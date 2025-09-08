@@ -1,13 +1,27 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
-  "name": "Mint Starter Kit",
-  "colors": {
-    "primary": "#16A34A",
-    "light": "#07C983",
-    "dark": "#15803D"
+  "name": "Summer",
+  "logo": {
+    "dark": "/images/BLACKFullLogoNoBg.png",
+    "light": "/images/FullLogoNoBg.png"
   },
-  "favicon": "/favicon.svg",
+  "colors": {
+    "primary": "#2563eb",
+    "light": "#3b82f6",
+    "dark": "#1d4ed8"
+  },
+  "favicon": "/images/icon/favicon.ico",
+  "topbarLinks": [
+    {
+      "name": "App",
+      "url": "https://summerengine.com"
+    },
+    {
+      "name": "Discord",
+      "url": "https://discord.gg/yUpgtxnZky"
+    }
+  ],
   "navigation": {
     "tabs": [
       {
@@ -17,52 +31,59 @@
             "group": "Getting started",
             "pages": [
               "index",
-              "quickstart",
-              "development"
+              "quickstart"
             ]
           },
           {
-            "group": "Customization",
+            "group": "Getting Started",
             "pages": [
-              "essentials/settings",
-              "essentials/navigation"
+              "essentials/installation",
+              "essentials/authentication",
+              "essentials/first-chat"
             ]
           },
           {
-            "group": "Writing content",
+            "group": "Using Summer",
             "pages": [
-              "essentials/markdown",
-              "essentials/code",
-              "essentials/images",
-              "essentials/reusable-snippets"
+              "ai-tools/operations",
+              "ai-tools/rag-search",
+              "essentials/limitations"
             ]
           },
           {
-            "group": "AI tools",
+            "group": "Engine Migration",
             "pages": [
-              "ai-tools/cursor",
-              "ai-tools/claude-code",
-              "ai-tools/windsurf"
+              "migration/godot"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "essentials/pricing",
+              "desktop/troubleshooting"
             ]
           }
         ]
       },
       {
-        "tab": "API reference",
+        "tab": "API Reference",
         "groups": [
           {
-            "group": "API documentation",
+            "group": "Developer APIs",
             "pages": [
-              "api-reference/introduction"
+              "api-reference/authentication",
+              "api-reference/chat-api"
             ]
-          },
+          }
+        ]
+      },
+      {
+        "tab": "Development",
+        "groups": [
           {
-            "group": "Endpoint examples",
+            "group": "Contributing",
             "pages": [
-              "api-reference/endpoint/get",
-              "api-reference/endpoint/create",
-              "api-reference/endpoint/delete",
-              "api-reference/endpoint/webhook"
+              "development/architecture"
             ]
           }
         ]
@@ -125,3 +146,4 @@
     }
   }
 }
+

@@ -1,0 +1,103 @@
+---
+title: "Migrating from Godot"
+description: "How to transition from Godot to Summer"
+icon: "arrow-right"
+---
+
+## Coming from Godot?
+
+If you're familiar with Godot, you'll feel right at home in Summer. The interface, node system, and scripting work exactly the same way you're used to.
+
+<Note>
+Quick migrations will soon be available. As Summer is based on the Godot codebase, it allows us to focus on making the best AI-powered game development experience while maintaining a familiar editing environment. This makes it easy to migrate your existing Godot settings to Summer.
+</Note>
+
+## What's the Same
+
+Everything you know about Godot still applies in Summer:
+
+- **Node system** - All the same nodes, properties, and relationships
+- **GDScript** - Your existing scripts work without changes  
+- **Scene structure** - `.tscn` files are identical
+- **Project settings** - Same export options and configurations
+- **Asset pipeline** - Import settings and resource formats unchanged
+
+## What's Different
+
+Summer adds AI capabilities on top of the familiar Godot experience:
+
+### AI Chat Panel
+
+- **Location**: Docked on the right side of the editor
+- **Purpose**: Natural language interface to modify your project
+- **Integration**: Directly connected to the editor's APIs
+
+### Enhanced Workflow
+
+Instead of manually clicking through menus:
+
+1. **Describe what you want** - "Add a player character with movement"
+2. **Review the plan** - Summer shows you what it will change
+3. **Apply or modify** - Accept changes or ask for adjustments
+4. **Undo if needed** - All AI changes use the standard undo system
+
+## Project Compatibility
+
+Your existing Godot projects work in Summer:
+
+<AccordionGroup>
+  <Accordion icon="folder-open" title="Opening Godot projects">
+    1. **File → Open Project** (or use Project Manager)
+    2. **Browse to your Godot project folder**
+    3. **Select project.godot file**
+    4. **Click "Open"**
+    
+    Summer will automatically index your project files for AI understanding.
+  </Accordion>
+  
+  <Accordion icon="sync" title="Project indexing">
+    When you first open a project, Summer:
+    - Scans all scripts, scenes, and assets
+    - Builds an understanding of your project structure  
+    - Enables AI to provide contextual help
+    - Takes 30 seconds to 2 minutes depending on project size
+  </Accordion>
+</AccordionGroup>
+
+## Common Questions
+
+<AccordionGroup>
+  <Accordion icon="question" title="Will my Godot plugins work?">
+    Most Godot plugins work in Summer without changes. However, plugins that modify the editor interface may need updates for AI integration.
+  </Accordion>
+  
+  <Accordion icon="question" title="Can I go back to Godot?">
+    Yes! Summer projects are standard Godot projects. You can open them in regular Godot anytime.
+  </Accordion>
+  
+  <Accordion icon="question" title="What about version compatibility?">
+    Summer is based on Godot 4.x. Projects from Godot 3.x will need the standard Godot 3→4 migration process.
+  </Accordion>
+</AccordionGroup>
+
+## Getting Started
+
+Ready to try Summer with your existing project?
+
+<CardGroup cols={2}>
+  <Card title="Download Summer" icon="download" href="/essentials/installation">
+    Get Summer installed on your system
+  </Card>
+  
+  <Card title="First Chat" icon="message-square" href="/essentials/first-chat">
+    Learn how to use AI assistance effectively
+  </Card>
+  
+  <Card title="AI Operations" icon="zap" href="/ai-tools/operations">
+    Understand what AI can do in your project
+  </Card>
+  
+  <Card title="Limitations" icon="info" href="/essentials/limitations">
+    Current MVP limitations to be aware of
+  </Card>
+</CardGroup>

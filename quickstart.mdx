@@ -1,80 +1,135 @@
 ---
-title: "Quickstart"
-description: "Start building awesome documentation in minutes"
+title: 'Quick Start'
+description: 'Build your first game in 5 minutes'
 ---
 
-## Get started in three steps
+## Welcome to Summer
 
-Get your documentation site running locally and make your first customization.
+Summer is The AI Game Engine. We make game development as fun as playing games. No coding experience? No problem. Just tell Summer what you want to build.
 
-### Step 1: Set up your local environment
+## Step 1: Download Summer
+
+Getting Summer on your computer is super easy.
 
 <AccordionGroup>
-  <Accordion icon="copy" title="Clone your docs locally">
-    During the onboarding process, you created a GitHub repository with your docs content if you didn't already have one. You can find a link to this repository in your [dashboard](https://dashboard.mintlify.com).
-    
-    To clone the repository locally so that you can make and preview changes to your docs, follow the [Cloning a repository](https://docs.github.com/en/repositories/creating-and-managing-repositories/cloning-a-repository) guide in the GitHub docs.
+  <Accordion icon="download" title="Get Summer for free">
+    **For Mac users:**
+    - Visit [summerengine.com](https://summerengine.com) and click "Download for Mac"
+    - Drag Summer to your Applications folder
+    - Double-click to open (Mac might ask for permission - that's normal!)
+
+    **For Windows users:**
+    - Visit [summerengine.com](https://summerengine.com) and click "Download for Windows"  
+    - Run the installer (Windows might ask for permission - click "Yes")
+    - Summer will be ready to go!
+
+    <Tip>Summer is completely free to download and try. No credit card required!</Tip>
   </Accordion>
-  <Accordion icon="rectangle-terminal" title="Start the preview server">
-    1. Install the Mintlify CLI: `npm i -g mint`
-    2. Navigate to your docs directory and run: `mint dev`
-    3. Open `http://localhost:3000` to see your docs live!
-    
-    <Tip>Your preview updates automatically as you edit files.</Tip>
+  <Accordion icon="user" title="Create your account">
+    1. **Open Summer** → You'll see a clean, friendly interface
+    2. **Click "Sign in"** → This opens your web browser  
+    3. **Create account** → Use Google, GitHub, or email - whatever you prefer
+    4. **Back to Summer** → The app will automatically log you in
+
+    <Tip>We use your browser for security - Summer never sees your password!</Tip>
   </Accordion>
 </AccordionGroup>
 
-### Step 2: Deploy your changes
+## Step 2: Build Your First Game
+
+This is where the magic happens. Let's create something awesome!
 
 <AccordionGroup>
-  <Accordion icon="github" title="Install our GitHub app">
-    Install the Mintlify GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app).
-    
-    Our GitHub app automatically deploys your changes to your docs site, so you don't need to manage deployments yourself.
-</Accordion>
-<Accordion icon="palette" title="Update your site name and colors">
-    For a first change, let's update the name and colors of your docs site.
+  <Accordion icon="plus" title="Start a new game">
+    1. **Click "New Project"** → Give it a fun name like "My Amazing Game"
+    2. **Choose a location** → Anywhere on your computer is fine
+    3. **Click "Create & Open"** → Summer opens with a chat window on the right
+    4. **Watch Summer think** → It's learning about your new project (takes a few seconds)
 
-    1. Open `docs.json` in your editor.
-    2. Change the `"name"` field to your project name.
-    3. Update the `"colors"` to match your brand.
-    4. Save and see your changes instantly at `http://localhost:3000`.
+    <Tip>The chat window is where you'll talk to Summer. Think of it as your creative partner!</Tip>
+  </Accordion>
+  <Accordion icon="message-square" title="Have your first conversation">
+    Ready to see Summer in action? Try typing these:
 
-    <Tip>Try changing the primary color to see an immediate difference!</Tip>
+    **"Create a player character that I can move around"**
+    - Summer creates a character for you
+    - Adds movement controls (arrow keys or WASD)
+    - You can immediately test it by pressing the play button!
+
+    **"Add some platforms to jump on"**
+    - Summer creates platforms in your game world
+    - Sets up physics so your character can land on them
+
+    **"Make the camera follow my player"**
+    - Summer adds a smooth camera that tracks your character
+    - Now your game feels professional!
+
+    <Tip>Don't worry about being precise - Summer understands natural language. Just describe what you want!</Tip>
   </Accordion>
 </AccordionGroup>
 
-### Step 3: Go live
+## Understanding the Interface
 
-<Accordion icon="rocket" title="Publish your docs">
-  1. Commit and push your changes.
-  2. Your docs will update and be live in moments!
-</Accordion>
+Summer looks like Godot because it IS Godot - with AI superpowers.
 
-## Next steps
+<AccordionGroup>
+  <Accordion icon="layout" title="Chat panel (right side)">
+    - **Multiple chat tabs** → Different conversations for different features
+    - **Change review** → See exactly what AI wants to change before applying
+    - **Sources** → AI shows which files it's reading from your project
+  </Accordion>
+  <Accordion icon="git-branch" title="Built-in Git integration">
+    - **Stage by hunk** → Review changes line by line
+    - **AI commit messages** → Generated from your changes
+    - **Conflict resolution** → AI helps resolve merge conflicts
+  </Accordion>
+  <Accordion icon="play" title="Test gate (optional)">
+    - **Play button gated** → Runs tests before allowing play (can disable)
+    - **Headless testing** → AI runs tests in background
+    - **Auto-rollback** → If something breaks, AI can revert changes
+  </Accordion>
+</AccordionGroup>
 
-Now that you have your docs running, explore these key features:
+## What Makes Summer Different
 
 <CardGroup cols={2}>
-
-<Card title="Write Content" icon="pen-to-square" href="/essentials/markdown">
-  Learn MDX syntax and start writing your documentation.
-</Card>
-
-<Card title="Customize style" icon="palette" href="/essentials/settings">
-  Make your docs match your brand perfectly.
-</Card>
-
-<Card title="Add code examples" icon="square-code" href="/essentials/code">
-  Include syntax-highlighted code blocks.
-</Card>
-
-<Card title="API documentation" icon="code" href="/api-reference/introduction">
-  Auto-generate API docs from OpenAPI specs.
-</Card>
-
+  <Card title="Native Godot Fork" icon="gamepad-2" href="/development/architecture">
+    Not a plugin - Summer IS Godot with AI built into the core engine.
+  </Card>
+  
+  <Card title="Project Intelligence" icon="brain" href="/ai-tools/rag-search">
+    AI understands your entire codebase, scenes, and assets automatically.
+  </Card>
+  
+  <Card title="Ops-Only Changes" icon="shield-check" href="/development/architecture">
+    AI can't break your project - all changes go through safe operations.
+  </Card>
+  
+  <Card title="Usage-Based Pricing" icon="credit-card" href="/essentials/authentication">
+    Pay only for what you use. Free tier for learning and small projects.
+  </Card>
 </CardGroup>
 
+## Next Steps
+
+<AccordionGroup>
+  <Accordion icon="book" title="Learn the fundamentals">
+    - [Authentication & Account Setup](/essentials/authentication)
+    - [Project Management & RAG Search](/ai-tools/rag-search)
+    - [Understanding AI Operations](/development/architecture)
+  </Accordion>
+  <Accordion icon="code" title="Advanced features">
+    - [Multiplayer Setup](/ai-tools/overview) - One-click headless servers
+    - [Asset Generation](/ai-tools/image-generation) - AI-created textures and models
+    - [Custom Tool Integration](/api-reference/authentication) - Extend Summer with APIs
+  </Accordion>
+  <Accordion icon="users" title="Get help">
+    - **Discord Community** → Join other Summer developers
+    - **GitHub Issues** → Report bugs and request features
+    - **Documentation** → Browse these docs for detailed guides
+  </Accordion>
+</AccordionGroup>
+
 <Note>
-  **Need help?** See our [full documentation](https://mintlify.com/docs) or join our [community](https://mintlify.com/community).
+  **Summer is in active development.** Features and APIs may change. Check the [changelog](/essentials/installation) for updates.
 </Note>
