@@ -3,8 +3,8 @@
   "theme": "mint",
   "name": "Summer",
   "logo": {
-    "dark": "/images/BLACKFullLogoNoBg.png",
-    "light": "/images/FullLogoNoBg.png"
+    "dark": "/images/FullLogoNoBg.png",
+    "light": "/images/BLACKFullLogoNoBg.png"
   },
   "colors": {
     "primary": "#2563eb",
@@ -109,8 +109,8 @@
     }
   },
   "logo": {
-    "light": "/images/FullLogoNoBg.png",
-    "dark": "/images/BLACKFullLogoNoBg.png"
+    "light": "/images/BLACKFullLogoNoBg.png",
+    "dark": "/images/FullLogoNoBg.png"
   },
   "navbar": {
     "links": [
