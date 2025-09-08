@@ -1,20 +1,20 @@
-# Mintlify Starter Kit
+# Summer Documentation
 
-Use the starter kit to get your docs deployed and ready to customize.
+The official documentation for Summer, The AI Game Engine.
 
-Click the green **Use this template** button at the top of this repo to copy the Mintlify starter kit. The starter kit contains examples with
+This repository contains:
 
-- Guide pages
-- Navigation
-- Customizations
-- API reference pages
-- Use of popular components
+- Getting started guides
+- AI operations documentation  
+- Engine migration guides
+- API reference
+- Community resources
 
-**[Follow the full quickstart guide](https://starter.mintlify.com/quickstart)**
+**[View the full documentation](https://docs.summerengine.com)**
 
 ## Development
 
-Install the [Mintlify CLI](https://www.npmjs.com/package/mint) to preview your documentation changes locally. To install, use the following command:
+Install the [Mintlify CLI](https://www.npmjs.com/package/mint) to preview documentation changes locally. To install, use the following command:
 
 ```
 npm i -g mint
@@ -30,7 +30,7 @@ View your local preview at `http://localhost:3000`.
 
 ## Publishing changes
 
-Install our GitHub app from your [dashboard](https://dashboard.mintlify.com/settings/organization/github-app) to propagate changes from your repo to your deployment. Changes are deployed to production automatically after pushing to the default branch.
+Documentation changes are deployed automatically after pushing to the main branch.
 
 ## Need help?
 
@@ -40,5 +40,5 @@ Install our GitHub app from your [dashboard](https://dashboard.mintlify.com/sett
 - If a page loads as a 404: Make sure you are running in a folder with a valid `docs.json`.
 
 ### Resources
-- [Mintlify documentation](https://mintlify.com/docs)
-- [Mintlify community](https://mintlify.com/community)
+- [Summer documentation](https://docs.summerengine.com)
+- [Summer community](https://discord.gg/yUpgtxnZky)

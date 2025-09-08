@@ -59,7 +59,6 @@
           {
             "group": "Reference",
             "pages": [
-              "essentials/pricing",
               "desktop/troubleshooting"
             ]
           }
@@ -92,38 +91,38 @@
     "global": {
       "anchors": [
         {
-          "anchor": "Documentation",
-          "href": "https://mintlify.com/docs",
+          "anchor": "Community",
+          "href": "https://discord.gg/yUpgtxnZky",
           "icon": "book-open-cover"
         },
         {
-          "anchor": "Community",
-          "href": "https://mintlify.com/community",
+          "anchor": "GitHub",
+          "href": "https://github.com/SummerEngine",
           "icon": "slack"
         },
         {
           "anchor": "Blog",
-          "href": "https://mintlify.com/blog",
+          "href": "https://summerengine.com/blog",
           "icon": "newspaper"
         }
       ]
     }
   },
   "logo": {
-    "light": "/logo/light.svg",
-    "dark": "/logo/dark.svg"
+    "light": "/images/FullLogoNoBg.png",
+    "dark": "/images/BLACKFullLogoNoBg.png"
   },
   "navbar": {
     "links": [
       {
         "label": "Support",
-        "href": "mailto:hi@mintlify.com"
+        "href": "mailto:support@summerengine.com"
       }
     ],
     "primary": {
       "type": "button",
       "label": "Dashboard",
-      "href": "https://dashboard.mintlify.com"
+      "href": "https://summerengine.com/dashboard"
     }
   },
   "contextual": {
