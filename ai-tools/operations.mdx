@@ -1,0 +1,180 @@
+---
+title: "AI Operations"
+description: "What Summer's AI can do in your project"
+icon: "zap"
+---
+
+## How AI Operations Work
+
+Summer's AI can directly modify your project through safe, structured operations. All changes go through the editor's proper APIs and are fully undoable.
+
+<Note>
+Unlike free-form file editing, Summer uses specific operations that ensure your project stays stable and nothing breaks unexpectedly.
+</Note>
+
+## Scene Operations
+
+The AI can modify your scenes through these operations:
+
+<AccordionGroup>
+  <Accordion icon="plus" title="Add Nodes">
+    **What it does**: Creates new nodes in your scene
+    
+    **Example prompts**:
+    - "Add a CharacterBody2D named Player"
+    - "Create a Button under the UI node"
+    - "Add a CollisionShape2D to the Player"
+    
+    **How it works**:
+    - AI specifies the parent node and node type
+    - Node is created with a unique name
+    - Automatically selected in the scene tree
+    - Fully undoable with Ctrl+Z
+  </Accordion>
+  
+  <Accordion icon="settings" title="Set Properties">
+    **What it does**: Changes node properties and values
+    
+    **Example prompts**:
+    - "Set the Player's position to (100, 200)"
+    - "Make the Button text say 'Start Game'"
+    - "Change the sprite texture to player.png"
+    
+    **How it works**:
+    - AI reads current property values
+    - Sets new values through the inspector
+    - Changes appear immediately in the editor
+    - Each property change is undoable
+  </Accordion>
+  
+  <Accordion icon="link" title="Connect Signals">
+    **What it does**: Connects node signals to methods
+    
+    **Example prompts**:
+    - "Connect the Button's pressed signal to start_game"
+    - "Wire up the player's body_entered signal"
+    
+    **How it works**:
+    - AI finds the signal and target method
+    - Creates the connection in the editor
+    - Generates method stubs if needed
+    - Opens external editor for code editing
+  </Accordion>
+</AccordionGroup>
+
+## Project Operations
+
+AI can also modify project-level settings:
+
+<AccordionGroup>
+  <Accordion icon="gear" title="Project Settings">
+    **What it does**: Changes project configuration
+    
+    **Example prompts**:
+    - "Set the main scene to MainMenu.tscn"
+    - "Add a new layer to the physics layers"
+    - "Configure the window size to 1920x1080"
+  </Accordion>
+  
+  <Accordion icon="keyboard" title="Input Actions">
+    **What it does**: Manages input action mappings
+    
+    **Example prompts**:
+    - "Add a 'jump' action mapped to Space"
+    - "Create movement actions for WASD"
+    - "Set up controller input for player 2"
+  </Accordion>
+  
+  <Accordion icon="code" title="Script Operations">
+    **What it does**: Attaches scripts and opens editors
+    
+    **Example prompts**:
+    - "Attach a script to the Player node"
+    - "Open the player script in my editor"
+    - "Create a new script for the UI manager"
+    
+    **Note**: For substantial code editing, Summer opens your external editor (VS Code, Cursor, etc.)
+  </Accordion>
+</AccordionGroup>
+
+## Reading Your Project
+
+Before making changes, AI can read your project structure:
+
+### Project Intelligence
+
+- **File tree scanning** - AI sees all your scripts, scenes, and assets
+- **Scene structure reading** - Understands node hierarchies and relationships  
+- **Property inspection** - Reads current values before making changes
+- **Script content** - Analyzes your existing code for context
+
+### What This Enables
+
+<Columns cols={2}>
+  <Card title="Smart Suggestions" icon="lightbulb">
+    AI understands your project structure and suggests appropriate changes
+  </Card>
+  
+  <Card title="Context-Aware" icon="brain">
+    References existing nodes, scripts, and assets in its responses
+  </Card>
+  
+  <Card title="Conflict Prevention" icon="shield">
+    Avoids naming conflicts and maintains scene integrity
+  </Card>
+  
+  <Card title="Incremental Changes" icon="layers">
+    Builds on your existing work rather than starting from scratch
+  </Card>
+</Columns>
+
+## Safety & Limitations
+
+### What's Safe
+
+- **All operations are undoable** - Standard Ctrl+Z works for everything
+- **Editor APIs only** - No direct file manipulation that could corrupt projects
+- **Explicit operations** - AI must specify exactly what it's changing
+- **Immediate feedback** - Changes appear instantly in the editor
+
+### Current Limitations
+
+- **No batch file operations** - Large refactors across many files aren't supported yet
+- **Limited import settings** - Asset import options are mostly manual for now
+- **Scene-focused** - Works best with open scenes rather than project-wide changes
+
+### Best Practices
+
+<AccordionGroup>
+  <Accordion icon="eye" title="Review changes">
+    Always check what the AI plans to do before confirming operations. The change review panel shows exactly what will be modified.
+  </Accordion>
+  
+  <Accordion icon="save" title="Save regularly">
+    Save your scenes after AI makes changes you want to keep. This persists the changes to your project files.
+  </Accordion>
+  
+  <Accordion icon="undo" title="Use undo freely">
+    Don't hesitate to undo AI changes that aren't quite right. You can always ask for a different approach.
+  </Accordion>
+</AccordionGroup>
+
+## Getting Started
+
+<CardGroup cols={2}>
+  <Card title="First Chat" icon="message-square" href="/essentials/first-chat">
+    Learn how to effectively communicate with Summer's AI
+  </Card>
+  
+  <Card title="Project Intelligence" icon="search" href="/ai-tools/rag-search">
+    Understand how AI reads and indexes your project
+  </Card>
+  
+  <Card title="Current Limitations" icon="info" href="/essentials/limitations">
+    Know what to expect in the current MVP version
+  </Card>
+  
+  <Card title="Troubleshooting" icon="wrench" href="/desktop/troubleshooting">
+    Solutions for common issues and questions
+  </Card>
+</CardGroup>

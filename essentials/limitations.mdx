@@ -1,0 +1,199 @@
+---
+title: "Current Limitations"
+description: "What to expect in Summer's MVP version"
+icon: "info"
+---
+
+## Summer is in Active Development
+
+Summer is currently in MVP (Minimum Viable Product) stage. We're transparent about what works well and what has limitations so you can set appropriate expectations.
+
+<Warning>
+This is MVP software - we're actively improving based on real usage patterns. Your feedback shapes the roadmap.
+</Warning>
+
+## Project Intelligence Limitations
+
+### Project Index Sharing (Temporary)
+
+**What it means**: Opening a new project will re-index and replace the previous project's search index
+
+**Impact**: If you work on multiple projects, you'll need to wait for re-indexing when switching
+
+**Workaround**: Work on one main project at a time for best performance
+
+**Timeline**: Will be fixed in next release with proper project isolation
+
+### File Discovery
+
+**What works**: Finds all scripts, scenes, and assets in your project
+
+**Limitation**: Re-indexes daily, not on every file save
+
+**Impact**: Very new files might not appear in search immediately
+
+**Workaround**: Ask the AI to "explore the project structure" to find recent files
+
+## Authentication & Desktop Integration
+
+### Authentication Flow
+
+**What works**: One-time login, persistent across app restarts
+
+**Limitation**: Login happens in embedded browser (some OAuth providers may block)
+
+**Workaround**: Use email/password if OAuth fails
+
+### File Operations
+
+**What works**: Add nodes, set properties, connect signals, read any file
+
+**Limitation**: Large file operations (>10MB) may be slow
+
+**Impact**: AI will ask for confirmation before large operations
+
+## AI Chat Features
+
+### Tool Calls
+
+**What works**: Editor operations, file reading, project exploration
+
+**Limitation**: Some operations require explicit scene/parent paths
+
+**Impact**: AI may ask follow-up questions for clarity
+
+**Benefit**: Ensures safe, predictable operations
+
+### Model Selection
+
+**What works**: All supported models work with Summer-specific tools
+
+**Limitation**: Tool calls not available with reasoning models
+
+**Workaround**: Switch to standard models for editor operations
+
+## Performance & Costs
+
+### Embedding Costs
+
+**Current costs**:
+- ~$0.001 per 1K tokens for text files
+- ~$0.0001 per asset file
+- **Typical project**: $0.50-$2.00 for initial indexing
+- **Ongoing**: Minimal costs for daily refresh and queries
+
+### Large Projects
+
+**Supported**: Up to 50K files per project
+
+**Performance**: Initial indexing may take 2-5 minutes for large projects
+
+**Optimization**: Text files get full embedding, assets get metadata only
+
+## Feature Limitations
+
+### What's Not Available Yet
+
+<AccordionGroup>
+  <Accordion icon="x" title="Advanced import settings">
+    Most asset import options need to be configured manually. AI can't modify importer settings yet.
+  </Accordion>
+  
+  <Accordion icon="x" title="Large-scale refactoring">
+    Cross-file refactoring and project-wide changes aren't supported in MVP.
+  </Accordion>
+  
+  <Accordion icon="x" title="Plugin integration">
+    Custom editor plugins may not work properly with AI operations.
+  </Accordion>
+  
+  <Accordion icon="x" title="Visual shader editing">
+    Visual shader graphs can't be modified through AI yet.
+  </Accordion>
+  
+  <Accordion icon="x" title="Animation timeline">
+    Animation keyframes and timeline editing is manual-only for now.
+  </Accordion>
+</AccordionGroup>
+
+### What Works Well
+
+<AccordionGroup>
+  <Accordion icon="check" title="Scene composition">
+    Adding nodes, setting properties, organizing scene hierarchies works reliably.
+  </Accordion>
+  
+  <Accordion icon="check" title="Script attachment">
+    Creating script stubs, attaching to nodes, opening in external editors.
+  </Accordion>
+  
+  <Accordion icon="check" title="Project settings">
+    Input actions, project configuration, basic export settings.
+  </Accordion>
+  
+  <Accordion icon="check" title="Signal connections">
+    Connecting node signals with automatic method stub generation.
+  </Accordion>
+</AccordionGroup>
+
+## Future Roadmap
+
+### Short-term (next release)
+
+- Project isolation (unique indexes per project)
+- Real-time file watching (immediate index updates)
+- Improved asset search and preview
+
+### Medium-term
+
+- Cross-project search and templates
+- Visual asset understanding
+- Advanced code generation and refactoring
+
+## Support & Feedback
+
+### If You Encounter Issues
+
+- Check desktop console for `[RAG]` prefixed messages
+- Try asking "explore my project structure" if search seems incomplete
+- Report specific cases where AI can't find files you know exist
+
+### Getting Help
+
+<CardGroup cols={2}>
+  <Card title="Troubleshooting" icon="wrench" href="/desktop/troubleshooting">
+    Common issues and solutions
+  </Card>
+  
+  <Card title="Discord Community" icon="message-circle" href="https://discord.gg/summer">
+    Join other Summer developers
+  </Card>
+  
+  <Card title="GitHub Issues" icon="bug" href="https://github.com/SummerEngine/summer/issues">
+    Report bugs and request features
+  </Card>
+  
+  <Card title="Email Support" icon="mail" href="mailto:support@summerengine.com">
+    Direct support for urgent issues
+  </Card>
+</CardGroup>
+
+## Setting Expectations
+
+### What Summer Excels At
+
+- **Scene building** - Quickly assembling game objects and hierarchies
+- **Property tweaking** - Adjusting values and configurations
+- **Project exploration** - Understanding existing codebases
+- **Learning assistance** - Explaining how things work in your project
+
+### What Requires Manual Work
+
+- **Complex scripting** - Use your preferred code editor for substantial coding
+- **Asset creation** - Import and configure art, audio, and models manually
+- **Performance optimization** - Profiling and optimization still needs hands-on work
+- **Advanced engine features** - Shaders, plugins, and specialized systems
+
+<Note>
+Remember: Summer is designed to accelerate your workflow, not replace your expertise. It handles the tedious parts so you can focus on the creative and technical challenges that matter.
+</Note>

@@ -1,0 +1,30 @@
+{
+  "name": "Summer - The AI Game Engine",
+  "short_name": "Summer Engine",
+  "description": "The AI game engine built to make creating games as fun as playing them. Create games faster with intelligent assistance.",
+  "icons": [
+    {
+      "src": "/icon/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon/apple-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#000000",
+  "background_color": "#000000",
+  "display": "standalone",
+  "start_url": "/",
+  "scope": "/",
+  "orientation": "portrait-primary"
+}
