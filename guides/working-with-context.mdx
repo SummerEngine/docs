@@ -1,0 +1,221 @@
+---
+title: "Working with Context"
+description: "How to provide effective context to Summer's AI for better results"
+icon: "brain"
+---
+
+## What is Context?
+
+When Summer generates code suggestions or responds to your requests, "context" refers to the information provided to the AI model that it uses to understand your intent and current situation. Effective context is the foundation of getting great results from Summer's AI assistance.
+
+There are two types of context:
+
+1. **Intent Context**: What you want Summer to do - your instructions, goals, and desired outcomes
+2. **State Context**: The current state of your project - code, files, error messages, and project structure
+
+## Why Context Matters
+
+The more relevant context you provide, the more accurate and helpful Summer's responses will be. Without sufficient context, you may experience:
+
+- **Hallucinations**: The AI making assumptions or creating code that doesn't fit your project
+- **Generic Solutions**: Responses that don't account for your specific codebase patterns
+- **Inefficient Results**: Having to iterate multiple times to get the right solution
+
+Summer automatically gathers context from your current file, project structure, and recent activity, but providing explicit context helps guide the AI in the right direction.
+
+## Providing Context in Summer
+
+### The @ Symbol
+
+The most direct way to provide context is using the `@` symbol in Summer's chat:
+
+| Symbol | Example | Use Case | Best For |
+|--------|---------|----------|----------|
+| `@file` | `@player.gd` | Reference specific files | When you know exactly which file is relevant |
+| `@folder` | `@scripts/` | Include entire folders | When multiple related files are needed |
+| `@function` | `@move_player()` | Reference specific functions | When discussing particular code elements |
+
+**Example:**
+```
+Using @player.gd as reference, create a similar enemy.gd script with different movement patterns
+```
+
+### Project Context
+
+Summer understands your project structure and can use it effectively:
+
+- **Recent Files**: Files you've been working on recently
+- **Related Code**: Functions and classes that are connected to your current work
+- **Project Patterns**: Your coding style and architectural decisions
+- **Error Context**: Current errors and console output
+
+### Conversation Context
+
+Summer maintains context throughout your conversation:
+
+- **Previous Requests**: Builds on earlier instructions in the same chat
+- **Established Patterns**: Remembers the style and approach you've requested
+- **Project Goals**: Keeps track of what you're trying to accomplish
+
+## Best Practices
+
+### Be Specific About Intent
+
+Instead of vague requests, provide clear, specific instructions:
+
+❌ **Vague**: "Make this better"  
+✅ **Specific**: "Optimize this function to reduce memory usage and add error handling"
+
+❌ **Vague**: "Fix the player"  
+✅ **Specific**: "Fix the player movement so it doesn't clip through walls when jumping"
+
+### Provide Relevant State Information
+
+Include information about the current state of your project:
+
+```
+I'm getting this error: "Cannot call method 'move_and_slide' on null instance"
+The error happens in @player.gd when the player tries to move
+Looking at @level.gd, I think the issue might be in how we instantiate the player
+```
+
+### Use Examples and References
+
+Point to existing code that works as you want:
+
+```
+Create a new weapon system similar to @sword.gd but for a bow
+The bow should have charging mechanics like @magic_staff.gd
+Use the same damage calculation system as other weapons in @weapons/
+```
+
+### Break Down Complex Requests
+
+For large changes, break them into smaller, focused requests:
+
+**Instead of:**
+```
+Create a complete inventory system with drag-and-drop, item stacking, equipment slots, and save/load functionality
+```
+
+**Try:**
+```
+First, let's create a basic inventory data structure that can hold items
+Then we'll add the UI for displaying items
+Finally, we'll implement drag-and-drop functionality
+```
+
+## Context in Different Scenarios
+
+### Debugging
+
+When asking for help with bugs:
+
+```
+I'm getting a crash when the player dies. Here's the error: [paste error]
+The crash happens in @game_manager.gd at line 45
+The player death is handled in @player.gd around line 120
+```
+
+### Feature Development
+
+When building new features:
+
+```
+I want to add a dialogue system to my RPG
+Look at @npc.gd to see how NPCs are currently structured
+The UI should match the style of @ui/menu.gd
+Store dialogue data similar to how @quest_data.gd works
+```
+
+### Code Review and Optimization
+
+When asking for improvements:
+
+```
+Review @enemy_ai.gd for performance issues
+This script runs for 50+ enemies simultaneously
+Focus on the pathfinding in the _process function
+Consider the patterns used in @player_controller.gd for optimization ideas
+```
+
+## Advanced Context Techniques
+
+### Contextual Conversations
+
+Start conversations with comprehensive context:
+
+```
+I'm working on a 2D platformer in Godot 4.2
+Main character: @player.gd (uses CharacterBody2D)
+Level structure: @level_manager.gd handles scene transitions
+Current issue: Player sometimes falls through moving platforms in @moving_platform.gd
+
+I need help fixing the collision detection between player and moving platforms.
+```
+
+### Reference Patterns
+
+Use existing code as templates:
+
+```
+Create a new enemy type based on @enemies/goblin.gd
+It should have the same AI structure but different attack patterns
+Use the health system from @components/health.gd
+Follow the same naming conventions as other enemies in @enemies/
+```
+
+### Cross-Project Learning
+
+Reference concepts from other projects or frameworks:
+
+```
+I want to implement a state machine for my player character
+Similar to how Unity's Animator Controller works
+Apply this to @player.gd's current movement system
+Keep the existing input handling in @input_manager.gd
+```
+
+## Common Context Mistakes
+
+### Too Much Irrelevant Context
+
+❌ Including entire large files when only a small section is relevant  
+✅ Point to specific functions or sections: "Look at the jump logic in @player.gd lines 50-80"
+
+### Too Little Context
+
+❌ "This doesn't work" without showing what "this" is  
+✅ "The enemy pathfinding in @enemy.gd isn't working - enemies get stuck on corners"
+
+### Outdated Context
+
+❌ Referencing old code that's been changed  
+✅ Always reference current file states and recent changes
+
+## Integration with Summer's Features
+
+### Project Intelligence
+
+Summer's [Project Intelligence](/ai-tools/rag-search) automatically provides context about:
+- Your project's architecture and patterns
+- Related files and dependencies
+- Your coding style and conventions
+
+### AI Operations
+
+When using [AI Operations](/ai-tools/operations), context helps Summer:
+- Make changes that fit your existing codebase
+- Follow your established patterns and conventions
+- Avoid breaking existing functionality
+
+## Takeaways
+
+- **Context is crucial**: The quality of Summer's responses directly correlates with the context you provide
+- **Be specific**: Clear intent and relevant state information lead to better results
+- **Use @ symbols**: Explicitly reference files, folders, and functions when relevant
+- **Provide examples**: Show Summer what you want by referencing existing code that works
+- **Break down complexity**: Large requests work better when split into focused pieces
+- **Maintain conversation context**: Build on previous requests in the same chat for continuity
+
+Effective context management is a skill that improves with practice. The more you understand your project and can communicate that understanding to Summer, the more powerful the AI assistance becomes.

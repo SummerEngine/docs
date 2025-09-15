@@ -1,0 +1,184 @@
+---
+title: "Security Overview"
+description: "How Summer protects your code and data"
+icon: "shield"
+---
+
+## Our Commitment to Security
+
+At Summer, we understand that your code is your most valuable asset. We've built our security infrastructure with developer privacy and data protection as core principles, not afterthoughts.
+
+## Data Handling Philosophy
+
+**Your Code, Your Control**: We believe developers should have full transparency and control over how their code is handled. Every decision we make prioritizes your privacy and security.
+
+## Infrastructure Security
+
+We depend on the following trusted partners and services, organized by how they interact with your data:
+
+### Core Infrastructure
+
+**AWS** - *Sees and stores code data*  
+Our primary infrastructure is hosted on AWS. Most servers are in the US, with some latency-critical servers in EU regions (London) for European users.
+
+**Cloudflare** - *Sees code data*  
+We use Cloudflare as a reverse proxy to improve performance and security for our API and website.
+
+### AI Model Providers
+
+**Anthropic** - *Sees code data*  
+We use Claude models for AI responses. Code may be sent to Anthropic for processing. We have a zero data retention agreement with Anthropic.
+
+**OpenAI** - *Sees code data*  
+We use GPT models for certain AI features. Code may be sent to OpenAI for processing. We have a zero data retention agreement with OpenAI.
+
+**Google Cloud Vertex API** - *Sees code data*  
+We use Gemini models through Google's Vertex API. We have a zero data retention agreement with Google Cloud Vertex.
+
+### Data Storage and Processing
+
+**Turbopuffer** - *Stores obfuscated code data*  
+Embeddings of indexed codebases and obfuscated metadata are stored with Turbopuffer on Google Cloud servers in the US. This enables Summer's project intelligence features. You can read more on [Turbopuffer's security page](https://turbopuffer.com/security).
+
+**Supabase** - *Stores code data*  
+We use Supabase for user data, project metadata, and art assets. All data is encrypted in transit and at rest.
+
+### Essential Services (No Code Access)
+
+**Stripe** - *No code data*  
+Handles billing and payments. Only stores your payment information and billing details.
+
+**Vercel** - *No code data*  
+Hosts our website and documentation. Has no access to code data.
+
+**Amplitude** - *No code data*  
+Analytics for usage patterns only. No code data is stored - only events like "AI request made" or "project opened".
+
+**Slack & Google Workspace** - *May store code snippets for debugging*  
+Our internal communication tools. We may share non-sensitive code snippets for debugging purposes, but never full codebases or sensitive information.
+
+**Sentry** - *May store code data in error reports*  
+Error monitoring and performance tracking. Code data may appear in error logs but is never explicitly sent.
+
+## Geographic Data Handling
+
+- **Primary servers**: United States
+- **EU servers**: London (for European users)
+- **No Chinese infrastructure**: We do not use any Chinese companies as subprocessors
+- **Data residency**: EU users' data can be processed on EU servers where possible
+
+## Access Controls
+
+### Team Access
+- **Least privilege principle**: Team members only access systems necessary for their role
+- **Multi-factor authentication**: Required for all infrastructure access
+- **Network controls**: Restricted access using both network-level and secret-based controls
+- **Regular audits**: Periodic review of access permissions and usage
+
+### Your Control
+- **Project privacy settings**: Control who can see your projects
+- **Data deletion**: Request deletion of your data at any time
+- **Access logs**: View when and how your data has been accessed
+- **Export capabilities**: Download your project data in standard formats
+
+## Data Protection Measures
+
+### Encryption
+- **In transit**: All data encrypted with TLS 1.3
+- **At rest**: Database and file storage encrypted
+- **End-to-end**: Sensitive operations use additional encryption layers
+
+### Privacy by Design
+- **Minimal data collection**: We only collect data necessary for functionality
+- **Purpose limitation**: Data is only used for stated purposes
+- **Data minimization**: Regular cleanup of unnecessary data
+- **Anonymization**: Personal identifiers removed where possible
+
+### Compliance
+- **GDPR compliance**: Full compliance with European data protection regulations
+- **CCPA compliance**: California Consumer Privacy Act compliance
+- **SOC 2 Type II**: Currently in progress (expected completion Q2 2024)
+
+## Transparency Reports
+
+We believe in transparency about how we handle data:
+
+### Data Requests
+- **Government requests**: We've received 0 government requests for user data
+- **Law enforcement**: We've received 0 law enforcement requests
+- **Third-party requests**: We don't share data with third parties without explicit consent
+
+### Security Incidents
+- **Breaches**: We've had 0 security breaches affecting user data
+- **Vulnerabilities**: We maintain a responsible disclosure program
+- **Incident response**: 24/7 monitoring with automated incident response
+
+## Your Rights
+
+### Data Access
+- **View your data**: Access all data we store about you
+- **Data portability**: Export your data in machine-readable formats
+- **Usage logs**: See how your data has been accessed and used
+
+### Data Control
+- **Correction**: Update or correct your personal information
+- **Deletion**: Request complete deletion of your account and data
+- **Restriction**: Limit how we process your data
+- **Objection**: Object to certain types of data processing
+
+### Privacy Settings
+- **Project visibility**: Control who can see your projects and code
+- **Analytics opt-out**: Disable usage analytics collection
+- **Marketing preferences**: Control communication preferences
+- **Data sharing**: Opt out of any data sharing (where legally permitted)
+
+## Security Best Practices for Users
+
+### Account Security
+- **Strong passwords**: Use unique, complex passwords
+- **Two-factor authentication**: Enable 2FA on your Summer account
+- **Regular reviews**: Periodically review account access and permissions
+- **Secure devices**: Keep your development machines secure and updated
+
+### Project Security
+- **Sensitive data**: Avoid committing secrets, API keys, or passwords
+- **Access controls**: Use project privacy settings appropriately
+- **Regular backups**: Maintain your own backups of critical projects
+- **Team management**: Regularly review team member access
+
+## Incident Response
+
+### If You Suspect a Security Issue
+1. **Report immediately**: Email security@summerengine.com
+2. **Provide details**: Include as much information as possible
+3. **Don't disclose publicly**: Allow us to investigate and fix first
+4. **Follow up**: We'll keep you updated on our investigation
+
+### Our Response Process
+1. **Immediate assessment**: Security team reviews within 1 hour
+2. **Containment**: Isolate and contain any potential issues
+3. **Investigation**: Full forensic investigation of the incident
+4. **Remediation**: Fix vulnerabilities and strengthen defenses
+5. **Communication**: Transparent communication about what happened
+
+## Contact Us
+
+### Security Team
+- **Email**: security@summerengine.com
+- **Response time**: Within 24 hours for security issues
+- **Emergency**: For critical security issues, mark subject as "URGENT"
+
+### General Privacy Questions
+- **Email**: privacy@summerengine.com
+- **Data requests**: Use this email for GDPR/CCPA requests
+- **Policy questions**: General questions about our privacy practices
+
+<Warning>
+**Security is a shared responsibility.** While we implement strong security measures, the security of your projects also depends on your own security practices. Keep your accounts secure, use strong passwords, and be mindful of what you commit to your repositories.
+</Warning>
+
+## Regular Updates
+
+This security overview is updated regularly to reflect our current practices and any changes to our infrastructure. Last updated: January 2024.
+
+For the most current information, always refer to this documentation or contact our security team directly.

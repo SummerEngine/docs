@@ -1,0 +1,342 @@
+---
+title: "Working with Documentation"
+description: "Leverage documentation effectively in Summer through external sources and internal context"
+icon: "book-open"
+---
+
+## Why Documentation Matters
+
+Documentation provides current, accurate context that helps Summer give better responses. Without proper documentation context, AI models rely on potentially outdated training data, leading to suggestions that might not work with current versions of frameworks, engines, or your specific project setup.
+
+## Types of Documentation Context
+
+### External Documentation
+- **Official Framework Docs**: Godot documentation, Unity manuals, Unreal Engine docs
+- **API References**: Language specifications, library documentation
+- **Community Resources**: Tutorials, Stack Overflow discussions, GitHub issues
+
+### Internal Documentation
+- **Project Documentation**: Architecture decisions, setup guides, deployment procedures
+- **Code Documentation**: Inline comments, docstrings, README files
+- **Team Knowledge**: Conventions, patterns, troubleshooting guides
+
+## Using External Documentation
+
+### Web Search Integration
+
+Summer can search the web for current information when you need up-to-date documentation:
+
+```
+Search for the latest Godot 4.3 documentation on AnimationPlayer
+Find examples of implementing state machines in Godot
+Look up best practices for multiplayer networking in Godot 4
+```
+
+### Referencing Specific Documentation
+
+When you know specific documentation exists, reference it directly:
+
+```
+Following the Godot documentation for CharacterBody2D, 
+implement a player controller with proper collision detection
+Use the move_and_slide() method as described in the official docs
+```
+
+### Framework-Specific Patterns
+
+Reference documentation patterns for consistency:
+
+```
+Create a custom Resource class following Godot's documentation patterns
+Implement the _get_property_list() method as shown in the Godot docs
+Use @export annotations according to Godot 4 best practices
+```
+
+## Internal Documentation Integration
+
+### Project README Files
+
+Keep your project documentation accessible to Summer:
+
+```markdown
+# Game Project Structure
+
+## Core Systems
+- `systems/combat/` - All combat-related logic
+- `systems/inventory/` - Item management and storage
+- `systems/progression/` - Player leveling and skills
+
+## Conventions
+- All managers are singletons following the pattern in `base/singleton_manager.gd`
+- UI components inherit from `ui/base_ui_component.gd`
+- Game events use the centralized event bus in `core/event_bus.gd`
+```
+
+### Inline Code Documentation
+
+Write comprehensive code documentation that Summer can reference:
+
+```gdscript
+## Player controller handling movement, jumping, and basic interactions
+## 
+## This class manages all player input and translates it into game actions.
+## It follows the standard CharacterBody2D pattern from Godot 4.x documentation.
+##
+## Dependencies:
+## - InputManager for input handling
+## - PlayerStats for movement parameters
+## - EventBus for broadcasting player events
+class_name PlayerController extends CharacterBody2D
+
+## Movement speed in pixels per second
+## Configured in the editor, typical values: 200-400
+@export var speed: float = 300.0
+
+## Jump velocity (negative because Y-axis is inverted)
+## Higher absolute values = higher jumps
+@export var jump_velocity: float = -400.0
+```
+
+### Architecture Documentation
+
+Document high-level architectural decisions:
+
+```markdown
+# Combat System Architecture
+
+## Overview
+The combat system is built around a component-based architecture where entities can have multiple combat-related components.
+
+## Core Components
+- `HealthComponent`: Manages health, damage, and death
+- `AttackComponent`: Handles damage dealing and attack timing
+- `DefenseComponent`: Manages armor, resistances, and damage reduction
+
+## Event Flow
+1. Attack initiated → AttackComponent processes
+2. Damage calculated → sent to target's HealthComponent
+3. Health changed → UI updated via signals
+4. Death triggered → cleanup and rewards processed
+```
+
+## Documentation-Driven Development
+
+### Creating Documentation from Code
+
+Generate documentation from existing implementations:
+
+```
+Analyze @systems/inventory/ and create documentation covering:
+- How the inventory system works
+- Public API methods and their parameters
+- Integration points with other systems
+- Common usage patterns and examples
+```
+
+### Updating Documentation from Changes
+
+Keep documentation current as code evolves:
+
+```
+I've refactored the save system in @systems/save_manager.gd
+Update the documentation in docs/save-system.md to reflect:
+- New save file format
+- Changed method signatures
+- Updated integration with @systems/game_state.gd
+```
+
+### Documentation-First Feature Development
+
+Plan features through documentation:
+
+```
+Before implementing the quest system, let's create documentation for:
+- Quest data structure and properties
+- Quest state management and progression
+- Integration with dialogue and inventory systems
+- Save/load functionality for quest progress
+
+This will help us design the API before writing code.
+```
+
+## Best Practices for Documentation Context
+
+### Be Specific About Versions
+
+When referencing external documentation, specify versions:
+
+```
+Using Godot 4.2 documentation for implementing custom resources
+Follow the GDScript 2.0 syntax guidelines
+Reference the latest Godot networking tutorial for multiplayer setup
+```
+
+### Link Documentation to Implementation
+
+Connect your code to relevant documentation:
+
+```gdscript
+## Implements the observer pattern as described in our architecture docs
+## See: docs/patterns/observer-pattern.md for usage guidelines
+class_name EventBus extends Node
+
+## Subscribes a callback to an event type
+## @param event_type: String identifier for the event
+## @param callback: Callable to invoke when event fires
+## @param subscriber: Object that owns the callback (for cleanup)
+func subscribe(event_type: String, callback: Callable, subscriber: Object):
+    # Implementation follows the pattern documented in observer-pattern.md
+```
+
+### Maintain Documentation Currency
+
+Regular documentation maintenance:
+
+```
+Review and update all documentation in docs/ folder:
+- Check for outdated API references
+- Update screenshots and examples
+- Verify all links still work
+- Add documentation for new features added this sprint
+```
+
+## Common Documentation Patterns
+
+### API Documentation
+
+Document public interfaces clearly:
+
+```gdscript
+## Inventory management system for handling player items
+##
+## Provides methods for adding, removing, and querying items in the player's
+## inventory. Supports item stacking, weight limits, and category filtering.
+##
+## Example usage:
+## [codeblock]
+## var inventory = InventoryManager.get_instance()
+## inventory.add_item("health_potion", 5)
+## var potion_count = inventory.get_item_count("health_potion")
+## [/codeblock]
+class_name InventoryManager extends Node
+```
+
+### Setup and Configuration Guides
+
+Document project setup procedures:
+
+```markdown
+# Development Environment Setup
+
+## Prerequisites
+- Godot 4.2 or later
+- Git for version control
+- Recommended: VS Code with Godot extensions
+
+## Project Setup
+1. Clone the repository: `git clone [repo-url]`
+2. Open `project.godot` in Godot Engine
+3. Configure project settings in Project → Project Settings
+4. Run the main scene to verify setup
+
+## Common Issues
+- If assets don't load: Reimport all assets via Project → Reimport Assets
+- If scripts show errors: Ensure Godot version matches requirements
+```
+
+### Troubleshooting Documentation
+
+Document common issues and solutions:
+
+```markdown
+# Common Issues and Solutions
+
+## Player Falls Through Floor
+**Symptoms**: Player character clips through solid platforms
+**Cause**: Collision detection running at wrong physics step
+**Solution**: Move collision code from `_process()` to `_physics_process()`
+
+## Save Files Corrupted
+**Symptoms**: Game crashes when loading saved games
+**Cause**: Save data format changed without migration
+**Solution**: Implement save file versioning in `SaveManager.gd`
+```
+
+## Integration with Summer's Features
+
+### Project Intelligence Enhancement
+
+Well-documented code helps Summer's [Project Intelligence](/ai-tools/rag-search) understand:
+- System boundaries and responsibilities
+- Integration points between components
+- Your team's conventions and patterns
+- Historical context for design decisions
+
+### Better AI Suggestions
+
+Comprehensive documentation enables Summer to:
+- Suggest implementations that follow your documented patterns
+- Avoid breaking established architectural principles
+- Provide solutions that integrate well with existing systems
+- Reference your specific conventions and naming schemes
+
+## Documentation Maintenance
+
+### Regular Reviews
+
+Schedule regular documentation updates:
+
+```
+Monthly documentation review checklist:
+- Update API documentation for changed methods
+- Add documentation for new features
+- Remove documentation for deprecated systems
+- Verify all examples still work with current code
+- Check external links for accuracy
+```
+
+### Automated Documentation
+
+Generate documentation automatically where possible:
+
+```
+Create a script that generates API documentation from GDScript comments
+Export class diagrams from the current codebase
+Generate changelog from git commit messages
+Update README with current project statistics
+```
+
+### Team Documentation Standards
+
+Establish team-wide documentation practices:
+
+```markdown
+# Team Documentation Standards
+
+## Code Comments
+- All public methods must have doc comments
+- Complex algorithms need explanatory comments
+- TODO comments must include assignee and date
+
+## Architecture Docs
+- Document all major design decisions
+- Include diagrams for complex systems
+- Update docs when refactoring systems
+
+## README Files
+- Each major system folder needs a README
+- Include setup instructions and examples
+- Document known limitations and future plans
+```
+
+## Takeaways
+
+- **Documentation provides crucial context** that improves Summer's understanding and suggestions
+- **Reference specific versions** when using external documentation to ensure accuracy
+- **Maintain internal documentation** that explains your project's unique patterns and decisions
+- **Generate documentation from code** to keep it current and reduce maintenance burden
+- **Document architecture and design decisions** to help Summer understand your system boundaries
+- **Use documentation-driven development** to plan features before implementation
+- **Regular maintenance is essential** to keep documentation valuable and current
+
+Effective documentation is an investment that pays dividends in AI assistance quality, team productivity, and long-term project maintainability. The more context you provide through good documentation, the better Summer can assist with your development work.
