@@ -94,10 +94,10 @@
         ]
       },
       {
-        "tab": "API Reference",
+        "tab": "MCP Access",
         "groups": [
           {
-            "group": "Coming Soon",
+            "group": "Model Context Protocol",
             "pages": [
               "api-reference/coming-soon"
             ]
@@ -141,7 +141,7 @@
     "links": [
       {
         "label": "Support",
-        "href": "mailto:support@summerengine.com"
+        "href": "mailto:founders@summerengine.com"
       }
     ],
     "primary": {

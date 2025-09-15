@@ -18,11 +18,11 @@ We depend on the following trusted partners and services, organized by how they 
 
 ### Core Infrastructure
 
-**AWS** - *Sees and stores code data*  
-Our primary infrastructure is hosted on AWS. Most servers are in the US, with some latency-critical servers in EU regions (London) for European users.
+**Vercel** - *Sees and stores code data*  
+Our primary infrastructure is hosted exclusively on Vercel's EU-based servers, ensuring GDPR compliance and providing enhanced privacy protection for all users.
 
-**Cloudflare** - *Sees code data*  
-We use Cloudflare as a reverse proxy to improve performance and security for our API and website.
+**Vercel AI Gateway** - *Sees code data*  
+We use Vercel AI Gateway as a proxy to improve performance and security for our AI API requests.
 
 ### AI Model Providers
 
@@ -38,7 +38,7 @@ We use Gemini models through Google's Vertex API. We have a zero data retention 
 ### Data Storage and Processing
 
 **Turbopuffer** - *Stores obfuscated code data*  
-Embeddings of indexed codebases and obfuscated metadata are stored with Turbopuffer on Google Cloud servers in the US. This enables Summer's project intelligence features. You can read more on [Turbopuffer's security page](https://turbopuffer.com/security).
+Embeddings of indexed codebases and obfuscated metadata are stored with Turbopuffer on Google Cloud servers in the US. This enables Summer's project intelligence features. You can read more on [Turbopuffer's security page](https://turbopuffer.com/docs/security).
 
 **Supabase** - *Stores code data*  
 We use Supabase for user data, project metadata, and art assets. All data is encrypted in transit and at rest.
@@ -48,8 +48,8 @@ We use Supabase for user data, project metadata, and art assets. All data is enc
 **Stripe** - *No code data*  
 Handles billing and payments. Only stores your payment information and billing details.
 
-**Vercel** - *No code data*  
-Hosts our website and documentation. Has no access to code data.
+**Vercel** - *Sees and stores code data*  
+Hosts our primary infrastructure including API servers. Code data passes through Vercel's infrastructure during processing.
 
 **Amplitude** - *No code data*  
 Analytics for usage patterns only. No code data is stored - only events like "AI request made" or "project opened".
@@ -62,10 +62,11 @@ Error monitoring and performance tracking. Code data may appear in error logs bu
 
 ## Geographic Data Handling
 
-- **Primary servers**: United States
-- **EU servers**: London (for European users)
+- **Primary servers**: European Union (exclusively via Vercel EU)
+- **AI processing**: United States (AI model providers only)
 - **No Chinese infrastructure**: We do not use any Chinese companies as subprocessors
-- **Data residency**: EU users' data can be processed on EU servers where possible
+- **Data residency**: All primary infrastructure and data processing occurs within EU boundaries
+- **GDPR compliance**: EU-based infrastructure ensures full GDPR compliance by design
 
 ## Access Controls
 
@@ -95,8 +96,9 @@ Error monitoring and performance tracking. Code data may appear in error logs bu
 - **Anonymization**: Personal identifiers removed where possible
 
 ### Compliance
-- **GDPR compliance**: Full compliance with European data protection regulations
+- **GDPR compliance**: Full compliance with European data protection regulations through EU-based infrastructure
 - **CCPA compliance**: California Consumer Privacy Act compliance
+- **EU data residency**: Primary infrastructure hosted exclusively in the European Union
 - **SOC 2 Type II**: Currently in progress (expected completion Q2 2024)
 
 ## Transparency Reports
@@ -149,7 +151,7 @@ We believe in transparency about how we handle data:
 ## Incident Response
 
 ### If You Suspect a Security Issue
-1. **Report immediately**: Email security@summerengine.com
+1. **Report immediately**: Email founders@summerengine.com
 2. **Provide details**: Include as much information as possible
 3. **Don't disclose publicly**: Allow us to investigate and fix first
 4. **Follow up**: We'll keep you updated on our investigation
@@ -163,15 +165,12 @@ We believe in transparency about how we handle data:
 
 ## Contact Us
 
-### Security Team
-- **Email**: security@summerengine.com
-- **Response time**: Within 24 hours for security issues
-- **Emergency**: For critical security issues, mark subject as "URGENT"
-
-### General Privacy Questions
-- **Email**: privacy@summerengine.com
-- **Data requests**: Use this email for GDPR/CCPA requests
-- **Policy questions**: General questions about our privacy practices
+### All Inquiries
+- **Email**: founders@summerengine.com
+- **Response time**: Within 24 hours for all inquiries
+- **Security issues**: Mark subject as "SECURITY" for urgent security matters
+- **Privacy requests**: Mark subject as "PRIVACY" for GDPR/CCPA requests
+- **General questions**: We personally handle all support and privacy questions
 
 <Warning>
 **Security is a shared responsibility.** While we implement strong security measures, the security of your projects also depends on your own security practices. Keep your accounts secure, use strong passwords, and be mindful of what you commit to your repositories.
