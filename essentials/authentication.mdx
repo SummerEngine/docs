@@ -1,0 +1,85 @@
+---
+title: "Authentication"
+description: "Set up your Summer account and API access"
+icon: "key"
+---
+
+## Creating Your Account
+
+Summer requires an account to access AI features and sync your projects.
+
+<Steps>
+  <Step title="Sign up">
+    Visit [summerengine.com](https://summerengine.com) and create a free account.
+  </Step>
+  <Step title="Verify email">
+    Check your email and click the verification link.
+  </Step>
+  <Step title="Sign in through Summer">
+    In Summer, open any project and navigate to the 'Chat' menu in the sidebar. This will open a deeplink to authenticate your account automatically.
+  </Step>
+</Steps>
+
+## Authentication Process
+
+Summer uses a streamlined authentication system:
+
+1. **Open a Project**: Create or open any project in Summer
+2. **Access Chat**: Click on the 'Chat' menu in the sidebar
+3. **Automatic Authentication**: Summer will open a secure deeplink to authenticate your account
+4. **Return to Summer**: Once authenticated, you'll be redirected back to Summer with full access
+
+## API Key Setup
+
+For advanced integrations and API access:
+
+<CodeGroup>
+
+```bash Terminal
+# Set your API key as an environment variable
+export SUMMER_API_KEY="your-api-key-here"
+```
+
+```javascript JavaScript
+// Use in your applications
+const summer = new SummerAPI({
+  apiKey: process.env.SUMMER_API_KEY
+});
+```
+
+</CodeGroup>
+
+## Account Tiers
+
+<Card
+  title="Free Tier"
+  icon="gift"
+>
+  - 100 AI operations per month
+  - Basic project templates
+  - Community support
+</Card>
+
+<Card
+  title="Pro Tier"
+  icon="crown"
+>
+  - Unlimited AI operations
+  - Advanced templates
+  - Priority support
+  - API access
+</Card>
+
+## Troubleshooting
+
+**Can't sign in?**
+- Check your email and password
+- Ensure your account is verified
+- Try resetting your password
+
+**API key not working?**
+- Verify the key is correctly set
+- Check your account tier supports API access
+- Ensure the key hasn't expired
+
+Need help? Contact us at [support@summerengine.com](mailto:support@summerengine.com).

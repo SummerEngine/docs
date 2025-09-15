@@ -51,6 +51,16 @@
             ]
           },
           {
+            "group": "Art Asset System",
+            "pages": [
+              "art-system/overview",
+              "art-system/ai-generation",
+              "art-system/gallery",
+              "art-system/collections",
+              "art-system/licensing"
+            ]
+          },
+          {
             "group": "Engine Migration",
             "pages": [
               "migration/godot"
@@ -93,12 +103,12 @@
         {
           "anchor": "Community",
           "href": "https://discord.gg/yUpgtxnZky",
-          "icon": "book-open-cover"
+          "icon": "discord"
         },
         {
           "anchor": "GitHub",
           "href": "https://github.com/SummerEngine",
-          "icon": "slack"
+          "icon": "github"
         },
         {
           "anchor": "Blog",
@@ -107,10 +117,6 @@
         }
       ]
     }
-  },
-  "logo": {
-    "light": "/images/BLACKFullLogoNoBg.png",
-    "dark": "/images/FullLogoNoBg.png"
   },
   "navbar": {
     "links": [
@@ -139,9 +145,9 @@
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/mintlify",
-      "github": "https://github.com/mintlify",
-      "linkedin": "https://linkedin.com/company/mintlify"
+      "x": "https://x.com/summerengine",
+      "github": "https://github.com/SummerEngine",
+      "discord": "https://discord.gg/yUpgtxnZky"
     }
   }
 }

@@ -1,0 +1,129 @@
+---
+title: "API Authentication"
+description: "Authenticate with Summer's API"
+---
+
+## Overview
+
+Summer's API uses API keys for authentication. You'll need a Pro account to access the API.
+
+## Getting Your API Key
+
+<Steps>
+  <Step title="Sign in to Dashboard">
+    Go to [summerengine.com/dashboard](https://summerengine.com/dashboard) and sign in
+  </Step>
+  <Step title="Navigate to API Keys">
+    Click on "API Keys" in the sidebar
+  </Step>
+  <Step title="Generate New Key">
+    Click "Generate New Key" and give it a descriptive name
+  </Step>
+  <Step title="Copy and Store Safely">
+    Copy the key immediately - you won't see it again
+  </Step>
+</Steps>
+
+## Using Your API Key
+
+Include your API key in the Authorization header:
+
+<CodeGroup>
+
+```bash cURL
+curl -X POST "https://api.summerengine.com/v1/chat" \
+  -H "Authorization: Bearer sk-summer-..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "Add a cube to the scene",
+    "project_id": "your-project-id"
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://api.summerengine.com/v1/chat', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer sk-summer-...',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    message: 'Add a cube to the scene',
+    project_id: 'your-project-id'
+  })
+});
+```
+
+```python Python
+import requests
+
+headers = {
+    'Authorization': 'Bearer sk-summer-...',
+    'Content-Type': 'application/json'
+}
+
+data = {
+    'message': 'Add a cube to the scene',
+    'project_id': 'your-project-id'
+}
+
+response = requests.post(
+    'https://api.summerengine.com/v1/chat',
+    headers=headers,
+    json=data
+)
+```
+
+</CodeGroup>
+
+## Rate Limits
+
+API usage is limited by your account tier:
+
+| Tier | Requests/minute | Requests/day |
+|------|----------------|--------------|
+| Pro  | 60             | 10,000       |
+| Enterprise | 300       | 100,000      |
+
+Rate limit headers are included in responses:
+- `X-RateLimit-Limit`: Your rate limit
+- `X-RateLimit-Remaining`: Requests remaining
+- `X-RateLimit-Reset`: When the limit resets
+
+## Error Responses
+
+Authentication errors return HTTP 401:
+
+```json
+{
+  "error": {
+    "type": "authentication_error",
+    "message": "Invalid API key",
+    "code": "invalid_api_key"
+  }
+}
+```
+
+Common error codes:
+- `invalid_api_key`: Key is malformed or doesn't exist
+- `insufficient_permissions`: Key doesn't have required permissions
+- `rate_limit_exceeded`: You've hit your rate limit
+- `account_suspended`: Your account has been suspended
+
+## Best Practices
+
+<Tip>
+**Keep keys secure**: Never commit API keys to version control or share them publicly.
+</Tip>
+
+<Tip>
+**Use environment variables**: Store keys in environment variables, not in code.
+</Tip>
+
+<Tip>
+**Rotate keys regularly**: Generate new keys periodically and delete old ones.
+</Tip>
+
+<Warning>
+**Monitor usage**: Keep track of your API usage to avoid hitting limits.
+</Warning>

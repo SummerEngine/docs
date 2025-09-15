@@ -1,0 +1,140 @@
+---
+title: "Troubleshooting"
+description: "Solutions to common Summer issues"
+icon: "wrench"
+---
+
+## Installation Issues
+
+### Summer won't start
+**Symptoms**: Application crashes on launch or shows error dialog
+
+**Solutions**:
+- Update your graphics drivers
+- Run as administrator (Windows) or with sudo (Linux)
+- Check system requirements are met
+- Disable antivirus temporarily during installation
+
+### Missing dependencies
+**Symptoms**: "DLL not found" or library errors
+
+**Solutions**:
+- Install Visual C++ Redistributables (Windows)
+- Update to latest macOS version (macOS)
+- Install required packages: `sudo apt install libgl1-mesa-dev` (Ubuntu)
+
+## AI Chat Issues
+
+### AI not responding
+**Symptoms**: Chat shows "Thinking..." indefinitely
+
+**Solutions**:
+- Check internet connection
+- Verify account authentication
+- Restart Summer
+- Check if you've hit usage limits
+
+### Poor AI responses
+**Symptoms**: AI doesn't understand requests or makes wrong changes
+
+**Solutions**:
+- Be more specific in your requests
+- Provide context: "In the player script, make the jump higher"
+- Break complex requests into smaller parts
+- Check if project indexing is complete
+
+## Performance Issues
+
+### Slow project loading
+**Symptoms**: Long delays when opening projects
+
+**Solutions**:
+- Close other resource-intensive applications
+- Exclude project from antivirus scanning
+- Use SSD storage for better performance
+- Clear Summer's cache: `~/.summer/cache/`
+
+### High memory usage
+**Symptoms**: System becomes sluggish with Summer open
+
+**Solutions**:
+- Close unused projects
+- Reduce viewport quality in settings
+- Limit concurrent AI operations
+- Increase system RAM if possible
+
+## Project Issues
+
+### Changes not applying
+**Symptoms**: AI says it made changes but nothing happened
+
+**Solutions**:
+- Check if files are read-only
+- Ensure you have write permissions
+- Look for errors in the output panel
+- Try manual undo/redo to refresh
+
+### Lost work
+**Symptoms**: Recent changes disappeared
+
+**Solutions**:
+- Check version control history
+- Look in `~/.summer/backups/` folder
+- Use Summer's built-in recovery tool
+- Enable auto-save in preferences
+
+## Authentication Problems
+
+### Can't sign in
+**Symptoms**: Login fails with valid credentials
+
+**Solutions**:
+- Reset password on website
+- Clear stored credentials in Summer
+- Check firewall isn't blocking Summer
+- Try signing in through browser first
+
+### API key issues
+**Symptoms**: API calls fail with authentication errors
+
+**Solutions**:
+- Regenerate API key in dashboard
+- Check key format (no extra spaces/characters)
+- Verify account tier supports API access
+- Test with curl first to isolate issues
+
+## Getting Help
+
+If these solutions don't work:
+
+<CardGroup cols={2}>
+  <Card
+    title="Discord Community"
+    icon="discord"
+    href="https://discord.gg/yUpgtxnZky"
+  >
+    Get help from other users and the Summer team
+  </Card>
+  <Card
+    title="Email Support"
+    icon="envelope"
+    href="mailto:support@summerengine.com"
+  >
+    Direct support from our team
+  </Card>
+</CardGroup>
+
+## Bug Reports
+
+When reporting bugs, include:
+
+- Summer version
+- Operating system
+- Steps to reproduce
+- Error messages or logs
+- Project details (if relevant)
+
+**Log locations**:
+- Windows: `%APPDATA%/Summer/logs/`
+- macOS: `~/Library/Application Support/Summer/logs/`
+- Linux: `~/.local/share/Summer/logs/`
