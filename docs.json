@@ -75,24 +75,43 @@
         ]
       },
       {
-        "tab": "API Reference",
+        "tab": "Guides",
         "groups": [
           {
-            "group": "Developer APIs",
+            "group": "Core Concepts",
             "pages": [
-              "api-reference/authentication",
-              "api-reference/chat-api"
+              "guides/working-with-context",
+              "guides/large-codebases",
+              "guides/working-with-documentation"
+            ]
+          },
+          {
+            "group": "Development",
+            "pages": [
+              "guides/web-development"
             ]
           }
         ]
       },
       {
-        "tab": "Development",
+        "tab": "API Reference",
         "groups": [
           {
-            "group": "Contributing",
+            "group": "Coming Soon",
             "pages": [
-              "development/architecture"
+              "api-reference/coming-soon"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Security & Privacy",
+        "groups": [
+          {
+            "group": "Data Protection",
+            "pages": [
+              "security/overview",
+              "security/privacy-mode"
             ]
           }
         ]
@@ -106,14 +125,14 @@
           "icon": "discord"
         },
         {
-          "anchor": "GitHub",
-          "href": "https://github.com/SummerEngine",
-          "icon": "github"
+          "anchor": "Website",
+          "href": "https://summerengine.com",
+          "icon": "globe"
         },
         {
-          "anchor": "Blog",
-          "href": "https://summerengine.com/blog",
-          "icon": "newspaper"
+          "anchor": "Support",
+          "href": "mailto:founders@summerengine.com",
+          "icon": "envelope"
         }
       ]
     }

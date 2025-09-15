@@ -1,0 +1,313 @@
+---
+title: "Large Codebases"
+description: "Strategies for working effectively with large projects in Summer"
+icon: "sitemap"
+---
+
+## Overview
+
+Working with large codebases presents unique challenges that require different strategies than smaller projects. Based on experience with complex game projects and enterprise codebases, this guide covers proven techniques for managing increased complexity in Summer.
+
+## Understanding Large Codebase Challenges
+
+### Common Issues
+- **Context Overload**: Too much information for the AI to process effectively
+- **Scope Creep**: Changes affecting unintended parts of the codebase
+- **Pattern Inconsistency**: Different coding styles across the project
+- **Navigation Difficulty**: Finding relevant code in thousands of files
+
+### Summer's Approach
+Summer's [Project Intelligence](/ai-tools/rag-search) automatically indexes your codebase to understand:
+- File relationships and dependencies
+- Code patterns and architectural decisions
+- Your team's coding conventions
+- Project-specific context and domain knowledge
+
+## Getting Up to Speed Quickly
+
+### Use Chat for Exploration
+
+When joining a large project or exploring unfamiliar code, start with broad questions:
+
+```
+What does the combat system architecture look like in this project?
+Show me how player input flows through the codebase
+Where is the save/load functionality implemented?
+```
+
+### Follow the Data Flow
+
+Understand how data moves through your system:
+
+```
+Trace how a player action becomes a game state change
+Show me the path from @input_handler.gd to @game_state.gd
+What happens when a player clicks the attack button?
+```
+
+### Map Dependencies
+
+Get a high-level view of how systems connect:
+
+```
+What files depend on @player_manager.gd?
+Show me all the systems that use @event_bus.gd
+Which scripts are called by @level_loader.gd?
+```
+
+## Effective Context Management
+
+### Start Broad, Then Narrow
+
+Begin with general questions to understand the landscape:
+
+**Step 1: High-level understanding**
+```
+How is the inventory system organized in this project?
+```
+
+**Step 2: Specific implementation details**
+```
+Looking at @inventory/inventory_manager.gd, how does item stacking work?
+```
+
+**Step 3: Focused changes**
+```
+In @inventory/item.gd, modify the stack_size property to support different stack limits per item type
+```
+
+### Use Rules for Consistency
+
+Document your project's patterns and conventions using Summer's Rules system:
+
+```markdown
+---
+description: Combat System Patterns
+---
+
+1. All combat entities inherit from CombatEntity base class
+2. Damage calculations use DamageCalculator.calculate_damage()
+3. Status effects are managed through StatusEffectManager
+4. Combat events are broadcast via CombatEventBus
+5. Health changes trigger UI updates through HealthDisplay component
+```
+
+### Reference Similar Implementations
+
+When adding new features, reference existing patterns:
+
+```
+Create a new spell system similar to @abilities/melee_ability.gd
+Follow the same pattern as @abilities/ranged_ability.gd for targeting
+Use the cooldown system from @systems/cooldown_manager.gd
+Integrate with the UI like @ui/ability_bar.gd does for other abilities
+```
+
+## Strategic Planning
+
+### Break Down Large Changes
+
+Instead of requesting massive changes, plan incrementally:
+
+**❌ Too Broad:**
+```
+Refactor the entire combat system to support multiplayer
+```
+
+**✅ Strategic Approach:**
+```
+1. First, let's identify all the places where combat state is stored
+2. Then we'll extract combat logic into a separate manager class
+3. Next, we'll make the combat state serializable for network sync
+4. Finally, we'll add network event broadcasting for combat actions
+```
+
+### Use Ask Mode for Planning
+
+Before implementing, use Summer's Ask mode to create detailed plans:
+
+```
+I need to add a crafting system to this RPG project.
+
+Looking at @inventory/, @items/, and @ui/ folders, create a plan for:
+- Where to place crafting-related scripts
+- How to integrate with the existing inventory system
+- What UI components we'll need
+- How to store crafting recipes
+
+Ask me questions if you need clarification about requirements.
+```
+
+## Choosing the Right Tools
+
+### Tool Selection Guide
+
+| **Tool** | **Best For** | **Large Codebase Strengths** | **Limitations** |
+|----------|--------------|-------------------------------|-----------------|
+| **Tab Completion** | Quick, localized changes | Fast, doesn't require context loading | Single file only |
+| **Inline Edit** | Focused modifications | Surgical changes without affecting other code | Limited to visible code |
+| **Chat** | Multi-file changes, exploration | Can understand project architecture | Slower, requires more context |
+
+### Chat Best Practices for Large Projects
+
+**Start Fresh Frequently**
+- Begin new chats for different features or bug fixes
+- Avoid letting conversations become too long and unfocused
+- Summarize important context when starting new chats
+
+**Provide Architectural Context**
+```
+I'm working on the player progression system in our RPG.
+Architecture: @systems/progression/ contains all progression logic
+Data flow: XP gains → @progression_manager.gd → @player_stats.gd → UI updates
+Current issue: Level-up rewards aren't being applied correctly
+```
+
+**Use Specific File References**
+```
+Looking at @systems/combat/damage_calculator.gd and @entities/player.gd,
+I need to add armor penetration mechanics that reduce damage mitigation
+```
+
+## Code Organization Strategies
+
+### Maintain Consistent Patterns
+
+Document and enforce architectural patterns:
+
+**Singleton Pattern Documentation:**
+```markdown
+---
+description: Singleton Manager Pattern
+globs: "**/managers/*.gd"
+---
+
+1. All manager classes extend from BaseManager
+2. Use @export var for configuration in editor
+3. Initialize in _ready(), cleanup in _exit_tree()
+4. Provide static get_instance() method
+5. Emit signals for state changes, don't call other systems directly
+```
+
+### Component-Based Architecture
+
+For large games, organize code into reusable components:
+
+```
+Create a new HealthComponent following the pattern in @components/
+- Inherits from BaseComponent like @components/movement_component.gd
+- Provides health, max_health, and damage/heal methods
+- Emits health_changed and death signals
+- Can be attached to any entity that needs health
+```
+
+### System Boundaries
+
+Define clear boundaries between systems:
+
+```
+The inventory system should only:
+- Manage item storage and retrieval
+- Handle item stacking and splitting
+- Emit inventory_changed signals
+
+It should NOT:
+- Update UI directly (that's the UI system's job)
+- Handle item usage effects (that's the item system's job)
+- Manage player stats (that's the stats system's job)
+```
+
+## Performance Considerations
+
+### Selective Context Loading
+
+For very large projects, be strategic about context:
+
+```
+For this UI bug fix, only include context from @ui/ folder
+Focus on @ui/inventory_panel.gd and related UI scripts
+Don't load the entire combat system - it's not relevant here
+```
+
+### Incremental Development
+
+Build and test changes incrementally:
+
+```
+Let's implement the quest system in phases:
+Phase 1: Basic quest data structure and storage
+Phase 2: Quest progress tracking
+Phase 3: UI integration
+Phase 4: Reward system integration
+
+Start with Phase 1 - create the basic QuestData resource class
+```
+
+## Team Collaboration
+
+### Shared Context Rules
+
+Create team-wide rules for consistency:
+
+```markdown
+---
+description: Team Coding Standards
+---
+
+1. Use PascalCase for class names, snake_case for variables
+2. All public methods must have documentation comments
+3. Use @export for designer-configurable values
+4. Prefix private methods with underscore (_private_method)
+5. Group related functionality in the same script file
+```
+
+### Documentation Generation
+
+Use Summer to maintain documentation:
+
+```
+Generate documentation for the @systems/combat/ folder
+Include class descriptions, public method signatures, and usage examples
+Format as markdown for our project wiki
+```
+
+## Debugging Large Systems
+
+### Systematic Debugging
+
+Approach bugs methodically in large codebases:
+
+```
+I have a bug where player stats aren't saving correctly.
+
+Let's trace the data flow:
+1. Check @player/player_stats.gd - are stats being updated correctly?
+2. Look at @systems/save_system.gd - is the save data being serialized?
+3. Examine @data/save_data.gd - is the data structure correct?
+4. Review @systems/file_manager.gd - are files being written to disk?
+```
+
+### Isolation Testing
+
+Test systems in isolation:
+
+```
+Create a simple test scene that only loads:
+- @systems/inventory_manager.gd
+- @data/item_database.gd
+- Basic test items
+
+This will help us isolate the inventory bug from other systems
+```
+
+## Takeaways
+
+- **Start broad, then narrow**: Understand the big picture before diving into specifics
+- **Use Rules extensively**: Document patterns and conventions for consistency
+- **Plan before implementing**: Use Ask mode to create detailed plans for large changes
+- **Choose appropriate tools**: Match the tool to the task complexity
+- **Maintain clear boundaries**: Keep systems decoupled and responsibilities clear
+- **Work incrementally**: Break large changes into smaller, testable pieces
+- **Create fresh contexts**: Start new chats frequently to maintain focus
+
+Working effectively with large codebases is a skill that develops over time. The key is balancing comprehensive understanding with focused action, using Summer's intelligence to navigate complexity while maintaining clear architectural principles.

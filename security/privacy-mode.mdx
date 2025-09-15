@@ -1,0 +1,214 @@
+---
+title: "Privacy Mode"
+description: "Enhanced privacy controls for sensitive projects"
+icon: "user-shield"
+---
+
+## What is Privacy Mode?
+
+Privacy Mode is one of our highest priorities at Summer. We understand that game developers work on highly proprietary projects, and your code is your competitive advantage. Privacy Mode ensures your code never leaves your control in ways you don't expect.
+
+**Privacy Mode is enabled by default** for all Summer users. We believe privacy should be the standard, not an upgrade.
+
+<Info>
+**Available Now**: Privacy Mode is our default operating mode. Every Summer user automatically gets these privacy protections.
+</Info>
+
+## How Privacy Mode Works
+
+### Our Privacy Guarantees
+
+**Your code is never used to train AI models. Period.**
+
+We know how competitive the game development industry is. Your innovative gameplay mechanics, proprietary algorithms, and creative solutions are what set your games apart. We will never use your code to train models that could benefit your competitors.
+
+**What we do with your code:**
+- Process it to give you AI assistance for your specific request
+- Temporarily hold it in memory during active conversations
+- Delete it immediately when you're done
+
+**What we never do:**
+- Train AI models on your code
+- Store your code long-term
+- Share your code with other users
+- Sell your data to anyone
+- Use your code to improve models for other developers
+
+### How Your Data Flows
+
+```
+Your Code → Summer (encrypted) → AI Provider → Response → You
+                ↓
+        Deleted immediately after response
+        Never stored long-term
+        Never used for training
+        Never shared with others
+```
+
+**That's it.** No complex data retention policies. No "anonymized training data." No selling to third parties. Your code helps you build your game, then it's gone.
+
+## How We Protect Your Code
+
+### Zero Data Retention Guarantee
+
+**Your code is deleted immediately after we respond to you.** Not after 30 days. Not after you close Summer. Immediately.
+
+We don't keep copies "for debugging" or "for analytics" or "to improve the service." When you're done with a conversation, that code is gone forever.
+
+**Exception**: Conversation history within an active chat session is temporarily stored so Summer can understand context. When you start a new chat or close Summer, this is deleted too.
+
+### Local-First Processing
+
+**Your code stays on your machine whenever possible.** Summer's project intelligence runs locally, analyzing your codebase without sending it to our servers.
+
+Only when you specifically ask Summer to generate or modify code do we send the minimal necessary context to AI providers. Even then, we send only what's needed for your specific request.
+
+### Military-Grade Encryption
+
+**Everything is encrypted in transit** with TLS 1.3. Your code is never sent over unencrypted connections.
+
+**Encrypted at rest**: Any temporary data stored during processing is encrypted with AES-256.
+
+**No backdoors**: We don't have special access to decrypt your data. When it's encrypted, only you and the intended recipient can read it.
+
+## What We Protect
+
+**Everything.** Your entire project is protected under these same privacy guarantees:
+
+- **All your code**: Every script, shader, configuration file
+- **Game assets**: Art, audio, models, textures, animations  
+- **Project structure**: How your game is organized and architected
+- **Comments and documentation**: Your thoughts and explanations
+- **Conversation history**: What you've discussed with Summer
+- **Usage patterns**: How you use Summer's features
+- **Error messages**: Any bugs or issues you encounter
+
+We treat all of this as equally sensitive and proprietary to your game development.
+
+## Who Sees Your Code
+
+We're transparent about every service that might see your code:
+
+### AI Providers (Only When You Make Requests)
+- **Anthropic (Claude)**: Sees code only during your active request. Zero retention agreement.
+- **OpenAI (GPT)**: Sees code only during your active request. Zero retention agreement.
+- **Google (Gemini)**: Sees code only during your active request. Zero retention agreement.
+
+**Important**: These providers only see your code when you specifically ask Summer to help with something. They never see your code for analytics, debugging, or improvement purposes.
+
+### Infrastructure (Encrypted, Never Stored)
+- **AWS**: Hosts our servers. Your code passes through encrypted, never stored.
+- **Cloudflare**: Routes traffic securely. Sees encrypted data only.
+
+### Services That Never See Your Code
+- **Analytics tools**: We don't send code to analytics services
+- **Error monitoring**: Code never appears in error logs
+- **Support systems**: Support staff never see your actual code
+- **Marketing tools**: Zero integration with marketing platforms
+
+## Privacy Mode is Default
+
+**You don't need to enable anything.** Every Summer user gets these privacy protections automatically.
+
+**No premium tiers for privacy.** We don't believe you should have to pay extra to keep your code private. Privacy is a fundamental right, not a luxury feature.
+
+**No complex settings.** Privacy Mode just works. Open Summer, start coding, and your privacy is protected.
+
+## What This Means for You
+
+### The Good
+- **Complete privacy**: Your code never trains competitors' AI tools
+- **No vendor lock-in**: Your data never becomes dependent on Summer
+- **Peace of mind**: Focus on building great games, not worrying about data leaks
+- **Professional confidence**: Use Summer on client projects without concern
+
+### The Trade-offs
+- **Fresh conversations**: Each chat starts without memory of previous sessions
+- **Local processing**: Some features use your computer's resources
+- **No usage insights**: We can't show you analytics about your coding patterns
+
+**We think this trade-off is worth it.** Your proprietary game code is more valuable than convenience features.
+
+## Verification and Auditing
+
+### Transparency Reports
+We provide detailed reports on Privacy Mode usage:
+- **Data deletion confirmations**: Proof that your data was deleted
+- **Processing logs**: What operations were performed (without revealing content)
+- **Third-party access logs**: When and why data was sent to AI providers
+
+### Independent Audits
+- **Third-party security audits**: Regular verification of our privacy practices
+- **Compliance certifications**: SOC 2 Type II, ISO 27001 (planned)
+- **Open source components**: Key privacy features will be open source for verification
+
+### Your Verification Tools
+- **Data access requests**: See exactly what data we have about you
+- **Processing logs**: View when your code was processed and by which systems
+- **Deletion confirmations**: Receive confirmation when data is deleted
+
+## Why We Built This
+
+### Game Development is Competitive
+
+We understand the game development industry. A unique mechanic, innovative algorithm, or creative solution can make the difference between a hit game and another indie title lost in the crowd.
+
+**Your code is your competitive advantage.** We're not going to help your competitors by training AI models on your innovations.
+
+### Trust is Everything
+
+**We're developers too.** We know what it feels like to work on something for years, only to worry about where your code ends up. We built Summer with the privacy we'd want for our own projects.
+
+### Complementary Security Measures
+- **Local development**: Use Privacy Mode with local development environments
+- **VPN usage**: Additional network-level privacy protection
+- **Encrypted storage**: Encrypt your local project files
+- **Access controls**: Limit who has access to Privacy Mode projects
+
+### Team Policies
+- **Default settings**: Make Privacy Mode default for sensitive projects
+- **Training**: Ensure team members understand privacy implications
+- **Compliance**: Align with your organization's data protection requirements
+- **Regular reviews**: Periodically audit privacy settings and usage
+
+## Future Enhancements
+
+### Planned Features
+- **Hardware security modules**: Enhanced key management
+- **Confidential computing**: Processing in secure enclaves
+- **Zero-knowledge proofs**: Prove processing without revealing data
+- **Decentralized options**: Peer-to-peer processing capabilities
+
+### Advanced Privacy Options
+- **Custom encryption**: Bring your own encryption keys
+- **Air-gapped processing**: Completely offline operation modes
+- **Selective sharing**: Fine-grained control over what data is shared
+- **Audit trails**: Comprehensive logging of all data access
+
+## Getting Started
+
+**Privacy Mode is already active.** Download Summer and start using it. Your privacy is protected from day one.
+
+**No configuration needed.** No settings to toggle. No premium accounts required. Just the privacy-first AI coding assistant you deserve.
+
+<Card
+  title="Download Summer"
+  icon="download"
+  href="https://summerengine.com"
+>
+  Get Summer with built-in privacy protection
+</Card>
+
+## Questions?
+
+**We're here to help.** Privacy is complex, and we want you to feel completely confident about how Summer handles your code.
+
+- **Email**: founders@summerengine.com
+- **Discord**: [Join our community](https://discord.gg/yUpgtxnZky)
+- **Response time**: We personally respond to all privacy questions within 24 hours
+
+<Warning>
+**Privacy Mode is not a substitute for good security practices.** Continue to follow security best practices like using strong passwords, keeping software updated, and being careful about what you commit to version control.
+</Warning>
+
+Privacy Mode represents our commitment to giving developers complete control over their code and data. We believe privacy should be a choice, not a compromise.
