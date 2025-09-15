@@ -1,0 +1,217 @@
+---
+title: "Chat API"
+description: "Send AI requests programmatically"
+---
+
+## Send Chat Message
+
+Send a natural language request to Summer's AI.
+
+<CodeGroup>
+
+```bash cURL
+curl -X POST "https://api.summerengine.com/v1/chat" \
+  -H "Authorization: Bearer sk-summer-..." \
+  -H "Content-Type: application/json" \
+  -d '{
+    "message": "Add a red cube to the scene",
+    "project_id": "proj_abc123",
+    "apply_changes": true
+  }'
+```
+
+```javascript JavaScript
+const response = await fetch('https://api.summerengine.com/v1/chat', {
+  method: 'POST',
+  headers: {
+    'Authorization': 'Bearer sk-summer-...',
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify({
+    message: 'Add a red cube to the scene',
+    project_id: 'proj_abc123',
+    apply_changes: true
+  })
+});
+
+const result = await response.json();
+```
+
+```python Python
+import requests
+
+response = requests.post(
+    'https://api.summerengine.com/v1/chat',
+    headers={'Authorization': 'Bearer sk-summer-...'},
+    json={
+        'message': 'Add a red cube to the scene',
+        'project_id': 'proj_abc123',
+        'apply_changes': True
+    }
+)
+
+result = response.json()
+```
+
+</CodeGroup>
+
+### Parameters
+
+<ParamField path="message" type="string" required>
+  The natural language request to process
+</ParamField>
+
+<ParamField path="project_id" type="string" required>
+  The ID of the project to operate on
+</ParamField>
+
+<ParamField path="apply_changes" type="boolean" default="false">
+  Whether to automatically apply the changes or just return the plan
+</ParamField>
+
+<ParamField path="context" type="string">
+  Additional context to help the AI understand your request
+</ParamField>
+
+### Response
+
+```json
+{
+  "id": "chat_abc123",
+  "message": "Add a red cube to the scene",
+  "response": "I'll create a MeshInstance3D with a BoxMesh and red material at the scene root.",
+  "changes": [
+    {
+      "type": "create_node",
+      "parent": "Main",
+      "node_type": "MeshInstance3D",
+      "name": "Cube",
+      "properties": {
+        "mesh": "BoxMesh",
+        "material": "RedMaterial"
+      }
+    }
+  ],
+  "applied": true,
+  "created_at": "2024-01-15T10:30:00Z"
+}
+```
+
+<ResponseField name="id" type="string">
+  Unique identifier for this chat interaction
+</ResponseField>
+
+<ResponseField name="message" type="string">
+  The original message sent
+</ResponseField>
+
+<ResponseField name="response" type="string">
+  Summer's explanation of what it will do
+</ResponseField>
+
+<ResponseField name="changes" type="array">
+  List of specific changes that were made or planned
+</ResponseField>
+
+<ResponseField name="applied" type="boolean">
+  Whether the changes were actually applied to the project
+</ResponseField>
+
+## Get Chat History
+
+Retrieve previous chat interactions for a project.
+
+```bash
+GET /v1/projects/{project_id}/chat
+```
+
+<CodeGroup>
+
+```bash cURL
+curl -X GET "https://api.summerengine.com/v1/projects/proj_abc123/chat" \
+  -H "Authorization: Bearer sk-summer-..."
+```
+
+```javascript JavaScript
+const response = await fetch(
+  'https://api.summerengine.com/v1/projects/proj_abc123/chat',
+  {
+    headers: {
+      'Authorization': 'Bearer sk-summer-...'
+    }
+  }
+);
+
+const history = await response.json();
+```
+
+</CodeGroup>
+
+### Query Parameters
+
+<ParamField path="limit" type="integer" default="50">
+  Maximum number of chat messages to return (1-100)
+</ParamField>
+
+<ParamField path="offset" type="integer" default="0">
+  Number of messages to skip for pagination
+</ParamField>
+
+### Response
+
+```json
+{
+  "chats": [
+    {
+      "id": "chat_abc123",
+      "message": "Add a red cube to the scene",
+      "response": "I'll create a MeshInstance3D...",
+      "applied": true,
+      "created_at": "2024-01-15T10:30:00Z"
+    }
+  ],
+  "total": 25,
+  "has_more": false
+}
+```
+
+## Error Handling
+
+The API returns standard HTTP status codes:
+
+- `200` - Success
+- `400` - Bad request (invalid parameters)
+- `401` - Unauthorized (invalid API key)
+- `404` - Project not found
+- `429` - Rate limit exceeded
+- `500` - Internal server error
+
+Error response format:
+
+```json
+{
+  "error": {
+    "type": "invalid_request",
+    "message": "Project not found",
+    "code": "project_not_found"
+  }
+}
+```
+
+## Webhooks
+
+Get notified when AI operations complete:
+
+```json
+{
+  "event": "chat.completed",
+  "data": {
+    "chat_id": "chat_abc123",
+    "project_id": "proj_abc123",
+    "applied": true,
+    "changes_count": 3
+  }
+}
+```
+
+Configure webhooks in your dashboard at [summerengine.com/dashboard/webhooks](https://summerengine.com/dashboard/webhooks).

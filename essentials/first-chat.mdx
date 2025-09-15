@@ -1,0 +1,105 @@
+---
+title: "Your First AI Chat"
+description: "Learn how to use Summer's AI to build game elements through conversation"
+icon: "message"
+---
+
+## Starting Your First Chat
+
+Once you have Summer installed and a project open, you can start using AI to build your game.
+
+<Steps>
+  <Step title="Open the AI Chat">
+    Click the chat icon in the toolbar or press `Ctrl+Shift+A` (Windows/Linux) or `Cmd+Shift+A` (macOS).
+  </Step>
+  <Step title="Describe what you want">
+    Type a natural language description of what you want to add or change in your game.
+  </Step>
+  <Step title="Review and apply">
+    Summer will show you what it plans to do. Click "Apply" to make the changes.
+  </Step>
+</Steps>
+
+## Example Conversations
+
+Here are some examples to get you started:
+
+### Adding Objects
+
+```
+You: Add a red cube to the center of the scene
+Summer: I'll create a MeshInstance3D with a BoxMesh and red material at position (0,0,0).
+```
+
+### Setting Properties
+
+```
+You: Make the player move twice as fast
+Summer: I'll find your player script and increase the speed variable from 5.0 to 10.0.
+```
+
+### Creating Scripts
+
+```
+You: Add a health system to the player that starts at 100
+Summer: I'll create a health.gd script with health = 100 and damage/heal functions.
+```
+
+## Best Practices
+
+<Tip>
+**Be specific**: Instead of "make it better", try "increase the jump height" or "add a blue glow effect".
+</Tip>
+
+<Tip>
+**Ask for explanations**: Add "and explain what you did" to understand the changes.
+</Tip>
+
+<Warning>
+**Review changes**: Always check what Summer did before continuing. Use Ctrl+Z to undo if needed.
+</Warning>
+
+## Understanding AI Responses
+
+Summer will typically:
+
+1. **Analyze** your request and current project state
+2. **Plan** the specific changes needed
+3. **Execute** the changes through the editor
+4. **Explain** what was done and why
+
+## Common Patterns
+
+### Scene Manipulation
+- "Add a [object] to the scene"
+- "Move the [object] to [position]"
+- "Scale the [object] by [factor]"
+
+### Code Generation
+- "Create a script that [does something]"
+- "Add a function to [do something]"
+- "Fix the bug where [describe issue]"
+
+### Project Organization
+- "Create a new scene for [purpose]"
+- "Organize these nodes into groups"
+- "Add this to the autoload"
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="AI Operations"
+    icon="robot"
+    href="/ai-tools/operations"
+  >
+    Learn about all the things Summer's AI can do
+  </Card>
+  <Card
+    title="Project Intelligence"
+    icon="search"
+    href="/ai-tools/rag-search"
+  >
+    Understand how Summer learns about your project
+  </Card>
+</CardGroup>
