@@ -1,0 +1,384 @@
+---
+title: "Export Troubleshooting"
+description: "Solutions to common export and publishing problems"
+icon: "wrench"
+---
+
+## Common Export Errors
+
+### "No export template found at the expected path"
+
+**What it means**: Summer Engine can't find the runtime files needed to create standalone games.
+
+**Solution**: This **shouldn't happen** with Summer Engine - templates are included by default.
+
+**If you see this**:
+1. Check: **Editor → Manage Export Templates**
+2. Should show templates installed for version `4.5.beta`
+3. **If missing**: Contact support@summerengine.com - this indicates an installation issue
+
+<Warning>
+  Unlike vanilla Godot, Summer Engine **includes export templates**. If they're missing, something went wrong with your Summer Engine installation.
+</Warning>
+
+---
+
+### "Cannot export for universal or arm64 if ETC2 ASTC texture format is disabled"
+
+**What it means**: You're trying to export for Apple Silicon Macs without the required texture compression format.
+
+**Solution**:
+
+<Steps>
+  <Step title="Open Project Settings">
+    **Project → Project Settings**
+  </Step>
+
+  <Step title="Enable Texture Compression">
+    **Rendering → Textures → VRAM Compression → Import ETC2 ASTC**
+    
+    Toggle to **On**
+  </Step>
+
+  <Step title="Wait for Reimport">
+    Summer will reimport all textures (1-5 minutes)
+    
+    Status bar shows progress
+  </Step>
+
+  <Step title="Try Export Again">
+    Return to **Project → Export** and try exporting
+  </Step>
+</Steps>
+
+**Why this happens**: Apple Silicon Macs use different texture compression than Intel Macs/PCs.
+
+---
+
+### "Cannot export for universal or x86_64 if S3TC BPTC texture format is disabled"
+
+**What it means**: You're trying to export for Windows/Intel Macs without the required texture format.
+
+**Solution**: Same as above, but enable **Import S3TC BPTC** instead of (or in addition to) ETC2 ASTC.
+
+**Pro tip**: Enable **both formats at once** if you're releasing on both Mac and Windows. Avoids reimporting twice.
+
+---
+
+### "Invalid Bundle Identifier"
+
+**Platform**: macOS only
+
+**What it means**: You're using the default placeholder (`com.example.game`) which isn't valid for distribution.
+
+**Solution**:
+
+<Steps>
+  <Step title="Open Export Preset">
+    **Project → Export** → Select your macOS preset
+  </Step>
+
+  <Step title="Find Bundle Identifier">
+    Scroll to **Application → Bundle Identifier**
+  </Step>
+
+  <Step title="Replace with Unique ID">
+    Use reverse-domain format:
+    - `com.yourstudio.yourgame`
+    - `io.itch.username.gamename`
+    - `com.yourname.projectname`
+    
+    Must be lowercase, use dots to separate, no spaces
+  </Step>
+
+  <Step title="Save">
+    Preset is now valid for export!
+  </Step>
+</Steps>
+
+**Why it matters**: macOS uses bundle identifiers to track apps. Without a unique one, your game might conflict with other apps or not install properly.
+
+---
+
+## Export Process Issues
+
+### Export Takes Forever
+
+**Normal times**:
+- Small game (100 MB): 30-60 seconds
+- Medium game (500 MB): 1-3 minutes
+- Large game (2 GB): 5-10 minutes
+
+**If taking longer**:
+- Check disk space (need 2-3x game size free)
+- Close other resource-heavy apps
+- First export is slower (building pak files) - subsequent exports faster
+
+### Export Crashes Summer Engine
+
+**Possible causes**:
+- Out of memory (exporting huge game)
+- Corrupted asset in project
+- Disk full
+
+**Solution**:
+1. Save your project
+2. Restart Summer Engine
+3. Check **Output** tab for error messages before exporting
+4. Try exporting to a different location (different drive)
+
+### Exported Build Is Missing Files
+
+**Cause**: Files not properly added to export or excluded by filters
+
+**Solution**:
+- Check **Resources** tab in export preset
+- Ensure **Export Mode** is **Export all resources** (not "selected resources")
+- Verify **Filters to export** doesn't exclude needed files
+
+---
+
+## Runtime Issues (Exported Game Problems)
+
+### Game Won't Launch After Export
+
+<AccordionGroup>
+  <Accordion title="Windows: 'VCRUNTIME140.dll not found'">
+    **Cause**: Missing Visual C++ Runtime
+    
+    **Solution**: Most PCs have this. If not, download from [Microsoft](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist)
+    
+    Summer Engine exports **should** include this automatically - contact support if issue persists.
+  </Accordion>
+
+  <Accordion title="macOS: 'App is damaged and can't be opened'">
+    **Cause**: Unsigned app downloaded from internet
+    
+    **Solution for players**: Right-click app → **Open** → Click **Open** in dialog
+    
+    **Solution for developers**: Code sign your app (requires Apple Developer account)
+  </Accordion>
+
+  <Accordion title="Linux: Permission Denied">
+    **Cause**: Executable not marked as executable
+    
+    **Solution**: 
+    ```bash
+    chmod +x MyGame.x86_64
+    ./MyGame.x86_64
+    ```
+  </Accordion>
+
+  <Accordion title="All Platforms: Crashes on Launch">
+    **Debugging steps**:
+    1. Run from terminal/command line to see error messages
+    2. Check if it works on your dev machine
+    3. Verify export architecture matches OS (arm64 for Apple Silicon, x86_64 for Intel/AMD)
+    4. Test with minimal project - does export work with empty project?
+  </Accordion>
+</AccordionGroup>
+
+---
+
+### Graphics Issues in Exported Game
+
+**Black screen or missing textures**:
+- ✅ Check texture compression is enabled for target platform
+- ✅ Verify shaders work in editor before exporting
+- ✅ Test on GPU different from your dev machine
+- ✅ Check minimum macOS/Windows version in export settings
+
+**Low FPS after export**:
+- Export in **Release** mode, not Debug
+- Check **Project Settings → Rendering → Quality** - lower settings if needed
+- Profile in editor first (Debug → Profiler) to find bottlenecks
+
+### Audio Issues in Exported Game
+
+**No sound or crackling**:
+- ✅ Test audio works in editor first
+- ✅ Check audio format (Ogg Vorbis recommended, not WAV)
+- ✅ Verify user's PC has audio drivers installed
+- ✅ Test with both speakers and headphones
+
+---
+
+## Platform-Specific Warnings
+
+### macOS: "Unidentified Developer" Warning
+
+**This is normal for unsigned apps!**
+
+**What players see**:
+> "MyGame.app cannot be opened because it is from an unidentified developer"
+
+**How players bypass it**:
+1. Right-click the app (don't double-click)
+2. Click **Open** from menu
+3. Dialog appears with **Open** button
+4. Click **Open** - app launches
+
+**Permanent fix**: Code sign your app (requires Apple Developer account - $99/year)
+
+**Alternative**: Publish on Steam - Steam handles signing for you
+
+### Windows: SmartScreen Warning
+
+**What players see**:
+> "Windows protected your PC. Microsoft Defender SmartScreen prevented an unrecognized app from starting."
+
+**How players bypass it**:
+1. Click **More info**
+2. Click **Run anyway**
+
+**Permanent fix**: Code sign with EV certificate ($400/year)
+
+**Alternative**: Publish on Steam or itch.io - users expect this from indie games
+
+<Info>
+  **Don't worry about these warnings for itch.io releases!** Indie game players are used to clicking through them. Steam removes them automatically.
+</Info>
+
+---
+
+## File Size Issues
+
+### Exported Game Is Huge
+
+**Check these**:
+- Using WAV audio instead of Ogg Vorbis? (WAV is 10x larger)
+- Uncompressed textures? (Enable S3TC/ETC2 compression)
+- Debug symbols included? (Export as Release, not Debug)
+- Unused assets in project? (Clean up before export)
+
+**Compression comparison**:
+- WAV audio (1 minute): ~10 MB
+- Ogg Vorbis (1 minute): ~1 MB
+- Uncompressed texture (1024x1024): ~4 MB
+- Compressed texture (1024x1024): ~200 KB
+
+### Exported Game Is Too Small (Missing Assets)
+
+**Possible causes**:
+- Export filters excluding your files
+- Resources not saved in project
+- Embed PCK disabled + you only distributed .exe (need both .exe and .pck)
+
+**Solution**: Check Export preset → Resources tab → Export mode is **Export all resources**
+
+---
+
+## Performance Problems After Export
+
+### Game Runs Slowly in Exported Build
+
+**Check**:
+1. Are you exporting in **Debug** mode? (Huge performance impact)
+   - Solution: Export as **Release**
+2. Is V-Sync enabled? (Limits to 60 FPS)
+   - Project Settings → Rendering → V-Sync
+3. Profile in editor first
+   - Debug → Profiler → Find bottlenecks before exporting
+
+**Debug vs Release performance**:
+- Debug mode: 30-50% slower (includes debug symbols, checks)
+- Release mode: Full speed optimization
+
+### Game Crashes After Running for a While
+
+**Possible causes**:
+- Memory leak (check if RAM usage grows over time)
+- Unhandled errors in game code
+- Resource loading issues
+
+**Debugging**:
+1. Enable console output (Windows: Export Console Wrapper = On)
+2. Run exported game and watch for error messages
+3. Fix issues in Summer Engine code, re-export
+
+---
+
+## Steam-Specific Issues
+
+### Build Uploaded But Players Can't Download
+
+**Cause**: Build not set live on default branch
+
+**Solution**:
+- Steamworks dashboard → **Builds** tab
+- Select your build → **Set build live on default branch**
+
+### Wrong Version Downloading
+
+**Cause**: Multiple builds on different branches
+
+**Solution**: Check which branch is set as **default** in Steamworks
+
+### macOS Build Won't Run Through Steam
+
+**Cause**: Incorrect launch executable path
+
+**Solution**: Set launch executable to:
+```
+MyGame.app/Contents/MacOS/MyGame
+```
+
+Not just `MyGame.app` - must point to binary **inside** the bundle!
+
+---
+
+## itch.io-Specific Issues
+
+### Upload Fails
+
+**File size limits**:
+- Free account: 1 GB per file
+- Paid account ($10/month): 2 GB per file
+
+**Solution**: Compress your build or split into multiple files if over limit
+
+### Web Game Doesn't Load
+
+**For HTML5 exports**:
+- Ensure you zipped the **entire export folder**, not just index.html
+- Set correct index file (`index.html`)
+- Check browser console (F12) for errors
+- Some browser features require HTTPS (SharedArrayBuffer) - itch.io provides this
+
+---
+
+## Getting More Help
+
+<CardGroup cols={2}>
+  <Card title="Discord Community" icon="discord" href="https://discord.gg/yUpgtxnZky">
+    Ask in `#game-dev` channel - community helps fast!
+  </Card>
+
+  <Card title="Email Support" icon="envelope" href="mailto:founders@summerengine.com">
+    Persistent export issues or bugs
+  </Card>
+
+  <Card title="Godot Documentation" icon="book" href="https://docs.godotengine.org/en/stable/tutorials/export/">
+    Advanced export topics (fully compatible with Summer)
+  </Card>
+
+  <Card title="Back to Export Guides" icon="arrow-left" href="/publishing/overview">
+    Platform-specific export instructions
+  </Card>
+</CardGroup>
+
+<Tip>
+  **Before asking for help**: Include this info:
+  - Platform you're exporting to (macOS/Windows/Linux)
+  - Export settings you're using (architecture, embed PCK, etc.)
+  - Error message (full text or screenshot)
+  - Does it work on your dev machine but not others?
+  
+  This helps us solve your issue faster!
+</Tip>
+
+**Contact us**:
+- Discord: [Join #game-dev channel](https://discord.gg/yUpgtxnZky)
+- X/Twitter: [@SummerEngineCom](https://x.com/SummerEngineCom)
+- Email: founders@summerengine.com
+

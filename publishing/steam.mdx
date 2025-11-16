@@ -1,0 +1,423 @@
+---
+title: "Publishing to Steam"
+description: "Complete guide to releasing your game on Steam with Summer Engine"
+icon: "steam"
+---
+
+## Overview
+
+Steam is the **largest PC gaming platform** with 120+ million active users. This guide walks you through uploading your Summer Engine game to Steam.
+
+**Prerequisites**:
+- Exported game builds for your target platforms ([macOS](/publishing/macos-export), [Windows](/publishing/windows-export))
+- Steamworks developer account
+- $100 Steam Direct fee (one-time per game)
+
+---
+
+## Before You Begin: Steamworks Setup
+
+### 1. Create Steam Partner Account
+
+<Steps>
+  <Step title="Sign Up">
+    Visit [Steamworks](https://partner.steamgames.com/) and create an account
+  </Step>
+
+  <Step title="Complete Tax Forms">
+    Required by Valve for revenue distribution (W-8/W-9 forms)
+  </Step>
+
+  <Step title="Pay Steam Direct Fee">
+    $100 per game (one-time, recouped after $1,000 in sales)
+  </Step>
+
+  <Step title="Create App">
+    Click **Create New App** in Steamworks dashboard
+    
+    Fill in basic info (game name, description, genre)
+  </Step>
+</Steps>
+
+<Info>
+  The Steam Direct fee is **refundable** after your game makes $1,000 in sales. It's Valve's anti-spam measure.
+</Info>
+
+### 2. Configure Your Steam Store Page
+
+Before uploading builds, set up your store page:
+- Game description (short and long)
+- Screenshots (at least 5)
+- Trailer video (highly recommended)
+- Pricing and release date
+- Supported languages
+- System requirements
+
+**You can do this while developing** - store pages can be "Coming Soon" for wishlists.
+
+---
+
+## Uploading Your Game to Steam
+
+### Understanding Steam Depots
+
+Steam uses "depots" for different platform builds:
+
+- **Windows Depot** - Your `MyGame.exe` build
+- **macOS Depot** - Your `MyGame.app` build  
+- **Linux Depot** - Your `MyGame.x86_64` build
+
+Each depot is uploaded separately but players download the right one automatically.
+
+### Upload Process
+
+<Steps>
+  <Step title="Install Steamworks SDK">
+    Download from [Steamworks SDK page](https://partner.steamgames.com/downloads/list)
+    
+    Extract to a convenient location (e.g., `~/SteamworksSDK/`)
+  </Step>
+
+  <Step title="Configure Build Scripts">
+    Navigate to `SteamworksSDK/tools/ContentBuilder/scripts/`
+    
+    Edit `app_build_<appid>.vdf`:
+    ```vdf
+    "appbuild"
+    {
+      "appid" "YOUR_STEAM_APP_ID"
+      "desc" "v1.0.0 Release"
+      "buildoutput" "../output/"
+      "contentroot" "../../content/"
+      "setlive" "default"
+      
+      "depots"
+      {
+        "WINDOWS_DEPOT_ID" "scripts/depot_build_windows.vdf"
+        "MAC_DEPOT_ID" "scripts/depot_build_mac.vdf"
+      }
+    }
+    ```
+  </Step>
+
+  <Step title="Configure Depot Scripts">
+    Edit `depot_build_windows.vdf`:
+    ```vdf
+    "DepotBuildConfig"
+    {
+      "DepotID" "YOUR_WINDOWS_DEPOT_ID"
+      "ContentRoot" "C:\path\to\your\exported\windows\build\"
+      "FileMapping"
+      {
+        "LocalPath" "*"
+        "DepotPath" "."
+        "recursive" "1"
+      }
+    }
+    ```
+    
+    Repeat for Mac depot pointing to your `MyGame.app`
+  </Step>
+
+  <Step title="Upload Build">
+    Run the upload tool:
+    ```bash
+    # Windows
+    steamcmd +login YOUR_STEAM_USERNAME +run_app_build ../scripts/app_build_<appid>.vdf +quit
+    
+    # macOS
+    ./steamcmd.sh +login YOUR_STEAM_USERNAME +run_app_build ../scripts/app_build_<appid>.vdf +quit
+    ```
+    
+    Enter your Steam password when prompted.
+  </Step>
+
+  <Step title="Verify Upload">
+    Check Steamworks dashboard → **Builds** tab
+    
+    You should see your uploaded build with all depots listed.
+  </Step>
+
+  <Step title="Set Build Live">
+    In Steamworks: **Builds → Set Build Live on Branch**
+    
+    Select `default` branch for public release, or `beta` for testing.
+  </Step>
+</Steps>
+
+<Warning>
+  **Test your Steam build** before setting it live! Use the `beta` branch first, download through Steam, and verify everything works.
+</Warning>
+
+---
+
+## Steam Features Integration (Optional)
+
+Summer Engine supports Steamworks integration for advanced features:
+
+### GodotSteam Plugin
+
+[GodotSteam](https://godotsteam.com/) is a community plugin that adds:
+- ✅ Achievements
+- ✅ Leaderboards  
+- ✅ Steam Cloud saves
+- ✅ Steam Input (controller support)
+- ✅ Steam Overlay
+- ✅ Multiplayer matchmaking
+
+**How to add**:
+1. Download GodotSteam from [godotsteam.com](https://godotsteam.com/)
+2. Extract to your project's `addons/` folder
+3. Enable in **Project → Project Settings → Plugins**
+4. Follow GodotSteam docs for achievement/leaderboard setup
+
+<Info>
+  GodotSteam works **identically** in Summer Engine - all Godot Steam tutorials apply directly.
+</Info>
+
+---
+
+## Platform-Specific Configuration
+
+### Windows Build Settings
+
+**Binary Format → Embed PCK**: ✅ **On**
+- Creates single `.exe` file (easier for Steam)
+- Slightly slower loading than separate `.pck` (negligible for most games)
+
+**Debug → Export Console Wrapper**:
+- **Debug Only** - For testing (console window shows debug output)
+- **No** - For final release (no console window)
+
+**Application → Product Name**: Your game's name as shown in Task Manager
+
+### macOS Build Settings
+
+**Binary Format → Architecture**: `universal` ✅
+- Supports both Intel and Apple Silicon Macs
+- Slightly larger file size but maximum compatibility
+
+**Application → Bundle Identifier**: Set your unique ID (e.g., `com.yourstudio.yourgame`)
+
+<Tip>
+  Use the **same bundle identifier** across all your game versions (Mac, iOS if applicable). This is important for cloud save continuity.
+</Tip>
+
+### Linux Build (Steam Deck)
+
+**Binary Format → Architecture**: `x86_64`
+- Steam Deck uses this architecture
+- **Export → Texture Format**: Use S3TC BPTC (same as Windows)
+
+**Steam Deck Optimization**:
+- Test UI at 1280x800 resolution (Steam Deck native)
+- Support controllers (Steam Input handles this)
+- Optimize for ~3-4 hours battery life
+
+---
+
+## Launch Options in Steamworks
+
+After uploading, configure launch options in Steamworks:
+
+### Windows Launch Options
+```
+Executable: MyGame.exe
+Working Dir: (leave blank)
+Arguments: (leave blank unless needed)
+```
+
+### macOS Launch Options
+```
+Executable: MyGame.app/Contents/MacOS/MyGame
+Working Dir: (leave blank)
+Arguments: (leave blank)
+```
+
+<Warning>
+  macOS launch path must point **inside** the .app bundle to the actual executable, not just the .app itself!
+</Warning>
+
+### Linux Launch Options
+```
+Executable: MyGame.x86_64
+Working Dir: (leave blank)
+Arguments: (leave blank)
+```
+
+---
+
+## Testing Your Steam Build
+
+### Use Steam Beta Branch
+
+Before releasing publicly, test with beta builds:
+
+<Steps>
+  <Step title="Upload to Beta Branch">
+    In Steamworks: Set your build live on `beta` branch (not `default`)
+  </Step>
+
+  <Step title="Access Beta">
+    In Steam client:
+    - Right-click your game → Properties
+    - Betas tab → Select `beta` branch
+    - Steam downloads your beta build
+  </Step>
+
+  <Step title="Test Everything">
+    - Launch the game through Steam
+    - Test achievements (if using GodotSteam)
+    - Verify cloud saves work
+    - Test Steam Overlay (Shift+Tab)
+    - Check controller support
+  </Step>
+
+  <Step title="Fix Issues and Re-upload">
+    If you find bugs, fix in Summer Engine, re-export, and upload again to beta branch
+  </Step>
+</Steps>
+
+### Final Release Checklist
+
+Before setting your build live on `default` branch:
+
+- [ ] Tested on Windows 10 **and** Windows 11
+- [ ] Tested on macOS (if shipping Mac build)
+- [ ] All graphics render correctly
+- [ ] Audio plays without issues
+- [ ] Controllers work (if game supports them)
+- [ ] Achievements unlock properly (if applicable)
+- [ ] Cloud saves persist (if using Steam Cloud)
+- [ ] Game can be quit properly (doesn't hang)
+- [ ] No console window in release build (Windows)
+- [ ] Store page complete (description, screenshots, trailer)
+
+---
+
+## Release Strategies
+
+### Soft Launch (Recommended for First Game)
+
+1. **Upload to beta branch** - test with friends/testers
+2. **Set "Coming Soon"** on store page - build wishlists
+3. **Release to default branch** when ready - notify wishlist users
+4. **Gather feedback** - update game based on player response
+
+### Immediate Release
+
+1. **Upload build** directly to default branch
+2. **Publish store page** immediately
+3. **Announce on social media** - drive traffic to Steam page
+
+### Early Access
+
+1. **Mark as Early Access** in Steamworks
+2. **Set clear roadmap** - tell players what's coming
+3. **Update regularly** - maintain player engagement
+4. **Graduate to full release** when feature-complete
+
+---
+
+## Updating Your Game on Steam
+
+Players love games that get updates! Here's how:
+
+<Steps>
+  <Step title="Fix/Add Features in Summer">
+    Make changes to your game, test in editor
+  </Step>
+
+  <Step title="Re-Export">
+    Export fresh builds for all platforms
+  </Step>
+
+  <Step title="Upload New Build">
+    Use same ContentBuilder process with new build files
+    
+    Update the `desc` field to version number (e.g., "v1.1.0 - Bug fixes")
+  </Step>
+
+  <Step title="Set Live">
+    Set new build live on `default` branch
+    
+    Steam automatically pushes update to all players!
+  </Step>
+</Steps>
+
+**Best practices**:
+- Include patch notes in Steamworks (players see what's new)
+- Test updates on beta branch first
+- Don't push broken builds to default - use beta testing!
+
+---
+
+## Common Steam Issues
+
+### Build Won't Upload
+
+**Error**: "Invalid content root" or "Files not found"
+
+**Solution**: Check that `ContentRoot` in your depot scripts points to the **exact** location of your exported build.
+
+### Players Can't Download Build
+
+**Cause**: No build set live on default branch, or wrong platform depot
+
+**Solution**: 
+- Verify build is set live in Steamworks → Builds
+- Check that Windows depot has Windows build, Mac depot has Mac build
+
+### Achievement Not Unlocking
+
+**Cause**: Achievement wasn't configured in Steamworks, or GodotSteam integration issue
+
+**Solution**:
+- Configure achievements in Steamworks first
+- Use GodotSteam's achievement test functions
+- Check Steam overlay is enabled
+
+---
+
+## Steam Distribution Fees
+
+**Revenue Split**:
+- Steam takes **30%** of all sales
+- You receive **70%** of revenue
+
+**Example**:
+- Game price: $20
+- Player buys game: $20 to Steam
+- You receive: $14 (after 30% cut)
+- After recouping $100 Steam Direct fee: All profit is yours
+
+**Payment Schedule**: Monthly via direct deposit or wire transfer
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Publish to itch.io Too" icon="gamepad" href="/publishing/itch-io">
+    Cross-platform indie game hosting (no revenue share!)
+  </Card>
+
+  <Card title="Add More Platforms" icon="globe" href="/publishing/overview">
+    Export for Linux, mobile, or web
+  </Card>
+
+  <Card title="Troubleshooting" icon="wrench" href="/publishing/troubleshooting">
+    Common Steam upload and export issues
+  </Card>
+
+  <Card title="Marketing Your Game" icon="bullhorn" href="https://howtomarketagame.com/">
+    External resource - learn Steam marketing
+  </Card>
+</CardGroup>
+
+<Tip>
+  **Pro tip**: Release on both Steam **and** itch.io. Different audiences, both valuable. itch.io players are supportive of indie devs and give great feedback!
+</Tip>
+
+**Need help with Steam?** [Discord](https://discord.gg/yUpgtxnZky) • [X/Twitter @SummerEngineCom](https://x.com/SummerEngineCom) • founders@summerengine.com
+

@@ -1,0 +1,281 @@
+---
+title: "Windows Export Guide"
+description: "Step-by-step guide to exporting your game for Windows PCs"
+icon: "windows"
+---
+
+## Overview
+
+Windows is the **largest PC gaming market**. This guide walks you through creating a Windows build of your game.
+
+**Time to complete**: 10-15 minutes (first time)
+
+<Info>
+  Good news: Windows export is simpler than macOS! No bundle identifiers or code signing complexities (unless you want them).
+</Info>
+
+## Prerequisites
+
+### Enable S3TC BPTC Texture Compression
+
+Windows graphics cards use S3TC/BPTC texture compression.
+
+<Steps>
+  <Step title="Open Project Settings">
+    Go to **Project → Project Settings** in the menu bar
+  </Step>
+
+  <Step title="Navigate to Textures">
+    **Rendering → Textures → VRAM Compression**
+  </Step>
+
+  <Step title="Enable S3TC BPTC">
+    Toggle **Import S3TC BPTC** to **On**
+  </Step>
+
+  <Step title="Wait for Reimport">
+    Summer will reimport all textures (1-5 minutes)
+    
+    Progress shown in bottom status bar. **Keep Summer open** during this.
+  </Step>
+</Steps>
+
+<Tip>
+  **Also releasing on Mac?** Enable **Import ETC2 ASTC** too. Both formats can coexist - just enable them both at once to avoid re-importing twice.
+</Tip>
+
+---
+
+## Creating a Windows Export Preset
+
+<Steps>
+  <Step title="Open Export Menu">
+    Go to **Project → Export** in the menu bar
+  </Step>
+
+  <Step title="Add Windows Preset">
+    Click **Add...** → Select **Windows Desktop**
+    
+    You'll see the Windows export configuration panel.
+  </Step>
+
+  <Step title="Configure Settings">
+    Windows is simpler than Mac - most defaults work fine!
+  </Step>
+</Steps>
+
+### Recommended Settings
+
+**Binary Format**:
+- **Architecture**: `x86_64` ✅ (64-bit, modern Windows)
+  - Don't use `x86_32` (32-bit) unless you have a specific reason
+  - 64-bit supports more RAM and is standard for games
+
+**Embed PCK**:
+- **On** ✅ - Creates single `.exe` file (easier distribution)
+- **Off** - Creates `.exe` + `.pck` file (slightly faster loading)
+
+<Info>
+  **For Steam and itch.io**: Use **Embed PCK: On** for single-file distribution. Players prefer downloading one file.
+</Info>
+
+**Debug Settings**:
+- **Export Console Wrapper**: 
+  - **Debug Only** ✅ - Recommended for testing (shows console output in test builds)
+  - **No** - For final release
+  - **Debug and Release** - If you want console output in released game
+
+**Application**:
+- **Icon**: (Optional) Browse to a `.ico` file for your game's Windows icon
+- **Company Name**: Your studio name
+- **Product Name**: Your game's name  
+- **File Description**: Brief game description
+- **Copyright**: Copyright text (e.g., "© 2024 Your Studio")
+
+---
+
+## Exporting Your Windows Game
+
+<Steps>
+  <Step title="Set Export Path">
+    Click the folder icon next to **Export Path**
+    
+    Choose where to save (e.g., `C:\Users\YourName\Desktop\MyGame.exe`)
+  </Step>
+
+  <Step title="Click Export Project">
+    Bottom right: **Export Project...**
+  </Step>
+
+  <Step title="Wait for Export">
+    Takes 30 seconds to 2 minutes. Progress bar shows status.
+  </Step>
+
+  <Step title="Done!">
+    Your Windows game is ready!
+  </Step>
+</Steps>
+
+---
+
+## Testing Your Windows Build
+
+### Test on Your PC First
+
+1. Navigate to export location
+2. Double-click `MyGame.exe`
+3. **If Windows Defender SmartScreen appears**:
+   - Click **More info**
+   - Click **Run anyway**
+   - This is normal for unsigned executables
+
+<Note>
+  The SmartScreen warning appears because your game isn't code signed. This is **normal** during development and for itch.io releases. Steam-distributed games don't show this warning.
+</Note>
+
+### Test on a Different Windows PC
+
+**Critical for catching issues!** Test on:
+- ✅ A friend's PC
+- ✅ A clean Windows install (virtual machine works)
+- ✅ Windows 10 AND Windows 11 (if possible)
+
+**What to verify**:
+- Game launches without errors
+- Graphics render correctly
+- Audio works (no crackling or silence)
+- Controls work (keyboard, mouse, gamepad)
+- Windowed and fullscreen modes work
+- Save files persist after closing
+
+---
+
+## Code Signing (Optional)
+
+Code signing removes the Windows Defender SmartScreen warning. **Do you need it?**
+
+| Publishing To | Code Signing Recommended? |
+|---------------|--------------------------|
+| **Steam** | ❌ No - Steam handles it |
+| **itch.io** | ❌ No - Players expect unsigned indie games |
+| **Direct download** | ✅ Yes - Improves trust, prevents warnings |
+
+### How to Code Sign (Advanced)
+
+**Requirements**:
+- EV Code Signing Certificate (~$400/year from DigiCert, Sectigo, etc.)
+- `signtool.exe` (included with Windows SDK)
+
+**Process**:
+1. Export your game as `.exe`
+2. Sign the exe with `signtool`:
+   ```powershell
+   signtool sign /f "YourCert.pfx" /p "password" /tr http://timestamp.digicert.com /td sha256 /fd sha256 MyGame.exe
+   ```
+3. Distribute the signed exe
+
+<Warning>
+  Code signing is **expensive** ($400/year minimum). Only worth it if you're doing **direct downloads** (not Steam/itch.io).
+  
+  For your first game release, **skip code signing** and use Steam or itch.io instead.
+</Warning>
+
+---
+
+## Export Formats
+
+Summer Engine can export Windows games in different formats:
+
+### Single Executable (Recommended)
+- **Export as**: `MyGame.exe`
+- **Embed PCK**: On
+- **Best for**: Steam, itch.io, direct downloads
+- **Players get**: One file to run
+
+### Executable + Data Pack
+- **Export as**: `MyGame.exe`
+- **Embed PCK**: Off
+- **Best for**: Faster loading times (minor difference)
+- **Players get**: `MyGame.exe` + `MyGame.pck` (must keep both files together)
+
+### ZIP Archive
+- **Export as**: `MyGame.zip`
+- **Best for**: Manual distribution
+- **Contains**: All game files in compressed archive
+
+<Tip>
+  **For most games**: Use single executable with Embed PCK enabled. It's the most user-friendly option.
+</Tip>
+
+---
+
+## Common Windows-Specific Issues
+
+### "VCRUNTIME140.dll not found"
+
+**Cause**: Missing Visual C++ Runtime on user's PC.
+
+**Solution**:
+- Most Windows PCs already have this
+- For clean installs, users can download from [Microsoft](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist)
+- Summer Engine exports include these by default
+
+### Graphics Not Working
+
+**Possible causes**:
+- Outdated GPU drivers
+- Missing DirectX 11 (Windows 7/8)
+- Integrated Intel GPU (may need settings adjustment)
+
+**Solution**: Have users update GPU drivers from manufacturer website.
+
+### Game Runs Slowly on Windows
+
+**Check**:
+- Are you running in Debug mode? Export as **Release** for final version
+- Is the user's PC below minimum specs?
+- Profile performance in editor first (Debug → Profiler)
+
+---
+
+## File Size Optimization
+
+**Typical Windows export sizes**:
+- Small 2D: 60-120 MB
+- Medium 3D: 220-450 MB
+- Large 3D: 600 MB - 2 GB
+
+**Summer Engine runtime on Windows**: ~70MB
+
+**To reduce size**:
+1. **Compress audio**: Use Ogg Vorbis instead of WAV
+2. **Optimize textures**: Ensure S3TC BPTC is enabled (you did this!)
+3. **Remove debug symbols**: Export as Release, not Debug
+4. **Strip unused resources**: Clean unused assets from project before export
+
+---
+
+## Next Steps
+
+Now that you have a Windows build:
+
+<CardGroup cols={2}>
+  <Card title="Test Your Build" icon="vial" href="/publishing/local-testing">
+    Verify everything works on a clean PC
+  </Card>
+
+  <Card title="Publish to Steam" icon="steam" href="/publishing/steam">
+    Upload to Steam for maximum reach
+  </Card>
+
+  <Card title="Publish to itch.io" icon="gamepad" href="/publishing/itch-io">
+    Quick indie publishing with no approval process
+  </Card>
+
+  <Card title="Export for macOS" icon="apple" href="/publishing/macos-export">
+    Add Mac support to reach more players
+  </Card>
+</CardGroup>
+
+**Need help?** [Discord](https://discord.gg/yUpgtxnZky) • [X/Twitter @SummerEngineCom](https://x.com/SummerEngineCom) • founders@summerengine.com
+

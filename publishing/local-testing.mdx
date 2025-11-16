@@ -1,0 +1,812 @@
+---
+title: "Testing Exported Builds"
+description: "How to test your exported game locally before releasing to players"
+icon: "vial"
+---
+
+## Why Test Exported Builds?
+
+Your game might work perfectly in the Summer Engine editor but have issues when exported. **Always test exported builds** before releasing to players!
+
+<Warning>
+  **Critical difference**: Some features work differently (or only work) in exported builds:
+  - Microphone permissions (macOS)
+  - Performance characteristics
+  - File paths and resource loading
+  - Platform-specific features
+</Warning>
+
+This guide shows you how to properly test your game **after export** but **before release**.
+
+---
+
+## Quick Testing Workflow
+
+<Steps>
+  <Step title="Export Your Game">
+    Follow the [macOS export](/publishing/macos-export) or [Windows export](/publishing/windows-export) guide
+  </Step>
+
+  <Step title="Test on Your Development Machine">
+    First smoke test - does it launch and run?
+  </Step>
+
+  <Step title="Test on a Clean Machine">
+    **Critical!** Test on different computer to catch distribution issues
+  </Step>
+
+  <Step title="Fix Issues and Re-export">
+    Make changes in Summer Engine, export again, repeat
+  </Step>
+</Steps>
+
+---
+
+## macOS Local Testing
+
+### First Run: Ad-Hoc Signing
+
+Summer Engine creates **ad-hoc signed** builds by default. These work on your Mac but have security dialogs.
+
+<Steps>
+  <Step title="Export Your Game">
+    **Project → Export → macOS**
+    
+    Configure minimum settings:
+    - **Bundle Identifier**: `com.yourgame.test` (any reverse-domain format)
+    - **Codesign → Codesign**: **Disabled** or **Built-in (ad-hoc only)**
+    - **Notarization → Notarization**: **Disabled**
+    
+    Click **Export Project** → Save as `~/Desktop/YourGame.app`
+  </Step>
+
+  <Step title="Launch the Exported Game">
+    Navigate to Desktop → Double-click `YourGame.app`
+  </Step>
+
+  <Step title="Handle Security Dialog">
+    **First launch**: macOS shows "unidentified developer" warning
+    
+    **To bypass**:
+    - Right-click (don't double-click!) `YourGame.app`
+    - Click **Open** from menu
+    - Click **Open** in the dialog
+    
+    <img src="/images/publishing/macos-security-warning.png" alt="macOS security dialog" />
+    
+    <Note>
+      This is **normal for local testing**! You're using ad-hoc signing, not production signing.
+    </Note>
+  </Step>
+
+  <Step title="Grant Permissions">
+    If your game uses microphone, camera, or other features:
+    
+    macOS will ask for permissions on **first launch** of the exported app
+    
+    This is **good** - it means your game can access hardware in exported builds!
+  </Step>
+</Steps>
+
+### Why the Security Warning Appears
+
+**Ad-hoc signed apps** (for testing):
+- ✅ Run on your Mac
+- ✅ Request permissions properly
+- ✅ Perfect for development testing
+- ❌ Other people's Macs will block them (Gatekeeper)
+
+**Properly signed apps** (for distribution):
+- ✅ Run on anyone's Mac
+- ✅ No security warnings
+- ❌ Require Apple Developer account ($99/year)
+- ❌ Not needed for Steam/itch.io (platforms handle it)
+
+<Tip>
+  **For local testing**: Ad-hoc signing is perfect! Only get proper signing when you're ready to distribute outside Steam/itch.io.
+</Tip>
+
+---
+
+## Testing Features That Only Work in Exports
+
+### Microphone/Audio Input
+
+**Why it matters**: Voice chat, voice commands, audio recording
+
+**In editor**: May not request permissions properly (macOS security limitation)
+
+**In export**: ✅ macOS permission dialog appears on first launch
+
+**How to test**:
+<Steps>
+  <Step title="Export and Launch">
+    Export game → Right-click Open → Click Open in dialog
+  </Step>
+
+  <Step title="Trigger Mic Usage">
+    Start your game's voice feature (voice chat, recording, etc.)
+  </Step>
+
+  <Step title="Grant Permission">
+    macOS shows: *"YourGame would like to access the microphone"*
+    
+    Click **OK**
+  </Step>
+
+  <Step title="Verify It Works">
+    - Speak into mic
+    - Check audio input is captured
+    - Test your voice features work properly
+  </Step>
+</Steps>
+
+**Check System Settings**:
+- After granting permission, verify in **System Settings → Privacy & Security → Microphone**
+- Your game should appear in the list ✅
+
+### Camera Access
+
+Similar process to microphone - permission dialog appears on first use in exported build.
+
+### File System Access
+
+**Save games and user data**:
+- **In editor**: Saves to project folder usually
+- **In export**: Saves to `~/Library/Application Support/Godot/app_userdata/YourGame/`
+
+**Test**:
+1. Save game in exported build
+2. Quit game
+3. Launch again - verify save loaded
+
+---
+
+## Windows Local Testing
+
+### No Security Warnings on Your PC
+
+Windows trusts your own builds by default. But test what **other users** will see:
+
+<Steps>
+  <Step title="Export for Windows">
+    **Project → Export → Windows Desktop**
+    
+    Export to `MyGame.exe`
+  </Step>
+
+  <Step title="Test Launch">
+    Double-click `MyGame.exe` - should run immediately
+  </Step>
+
+  <Step title="Test on Friend's PC">
+    Copy `MyGame.exe` to another Windows PC
+    
+    **They'll see**: Windows Defender SmartScreen warning
+  </Step>
+</Steps>
+
+### What Users See (Unsigned Windows Build)
+
+**First launch on clean PC**:
+
+1. Double-click `MyGame.exe`
+2. **Windows Defender SmartScreen** appears:
+   > "Windows protected your PC. Microsoft Defender SmartScreen prevented an unrecognized app from starting."
+
+**How to bypass** (show in your game's README):
+1. Click **More info**
+2. Click **Run anyway**
+3. Game launches
+
+<Info>
+  **This is normal for unsigned games!** itch.io players are used to this. Steam removes the warning automatically.
+  
+  Only code sign if you're doing **direct downloads** outside Steam/itch.io.
+</Info>
+
+---
+
+## Performance Testing
+
+### Test Debug vs Release
+
+<AccordionGroup>
+  <Accordion title="Debug Export (For Testing)">
+    **When to use**: During development, need console output
+    
+    **Characteristics**:
+    - Shows debug messages in console
+    - 30-50% slower than release
+    - Larger file size
+    - Includes debug symbols
+    
+    **Good for**: Finding bugs, checking logs
+  </Accordion>
+
+  <Accordion title="Release Export (For Distribution)">
+    **When to use**: Final distribution to players
+    
+    **Characteristics**:
+    - Full optimization enabled
+    - Smaller file size
+    - No console output
+    - Maximum performance
+    
+    **Good for**: Final release, performance testing
+  </Accordion>
+</AccordionGroup>
+
+**How to switch**:
+- Export preset → **Debug → Export Console Wrapper**
+- **Debug Only**: Includes console in debug builds
+- **No**: No console in any builds (release mode)
+
+<Tip>
+  **Test workflow**: Export as Debug during testing (see errors), then export as Release for final performance check before publishing.
+</Tip>
+
+### Framerate Testing
+
+**Check FPS in exported build**:
+1. Enable FPS display in your game (or use external tools)
+2. Run through demanding scenes
+3. Verify maintains target FPS (30 or 60)
+
+**If slow**:
+- Profile in editor first (Debug → Profiler)
+- Optimize before exporting
+- Lower graphics settings in Project Settings
+
+---
+
+## Testing on Clean Machines
+
+### Why This Matters
+
+**Your dev machine has**:
+- Summer Engine installed
+- All dependencies
+- Your project files
+- Visual C++ runtimes
+- Ideal testing environment
+
+**User's machine has**:
+- Nothing except the OS
+- Might be missing runtimes
+- Different GPU/drivers
+- Real-world conditions
+
+**Common issues only found on clean machines**:
+- Missing DLL files (Windows)
+- Graphics driver incompatibilities
+- Audio device issues
+- Save file path problems
+
+### How to Test on Clean Machine
+
+<Tabs>
+  <Tab title="Use a Friend's Computer">
+    **Easiest option**: Send your exported game to a friend
+    
+    Steps:
+    1. Export your game
+    2. Copy to USB drive or upload to Google Drive/Dropbox
+    3. Friend downloads and runs it
+    4. Watch them play (screen share if remote)
+    5. Note any errors or issues
+  </Tab>
+
+  <Tab title="Virtual Machine">
+    **For thorough testing**: Create clean Windows/Mac VM
+    
+    Tools:
+    - **macOS**: UTM (free), Parallels ($100/year)
+    - **Windows**: VMware, VirtualBox (free)
+    
+    Steps:
+    1. Install clean OS in VM
+    2. Copy your exported game to VM
+    3. Run and test
+    4. VM can be reset to clean state for repeated testing
+  </Tab>
+
+  <Tab title="Different User Account">
+    **Quick option**: Create new user account on your Mac/PC
+    
+    Steps:
+    1. System Settings → Users → Add new user
+    2. Log in as that user (fresh environment)
+    3. Copy and test your game
+    4. Closer to real user experience than your dev account
+  </Tab>
+</Tabs>
+
+---
+
+## Testing Checklist
+
+Before releasing your game, verify:
+
+### Launch and Stability
+- [ ] Game launches without errors
+- [ ] No crashes during 30+ minutes of gameplay
+- [ ] Game can be quit properly (doesn't hang)
+- [ ] Multiple launch/quit cycles work (no state corruption)
+
+### Graphics
+- [ ] All textures load correctly
+- [ ] Shaders work (no pink/magenta materials)
+- [ ] UI scales properly at different resolutions
+- [ ] Fullscreen and windowed modes work
+- [ ] Game looks correct on different monitors
+
+### Audio
+- [ ] Music plays without crackling
+- [ ] Sound effects trigger correctly
+- [ ] Volume controls work
+- [ ] Audio doesn't cut out or distort
+- [ ] Works with both speakers and headphones
+
+### Input
+- [ ] Keyboard controls work (if applicable)
+- [ ] Mouse controls work (if applicable)
+- [ ] Gamepad controls work (if applicable)
+- [ ] Input remapping works (if your game has it)
+
+### Game Features
+- [ ] Save/load works
+- [ ] Saved data persists after quitting
+- [ ] All levels/content accessible
+- [ ] Achievements unlock (if implemented)
+- [ ] Multiplayer connects (if applicable)
+
+### Platform-Specific (macOS)
+- [ ] Microphone permission requested (if using voice)
+- [ ] Camera permission requested (if using camera)
+- [ ] Game works on both Intel and Apple Silicon (if using universal)
+
+### Platform-Specific (Windows)
+- [ ] No DLL missing errors
+- [ ] Works on Windows 10 and 11
+- [ ] Visual C++ Runtime not required (should be bundled)
+
+---
+
+## Voice Feature Testing (Special Case)
+
+If your game uses **microphone input** (voice chat, voice commands):
+
+### The Editor Problem
+
+**Issue**: Running Summer Engine editor as a bare binary **doesn't** trigger macOS microphone permissions properly.
+
+**Result**: Voice features may appear broken in editor but work fine in exported builds.
+
+### The Solution: Test Via Export
+
+<Steps>
+  <Step title="Export Your Game">
+    Create macOS export preset (ad-hoc signing is fine)
+  </Step>
+
+  <Step title="Launch Exported .app">
+    Right-click → Open → Open
+    
+    **Not** launching via editor's "Run" button!
+  </Step>
+
+  <Step title="Trigger Voice Feature">
+    Join voice chat, speak command, or start recording
+  </Step>
+
+  <Step title="Permission Dialog Appears">
+    macOS shows: *"YourGame would like to access the microphone"*
+    
+    ✅ This is **correct behavior** - means it will work for players!
+  </Step>
+
+  <Step title="Grant and Test">
+    Click **OK** → Test voice features work properly
+  </Step>
+</Steps>
+
+<Warning>
+  **Voice features cannot be fully tested in the editor** due to macOS security restrictions on bare binaries.
+  
+  Always export and test voice features in the exported .app build!
+</Warning>
+
+---
+
+## Fixing Issues Found During Testing
+
+### Game Crashes on Launch
+
+**Debug process**:
+<Steps>
+  <Step title="Export in Debug Mode">
+    Change **Debug → Export Console Wrapper** to **Debug Only**
+    
+    Re-export your game
+  </Step>
+
+  <Step title="Launch from Terminal">
+    ```bash
+    # macOS
+    ~/Desktop/YourGame.app/Contents/MacOS/YourGame
+    
+    # Windows (Command Prompt)
+    C:\Users\You\Desktop\YourGame.exe
+    ```
+    
+    Errors will print to terminal
+  </Step>
+
+  <Step title="Read Error Messages">
+    Look for:
+    - Missing file errors
+    - Script errors
+    - Resource loading failures
+  </Step>
+
+  <Step title="Fix in Summer Engine">
+    Fix the issue in your project, re-export, test again
+  </Step>
+</Steps>
+
+### Graphics Issues (Missing Textures, Pink Materials)
+
+**Possible causes**:
+1. Texture compression not enabled for platform
+2. Shaders not exported properly
+3. Resources not included in export
+
+**Solution**:
+1. Verify texture compression enabled (ETC2 ASTC for Mac, S3TC BPTC for Windows)
+2. Check **Export → Resources → Export Mode** is **"Export all resources in project"**
+3. Re-export and test
+
+### Audio Not Playing
+
+**Check**:
+1. Audio files are Ogg Vorbis or WAV (MP3 works but has licensing issues)
+2. AudioStreamPlayer nodes properly configured
+3. Audio bus not muted
+4. Test with headphones (not just speakers)
+
+---
+
+## Testing Different Architectures (macOS)
+
+macOS has **three architecture options** - each needs testing if you support it:
+
+### Universal (Recommended)
+
+**What it is**: Single app that runs on both Intel and Apple Silicon Macs
+
+**How to test**:
+- Test on **Apple Silicon Mac** (M1/M2/M3)
+- Test on **Intel Mac** (if you have access)
+
+**If you only have one Mac type**: Ask a friend with the other type to test!
+
+### arm64 Only
+
+**What it is**: Apple Silicon only (smaller file size)
+
+**How to test**: Runs on M1/M2/M3 Macs only
+
+**Will NOT run on**: Intel Macs (shows error)
+
+### x86_64 Only (Legacy)
+
+**What it is**: Intel Macs only
+
+**How to test**: Runs on Intel Macs
+
+**On Apple Silicon**: Runs via Rosetta 2 (translation layer) - slower performance
+
+<Info>
+  **For Steam/itch.io**: Use **universal** to support maximum players. File size difference is minimal (~20% larger) but compatibility is worth it.
+</Info>
+
+---
+
+## Testing Save Data
+
+### Where Saves Go
+
+**In editor**:
+- Usually `user://` folder maps to project directory
+- Easy to find and debug
+
+**In exported game**:
+- macOS: `~/Library/Application Support/Godot/app_userdata/YourGameName/`
+- Windows: `%APPDATA%\Godot\app_userdata\YourGameName\`
+- Linux: `~/.local/share/godot/app_userdata/YourGameName/`
+
+### Test Save Persistence
+
+<Steps>
+  <Step title="Create Save Data">
+    Launch exported game → Save your progress
+  </Step>
+
+  <Step title="Quit Completely">
+    Fully quit the game (don't just close window)
+  </Step>
+
+  <Step title="Relaunch">
+    Open game again
+  </Step>
+
+  <Step title="Verify Save Loaded">
+    Check that your progress/settings persisted
+  </Step>
+</Steps>
+
+**Common save issues**:
+- Using wrong directory (hardcoded paths instead of `user://`)
+- Not calling `save()` on File object
+- File permissions issues on different OS
+
+---
+
+## Performance Testing
+
+### Compare Editor vs Export
+
+**Expected**: Exported game runs **faster** than editor (especially Release builds)
+
+**If exported game is slower**:
+- Check you're using **Release** export, not Debug
+- Profile in editor first (Debug → Profiler) - find bottlenecks before exporting
+- Test on same machine for fair comparison
+
+### Minimum Spec Testing
+
+**Test on lower-end hardware**:
+- Older Mac (Intel i5)
+- Budget Windows PC
+- Integrated graphics (Intel/AMD iGPU, not dedicated GPU)
+
+**Check**:
+- Maintains target FPS (30 or 60)
+- No stuttering during gameplay
+- Memory usage stays reasonable (< 4 GB for most indie games)
+
+<Tip>
+  **Can't test on low-end hardware?** 
+  
+  In Project Settings: **Rendering → Quality** - set to "Low" and test. If it runs well on your dev machine at Low quality, it'll run OK on budget PCs at similar settings.
+</Tip>
+
+---
+
+## Platform-Specific Testing
+
+### macOS Specific
+
+**Test these features**:
+- [ ] Retina display rendering (high DPI)
+- [ ] Fullscreen vs windowed mode
+- [ ] Menu bar integration (if using native menus)
+- [ ] Dock icon appears correctly
+- [ ] Microphone permissions (if using voice)
+- [ ] Trackpad gestures (if supported)
+
+**Test on both**:
+- macOS Sonoma (14.x) - latest
+- macOS Ventura (13.x) - common version
+
+### Windows Specific
+
+**Test these features**:
+- [ ] DirectX 11 rendering
+- [ ] Fullscreen exclusive mode
+- [ ] Alt+Tab works properly
+- [ ] Multiple monitor support
+- [ ] Windows 10 AND Windows 11
+
+**Common Windows-only bugs**:
+- Path separators (`/` vs `\`)
+- Case-sensitive file names (works on Mac, breaks on Windows)
+- Missing Visual C++ Runtime (should be bundled)
+
+---
+
+## Multiplayer Testing
+
+If your game has multiplayer (voice chat, co-op, etc.):
+
+### Local Network Testing
+
+<Steps>
+  <Step title="Export for Both Platforms">
+    Build Mac version and Windows version (or same platform twice)
+  </Step>
+
+  <Step title="Test on Same Network">
+    - Computer A runs one build
+    - Computer B runs another build
+    - Connect them together (LAN multiplayer)
+  </Step>
+
+  <Step title="Test Voice Chat">
+    If using voice:
+    - Verify audio transmits clearly
+    - Check proximity audio works (if applicable)
+    - Test push-to-talk vs always-on
+  </Step>
+
+  <Step title="Test Gameplay">
+    - Movement syncs correctly
+    - Actions sync (shooting, jumping, etc.)
+    - No severe lag on local network
+  </Step>
+</Steps>
+
+### Internet Testing
+
+**Test over real internet** (not just LAN):
+- Use cloud server or dedicated server
+- Test with friend in different location
+- Check for latency issues
+- Verify voice quality over internet connection
+
+---
+
+## What to Look For During Testing
+
+### Red Flags (Fix Before Release)
+
+🚩 **Crashes within first 5 minutes** - major stability issue
+🚩 **Missing textures/audio** - resource export problem
+🚩 **Stuttering/freezing** - performance issue
+🚩 **Save doesn't persist** - save system broken
+🚩 **Controls don't work** - input mapping issue
+
+### Minor Issues (Fix If Time Permits)
+
+⚠️ **Occasional visual glitch** - note and fix if easy
+⚠️ **One sound effect too loud** - balance issue
+⚠️ **Typo in UI text** - polish issue
+⚠️ **Minor FPS dip in one area** - optimize if possible
+
+### What's OK to Ship
+
+✅ **Security warnings on macOS/Windows** - normal for unsigned games on itch.io
+✅ **Console window appears briefly** (Windows Debug mode) - disable for final release
+✅ **Not 100% perfect graphics** - indie games are judged on gameplay
+✅ **Small bugs you know about** - can patch after release if noted
+
+<Tip>
+  **Perfection is the enemy of shipping.** Fix critical bugs, polish what you can, then release! You can always update after launch based on player feedback.
+</Tip>
+
+---
+
+## Iteration Speed
+
+### Fast Testing Loop
+
+<Steps>
+  <Step title="Make Changes">
+    Edit code/assets in Summer Engine
+  </Step>
+
+  <Step title="Quick Test in Editor">
+    Run game in editor - basic functionality check
+  </Step>
+
+  <Step title="Export">
+    **Project → Export → macOS/Windows**
+    
+    Takes 30-60 seconds with templates ready
+  </Step>
+
+  <Step title="Test Export">
+    Launch exported build - verify fix worked
+  </Step>
+
+  <Step title="Repeat">
+    Iterate until all issues fixed!
+  </Step>
+</Steps>
+
+**Export is fast** (30-60s) with Summer Engine's pre-built templates. Don't be afraid to export frequently during testing!
+
+---
+
+## Preparing for Release
+
+Once testing is complete:
+
+### Final Export Checklist
+
+- [ ] Export in **Release mode** (not Debug)
+- [ ] Test on clean machine(s)
+- [ ] All critical bugs fixed
+- [ ] Save/load verified working
+- [ ] Performance acceptable on minimum spec
+- [ ] File size reasonable (< 500 MB ideal for indie games)
+- [ ] Game can be quit properly
+- [ ] README/instructions included (if distributing manually)
+
+### For Steam
+
+- [ ] Exported for all target platforms (Windows, Mac, Linux)
+- [ ] Tested each platform build
+- [ ] Build size under Steam depot limits (usually fine for indie games)
+- [ ] Steam Input configured (if using controllers)
+
+### For itch.io
+
+- [ ] Game zipped if needed (macOS .app must be zipped)
+- [ ] File named clearly (`MyGame-Mac.zip`, `MyGame-Windows.exe`)
+- [ ] README explains how to bypass security warnings
+- [ ] File size under itch.io limits (1-2 GB)
+
+---
+
+## Common Testing Mistakes
+
+### ❌ Only Testing on Development Machine
+
+**Problem**: Works for you, crashes for users
+
+**Solution**: Test on at least one other computer
+
+### ❌ Only Testing Debug Builds
+
+**Problem**: Debug is slow, users get Release build
+
+**Solution**: Always test final Release build before publishing
+
+### ❌ Skipping Platform-Specific Testing
+
+**Problem**: Works on Mac, crashes on Windows (or vice versa)
+
+**Solution**: Test every platform you're releasing on
+
+### ❌ Not Testing Permissions
+
+**Problem**: Microphone/camera don't work for users
+
+**Solution**: Test exported build specifically for permission dialogs
+
+### ❌ Assuming Editor = Export
+
+**Problem**: Different behaviors in editor vs export
+
+**Solution**: **Always export and test** before considering game "done"
+
+---
+
+## Getting Help
+
+<CardGroup cols={2}>
+  <Card title="Discord Community" icon="discord" href="https://discord.gg/yUpgtxnZky">
+    Share testing issues in `#game-dev` for quick help
+  </Card>
+
+  <Card title="X / Twitter" icon="x-twitter" href="https://x.com/SummerEngineCom">
+    Tweet @SummerEngineCom for support
+  </Card>
+
+  <Card title="Report Bugs" icon="bug" href="mailto:founders@summerengine.com">
+    Found an export bug in Summer Engine? Let us know!
+  </Card>
+
+  <Card title="Back to Export Guides" icon="arrow-left" href="/publishing/overview">
+    Platform-specific export instructions
+  </Card>
+</CardGroup>
+
+<Tip>
+  **Testing takes time, but it's worth it!** Players remember buggy launches. Taking an extra day to test properly can save weeks of damage control later.
+  
+  When in doubt: test more, ship when confident! 🚀
+</Tip>
+

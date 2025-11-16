@@ -1,0 +1,468 @@
+---
+title: "Console Publishing"
+description: "Guide to releasing your game on Nintendo Switch, PlayStation, and Xbox"
+icon: "gamepad-modern"
+---
+
+## Console Publishing Status
+
+Summer Engine is based on **Godot 4.5**, which has **full console export support**. However, console publishing is more complex than PC/mobile and requires official approval from platform holders.
+
+<Warning>
+  Console publishing is **not available to everyone**. You need:
+  - Registered company or legal entity
+  - Platform holder approval (Nintendo/Sony/Microsoft)
+  - Official dev kit hardware ($500-$10,000+ per platform)
+  - NDAs and publisher agreements
+</Warning>
+
+---
+
+## Supported Consoles (via Godot)
+
+### Nintendo Switch
+- ✅ **Engine support**: Available in Godot 4.5+
+- 💼 **Requirements**: Nintendo Developer Portal approval
+- 🎮 **Dev kit**: ~$450 USD
+- 📄 **NDA**: Required before access to Switch SDK
+
+### PlayStation 4/5
+- ✅ **Engine support**: Available in Godot 4.5+
+- 💼 **Requirements**: PlayStation Partners approval
+- 🎮 **Dev kit**: PS4 (~$2,500), PS5 (~$2,500)
+- 📄 **NDA**: Required before SDK access
+
+### Xbox One/Series S/X
+- ✅ **Engine support**: Available in Godot 4.5+
+- 💼 **Requirements**: ID@Xbox program approval
+- 🎮 **Dev kit**: Can use retail console for ID@Xbox (or ~$500 dev kit)
+- 📄 **NDA**: Required for advanced features
+
+<Info>
+  Summer Engine uses the **same console export code** as Godot. Once you have platform approval, our team can help with the export configuration.
+</Info>
+
+---
+
+## How to Get Console Approval
+
+### Step 1: Build a Compelling Demo
+
+Platform holders want to see:
+- ✅ **Vertical slice** - 5-15 minutes of polished gameplay
+- ✅ **Visual quality** - Professional-looking art and UI
+- ✅ **Unique hook** - What makes your game special?
+- ✅ **Market potential** - Why would console players buy this?
+
+**Build your demo in Summer Engine for PC first**, then apply to console programs.
+
+### Step 2: Apply to Developer Programs
+
+<AccordionGroup>
+  <Accordion title="Nintendo Switch - Nintendo Developer Portal">
+    **Apply at**: [developer.nintendo.com](https://developer.nintendo.com/)
+    
+    **Requirements**:
+    - Registered company (LLC, sole proprietorship, etc.)
+    - Business plan outlining your game
+    - Development team credentials
+    - Previous released games (helpful but not required)
+    
+    **Approval time**: 2-6 weeks
+    
+    **What you get**:
+    - Access to Switch SDK
+    - Dev kit purchase option
+    - Publishing documentation
+    - Nintendo developer support
+  </Accordion>
+
+  <Accordion title="PlayStation - PlayStation Partners">
+    **Apply at**: [partners.playstation.net](https://partners.playstation.net/)
+    
+    **Requirements**:
+    - Registered company
+    - Game pitch with screenshots/trailer
+    - Team experience
+    - Business and marketing plan
+    
+    **Approval time**: 4-8 weeks (more selective than Nintendo)
+    
+    **What you get**:
+    - Access to PS4/PS5 SDK
+    - Dev kit pricing
+    - PlayStation Store publishing rights
+    - Sony developer support
+  </Accordion>
+
+  <Accordion title="Xbox - ID@Xbox Program">
+    **Apply at**: [xbox.com/developers/id](https://www.xbox.com/en-US/developers/id)
+    
+    **Requirements**:
+    - Concept pitch (game description, screenshots)
+    - Publishing plan
+    - Previous game development experience preferred
+    
+    **Approval time**: 2-4 weeks (most accessible of the three)
+    
+    **What you get**:
+    - Use retail Xbox for development (dev kit optional)
+    - Xbox publishing rights
+    - Microsoft developer support
+    - Access to Game Pass opportunities
+    
+    **Advantage**: ID@Xbox is the **most indie-friendly** program - easiest to get approved.
+  </Accordion>
+</AccordionGroup>
+
+---
+
+## Alternative: Work with a Porting Studio
+
+**Don't want to deal with console bureaucracy?** Hire specialists who already have approval and dev kits.
+
+### Recommended Godot Porting Partners
+
+<CardGroup cols={2}>
+  <Card title="Pineapple Works" icon="gamepad" href="https://pineapple.works/">
+    **Specialty**: Nintendo Switch
+    
+    - Extensive Godot experience
+    - Published multiple Godot games on Switch
+    - Handles porting, QA, and publishing
+    - Revenue share or flat fee options
+  </Card>
+
+  <Card title="Lone Wolf Technology" icon="code" href="https://lonewolftechnology.com/">
+    **Specialty**: Multi-platform porting
+    
+    - Switch, PlayStation, Xbox experience
+    - Godot engine expertise
+    - Technical optimization for consoles
+    - Full-service porting and publishing
+  </Card>
+
+  <Card title="Broken Rules" icon="rocket" href="https://brokenrul.es/">
+    **Specialty**: Publishing + Porting
+    
+    - Switch, PlayStation experience
+    - Published their own Godot titles
+    - Can handle publishing negotiations
+    - European studio (good for EU developers)
+  </Card>
+
+  <Card title="Contact Summer Team" icon="envelope" href="mailto:founders@summerengine.com">
+    **We can connect you** with other trusted partners
+    
+    - Godot-specific porting studios
+    - Console-specific specialists
+    - Publishing consultants
+  </Card>
+</CardGroup>
+
+### How Porting Studios Work
+
+**Typical process**:
+1. **You provide**: PC build (Windows/Mac) of your game
+2. **They handle**: Console export, optimization, compliance, publishing
+3. **Revenue split**: Usually 20-40% to porting studio, or flat fee ($10k-$50k range)
+4. **Timeline**: 2-6 months depending on game complexity
+
+**Benefits**:
+- ✅ No dev kit purchase needed
+- ✅ No NDA paperwork for you
+- ✅ They handle platform compliance (age ratings, content policies)
+- ✅ Optimization for console performance
+- ✅ Ongoing patch support
+
+---
+
+## DIY Console Porting (Advanced)
+
+If you **do** get platform approval and want to port yourself:
+
+### General Requirements
+
+1. **Dev kit hardware** (per platform)
+2. **Platform SDK** access
+3. **Summer Engine source** with console modules enabled
+4. **Compliance testing** (age ratings, content guidelines)
+5. **Performance optimization** (consoles have fixed specs)
+
+### Summer Engine Console Export
+
+Once you have SDK access:
+
+<Steps>
+  <Step title="Contact Summer Team">
+    Email founders@summerengine.com with:
+    - Proof of platform approval
+    - Which console(s) you're targeting
+    - Your game's name and genre
+  </Step>
+
+  <Step title="We'll Provide">
+    - Console-specific build instructions
+    - Export configuration help
+    - Engine modifications if needed (console-specific optimizations)
+  </Step>
+
+  <Step title="Build and Test">
+    Follow platform-specific build process
+    
+    Test on actual dev kit hardware (not emulators)
+  </Step>
+
+  <Step title="Submit to Platform">
+    Submit build through platform's publishing portal
+    
+    Wait for certification (2-6 weeks)
+  </Step>
+</Steps>
+
+<Warning>
+  **We cannot provide SDK files or bypass platform NDAs.** You must be approved by Nintendo/Sony/Microsoft independently.
+  
+  We can only help with Summer Engine-specific export configuration after you have legal SDK access.
+</Warning>
+
+---
+
+## Console Certification Process
+
+Each platform has strict requirements:
+
+### Technical Requirements
+- **Performance**: Maintain 30 or 60 FPS (platform-dependent)
+- **Memory limits**: Stay within console RAM constraints
+- **Controller support**: Full gamepad support required (no keyboard/mouse)
+- **Save data**: Follow platform save system guidelines
+- **Suspend/resume**: Handle sleep mode correctly
+
+### Content Requirements
+- **Age rating**: ESRB, PEGI ratings required before publishing
+- **Content policy**: No prohibited content per platform rules
+- **Localization**: May require multiple language support
+- **Accessibility**: Some platforms require accessibility features
+
+### Compliance Testing
+- Submit build to platform's QA team
+- Wait for certification results
+- Fix any failed tests
+- Re-submit until approved
+
+**Timeline**: Budget **2-6 months** from dev kit to published game (experienced devs can be faster).
+
+---
+
+## Cost Breakdown
+
+### Nintendo Switch (Example)
+
+| Item | Cost |
+|------|------|
+| Nintendo Developer Portal application | Free |
+| Dev kit hardware | ~$450 USD |
+| Age ratings (ESRB/PEGI) | $3,000-$4,000 |
+| Localization (optional) | $5,000-$20,000 |
+| **Total minimum** | **~$3,500** |
+
+### PlayStation 4/5 (Example)
+
+| Item | Cost |
+|------|------|
+| PlayStation Partners application | Free |
+| PS4 dev kit | ~$2,500 |
+| PS5 dev kit | ~$2,500 |
+| Age ratings | $3,000-$4,000 |
+| **Total minimum** | **~$6,000** (one console) |
+
+### Xbox (Example)
+
+| Item | Cost |
+|------|------|
+| ID@Xbox application | Free |
+| Retail Xbox (dev mode) | ~$500 |
+| Age ratings | $3,000-$4,000 |
+| **Total minimum** | **~$3,500** |
+
+<Info>
+  **Xbox is the cheapest** to start with via ID@Xbox (use retail console). **Switch is next**. **PlayStation is most expensive** (requires dedicated dev kit).
+</Info>
+
+---
+
+## Age Ratings (Required for Console)
+
+All console games need official age ratings:
+
+**ESRB** (North America):
+- Application fee: ~$3,000-$4,000 depending on revenue tier
+- Fill out content questionnaire
+- Provide gameplay footage
+- Rating assigned: E, E10+, T, M, AO
+
+**PEGI** (Europe):
+- Similar process and cost to ESRB
+- Ratings: 3, 7, 12, 16, 18
+
+**IARC** (International):
+- Free digital rating system
+- Used by some platforms
+- Questionnaire-based (no footage required)
+
+<Tip>
+  Get ratings **after** platform approval but **before** final submission. You'll need the rating certificates to publish.
+</Tip>
+
+---
+
+## Realistic Timeline for Console Release
+
+From PC version complete → console release:
+
+### Fast Track (Experienced Team)
+- **Month 1**: Apply to platforms, build demo
+- **Month 2**: Get approval, purchase dev kits
+- **Month 3**: Port game, optimize for console
+- **Month 4**: QA testing, submit for certification
+- **Month 5**: Fix certification issues, re-submit
+- **Month 6**: Approved and published ✅
+
+### Realistic Timeline (First Console Game)
+- **Months 1-2**: Applications and approval process
+- **Months 3-4**: Learning platform SDKs, initial port
+- **Months 5-7**: Optimization, fixing console-specific bugs
+- **Months 8-9**: QA, age ratings, certification submission
+- **Months 10-12**: Certification fixes, re-submissions, launch ✅
+
+**Budget 6-12 months** for your first console release.
+
+---
+
+## Should You Release on Consoles?
+
+### Good Reasons to Target Consoles
+- ✅ Game is well-suited for controllers
+- ✅ You have budget for dev kits and ratings ($5k-$15k)
+- ✅ You have time for 6-12 month process
+- ✅ Game has already succeeded on PC/mobile (proven concept)
+- ✅ Genre fits console market (platformers, roguelikes, cozy games)
+
+### Reasons to Wait
+- ❌ First game ever - **release on PC/itch.io first**
+- ❌ Limited budget - dev kits and ratings are expensive
+- ❌ PC-focused genre (RTS, complex strategy)
+- ❌ Game requires keyboard/mouse
+- ❌ Still in early development - validate on PC first
+
+<Tip>
+  **Most successful indie devs** release on **PC/itch.io/Steam first**, validate the market, **then** port to consoles once they have revenue and proven demand.
+  
+  Don't rush to consoles - build your audience on accessible platforms first!
+</Tip>
+
+---
+
+## Getting Help with Console Ports
+
+<CardGroup cols={2}>
+  <Card title="Email Summer Team" icon="envelope" href="mailto:founders@summerengine.com">
+    We can connect you with:
+    - Trusted porting studios
+    - Platform application help
+    - Summer Engine console export support (post-approval)
+  </Card>
+
+  <Card title="Porting Studios" icon="code">
+    **Contact these Godot specialists**:
+    - Pineapple Works (Switch focus)
+    - Lone Wolf Technology (multi-platform)
+    - Broken Rules (EU publishing)
+  </Card>
+
+  <Card title="Join Console Dev Communities" icon="discord">
+    **After platform approval**, join:
+    - Nintendo Developer Portal forums
+    - PlayStation Partners community
+    - ID@Xbox Discord
+    
+    (Requires approved developer status)
+  </Card>
+
+  <Card title="Start with PC/Mobile" icon="desktop" href="/publishing/overview">
+    **Not ready for consoles?** Focus on PC and mobile first - easier path to release!
+  </Card>
+</CardGroup>
+
+---
+
+## Alternative: Console-First Publishers
+
+Some publishers **specialize in bringing indie games to console**:
+
+**How it works**:
+1. You release your game on PC/Steam first
+2. Publisher sees your game's success
+3. Publisher approaches you (or you pitch to them)
+4. They fund console ports in exchange for revenue share
+
+**Examples**: Devolver Digital, Annapurna Interactive, Raw Fury
+
+**Advantages**:
+- ✅ They pay for everything (dev kits, ratings, marketing)
+- ✅ You keep working on the game
+- ✅ Professional QA and optimization
+- ✅ Marketing and PR support
+
+**Disadvantages**:
+- 📉 Lower revenue share (30-50% to publisher)
+- 📅 You don't control timeline
+- 🎯 They're selective (need proven PC success first)
+
+---
+
+## Realistic Advice
+
+### For Your First Game
+**Focus on PC** (Windows/Mac/Linux) and **itch.io** or **Steam**:
+- Much faster to market (weeks vs months)
+- Cheaper ($0 for itch.io, $100 for Steam vs $5k+ for consoles)
+- Easier to iterate based on player feedback
+- Build your audience and credibility
+
+### Once You Have a Hit
+**Then consider consoles**:
+- You'll have revenue to fund dev kits and ratings
+- You'll have proven the game concept works
+- You can hire porting studio or get publisher interest
+- Platform holders are more likely to approve (proven track record)
+
+<Tip>
+  **Success path**: Release on PC → Get good reviews and sales → Use that revenue and validation to fund console ports
+  
+  Trying to launch on all platforms simultaneously is **extremely difficult** and **expensive** for indie devs. Start small, grow strategically!
+</Tip>
+
+---
+
+## Questions?
+
+<CardGroup cols={2}>
+  <Card title="Discord Community" icon="discord" href="https://discord.gg/yUpgtxnZky">
+    Ask about console publishing in #game-dev
+  </Card>
+
+  <Card title="X / Twitter" icon="x-twitter" href="https://x.com/SummerEngineCom">
+    Tweet @SummerEngineCom for questions
+  </Card>
+
+  <Card title="Email Summer Team" icon="envelope" href="mailto:founders@summerengine.com">
+    Questions about console export capabilities
+  </Card>
+
+  <Card title="Start with PC Publishing" icon="desktop" href="/publishing/overview">
+    Focus on accessible platforms first
+  </Card>
+</CardGroup>
+
