@@ -50,16 +50,16 @@
               "essentials/limitations"
             ]
           },
-          {
-            "group": "Art Asset System",
-            "pages": [
-              "art-system/overview",
-              "art-system/ai-generation",
-              "art-system/gallery",
-              "art-system/collections",
-              "art-system/licensing"
-            ]
-          },
+                  {
+                    "group": "Summer Asset Store",
+                    "pages": [
+                      "art-system/overview",
+                      "art-system/ai-generation",
+                      "art-system/gallery",
+                      "art-system/collections",
+                      "art-system/licensing"
+                    ]
+                  },
           {
             "group": "Engine Migration",
             "pages": [
@@ -89,6 +89,19 @@
             "group": "Development",
             "pages": [
               "guides/web-development"
+            ]
+          },
+          {
+            "group": "Publishing Your Game",
+            "pages": [
+              "publishing/overview",
+              "publishing/macos-export",
+              "publishing/windows-export",
+              "publishing/local-testing",
+              "publishing/steam",
+              "publishing/itch-io",
+              "publishing/consoles",
+              "publishing/troubleshooting"
             ]
           }
         ]

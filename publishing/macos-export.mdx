@@ -1,0 +1,257 @@
+---
+title: "macOS Export Guide"
+description: "Step-by-step guide to exporting your game for Mac computers"
+icon: "apple"
+---
+
+## Overview
+
+This guide walks you through exporting your Summer Engine game for macOS. Whether you're targeting Steam, itch.io, or direct distribution, the export process is the same.
+
+**Time to complete**: 10-15 minutes (first time)
+
+## Prerequisites
+
+### Enable ETC2 ASTC Texture Compression
+
+Apple Silicon Macs (M1, M2, M3 chips) require ETC2/ASTC texture format.
+
+<Steps>
+  <Step title="Open Project Settings">
+    Go to **Project → Project Settings** in the menu bar
+  </Step>
+
+  <Step title="Navigate to Textures">
+    **Rendering → Textures → VRAM Compression**
+  </Step>
+
+  <Step title="Enable ETC2 ASTC">
+    Toggle **Import ETC2 ASTC** to **On**
+    
+    <img src="/images/publishing/enable-etc2-astc.png" alt="Enable ETC2 ASTC" />
+  </Step>
+
+  <Step title="Wait for Reimport">
+    Summer will reimport all textures (1-5 minutes depending on project size)
+    
+    You'll see progress in the bottom status bar. **Do not close Summer** during this process.
+  </Step>
+</Steps>
+
+<Tip>
+  **Also releasing on Windows?** Enable **Import S3TC BPTC** at the same time. This covers both Mac and Windows with one reimport.
+</Tip>
+
+---
+
+## Creating a macOS Export Preset
+
+<Steps>
+  <Step title="Open Export Menu">
+    Go to **Project → Export** in the menu bar
+  </Step>
+
+  <Step title="Add macOS Preset">
+    Click **Add...** → Select **macOS (Runnable)**
+    
+    You'll see the export configuration panel appear.
+  </Step>
+
+  <Step title="Configure Required Settings">
+    You'll see some warnings in red at the bottom. Let's fix them:
+  </Step>
+</Steps>
+
+### Fix: Invalid Bundle Identifier
+
+<Warning>
+  You'll see: **"Invalid Bundle Identifier (com.example.game). The Bundle Identifier should be a valid domain name in reverse..."**
+</Warning>
+
+**What is this?** A bundle identifier is a unique name for your app in reverse-domain format.
+
+**Examples**:
+- `com.yourstudio.yourgame` (most common)
+- `com.yourname.dontpray`
+- `io.itch.username.gamename`
+
+**How to fix**:
+1. In the export panel, find **Application → Bundle Identifier**
+2. Replace `com.example.game` with your unique identifier
+3. Use only lowercase letters, numbers, dots, and hyphens
+4. Must start with `com.`, `org.`, `io.`, or similar
+
+<Tip>
+  **Don't have a domain?** Use `io.itch.yourusername.yourgame` or `com.yourname.yourgame`. It just needs to be unique to you.
+</Tip>
+
+### Other Important Settings
+
+**Application Section**:
+- **Icon**: (Optional) Browse to a `.icns` or high-res `.png` file for your game icon
+- **Signature**: Leave as default (`????`) unless you have a specific 4-character code
+- **Short Version**: Leave empty to use project version
+- **Copyright**: (Optional) Add your copyright text
+
+**Export Section**:
+- **Distribution Type**: 
+  - **Testing** (default) - For local testing and itch.io
+  - **Distribution** - For Steam and signed releases
+  - **App Store** - Only if publishing to Mac App Store
+
+**Binary Format**:
+- **Architecture**: 
+  - `universal` ✅ **Recommended** - Works on both Intel and Apple Silicon Macs
+  - `arm64` - Apple Silicon only (M1/M2/M3) - smaller file size
+  - `x86_64` - Intel Macs only (legacy, not recommended)
+
+<Info>
+  For Steam or itch.io, use **universal** architecture to support the widest audience.
+</Info>
+
+---
+
+## Exporting Your Game
+
+<Steps>
+  <Step title="Set Export Path">
+    Click the folder icon next to **Export Path**
+    
+    Choose where to save your game (e.g., `~/Desktop/MyGame.app`)
+  </Step>
+
+  <Step title="Click Export Project">
+    Bottom right button: **Export Project...**
+    
+    Summer will create your standalone Mac app!
+  </Step>
+
+  <Step title="Wait for Export">
+    Export takes 30 seconds to 2 minutes depending on project size.
+    
+    You'll see a progress bar. **Don't close Summer** during export.
+  </Step>
+
+  <Step title="Export Complete!">
+    Your game is now a standalone `.app` file ready to distribute!
+  </Step>
+</Steps>
+
+---
+
+## Testing Your Exported Game
+
+**Critical**: Always test on a clean machine before releasing to players!
+
+### Test on Your Mac First
+
+1. Navigate to where you exported (e.g., Desktop)
+2. Double-click `MyGame.app`
+3. **If you see "unidentified developer" warning**:
+   - Right-click the app → **Open**
+   - Click **Open** in the dialog
+   - This is normal for unsigned apps during testing
+
+### Test on Someone Else's Mac
+
+<Warning>
+  **Do NOT skip this step!** Your game might work on your dev machine but crash on clean systems.
+</Warning>
+
+What to test:
+- ✅ Game launches without errors
+- ✅ Graphics render correctly
+- ✅ Audio plays properly
+- ✅ Controls respond (keyboard, mouse, gamepad)
+- ✅ Save/load works
+- ✅ Game can be quit normally
+
+**Found a bug?** Fix it in Summer Engine, then re-export. Exported games don't update automatically.
+
+---
+
+## What About Code Signing?
+
+Code signing prevents "unidentified developer" warnings on macOS. **Do you need it?**
+
+| Publishing To | Code Signing Required? | Notes |
+|---------------|----------------------|-------|
+| **Steam** | ❌ No | Steam handles signing for you automatically |
+| **itch.io** | ❌ No | Indie game players expect unsigned games |
+| **Direct download** (your website) | ✅ **Yes, highly recommended** | Without it, users see scary warnings |
+| **Mac App Store** | ✅ **Required** | Cannot publish without Apple Developer account |
+
+### How to Code Sign (Advanced)
+
+If you need code signing for direct distribution:
+
+**Requirements**:
+- Apple Developer account ($99/year)
+- Developer ID Application certificate
+- Xcode Command Line Tools
+
+**In Summer Engine**:
+1. Export settings → **Codesign → Codesign**: Select **Xcode codesign**
+2. **Codesign → Identity**: Enter your Developer ID certificate name
+3. **Notarization → Notarization**: Select **altool** or **notarytool**
+4. Provide Apple ID and app-specific password
+
+<Info>
+  This is **advanced** and only needed for direct downloads. If you're publishing to Steam or itch.io first, skip code signing entirely.
+</Info>
+
+---
+
+## Common Issues
+
+### "No export template found"
+
+**This shouldn't happen** with Summer Engine! Templates are included.
+
+**If you see this**: Contact support at founders@summerengine.com - something went wrong with your installation.
+
+### "Cannot export for universal or arm64 if ETC2 ASTC is disabled"
+
+**Solution**: Go back to **Prerequisites** section above and enable ETC2 ASTC texture compression.
+
+### "Invalid Bundle Identifier"
+
+**Solution**: Set a proper bundle identifier (see **Fix: Invalid Bundle Identifier** section above).
+
+---
+
+## File Size Tips
+
+**Typical Mac export sizes**:
+- Small 2D game: 50-150 MB
+- Medium 3D game: 200-500 MB  
+- Large 3D game with cinematics: 1-3 GB
+
+**To reduce size**:
+- Compress audio as Ogg Vorbis (not WAV)
+- Use appropriate texture compression (you already enabled this!)
+- Remove unused assets from your project
+- Enable **Embed PCK** to avoid separate `.pck` file
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Publish to itch.io" icon="gamepad" href="/publishing/itch-io">
+    Easiest way to share your Mac game (no approval needed)
+  </Card>
+
+  <Card title="Publish to Steam" icon="steam" href="/publishing/steam">
+    Reach the largest gaming audience
+  </Card>
+
+  <Card title="Export for Windows" icon="windows" href="/publishing/windows-export">
+    Add Windows support for wider reach
+  </Card>
+
+  <Card title="Troubleshooting" icon="wrench" href="/publishing/troubleshooting">
+    Common export problems and solutions
+  </Card>
+</CardGroup>
+

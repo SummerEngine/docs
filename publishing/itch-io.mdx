@@ -1,0 +1,449 @@
+---
+title: "Publishing to itch.io"
+description: "Quick and easy indie game publishing with no approval process"
+icon: "gamepad"
+---
+
+## Why itch.io?
+
+itch.io is the **friendliest platform for indie game developers**:
+
+- ✅ **No approval process** - publish immediately
+- ✅ **No fees** - 0% revenue share (optional tip jar for itch.io)
+- ✅ **Upload in minutes** - drag and drop your game files
+- ✅ **Perfect for game jams** - instant hosting
+- ✅ **Great community** - supportive indie game players
+- ✅ **Flexible pricing** - free, paid, pay-what-you-want, or donations
+
+**Best for**: First-time releases, game jams, early feedback, web games
+
+---
+
+## Quick Upload Guide
+
+### 1. Create itch.io Account
+
+<Steps>
+  <Step title="Sign Up">
+    Visit [itch.io](https://itch.io/) and create a free account
+  </Step>
+
+  <Step title="Verify Email">
+    Check your email and verify account
+  </Step>
+
+  <Step title="Set Up Profile">
+    Add profile picture, bio, and social links (helps with discoverability)
+  </Step>
+</Steps>
+
+### 2. Create Your Game Page
+
+<Steps>
+  <Step title="Create New Project">
+    Dashboard → [Create New Project](https://itch.io/game/new)
+  </Step>
+
+  <Step title="Fill Basic Info">
+    - **Title**: Your game's name
+    - **Project URL**: `yourusername.itch.io/yourgame` (becomes your game's page)
+    - **Classification**: Game
+    - **Kind of project**: Downloadable (for desktop) or HTML (for web)
+  </Step>
+
+  <Step title="Upload Builds">
+    Scroll to **Uploads** section
+  </Step>
+</Steps>
+
+---
+
+## Uploading Windows Build
+
+<Steps>
+  <Step title="Prepare Your Build">
+    You have two options:
+    
+    **Option A: Single .exe** (if you used Embed PCK)
+    - Just upload `MyGame.exe`
+    
+    **Option B: .exe + .pck** (if PCK not embedded)
+    - Zip them together: `MyGame.zip` containing `MyGame.exe` and `MyGame.pck`
+  </Step>
+
+  <Step title="Upload File">
+    Click **Upload files** → Select your `.exe` or `.zip`
+    
+    itch.io uploads the file to their servers.
+  </Step>
+
+  <Step title="Configure Platform">
+    After upload, checkboxes appear:
+    - ✅ Check **Windows**
+    - Set **This file will be played**: In the app (not browser)
+    - **Architecture**: 64-bit (if using x86_64)
+  </Step>
+</Steps>
+
+<Tip>
+  **Uploading a ZIP?** Name it clearly like `MyGame-Windows.zip` so players know what platform it's for.
+</Tip>
+
+---
+
+## Uploading macOS Build
+
+<Steps>
+  <Step title="Zip Your .app">
+    macOS apps need to be zipped for upload:
+    ```bash
+    cd ~/Desktop/
+    zip -r MyGame-Mac.zip MyGame.app
+    ```
+  </Step>
+
+  <Step title="Upload to itch.io">
+    Click **Upload files** → Select `MyGame-Mac.zip`
+  </Step>
+
+  <Step title="Configure Platform">
+    - ✅ Check **macOS**
+    - Set **This file will be played**: In the app
+    - **Architecture**: Universal (if you exported universal)
+  </Step>
+</Steps>
+
+<Warning>
+  **Mac players will see "unidentified developer" warning** unless you code sign your app. Include instructions in your game description:
+  
+  *"On macOS: Right-click the app → Open → Click 'Open' in the dialog to bypass security warning."*
+</Warning>
+
+---
+
+## Multiple Platform Uploads
+
+**Uploading Mac + Windows + Linux?** Just upload all of them!
+
+itch.io automatically shows the right download button based on player's OS:
+
+- Windows user sees: **Download for Windows**
+- Mac user sees: **Download for Mac**
+- Linux user sees: **Download for Linux**
+
+**File naming tips**:
+- `MyGame-Windows.zip`
+- `MyGame-Mac.zip`
+- `MyGame-Linux.zip`
+
+Clear naming helps players pick the right version.
+
+---
+
+## Configuring Your Game Page
+
+### Essential Settings
+
+**Kind of project**: 
+- **Downloadable** (for desktop games)
+- **HTML** (for web games - different upload process)
+
+**Release Status**:
+- **Released** - Game is complete and available now
+- **In development** - Early access, still being worked on
+- **Prototype** - Tech demo or proof of concept
+- **On hold** - Development paused
+
+**Pricing**:
+- **No payments** - Free game
+- **Paid** - Set a price ($1-$60 typical range)
+- **Pay what you want** - Let players decide (minimum $0 or set minimum)
+- **No payments with donations** - Free with optional tip jar
+
+<Tip>
+  **For your first game**: Consider **pay what you want with $0 minimum**. Gets more players, some will tip generously, builds audience.
+</Tip>
+
+### Details Tab
+
+**Genre**: Select up to 3 (e.g., Action, Platformer, Multiplayer)
+
+**Tags**: Add relevant tags (players search by these):
+- Gameplay tags: roguelike, puzzle, shooter, etc.
+- Visual style: pixel-art, 3d, hand-drawn, etc.
+- Features: multiplayer, controller-support, co-op, etc.
+
+**Engine**: Select **Godot** from dropdown
+- Summer Engine is Godot-based, so this is correct
+- Helps discoverability for Godot game fans
+
+### Media
+
+**Cover Image**: 630x500px (shown in browse listings)
+**Screenshots**: At least 3-5 (show gameplay, not just menus)
+**Trailer**: YouTube or direct upload (highly increases downloads)
+
+---
+
+## Launching Your Game
+
+<Steps>
+  <Step title="Write Description">
+    Include:
+    - What the game is about (2-3 sentences)
+    - Key features (bullet points)
+    - Controls (especially keyboard/mouse vs controller)
+    - **macOS security note** (if unsigned): "Right-click → Open to bypass security warning"
+    - Credits (music, art, etc.)
+  </Step>
+
+  <Step title="Set Visibility">
+    **Draft** → **Public** when ready to launch
+    
+    **Or** set to **Restricted** for friends/testers only
+  </Step>
+
+  <Step title="Save & View">
+    Click **Save & View page**
+    
+    Your game is now live!
+  </Step>
+
+  <Step title="Share Your Game">
+    itch.io generates a URL: `yourusername.itch.io/yourgame`
+    
+    Share on social media, Reddit, Discord, etc.
+  </Step>
+</Steps>
+
+---
+
+## Web Games on itch.io (HTML5 Export)
+
+Summer Engine can export **HTML5/WebAssembly** games that run in browser!
+
+### Exporting for Web
+
+<Steps>
+  <Step title="Create Web Export Preset">
+    Project → Export → Add → **Web**
+  </Step>
+
+  <Step title="Configure Web Settings">
+    - **Export Type**: HTML
+    - **Texture Format**: Works with any (no special compression needed)
+  </Step>
+
+  <Step title="Export as HTML">
+    Export to a folder containing:
+    - `index.html`
+    - `MyGame.wasm`
+    - `MyGame.pck`
+    - Other web assets
+  </Step>
+
+  <Step title="Zip the Folder">
+    Zip the entire folder: `MyGame-Web.zip`
+  </Step>
+</Steps>
+
+### Uploading Web Build to itch.io
+
+<Steps>
+  <Step title="Upload ZIP">
+    Upload your `MyGame-Web.zip` to itch.io
+  </Step>
+
+  <Step title="Configure as HTML">
+    - ✅ Check **This file will be played in the browser**
+    - Select `index.html` as the main file
+  </Step>
+
+  <Step title="Set Embed Options">
+    - **Viewport dimensions**: Match your game resolution (e.g., 1280x720)
+    - **Orientation**: Landscape (most games) or Portrait (mobile-style)
+    - **Fullscreen button**: Enable for better experience
+  </Step>
+
+  <Step title="Test in Browser">
+    Click **View page** → Click **Run game**
+    
+    Your game runs directly in the browser!
+  </Step>
+</Steps>
+
+<Info>
+  **Web games get more plays** on itch.io! No download required = lower barrier to entry. Perfect for game jams and demos.
+</Info>
+
+---
+
+## itch.io vs Steam: Quick Comparison
+
+| Feature | itch.io | Steam |
+|---------|---------|-------|
+| **Setup Time** | 15 minutes | 2-3 hours |
+| **Approval** | None | 1-3 days |
+| **Upfront Cost** | $0 | $100 per game |
+| **Revenue Share** | 0% (optional tip) | 30% to Valve |
+| **Audience Size** | Smaller, indie-focused | 120M+ users |
+| **Web Games** | ✅ Native support | ❌ Not supported |
+| **Best For** | Quick releases, jams, web games | Professional releases, large audience |
+
+<Tip>
+  **Pro move**: Release on **both** platforms!
+  
+  - itch.io for early feedback and web version
+  - Steam for maximum reach and sales
+  
+  Different audiences, both valuable.
+</Tip>
+
+---
+
+## Updating Your Game
+
+### Upload New Build
+
+<Steps>
+  <Step title="Export New Version">
+    Make changes in Summer Engine, export again
+  </Step>
+
+  <Step title="Upload to itch.io">
+    Dashboard → Your Game → Edit → **Upload files**
+    
+    Upload new version alongside old one
+  </Step>
+
+  <Step title="Delete Old Version">
+    Click ❌ next to old file to remove it
+    
+    **Or** keep both (lets players download old versions)
+  </Step>
+
+  <Step title="Save Changes">
+    Players automatically get new version on next download
+  </Step>
+</Steps>
+
+**Existing players**: itch.io doesn't auto-update installed games. Players need to re-download.
+
+**Alternative**: Use [itch.io app](https://itch.io/app) - it auto-updates games for players!
+
+---
+
+## Making Your itch.io Page Stand Out
+
+### Great Game Pages Have:
+
+1. **Eye-catching cover art** (630x500px)
+2. **GIF of gameplay** (shows movement, hooks attention)
+3. **5+ screenshots** (show different gameplay moments)
+4. **Clear description** (what is the game? what do you do?)
+5. **Key features** as bullet points
+6. **Controls listed** (WASD to move, Space to jump, etc.)
+7. **Credits** (music, fonts, tools used)
+8. **Development log** (updates keep players engaged)
+
+### Example Description Structure
+
+```markdown
+# My Awesome Game
+
+A fast-paced platformer where you play as a robot escaping a factory.
+
+## Features
+- 20+ challenging levels
+- Speedrun timer with global leaderboards
+- Unlockable abilities and power-ups
+- Original chiptune soundtrack
+
+## Controls
+- Arrow Keys / WASD: Move
+- Space: Jump
+- Shift: Dash
+- ESC: Pause
+
+## Credits
+- Code: Your Name
+- Music: Composer Name
+- Art: Artist Name
+
+Built with Summer Engine ❤️
+```
+
+---
+
+## Pricing Strategies for itch.io
+
+### Pay What You Want ($0 minimum)
+- **Gets most downloads** (free)
+- Some players pay generously ($5-$20 for great games)
+- Builds audience for future paid games
+- **Average**: ~10-20% of players pay something
+
+### Fixed Price
+- **Sets clear value** ($3-$15 typical for indie)
+- Easier to predict revenue
+- Can run sales/discounts later
+- **Best for**: Polished, complete games
+
+### Name Your Own Price (Minimum $X)
+- Middle ground: "Pay at least $5, or more if you want"
+- Shows suggested price while allowing generosity
+- **Best for**: Premium indie games
+
+<Tip>
+  **Your first game?** Start free or pay-what-you-want. Building an audience is more valuable than early revenue. Players who love your game will support future releases.
+</Tip>
+
+---
+
+## itch.io Community Features
+
+### Devlogs (Development Blogs)
+- Post updates about your game
+- Shown to followers and on your game page
+- Great for building hype pre-release
+- Players love seeing behind-the-scenes
+
+### Community Tab
+- Players can leave comments
+- You can respond and build community
+- Feature player feedback in updates
+
+### Game Jams
+- Submit your game to relevant jams
+- Massive exposure and feedback
+- Community rating system
+- Many successful indie games started in jams
+
+---
+
+## Next Steps After Publishing
+
+<CardGroup cols={2}>
+  <Card title="Share on Social Media" icon="share">
+    Twitter/X, Reddit (r/IndieDev, r/gamedev), Discord servers
+  </Card>
+
+  <Card title="Submit to Game Jams" icon="trophy">
+    Search itch.io jams matching your genre
+  </Card>
+
+  <Card title="Gather Feedback" icon="comments">
+    Read comments, update game based on player suggestions
+  </Card>
+
+  <Card title="Consider Steam Release" icon="steam" href="/publishing/steam">
+    Larger audience once you've validated on itch.io
+  </Card>
+</CardGroup>
+
+<Tip>
+  **Pro tip**: Use itch.io as your **alpha/beta testing ground**, then polish and release on **Steam** for wider release. Many successful indie devs do this!
+</Tip>
+
+**Need help with itch.io?** [Discord](https://discord.gg/yUpgtxnZky) • [X/Twitter @SummerEngineCom](https://x.com/SummerEngineCom) • founders@summerengine.com
+
