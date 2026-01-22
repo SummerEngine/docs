@@ -17,10 +17,35 @@ Quick migrations will soon be available. As Summer is based on the Godot codebas
 Everything you know about Godot still applies in Summer:
 
 - **Node system** - All the same nodes, properties, and relationships
-- **GDScript** - Your existing scripts work without changes  
-- **Scene structure** - `.tscn` files are identical
+- **GDScript & C#** - Your existing scripts work without changes  
+- **Scene structure** - `.tscn` files are byte-for-byte identical
 - **Project settings** - Same export options and configurations
 - **Asset pipeline** - Import settings and resource formats unchanged
+
+## Zero Lock-in
+
+Summer projects ARE Godot projects. Identical file formats:
+
+| Format | Description |
+|--------|-------------|
+| `.gd` | GDScript source (text) |
+| `.tscn` / `.scn` | Scene files |
+| `.tres` / `.res` | Resource files |
+| `project.godot` | Project configuration |
+
+**No proprietary formats. No metadata injection.** A `git diff` between a Summer-edited file and a Godot-edited file shows only your changes.
+
+### Team Workflows
+
+Team members can use Summer and vanilla Godot interchangeably:
+- Artist opens project in Godot, edits scenes
+- Programmer opens same project in Summer, uses AI assistance  
+- Both commit to the same repo
+- No merge conflicts from tooling differences
+
+### Worst Case
+
+Summer disappears tomorrow? Your project opens in Godot 4 without modification. You lose AI assistance. Your game, code, and assets are unaffected.
 
 ## What's Different
 
