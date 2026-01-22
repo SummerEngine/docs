@@ -1,28 +1,22 @@
 ---
-title: "Current Limitations"
-description: "What to expect in Summer's MVP version"
+title: "Current Focus & Roadmap"
+description: "What Summer excels at and what we're building next"
 icon: "info"
 ---
 
-## Summer is in Active Development
+## What Summer Does Today
 
-Summer is currently in MVP (Minimum Viable Product) stage. We're building toward becoming the most productive game development environment available. Here's what you can expect and what we're still working on.
+Summer is built for production game development. Here's what works well and what we're improving.
 
-<Warning>
-This is MVP software - we're actively improving based on real usage patterns. Your feedback shapes the roadmap.
-</Warning>
+<Note>
+We ship updates frequently based on developer feedback. Your input shapes the roadmap.
+</Note>
 
-## Project Intelligence Limitations
+## Project Intelligence
 
-### Project Index Sharing (Temporary)
+### Project Indexing
 
-**What it means**: Opening a new project will re-index and replace the previous project's search index
-
-**Impact**: If you work on multiple projects, you'll need to wait for re-indexing when switching
-
-**Workaround**: Work on one main project at a time for best performance
-
-**Timeline**: Will be fixed in next release with proper project isolation
+Each project has its own isolated search index. When you open a project, Summer indexes your scripts, scenes, and assets to enable AI-powered search and understanding.
 
 ### File Discovery
 
@@ -82,29 +76,23 @@ This is MVP software - we're actively improving based on real usage patterns. Yo
 
 **Optimization**: Text files get full analysis, assets get metadata scanning
 
-## Feature Limitations
-
-### What's Not Available Yet
+## Coming Soon
 
 <AccordionGroup>
-  <Accordion icon="x" title="Advanced import settings">
-    Most asset import options need to be configured manually. AI can't modify importer settings yet.
+  <Accordion icon="clock" title="Advanced import settings">
+    AI-assisted asset import configuration is on the roadmap.
   </Accordion>
   
-  <Accordion icon="x" title="Large-scale refactoring">
-    Cross-file refactoring and project-wide changes aren't supported in MVP.
+  <Accordion icon="clock" title="Large-scale refactoring">
+    Cross-file refactoring and project-wide changes are in development.
   </Accordion>
   
-  <Accordion icon="x" title="Plugin integration">
-    Custom editor plugins may not work properly with AI operations.
+  <Accordion icon="clock" title="Visual shader editing">
+    Visual shader graph AI assistance is planned.
   </Accordion>
   
-  <Accordion icon="x" title="Visual shader editing">
-    Visual shader graphs can't be modified through AI yet.
-  </Accordion>
-  
-  <Accordion icon="x" title="Animation timeline">
-    Animation keyframes and timeline editing is manual-only for now.
+  <Accordion icon="clock" title="Animation timeline">
+    AI-assisted animation keyframing is coming.
   </Accordion>
 </AccordionGroup>
 
@@ -132,7 +120,6 @@ This is MVP software - we're actively improving based on real usage patterns. Yo
 
 ### Short-term (next release)
 
-- Project isolation (unique indexes per project)
 - Real-time file watching (immediate index updates)
 - Improved asset search and preview
 
