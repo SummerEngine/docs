@@ -1,0 +1,63 @@
+---
+title: "Subagents"
+description: "Specialized AI assistants that can run in parallel and keep context focused"
+icon: "users"
+---
+
+## What Are Subagents?
+
+Subagents are specialized AI assistants that Summer's agent can delegate work to. Each subagent runs in its own context, handles specific types of work, and returns results to the main agent. Summer uses them automatically when tasks benefit from focused, parallel execution.
+
+### Why Subagents Matter
+
+- **Context isolation.** Long research or exploration stays in the subagent. Your main chat stays clean and focused.
+- **Parallel execution.** Summer can run multiple subagents at once, so different parts of your project get worked on without blocking each other.
+- **Specialized expertise.** Different subagents are tuned for different tasks, from research to full code changes.
+- **Efficient research.** Codebase exploration uses fast, cost-effective models so you get answers without slowing down or spending more than needed.
+
+## How It Works
+
+When a task is complex enough, Summer starts a subagent automatically. The subagent receives what it needs, works on its own (often in a background queue), and returns a summary when done. You don't configure anything. Summer figures out when to use subagents and when to handle things directly.
+
+## Built-in Subagents
+
+Summer includes built-in subagents that handle context-heavy work. You don't need to configure them.
+
+- **Explore.** Read-only codebase exploration. For understanding how things work, finding files, and gathering context across the project.
+- **General purpose.** Full-capability agent with write access. For complex multi-step tasks that need code modifications.
+
+When to use which is automatic. Summer chooses based on the task.
+
+## Expert Queue
+
+The expert queue lets Summer hand off work to specialist experts in an ordered way. In addition to subagents, Summer has domain experts for 3D and 2D scene creation: lighting, environment, sprites, collision, cameras, platformer setups. The main agent stays in charge; experts do the deep work and report back. Tasks run in the background so you can keep chatting while work completes.
+
+## Shell Commands
+
+All shell commands require your approval before they run. Summer can propose commands (run tests, install deps, run scripts), but nothing executes until you approve it. You stay in control.
+
+## When Summer Uses Subagents
+
+Summer uses subagents when:
+
+- Tasks need deep codebase understanding across many files
+- Multiple workstreams can run in parallel
+- Research or exploration would otherwise clutter the main chat
+- A complex refactor or multi-step change benefits from focused execution
+
+For simple tasks (single file, exact lookup, quick edit), Summer handles it directly. No subagent needed.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="AI Operations" icon="robot" href="/ai-tools/operations">
+    What Summer's AI can do in your project
+  </Card>
+  <Card title="Project Intelligence" icon="search" href="/ai-tools/rag-search">
+    How Summer indexes and searches your project
+  </Card>
+</CardGroup>
+
+---
+
+Need help or have questions? Reach out at [founders@summerengine.com](mailto:founders@summerengine.com) or join [Discord](https://discord.gg/yUpgtxnZky).

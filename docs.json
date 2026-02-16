@@ -47,6 +47,7 @@
             "pages": [
               "ai-tools/operations",
               "ai-tools/rag-search",
+              "ai-tools/subagents",
               "essentials/limitations"
             ]
           },
