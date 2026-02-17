@@ -144,8 +144,9 @@ Ask me questions if you need clarification about requirements.
 
 | **Tool** | **Best For** | **Large Codebase Strengths** | **Limitations** |
 |----------|--------------|-------------------------------|-----------------|
-| **Tab Completion** | Quick, localized changes | Fast, doesn't require context loading | Single file only |
-| **Inline Edit** | Focused modifications | Surgical changes without affecting other code | Limited to visible code |
+| **Glob** | Finding files by pattern | Fast discovery (e.g. `*.gd`, `**/scripts/*.tscn`) without loading full tree | Pattern-based only |
+| **Grep** | Code search | Find symbols, patterns, references across files | Text/regex only |
+| **strReplace** | Small, surgical edits | Token-efficient; renames, typos, single-spot changes | Exact match required |
 | **Chat** | Multi-file changes, exploration | Can understand project architecture | Slower, requires more context |
 
 ### Chat Best Practices for Large Projects

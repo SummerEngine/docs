@@ -288,6 +288,14 @@ Before making changes, AI can read your project structure:
 
 Summer uses **grep-style search** (ripgrep) across your codebase for faster, more precise discovery. The agent can find code patterns, symbols, and references without loading entire files, which improves both search quality and performance.
 
+### Glob file discovery
+
+Summer can **find files by pattern** (e.g. `*.gd`, `**/scripts/*.tscn`). When the AI needs to discover which files exist before reading or editing, it uses glob to quickly list matching paths. This is faster than scanning the full tree when you know the file type or location pattern.
+
+### Code editing tools
+
+Summer chooses the right edit tool for each job: **strReplace** for small, surgical changes (rename a variable, fix a typo, swap a snippet) and **replaceText** for larger edits that touch many lines. The AI reads your file first, then applies changes with the most efficient tool.
+
 ### Infrastructure (Vercel)
 
 Search and AI infrastructure runs on **Vercel**. Where applicable, services are hosted in the EU for privacy and low latency. This is already implemented and in use.
