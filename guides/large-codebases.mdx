@@ -147,7 +147,8 @@ Ask me questions if you need clarification about requirements.
 | **Glob** | Finding files by pattern | Fast discovery (e.g. `*.gd`, `**/scripts/*.tscn`) without loading full tree | Pattern-based only |
 | **Grep** | Code search | Find symbols, patterns, references across files | Text/regex only |
 | **strReplace** | Small, surgical edits | Token-efficient; renames, typos, single-spot changes | Exact match required |
-| **Chat** | Multi-file changes, exploration | Can understand project architecture | Slower, requires more context |
+| **Subagents** | Deep research, multi-step tasks | Can run parallel 'Explore' tasks; keeps main chat context entirely clean | Asynchronous (runs in background) |
+| **Chat** | Orchestration, high-level logic | Can coordinate subagents and understand project architecture | Requires clear context management |
 
 ### Chat Best Practices for Large Projects
 
