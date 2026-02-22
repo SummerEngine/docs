@@ -12,6 +12,7 @@
     "dark": "#f0b566"
   },
   "appearance": {
+    "mode": "system",
     "background": {
       "color": {
         "dark": "#14120b"
@@ -35,7 +36,7 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Guides",
+        "tab": "Docs",
         "groups": [
           {
             "group": "Getting started",
