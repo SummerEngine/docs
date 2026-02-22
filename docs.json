@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "theme": "mint",
+  "theme": "maple",
   "name": "Summer",
   "logo": {
     "dark": "/images/FullLogoNoBg.png",
@@ -8,7 +8,7 @@
   },
   "colors": {
     "primary": "#f0b566",
-    "light": "#6b7280",
+    "light": "#f0b566",
     "dark": "#f0b566"
   },
   "appearance": {
@@ -62,7 +62,7 @@
             ]
           },
                   {
-                    "group": "Summer Asset Store",
+                    "group": "Summer Studio",
                     "pages": [
                       "art-system/overview",
                       "art-system/ai-generation",
@@ -156,7 +156,7 @@
         {
           "anchor": "Support",
           "href": "mailto:founders@summerengine.com",
-          "icon": "envelope"
+          "icon": "mail"
         }
       ]
     }

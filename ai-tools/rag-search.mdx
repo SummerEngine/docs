@@ -84,10 +84,20 @@ Based on project analysis, Summer can suggest:
   <Card title="Bug Prevention" icon="shield">
     "Adding null checks here would prevent crashes when nodes are freed."
   </Card>
-  <Card title="Architecture Patterns" icon="sitemap">
+  <Card title="Architecture Patterns" icon="network">
     "Consider using a state machine for this enemy behavior."
   </Card>
 </CardGroup>
+
+## Per-Project Indexing & Caching
+
+Summer uses **per-project indexing** with **intelligent caching**—similar to how Cursor indexes a repo. Each project has its own isolated search index. When you open a project, Summer scans and indexes your codebase, then uses RAG (Retrieval-Augmented Generation) to find relevant context when you ask questions.
+
+**Smart caching** means Summer remembers what it learned between sessions *within that project*. The index persists so you don't start from scratch every time you open Summer.
+
+<Info>
+**New chats start fresh**: Each new chat does not automatically include a summary of your other chats. If you want context from a previous conversation, you need to inject it—for example, by referencing specific files or summarizing what you discussed.
+</Info>
 
 ## Privacy & Performance
 
@@ -97,10 +107,6 @@ Based on project analysis, Summer can suggest:
 
 <Info>
 **Incremental Updates**: Only changed files are re-analyzed, keeping things fast.
-</Info>
-
-<Info>
-**Smart Caching**: Summer remembers what it learned between sessions.
 </Info>
 
 ## Customizing Intelligence
@@ -141,7 +147,7 @@ For projects with thousands of files:
 
 <Card
   title="AI Operations"
-  icon="robot"
+  icon="bot"
   href="/ai-tools/operations"
 >
   See how project intelligence powers Summer's AI operations
