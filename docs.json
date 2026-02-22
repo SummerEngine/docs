@@ -23,6 +23,11 @@
   "icons": {
     "library": "lucide"
   },
+  "seo": {
+    "metatags": {
+      "description": "Summer Engine documentation. The AI game engine built on Godot. Build games by describing them in natural language."
+    }
+  },
   "topbarLinks": [
     {
       "name": "App",
@@ -39,19 +44,31 @@
         "tab": "Docs",
         "groups": [
           {
-            "group": "Getting started",
+            "group": "Getting Started",
             "pages": [
               "index",
-              "quickstart"
+              "quickstarts/fresh-project",
+              "quickstarts/existing-godot",
+              "quickstarts/ai-game-dev",
+              "quickstarts/web-game",
+              "quickstarts/pc-game",
+              "quickstarts/mac-game",
+              "quickstarts/ios-game",
+              "quickstarts/android-game",
+              "quickstarts/console-game",
+              "quickstarts/playstation-game",
+              "quickstarts/unity-migration",
+              "quickstarts/unreal-migration"
             ]
           },
           {
-            "group": "Getting Started",
+            "group": "Essentials",
             "pages": [
               "essentials/installation",
               "essentials/authentication",
               "essentials/account-billing",
-              "essentials/first-chat"
+              "essentials/first-chat",
+              "essentials/faq"
             ]
           },
           {
@@ -119,7 +136,54 @@
         ]
       },
       {
-        "tab": "MCP Access",
+        "tab": "Knowledge Base",
+        "groups": [
+          {
+            "group": "About Summer",
+            "pages": [
+              "knowledge-base/what-is-summer",
+              "knowledge-base/summer-vs-chatgpt",
+              "knowledge-base/beginners-or-professionals",
+              "knowledge-base/production-games",
+              "knowledge-base/learning-curve",
+              "knowledge-base/aaa-games",
+              "knowledge-base/summer-vs-other-tools",
+              "knowledge-base/whats-next"
+            ]
+          },
+          {
+            "group": "Technical",
+            "pages": [
+              "knowledge-base/godot-compatibility",
+              "knowledge-base/godot-projects",
+              "knowledge-base/ai-models",
+              "knowledge-base/ai-asset-quality",
+              "knowledge-base/ai-game-dev",
+              "knowledge-base/specialist-agents",
+              "knowledge-base/project-intelligence",
+              "knowledge-base/ai-operations-limitations",
+              "knowledge-base/multiplayer",
+              "knowledge-base/custom-assets",
+              "knowledge-base/web-games",
+              "knowledge-base/unity-unreal-migration"
+            ]
+          },
+          {
+            "group": "Account & Support",
+            "pages": [
+              "knowledge-base/privacy-and-code-safety",
+              "knowledge-base/pricing",
+              "knowledge-base/refund-policy",
+              "knowledge-base/support",
+              "knowledge-base/no-experience",
+              "knowledge-base/publish-steam",
+              "knowledge-base/export-mobile"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "API Reference",
         "groups": [
           {
             "group": "Model Context Protocol",

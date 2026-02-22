@@ -1,0 +1,67 @@
+---
+title: "How do I export to mobile (iOS and Android)?"
+description: "Enable ETC2 ASTC texture format, create mobile export preset, configure signing. iOS requires Mac and Apple Developer account."
+icon: "question"
+---
+
+## Both iOS and Android Are Supported
+
+Summer Engine can export to iOS and Android. The flow is similar for both: enable the right texture format, create an export preset, configure signing, and export. iOS has additional requirements (Mac, Apple Developer account).
+
+## Step 1: Enable Texture Compression
+
+Mobile devices use ETC2/ASTC texture format. Before exporting:
+
+1. Project → Project Settings
+2. Rendering → Textures → VRAM Compression
+3. Enable **Import ETC2 ASTC**
+4. Wait for reimport (1-5 minutes depending on project size)
+
+## Step 2: Create Export Preset
+
+Project → Export → Add → iOS or Android. You'll see the export configuration panel.
+
+## Step 3: Configure for Your Platform
+
+**iOS:**
+- **Bundle identifier** — Unique ID in reverse-domain format (e.g. `com.yourstudio.yourgame`)
+- **Provisioning profile** — Required for App Store. You need an Apple Developer account ($99/year)
+- **Signing** — Configure in the export panel. Xcode may be involved for final submission
+
+**Android:**
+- **Package name** — Unique identifier (e.g. `com.yourstudio.yourgame`)
+- **Signing keys** — Required for Google Play. Create a keystore and configure in the export panel
+
+## Step 4: Add Mobile-Specific Features
+
+Ask Summer Engine to add touch controls, responsive UI for different screen sizes, and device orientation support. "Add touch controls for mobile." "Implement responsive UI for phones and tablets." "Optimize for mobile performance."
+
+## iOS-Specific Requirements
+
+- **Mac required** — iOS export and App Store submission are done from macOS
+- **Apple Developer account** — $99/year. Required for App Store distribution
+- **Provisioning and signing** — Apple's process. Summer Engine's export produces the build; you use Xcode or Transporter for submission
+
+## Android-Specific Notes
+
+- **Windows or Mac** — Android export works on both
+- **Google Play** — Requires a developer account (one-time $25 fee) and signing keys
+- **Alternative stores** — You can distribute the APK directly (e.g. itch.io, your website) without Google Play
+
+## Testing
+
+Test on real devices before submitting. Emulators don't always match real performance. Use Project → Export → Run to test on a connected device.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Quickstart: iOS" icon="smartphone" href="/quickstarts/ios-game">
+    Make an iOS game with AI
+  </Card>
+  <Card title="Quickstart: Android" icon="smartphone" href="/quickstarts/android-game">
+    Make an Android game with AI
+  </Card>
+  <Card title="Publishing Overview" icon="upload" href="/publishing/overview">
+    All platforms
+  </Card>
+</CardGroup>

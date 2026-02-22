@@ -1,0 +1,73 @@
+---
+title: "How do I migrate from Unreal to Summer?"
+description: "Rebuild your Unreal project in Summer with AI assistance. Use AI to research your project, make a plan, and rebuild."
+icon: "arrow-right"
+---
+
+## Migrate from Unreal to Summer
+
+You can migrate your Unreal project to Summer. The workflow: have the AI use shell and tools to research your existing project, create a migration plan, then rebuild in Summer. Relatively fresh projects can often be done in one pass; larger projects need more planning.
+
+## Step 1: Prepare Your Unreal Project
+
+<Steps>
+  <Step title="Document your project">
+    Have a clear picture of your levels, Blueprints/scripts, and assets. The AI will need to understand your structure
+  </Step>
+  <Step title="Download Summer">
+    Visit [summerengine.com](https://summerengine.com) and download
+  </Step>
+  <Step title="Create a new Summer project">
+    Start fresh in Summer. You'll rebuild, not import
+  </Step>
+</Steps>
+
+## Step 2: Use AI to Research and Plan
+
+In Summer's chat, ask the AI to:
+
+- **"Use shell and tools to research my Unreal project at [path]. Analyze the structure, levels, and Blueprints. Create a migration plan."**
+- **"Based on my Unreal project structure, what's the best order to rebuild the core systems?"**
+- **"List the main levels and actors I need to recreate"**
+
+The AI can read your Unreal project files (Blueprints, level structure, asset references) and create a step-by-step plan.
+
+## Step 3: Rebuild with AI Assistance
+
+<Steps>
+  <Step title="Start with core systems">
+    Rebuild your player, camera, and core mechanics first. Describe what you had: "Create a first-person controller with jump and crouch"
+  </Step>
+  <Step title="Recreate levels">
+    Describe each level: "Build an outdoor environment with terrain, trees, and a building"
+  </Step>
+  <Step title="Import or regenerate assets">
+    Use Summer's AI asset generation for placeholders, or import your existing art and audio
+  </Step>
+</Steps>
+
+## Project Size Matters
+
+| Project Size | Difficulty | Approach |
+|--------------|------------|----------|
+| **Fresh / small** | Easy | Often one-shot. Describe the game, AI rebuilds it |
+| **Medium** | Moderate | Break into systems. Migrate level by level |
+| **Large** | Planning required | AI researches first, creates detailed plan. Migrate in phases. You already have assets—focus on structure and logic |
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="First Chat" icon="message-square" href="/essentials/first-chat">
+    Learn effective AI prompting
+  </Card>
+  <Card title="AI Operations" icon="brain" href="/ai-tools/operations">
+    What Summer can do in your project
+  </Card>
+  <Card title="Existing Project Quickstart" icon="folder" href="/quickstarts/existing-godot">
+    If you have an existing project to open
+  </Card>
+</CardGroup>
+
+---
+
+Need help or have questions? Reach out to our founders at [founders@summerengine.com](mailto:founders@summerengine.com) or join our community on [Discord](https://discord.gg/yUpgtxnZky) for fast responses.

@@ -1,0 +1,53 @@
+---
+title: "How does project intelligence work?"
+description: "AI indexes and understands your entire codebase, scenes, assets, and relationships automatically."
+icon: "question"
+---
+
+## What Project Intelligence Does
+
+Summer Engine automatically analyzes and indexes your project when you open it. The AI learns your code structure, scene hierarchies, asset relationships, and project patterns. When you ask a question, Summer Engine uses this index (RAG—Retrieval-Augmented Generation) to find relevant context and give you accurate, project-specific answers.
+
+## What Gets Indexed
+
+**Code structure.** Classes, functions, variables, and their relationships. Summer Engine knows which script controls the player, what `speed` does, and how to modify it safely.
+
+**Scene hierarchy.** Node trees, components, connections. Summer Engine understands that your Player has a MeshInstance3D and CollisionShape3D, and that the HealthBar UI references the player.
+
+**Asset relationships.** Textures, models, sounds, and where they're used. Summer Engine knows which assets are in which scenes.
+
+**Project patterns.** Your coding style, naming conventions, architecture. Summer Engine suggests changes that fit how you already work.
+
+## How Indexing Works
+
+When you open a project, Summer Engine scans all files (scripts, scenes, resources, project settings), builds a knowledge graph of connections, and learns your patterns. Indexing takes 30 seconds to 2 minutes depending on project size. It runs in the background.
+
+**Per-project indexing.** Each project has its own isolated index. When you switch projects, Summer Engine uses that project's index.
+
+**Smart caching.** The index persists between sessions. Summer Engine remembers what it learned so you don't start from scratch every time you open Summer Engine.
+
+**Incremental updates.** Only changed files are re-analyzed, keeping things fast.
+
+## What This Enables
+
+**Context-aware help.** When you ask "add a health bar to my player," Summer Engine knows which player script and scene to modify. It doesn't guess—it looks at your project.
+
+**Smart suggestions.** "I noticed you're using get_node() in _process. Let me cache those references." "This signal connection could be done in the editor instead of code." "Adding null checks here would prevent crashes."
+
+**Conflict prevention.** Summer Engine avoids naming conflicts and maintains scene integrity. It builds on your existing work rather than overwriting it.
+
+## Local Processing
+
+Project intelligence runs locally on your machine. Your code is analyzed without being sent to our servers. Only when you ask Summer Engine to generate or modify code do we send the minimal necessary context to AI providers.
+
+## Large Projects
+
+For projects with thousands of files, Summer Engine prioritizes recently modified files, can focus on specific folders, and processes in the background without blocking your work.
+
+## Related
+
+<CardGroup cols={1}>
+  <Card title="Project Intelligence" icon="search" href="/ai-tools/rag-search">
+    Deep dive on RAG search
+  </Card>
+</CardGroup>

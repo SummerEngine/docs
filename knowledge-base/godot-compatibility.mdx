@@ -1,0 +1,42 @@
+---
+title: "Is Summer Engine compatible with my existing project?"
+description: "Yes. Open your project and continue working with AI assistance. No conversion required."
+icon: "question"
+---
+
+## Yes, Completely Compatible
+
+Summer Engine works with industry-standard project formats. You can open any existing Godot project in Summer Engine and continue working on it immediately. No conversion, no migration, no lock-in.
+
+## What Works Out of the Box
+
+**All existing Godot projects.** Summer Engine is built on the Godot codebase. Your `.tscn` scene files, `.gd` scripts, `.tres` resources, and `project.godot` configuration are identical. A `git diff` between a Summer Engine-edited file and a Godot-edited file shows only your changes—no proprietary metadata injection.
+
+**Third-party libraries and plugins.** Most Godot plugins work in Summer Engine without changes. Plugins that modify the editor interface may need updates for AI integration, but the vast majority work as-is.
+
+**Export templates.** Web, desktop (Windows, Mac, Linux), and mobile (iOS, Android) export all work. You can build for any platform Summer Engine supports.
+
+**Team workflows.** Team members can use Summer Engine and vanilla Godot interchangeably. An artist opens the project in Godot to edit scenes; a programmer opens the same project in Summer Engine for AI assistance. Both commit to the same repo. No merge conflicts from tooling differences.
+
+## What Happens When You Open Your Project
+
+1. **File → Open Project** (or Project Manager) → browse to your project folder → select `project.godot`
+2. Summer Engine automatically indexes your project (30 seconds to 2 minutes depending on size)
+3. The AI learns your scenes, scripts, assets, and relationships
+4. You start chatting. Describe what you want to change; Summer Engine applies it
+
+## Zero Lock-in
+
+Summer Engine projects *are* Godot projects. Identical file formats. If Summer Engine disappeared tomorrow, your project would open in Godot 4 without modification. You'd lose AI assistance, but your game, code, and assets would be unaffected.
+
+## Version Compatibility
+
+Summer Engine supports Godot 4.x project formats. Projects from Godot 3.x need the standard Godot 3→4 migration process before opening in Summer Engine.
+
+## Related
+
+<CardGroup cols={1}>
+  <Card title="Quickstart: Existing Project" icon="folder" href="/quickstarts/existing-godot">
+    Open your project in Summer Engine in 5 minutes
+  </Card>
+</CardGroup>

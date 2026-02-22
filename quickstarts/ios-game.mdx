@@ -1,0 +1,63 @@
+---
+title: "How do I make an iOS game with AI?"
+description: "Build and export an iPhone or iPad game with AI assistance. Publish to the App Store."
+icon: "smartphone"
+---
+
+## Make an iOS Game with Summer
+
+Build your game with AI assistance, then export for iPhone and iPad. Summer supports iOS export with full touch and mobile features.
+
+## Step 1: Build Your Game
+
+<Steps>
+  <Step title="Download Summer">
+    Visit [summerengine.com](https://summerengine.com) and download (Mac required for iOS export)
+  </Step>
+  <Step title="Create a project">
+    New Project → Build your game with AI. Describe what you want
+  </Step>
+  <Step title="Add mobile features">
+    Ask Summer: "Add touch controls for mobile", "Implement responsive UI for different screen sizes", "Add support for device orientation"
+  </Step>
+</Steps>
+
+## Step 2: Enable Texture Compression
+
+Enable ETC2 ASTC (required for iOS):
+
+1. **Project → Project Settings**
+2. **Rendering → Textures → VRAM Compression**
+3. **Enable "Import ETC2 ASTC"**
+4. Wait for reimport (1-5 minutes)
+
+## Step 3: Export for iOS
+
+<Steps>
+  <Step title="Create export preset">
+    Project → Export → Add → iOS
+  </Step>
+  <Step title="Configure">
+    Set your bundle identifier and provisioning profile (requires Apple Developer account)
+  </Step>
+  <Step title="Export">
+    Export for iOS. You get an Xcode project or IPA for App Store submission
+  </Step>
+</Steps>
+
+<Info>iOS export requires an Apple Developer account ($99/year) and a Mac. See the [Publishing Overview](/publishing/overview) for platform requirements.</Info>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Publishing Overview" icon="upload" href="/publishing/overview">
+    Platform requirements and export options
+  </Card>
+  <Card title="Console Publishing" icon="gamepad-2" href="/publishing/consoles">
+    Console export (Switch, PlayStation, Xbox)
+  </Card>
+</CardGroup>
+
+---
+
+Need help or have questions? Reach out to our founders at [founders@summerengine.com](mailto:founders@summerengine.com) or join our community on [Discord](https://discord.gg/yUpgtxnZky) for fast responses.

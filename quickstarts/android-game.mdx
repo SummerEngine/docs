@@ -1,0 +1,61 @@
+---
+title: "How do I make an Android game with AI?"
+description: "Build and export an Android game with AI assistance. Publish to Google Play or other stores."
+icon: "smartphone"
+---
+
+## Make an Android Game with Summer
+
+Build your game with AI assistance, then export for Android. Summer supports Android export with touch controls and mobile optimization.
+
+## Step 1: Build Your Game
+
+<Steps>
+  <Step title="Download Summer">
+    Visit [summerengine.com](https://summerengine.com) and download for Mac or Windows
+  </Step>
+  <Step title="Create a project">
+    New Project → Build your game with AI. Describe what you want
+  </Step>
+  <Step title="Add mobile features">
+    Ask Summer: "Add touch controls", "Implement responsive UI for phones and tablets", "Optimize for mobile performance"
+  </Step>
+</Steps>
+
+## Step 2: Enable Texture Compression
+
+Enable ETC2 ASTC (used by Android devices):
+
+1. **Project → Project Settings**
+2. **Rendering → Textures → VRAM Compression**
+3. **Enable "Import ETC2 ASTC"**
+4. Wait for reimport (1-5 minutes)
+
+## Step 3: Export for Android
+
+<Steps>
+  <Step title="Create export preset">
+    Project → Export → Add → Android
+  </Step>
+  <Step title="Configure">
+    Set your package name and signing keys (required for Google Play)
+  </Step>
+  <Step title="Export">
+    Export for Android. You get an APK or AAB for Play Store submission
+  </Step>
+</Steps>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="Publishing Overview" icon="upload" href="/publishing/overview">
+    All platforms: Android, iOS, PC, consoles
+  </Card>
+  <Card title="Local Testing" icon="play" href="/publishing/local-testing">
+    Test your exported build before release
+  </Card>
+</CardGroup>
+
+---
+
+Need help or have questions? Reach out to our founders at [founders@summerengine.com](mailto:founders@summerengine.com) or join our community on [Discord](https://discord.gg/yUpgtxnZky) for fast responses.

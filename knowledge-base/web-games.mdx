@@ -1,0 +1,46 @@
+---
+title: "Can I use Summer Engine for web games?"
+description: "Yes. Export to HTML5/WebAssembly. Deploy to itch.io, your website, or any static host."
+icon: "question"
+---
+
+## Yes—Web Export Is Fully Supported
+
+Summer Engine excels at web game development. You build your game with AI assistance, then export to HTML5/WebAssembly. The result runs in any modern browser. No separate web framework needed. Deploy to itch.io, your website, Netlify, GitHub Pages, or any static host.
+
+## The Workflow
+
+**1. Build your game.** Create your game in Summer Engine. Describe what you want; Summer Engine implements it. Add touch controls, responsive UI, and web-specific features by asking: "Add touch controls for mobile browsers." "Implement responsive UI scaling for different screen sizes."
+
+**2. Configure for web export.** When ready to export, ask Summer Engine: "Configure my project for HTML5 export." "Set up the export template with proper threading settings." "Optimize asset loading for web browsers." "Add a loading screen with progress indication."
+
+**3. Export.** Project → Export → Add → Web. Configure if needed, then Export. You get HTML, JavaScript, and WebAssembly files.
+
+**4. Deploy.** Upload to any static host. itch.io, Netlify, GitHub Pages, AWS S3, your own server. No special server required—static files are enough. Players load your game in their browser.
+
+## Web-Specific Considerations
+
+**Browser compatibility.** Summer Engine can help with WebGL shaders, fallbacks for older browsers, and cross-browser testing. "Check this WebGL shader for compatibility with older browsers." "Add fallbacks for browsers that don't support WebAssembly."
+
+**Performance.** Web games need careful asset optimization. "Optimize texture sizes for faster web loading." "Implement asset streaming for large games." "Add compression to reduce download sizes."
+
+**Touch and mobile web.** "Add touch controls." "Implement responsive UI for phones and tablets." "Handle orientation changes gracefully."
+
+## Where to Publish
+
+**itch.io.** Popular for indie web games. Upload your build, set a URL, players play in browser. No approval process.
+
+**Your website.** Host the files yourself. Full control. You handle distribution and payments if you monetize.
+
+**Newgrounds, Kongregate, etc.** Many portals accept HTML5 games. Same export; different upload process.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Quickstart: Web Game" icon="globe" href="/quickstarts/web-game">
+    Make a web game with AI
+  </Card>
+  <Card title="Web Development Guide" icon="globe" href="/guides/web-development">
+    Browser compatibility, performance, deployment
+  </Card>
+</CardGroup>

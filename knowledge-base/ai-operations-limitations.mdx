@@ -1,0 +1,54 @@
+---
+title: "What are the limitations of AI operations?"
+description: "AI changes go through safe APIs. Some tasks still require manual work. Learn what works well and what doesn't."
+icon: "question"
+---
+
+## What Works Well
+
+Summer Engine's AI can do a lot directly in your project:
+
+**Scene modifications.** Add nodes, set properties, connect signals. "Add a CharacterBody2D named Player." "Set the Button text to 'Start Game'." "Connect the Button's pressed signal to start_game." Changes appear immediately in the editor.
+
+**Script operations.** Create scripts, attach them to nodes, open your external editor for code. Summer Engine writes production-ready code that integrates with your existing codebase.
+
+**Asset import.** Import 3D models, textures, and audio from Summer Studio. "Import a low-poly tree for my forest." "Build a village: houses, trees, fences, and props." Summer Engine searches, downloads, runs the import pipeline, and places assets. Bulk import is supported—many assets in one batch.
+
+**Project settings.** Change main scene, physics layers, window size. Add input actions (jump, movement, controller mappings).
+
+**Game systems.** Character controllers, inventory systems, AI behaviors, network sync. Summer Engine builds complete systems, not just snippets.
+
+All changes go through **safe operations** with full undo support. Every change can be reverted with Ctrl+Z. Nothing breaks unexpectedly.
+
+## Current Limitations
+
+**No batch code refactors.** Large refactors across many files (e.g., rename a function in 50 files) are not supported yet. Bulk asset import is supported; bulk code refactors are not.
+
+**Limited import settings.** Asset import options are mostly manual for now. You may need to adjust import settings in the editor for some assets.
+
+**Scene-focused.** Works best with open scenes rather than project-wide changes. For cross-scene refactors, you may need to do it scene by scene.
+
+**Shell commands require approval.** Summer Engine can propose shell commands (run tests, install deps, run scripts), but nothing executes until you approve it. This is by design—you stay in control.
+
+## What's Safe
+
+- All operations are undoable (Ctrl+Z)
+- Editor APIs only—no direct file manipulation that could corrupt projects
+- Explicit operations—AI must specify exactly what it's changing
+- Immediate feedback—changes appear instantly so you can verify
+
+## Best Practices
+
+**Review before applying.** The change review panel shows exactly what will be modified. Check it before confirming.
+
+**Save regularly.** Save your scenes after AI makes changes you want to keep. This persists changes to your project files.
+
+**Use undo freely.** Don't hesitate to undo AI changes that aren't quite right. You can always ask for a different approach.
+
+## Related
+
+<CardGroup cols={1}>
+  <Card title="AI Operations" icon="brain" href="/ai-tools/operations">
+    What Summer Engine can do
+  </Card>
+</CardGroup>

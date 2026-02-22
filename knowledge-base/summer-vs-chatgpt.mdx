@@ -1,0 +1,47 @@
+---
+title: "What makes Summer Engine different from using ChatGPT?"
+description: "Unified experience, safe operations, specialist agents, and project intelligence. AI directly modifies your game."
+icon: "question"
+---
+
+## The Core Difference: AI That Modifies Your Game
+
+With ChatGPT (or similar), you get text responses. You copy code, paste it into your project, fix paths and imports, and hope it works. With Summer Engine, you describe what you want and Summer Engine implements it directly in your project. No copy-paste. No context switching. The AI understands your codebase and applies changes through engine APIs.
+
+## Unified Experience
+
+**No tool switching.** You're not juggling ChatGPT, VS Code, and a game engine. Summer Engine is one environment. The chat is next to your project. You ask; Summer Engine modifies. You see changes immediately.
+
+**Project context.** Summer Engine indexes your project—scripts, scenes, assets, relationships. When you ask "add a health bar to my player," it knows which player. ChatGPT doesn't have access to your project. It guesses. Summer Engine looks.
+
+## Safe Operations
+
+**Engine APIs, not raw file edits.** Summer Engine doesn't do free-form file manipulation. It uses specific operations: add node, set property, connect signal, import asset. Each operation is explicit and undoable. Nothing breaks unexpectedly.
+
+**Full undo.** Every change can be reverted with Ctrl+Z. Try something, don't like it, undo. No "oops, the AI rewrote my entire script."
+
+## Specialist Agents
+
+**Domain experts on demand.** For 3D modeling, audio design, physics, or complex systems, Summer Engine can bring in specialist agents. They run in parallel, stay focused on their area, and report back. ChatGPT is one general-purpose model. Summer Engine has specialists for deep dives.
+
+## Project Intelligence
+
+**RAG over your codebase.** Summer Engine uses retrieval-augmented generation. It searches your project for relevant context before answering. "How does my player handle input?"—Summer Engine finds the script, reads it, and gives accurate advice. ChatGPT has no access to your files.
+
+## Summary
+
+| | ChatGPT | Summer Engine |
+|---|---------|--------|
+| Modifies your project | No—you copy-paste | Yes—directly |
+| Knows your codebase | No | Yes—indexed |
+| Undo support | No | Yes—Ctrl+Z |
+| Specialist expertise | No | Yes—3D, audio, etc. |
+| Context switching | High | None |
+
+## Related
+
+<CardGroup cols={1}>
+  <Card title="AI Operations" icon="brain" href="/ai-tools/operations">
+    What Summer Engine can do in your project
+  </Card>
+</CardGroup>

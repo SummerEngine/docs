@@ -1,173 +1,55 @@
 ---
 title: "Frequently Asked Questions"
-description: "Answers to common questions about Summer"
+description: "Answers to common questions about Summer. Browse by topic or search."
 icon: "question"
 ---
 
-## What is Summer?
+## FAQ Overview
 
-Summer is **The AI Native Game Engine**. It's not just a game engine with a plugin. It's a professional engine built from the ground up to be AI-native, where the AI understands your entire project and can modify scenes, code, and assets through natural language commands.
+Common questions about Summer, organized by topic. Each question links to a detailed answer.
 
-**Think of it as Cursor for game development.** Instead of juggling ChatGPT, VS Code, and another engine, you work in one unified environment.
+## About Summer
 
-## Is Summer Compatible with Existing Projects?
+<CardGroup cols={2}>
+  <Card title="What is Summer?" href="/knowledge-base/what-is-summer" />
+  <Card title="What makes Summer different from ChatGPT?" href="/knowledge-base/summer-vs-chatgpt" />
+  <Card title="Is Summer for beginners or professionals?" href="/knowledge-base/beginners-or-professionals" />
+  <Card title="Has Summer been used for production games?" href="/knowledge-base/production-games" />
+  <Card title="What's the learning curve?" href="/knowledge-base/learning-curve" />
+  <Card title="Can I make AAA games with Summer?" href="/knowledge-base/aaa-games" />
+  <Card title="How does Summer compare to other AI game tools?" href="/knowledge-base/summer-vs-other-tools" />
+  <Card title="What's next for Summer?" href="/knowledge-base/whats-next" />
+</CardGroup>
 
-**Yes, completely.** Summer works with industry-standard formats, which means it works with:
-- All existing Godot projects
-- All standard tutorials and documentation
-- All third-party libraries and plugins
-- All community assets and tools
-- All export templates (web, desktop, mobile)
+## Technical
 
-You can open any Godot project in Summer and continue working on it immediately.
+<CardGroup cols={2}>
+  <Card title="Is Summer compatible with my existing project?" href="/knowledge-base/godot-compatibility" />
+  <Card title="What if I have existing Godot projects?" href="/knowledge-base/godot-projects" />
+  <Card title="Which AI models does Summer use?" href="/knowledge-base/ai-models" />
+  <Card title="How good are AI-generated assets?" href="/knowledge-base/ai-asset-quality" />
+  <Card title="Can I make a game with just AI, no coding?" href="/knowledge-base/ai-game-dev" />
+  <Card title="How do specialist agents work?" href="/knowledge-base/specialist-agents" />
+  <Card title="How does project intelligence work?" href="/knowledge-base/project-intelligence" />
+  <Card title="What are the limitations of AI operations?" href="/knowledge-base/ai-operations-limitations" />
+  <Card title="Does Summer support multiplayer?" href="/knowledge-base/multiplayer" />
+  <Card title="Can I use my own assets?" href="/knowledge-base/custom-assets" />
+  <Card title="Can I use Summer for web games?" href="/knowledge-base/web-games" />
+  <Card title="How does Unity or Unreal migration work?" href="/knowledge-base/unity-unreal-migration" />
+</CardGroup>
 
-## What Makes Summer Different from Just Using Other Tools + ChatGPT?
+## Account & Support
 
-**Unified Experience**: No switching between tools. AI understands your project context and can directly modify your game.
+<CardGroup cols={2}>
+  <Card title="Is my code safe?" href="/knowledge-base/privacy-and-code-safety" />
+  <Card title="Is Summer free?" href="/knowledge-base/pricing" />
+  <Card title="What's your refund policy?" href="/knowledge-base/refund-policy" />
+  <Card title="How do I get support?" href="/knowledge-base/support" />
+  <Card title="How do I get started with no experience?" href="/knowledge-base/no-experience" />
+  <Card title="How do I publish to Steam?" href="/knowledge-base/publish-steam" />
+  <Card title="How do I export to mobile?" href="/knowledge-base/export-mobile" />
+</CardGroup>
 
-**Safe Operations**: AI changes go through safe APIs with full undo support. Nothing breaks unexpectedly.
+---
 
-**Specialist Agents**: Expert AI agents for 3D modeling, audio design, and complex technical challenges.
-
-**Project Intelligence**: AI indexes and understands your entire codebase, scenes, assets, and relationships.
-
-## Is Summer for Beginners or Professionals?
-
-**Summer is for everyone.** We believe making games should be as fun as playing them.
-
-- **For Beginners & Vibe Coders**: You can build complete games just by describing them in plain English. Summer handles the code, assets, and scene setup. It's the perfect way to "vibe code" your dream game into existence without needing years of experience.
-- **For Professionals**: Summer is a production-ready tool that accelerates your workflow. We shipped a commercial Steam game (*Don't Pray*) in 2.5 months using Summer. You get full access to the underlying engine, clean code generation, and complete control over your architecture.
-
-## Has Summer Been Used for Production Games?
-
-**Yes.** Summer is built by game developers, for game developers. We shipped *Don't Pray* on Steam, a P2P 3D PvP co-op game with multiplayer networking, combat systems, and Steam integration, in 2.5 months. A project that would have taken us 1-2 years before Summer. It's not a demo; it's a commercial product.
-
-## How Good are AI-Generated Assets?
-
-**Honest answer**: Good for prototyping and indie games. AI assets in Summer are designed for:
-- Rapid concept exploration
-- Placeholder assets during development
-- Quick iteration on visual ideas
-- Indie game aesthetics
-
-**What it's not good for**:
-- Final AAA production art
-- Specific, highly detailed character designs matching exact specs
-
-All AI-generated assets are clearly labeled, and we strongly encourage using human artists for final production work if you have the budget.
-
-## What About Privacy? Is My Code Safe?
-
-**Privacy is a top priority.** We don't train AI models on user code, and Privacy Mode is enabled by default.
-
-**What we do with your code**:
-- Send it to AI models to generate responses to your questions
-- Index it for project intelligence (understanding your codebase)
-- Temporarily hold it during conversations
-- Delete it when you're done
-
-**What we never do**:
-- Train AI models on your code
-- Store your code permanently on our servers
-- Share your code with other users or companies
-- Sell access to your data
-- Use your code for any purpose except helping you build games
-
-**Privacy Policy**: For complete legal details about data handling and retention, see our full privacy policy.
-
-## Which AI Models Does Summer Use?
-
-Summer integrates with multiple AI providers to give you the best experience. You can choose which models to use for different tasks.
-
-### Primary AI Models
-**Claude 3.5 Sonnet (Anthropic)** - Primary model for code generation and project assistance
-- Latest Claude model with superior reasoning for complex programming
-- Best for game logic, debugging, and architecture decisions
-
-**GPT-4o (OpenAI)** - Alternative model for code and creative tasks
-- Most advanced GPT model with multimodal capabilities
-- Excellent for creative problem-solving and documentation generation
-
-**Gemini 1.5 Pro (Google)** - Additional model for code generation
-- Strong at code completion and technical tasks
-- Good for complex programming challenges
-
-**Custom Summer Models** - Specialized models trained on game development
-- Optimized for Godot-specific workflows
-- Enhanced understanding of game development patterns
-
-### Generation Models
-**Meshy** - 3D model generation
-- Text-to-3D and image-to-3D conversion
-- Game-ready models with proper UV mapping
-
-**ElevenLabs** - Voice and music generation
-- High-quality voice acting for games
-- Background music and sound effects
-- Multiple voice styles and languages
-
-**Gemini Flash 2.5 (Google)** - Image generation
-- Fast, high-quality image creation
-- Optimized for game art and concept visualization
-
-**Sora 2 (OpenAI)** - Video cutscene generation
-- AI-powered cinematic cutscenes
-- High-quality video content for game narratives
-
-**Other Providers** - Additional 3D and audio partners
-- Integration with various AI generation services
-- Expandable based on user needs and quality
-
-### Model Selection
-You can choose which models to use in Summer's settings:
-- Switch between primary AI models based on your preferences
-- Enable/disable specific generation providers
-- Use your own API keys for supported services
-
-**Default Settings**: Claude for primary assistance, Meshy for 3D, ElevenLabs for audio.
-
-**Staying Current**: When new AI models are released, Summer typically integrates them within 24 hours to ensure you always have access to the latest capabilities.
-
-## What's the Learning Curve?
-
-**Gentle to Advanced.** 
-
-If you just want to vibe code, the learning curve is near zero—just chat with the AI. If you want to master the engine, Summer acts as an infinite tutor, explaining how things work as it builds them. It's the fastest way to learn game development.
-
-## Can I Make AAA Games with Summer?
-
-Summer is designed for indie games, small teams, and professional studios building mid-scale projects. The engine foundation powers commercial games across all platforms. Summer adds AI tooling to accelerate development.
-
-**Sweet spot**: Projects that would traditionally take 1-7 years can be built in 3-12 months with Summer.
-
-## Is Summer Free?
-
-**Free to download and try.** We offer a free tier with core AI features. Premium features (advanced AI models, team collaboration) will be available through subscription.
-
-## How Does Summer Compare to Other AI Game Tools?
-
-**Summer is unique because it's a full game engine**, not just an AI addon. This means:
-- Deeper integration with the development workflow
-- Better understanding of project context
-- More reliable and safe AI operations
-- Full compatibility with existing Godot ecosystem
-
-## What If I Have Existing Godot Projects?
-
-**They work perfectly.** Just open them in Summer and continue development. All your scenes, scripts, assets, and plugins will work exactly as before, plus you get AI assistance.
-
-## Do You Support Multiplayer Games?
-
-**Yes, with limitations.** Basic multiplayer networking works with AI assistance. Advanced multiplayer features are still being developed.
-
-## What's Your Refund Policy?
-
-**30-day money-back guarantee** on all paid plans. If Summer doesn't help you build games faster, we'll refund your purchase.
-
-## How Do I Get Support?
-
-**Founders are directly accessible.** Email founders@summerengine.com for any questions, bugs, or feature requests. We're a small team and respond personally to every inquiry.
-
-## What's Next for Summer?
-
-**We're focused on becoming the most productive game development environment available.** We ship updates frequently based on real developer feedback and usage patterns.
+Need help or have questions? Reach out to our founders at [founders@summerengine.com](mailto:founders@summerengine.com) or join our community on [Discord](https://discord.gg/yUpgtxnZky) for fast responses.

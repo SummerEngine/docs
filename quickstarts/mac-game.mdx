@@ -1,0 +1,66 @@
+---
+title: "How do I make a Mac game with AI?"
+description: "Build and export a macOS game with AI assistance. Supports Intel and Apple Silicon."
+icon: "apple"
+---
+
+## Make a Mac Game with Summer
+
+Build your game with AI assistance, then export for macOS. Summer supports both Intel and Apple Silicon Macs.
+
+## Step 1: Build Your Game
+
+<Steps>
+  <Step title="Download Summer">
+    Visit [summerengine.com](https://summerengine.com) and download for Mac
+  </Step>
+  <Step title="Create a project">
+    New Project → Create your game with AI. Describe what you want in natural language
+  </Step>
+  <Step title="Iterate with AI">
+    Refine through conversation. "Add a settings menu", "Optimize for Retina displays"
+  </Step>
+</Steps>
+
+## Step 2: Enable Texture Compression
+
+Before exporting, enable ETC2/ASTC (required for Apple Silicon):
+
+1. **Project → Project Settings**
+2. **Rendering → Textures → VRAM Compression**
+3. **Enable "Import ETC2 ASTC"**
+4. Wait for reimport (1-5 minutes)
+
+## Step 3: Export for macOS
+
+<Steps>
+  <Step title="Create export preset">
+    Project → Export → Add → macOS (Runnable)
+  </Step>
+  <Step title="Set bundle identifier">
+    Replace `com.example.game` with your unique ID (e.g. `com.yourstudio.yourgame`)
+  </Step>
+  <Step title="Export">
+    Click Export. You get a .app bundle ready for distribution
+  </Step>
+</Steps>
+
+<Tip>Releasing on both Mac and Windows? Enable both ETC2 ASTC and S3TC BPTC texture formats at once to avoid reimporting twice.</Tip>
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card title="macOS Export Guide" icon="apple" href="/publishing/macos-export">
+    Full guide: code signing, notarization, Steam
+  </Card>
+  <Card title="Publish to Steam" icon="steam" href="/publishing/steam">
+    Release on Steam (Mac + Windows)
+  </Card>
+  <Card title="Publish to itch.io" icon="gamepad" href="/publishing/itch-io">
+    Quick indie publishing
+  </Card>
+</CardGroup>
+
+---
+
+Need help or have questions? Reach out to our founders at [founders@summerengine.com](mailto:founders@summerengine.com) or join our community on [Discord](https://discord.gg/yUpgtxnZky) for fast responses.

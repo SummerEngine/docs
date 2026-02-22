@@ -1,0 +1,48 @@
+---
+title: "How do specialist agents work?"
+description: "Expert AI agents for 3D modeling, audio design, and complex systems. Brought in on demand."
+icon: "question"
+---
+
+## What Are Specialist Agents?
+
+Specialist agents are expert AI assistants that Summer Engine can bring in for specific domains. Unlike regular chat where Summer Engine handles everything, specialist agents are like bringing in a consultant for a focused job. They stay in their area of expertise and can dive deep into complex problems.
+
+## When Summer Engine Uses Specialists
+
+You don't need to configure anything. Summer Engine invokes specialists automatically when your task benefits from focused expertise. For example:
+
+- **3D modeling** — Complex mesh creation, UV mapping, LODs, lighting setups, PBR materials, scene optimization
+- **Audio design** — Music, sound effects, voice generation, spatial audio, mixing for horror games or action sequences
+- **Physics** — Rigid body setup, character controllers, collision systems, platformer mechanics
+- **Character systems** — Animation rigging, bone hierarchies, IK setups, state machines, AI behavior
+
+## How the Workflow Works
+
+1. You ask for help: "Create a 3D specialist to help me set up realistic lighting for my forest scene"
+2. Summer Engine creates a new conversation thread with the 3D specialist
+3. You work with the specialist on the detailed task—they remember your project's patterns from the conversation
+4. When done, you return to your main chat
+
+This keeps conversations focused. Long research or exploration stays in the specialist thread; your main chat stays clean.
+
+## Expert Queue and Subagents
+
+Summer Engine also has an **expert queue** that hands off work to specialists in order. The main agent stays in charge; experts do the deep work and report back. Tasks can run in the background so you can keep chatting while work completes.
+
+For even more complex tasks, Summer Engine uses **subagents**—specialized background assistants that run in their own context. The **Explore** subagent does read-only codebase exploration. The **General Purpose** subagent handles complex multi-step tasks with write access. Summer Engine chooses which to use based on the task.
+
+## Parallel Execution
+
+Specialists and subagents can run in parallel. Different parts of your project can be worked on without blocking each other. You can watch subagents work live in the chat via an interleaved transcript of their thoughts and tool usage.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="AI Operations" icon="brain" href="/ai-tools/operations">
+    What Summer Engine can do in your project
+  </Card>
+  <Card title="Subagents" icon="users" href="/ai-tools/subagents">
+    How specialist agents are orchestrated
+  </Card>
+</CardGroup>
