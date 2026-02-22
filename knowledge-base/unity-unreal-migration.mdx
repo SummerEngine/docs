@@ -14,7 +14,7 @@ Summer Engine uses different project formats than Unity or Unreal. There is no d
 
 **Step 2: Plan.** The AI creates a step-by-step plan: which systems to rebuild first, what order makes sense, what assets you can reuse vs. regenerate.
 
-**Step 3: Rebuild.** Describe each system: "Create a 3D character controller like my Unity Rigidbody setup." "Build a level with a ground plane, obstacles, and spawn points." Summer Engine implements it. You already have assets—import them or use AI generation for placeholders.
+**Step 3: Rebuild.** Describe each system: "Create a 3D character controller like my Unity Rigidbody setup." "Build a level with a ground plane, obstacles, and spawn points." Summer Engine implements it. You already have assets. Import them or use AI generation for placeholders.
 
 ## Project Size Matters
 
@@ -22,17 +22,17 @@ Summer Engine uses different project formats than Unity or Unreal. There is no d
 |--------------|------------|----------|
 | **Fresh / small** | Easy | Often one-shot. Describe the game, AI rebuilds it. |
 | **Medium** | Moderate | Break into systems. Migrate scene by scene or level by level. |
-| **Large** | Planning required | AI researches first, creates detailed plan. You have assets—focus on structure and logic. May need phased migration over weeks. |
+| **Large** | Planning required | AI researches first, creates detailed plan. You have assets. Focus on structure and logic. May need phased migration over weeks. |
 
 For a relatively fresh Unity or Unreal project (a few scenes, straightforward systems), migration can often be done in one pass. For a huge project with years of work, the AI creates a phased plan. You migrate in chunks, validating each phase before moving on.
 
 ## What the AI Can Read
 
-The AI can analyze your existing codebase: C# scripts, Blueprint structure, scene/level files, asset references. It uses this to understand your architecture and suggest the right rebuild order. It does not convert files automatically—you're rebuilding in Summer Engine's format with AI assistance.
+The AI can analyze your existing codebase: C# scripts, Blueprint structure, scene/level files, asset references. It uses this to understand your architecture and suggest the right rebuild order. It does not convert files automatically. You're rebuilding in Summer Engine's format with AI assistance.
 
 ## Shell and Tools
 
-Summer Engine's AI can run shell commands (with your approval) to scan directories, read files, and gather context. This is how it researches your Unity or Unreal project. You stay in control—nothing executes without your approval.
+Summer Engine's AI can run shell commands (with your approval) to scan directories, read files, and gather context. This is how it researches your Unity or Unreal project. You stay in control. Nothing executes without your approval.
 
 ## Related
 

@@ -1,12 +1,12 @@
 ---
 title: "Project Intelligence"
-description: "How Summer understands and indexes your entire project"
+description: "How Summer Engine understands and indexes your entire project"
 icon: "lightbulb"
 ---
 
 ## How It Works
 
-Summer automatically analyzes and indexes your project to understand:
+Summer Engine automatically analyzes and indexes your project to understand:
 
 - **Code structure** - Classes, functions, variables, and their relationships
 - **Scene hierarchy** - Node trees, components, and connections
@@ -15,7 +15,7 @@ Summer automatically analyzes and indexes your project to understand:
 
 ## Automatic Indexing
 
-When you open a project, Summer:
+When you open a project, Summer Engine:
 
 <Steps>
   <Step title="Scans all files">
@@ -32,11 +32,11 @@ When you open a project, Summer:
   </Step>
 </Steps>
 
-## What Summer Knows
+## What Summer Engine Knows
 
 ### Code Understanding
 ```gdscript
-# Summer knows this is a player controller
+# Summer Engine knows this is a player controller
 extends CharacterBody3D
 class_name Player
 
@@ -44,11 +44,11 @@ class_name Player
 @export var jump_velocity: float = 4.5
 
 func _physics_process(delta):
-    # Summer understands this handles movement
+    # Summer Engine understands this handles movement
     handle_movement(delta)
 ```
 
-When you ask "make the player faster", Summer knows:
+When you ask "make the player faster", Summer Engine knows:
 - Which script controls the player
 - That `speed` is the relevant variable
 - How to modify it safely
@@ -65,14 +65,14 @@ Main Scene
     └── Score
 ```
 
-Summer understands these connections and can:
+Summer Engine understands these connections and can:
 - Add UI elements that reference the player
 - Create enemies that target the player node
 - Modify scenes while preserving relationships
 
 ## Smart Suggestions
 
-Based on project analysis, Summer can suggest:
+Based on project analysis, Summer Engine can suggest:
 
 <CardGroup cols={2}>
   <Card title="Performance Improvements" icon="gauge">
@@ -91,12 +91,12 @@ Based on project analysis, Summer can suggest:
 
 ## Per-Project Indexing & Caching
 
-Summer uses **per-project indexing** with **intelligent caching**—similar to how Cursor indexes a repo. Each project has its own isolated search index. When you open a project, Summer scans and indexes your codebase, then uses RAG (Retrieval-Augmented Generation) to find relevant context when you ask questions.
+Summer Engine uses **per-project indexing** with **intelligent caching**, similar to how Cursor indexes a repo. Each project has its own isolated search index. When you open a project, Summer Engine scans and indexes your codebase, then uses RAG (Retrieval-Augmented Generation) to find relevant context when you ask questions.
 
-**Smart caching** means Summer remembers what it learned between sessions *within that project*. The index persists so you don't start from scratch every time you open Summer.
+**Smart caching** means Summer Engine remembers what it learned between sessions *within that project*. The index persists so you don't start from scratch every time you open Summer Engine.
 
 <Info>
-**New chats start fresh**: Each new chat does not automatically include a summary of your other chats. If you want context from a previous conversation, you need to inject it—for example, by referencing specific files or summarizing what you discussed.
+**New chats start fresh**: Each new chat does not automatically include a summary of your other chats. If you want context from a previous conversation, you need to inject it (for example, by referencing specific files or summarizing what you discussed).
 </Info>
 
 ## Privacy & Performance
@@ -111,7 +111,7 @@ Summer uses **per-project indexing** with **intelligent caching**—similar to h
 
 ## Customizing Intelligence
 
-You can guide Summer's understanding:
+You can guide Summer Engine's understanding:
 
 ### Project Comments
 ```gdscript
@@ -139,7 +139,7 @@ addons/third_party/
 
 For projects with thousands of files:
 
-- **Prioritization**: Summer focuses on recently modified files
+- **Prioritization**: Summer Engine focuses on recently modified files
 - **Selective indexing**: You can specify which folders are most important
 - **Background processing**: Analysis happens without blocking your work
 
@@ -150,5 +150,5 @@ For projects with thousands of files:
   icon="bot"
   href="/ai-tools/operations"
 >
-  See how project intelligence powers Summer's AI operations
+  See how project intelligence powers Summer Engine's AI operations
 </Card>

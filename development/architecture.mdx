@@ -1,16 +1,16 @@
 ---
-title: "Summer Architecture"
-description: "Technical overview of how Summer works"
+title: "Summer Engine Architecture"
+description: "Technical overview of how Summer Engine works"
 icon: "network"
 ---
 
 ## System Overview
 
-Summer is built as a hybrid desktop application with cloud-enhanced AI capabilities.
+Summer Engine is built as a hybrid desktop application with cloud-enhanced AI capabilities.
 
 ```mermaid
 graph TB
-    A[Summer Desktop App] --> B[Local Project Manager]
+    A[Summer Engine Desktop App] --> B[Local Project Manager]
     A --> C[AI Chat Interface]
     A --> D[Scene Editor]
     
@@ -98,7 +98,7 @@ Project Indexing (Local)
 
 ## Plugin Architecture
 
-Summer supports extensions through a plugin system:
+Summer Engine supports extensions through a plugin system:
 
 ```gdscript
 # Example plugin structure
@@ -121,7 +121,7 @@ func handle_command(args: Dictionary):
 
 ## Development
 
-Summer is built with a modular architecture designed for performance and maintainability.
+Summer Engine is built with a modular architecture designed for performance and maintainability.
 
 ### Development Setup
 
@@ -138,7 +138,7 @@ cd Summer
 # Build debug version
 scons platform=linux target=editor dev=yes
 
-# Run Summer
+# Run Summer Engine
 ./bin/summer.linux.editor.dev.x86_64
 ```
 
