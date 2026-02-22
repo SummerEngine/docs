@@ -7,11 +7,21 @@
     "light": "/images/BLACKFullLogoNoBg.png"
   },
   "colors": {
-    "primary": "#2563eb",
-    "light": "#3b82f6",
-    "dark": "#1d4ed8"
+    "primary": "#f0b566",
+    "light": "#6b7280",
+    "dark": "#f0b566"
+  },
+  "appearance": {
+    "background": {
+      "color": {
+        "dark": "#14120b"
+      }
+    }
   },
   "favicon": "/images/icon/favicon.ico",
+  "icons": {
+    "library": "lucide"
+  },
   "topbarLinks": [
     {
       "name": "App",
@@ -39,6 +49,7 @@
             "pages": [
               "essentials/installation",
               "essentials/authentication",
+              "essentials/account-billing",
               "essentials/first-chat"
             ]
           },
@@ -47,8 +58,7 @@
             "pages": [
               "ai-tools/operations",
               "ai-tools/rag-search",
-              "ai-tools/subagents",
-              "essentials/limitations"
+              "ai-tools/subagents"
             ]
           },
                   {
