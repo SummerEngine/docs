@@ -1,0 +1,87 @@
+---
+title: "CLI Quick Start"
+description: "How to use the Summer Engine CLI. Install, login, create projects, run the engine, start MCP."
+icon: "terminal"
+---
+
+## Summer Engine CLI Quick Start
+
+The Summer Engine CLI lets you install the engine, create projects, run the engine, and start the MCP server for Cursor, Claude Code, or Windsurf. Use `npx summer-engine` (no install) or `summer` (after global install).
+
+## Install the Engine
+
+```bash
+npx summer-engine install
+```
+
+Downloads and installs Summer Engine to your system (macOS: `/Applications/Summer.app`, Windows: default location). No npm global install required.
+
+## Sign In
+
+```bash
+npx summer-engine login
+```
+
+Opens your browser to sign in with Google, GitHub, or email. Saves your session for analytics and future cloud features.
+
+## Create a Project
+
+```bash
+npx summer-engine create 3d-basic my-game
+```
+
+Creates a new project from a template. Templates: `empty` (minimal 3D) or `3d-basic` (camera, light, floor).
+
+## Run the Engine
+
+```bash
+npx summer-engine run my-game
+```
+
+Launches Summer Engine with your project. The engine must be running for MCP tools to work.
+
+## Start MCP (for Cursor, Claude Code, Windsurf)
+
+Add this to your IDE's MCP config. You don't run `mcp` manually; the IDE does:
+
+```json
+{
+  "mcpServers": {
+    "summer-engine": {
+      "command": "npx",
+      "args": ["summer-engine", "mcp"]
+    }
+  }
+}
+```
+
+See [MCP setup](/mcp/setup) for IDE-specific instructions.
+
+## Full CLI Reference
+
+| Command | Description |
+|---------|-------------|
+| `summer install` | Download and install Summer Engine |
+| `summer login` | Sign in via browser |
+| `summer logout` | Clear auth tokens |
+| `summer status` | Check engine status, port, auth |
+| `summer run [path]` | Launch engine, optionally with project |
+| `summer open <path>` | Open project in running engine |
+| `summer create <template> [name]` | Create project from template |
+| `summer list templates` | Show available templates |
+| `summer list projects` | Show projects in current directory |
+| `summer skills list` | List available skills |
+| `summer skills install <name>` | Install a skill to ~/.summer/skills/ |
+| `summer mcp` | Start MCP server (used by IDEs) |
+
+<Card
+  title="Full CLI Reference"
+  icon="list"
+  href="/mcp/cli-reference"
+>
+  All commands with options, examples, and file locations
+</Card>
+
+---
+
+[← MCP overview](/mcp) · [MCP setup →](/mcp/setup)

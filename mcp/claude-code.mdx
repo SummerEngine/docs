@@ -1,0 +1,141 @@
+---
+title: "Claude Code Setup"
+description: "Add Summer Engine's MCP server to Claude Code. Build games with Claude's coding assistant."
+icon: "message-square"
+---
+
+## Summer Engine in Claude Code
+
+Claude Code (Claude for developers) supports MCP servers. With Summer Engine's integration, Claude can modify your game scenes, add nodes, import assets, run the game, and debug, all from the same conversation where you're writing code.
+
+This guide covers the configuration steps. The setup takes about a minute.
+
+## Prerequisites
+
+- **Claude Code**: The desktop app or IDE integration
+- **Node.js**: For running the MCP server (Node 18+)
+- **Summer Engine**: Installed and running with your project open
+
+## Configuration
+
+### Step 1: Locate the Config File
+
+Claude Code reads MCP servers from:
+
+`~/.claude/claude_code_config.json`
+
+On macOS: `~/` means your home directory (e.g., `/Users/yourname/`).  
+On Windows: `~/.claude/` typically maps to `%USERPROFILE%\.claude\`.
+
+Create the file if it doesn't exist. If you already have other MCP servers configured, you'll add Summer Engine to the existing `mcpServers` object.
+
+### Step 2: Add Summer Engine
+
+<CodeGroup>
+
+```json New file (~/.claude/claude_code_config.json)
+{
+  "mcpServers": {
+    "summer-engine": {
+      "command": "npx",
+      "args": ["summer-engine", "mcp"]
+    }
+  }
+}
+```
+
+```json Adding to existing mcpServers
+{
+  "mcpServers": {
+    "other-server": { ... },
+    "summer-engine": {
+      "command": "npx",
+      "args": ["summer-engine", "mcp"]
+    }
+  }
+}
+```
+
+</CodeGroup>
+
+### Step 3: Restart Claude Code
+
+Close and reopen Claude Code so it loads the new MCP config. The server starts when Claude Code starts; it connects to the engine on the first tool call.
+
+### Step 4: Verify
+
+When you start a conversation, Claude should have access to Summer Engine's tools. You can ask:
+
+- "Use Summer Engine to add a Camera3D to the scene"
+- "Get the scene tree from Summer Engine"
+
+If Claude says it doesn't have access to Summer Engine tools, check that the config file path is correct and the JSON is valid.
+
+## Using Summer Engine with Claude
+
+Claude will use the MCP tools when your requests involve game development. You can be explicit ("Use Summer Engine to...") or implicit ("Add a player character to the scene"). If you're in a game project, Claude may infer that Summer Engine is the right tool.
+
+**Example prompts:**
+
+- "Add a CharacterBody3D named Player with a CollisionShape3D to the scene"
+- "Import https://example.com/barrel.glb and add it under ./World/Props"
+- "Set up jump and move_forward input actions for WASD and Space"
+- "Run the game and tell me if there are any errors in the console"
+- "Save the current scene to res://levels/level1.tscn"
+
+<Tip>
+**Engine must be running.** Claude's tools talk to Summer Engine over localhost. Open your project in the engine first, or run `npx summer-engine run` from the project directory.
+</Tip>
+
+## Troubleshooting
+
+### "Summer Engine is not running"
+
+The MCP server couldn't connect to the engine. Start Summer Engine, open your project, and try again. The engine runs a local API on port 6550; the MCP server discovers it via `~/.summer/api-token`.
+
+### Config not loading
+
+- **Path:** Ensure the file is exactly `~/.claude/claude_code_config.json` (not a subfolder, not a different name)
+- **JSON:** Validate the syntax. No trailing commas, all strings in double quotes
+- **Restart:** Fully quit Claude Code and reopen
+
+### Claude doesn't use the tools
+
+Claude may not always choose MCP tools automatically. If you want to force their use, phrase your request explicitly: "Use the summer_add_node tool to add a DirectionalLight3D to the scene."
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Tools Reference"
+    icon="wrench"
+    href="/mcp/tools-reference"
+  >
+    All 23 MCP tools with parameters and examples
+  </Card>
+  <Card
+    title="Building a Game"
+    icon="gamepad-2"
+    href="/mcp/building-a-game"
+  >
+    How an AI builds a full game using MCP
+  </Card>
+  <Card
+    title="MCP Setup Overview"
+    icon="plug"
+    href="/mcp/setup"
+  >
+    Architecture, prerequisites, and other IDEs
+  </Card>
+  <Card
+    title="CLI Reference"
+    icon="terminal"
+    href="/mcp/cli-reference"
+  >
+    summer install, run, create, and more
+  </Card>
+</CardGroup>
+
+---
+
+Need help or have questions? Reach out to our founders at [founders@summerengine.com](mailto:founders@summerengine.com) or join our community on [Discord](https://discord.gg/yUpgtxnZky) for fast responses.

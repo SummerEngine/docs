@@ -1,0 +1,158 @@
+---
+title: "Cursor Setup"
+description: "Add Summer Engine's MCP server to Cursor in under a minute. One-click or manual configuration."
+icon: "mouse-pointer"
+---
+
+## Summer Engine in Cursor
+
+Cursor is the most popular IDE for AI-assisted development. With Summer Engine's MCP integration, you can build games without leaving Cursor: the AI adds nodes to your scenes, sets properties, imports assets, runs the game, and debugs errors, all through the same chat you use for code.
+
+This guide walks you through two setup options: a one-click install link (when supported) and manual configuration, which always works.
+
+## Option 1: One-Click Install
+
+Cursor supports MCP install deeplinks. Click the link below to add Summer Engine to your MCP servers:
+
+<Card
+  title="Add Summer Engine to Cursor"
+  icon="plug"
+  href="cursor://anysphere.cursor-deeplink/mcp/install?name=summer-engine&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyJzdW1tZXItZW5naW5lIiwibWNwIl19"
+>
+  Click to install Summer Engine MCP (opens Cursor)
+</Card>
+
+<Note>
+**If the link doesn't work:** Cursor's deeplink format may change. Use Option 2 (manual config). It takes about 30 seconds and is reliable.
+</Note>
+
+## Option 2: Manual Configuration
+
+Manual setup gives you full control and works in all Cursor versions.
+
+### Step 1: Create or Edit MCP Config
+
+Cursor reads MCP servers from one of these locations:
+
+- **Project-level:** `.cursor/mcp.json` in your project root (recommended, stays with the project)
+- **User-level:** `~/.cursor/mcp.json` (global, applies to all projects)
+
+Create the file if it doesn't exist. If it does, add the `summer-engine` entry to the existing `mcpServers` object.
+
+### Step 2: Add the Summer Engine Config
+
+<CodeGroup>
+
+```json New file (.cursor/mcp.json)
+{
+  "mcpServers": {
+    "summer-engine": {
+      "command": "npx",
+      "args": ["summer-engine", "mcp"]
+    }
+  }
+}
+```
+
+```json Adding to existing mcpServers
+{
+  "mcpServers": {
+    "other-server": { ... },
+    "summer-engine": {
+      "command": "npx",
+      "args": ["summer-engine", "mcp"]
+    }
+  }
+}
+```
+
+</CodeGroup>
+
+### Step 3: Restart Cursor
+
+Close and reopen Cursor so it loads the new MCP config. The MCP server starts when Cursor starts; it doesn't connect to the engine until you first use a Summer Engine tool.
+
+### Step 4: Verify
+
+1. Open **Cursor Settings** (Cmd+, or Ctrl+,)
+2. Go to **MCP** (or search for "MCP")
+3. You should see **summer-engine** listed with 23 tools
+
+If you don't see it, check that the JSON is valid (no trailing commas, proper quotes) and that the file path is correct.
+
+## Using Summer Engine in Cursor
+
+Once configured, the AI has access to Summer Engine's tools. You don't need to mention "Summer Engine" in every message. If the AI knows you're building a game and the tools are available, it will use them when appropriate.
+
+**Example prompts:**
+
+- "Add a Camera3D and DirectionalLight3D to the scene"
+- "Get the current scene tree so I can see the structure"
+- "Import this model: https://example.com/tree.glb and add it under the World node"
+- "Run the game and take a screenshot of what the player sees"
+- "Set the main scene to res://main.tscn"
+
+<Tip>
+**Engine must be running.** Summer Engine needs to be open with your project loaded. If you haven't started it yet, run `npx summer-engine run` from your project directory, or open the project from the Summer Engine app.
+</Tip>
+
+## Troubleshooting
+
+### "Summer Engine is not running"
+
+The MCP server can't connect to the engine. Fix:
+
+1. Open Summer Engine and load your project
+2. Or run `npx summer-engine run` from the project folder
+3. Wait a few seconds for the engine to start, then try your request again
+
+### MCP server not appearing
+
+- **Check the config path:** `.cursor/mcp.json` must be in the project root (the folder you opened in Cursor)
+- **Validate JSON:** Use a JSON validator. A single missing comma or extra comma will break it
+- **Restart Cursor:** Fully quit and reopen, not just reload the window
+
+### Tools return errors
+
+If a specific tool fails, the error message usually explains why. Common causes:
+
+- **Wrong node path:** Paths use `./` prefix (e.g., `./World/Player`). The root is `./` or `./Root` depending on your scene.
+- **Engine not ready:** Some operations require the game to be stopped. Use `summer_stop` before making scene changes.
+- **Invalid value format:** Properties like `position` need engine string format: `"Vector3(0, 10, 0)"` not `{x: 0, y: 10, z: 0}`. See the [Tools Reference](/mcp/tools-reference) for format details.
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Tools Reference"
+    icon="wrench"
+    href="/mcp/tools-reference"
+  >
+    All 23 MCP tools with parameters and examples
+  </Card>
+  <Card
+    title="Building a Game"
+    icon="gamepad-2"
+    href="/mcp/building-a-game"
+  >
+    Step-by-step: how an AI builds a full game with MCP
+  </Card>
+  <Card
+    title="MCP Setup Overview"
+    icon="plug"
+    href="/mcp/setup"
+  >
+    Prerequisites, architecture, and other IDEs
+  </Card>
+  <Card
+    title="CLI Reference"
+    icon="terminal"
+    href="/mcp/cli-reference"
+  >
+    summer install, run, create, and more
+  </Card>
+</CardGroup>
+
+---
+
+Need help or have questions? Reach out to our founders at [founders@summerengine.com](mailto:founders@summerengine.com) or join our community on [Discord](https://discord.gg/yUpgtxnZky) for fast responses.

@@ -1,0 +1,213 @@
+---
+title: "Building a Game with MCP"
+description: "Step-by-step guide for AI agents: how to build a complete game using Summer Engine's MCP tools."
+icon: "gamepad-2"
+---
+
+## For AI Agents
+
+This page is a playbook for building games with Summer Engine's MCP tools. Follow it when the user asks you to create or modify a game. The tools execute operations in the engine: scenes, nodes, properties, imports, and debugging. So you can build real games from natural language requests.
+
+**Prerequisites:** Summer Engine must be running with a project open. If you get "Summer Engine is not running," tell the user to start the engine or run `npx summer-engine run` from the project directory.
+
+---
+
+## Skills (Best-Practice Guides)
+
+Before building, install the relevant skill. Skills are bundled with the CLI and contain patterns for scene structure, GDScript, and MCP tool usage. Install them, then read the SKILL.md file and follow its patterns.
+
+**When to install which skill:**
+
+| Task | Skill | Install command |
+|------|-------|-----------------|
+| FPS game, first-person movement | `fps-controller` | `npx summer-engine skills install fps-controller` |
+| Any GDScript, signals, exports | `gdscript-patterns` | `npx summer-engine skills install gdscript-patterns` |
+| Scene structure, sub-scenes, hierarchy | `scene-composition` | `npx summer-engine skills install scene-composition` |
+| 3D lighting, environment, shadows | `3d-lighting` | `npx summer-engine skills install 3d-lighting` |
+| Menus, HUD, health bars, UI | `ui-basics` | `npx summer-engine skills install ui-basics` |
+| All of the above | (all) | `npx summer-engine skills install --all` |
+
+**For Claude Code:** Add `--as-claude-skill` to install into `~/.claude/skills/`. **For Cursor:** Add `--as-cursor-skill` to install into `~/.cursor/skills/`. Example: `npx summer-engine skills install fps-controller --as-claude-skill`
+
+**After installing:** Read the skill file at `~/.summer/skills/<name>/SKILL.md` (or `~/.claude/skills/<name>/SKILL.md` if you used `--as-claude-skill`). Follow the patterns when building.
+
+---
+
+## Core Workflow
+
+### 1. Understand the Scene First
+
+Before making changes, call `summer_get_scene_tree` to see the current structure. You'll get node paths, types, and hierarchy. Use this to:
+
+- Find the correct parent path for new nodes (e.g., `./World` or `./` for root)
+- Avoid duplicate names
+- Understand what already exists
+
+### 2. Add Nodes, Then Configure
+
+The pattern is: add, then set properties.
+
+1. **Add:** `summer_add_node(parent="./", type="MeshInstance3D", name="Player")`
+2. **Configure:** `summer_set_prop(path="./Player", key="position", value="Vector3(0, 1, 0)")`
+3. **Mesh:** `summer_set_prop(path="./Player", key="mesh", value="BoxMesh")`
+
+For nested resource properties (e.g., collision shape size, material color), use `summer_set_resource_property`.
+
+### 3. Use Engine Value Formats
+
+Properties use engine string syntax, not JSON objects:
+
+| Property | Correct | Wrong |
+|----------|---------|-------|
+| position | `"Vector3(0, 10, 0)"` | `{x: 0, y: 10, z: 0}` |
+| color | `"Color(1, 0.5, 0, 1)"` | `{r: 1, g: 0.5, b: 0}` |
+| mesh | `"BoxMesh"` | `"res://box.glb"` (use InstantiateScene for files) |
+
+### 4. Save When Done
+
+After making scene changes, call `summer_save_scene` to persist them. Without saving, changes exist only in the editor's memory and are lost on close.
+
+---
+
+## Scene Setup Patterns
+
+### Basic 3D Scene
+
+A minimal playable 3D scene needs:
+
+1. **Root:** Usually a Node3D named "World" (may already exist)
+2. **Camera:** `summer_add_node(parent="./World", type="Camera3D", name="MainCamera")`
+3. **Light:** `summer_add_node(parent="./World", type="DirectionalLight3D", name="Sun")`. Set `shadow_enabled: true`, `light_energy: 1.0`
+4. **Floor:** `summer_add_node(parent="./World", type="MeshInstance3D", name="Floor")`. Set `mesh: "BoxMesh"`, use `summer_set_resource_property` for BoxMesh `size` to make it flat (e.g., `Vector3(20, 0.2, 20)`)
+
+### Player with Physics
+
+For a CharacterBody3D player:
+
+1. Add `CharacterBody3D` named "Player"
+2. Add child `CollisionShape3D` under Player
+3. Set the shape: `summer_set_prop(path="./Player/CollisionShape3D", key="shape", value="CapsuleShape3D")`
+4. Set capsule size: `summer_set_resource_property(nodePath="./Player/CollisionShape3D", resourceProperty="shape", subProperty="radius", value="0.5")` and `height` similarly
+5. Attach a script (user may need to edit in external editor) or use `summer_connect_signal` for input
+
+### UI Layout
+
+For menus and HUD:
+
+1. Add `Control` or `CanvasLayer` as root for UI
+2. Add `MarginContainer`, `VBoxContainer`, or `HBoxContainer` for layout
+3. Add `Button`, `Label`, etc. as children
+4. Use `summer_connect_signal` to wire `pressed` to handler methods
+
+---
+
+## Importing Assets
+
+### Single Asset
+
+1. `summer_import_from_url(url="https://example.com/tree.glb")`. Path is auto-inferred from filename.
+2. Or specify path: `summer_import_from_url(url="...", path="res://assets/tree.glb")`
+3. After import, add to scene: `summer_instantiate_scene(parent="./World", scene="res://assets/tree.glb", name="Tree1")`
+
+### Multiple Assets
+
+Use `summer_import_from_url_batch` with an array of `{url, path}`. One scan after all downloads. Faster than importing one by one.
+
+---
+
+## Debugging Workflow
+
+### Check for Errors
+
+1. **First:** `summer_get_diagnostics`. Tells you if there are console errors, debugger errors, or warnings.
+2. **If console issues:** `summer_get_console` with optional `filter` or `type`
+3. **If runtime issues:** `summer_get_debugger_errors` (game must have been run)
+
+### Run and Inspect
+
+1. `summer_play`. Start the game.
+2. Wait a moment for the game to load
+3. `summer_game_snapshot`. Capture what the player sees (base64 image).
+4. `summer_get_diagnostics`. Check for runtime errors.
+5. `summer_stop`. Stop before making scene changes.
+
+<Warning>
+**Stop before editing.** Some scene operations require the game to be stopped. Call `summer_stop` before adding/removing nodes or changing properties.
+</Warning>
+
+---
+
+## Input and Project Settings
+
+### Input Actions
+
+`summer_input_map_bind` creates an action and binds events:
+
+```
+name: "jump"
+events: [{ type: "key", key: "Space" }]
+```
+
+For WASD movement:
+
+```
+name: "move_forward"
+events: [{ type: "key", key: "W" }]
+```
+
+### Main Scene
+
+`summer_project_setting(key="application/run/main_scene", value="res://main.tscn")`
+
+---
+
+## Common Pitfalls
+
+1. **Wrong path format:** Use `./World/Player`, not `World/Player` or `/World/Player`
+2. **Game running during edits:** Stop the game with `summer_stop` before scene changes
+3. **Vector/Color as JSON:** Use `"Vector3(0, 10, 0)"` not `{x:0, y:10, z:0}`
+4. **Missing save:** Call `summer_save_scene` after changes you want to keep
+5. **InstantiateScene vs SetProp mesh:** Use `InstantiateScene` for .tscn/.glb files; use `SetProp` with `mesh` for built-in meshes (BoxMesh, SphereMesh, etc.)
+
+---
+
+## Tool Selection Quick Reference
+
+| Task | Tool |
+|------|------|
+| Add object | `summer_add_node` |
+| Move/scale/rotate | `summer_set_prop` (position, scale, rotation_degrees) |
+| Set mesh type | `summer_set_prop` (mesh: "BoxMesh", etc.) |
+| Set collision size | `summer_set_resource_property` (shape → size/radius/height) |
+| Set material color | `summer_set_resource_property` (material_override → albedo_color) |
+| Add prefab/model | `summer_instantiate_scene` |
+| Import from URL | `summer_import_from_url` or `summer_import_from_url_batch` |
+| Wire up button | `summer_connect_signal` (emitter, signal: "pressed", receiver, method) |
+| Check errors | `summer_get_diagnostics` |
+| Run game | `summer_play` → `summer_game_snapshot` → `summer_stop` |
+| Save scene | `summer_save_scene` |
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Tools Reference"
+    icon="wrench"
+    href="/mcp/tools-reference"
+  >
+    Full parameter reference for all 23 tools
+  </Card>
+  <Card
+    title="MCP Setup"
+    icon="plug"
+    href="/mcp/setup"
+  >
+    Connect your IDE to Summer Engine
+  </Card>
+</CardGroup>
+
+---
+
+Need help or have questions? Reach out to our founders at [founders@summerengine.com](mailto:founders@summerengine.com) or join our community on [Discord](https://discord.gg/yUpgtxnZky) for fast responses.

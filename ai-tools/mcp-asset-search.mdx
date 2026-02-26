@@ -1,0 +1,162 @@
+---
+title: "MCP Asset Search"
+description: "Search and import 25,000+ game assets from your IDE using AI-powered hybrid search"
+icon: "search"
+---
+
+## Overview
+
+The Asset Search MCP tools let AI agents (running in Cursor, Claude Code, Windsurf, or any MCP-compatible IDE) discover and import game assets directly into your Summer Engine project. Instead of switching to the Summer app to browse the asset store, you describe what you need in natural language and the agent finds it, imports it, and optionally adds it to your scene.
+
+**What makes it powerful:** Hybrid search combines keyword matching with semantic understanding. A query like "sci-fi weapon" finds assets named "Blaster A" *and* assets described as "futuristic gun" or "space shooter." Results are diversified across asset packs so you get variety, not ten variations of the same model.
+
+<Info>
+**Pro subscription required.** Asset search via MCP is a Pro feature. Run `summer login` to authenticate. Free users can use all other MCP tools (scene editing, project settings, import from URL) without restriction.
+</Info>
+
+## Prerequisites
+
+1. **Summer Engine** installed and running (for import and scene placement)
+2. **MCP configured** in your IDE to use the Summer Engine MCP server
+3. **Logged in** with a Pro account: `summer login`
+4. **Scene open** in the editor (for adding assets to the scene tree)
+
+## Tools
+
+### summer_search_assets
+
+Searches the asset library by description. Returns asset names, types, preview URLs, and import-ready file URLs. Use this when you need to explore options before committing to an import, or when the user asks "what trees do you have?" or "show me some low-poly characters."
+
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `query` | string | *required* | Natural language search, e.g. "low-poly tree", "wooden crate", "sci-fi weapon" |
+| `assetType` | enum | `"all"` | Filter: `2d_image`, `animation`, `3d_model`, `audio`, `music`, or `all` |
+| `limit` | number | `10` | Max results (1–20) |
+
+**Example responses:**
+
+```json
+{
+  "assets": [
+    {
+      "id": "abc123",
+      "title": "Tree Oak",
+      "type": "3d_model",
+      "fileUrl": "https://res.cloudinary.com/.../tree-oak.glb",
+      "thumbnailUrl": "https://res.cloudinary.com/.../preview.png",
+      "pack": "Nature Kit",
+      "similarity": 0.87
+    }
+  ],
+  "count": 10,
+  "summary": "3 from Nature Kit (3d model), 2 from Forest Pack (3d model), ...",
+  "message": "Found 10 assets matching \"low-poly tree\""
+}
+```
+
+**When to use:** Before importing, when the user wants to see options, or when you need to pick the best match from several results.
+
+---
+
+### summer_import_asset
+
+Searches the asset library and imports the best match in one step. Use when the user's intent is clear: "Add a tree to the scene," "Import a wooden barrel," "Put a low-poly character in ./World."
+
+**Parameters:**
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `query` | string | *required* | What to find, e.g. "low-poly tree", "wooden crate" |
+| `parent` | string | *optional* | Parent node path to add the asset under, e.g. `./World`. If omitted, only imports (no scene placement) |
+| `assetType` | enum | `"3d_model"` | Preferred type: `2d_image`, `animation`, `3d_model`, `audio`, `music`, or `all` |
+
+**Behavior:**
+
+1. Searches the library (up to 5 results)
+2. Picks the top match by relevance
+3. Downloads and imports the file into the project (triggers the engine's import pipeline)
+   - **Kenney 3D assets:** Imports texture first (`Textures/colormap.png`), then the GLB, using pack-scoped paths (`res://assets/models/kenney/{packSlug}/`). This prevents texture collisions when multiple packs are imported. Each pack keeps its own texture folder.
+4. If `parent` is provided and the asset is a 3D model, instantiates it under that node
+
+**Example success response:**
+
+```json
+{
+  "success": true,
+  "asset": "Tree Oak",
+  "type": "3d_model",
+  "importedTo": "res://assets/models/kenney/nature-kit/tree-oak.glb",
+  "addedToScene": true,
+  "parent": "./World",
+  "message": "Imported \"Tree Oak\" and added to ./World"
+}
+```
+
+**When to use:** When the user wants a specific asset added and the description is unambiguous. For compound requests ("add trees, rocks, and a fence"), call `summer_import_asset` multiple times or use `summer_search_assets` first to curate, then import selected assets via `summer_import_from_url`.
+
+---
+
+## Search Quality Tips
+
+The hybrid search works best when you match how assets are described in the library:
+
+- **Be specific:** "low-poly wooden crate" beats "crate"
+- **Use style terms:** "cartoon", "realistic", "stylized", "sci-fi", "fantasy"
+- **Mention context:** "platformer tiles", "FPS weapon", "RPG character"
+- **Pack names help:** If you know a pack (e.g. "Nature Kit"), include it
+
+Results are diversified: you won't get ten assets from the same pack. Each result includes a `pack` field so you can group or filter by asset pack.
+
+---
+
+## Error Handling
+
+| Error | Cause | Resolution |
+|-------|-------|------------|
+| `Not logged in` | No auth token | Run `summer login` |
+| `upgrade_required` | Free plan | Upgrade to Pro at [summerengine.com/dashboard](https://summerengine.com/dashboard) |
+| `Invalid or expired token` | Token expired or invalid | Run `summer login --force` |
+| `No results` | Query didn't match any assets | Try different keywords or broaden the search |
+| `Engine error` | Summer Engine not running | Open Summer Engine first |
+| `Import failed` | Download or import pipeline failed | Check engine logs; verify asset URL is accessible |
+
+---
+
+## Workflow Examples
+
+### Single asset, add to scene
+
+User: "Add a low-poly tree to my World node"
+
+Agent calls: `summer_import_asset({ query: "low-poly tree", parent: "./World", assetType: "3d_model" })`
+
+### Browse before importing
+
+User: "What sci-fi weapons do you have?"
+
+Agent calls: `summer_search_assets({ query: "sci-fi weapon", assetType: "3d_model", limit: 15 })`
+
+Agent presents results, user picks one. Agent then uses `summer_import_from_url` with the chosen asset's `fileUrl` and `summer_instantiate_scene` to add it.
+
+### Multiple assets, same type
+
+User: "Add some wooden crates and barrels to the warehouse"
+
+Agent calls `summer_import_asset` twice (or uses `summer_search_assets` + `summer_import_from_url_batch` for bulk import).
+
+---
+
+## Asset Library
+
+The search covers **25,000+ assets** from the Kenney asset collection: 3D models, 2D sprites, UI elements, and audio. All assets are CC0 (public domain) and free to use in commercial projects. See [Art System Licensing](/art-system/licensing) for details.
+
+<CardGroup cols={2}>
+  <Card title="Summer Studio" icon="palette" href="/art-system/overview">
+    Create, browse, and manage assets in the Summer app
+  </Card>
+  <Card title="MCP Setup" icon="plug" href="/mcp/setup">
+    Configure MCP in Cursor, Claude Code, and other IDEs
+  </Card>
+</CardGroup>

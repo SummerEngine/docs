@@ -1,0 +1,336 @@
+---
+title: "Tools Reference"
+description: "All 23 Summer Engine MCP tools with parameters, value formats, and examples."
+icon: "wrench"
+---
+
+## Overview
+
+The Summer Engine MCP server exposes 23 tools in three categories: **Scene** (10), **Debug** (9), and **Project** (4). All tools require the engine to be running with a project open. If the engine isn't running, tools return a clear error message.
+
+**Critical: Value formats.** Properties like `position`, `rotation_degrees`, and `mesh` use engine string syntax, not raw JSON objects. See [Value Formats](#value-formats) below.
+
+---
+
+## Value Formats
+
+When setting properties via `summer_set_prop` or `summer_set_resource_property`, use these formats:
+
+| Type | Format | Example |
+|------|--------|---------|
+| Vector3 | `"Vector3(x, y, z)"` | `"Vector3(0, 10, 0)"` |
+| Vector2 | `"Vector2(x, y)"` | `"Vector2(100, 200)"` |
+| Color | `"Color(r, g, b, a)"` RGBA 0.0 to 1.0 | `"Color(1, 0.5, 0, 1)"` |
+| Transform3D | `"Transform3D(...)"` basis + origin | `"Transform3D(1,0,0, 0,1,0, 0,0,1, 0,5,0)"` |
+| Resource | Class name, auto-instantiated | `"BoxMesh"`, `"SphereMesh"`, `"StandardMaterial3D"` |
+| Number | Native JSON | `1.5`, `42` |
+| Boolean | Native JSON | `true`, `false` |
+| String | Native JSON | `"hello"` |
+
+<Warning>
+**Wrong:** `"position": {x: 0, y: 10, z: 0}` stays Dictionary, fails  
+**Right:** `"position": "Vector3(0, 10, 0)"` parses to Vector3
+</Warning>
+
+---
+
+## Scene Tools (10)
+
+### summer_add_node
+
+Add a new node to the scene tree.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `parent` | string | Yes | Parent path, e.g. `./World` or `./World/Enemies` |
+| `type` | string | Yes | Node type, e.g. `MeshInstance3D`, `CharacterBody3D` |
+| `name` | string | Yes | Name for the new node |
+
+**Common node types:** Node3D, MeshInstance3D, CharacterBody3D, Camera3D, DirectionalLight3D, CollisionShape3D, Area3D, Node2D, Sprite2D, Control, Button, VBoxContainer, AudioStreamPlayer.
+
+**Example:** `summer_add_node(parent="./", type="DirectionalLight3D", name="Sun")`
+
+---
+
+### summer_set_prop
+
+Set a property on a node. Primary way to configure nodes after adding them.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `path` | string | Yes | Node path, e.g. `./World/Player` |
+| `key` | string | Yes | Property name, e.g. `position`, `mesh`, `visible` |
+| `value` | string \| number \| boolean | Yes | Value in engine string format for complex types |
+
+**Common properties:** `position`, `rotation_degrees`, `scale`, `visible`, `mesh`, `shadow_enabled`, `light_energy`, `fov`.
+
+**Example:** `summer_set_prop(path="./World/Player", key="position", value="Vector3(0, 1, 0)")`
+
+---
+
+### summer_set_resource_property
+
+Set a nested property on a resource attached to a node (e.g., shape size, material color).
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `nodePath` | string | Yes | Node path |
+| `resourceProperty` | string | Yes | Resource property on node, e.g. `shape`, `mesh`, `material_override` |
+| `subProperty` | string | Yes | Property on the resource, e.g. `size`, `radius`, `albedo_color` |
+| `value` | string \| number \| boolean | Yes | Value in engine string format |
+
+**Example:** `summer_set_resource_property(nodePath="./Player/CollisionShape3D", resourceProperty="shape", subProperty="size", value="Vector3(1, 2, 1)")`
+
+---
+
+### summer_remove_node
+
+Remove a node from the scene tree. All children are removed. Cannot remove root. Supports undo.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `path` | string | Yes | Node path to remove |
+
+---
+
+### summer_save_scene
+
+Save the current scene to disk. Call after making changes to persist them.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `path` | string | No | Save-as path for creating a new scene file, e.g. `res://levels/level2.tscn` |
+
+---
+
+### summer_open_scene
+
+Open a scene file in the editor. Use to switch between scenes.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `path` | string | Yes | Scene path, e.g. `res://main.tscn` |
+
+---
+
+### summer_instantiate_scene
+
+Add an existing scene or 3D model as a child node. Use for .tscn prefabs or .glb/.gltf models.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `parent` | string | Yes | Parent node path |
+| `scene` | string | Yes | Scene/model path, e.g. `res://player.tscn` or `res://models/tree.glb` |
+| `name` | string | No | Override the instance name |
+
+---
+
+### summer_connect_signal
+
+Connect a signal between two nodes. The receiver must have a script with the specified method.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `emitter` | string | Yes | Node that fires the signal |
+| `signal` | string | Yes | Signal name, e.g. `body_entered`, `pressed`, `timeout` |
+| `receiver` | string | Yes | Node with the handler script |
+| `method` | string | Yes | Method name in receiver's script |
+
+**Common signals:** `body_entered`, `body_exited`, `pressed`, `timeout`, `area_entered`, `input_event`.
+
+---
+
+### summer_select_node
+
+Select a node in the editor's scene tree and show it in the inspector.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `nodePath` | string | Yes | Node path to select |
+| `scenePath` | string | No | Open this scene first, then select the node |
+
+---
+
+### summer_replace_node
+
+Replace a node with a different type or scene, preserving position and children.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `path` | string | Yes | Node path to replace |
+| `type` | string | No | New node type, e.g. `RigidBody3D` |
+| `scene` | string | No | Scene to replace with, e.g. `res://enemies/boss.tscn` |
+
+---
+
+## Debug Tools (9)
+
+### summer_get_diagnostics
+
+Quick overview of errors and warnings from the editor console and runtime debugger. **Call this first** before diving into console or debugger details.
+
+| Parameters | None |
+|------------|------|
+
+**Workflow:** `summer_get_diagnostics` → if errors, use `summer_get_console` or `summer_get_debugger_errors` → fix → `summer_get_diagnostics` again to verify.
+
+---
+
+### summer_get_console
+
+Read recent messages from the editor's Output panel. Use after diagnostics indicate console issues.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `max_lines` | number | No | Max lines to return (default 100) |
+| `filter` | string | No | Only return lines containing this string |
+| `type` | enum | No | Filter by: `error`, `warning`, `std`, `editor` |
+
+---
+
+### summer_clear_console
+
+Clear the editor's Output panel. Useful before running the game for a clean slate.
+
+| Parameters | None |
+|------------|------|
+
+---
+
+### summer_get_debugger_errors
+
+Read runtime errors and warnings from the debugger (null refs, missing nodes, physics errors). Different from console. These occur while the game is running.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `max_errors` | number | No | Max errors to return (default 50) |
+| `include_stack` | boolean | No | Include stack traces |
+
+---
+
+### summer_play
+
+Start running the game in the engine. Use `summer_game_snapshot` to see what the player sees.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `scene` | string | No | Scene to run instead of main scene |
+
+---
+
+### summer_stop
+
+Stop the running game. Call before making scene changes. Some operations require the game to be stopped.
+
+| Parameters | None |
+|------------|------|
+
+---
+
+### summer_is_running
+
+Check if the game is currently running. Returns the active scene path if running.
+
+| Parameters | None |
+|------------|------|
+
+---
+
+### summer_viewport_snapshot
+
+Capture a screenshot of the editor's 3D/2D viewport (editor camera, not game camera).
+
+| Parameters | None |
+|------------|------|
+
+---
+
+### summer_game_snapshot
+
+Capture a screenshot of the **running game** (player's view). Call `summer_play` first. Returns base64 JPEG.
+
+| Parameters | None |
+|------------|------|
+
+---
+
+## Project Tools (4)
+
+### summer_project_setting
+
+Set a project setting in project.godot.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `key` | string | Yes | Setting key path, e.g. `application/config/name` |
+| `value` | string \| number \| boolean | Yes | Setting value |
+
+**Common settings:** `application/config/name`, `application/run/main_scene`, `display/window/size/viewport_width`, `physics/3d/default_gravity`.
+
+---
+
+### summer_input_map_bind
+
+Set up input controls. Creates the action if it doesn't exist, then binds events.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `name` | string | Yes | Action name, e.g. `jump`, `move_forward` |
+| `events` | array | Yes | Array of input event objects |
+
+**Event format:** `{ type: "key", key: "W" }` or `{ type: "mouse_button", button: 1 }` (1=left, 2=right, 3=middle).
+
+---
+
+### summer_get_scene_tree
+
+Get the full scene tree structure of the currently open scene. Returns all nodes with types, paths, and children. Use to understand the scene before making changes.
+
+| Parameters | None |
+|------------|------|
+
+---
+
+### summer_import_from_url
+
+Download a file from a URL and import it into the project. Triggers the engine's full import pipeline. Use for .glb, .gltf, .obj, .png, .ogg, etc.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `url` | string | Yes | HTTP(S) URL to download from |
+| `path` | string | No | Target path in project. Auto-inferred from URL if omitted. |
+
+---
+
+### summer_import_from_url_batch
+
+Download multiple files from URLs in one operation. Single filesystem scan after all downloads. Faster than importing one at a time.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `imports` | array | Yes | Array of `{url, path}` objects |
+
+---
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Building a Game"
+    icon="gamepad-2"
+    href="/mcp/building-a-game"
+  >
+    Step-by-step: how an AI builds a full game with these tools
+  </Card>
+  <Card
+    title="MCP Setup"
+    icon="plug"
+    href="/mcp/setup"
+  >
+    Connect Cursor, Claude Code, or Windsurf
+  </Card>
+</CardGroup>
+
+---
+
+Need help or have questions? Reach out to our founders at [founders@summerengine.com](mailto:founders@summerengine.com) or join our community on [Discord](https://discord.gg/yUpgtxnZky) for fast responses.

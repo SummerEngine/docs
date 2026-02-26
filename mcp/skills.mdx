@@ -1,0 +1,112 @@
+---
+title: "Skills"
+description: "Best-practice guides for AI agents building games with Summer Engine. Install GDScript patterns, FPS controllers, lighting, and more."
+icon: "book-open"
+---
+
+## What Are Skills?
+
+Skills are downloadable best-practice guides that make AI agents better at game development. When you or an AI agent builds a game with Summer Engine's MCP tools, skills provide patterns for GDScript, scene composition, character controllers, lighting, and UI. Think of them as Cursor rules or Claude Code skills, but specialized for game development.
+
+**How they work:** Install a skill with `summer skills install <name>`. The skill (a markdown file with instructions) is copied to `~/.summer/skills/<name>/`. AI agents can read it when relevant—for example, when building an FPS game, the agent reads the fps-controller skill and follows its scene structure and GDScript patterns.
+
+Skills follow the [Agent Skills](https://agentskills.io/) open standard, so they're compatible with Cursor, Claude Code, and other tools that support the format.
+
+## Quick Start
+
+```bash
+# List available skills
+summer skills list
+
+# Install a skill
+summer skills install fps-controller
+
+# Install all skills at once
+summer skills install --all
+
+# For Claude Code: install so Claude auto-discovers it
+summer skills install fps-controller --as-claude-skill
+
+# For Cursor: install so Cursor auto-discovers it
+summer skills install fps-controller --as-cursor-skill
+
+# Preview a skill
+summer skills info gdscript-patterns
+```
+
+## Available Skills
+
+| Skill | Use when |
+|-------|----------|
+| **gdscript-patterns** | Writing GDScript, attaching scripts, connecting signals, defining exports |
+| **scene-composition** | Building scenes, organizing nodes, creating reusable prefabs |
+| **fps-controller** | Building an FPS game, first-person movement, 3D character with WASD + mouse |
+| **3d-lighting** | Setting up 3D lighting, environment, sky, shadows |
+| **ui-basics** | Building menus, HUDs, health bars, responsive UI |
+
+### gdscript-patterns
+
+Common GDScript idioms: type hints, signals, exports, lifecycle methods (`_ready`, `_physics_process`), node access, health systems, input handling, simple state machines. Aligns with Godot 4.x and MCP scene operations.
+
+### scene-composition
+
+Node hierarchy conventions, when to use sub-scenes vs inline nodes, parent path format (`./World/Player`), InstantiateScene vs AddNode, save conventions, common mistakes.
+
+### fps-controller
+
+First-person character controller: CharacterBody3D + CollisionShape3D (CapsuleShape3D) + Camera3D. InputMap actions for WASD and jump. GDScript for movement and mouse look. MCP ops for setup.
+
+### 3d-lighting
+
+DirectionalLight3D (sun), OmniLight3D (point lights), WorldEnvironment, shadow settings, light energy and color. Godot string format for Color values.
+
+### ui-basics
+
+Control hierarchy (MarginContainer, VBoxContainer, HBoxContainer), Label, Button, ProgressBar, anchors for responsive layout, connecting button signals.
+
+## For AI Agents
+
+When building a game, install the relevant skill first:
+
+```
+summer skills install fps-controller
+```
+
+Then read the skill file at `~/.summer/skills/fps-controller/SKILL.md` (or have it loaded into context). Follow the patterns for scene structure, property values, and GDScript. The skill references MCP tools (`summer_add_node`, `summer_set_prop`, etc.) and Godot value formats (`Vector3(0, 10, 0)`, `Color(1, 0.5, 0, 1)`).
+
+## File Locations
+
+| Path | Purpose |
+|------|---------|
+| `~/.summer/skills/<name>/` | Default install (from `summer skills install`) |
+| `~/.claude/skills/<name>/` | With `--as-claude-skill` (Claude Code auto-discovery) |
+| `~/.cursor/skills/<name>/` | With `--as-cursor-skill` (Cursor auto-discovery) |
+
+Override the install location with `SUMMER_SKILLS_DIR`:
+
+```bash
+SUMMER_SKILLS_DIR=/path/to/skills summer skills install fps-controller
+```
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="CLI Reference"
+    icon="terminal"
+    href="/mcp/cli-reference"
+  >
+    All CLI commands including skills
+  </Card>
+  <Card
+    title="Building a Game"
+    icon="gamepad-2"
+    href="/mcp/building-a-game"
+  >
+    Step-by-step MCP workflow for AI agents
+  </Card>
+</CardGroup>
+
+---
+
+Need help or have questions? Reach out to our founders at [founders@summerengine.com](mailto:founders@summerengine.com) or join our community on [Discord](https://discord.gg/yUpgtxnZky) for fast responses.

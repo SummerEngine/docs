@@ -1,58 +1,81 @@
 ---
 title: "Welcome to Summer Engine"
-description: "Learn about Summer Engine and how to get started"
+description: "Make games with AI, Cursor, Claude Code, Windsurf. Summer Engine MCP, CLI, API."
+icon: "sparkles"
 ---
 
 Summer Engine is an AI game engine and coding agent, built to make it as fun to make games as it is to play them. Describe what you want to build or change in natural language and Summer Engine will write the code for you and help you create the first game assets for your game.
 Instead of bouncing between ChatGPT, VS Code, and your game engine, you work in one unified environment where AI understands your entire game project and can modify scenes, code, and assets through natural language commands.
 
 **What makes Summer Engine different:**
-- **Works with Godot**: Works with existing tutorials, libraries, and extensions out of the box from Godot
-- **Godot forward and backward compatible**: Open your existing Godot projects and keep working directly inside them with Summer Engine. Return to Godot whenever you want.
+- **Works with existing projects**: Open your projects and keep working. Tutorials, libraries, and extensions work out of the box.
+- **No lock-in**: Your projects stay yours. Open them in Summer Engine or your preferred editor anytime.
 - **Project Intelligence**: AI understands your scenes, scripts, assets, and game logic
 - **Safe Operations**: Changes go through safe APIs, so nothing breaks unexpectedly
 - **Privacy-First**: Your code stays on your machine by default
+
+## How Do I Make Games with AI?
+
+One row per solution. Easy to scan top to bottom.
+
+<CardGroup cols={1}>
+  <Card title="How do I make a game with Cursor?" icon="mouse-pointer" href="/mcp/cursor">
+    Add Summer Engine to Cursor. One-click or manual config. Full page.
+  </Card>
+  <Card title="How do I make a game with Claude Code?" icon="message-square" href="/mcp/claude-code">
+    Add Summer Engine to Claude Code. Full setup guide.
+  </Card>
+  <Card title="How do I make a game with Windsurf?" icon="wind" href="/mcp/windsurf">
+    Add Summer Engine to Windsurf. Full setup guide.
+  </Card>
+  <Card title="How do I use the Summer Engine CLI?" icon="terminal" href="/mcp/cli">
+    Install, login, create, run. CLI docs and reference.
+  </Card>
+  <Card title="API Reference" icon="book" href="/api-reference/mcp">
+    MCP API, tools reference, and quick links.
+  </Card>
+</CardGroup>
 
 ## Quickstarts
 
 Get started in 5 minutes. Pick your path:
 
 <CardGroup cols={1}>
-  <Card title="How do I make a game with just AI?" icon="sparkles" href="/quickstarts/ai-game-dev">
-    AI game dev: build a complete game with full AI assistance, no coding required
+  <Card title="How do I make a game with Summer Agent?" icon="sparkles" href="/quickstarts/ai-game-dev">
+    Use Summer Agent in Summer Engine: build a complete game with full AI assistance, no coding required
   </Card>
   <Card title="How do I start a fresh project?" icon="rocket" href="/quickstarts/fresh-project">
-    Start from scratch and build your first AI-powered game in minutes
+    Start from scratch and build your first game with Summer Agent in minutes
   </Card>
   <Card title="I have an existing project. How do I add Summer Engine?" icon="folder" href="/quickstarts/existing-godot">
-    Open your existing project in Summer Engine and get AI assistance immediately
+    Open your existing project in Summer Engine and get Summer Agent assistance immediately
   </Card>
-  <Card title="How do I make a PC game with AI?" icon="monitor" href="/quickstarts/pc-game">
-    Build and export a Windows game with AI assistance
+  <Card title="How do I make a PC game with Summer Agent?" icon="monitor" href="/quickstarts/pc-game">
+    Build and export a Windows game with Summer Agent
   </Card>
-  <Card title="How do I make a Mac game with AI?" icon="apple" href="/quickstarts/mac-game">
-    Build and export a macOS game with AI assistance
+  <Card title="How do I make a Mac game with Summer Agent?" icon="apple" href="/quickstarts/mac-game">
+    Build and export a macOS game with Summer Agent
   </Card>
-  <Card title="How do I make a web game with AI?" icon="globe" href="/quickstarts/web-game">
-    Create a browser-playable game with AI assistance
+  <Card title="How do I make a web game with Summer Agent?" icon="globe" href="/quickstarts/web-game">
+    Create a browser-playable game with Summer Agent
   </Card>
-  <Card title="How do I make an iOS game with AI?" icon="smartphone" href="/quickstarts/ios-game">
-    Build and export an iPhone or iPad game with AI assistance
+  <Card title="How do I make an iOS game with Summer Agent?" icon="smartphone" href="/quickstarts/ios-game">
+    Build and export an iPhone or iPad game with Summer Agent
   </Card>
-  <Card title="How do I make an Android game with AI?" icon="smartphone" href="/quickstarts/android-game">
-    Build and export an Android game with AI assistance
+  <Card title="How do I make an Android game with Summer Agent?" icon="smartphone" href="/quickstarts/android-game">
+    Build and export an Android game with Summer Agent
   </Card>
-  <Card title="How do I make a console game with AI?" icon="gamepad-2" href="/quickstarts/console-game">
-    Build a Nintendo Switch, PlayStation, or Xbox game with AI assistance
+  <Card title="How do I make a console game with Summer Agent?" icon="gamepad-2" href="/quickstarts/console-game">
+    Build a Nintendo Switch, PlayStation, or Xbox game with Summer Agent
   </Card>
-  <Card title="How do I make a PlayStation game with AI?" icon="gamepad-2" href="/quickstarts/playstation-game">
-    Build and export a PlayStation game with AI assistance
+  <Card title="How do I make a PlayStation game with Summer Agent?" icon="gamepad-2" href="/quickstarts/playstation-game">
+    Build and export a PlayStation game with Summer Agent
   </Card>
   <Card title="How do I migrate from Unity to Summer Engine?" icon="arrow-right" href="/quickstarts/unity-migration">
-    Rebuild your Unity project in Summer Engine with AI assistance
+    Rebuild your Unity project in Summer Engine with Summer Agent
   </Card>
   <Card title="How do I migrate from Unreal to Summer Engine?" icon="arrow-right" href="/quickstarts/unreal-migration">
-    Rebuild your Unreal project in Summer Engine with AI assistance
+    Rebuild your Unreal project in Summer Engine with Summer Agent
   </Card>
 </CardGroup>
 
@@ -61,6 +84,9 @@ Get started in 5 minutes. Pick your path:
 Deep dives into Summer Engine's capabilities:
 
 <CardGroup cols={2}>
+  <Card title="MCP: Build with Cursor, Claude, Windsurf" icon="plug" href="/mcp">
+    How to make games with Summer Engine from your IDE. MCP setup, CLI, API reference.
+  </Card>
   <Card title="AI Operations" icon="brain" href="/ai-tools/operations">
     How Summer Engine modifies your project safely through natural language
   </Card>
@@ -176,11 +202,11 @@ Summer Engine removes boilerplate, accelerates iteration, and handles the hard p
     Engine‑level edits with full undo. No surprise file rewrites.
   </Card>
   <Card
-    title="Godot Compatible"
+    title="Open Existing Projects"
     icon="check"
     href="/essentials/installation"
   >
-    Open your Godot projects as‑is. Keep your plugins, docs, and muscle memory.
+    Open your projects as-is. Keep your plugins, docs, and muscle memory.
   </Card>
 </Columns>
 

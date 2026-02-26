@@ -1,0 +1,154 @@
+---
+title: "MCP Setup"
+description: "Connect Cursor, Claude Code, or Windsurf to Summer Engine. Build games from your favorite AI-powered IDE."
+icon: "settings"
+---
+
+## Build Games from Your IDE
+
+Summer Engine's MCP (Model Context Protocol) integration lets you control the engine directly from Cursor, Claude Code, Windsurf, or any MCP-compatible AI tool. Instead of switching between your IDE and the Summer Engine editor, you stay in one place: describe what you want, and the AI modifies your game scenes, adds nodes, sets up physics, and runs your project, all through natural language.
+
+**What this means in practice:** Open a Summer Engine project, add the MCP config to your IDE, and ask "Add a Camera3D and DirectionalLight3D to the scene." The nodes appear in the engine. Ask "Import a low-poly tree from this URL and add it to the World node." The asset downloads, imports, and lands in your scene tree. The AI has 23 focused tools for scene manipulation, debugging, project settings, and asset import. No copy-paste, no context switching.
+
+## Why Use MCP?
+
+### One Environment, Full Control
+
+You already use Cursor or Claude Code for coding. MCP extends that workflow to game development. The AI understands your Summer Engine project: it can read the scene tree, inspect properties, run the game, capture screenshots, and fix errors, all without leaving your editor.
+
+### Same Operations as the Built-in Chat
+
+The MCP tools use the same engine operations as Summer Engine's integrated chat. AddNode, SetProp, SaveScene, ImportFromUrl. They're identical. The difference is where you type: in your IDE instead of the engine's chat panel. Undo works the same. Changes are just as safe.
+
+### Lazy Connection
+
+The MCP server starts immediately. It doesn't require the engine to be running upfront. When you first call a tool, it connects to the engine. If the engine isn't running, you get a clear error: "Summer Engine is not running. Open it first, or run: npx summer-engine run." Start the engine, try again, and it works. No crashes, no hanging.
+
+## Prerequisites
+
+Before setting up MCP, you need:
+
+1. **Summer Engine**: Either the desktop app (from [summerengine.com](https://summerengine.com)) or installed via `npx summer-engine install`
+2. **Node.js**: For running the MCP server via `npx summer-engine mcp` (Node 18+)
+3. **A Summer Engine project**: Open it in the engine so the local API server is active
+
+The engine runs a local HTTP server on `localhost:6550` when it's open. The MCP server connects to it using a token stored in `~/.summer/api-token` (created automatically when the engine starts). No API keys to manage. It just works.
+
+## Quick Setup by IDE
+
+<CardGroup cols={3}>
+  <Card
+    title="Cursor"
+    icon="cursor"
+    href="/mcp/cursor"
+  >
+    One-click or manual config. Most popular choice for AI-assisted development.
+  </Card>
+  <Card
+    title="Claude Code"
+    icon="message-square"
+    href="/mcp/claude-code"
+  >
+    Add Summer Engine to Claude Code's MCP configuration.
+  </Card>
+  <Card
+    title="Windsurf"
+    icon="wind"
+    href="/mcp/windsurf"
+  >
+    Configure Windsurf to use Summer Engine's MCP tools.
+  </Card>
+</CardGroup>
+
+## Manual Configuration
+
+If your IDE supports MCP but isn't listed above, add this to your MCP config file:
+
+<CodeGroup>
+
+```json Cursor (.cursor/mcp.json)
+{
+  "mcpServers": {
+    "summer-engine": {
+      "command": "npx",
+      "args": ["summer-engine", "mcp"]
+    }
+  }
+}
+```
+
+```json Claude Code (~/.claude/claude_code_config.json)
+{
+  "mcpServers": {
+    "summer-engine": {
+      "command": "npx",
+      "args": ["summer-engine", "mcp"]
+    }
+  }
+}
+```
+
+</CodeGroup>
+
+<Tip>
+**No global install required.** Using `npx summer-engine mcp` runs the server on demand. For faster startup, you can install globally: `npm install -g summer-engine`, then use `"args": ["summer", "mcp"]` instead.
+</Tip>
+
+## Verify It Works
+
+1. **Start Summer Engine**: Open your project in the engine (or run `npx summer-engine run` from the project directory).
+2. **Restart your IDE**: So it picks up the new MCP config.
+3. **Check the MCP panel**: In Cursor: Settings > MCP. You should see "summer-engine" with 23 tools.
+4. **Ask the AI**: "Use Summer Engine to add a MeshInstance3D with a BoxMesh to the scene root. Name it TestCube."
+5. **Confirm in the engine**: The node should appear in the scene tree.
+
+If you get "Summer Engine is not running," the engine isn't open or the project isn't loaded. Start the engine and try again.
+
+## What the AI Can Do
+
+The MCP server exposes 23 tools in three categories:
+
+| Category | Tools | What they do |
+|----------|-------|--------------|
+| **Scene** | 10 tools | Add nodes, set properties, save/open scenes, connect signals, instantiate prefabs |
+| **Debug** | 9 tools | Run the game, capture screenshots, read console output, get diagnostics |
+| **Project** | 4 tools | Project settings, input mappings, scene tree, import assets from URLs |
+
+For a full reference with parameters and examples, see the [Tools Reference](/mcp/tools-reference). For a step-by-step guide on how an AI agent builds a complete game using these tools, see [Building a Game with MCP](/mcp/building-a-game).
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Cursor Setup"
+    icon="cursor"
+    href="/mcp/cursor"
+  >
+    Detailed Cursor configuration with one-click install
+  </Card>
+  <Card
+    title="CLI Reference"
+    icon="terminal"
+    href="/mcp/cli-reference"
+  >
+    All CLI commands: install, login, run, create, and more
+  </Card>
+  <Card
+    title="Tools Reference"
+    icon="wrench"
+    href="/mcp/tools-reference"
+  >
+    Every MCP tool with parameters and usage examples
+  </Card>
+  <Card
+    title="Building a Game"
+    icon="gamepad-2"
+    href="/mcp/building-a-game"
+  >
+    How an AI agent builds a full game using MCP
+  </Card>
+</CardGroup>
+
+---
+
+Need help or have questions? Reach out to our founders at [founders@summerengine.com](mailto:founders@summerengine.com) or join our community on [Discord](https://discord.gg/yUpgtxnZky) for fast responses.

@@ -25,7 +25,7 @@
   },
   "seo": {
     "metatags": {
-      "description": "Summer Engine documentation. The AI game engine built on Godot. Build games by describing them in natural language."
+      "description": "Summer Engine documentation. The AI game engine. Build games by describing them in natural language."
     }
   },
   "topbarLinks": [
@@ -42,6 +42,7 @@
     "tabs": [
       {
         "tab": "Docs",
+        "icon": "book-open",
         "groups": [
           {
             "group": "Getting Started",
@@ -63,6 +64,7 @@
           },
           {
             "group": "Essentials",
+            "icon": "circle-help",
             "pages": [
               "essentials/installation",
               "essentials/authentication",
@@ -76,19 +78,20 @@
             "pages": [
               "ai-tools/operations",
               "ai-tools/rag-search",
-              "ai-tools/subagents"
+              "ai-tools/subagents",
+              "ai-tools/mcp-asset-search"
             ]
           },
-                  {
-                    "group": "Summer Studio",
-                    "pages": [
-                      "art-system/overview",
-                      "art-system/ai-generation",
-                      "art-system/gallery",
-                      "art-system/collections",
-                      "art-system/licensing"
-                    ]
-                  },
+          {
+            "group": "Summer Studio",
+            "pages": [
+              "art-system/overview",
+              "art-system/ai-generation",
+              "art-system/gallery",
+              "art-system/collections",
+              "art-system/licensing"
+            ]
+          },
           {
             "group": "Engine Migration",
             "pages": [
@@ -104,7 +107,53 @@
         ]
       },
       {
+        "tab": "MCP",
+        "icon": "plug",
+        "groups": [
+          {
+            "group": "Overview",
+            "icon": "layout",
+            "pages": [
+              "mcp",
+              "mcp/setup"
+            ]
+          },
+          {
+            "group": "Setup",
+            "icon": "settings",
+            "pages": [
+              "mcp/cursor",
+              "mcp/claude-code",
+              "mcp/windsurf"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "mcp/tools-reference",
+              "mcp/building-a-game",
+              "mcp/skills"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "CLI",
+        "icon": "terminal",
+        "groups": [
+          {
+            "group": "CLI",
+            "pages": [
+              "mcp/cli",
+              "mcp/cli-reference",
+              "mcp/skills"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "Guides",
+        "icon": "book-open",
         "groups": [
           {
             "group": "Core Concepts",
@@ -137,6 +186,7 @@
       },
       {
         "tab": "Knowledge Base",
+        "icon": "help-circle",
         "groups": [
           {
             "group": "About Summer",
@@ -183,17 +233,19 @@
       },
       {
         "tab": "API Reference",
+        "icon": "code",
         "groups": [
           {
-            "group": "Model Context Protocol",
+            "group": "MCP",
             "pages": [
-              "api-reference/coming-soon"
+              "api-reference/mcp"
             ]
           }
         ]
       },
       {
         "tab": "Security & Privacy",
+        "icon": "shield",
         "groups": [
           {
             "group": "Data Protection",
@@ -256,6 +308,44 @@
       "github": "https://github.com/SummerEngine",
       "discord": "https://discord.gg/yUpgtxnZky"
     }
-  }
+  },
+  "redirects": [
+    {
+      "source": "/api-reference/coming-soon",
+      "destination": "/api-reference/mcp"
+    },
+    {
+      "source": "/ai-tools/mcp-setup",
+      "destination": "/mcp/setup"
+    },
+    {
+      "source": "/ai-tools/cursor-setup",
+      "destination": "/mcp/cursor"
+    },
+    {
+      "source": "/ai-tools/claude-code-setup",
+      "destination": "/mcp/claude-code"
+    },
+    {
+      "source": "/ai-tools/windsurf-setup",
+      "destination": "/mcp/windsurf"
+    },
+    {
+      "source": "/ai-tools/cli-reference",
+      "destination": "/mcp/cli-reference"
+    },
+    {
+      "source": "/ai-tools/tools-reference",
+      "destination": "/mcp/tools-reference"
+    },
+    {
+      "source": "/ai-tools/building-a-game",
+      "destination": "/mcp/building-a-game"
+    },
+    {
+      "source": "/cli",
+      "destination": "/mcp/cli"
+    }
+  ]
 }
 
