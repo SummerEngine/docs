@@ -124,7 +124,11 @@
             "pages": [
               "mcp/cursor",
               "mcp/claude-code",
-              "mcp/windsurf"
+              "mcp/windsurf",
+              "mcp/antigravity",
+              "mcp/codex",
+              "mcp/vscode",
+              "mcp/zed"
             ]
           },
           {

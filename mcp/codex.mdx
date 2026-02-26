@@ -1,0 +1,139 @@
+---
+title: "Codex Setup"
+description: "Add Summer Engine's MCP server to Codex. Build games with OpenAI's AI coding assistant."
+icon: "code"
+---
+
+## Summer Engine in Codex
+
+Codex is OpenAI's AI coding assistant that supports MCP (Model Context Protocol). With Summer Engine's integration, Codex can control your game engine: add nodes to scenes, set properties, import assets, run the game, and debug, all from within your coding workflow.
+
+This guide covers the configuration. Setup takes about a minute.
+
+## Prerequisites
+
+- **Codex**: OpenAI's AI coding assistant (CLI or IDE extension)
+- **Node.js**: For running the MCP server (Node 18+)
+- **Summer Engine**: Installed and running with your project open
+
+## Configuration
+
+Codex uses TOML configuration. The config file is:
+
+- **User-level:** `~/.codex/config.toml` (applies to all projects)
+- **Project-level:** `.codex/config.toml` in your project root (trusted projects only)
+
+You can configure via the CLI or by editing the config file directly.
+
+### Option 1: CLI (Recommended)
+
+Add Summer Engine with a single command:
+
+```bash
+codex mcp add summer-engine -- npx summer-engine mcp
+```
+
+### Option 2: Edit config.toml
+
+Create or edit `~/.codex/config.toml` and add:
+
+<CodeGroup>
+
+```toml New file (~/.codex/config.toml)
+[mcp_servers.summer-engine]
+command = "npx"
+args = ["summer-engine", "mcp"]
+```
+
+```toml Adding to existing config
+[mcp_servers.other-server]
+command = "npx"
+args = ["-y", "@some/other-mcp"]
+
+[mcp_servers.summer-engine]
+command = "npx"
+args = ["summer-engine", "mcp"]
+```
+
+</CodeGroup>
+
+In the Codex IDE extension, you can open the config via **MCP settings** > **Open config.toml** from the gear menu.
+
+### Step 3: Restart Codex
+
+Close and reopen Codex (or the IDE extension) so it loads the new MCP config. The Summer Engine MCP server starts when Codex starts; it connects to the engine on the first tool call.
+
+### Step 4: Verify
+
+In the Codex TUI, use `/mcp` to see your active MCP servers. You should see "summer-engine" with 23 tools. Then try a prompt:
+
+- "Use Summer Engine to add a MeshInstance3D with a BoxMesh to the scene"
+
+If the node appears in Summer Engine, the setup is working.
+
+## Using Summer Engine with Codex
+
+Once configured, Codex can use Summer Engine's tools when you ask for game-related changes. Example prompts:
+
+- "Add a Camera3D and DirectionalLight3D to the scene root"
+- "Get the scene tree from Summer Engine"
+- "Import this model and add it to the World node: [URL]"
+- "Run the game and capture a screenshot"
+- "Set the project's main scene to res://main.tscn"
+
+<Tip>
+**Engine must be running.** Codex talks to Summer Engine over localhost. Open your project in the engine first, or run `npx summer-engine run` from the project directory.
+</Tip>
+
+## Troubleshooting
+
+### "Summer Engine is not running"
+
+Start Summer Engine and open your project. The MCP server connects to the engine's local API on port 6550. The engine writes a token to `~/.summer/api-token` when it starts.
+
+### MCP server not appearing
+
+- **Config path:** Verify `~/.codex/config.toml` exists (or `.codex/config.toml` for project scope)
+- **TOML syntax:** Ensure valid TOML (no trailing commas, proper section headers)
+- **Restart:** Fully quit and reopen Codex
+
+### Tools return errors
+
+See the [Tools Reference](/mcp/tools-reference) for parameter formats. Common issues: wrong node path format (`./World/Player`), invalid property values (use engine string format like `"Vector3(0, 10, 0)"`), or the game running when scene edits are attempted (stop it first with `summer_stop`).
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Tools Reference"
+    icon="wrench"
+    href="/mcp/tools-reference"
+  >
+    All 23 MCP tools with parameters and examples
+  </Card>
+  <Card
+    title="Building a Game"
+    icon="gamepad-2"
+    href="/mcp/building-a-game"
+  >
+    How an AI builds a full game using MCP
+  </Card>
+  <Card
+    title="MCP Setup Overview"
+    icon="plug"
+    href="/mcp/setup"
+  >
+    Architecture, prerequisites, and other IDEs
+  </Card>
+  <Card
+    title="CLI Reference"
+    icon="terminal"
+    href="/mcp/cli-reference"
+  >
+    summer install, run, create, and more
+  </Card>
+</CardGroup>
+
+---
+
+Need help or have questions? Reach out to our founders at [founders@summerengine.com](mailto:founders@summerengine.com) or join our community on [Discord](https://discord.gg/yUpgtxnZky) for fast responses.

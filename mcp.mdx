@@ -1,6 +1,6 @@
 ---
 title: "MCP: Build Games with AI"
-description: "How to make games with AI, Cursor, Claude Code, Windsurf. Summer Engine MCP, CLI, and API. 23 tools."
+description: "How to make games with AI, Cursor, Claude Code, Windsurf, Antigravity, Codex, VS Code, Zed. Summer Engine MCP, CLI, and API. 23 tools."
 icon: "plug"
 ---
 
@@ -25,7 +25,7 @@ Use Cursor's AI to control Summer Engine. Add the MCP config, open your project,
 <Card
   title="Cursor Setup"
   icon="cursor"
-  href="/ai-tools/cursor-setup"
+  href="/mcp/cursor"
 >
   One-click install or manual config. 2 minutes to get started.
 </Card>
@@ -39,7 +39,7 @@ Claude Code can control Summer Engine via MCP. Add the config to `~/.claude/clau
 <Card
   title="Claude Code Setup"
   icon="message-square"
-  href="/ai-tools/claude-code-setup"
+  href="/mcp/claude-code"
 >
   Add Summer Engine to Claude Code's MCP configuration
 </Card>
@@ -53,9 +53,65 @@ Windsurf's AI can use Summer Engine's MCP tools. Configure the MCP server, open 
 <Card
   title="Windsurf Setup"
   icon="wind"
-  href="/ai-tools/windsurf-setup"
+  href="/mcp/windsurf"
 >
   Configure Windsurf to use Summer Engine's MCP tools
+</Card>
+
+---
+
+## How Do I Make Games with Antigravity?
+
+Antigravity's AI can use Summer Engine's MCP tools. Add the config to `.vscode/mcp.json`, open your project in the engine, and build games from Antigravity: add nodes, import assets, run and debug.
+
+<Card
+  title="Antigravity Setup"
+  icon="rocket"
+  href="/mcp/antigravity"
+>
+  Add Summer Engine to Antigravity's MCP configuration
+</Card>
+
+---
+
+## How Do I Make Games with Codex?
+
+Codex can use Summer Engine's MCP tools. Add the config via `codex mcp add` or edit `~/.codex/config.toml`, open your project in the engine, and build games from Codex: add nodes, import assets, run and debug.
+
+<Card
+  title="Codex Setup"
+  icon="code"
+  href="/mcp/codex"
+>
+  Add Summer Engine to Codex's MCP configuration
+</Card>
+
+---
+
+## How Do I Make Games with VS Code or GitHub Copilot?
+
+VS Code and GitHub Copilot's coding agent use the same MCP config. Add Summer Engine to `.vscode/mcp.json`, open your project in the engine, and build games from VS Code or Copilot Chat: add nodes, import assets, run and debug.
+
+<Card
+  title="VS Code & GitHub Copilot Setup"
+  icon="square-code"
+  href="/mcp/vscode"
+>
+  Add Summer Engine to VS Code or Copilot's MCP configuration
+</Card>
+
+---
+
+## How Do I Make Games with Zed?
+
+Zed's Agent Panel can use Summer Engine's MCP tools. Add the config to `context_servers` in settings, open your project in the engine, and build games from Zed: add nodes, import assets, run and debug.
+
+<Card
+  title="Zed Setup"
+  icon="zap"
+  href="/mcp/zed"
+>
+  Add Summer Engine to Zed's context servers
 </Card>
 
 ---
@@ -109,7 +165,7 @@ Summer Engine gives you:
 - **23 MCP tools**: Scene (AddNode, SetProp, SaveScene, etc.), Debug (Play, Stop, Snapshots), Project (settings, input, import)
 - **Works with existing projects**: No conversion. Tutorials, plugins, and assets work as-is.
 - **CLI + MCP + API**: Install via CLI, control via MCP, same local API under the hood
-- **One workflow**: Whether you use the built-in chat, Cursor, Claude Code, or Windsurf, the operations are identical
+- **One workflow**: Whether you use the built-in chat, Cursor, Claude Code, Windsurf, Antigravity, Codex, VS Code, or Zed, the operations are identical
 
 ---
 
@@ -121,7 +177,11 @@ Summer Engine gives you:
 | Start a fresh project | [Fresh project quickstart](/quickstarts/fresh-project) |
 | Use Cursor with Summer Engine | [Cursor setup](/ai-tools/cursor-setup) |
 | Use Claude Code with Summer Engine | [Claude Code setup](/ai-tools/claude-code-setup) |
-| Use Windsurf with Summer Engine | [Windsurf setup](/ai-tools/windsurf-setup) |
+| Use Windsurf with Summer Engine | [Windsurf setup](/mcp/windsurf) |
+| Use Antigravity with Summer Engine | [Antigravity setup](/mcp/antigravity) |
+| Use Codex with Summer Engine | [Codex setup](/mcp/codex) |
+| Use VS Code or GitHub Copilot with Summer Engine | [VS Code & Copilot setup](/mcp/vscode) |
+| Use Zed with Summer Engine | [Zed setup](/mcp/zed) |
 | Use the CLI | [CLI quick start](/cli) · [CLI reference](/ai-tools/cli-reference) |
 | See all MCP tools | [Tools reference](/ai-tools/tools-reference) |
 | Build a game with MCP (for AI agents) | [Building a game](/ai-tools/building-a-game) |

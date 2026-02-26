@@ -1,0 +1,142 @@
+---
+title: "Zed Setup"
+description: "Add Summer Engine's MCP server to Zed. Build games with the fast, AI-powered editor."
+icon: "zap"
+---
+
+## Summer Engine in Zed
+
+Zed is a fast, AI-powered code editor that supports MCP (Model Context Protocol) through its Agent Panel. With Summer Engine's integration, Zed's AI can control your game engine: add nodes to scenes, set properties, import assets, run the game, and debug, all from within your coding workflow.
+
+This guide covers the configuration. Setup takes about a minute.
+
+## Prerequisites
+
+- **Zed**: The high-performance editor with built-in AI
+- **Node.js**: For running the MCP server (Node 18+)
+- **Summer Engine**: Installed and running with your project open
+
+## Configuration
+
+Zed uses `context_servers` in its settings. You can add Summer Engine via:
+
+- **Settings file:** `~/.config/zed/settings.json` (or `$XDG_CONFIG_HOME/zed/settings.json` on Linux)
+- **Project-level:** `.zed/settings.json` in your project root (create via **zed: open project settings**)
+- **UI:** Agent Panel → Settings → **Add Custom Server**
+
+### Step 1: Open Settings
+
+Press `Cmd+,` (Mac) or `Ctrl+,` (Linux/Windows), or run **zed: open settings** from the Command Palette. For project-specific config, run **zed: open project settings** to create `.zed/settings.json`.
+
+### Step 2: Add Summer Engine
+
+Add the `context_servers` entry. If it already exists, add `summer-engine` to the object:
+
+<CodeGroup>
+
+```json New context_servers
+{
+  "context_servers": {
+    "summer-engine": {
+      "command": "npx",
+      "args": ["summer-engine", "mcp"],
+      "env": {}
+    }
+  }
+}
+```
+
+```json Adding to existing context_servers
+{
+  "context_servers": {
+    "other-server": { ... },
+    "summer-engine": {
+      "command": "npx",
+      "args": ["summer-engine", "mcp"],
+      "env": {}
+    }
+  }
+}
+```
+
+</CodeGroup>
+
+### Step 3: Restart Zed
+
+Close and reopen Zed so it loads the new config. The Summer Engine MCP server starts when Zed starts; it connects to the engine on the first tool call.
+
+### Step 4: Verify
+
+1. Open the **Agent Panel** (top-right menu or Command Palette)
+2. Go to **Settings** and check the context servers list
+3. A green dot next to **summer-engine** means it's active
+4. Try a prompt: "Use Summer Engine to add a MeshInstance3D with a BoxMesh to the scene"
+
+If the node appears in Summer Engine, the setup is working.
+
+## Using Summer Engine with Zed
+
+Once configured, the AI can use Summer Engine's tools when you ask for game-related changes. Example prompts:
+
+- "Add a Camera3D and DirectionalLight3D to the scene root"
+- "Get the scene tree from Summer Engine"
+- "Import this model and add it to the World node: [URL]"
+- "Run the game and capture a screenshot"
+- "Set the project's main scene to res://main.tscn"
+
+<Tip>
+**Engine must be running.** Zed's AI talks to Summer Engine over localhost. Open your project in the engine first, or run `npx summer-engine run` from the project directory.
+</Tip>
+
+## Troubleshooting
+
+### "Summer Engine is not running"
+
+Start Summer Engine and open your project. The MCP server connects to the engine's local API on port 6550. The engine writes a token to `~/.summer/api-token` when it starts.
+
+### MCP server not appearing or red dot
+
+- **Config path:** Verify settings are in `~/.config/zed/settings.json` or `.zed/settings.json` in your project
+- **JSON validity:** Ensure no trailing commas, proper quotes, and valid JSON structure
+- **Restart:** Fully quit and reopen Zed
+
+### Tools return errors
+
+See the [Tools Reference](/mcp/tools-reference) for parameter formats. Common issues: wrong node path format (`./World/Player`), invalid property values (use engine string format like `"Vector3(0, 10, 0)"`), or the game running when scene edits are attempted (stop it first with `summer_stop`).
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Tools Reference"
+    icon="wrench"
+    href="/mcp/tools-reference"
+  >
+    All 23 MCP tools with parameters and examples
+  </Card>
+  <Card
+    title="Building a Game"
+    icon="gamepad-2"
+    href="/mcp/building-a-game"
+  >
+    How an AI builds a full game using MCP
+  </Card>
+  <Card
+    title="MCP Setup Overview"
+    icon="plug"
+    href="/mcp/setup"
+  >
+    Architecture, prerequisites, and other IDEs
+  </Card>
+  <Card
+    title="CLI Reference"
+    icon="terminal"
+    href="/mcp/cli-reference"
+  >
+    summer install, run, create, and more
+  </Card>
+</CardGroup>
+
+---
+
+Need help or have questions? Reach out to our founders at [founders@summerengine.com](mailto:founders@summerengine.com) or join our community on [Discord](https://discord.gg/yUpgtxnZky) for fast responses.

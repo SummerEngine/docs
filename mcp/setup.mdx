@@ -1,12 +1,12 @@
 ---
 title: "MCP Setup"
-description: "Connect Cursor, Claude Code, or Windsurf to Summer Engine. Build games from your favorite AI-powered IDE."
+description: "Connect Cursor, Claude Code, Windsurf, Antigravity, Codex, VS Code, or Zed to Summer Engine. Build games from your favorite AI-powered IDE."
 icon: "settings"
 ---
 
 ## Build Games from Your IDE
 
-Summer Engine's MCP (Model Context Protocol) integration lets you control the engine directly from Cursor, Claude Code, Windsurf, or any MCP-compatible AI tool. Instead of switching between your IDE and the Summer Engine editor, you stay in one place: describe what you want, and the AI modifies your game scenes, adds nodes, sets up physics, and runs your project, all through natural language.
+Summer Engine's MCP (Model Context Protocol) integration lets you control the engine directly from Cursor, Claude Code, Windsurf, Antigravity, Codex, VS Code, Zed, or any MCP-compatible AI tool. Instead of switching between your IDE and the Summer Engine editor, you stay in one place: describe what you want, and the AI modifies your game scenes, adds nodes, sets up physics, and runs your project, all through natural language.
 
 **What this means in practice:** Open a Summer Engine project, add the MCP config to your IDE, and ask "Add a Camera3D and DirectionalLight3D to the scene." The nodes appear in the engine. Ask "Import a low-poly tree from this URL and add it to the World node." The asset downloads, imports, and lands in your scene tree. The AI has 23 focused tools for scene manipulation, debugging, project settings, and asset import. No copy-paste, no context switching.
 
@@ -58,6 +58,34 @@ The engine runs a local HTTP server on `localhost:6550` when it's open. The MCP 
   >
     Configure Windsurf to use Summer Engine's MCP tools.
   </Card>
+  <Card
+    title="Antigravity"
+    icon="rocket"
+    href="/mcp/antigravity"
+  >
+    Add Summer Engine to Google's AI-powered IDE.
+  </Card>
+  <Card
+    title="Codex"
+    icon="code"
+    href="/mcp/codex"
+  >
+    Add Summer Engine to OpenAI's AI coding assistant.
+  </Card>
+  <Card
+    title="VS Code & Copilot"
+    icon="square-code"
+    href="/mcp/vscode"
+  >
+    Add Summer Engine to VS Code or GitHub Copilot.
+  </Card>
+  <Card
+    title="Zed"
+    icon="zap"
+    href="/mcp/zed"
+  >
+    Add Summer Engine to Zed's Agent Panel.
+  </Card>
 </CardGroup>
 
 ## Manual Configuration
@@ -83,6 +111,30 @@ If your IDE supports MCP but isn't listed above, add this to your MCP config fil
     "summer-engine": {
       "command": "npx",
       "args": ["summer-engine", "mcp"]
+    }
+  }
+}
+```
+
+```json VS Code / Antigravity (.vscode/mcp.json)
+{
+  "servers": {
+    "summer-engine": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["summer-engine", "mcp"]
+    }
+  }
+}
+```
+
+```json Zed (context_servers in settings.json)
+{
+  "context_servers": {
+    "summer-engine": {
+      "command": "npx",
+      "args": ["summer-engine", "mcp"],
+      "env": {}
     }
   }
 }

@@ -1,0 +1,140 @@
+---
+title: "Antigravity Setup"
+description: "Add Summer Engine's MCP server to Antigravity. Build games with Google's AI-powered IDE."
+icon: "rocket"
+---
+
+## Summer Engine in Antigravity
+
+Antigravity is Google's AI-powered IDE that supports MCP (Model Context Protocol). With Summer Engine's integration, Antigravity's AI can control your game engine: add nodes to scenes, set properties, import assets, run the game, and debug, all from within your coding workflow.
+
+This guide covers the configuration. Setup takes about a minute.
+
+## Prerequisites
+
+- **Antigravity**: Google's AI-powered IDE
+- **Node.js**: For running the MCP server (Node 18+)
+- **Summer Engine**: Installed and running with your project open
+
+## Configuration
+
+Antigravity uses the VS Code MCP config format. The config file is:
+
+- **Project-level:** `.vscode/mcp.json` in your project root
+- **Global:** Use the Antigravity CLI (`antigravity --add-mcp`) if available
+
+<Note>
+**Config format.** Antigravity uses `servers` (not `mcpServers`). The structure matches VS Code's MCP configuration.
+</Note>
+
+### Step 1: Create or Edit the Config File
+
+Create `.vscode/mcp.json` in your project root. If the file already exists (e.g., for other MCP servers), add Summer Engine to the existing `servers` object.
+
+### Step 2: Add Summer Engine
+
+<CodeGroup>
+
+```json New file (.vscode/mcp.json)
+{
+  "servers": {
+    "summer-engine": {
+      "command": "npx",
+      "args": ["summer-engine", "mcp"]
+    }
+  }
+}
+```
+
+```json Adding to existing servers
+{
+  "servers": {
+    "other-server": { ... },
+    "summer-engine": {
+      "command": "npx",
+      "args": ["summer-engine", "mcp"]
+    }
+  }
+}
+```
+
+</CodeGroup>
+
+### Step 3: Restart Antigravity
+
+Close and reopen Antigravity so it loads the new MCP config. The Summer Engine MCP server starts when Antigravity starts; it connects to the engine on the first tool call.
+
+### Step 4: Verify
+
+Check Antigravity's MCP or AI settings to confirm "summer-engine" appears with 23 tools. Then try a prompt:
+
+- "Use Summer Engine to add a MeshInstance3D with a BoxMesh to the scene"
+
+If the node appears in Summer Engine, the setup is working.
+
+## Using Summer Engine with Antigravity
+
+Once configured, the AI can use Summer Engine's tools when you ask for game-related changes. Example prompts:
+
+- "Add a Camera3D and DirectionalLight3D to the scene root"
+- "Get the scene tree from Summer Engine"
+- "Import this model and add it to the World node: [URL]"
+- "Run the game and capture a screenshot"
+- "Set the project's main scene to res://main.tscn"
+
+<Tip>
+**Engine must be running.** Antigravity's AI talks to Summer Engine over localhost. Open your project in the engine first, or run `npx summer-engine run` from the project directory.
+</Tip>
+
+## Troubleshooting
+
+### "Summer Engine is not running"
+
+Start Summer Engine and open your project. The MCP server connects to the engine's local API on port 6550. The engine writes a token to `~/.summer/api-token` when it starts.
+
+### MCP server not appearing
+
+- **Config path:** Verify `.vscode/mcp.json` is in your project root (the folder you opened in Antigravity)
+- **JSON validity:** Ensure no trailing commas, proper quotes, and valid JSON structure
+- **Restart:** Fully quit and reopen Antigravity
+
+### Tools return errors
+
+See the [Tools Reference](/mcp/tools-reference) for parameter formats. Common issues: wrong node path format (`./World/Player`), invalid property values (use engine string format like `"Vector3(0, 10, 0)"`), or the game running when scene edits are attempted (stop it first with `summer_stop`).
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Tools Reference"
+    icon="wrench"
+    href="/mcp/tools-reference"
+  >
+    All 23 MCP tools with parameters and examples
+  </Card>
+  <Card
+    title="Building a Game"
+    icon="gamepad-2"
+    href="/mcp/building-a-game"
+  >
+    How an AI builds a full game using MCP
+  </Card>
+  <Card
+    title="MCP Setup Overview"
+    icon="plug"
+    href="/mcp/setup"
+  >
+    Architecture, prerequisites, and other IDEs
+  </Card>
+  <Card
+    title="CLI Reference"
+    icon="terminal"
+    href="/mcp/cli-reference"
+  >
+    summer install, run, create, and more
+  </Card>
+</CardGroup>
+
+---
+
+Need help or have questions? Reach out to our founders at [founders@summerengine.com](mailto:founders@summerengine.com) or join our community on [Discord](https://discord.gg/yUpgtxnZky) for fast responses.
