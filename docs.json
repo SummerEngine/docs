@@ -57,14 +57,11 @@
               "quickstarts/ios-game",
               "quickstarts/android-game",
               "quickstarts/console-game",
-              "quickstarts/playstation-game",
-              "quickstarts/unity-migration",
-              "quickstarts/unreal-migration"
+              "quickstarts/playstation-game"
             ]
           },
           {
             "group": "Essentials",
-            "icon": "circle-help",
             "pages": [
               "essentials/installation",
               "essentials/authentication",
@@ -96,7 +93,9 @@
           {
             "group": "Engine Migration",
             "pages": [
-              "migration/godot"
+              "migration/godot",
+              "quickstarts/unity-migration",
+              "quickstarts/unreal-migration"
             ]
           },
           {
@@ -185,7 +184,7 @@
       },
       {
         "tab": "Knowledge Base",
-        "icon": "help-circle",
+        "icon": "circle-question-mark",
         "groups": [
           {
             "group": "About Summer",

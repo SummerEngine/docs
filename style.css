@@ -1,0 +1,16 @@
+/* Smaller sidebar font sizes (0.8125rem ≈ 13px) */
+#sidebar,
+.sidebar,
+.sidebar-content,
+.sidebar-title,
+.sidebar-group,
+.sidebar-group-header,
+.sidebar-nav-group-divider {
+  font-size: 0.8125rem !important;
+}
+
+#sidebar a,
+.sidebar a,
+.sidebar-content a {
+  font-size: 0.8125rem !important;
+}
