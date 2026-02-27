@@ -69,6 +69,7 @@
               "essentials/installation",
               "essentials/authentication",
               "essentials/account-billing",
+              "essentials/pricing",
               "essentials/first-chat",
               "essentials/faq"
             ]
@@ -114,7 +115,7 @@
             "group": "Overview",
             "icon": "layout",
             "pages": [
-              "mcp",
+              "mcp/overview",
               "mcp/setup"
             ]
           },
@@ -132,24 +133,18 @@
             ]
           },
           {
+            "group": "CLI",
+            "icon": "terminal",
+            "pages": [
+              "mcp/cli",
+              "mcp/cli-reference"
+            ]
+          },
+          {
             "group": "Reference",
             "pages": [
               "mcp/tools-reference",
               "mcp/building-a-game",
-              "mcp/skills"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "CLI",
-        "icon": "terminal",
-        "groups": [
-          {
-            "group": "CLI",
-            "pages": [
-              "mcp/cli",
-              "mcp/cli-reference",
               "mcp/skills"
             ]
           }
