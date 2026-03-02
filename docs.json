@@ -165,8 +165,15 @@
               "api-reference/crafty-sdk/guides/multiplayer-ffa-coin-collector",
               "api-reference/crafty-sdk/guides/multiplayer-persistence-rpg",
               "api-reference/crafty-sdk/guides/team-based-game",
+              "api-reference/crafty-sdk/guides/making-a-2d-game-multiplayer",
+              "api-reference/crafty-sdk/guides/making-a-turn-based-or-card-game-multiplayer",
               "api-reference/crafty-sdk/manifest-json-reference",
-              "api-reference/crafty-sdk/submission-guide"
+              "api-reference/crafty-sdk/production-launch-runbook",
+              "api-reference/crafty-sdk/submission-guide",
+              "api-reference/crafty-sdk/testing-your-game-locally",
+              "api-reference/crafty-sdk/exporting-and-uploading-your-game",
+              "api-reference/crafty-sdk/banned-apis-reference",
+              "api-reference/crafty-sdk/ai-agent-playbook"
             ]
           },
           {

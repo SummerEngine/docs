@@ -1,6 +1,6 @@
 ---
 title: "Game Guide: Multiplayer FFA (Coin Collector)"
-description: "Full working free-for-all example with timer, collectibles, scoring, announcements, and game-end results."
+description: "How to make a 3D action game multiplayer on Crafty using the optional CraftyCharacter3D template."
 icon: "swords"
 ---
 
@@ -13,6 +13,8 @@ This is a full `CraftyGame` example for a multiplayer free-for-all:
 - Scoring via `Crafty.score`
 - Announcements via `Crafty.send_announcement`
 - End-of-round winner announcement
+
+This guide uses the optional 3D template path (`player.tscn` rooted with `CraftyCharacter3D`).
 
 ## Scene Setup
 
@@ -75,16 +77,17 @@ func _game_end() -> void:
         Crafty.send_announcement("Round over: no winner")
         return
 
-    var winner := leaderboard[0].player as CraftyPlayer
+    var winner = leaderboard[0].player
     var score := int(leaderboard[0].score)
-    Crafty.send_announcement("%s wins with %d coins!" % [winner.display_name, score])
+    Crafty.send_announcement("%s wins with %d coins!" % [str(winner.get("display_name")), score])
 
-func _player_joined(player: CraftyPlayer) -> void:
-    player.respawn(get_random_spawn_point())
+func _player_joined(player) -> void:
+    if player.has_method("respawn"):
+        player.respawn(get_random_spawn_point())
     Crafty.score.set_score(player, 0)
     player.set_synced("score", 0)
 
-func _player_left(_player: CraftyPlayer) -> void:
+func _player_left(_player) -> void:
     pass
 
 func _process(delta: float) -> void:
@@ -125,7 +128,7 @@ func _tick_coin_respawns(delta: float) -> void:
         else:
             i += 1
 
-func _on_coin_collected(player: CraftyPlayer, _obj: CraftyObject) -> void:
+func _on_coin_collected(player, _obj: CraftyObject) -> void:
     Crafty.score.add(player, 1)
     var score := Crafty.score.get_score(player)
     player.set_synced("score", score)
@@ -139,6 +142,10 @@ func _on_coin_collected(player: CraftyPlayer, _obj: CraftyObject) -> void:
         "t": COIN_RESPAWN_TIME
     })
 ```
+
+## If You Are Not Building A 3D Action Game
+
+Do not use this movement pattern. Use `CraftyPlayer` directly and sync your own state model (for example turn state, board state, inventory, cursor targets).
 
 ## Suggested `manifest.json`
 

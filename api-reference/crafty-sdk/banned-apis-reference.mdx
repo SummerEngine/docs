@@ -1,0 +1,102 @@
+---
+title: "Banned APIs Reference"
+description: "Complete list of blocked APIs/patterns during Crafty submission, with rationale and safer alternatives."
+icon: "shield-alert"
+---
+
+## Why These APIs Are Blocked
+
+Crafty runs creator-submitted code on shared infrastructure.
+
+To protect platform security and stability, submission blocks patterns that enable:
+
+- shell/process execution,
+- uncontrolled filesystem/network access,
+- runtime reflection/eval bypasses,
+- loading or embedding unsafe native/binary resources.
+
+## Important: Scanner Is Pattern-Based
+
+If a blocked pattern appears in submitted source, upload fails, even when:
+
+- it is in an editor/debug branch,
+- it is inside dead code,
+- it is conditionally executed.
+
+## Full Blocked Pattern List
+
+| Pattern | Why it is blocked | Use instead |
+|------|------|------|
+| `OS.execute` | Executes arbitrary system commands on server hosts. | Use Crafty SDK gameplay/data APIs. |
+| `OS.shell_open` | Opens external shells/URLs and escapes runtime boundaries. | Use in-game UI flow; no direct OS shell access. |
+| `OS.create_process` | Spawns unmanaged processes from game code. | Keep process control in platform runtime, not game scripts. |
+| `OS.create_instance` | Creates new runtime instances outside allowed flow. | Use standard scene instantiation and SDK systems. |
+| `OS.kill` | Can terminate infrastructure or peer processes. | Use gameplay lifecycle APIs only. |
+| `FileAccess` | Unrestricted read/write to filesystem. | Use `Crafty.data` for persistence. |
+| `DirAccess` | Directory traversal/manipulation on host filesystem. | Use SDK-managed storage paths via `Crafty.data`. |
+| `HTTPRequest` | Arbitrary outbound HTTP from game logic. | Use `Crafty.data` / `Crafty.economy` platform APIs. |
+| `HTTPClient` | Low-level custom network egress from untrusted scripts. | Use SDK networking and platform endpoints only. |
+| `JavaScriptBridge` | Bridge escape to browser/JS runtime. | Keep logic in GDScript + SDK only. |
+| `ClassDB.instantiate` | Dynamic class loading can bypass allowed surfaces. | Instantiate explicit scene/resources you control. |
+| `Thread.new` | Unmanaged concurrency can impact determinism/stability. | Use deterministic main-loop gameplay logic. |
+| `Mutex.new` | Same as above, often paired with unsafe concurrency patterns. | Keep gameplay state updates on main thread. |
+| `Semaphore.new` | Same as above; can hide blocking/synchronization hazards. | Use frame/tick-driven state machines. |
+| `StreamPeerTCP` | Raw socket networking bypasses platform control. | Use built-in Crafty networking flow. |
+| `PacketPeerUDP` | Raw UDP bypasses platform-level auth/routing. | Use Crafty transport and replication APIs. |
+| `TCPServer` | Opens custom server sockets inside creator game scripts. | Use platform-managed game servers only. |
+| `UDPServer` | Same as above for UDP. | Use platform-managed networking only. |
+| `WebSocketPeer` | Arbitrary socket communication channel. | Use Crafty-managed networking. |
+| `.call(` | Reflection can be used to bypass direct API checks. | Explicit method calls on known safe objects. |
+| `.callv(` | Same reflection bypass risk. | Explicit typed calls. |
+| `.call_deferred(` | Reflection/deferred execution can hide unsafe paths. | Use explicit logic flow and signals. |
+| `Callable(` | Dynamic invocation surface for bypass patterns. | Direct signal/method wiring with known methods. |
+| `Engine.get_singleton` | Accesses internal engine singletons outside approved API. | Use Crafty SDK abstractions. |
+| `Expression.new` | Runtime expression eval can execute dynamic untrusted code. | Static, explicit gameplay logic. |
+| `Expression(` | Same runtime eval surface. | Static logic and pre-defined scripts. |
+| `Marshalls.base64_to_variant` | Unsafe/deserialization abuse vector for crafted payloads. | Use validated JSON and typed schema checks. |
+| `ResourceSaver` | Writes resource files at runtime; persistence boundary risk. | Use `Crafty.data` for persisted state. |
+| `ProjectSettings.load_resource_pack` | Runtime pack loading from game scripts is not allowed. | Let platform runtime load approved game packs. |
+| `get_node("/root` | Root traversal can reach infrastructure internals. | Use scoped scene tree access in your game subtree. |
+| `get_node(\"/root` | Same root traversal risk (escaped quote variant). | Use local node paths. |
+| `get_tree().root` | Global root access to internals outside game boundary. | Access only local game nodes and SDK APIs. |
+
+## Reserved Paths (Blocked In .pck)
+
+Packs are rejected if they include infrastructure paths, including:
+
+- `res://sdk/`
+- `res://core/`
+- `res://server/`
+- `res://client/`
+- `res://official_games/`
+- `res://bootstrap.gd`, `res://bootstrap.tscn`
+- `res://project.godot`
+- `res://crafty.cfg`
+- `res://export_presets.cfg`
+- `res://test_runner.gd`, `res://test_runner.tscn`
+
+## Blocked Native/Binary Resource Extensions
+
+Packs are also rejected if they include:
+
+- `.gdextension`
+- `.so`
+- `.dll`
+- `.dylib`
+- `.framework`
+- `.res`
+
+## Practical Guidance For AI-Generated Code
+
+When generating code from prompts:
+
+1. Never generate “debug fallback” branches with blocked APIs.
+2. Prefer SDK primitives (`Crafty.data`, `Crafty.economy`, score/teams/sync helpers).
+3. Keep all file/network/process interactions out of creator game scripts.
+4. Use explicit method calls instead of reflective invocation helpers.
+
+## Related Docs
+
+- [Exporting and Uploading Your Game](/api-reference/crafty-sdk/exporting-and-uploading-your-game)
+- [Submission Guide](/api-reference/crafty-sdk/submission-guide)
+- [AI Agent Playbook](/api-reference/crafty-sdk/ai-agent-playbook)

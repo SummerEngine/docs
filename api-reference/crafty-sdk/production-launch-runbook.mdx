@@ -1,0 +1,109 @@
+---
+title: "Production Launch Runbook"
+description: "Single linear runbook for fresh AI/dev sessions: integrate SDK, validate locally, export safely, submit, and ship."
+icon: "check-check"
+---
+
+## Use This When You Need A Reliable End-To-End Path
+
+This page is the shortest safe route from “new game” to “submitted for review.”
+
+## Step 1: Validate Project Contract
+
+- `main.gd` extends `CraftyGame`.
+- `manifest.json` includes required keys.
+- `player_scene` points to a valid scene.
+- choose player model:
+  - `CraftyCharacter3D` (3D template), or
+  - custom script extending `CraftyPlayer`.
+
+## Step 2: Validate Authority Boundaries
+
+- gameplay outcomes run under `if not Crafty.is_server(): return`.
+- clients render synced state (`get_synced`) only.
+- no score/economy/data writes on client paths.
+
+## Step 3: Validate Scanner Safety
+
+- no blocked APIs in scripts/resources.
+- no reserved infrastructure paths in export scope.
+- no blocked binary/native resource extensions in pack.
+
+Reference:
+
+- [/api-reference/crafty-sdk/banned-apis-reference](/api-reference/crafty-sdk/banned-apis-reference)
+
+## Step 4: Local Runtime Validation
+
+Run through test-runner flow and confirm:
+
+- server starts + client connects,
+- player join/leave stable,
+- gameplay loop runs for 10+ minutes,
+- reconnect path works.
+
+Reference:
+
+- [/api-reference/crafty-sdk/testing-your-game-locally](/api-reference/crafty-sdk/testing-your-game-locally)
+
+## Step 5: Export Validation
+
+- use game-only `.pck` preset.
+- update include filter to game folder.
+- confirm exported `.pck` includes only intended content.
+- confirm package size <= 250MB.
+
+Reference:
+
+- [/api-reference/crafty-sdk/exporting-and-uploading-your-game](/api-reference/crafty-sdk/exporting-and-uploading-your-game)
+
+## Step 6: Submission Validation
+
+Upload:
+
+- `.pck`
+- `manifest.json`
+
+Expect:
+
+- status `review`,
+- submission id returned,
+- no static analysis violations.
+
+Reference:
+
+- [/api-reference/crafty-sdk/submission-guide](/api-reference/crafty-sdk/submission-guide)
+
+## Top 10 Failure Modes (And Fixes)
+
+1. **`entry_scene` invalid**
+   - Fix `manifest.json` path and re-export.
+2. **`player_scene` invalid**
+   - Fix scene path, confirm script setup, re-export.
+3. **Client-authoritative logic**
+   - Move outcome logic to server path.
+4. **Missing synced fields**
+   - Use `set_synced` for client-visible state.
+5. **Scanner blocked pattern**
+   - Remove blocked API usage.
+6. **Reserved path in pack**
+   - Correct include/exclude export filters.
+7. **File too large**
+   - Optimize assets and remove unused files.
+8. **Manifest type mismatch**
+   - Enforce required key types.
+9. **Template mismatch**
+   - 3D helper methods used without `CraftyCharacter3D`.
+10. **Reconnect instability**
+    - Reinitialize player synced state on join.
+
+## Launch Ready Criteria
+
+- [ ] Contract checks pass
+- [ ] Authority checks pass
+- [ ] Scanner checks pass
+- [ ] Local runtime checks pass
+- [ ] Export checks pass
+- [ ] Submission accepted into review
+
+If all are true, the build is ready for production review launch.

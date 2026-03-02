@@ -1,0 +1,100 @@
+---
+title: "Guide: Making A 2D Game Multiplayer"
+description: "Integrate Crafty into a 2D game by extending CraftyPlayer and syncing your own state."
+icon: "square"
+---
+
+## Platform Framing
+
+You are not building a “Crafty game type.”  
+You are building a 2D game in Summer/Godot and integrating the Crafty platform layer:
+
+- multiplayer runtime,
+- server authority,
+- data/economy/teams/score modules.
+
+## Recommended Player Model
+
+For 2D games, create your own 2D player class that extends `CraftyPlayer`.
+
+```gdscript
+extends CraftyPlayer
+
+@export var speed := 220.0
+var local_position := Vector2.ZERO
+var is_alive := true
+
+func _ready() -> void:
+    set_synced("x", local_position.x)
+    set_synced("y", local_position.y)
+    set_synced("anim", "idle")
+```
+
+## Server Authority Loop
+
+```gdscript
+extends CraftyGame
+
+func _process(delta: float) -> void:
+    super._process(delta)
+    if not Crafty.is_server():
+        return
+
+    for p in get_players():
+        _step_2d_player(p, delta)
+
+func _step_2d_player(player, delta: float) -> void:
+    var move: Vector2 = player.input.movement
+    player.local_position += move.normalized() * player.speed * delta
+
+    player.set_synced("x", player.local_position.x)
+    player.set_synced("y", player.local_position.y)
+    player.set_synced("anim", "run" if move.length() > 0 else "idle")
+```
+
+## Client Render Pattern
+
+On clients, render from synced state:
+
+```gdscript
+func _process(_delta: float) -> void:
+    var x = get_synced("x")
+    var y = get_synced("y")
+    if x != null and y != null:
+        $Sprite2D.global_position = Vector2(float(x), float(y))
+```
+
+## Joining / Leaving
+
+```gdscript
+func _player_joined(player) -> void:
+    player.set_synced("x", 0.0)
+    player.set_synced("y", 0.0)
+    player.set_synced("hp", 100)
+
+func _player_left(player) -> void:
+    pass
+```
+
+## Optional Subsystems
+
+Use only what you need:
+
+- `Crafty.score` for score/rank,
+- `Crafty.teams` for team modes,
+- `Crafty.data` for persistent inventory/progress,
+- `Crafty.economy` for currency.
+
+## Common Mistakes
+
+- Running movement authority on clients.
+- Mutating score/economy from client paths.
+- Treating `set_synced` as client-owned state.
+
+## Production Checklist (2D)
+
+- [ ] `Crafty.is_server()` gates all authoritative state updates.
+- [ ] 2D state is synced via `set_synced`.
+- [ ] Client only renders synced values.
+- [ ] Required manifest fields valid.
+- [ ] Local test runner flow passes.

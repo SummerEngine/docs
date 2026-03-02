@@ -1,38 +1,19 @@
 ---
 title: "Build Your First Crafty Game"
-description: "Golden-path tutorial: blank Godot project -> Crafty game -> local test -> .pck export -> submission."
+description: "Golden path: integrate Crafty platform APIs into a simple game, then test, export, and submit."
 icon: "rocket"
 ---
 
-## What You Will Build
+## What You Build
 
-A minimal multiplayer game that:
+A minimal multiplayer integration that:
 
-- Extends `CraftyGame`
-- Spawns players at spawn points
-- Uses server-authoritative movement
-- Awards score when players reach a goal zone
-- Ends on timer
+- extends `CraftyGame`,
+- uses server-authoritative gameplay updates,
+- syncs player-visible state with `set_synced`,
+- passes local testing and submission pipeline.
 
-## Step 1: Create a Blank Project and Add the SDK
-
-Create a new Godot project, then add the Crafty SDK files to your project:
-
-- `res://sdk/crafty.gd`
-- `res://sdk/crafty_game.gd`
-- `res://sdk/crafty_player.gd`
-- `res://sdk/crafty_object.gd`
-- subsystem scripts (`crafty_score.gd`, `crafty_teams.gd`, etc.)
-
-Set autoload:
-
-- **Project Settings -> Autoload**
-- Path: `res://sdk/crafty.gd`
-- Name: `Crafty`
-
-## Step 2: Create `manifest.json`
-
-Create `res://manifest.json`:
+## Step 1: Create `manifest.json`
 
 ```json
 {
@@ -43,77 +24,23 @@ Create `res://manifest.json`:
   "entry_scene": "main.tscn",
   "player_scene": "player.tscn",
   "min_players": 1,
-  "max_players": 8,
-  "tick_rate": 60,
-  "description": "A first multiplayer Crafty game",
-  "tags": ["tutorial", "multiplayer"]
+  "max_players": 8
 }
 ```
 
-## Step 3: Build `main.tscn`
+## Step 2: Choose Your Player Path
 
-Create `res://main.tscn`:
+### 3D Action Template (fastest start)
 
-- Root: `Node3D` named `Main`
-- Child: `Node3D` named `SpawnPoints`
-- Add 4 children under `SpawnPoints` (Node3D): `SpawnA`, `SpawnB`, `SpawnC`, `SpawnD`
-- Set spawn positions, for example:
-  - `SpawnA`: `(-8, 1, -8)`
-  - `SpawnB`: `(8, 1, -8)`
-  - `SpawnC`: `(-8, 1, 8)`
-  - `SpawnD`: `(8, 1, 8)`
+- set `player.tscn` root script to `res://sdk/crafty_character_3d.gd`
+- use `apply_default_movement(...)` from `CraftyGame`.
 
-Attach `res://main.gd` to `Main`.
+### Custom Genre Path (2D/card/RTS/puzzle)
 
-## Step 4: Add the Base Game Script
+- make your own script extending `CraftyPlayer`
+- sync your own state model (`set_synced("hand_count", ...)`, etc.).
 
-Create `res://main.gd` with this full code:
-
-```gdscript
-extends CraftyGame
-
-const ROUND_SECONDS := 120.0
-
-func _game_init() -> void:
-    var spawn_root := get_node_or_null("SpawnPoints")
-    if spawn_root:
-        for child in spawn_root.get_children():
-            if child is Node3D:
-                spawn_points.append(child.global_position)
-
-    if spawn_points.is_empty():
-        spawn_points = [
-            Vector3(-8, 1, -8),
-            Vector3(8, 1, -8),
-            Vector3(-8, 1, 8),
-            Vector3(8, 1, 8)
-        ]
-
-func _game_start() -> void:
-    Crafty.set_time_limit(ROUND_SECONDS)
-    Crafty.send_announcement("Round started")
-
-func _game_end() -> void:
-    var leaderboard := Crafty.score.get_leaderboard()
-    if not leaderboard.is_empty():
-        var winner := leaderboard[0].player as CraftyPlayer
-        var points := int(leaderboard[0].score)
-        Crafty.send_announcement("%s wins with %d points" % [winner.display_name, points])
-    else:
-        Crafty.send_announcement("Game over")
-
-func _player_joined(player: CraftyPlayer) -> void:
-    player.respawn(get_random_spawn_point())
-    Crafty.score.set_score(player, 0)
-    player.set_synced("score", 0)
-
-func _player_left(_player: CraftyPlayer) -> void:
-    pass
-```
-
-## Step 5: Add Movement (Server Authoritative)
-
-Replace `res://main.gd` with this full code:
+## Step 3: Build `main.gd`
 
 ```gdscript
 extends CraftyGame
@@ -132,143 +59,67 @@ func _game_init() -> void:
             if child is Node3D:
                 spawn_points.append(child.global_position)
 
-    if spawn_points.is_empty():
-        spawn_points = [
-            Vector3(-8, 1, -8),
-            Vector3(8, 1, -8),
-            Vector3(-8, 1, 8),
-            Vector3(8, 1, 8)
-        ]
-
 func _game_start() -> void:
     Crafty.set_time_limit(ROUND_SECONDS)
     Crafty.send_announcement("Round started")
 
 func _game_end() -> void:
-    var leaderboard := Crafty.score.get_leaderboard()
-    if not leaderboard.is_empty():
-        var winner := leaderboard[0].player as CraftyPlayer
-        var points := int(leaderboard[0].score)
-        Crafty.send_announcement("%s wins with %d points" % [winner.display_name, points])
-    else:
-        Crafty.send_announcement("Game over")
+    Crafty.send_announcement("Game over")
 
-func _player_joined(player: CraftyPlayer) -> void:
-    player.respawn(get_random_spawn_point())
-    Crafty.score.set_score(player, 0)
+func _player_joined(player) -> void:
+    if player.has_method("respawn"):
+        player.respawn(get_random_spawn_point())
     player.set_synced("score", 0)
 
-func _player_left(_player: CraftyPlayer) -> void:
+func _player_left(_player) -> void:
     pass
 
 func _process(delta: float) -> void:
     super._process(delta)
     if not Crafty.is_server():
         return
-
     for p in get_players():
-        apply_default_movement(p, delta, MOVE_SPEED, GRAVITY)
+        if p.has_method("respawn"):
+            apply_default_movement(p, delta, MOVE_SPEED, GRAVITY)
 ```
 
-## Step 6: Add Basic Scoring Goal
+## Step 4: Add One Multiplayer Rule
 
-Replace `res://main.gd` with this full code:
+Example scoring rule:
 
 ```gdscript
-extends CraftyGame
-
-const ROUND_SECONDS := 120.0
-const MOVE_SPEED := 7.0
-const GRAVITY := 20.0
-const SCORE_GOAL_Z := 20.0
-const SCORE_TO_WIN := 5
-const RESPAWN_AFTER_SCORE := Vector3(0, 1, -10)
-
-func get_prediction_params() -> Dictionary:
-    return {"move_speed": MOVE_SPEED, "gravity": GRAVITY}
-
-func _game_init() -> void:
-    var spawn_root := get_node_or_null("SpawnPoints")
-    if spawn_root:
-        for child in spawn_root.get_children():
-            if child is Node3D:
-                spawn_points.append(child.global_position)
-
-    if spawn_points.is_empty():
-        spawn_points = [
-            Vector3(-8, 1, -8),
-            Vector3(8, 1, -8),
-            Vector3(-8, 1, 8),
-            Vector3(8, 1, 8)
-        ]
-
-func _game_start() -> void:
-    Crafty.set_time_limit(ROUND_SECONDS)
-    Crafty.send_announcement("Reach z >= 20 to score")
-
-func _game_end() -> void:
-    var leaderboard := Crafty.score.get_leaderboard()
-    if not leaderboard.is_empty():
-        var winner := leaderboard[0].player as CraftyPlayer
-        var points := int(leaderboard[0].score)
-        Crafty.send_announcement("%s wins with %d points" % [winner.display_name, points])
-    else:
-        Crafty.send_announcement("Game over")
-
-func _player_joined(player: CraftyPlayer) -> void:
-    player.respawn(get_random_spawn_point())
-    Crafty.score.set_score(player, 0)
-    player.set_synced("score", 0)
-
-func _player_left(_player: CraftyPlayer) -> void:
-    pass
-
-func _process(delta: float) -> void:
-    super._process(delta)
-    if not Crafty.is_server():
-        return
-
-    for p in get_players():
-        apply_default_movement(p, delta, MOVE_SPEED, GRAVITY)
-        _check_goal_score(p)
-
-func _check_goal_score(player: CraftyPlayer) -> void:
-    if player.position.z < SCORE_GOAL_Z:
-        return
-
-    Crafty.score.add(player, 1)
-    var score := Crafty.score.get_score(player)
-    player.set_synced("score", score)
-    player.teleport(RESPAWN_AFTER_SCORE)
-    Crafty.send_announcement("%s scored (%d/%d)" % [player.display_name, score, SCORE_TO_WIN])
-
-    if score >= SCORE_TO_WIN:
-        end_game(false)
+func score_point(player) -> void:
+    var current := int(player.get_synced("score") if player.get_synced("score") != null else 0)
+    current += 1
+    player.set_synced("score", current)
+    Crafty.send_announcement("%s scored (%d)" % [str(player.get("display_name")), current])
 ```
 
-## Step 7: Local Test
+## Step 5: Local Test
 
-1. Run one server instance.
-2. Connect one or more clients.
-3. Confirm:
-   - players spawn correctly
-   - movement is server-authoritative
-   - scoring increments when crossing the goal line
-   - game ends at score cap or timer expiry
+Use the two-process test runner flow:
 
-## Step 8: Export `.pck`
+- starts local headless server,
+- starts client and connects to localhost,
+- validates real multiplayer behavior.
 
-Use standard Godot/Summer export flow:
+Guide:
 
-1. Project -> Export
-2. Choose preset for your target (desktop/web tooling flow)
-3. Export pack and produce your `.pck`
+- [/api-reference/crafty-sdk/testing-your-game-locally](/api-reference/crafty-sdk/testing-your-game-locally)
 
-## Step 9: Upload to playcrafty.games
+## Step 6: Export and Upload
 
-Use the submission flow with:
+Export a game-only `.pck`, then upload with `manifest.json`.
 
-- `.pck` file
-- `manifest.json`
+Guides:
 
-See the full upload/review details in `/api-reference/crafty-sdk/submission-guide`.
+- [/api-reference/crafty-sdk/exporting-and-uploading-your-game](/api-reference/crafty-sdk/exporting-and-uploading-your-game)
+- [/api-reference/crafty-sdk/submission-guide](/api-reference/crafty-sdk/submission-guide)
+
+## What “Done” Looks Like
+
+- [ ] All lifecycle hooks implemented.
+- [ ] Server authority enforced (`Crafty.is_server()`).
+- [ ] Player-visible state comes from `set_synced`.
+- [ ] Local test runner path passes.
+- [ ] Upload passes scanner + enters review.

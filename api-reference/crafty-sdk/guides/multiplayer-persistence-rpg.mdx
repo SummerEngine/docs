@@ -1,6 +1,6 @@
 ---
 title: "Game Guide: Multiplayer with Persistence (RPG/Quest)"
-description: "Full working multiplayer RPG-style example with Crafty.data saves, quest progression, auto-save, and economy rewards."
+description: "How to add persistence and economy to a multiplayer game using Crafty.data and Crafty.economy."
 icon: "database"
 ---
 
@@ -61,12 +61,13 @@ func _game_end() -> void:
         _save_player_snapshot(p)
     Crafty.send_announcement("Quest Arena session saved")
 
-func _player_joined(player: CraftyPlayer) -> void:
-    player.respawn(get_random_spawn_point())
+func _player_joined(player) -> void:
+    if player.has_method("respawn"):
+        player.respawn(get_random_spawn_point())
     _load_player_snapshot(player)
     _sync_player_hud_fields(player)
 
-func _player_left(player: CraftyPlayer) -> void:
+func _player_left(player) -> void:
     _save_player_snapshot(player)
 
 func _process(delta: float) -> void:
@@ -84,14 +85,14 @@ func _process(delta: float) -> void:
         for p in get_players():
             _save_player_snapshot(p)
 
-func _handle_player_actions(player: CraftyPlayer) -> void:
+func _handle_player_actions(player) -> void:
     if player.input.is_action_just_pressed("quest_complete"):
         _complete_quest(player)
 
     if player.input.is_action_just_pressed("buy_potion"):
         _buy_potion(player)
 
-func _complete_quest(player: CraftyPlayer) -> void:
+func _complete_quest(player) -> void:
     var progress := Crafty.data.load(player, "quest_progress")
     if progress == null:
         progress = {"main": 0}
@@ -108,14 +109,14 @@ func _complete_quest(player: CraftyPlayer) -> void:
 
     var awarded := await Crafty.economy.award(player, QUEST_CREDIT_REWARD, "quest_complete")
     if awarded:
-        Crafty.send_announcement("%s completed a quest (+%d credits)" % [player.display_name, QUEST_CREDIT_REWARD])
+        Crafty.send_announcement("%s completed a quest (+%d credits)" % [str(player.get("display_name")), QUEST_CREDIT_REWARD])
 
     _sync_player_hud_fields(player)
 
-func _buy_potion(player: CraftyPlayer) -> void:
+func _buy_potion(player) -> void:
     var purchased := await Crafty.economy.spend(player, POTION_COST, "potion_purchase")
     if not purchased:
-        Crafty.send_announcement("%s cannot afford a potion" % player.display_name)
+        Crafty.send_announcement("%s cannot afford a potion" % str(player.get("display_name")))
         return
 
     var inventory := Crafty.data.load(player, "inventory")
@@ -123,10 +124,10 @@ func _buy_potion(player: CraftyPlayer) -> void:
         inventory = {"potions": 0}
     inventory["potions"] = int(inventory.get("potions", 0)) + 1
     Crafty.data.save(player, "inventory", inventory)
-    Crafty.send_announcement("%s bought a potion" % player.display_name)
+    Crafty.send_announcement("%s bought a potion" % str(player.get("display_name")))
     _sync_player_hud_fields(player)
 
-func _load_player_snapshot(player: CraftyPlayer) -> void:
+func _load_player_snapshot(player) -> void:
     var level = Crafty.data.load(player, "level")
     if level == null:
         level = 1
@@ -148,7 +149,7 @@ func _load_player_snapshot(player: CraftyPlayer) -> void:
     Crafty.data.save(player, "inventory", inventory)
     Crafty.data.save(player, "quest_progress", quest_progress)
 
-func _save_player_snapshot(player: CraftyPlayer) -> void:
+func _save_player_snapshot(player) -> void:
     # Data API is write-through to in-memory cache; backend flush is handled by SDK.
     var level = Crafty.data.load(player, "level")
     var xp = Crafty.data.load(player, "xp")
@@ -160,7 +161,7 @@ func _save_player_snapshot(player: CraftyPlayer) -> void:
     Crafty.data.save(player, "inventory", {"potions": 0} if inventory == null else inventory)
     Crafty.data.save(player, "quest_progress", {"main": 0} if quest_progress == null else quest_progress)
 
-func _sync_player_hud_fields(player: CraftyPlayer) -> void:
+func _sync_player_hud_fields(player) -> void:
     var level := int(Crafty.data.load(player, "level"))
     var xp := int(Crafty.data.load(player, "xp"))
     var inventory := Crafty.data.load(player, "inventory")

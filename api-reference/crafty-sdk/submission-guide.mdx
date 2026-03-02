@@ -24,27 +24,34 @@ Use standard export flow:
 
 ## 2) Static Analysis Scanner Rules (Blocking)
 
-During submission, platform API scans `.gd` files in your `.pck`.
+During submission, the platform scans:
 
-The following patterns are blocked:
-
-| Blocked Pattern | Why It Is Blocked |
-|------|------|
-| `OS.execute` | Prevent arbitrary process execution on servers. |
-| `OS.shell_open` | Prevent shell/URL process escape vectors. |
-| `OS.create_process` | Prevent unmanaged process spawning. |
-| `FileAccess` | Prevent uncontrolled filesystem reads/writes. |
-| `DirAccess` | Prevent directory traversal/manipulation. |
-| `HTTPRequest` | Prevent untrusted outbound network calls from game scripts. |
-| `HTTPClient` | Prevent low-level custom network egress from untrusted scripts. |
-| `JavaScriptBridge` | Prevent browser-context escape/injection surface. |
-| `ClassDB.instantiate` | Prevent dynamic instantiation bypassing allowed surfaces. |
-| `Thread.new` | Prevent unmanaged concurrency abuse and sandbox evasion patterns. |
+- GDScript files (`.gd`)
+- embedded scripts in `.tscn` and `.tres`
+- reserved infrastructure paths
+- blocked native/binary resource extensions
 
 If scanner violations are found, submission fails with:
 
 - `error: "Static analysis failed"`
 - `violations`: file, line, and blocked pattern
+
+See the complete up-to-date list here:
+
+- [Banned APIs Reference](/api-reference/crafty-sdk/banned-apis-reference)
+
+### Important For AI Code Generation
+
+Do not generate "fallback" code paths that use blocked APIs, even if wrapped in conditions.
+
+Example of **still invalid** output:
+
+```gdscript
+if OS.has_feature("editor"):
+    var f = FileAccess.open("user://debug.txt", FileAccess.WRITE)
+```
+
+The scanner is pattern-based and blocks usage regardless of runtime branch.
 
 ## 3) Upload on playcrafty.games
 
@@ -96,6 +103,12 @@ The platform:
 - updates the game metadata for same creator + slug
 - stores a new version row
 - sets status back to `review` for that update
+
+## Related Docs
+
+- [Testing Your Game Locally](/api-reference/crafty-sdk/testing-your-game-locally)
+- [Exporting and Uploading Your Game](/api-reference/crafty-sdk/exporting-and-uploading-your-game)
+- [Banned APIs Reference](/api-reference/crafty-sdk/banned-apis-reference)
 
 ## Common Upload Errors
 

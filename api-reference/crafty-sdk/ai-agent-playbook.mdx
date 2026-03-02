@@ -1,0 +1,149 @@
+---
+title: "AI Agent Playbook"
+description: "Production contract for AI-generated Crafty integrations: platform-first framing, required outputs, and acceptance checks."
+icon: "bot"
+---
+
+## Why This Exists
+
+Fresh AI sessions must be able to generate code that:
+
+- runs in Crafty runtime,
+- passes static analysis + submission checks,
+- stays server-authoritative,
+- does not assume 3D template-only architecture.
+
+This page is the strict contract for that.
+
+## Platform-First Rule
+
+Treat Crafty as a platform layer:
+
+- Build game logic in Summer/Godot.
+- Integrate `CraftyGame` lifecycle + player synced state.
+- Use templates only when they fit the genre.
+
+Never frame the SDK as “3D framework required.”
+
+## Required Output (Minimum Valid Pack)
+
+Generate these files:
+
+- `manifest.json`
+- `main.gd` (`extends CraftyGame`)
+- `main.tscn` (`entry_scene`)
+- `player.tscn` (player root script)
+
+If any file is missing, output is invalid.
+
+## Player Model Decision (Required)
+
+Pick one path explicitly:
+
+1. **3D template path**: player root script is `CraftyCharacter3D`
+2. **Custom path**: player root script extends `CraftyPlayer` and defines custom synced game model
+
+Do not mix assumptions from both paths.
+
+## Required `manifest.json` Keys
+
+`manifest.json` must contain:
+
+- `id` (string)
+- `name` (string)
+- `version` (string)
+- `crafty_sdk` (string, for now `"1.0"`)
+- `entry_scene` (string, for example `"main.tscn"`)
+- `min_players` (number)
+- `max_players` (number)
+
+Strongly recommended:
+
+- `player_scene` (string, for example `"player.tscn"`)
+
+If `player_scene` is present, it must point to a real scene in the project.
+
+## Scene + Script Contract
+
+`main.gd` must:
+
+- extend `CraftyGame`
+- implement:
+  - `_game_init()`
+  - `_game_start()`
+  - `_game_end()`
+  - `_player_joined(player)`
+  - `_player_left(player)`
+- run authority logic server-side (`if not Crafty.is_server(): return` in `_process` when needed)
+
+`main.tscn` should include:
+
+- a `SpawnPoints` node with at least 2 child spawn nodes for multiplayer testing
+- a `Players` node (recommended)
+
+`player.tscn` should:
+
+- use either:
+  - `res://sdk/crafty_character_3d.gd`, or
+  - your own script that extends `CraftyPlayer`
+- include collision + visible mesh so test runs are obvious
+
+## Allowed vs Blocked APIs
+
+### Allowed (use these)
+
+- Crafty SDK systems (`Crafty`, `CraftyGame`, `CraftyPlayer`, score/teams/data/economy APIs)
+- normal gameplay node logic (`Node`, `Node3D`, movement, physics, animation, signals)
+
+### Blocked (never generate these in game scripts)
+
+- `OS.execute`
+- `OS.shell_open`
+- `OS.create_process`
+- `FileAccess`
+- `DirAccess`
+- `HTTPRequest`
+- `HTTPClient`
+- `JavaScriptBridge`
+- `ClassDB.instantiate`
+- `Thread.new`
+
+Reason: submission scanner blocks these patterns and upload fails.
+
+For the complete and current blocked-pattern set, see:
+
+- [Banned APIs Reference](/api-reference/crafty-sdk/banned-apis-reference)
+
+## Definition Of Done (AI Output)
+
+An AI-generated game is "done" only if all checks pass:
+
+1. `manifest.json` has all required fields and valid types.
+2. `entry_scene` exists and loads.
+3. `player_scene` exists (if present) and loads.
+4. Main script extends `CraftyGame`.
+5. Player path chosen explicitly (3D template or custom `CraftyPlayer` subclass).
+6. No blocked APIs appear in any `.gd` file.
+7. Server-authoritative gameplay logic is on server paths.
+8. Game can be exported to `.pck` and submitted.
+
+## Safe Starter Prompt (for AI systems)
+
+Use this prompt when generating a new Crafty game:
+
+```text
+Create a minimal multiplayer Crafty game with these files only:
+manifest.json, main.gd, main.tscn, player.tscn.
+
+Rules:
+- main.gd must extend CraftyGame and implement all lifecycle hooks.
+- Include at least 4 spawn points in main.tscn.
+- Keep authoritative gameplay state on server paths only.
+- Include player_scene in manifest.json and make sure it matches player.tscn.
+- Choose one player model:
+  - 3D template: use CraftyCharacter3D in player.tscn
+  - custom model: extend CraftyPlayer and sync game-specific state with set_synced/get_synced
+- DO NOT use blocked APIs: OS.execute, OS.shell_open, OS.create_process, FileAccess, DirAccess, HTTPRequest, HTTPClient, JavaScriptBridge, ClassDB.instantiate, Thread.new.
+- Target crafty_sdk "1.0".
+```
+

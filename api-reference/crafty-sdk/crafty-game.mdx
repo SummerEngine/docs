@@ -1,18 +1,25 @@
 ---
 title: "CraftyGame"
-description: "Base class for all Crafty games: lifecycle hooks, structure, and server-authoritative usage patterns."
+description: "Required base class that connects your game to the Crafty platform lifecycle."
 icon: "workflow"
 ---
 
 ## What Is `CraftyGame`?
 
-Every Crafty game extends `CraftyGame`. The platform calls lifecycle hooks automatically as players join, leave, and matches start/end.
+Every game published on Crafty must extend `CraftyGame`.
+
+`CraftyGame` is the contract between your game and the platform:
+
+- game lifecycle,
+- player join/leave callbacks,
+- timer/match control helpers,
+- server-authoritative movement helper for 3D templates.
 
 ```gdscript
 extends CraftyGame
 ```
 
-## Lifecycle Hooks (Contract)
+## Required Lifecycle Hooks
 
 Override these in your game script:
 
@@ -26,42 +33,66 @@ func _game_start() -> void:
 func _game_end() -> void:
     pass
 
-func _player_joined(player: CraftyPlayer) -> void:
+func _player_joined(player) -> void:
     pass
 
-func _player_left(player: CraftyPlayer) -> void:
+func _player_left(player) -> void:
     pass
 ```
 
-## What To Put In Each Hook
+Use untyped `player` for maximum compatibility across:
 
-- `_game_init()`: register static setup (teams, economy items, config)
-- `_game_start()`: initialize round runtime state, start timer, spawn logic
-- `_game_end()`: finalize outcomes, cleanup, optional rewards persistence
-- `_player_joined(player)`: apply defaults, team assignment, per-player bootstrap
-- `_player_left(player)`: cleanup player-owned state or temporary entities
+- `CraftyCharacter3D` players (3D action template),
+- custom `CraftyPlayer` subclasses (2D/RTS/card/turn-based).
 
-## AI Implementation Rules
-
-If you are generating code from this page:
-
-1. Keep win/lose logic and scoring server-side.
-2. Use `crafty` for match-wide state, not per-player custom fields.
-3. Use `CraftyPlayer.set_synced` for values clients need to read.
-4. Keep `_game_init()` idempotent and lightweight.
-
-## Common `crafty` Calls Inside `CraftyGame`
-
-In your `CraftyGame` class, use the `Crafty` singleton:
+## Common Platform Methods On `CraftyGame`
 
 ```gdscript
-func _game_start() -> void:
-    crafty.set_time_limit(180)
-    crafty.send_announcement("Round started")
-
-func _game_end() -> void:
-    crafty.end_game()
+end_game(from_timer: bool = false) -> void
+set_time_limit(seconds: float) -> void
+get_time_remaining() -> float
+get_players() -> Array
+get_player_count() -> int
+get_max_players() -> int
+get_random_spawn_point() -> Vector3
+apply_default_movement(player, delta, move_speed := 7.0, gravity := 20.0) -> void
 ```
+
+## Hook Responsibilities
+
+- `_game_init()`: one-time setup (spawn points, static data, signal wiring).
+- `_game_start()`: begin active match flow.
+- `_game_end()`: finalize and cleanup.
+- `_player_joined(player)`: attach defaults for a newly connected player.
+- `_player_left(player)`: cleanup per-player transient state.
+
+## Server-Authoritative Pattern
+
+```gdscript
+func _process(delta: float) -> void:
+    super._process(delta)
+    if not Crafty.is_server():
+        return
+    # authoritative gameplay logic here
+```
+
+## 3D Template Pattern (Optional)
+
+If your player scene uses `CraftyCharacter3D`, you can use the built-in movement helper:
+
+```gdscript
+const MOVE_SPEED := 8.0
+const GRAVITY := 20.0
+
+func _process(delta: float) -> void:
+    super._process(delta)
+    if not Crafty.is_server():
+        return
+    for p in get_players():
+        apply_default_movement(p, delta, MOVE_SPEED, GRAVITY)
+```
+
+For non-3D games, ignore `apply_default_movement` and implement your own state model with `set_synced`.
 
 ## Minimal Example
 
@@ -69,9 +100,9 @@ func _game_end() -> void:
 extends CraftyGame
 
 func _game_start() -> void:
-    crafty.set_time_limit(300)
-    crafty.send_announcement("Collect the most orbs to win.")
+    Crafty.set_time_limit(180.0)
+    Crafty.send_announcement("Match started")
 
-func _player_joined(player: CraftyPlayer) -> void:
-    player.respawn(Vector3.ZERO)
+func _player_joined(player) -> void:
+    player.set_synced("score", 0)
 ```

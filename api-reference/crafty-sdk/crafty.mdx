@@ -1,19 +1,19 @@
 ---
 title: "Crafty Singleton"
-description: "Core game runtime API: match control, players, spawning, context checks, and subsystem access."
+description: "Platform entrypoint for multiplayer runtime features: lifecycle helpers, players, spawning, context checks, and subsystems."
 icon: "box"
 ---
 
 ## What Is `Crafty`?
 
-`Crafty` is the autoload singleton your game uses for game-level operations.
+`Crafty` is the autoload singleton exposed by the SDK.
 
-In code, you typically access it as `crafty`.
+Use it for platform-level operations that are not tied to one player object.
 
-## What Should Use `Crafty` vs `CraftyPlayer`?
+## `Crafty` vs Player Object
 
-- Use `Crafty` for match-wide operations (timer, announcements, ending game, entity spawning).
-- Use `CraftyPlayer` for per-player state and actions (health, respawn, input, synced vars).
+- Use `Crafty` for match-wide actions (timer, announcements, spawning, subsystem access).
+- Use the player object (`CraftyPlayer` or `CraftyCharacter3D`) for per-player synced state and input.
 
 ## Core Methods (Signatures)
 
@@ -21,13 +21,13 @@ In code, you typically access it as `crafty`.
 end_game() -> void
 set_time_limit(seconds: float) -> void
 get_time_remaining() -> float
-get_players() -> Array[CraftyPlayer]
+get_players() -> Array
 get_player_count() -> int
 get_max_players() -> int
 send_announcement(text: String) -> void
 spawn_npc(scene: PackedScene, position: Vector3) -> CraftyNPC
 spawn_object(scene: PackedScene, position: Vector3) -> CraftyObject
-spawn_projectile(scene: PackedScene, origin: Vector3, direction: Vector3, speed: float) -> Variant
+spawn_projectile(scene: PackedScene, origin: Vector3, direction: Vector3, speed: float) -> CraftyObject
 is_server() -> bool
 is_client() -> bool
 ```
@@ -35,39 +35,39 @@ is_client() -> bool
 ## Match Flow
 
 ```gdscript
-crafty.set_time_limit(300)
-crafty.send_announcement("Round started")
+Crafty.set_time_limit(300)
+Crafty.send_announcement("Round started")
 
-if crafty.get_time_remaining() <= 0.0:
-    crafty.end_game()
+if Crafty.get_time_remaining() <= 0.0:
+    Crafty.end_game()
 ```
 
 ## Players
 
 ```gdscript
-var players = crafty.get_players()
-var current = crafty.get_player_count()
-var max_players = crafty.get_max_players()
+var players = Crafty.get_players()
+var current = Crafty.get_player_count()
+var max_players = Crafty.get_max_players()
 ```
 
 ## Announcements
 
 ```gdscript
-crafty.send_announcement("Sudden death starts now!")
+Crafty.send_announcement("Sudden death starts now!")
 ```
 
 ## Spawning
 
 ```gdscript
-var npc = crafty.spawn_npc(npc_scene, Vector3(0, 0, 0))
-var pickup = crafty.spawn_object(pickup_scene, Vector3(2, 0, 2))
-var projectile = crafty.spawn_projectile(bullet_scene, origin, direction, 30.0)
+var npc = Crafty.spawn_npc(npc_scene, Vector3(0, 0, 0))
+var pickup = Crafty.spawn_object(pickup_scene, Vector3(2, 0, 2))
+var projectile = Crafty.spawn_projectile(bullet_scene, origin, direction, 30.0)
 ```
 
 ## Runtime Context
 
 ```gdscript
-if crafty.is_server():
+if Crafty.is_server():
     # scoring, persistence, win conditions
     update_game_state()
 ```
@@ -76,14 +76,14 @@ Use `is_server()` and `is_client()` to keep gameplay authority on the server.
 
 ## Subsystems
 
-`Crafty` exposes subsystem handles:
+`Crafty` exposes optional subsystem handles:
 
-- `crafty.teams`
-- `crafty.score`
-- `crafty.data`
-- `crafty.economy`
-- `crafty.ui`
-- `crafty.audio`
-- `crafty.input`
+- `Crafty.teams`
+- `Crafty.score`
+- `Crafty.data`
+- `Crafty.economy`
+- `Crafty.ui`
+- `Crafty.audio`
+- `Crafty.input`
 
 See `/api-reference/crafty-sdk/subsystems-signals` for subsystem APIs.

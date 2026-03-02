@@ -1,54 +1,61 @@
 ---
 title: "Creating Games on Crafty"
-description: "Build games for Crafty with Summer Engine. Learn what the Crafty SDK is, how it works, and where every creator-facing API lives."
+description: "Crafty is a platform layer (like Steamworks), not a game template. Build any game in Summer/Godot, then integrate multiplayer, persistence, and economy."
 icon: "gamepad-2"
 ---
 
-## What Is This API?
+## Core Principle
 
-`Crafty` is a multiplayer game platform where players discover and play community games at [playcrafty.games](https://playcrafty.games). Think Roblox-style distribution, built for modern creators using Summer Engine.
+You do **not** “build a Crafty game type.”  
+You build your game in Summer/Godot, then integrate the Crafty SDK platform layer.
 
-`Crafty SDK` is the creator API you use inside Summer Engine to build, test, and ship games on Crafty.
+Think:
 
-If you're building game logic, this is your source of truth. It is also structured so AI coding agents can generate reliable creator-side code without guessing.
+- Godot + your game design + your systems
+- plus Crafty SDK for multiplayer platform features
 
-## What Is It For?
+This is the same mental model as Steam + Steamworks.
 
-Use the Crafty SDK to build complete multiplayer game loops:
+## What Crafty Handles
 
-- Match flow (start/end/timer)
-- Players, damage, respawn, and input
-- Team and score logic
-- Spawning NPCs, objects, and projectiles
-- Persistent data and leaderboards
-- Economy, UI helpers, and gameplay signals
+- server-authoritative multiplayer runtime,
+- player/session infrastructure,
+- persistence and economy APIs,
+- score/team helpers,
+- submission/review/publishing pipeline.
 
-Crafty handles the platform layer for you: authentication, networking transport, server orchestration, moderation, submission/review flow, and payments.  
-You focus on building the game. Crafty handles running it at platform scale.
+## What You Build
 
-## How Does It Work?
+- gameplay systems,
+- world/scenes,
+- win/loss rules,
+- rendering and game feel,
+- genre-specific mechanics (3D, 2D, RTS, card, puzzle, etc.).
 
-Crafty is server-authoritative:
+## Platform Contract
 
-- Your core game rules should run on the server.
-- The server owns truth for player state, scores, and outcomes.
-- Clients consume synced state and render UI/feedback.
+The minimum integration contract:
 
-At runtime, you use:
+1. `extends CraftyGame`
+2. implement lifecycle hooks (`_game_init`, `_game_start`, `_game_end`, `_player_joined`, `_player_left`)
+3. use player synced state (`set_synced` / `get_synced`)
+4. keep authority on server paths (`Crafty.is_server()`)
+5. provide valid `manifest.json` and export/upload flow.
 
-- `Crafty` autoload singleton for game control and subsystems
-- `CraftyGame` as your base class with lifecycle hooks
-- `CraftyPlayer` for per-player state/actions
+## Templates Are Optional
 
-## If You Are An AI Agent
+Templates are examples, not requirements.
 
-Follow these rules when generating creator code:
+- `CraftyCharacter3D` is the optional 3D character template path.
+- For 2D/RTS/card/turn-based games, extend `CraftyPlayer` directly and sync your own game model.
 
-1. Extend `CraftyGame` for the main game script.
-2. Put scoring, damage, win conditions, and persistence on server paths.
-3. Use `Crafty` for round control (`set_time_limit`, `end_game`) and global systems.
-4. Use `CraftyPlayer.set_synced` for custom state that clients must read.
-5. Connect to signals for reactive game logic (`player_killed`, `timer_expired`, etc.).
+## Recommended Reading Order (Fresh AI / Fresh Dev)
+
+1. `CraftyGame` and `Crafty` basics
+2. `CraftyPlayer` contract and `set_synced`
+3. subsystem modules you need (`data`, `economy`, `teams`, `score`)
+4. local test runner flow
+5. export/upload and banned API constraints.
 
 ## API Sections
 
@@ -60,10 +67,10 @@ Follow these rules when generating creator code:
     Required base class, lifecycle hooks, and practical game structure
   </Card>
   <Card title="CraftyPlayer" icon="user" href="/api-reference/crafty-sdk/crafty-player">
-    Player identity, synced fields, custom vars, actions, and input
+    Minimal player contract: identity, synced vars, input, and optional 3D template path
   </Card>
   <Card title="Subsystems & Signals" icon="radio" href="/api-reference/crafty-sdk/subsystems-signals">
-    Teams, score, data, economy, UI, audio, input, and event hooks
+    Optional platform modules: teams, score, data, economy, UI, audio, and signals
   </Card>
   <Card title="Build Your First Crafty Game" icon="rocket" href="/api-reference/crafty-sdk/build-your-first-crafty-game">
     Golden-path tutorial from blank project to .pck submission
@@ -77,11 +84,32 @@ Follow these rules when generating creator code:
   <Card title="Team-Based Game Guide" icon="users" href="/api-reference/crafty-sdk/guides/team-based-game">
     Teams, auto-balance, team spawns, and team scoring
   </Card>
+  <Card title="2D Multiplayer Guide" icon="square" href="/api-reference/crafty-sdk/guides/making-a-2d-game-multiplayer">
+    Extend CraftyPlayer for 2D state sync and server-authoritative logic
+  </Card>
+  <Card title="Turn-Based/Card Guide" icon="layout-grid" href="/api-reference/crafty-sdk/guides/making-a-turn-based-or-card-game-multiplayer">
+    Sync turn order, hand/board state, and validate all actions on server
+  </Card>
   <Card title="manifest.json Reference" icon="file-json" href="/api-reference/crafty-sdk/manifest-json-reference">
     Every field, required keys, and validated examples
   </Card>
+  <Card title="Production Launch Runbook" icon="check-check" href="/api-reference/crafty-sdk/production-launch-runbook">
+    One linear path for fresh AI/dev sessions: integrate, test, export, submit
+  </Card>
   <Card title="Submission Guide" icon="upload" href="/api-reference/crafty-sdk/submission-guide">
     Export .pck, scanner rules, upload flow, review lifecycle, and updates
+  </Card>
+  <Card title="Testing Your Game Locally" icon="flask-conical" href="/api-reference/crafty-sdk/testing-your-game-locally">
+    Two-process local workflow, multiplayer testing, and production-like validation loop
+  </Card>
+  <Card title="Exporting and Uploading Your Game" icon="upload-cloud" href="/api-reference/crafty-sdk/exporting-and-uploading-your-game">
+    Game-only PCK export preset, upload pipeline, and update workflow
+  </Card>
+  <Card title="Banned APIs Reference" icon="shield-alert" href="/api-reference/crafty-sdk/banned-apis-reference">
+    Complete blocked pattern list, rationale, and safe alternatives
+  </Card>
+  <Card title="AI Agent Playbook" icon="bot" href="/api-reference/crafty-sdk/ai-agent-playbook">
+    Required file contract, banned API rules, and acceptance checklist for AI-generated games
   </Card>
 </CardGroup>
 

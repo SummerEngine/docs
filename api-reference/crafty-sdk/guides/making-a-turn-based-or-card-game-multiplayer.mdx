@@ -1,0 +1,121 @@
+---
+title: "Guide: Making A Turn-Based Or Card Game Multiplayer"
+description: "Use CraftyPlayer synced state for turn order, hand data, board state, and authoritative turn actions."
+icon: "layout-grid"
+---
+
+## Platform Framing
+
+Turn-based and card games are first-class on Crafty.
+
+Use:
+
+- `CraftyGame` for match lifecycle,
+- `CraftyPlayer` for connected player identity + synced state,
+- `set_synced` for turn/board/hand summaries.
+
+No 3D character system is required.
+
+## Minimal Player Setup
+
+```gdscript
+extends CraftyPlayer
+
+func _ready() -> void:
+    set_synced("hand_count", 0)
+    set_synced("mana", 0)
+    set_synced("ready", false)
+```
+
+## Authoritative Turn State
+
+Store canonical game state on server:
+
+```gdscript
+extends CraftyGame
+
+var _turn_order: Array = []
+var _active_turn_index := 0
+var _board_state := {}
+
+func _game_init() -> void:
+    _board_state = {"round": 1, "stack_size": 0}
+
+func _player_joined(player) -> void:
+    _turn_order.append(player)
+    player.set_synced("hand_count", 5)
+    player.set_synced("mana", 1)
+    _sync_turn_state()
+
+func _player_left(player) -> void:
+    _turn_order.erase(player)
+    _active_turn_index = clamp(_active_turn_index, 0, max(_turn_order.size() - 1, 0))
+    _sync_turn_state()
+```
+
+## Turn Progression
+
+```gdscript
+func end_turn(player) -> void:
+    if not Crafty.is_server():
+        return
+    if _turn_order.is_empty():
+        return
+
+    var active = _turn_order[_active_turn_index]
+    if player != active:
+        return
+
+    _active_turn_index = (_active_turn_index + 1) % _turn_order.size()
+    _board_state["round"] = int(_board_state.get("round", 1)) + 1
+    _sync_turn_state()
+
+func _sync_turn_state() -> void:
+    for i in _turn_order.size():
+        var p = _turn_order[i]
+        p.set_synced("turn_active", i == _active_turn_index)
+        p.set_synced("round", _board_state.get("round", 1))
+```
+
+## Action Validation Pattern
+
+Every turn action should be server-validated:
+
+```gdscript
+func play_card(player, card_id: String, target_id: String) -> void:
+    if not Crafty.is_server():
+        return
+    if _turn_order[_active_turn_index] != player:
+        return
+    if not _is_legal_card_play(player, card_id, target_id):
+        return
+
+    _apply_card_effect(player, card_id, target_id)
+    _sync_turn_state()
+```
+
+## What To Sync
+
+Sync only what clients need for rendering:
+
+- `turn_active`
+- `round`
+- `hand_count`
+- public board/stack data
+- timers or action windows
+
+Keep hidden/private data server-side unless intentionally exposed.
+
+## Optional Platform Modules
+
+- `Crafty.data`: persistent deck/profile/MMR.
+- `Crafty.economy`: card packs, tournament entry, rewards.
+- `Crafty.score`: ranked points or win tally.
+
+## Production Checklist (Turn-Based/Card)
+
+- [ ] All turn actions validated server-side.
+- [ ] Synced state is minimal and intentional.
+- [ ] Hidden game information not leaked to all clients.
+- [ ] Join/leave logic preserves turn order safely.
+- [ ] Reconnect flow restores synced state correctly.

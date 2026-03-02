@@ -1,6 +1,6 @@
 ---
 title: "Game Guide: Team-Based Multiplayer"
-description: "Full working team game example with CraftyTeams, auto-balance, team spawn points, and team scoring."
+description: "How to build team modes with Crafty.teams and Crafty.score, independent of genre."
 icon: "users"
 ---
 
@@ -76,13 +76,14 @@ func _game_end() -> void:
     else:
         Crafty.send_announcement("Draw %d - %d" % [red_score, blue_score])
 
-func _player_joined(player: CraftyPlayer) -> void:
+func _player_joined(player) -> void:
     var assigned := _assign_team(player)
     var spawn := _team_spawn_for(assigned)
-    player.respawn(spawn)
+    if player.has_method("respawn"):
+        player.respawn(spawn)
     player.set_synced("team", assigned)
 
-func _player_left(player: CraftyPlayer) -> void:
+func _player_left(player) -> void:
     Crafty.teams.remove_player(player)
 
 func _process(delta: float) -> void:
@@ -94,7 +95,7 @@ func _process(delta: float) -> void:
         apply_default_movement(p, delta, MOVE_SPEED, GRAVITY)
         _check_goal_score(p)
 
-func _assign_team(player: CraftyPlayer) -> String:
+func _assign_team(player) -> String:
     var red_count := Crafty.teams.get_members("red").size()
     var blue_count := Crafty.teams.get_members("blue").size()
     var target := "red" if red_count <= blue_count else "blue"
@@ -108,7 +109,7 @@ func _team_spawn_for(team_id: String) -> Vector3:
         return _red_spawns.pick_random()
     return _blue_spawns.pick_random()
 
-func _check_goal_score(player: CraftyPlayer) -> void:
+func _check_goal_score(player) -> void:
     var team_id := Crafty.teams.get_team(player)
     if team_id == "":
         return
@@ -118,10 +119,10 @@ func _check_goal_score(player: CraftyPlayer) -> void:
     elif team_id == "blue" and player.position.x <= BLUE_GOAL_X_MAX:
         _award_team_score("blue", player)
 
-func _award_team_score(team_id: String, scorer: CraftyPlayer) -> void:
+func _award_team_score(team_id: String, scorer) -> void:
     Crafty.score.add_team(team_id, 1)
     var score := Crafty.score.get_team(team_id)
-    Crafty.send_announcement("%s team scored (%d/%d) by %s" % [team_id.capitalize(), score, TEAM_SCORE_TO_WIN, scorer.display_name])
+    Crafty.send_announcement("%s team scored (%d/%d) by %s" % [team_id.capitalize(), score, TEAM_SCORE_TO_WIN, str(scorer.get("display_name"))])
 
     var current_team := Crafty.teams.get_team(scorer)
     scorer.teleport(_team_spawn_for(current_team))
@@ -129,6 +130,15 @@ func _award_team_score(team_id: String, scorer: CraftyPlayer) -> void:
     if score >= TEAM_SCORE_TO_WIN:
         end_game(false)
 ```
+
+## Genre Note
+
+This team logic works for:
+
+- 3D objective shooters,
+- 2D objective games,
+- turn-based team tactics,
+- card games with team play.
 
 ## Suggested `manifest.json`
 

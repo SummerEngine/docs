@@ -1,0 +1,116 @@
+---
+title: "Testing Your Game Locally"
+description: "Press play, launch server+client automatically, and test your Crafty game with production-like runtime behavior."
+icon: "flask-conical"
+---
+
+## Why This Matters
+
+Local testing should match production behavior as closely as possible.
+
+In Crafty, a published game runs on:
+
+- the same Summer/Godot runtime,
+- the same Crafty SDK APIs,
+- server-authoritative networking.
+
+That is why the recommended workflow launches a local headless server and a client, instead of testing gameplay logic in a client-only setup.
+
+## Default Local Workflow
+
+Use the starter template test runner:
+
+- `test_runner.gd` launches a headless server process.
+- It waits for startup.
+- It launches/loads the client flow and connects to `localhost:7777`.
+
+This gives you a real multiplayer loop in one click.
+
+<Tip>
+  If it works in this local test-runner flow, it is much closer to how it will behave in production than single-process editor-only testing.
+</Tip>
+
+## What Happens Under The Hood
+
+When you run the test runner:
+
+1. The runner detects your game slug from `manifest.json`.
+2. It starts Summer/Godot in headless mode with server args:
+   - `--server`
+   - `--game-id <slug>`
+   - `--port 7777`
+3. It waits for the server to begin listening.
+4. It starts the client path and quick-connects to `localhost:7777`.
+5. On stop/exit, it kills the spawned server process.
+
+## Project Requirements
+
+To make local testing reliable:
+
+- Keep `manifest.json` valid and present.
+- Ensure `entry_scene` points to a real scene.
+- Set `player_scene` and keep it in sync with your player scene path (`CraftyCharacter3D` for 3D templates, or your own `CraftyPlayer` subclass for other genres).
+- Keep server-authoritative logic in server paths (`Crafty.is_server()` checks where needed).
+
+## Multiplayer Testing (2+ Players)
+
+You have two practical options:
+
+### Option A: First client via test runner, additional clients from editor
+
+1. Start the first instance with test runner (starts server + client).
+2. Launch another editor instance.
+3. Run the client scene and connect to `localhost:7777` using your quick-connect flow.
+
+### Option B: Team testing on same network
+
+1. One teammate runs the test runner (hosts local server).
+2. Share host IP and port.
+3. Other teammates run client mode and connect to that host.
+
+<Warning>
+  Do not start multiple local servers on the same port. For parallel server tests, use different ports.
+</Warning>
+
+## Fast Local QA Checklist
+
+Before exporting:
+
+- [ ] Game starts without script errors.
+- [ ] Players spawn correctly.
+- [ ] Movement and game rules are server-authoritative.
+- [ ] Scoring/round end/win conditions trigger correctly.
+- [ ] Reconnect/disconnect behavior is stable.
+- [ ] Match can run for at least 10+ minutes without critical errors.
+
+## Common Local Testing Problems
+
+### Server starts, but game scene does not load
+
+Usually one of:
+
+- `manifest.json` missing or invalid.
+- `entry_scene` path wrong.
+- scene root does not extend `CraftyGame`.
+
+### Player spawns fail
+
+Usually one of:
+
+- `player_scene` path wrong.
+- player scene does not use `CraftyPlayer`.
+- game scene missing expected spawn/player nodes.
+
+### Local behavior differs from expected production behavior
+
+Check:
+
+- your game rules are not accidentally client-side,
+- no editor-only assumptions in gameplay code,
+- no banned/blocked APIs used by generated code.
+
+## Related Docs
+
+- [manifest.json Reference](/api-reference/crafty-sdk/manifest-json-reference)
+- [Exporting and Uploading Your Game](/api-reference/crafty-sdk/exporting-and-uploading-your-game)
+- [Banned APIs Reference](/api-reference/crafty-sdk/banned-apis-reference)

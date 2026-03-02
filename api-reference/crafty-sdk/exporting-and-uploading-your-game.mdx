@@ -1,0 +1,128 @@
+---
+title: "Exporting and Uploading Your Game"
+description: "Export a game-only .pck, upload it for review, and understand exactly what validation runs on submission."
+icon: "upload"
+---
+
+## Goal
+
+Produce a `.pck` that contains only your game content, then submit it for review.
+
+The safest flow is:
+
+1. Export with the `Crafty Game PCK` preset.
+2. Upload `.pck` + `manifest.json` at `/submit`.
+3. Fix any validation findings.
+4. Re-submit with bumped `manifest.version`.
+
+## 1) Configure Export Preset
+
+Use the starter template preset:
+
+- name: `Crafty Game PCK`
+- export filter: `resources`
+- include filter: `my_game/*,manifest.json`
+- exclude filter: infrastructure directories (`sdk/*`, `core/*`, `server/*`, etc.)
+
+You must update `include_filter` to your actual game folder name.
+
+<Warning>
+  If `include_filter` is wrong, your exported `.pck` can miss required scenes or include unintended files.
+</Warning>
+
+## 2) Export The .pck
+
+In Summer/Godot:
+
+1. Open **Project -> Export**.
+2. Select `Crafty Game PCK`.
+3. Verify include/exclude filters.
+4. Export to a file like `my_game.pck`.
+
+Quick checks after export:
+
+- file extension is `.pck`,
+- `manifest.json` exists and is current,
+- entry/player scenes referenced by manifest are present in the exported game scope.
+
+## 3) Upload On playcrafty.games
+
+Go to `/submit` on the Crafty web app and upload:
+
+- `.pck` file (required)
+- `manifest.json` file (required)
+
+The page sends a multipart request to:
+
+- `POST https://crafty-production-5a7c.up.railway.app/games/submit`
+- `Authorization: Bearer <supabase_access_token>`
+
+## 4) What Validation Runs
+
+Submission validates:
+
+- auth and creator identity,
+- required manifest fields and basic typing,
+- max upload size (250MB),
+- static analysis scanner (dangerous APIs, reserved paths, banned binary/native file types).
+
+If validation fails, the API returns structured error details and scanner violations (file, line, pattern).
+
+## 5) Review Lifecycle
+
+On successful upload:
+
+- submission status becomes `review`,
+- admins review the build,
+- game is either:
+  - `published`, or
+  - `rejected` (with a reason).
+
+## 6) Updating Your Game
+
+For updates:
+
+1. Keep `manifest.id` stable.
+2. Bump `manifest.version`.
+3. Re-export `.pck`.
+4. Re-upload `.pck` + `manifest.json`.
+
+Each update goes through review again.
+
+## Common Upload Errors
+
+### `Uploaded file must be a .pck`
+
+- Wrong file type.
+- Renamed file without real `.pck` export.
+
+### `PCK file too large (... max 250MB)`
+
+- Reduce textures/audio size.
+- Remove non-game assets from export filter.
+
+### `Invalid manifest. Required: ...`
+
+- Missing required keys.
+- Wrong types.
+- Invalid JSON syntax.
+
+### `Static analysis failed`
+
+- Scanner found banned APIs, reserved paths, or blocked resource types.
+- Open violation list and fix each issue before re-uploading.
+
+## Recommended Release Checklist
+
+- [ ] `manifest.json` required fields valid.
+- [ ] `entry_scene` and `player_scene` paths load.
+- [ ] Export includes only game files.
+- [ ] `.pck` under 250MB.
+- [ ] No banned APIs or reserved paths.
+- [ ] Local test runner flow passes before upload.
+
+## Related Docs
+
+- [Testing Your Game Locally](/api-reference/crafty-sdk/testing-your-game-locally)
+- [manifest.json Reference](/api-reference/crafty-sdk/manifest-json-reference)
+- [Banned APIs Reference](/api-reference/crafty-sdk/banned-apis-reference)
