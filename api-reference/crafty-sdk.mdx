@@ -1,0 +1,89 @@
+---
+title: "Creating Games on Crafty"
+description: "What the Crafty game API is, how it works, and where to find each creator-facing API surface."
+icon: "gamepad-2"
+---
+
+## What Is This API?
+
+`Crafty` is the game platform where players discover and play games (similar to Roblox).
+
+`Crafty SDK` is the creator API you use in Summer Engine to build games that run on Crafty.
+
+This documentation is the source of truth for creators and AI coding agents generating creator-side game code.
+
+## What Is It For?
+
+Use this API to implement gameplay logic inside your game:
+
+- Match flow (start/end/timer)
+- Players, damage, respawn, and input
+- Team and score logic
+- Spawning NPCs, objects, and projectiles
+- Persistent data and leaderboards
+- Economy, UI helpers, and gameplay signals
+
+Platform infrastructure like authentication, networking transport, server orchestration, moderation, and payment processing is handled by the Crafty platform.
+
+## How Does It Work?
+
+Crafty is server-authoritative:
+
+- Your core game rules should run on the server.
+- The server owns truth for player state, scores, and outcomes.
+- Clients consume synced state and render UI/feedback.
+
+At runtime, you use:
+
+- `Crafty` autoload singleton for game control and subsystems
+- `CraftyGame` as your base class with lifecycle hooks
+- `CraftyPlayer` for per-player state/actions
+
+## If You Are An AI Agent
+
+Follow these rules when generating creator code:
+
+1. Extend `CraftyGame` for the main game script.
+2. Put scoring, damage, win conditions, and persistence on server paths.
+3. Use `Crafty` for round control (`set_time_limit`, `end_game`) and global systems.
+4. Use `CraftyPlayer.set_synced` for custom state that clients must read.
+5. Connect to signals for reactive game logic (`player_killed`, `timer_expired`, etc.).
+
+## API Sections
+
+<CardGroup cols={2}>
+  <Card title="Crafty Singleton" icon="box" href="/api-reference/crafty-sdk/crafty">
+    Match control, player queries, spawning, server/client checks, subsystem access
+  </Card>
+  <Card title="CraftyGame" icon="workflow" href="/api-reference/crafty-sdk/crafty-game">
+    Required base class, lifecycle hooks, and practical game structure
+  </Card>
+  <Card title="CraftyPlayer" icon="user" href="/api-reference/crafty-sdk/crafty-player">
+    Player identity, synced fields, custom vars, actions, and input
+  </Card>
+  <Card title="Subsystems & Signals" icon="radio" href="/api-reference/crafty-sdk/subsystems-signals">
+    Teams, score, data, economy, UI, audio, input, and event hooks
+  </Card>
+  <Card title="Build Your First Crafty Game" icon="rocket" href="/api-reference/crafty-sdk/build-your-first-crafty-game">
+    Golden-path tutorial from blank project to .pck submission
+  </Card>
+  <Card title="Multiplayer FFA Guide" icon="swords" href="/api-reference/crafty-sdk/guides/multiplayer-ffa-coin-collector">
+    Full Coin Collector-style example with timer, collectibles, and scoring
+  </Card>
+  <Card title="Multiplayer Persistence Guide" icon="database" href="/api-reference/crafty-sdk/guides/multiplayer-persistence-rpg">
+    RPG/quest example with player saves, progression, and economy
+  </Card>
+  <Card title="Team-Based Game Guide" icon="users" href="/api-reference/crafty-sdk/guides/team-based-game">
+    Teams, auto-balance, team spawns, and team scoring
+  </Card>
+  <Card title="manifest.json Reference" icon="file-json" href="/api-reference/crafty-sdk/manifest-json-reference">
+    Every field, required keys, and validated examples
+  </Card>
+  <Card title="Submission Guide" icon="upload" href="/api-reference/crafty-sdk/submission-guide">
+    Export .pck, scanner rules, upload flow, review lifecycle, and updates
+  </Card>
+</CardGroup>
+
+## Versioning
+
+Games declare a `crafty_sdk` version in `manifest.json`. SDK changes are intended to be additive and backward-compatible.

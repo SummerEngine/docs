@@ -1,0 +1,105 @@
+---
+title: "Submission Guide"
+description: "How to export .pck, pass static analysis, upload to playcrafty.games, and understand review/update flow."
+icon: "upload"
+---
+
+## Submission Checklist
+
+Before uploading:
+
+- Valid `manifest.json`
+- Exported `.pck`
+- No banned API usage in GDScript
+
+## 1) Export `.pck` from Godot / Summer Engine
+
+Use standard export flow:
+
+1. Open your game project.
+2. Go to **Project -> Export**.
+3. Choose/create export preset for your build target.
+4. Export and generate a `.pck`.
+5. Confirm your game includes `manifest.json`.
+
+## 2) Static Analysis Scanner Rules (Blocking)
+
+During submission, platform API scans `.gd` files in your `.pck`.
+
+The following patterns are blocked:
+
+| Blocked Pattern | Why It Is Blocked |
+|------|------|
+| `OS.execute` | Prevent arbitrary process execution on servers. |
+| `OS.shell_open` | Prevent shell/URL process escape vectors. |
+| `OS.create_process` | Prevent unmanaged process spawning. |
+| `FileAccess` | Prevent uncontrolled filesystem reads/writes. |
+| `DirAccess` | Prevent directory traversal/manipulation. |
+| `HTTPRequest` | Prevent untrusted outbound network calls from game scripts. |
+| `HTTPClient` | Prevent low-level custom network egress from untrusted scripts. |
+| `JavaScriptBridge` | Prevent browser-context escape/injection surface. |
+| `ClassDB.instantiate` | Prevent dynamic instantiation bypassing allowed surfaces. |
+| `Thread.new` | Prevent unmanaged concurrency abuse and sandbox evasion patterns. |
+
+If scanner violations are found, submission fails with:
+
+- `error: "Static analysis failed"`
+- `violations`: file, line, and blocked pattern
+
+## 3) Upload on playcrafty.games
+
+V1 submission requires two files:
+
+- `.pck` as multipart field `pck`
+- `manifest.json` as multipart field `manifest` (file or JSON text)
+
+Authenticated request:
+
+- `POST https://crafty-production-5a7c.up.railway.app/games/submit`
+- `Authorization: Bearer <supabase_access_token>`
+
+### Example Request (cURL)
+
+```bash
+curl -X POST "https://crafty-production-5a7c.up.railway.app/games/submit" \
+  -H "Authorization: Bearer <SUPABASE_ACCESS_TOKEN>" \
+  -F "pck=@./build/my-game.pck" \
+  -F "manifest=@./manifest.json;type=application/json"
+```
+
+## 4) What Happens During Review
+
+On success, API returns:
+
+- `ok: true`
+- `gameId`
+- `submissionId`
+- `status: "review"`
+- `scan` metadata
+
+Game status lifecycle:
+
+- `review` -> waiting for manual/admin review
+- `published` -> approved and live
+- `rejected` -> rejected with reason
+
+## 5) Updating an Existing Game
+
+To update:
+
+1. Keep `manifest.id` the same.
+2. Increase `manifest.version`.
+3. Upload new `.pck` + `manifest`.
+
+The platform:
+
+- updates the game metadata for same creator + slug
+- stores a new version row
+- sets status back to `review` for that update
+
+## Common Upload Errors
+
+- `Missing .pck file (multipart field: pck)`
+- `Uploaded file must be a .pck`
+- `Invalid manifest. Required: id, name, version, crafty_sdk, entry_scene, min_players, max_players`
+- `Static analysis failed` (with violations list)

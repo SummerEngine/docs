@@ -1,0 +1,89 @@
+---
+title: "Crafty Singleton"
+description: "Core game runtime API: match control, players, spawning, context checks, and subsystem access."
+icon: "box"
+---
+
+## What Is `Crafty`?
+
+`Crafty` is the autoload singleton your game uses for game-level operations.
+
+In code, you typically access it as `crafty`.
+
+## What Should Use `Crafty` vs `CraftyPlayer`?
+
+- Use `Crafty` for match-wide operations (timer, announcements, ending game, entity spawning).
+- Use `CraftyPlayer` for per-player state and actions (health, respawn, input, synced vars).
+
+## Core Methods (Signatures)
+
+```gdscript
+end_game() -> void
+set_time_limit(seconds: float) -> void
+get_time_remaining() -> float
+get_players() -> Array[CraftyPlayer]
+get_player_count() -> int
+get_max_players() -> int
+send_announcement(text: String) -> void
+spawn_npc(scene: PackedScene, position: Vector3) -> CraftyNPC
+spawn_object(scene: PackedScene, position: Vector3) -> CraftyObject
+spawn_projectile(scene: PackedScene, origin: Vector3, direction: Vector3, speed: float) -> Variant
+is_server() -> bool
+is_client() -> bool
+```
+
+## Match Flow
+
+```gdscript
+crafty.set_time_limit(300)
+crafty.send_announcement("Round started")
+
+if crafty.get_time_remaining() <= 0.0:
+    crafty.end_game()
+```
+
+## Players
+
+```gdscript
+var players = crafty.get_players()
+var current = crafty.get_player_count()
+var max_players = crafty.get_max_players()
+```
+
+## Announcements
+
+```gdscript
+crafty.send_announcement("Sudden death starts now!")
+```
+
+## Spawning
+
+```gdscript
+var npc = crafty.spawn_npc(npc_scene, Vector3(0, 0, 0))
+var pickup = crafty.spawn_object(pickup_scene, Vector3(2, 0, 2))
+var projectile = crafty.spawn_projectile(bullet_scene, origin, direction, 30.0)
+```
+
+## Runtime Context
+
+```gdscript
+if crafty.is_server():
+    # scoring, persistence, win conditions
+    update_game_state()
+```
+
+Use `is_server()` and `is_client()` to keep gameplay authority on the server.
+
+## Subsystems
+
+`Crafty` exposes subsystem handles:
+
+- `crafty.teams`
+- `crafty.score`
+- `crafty.data`
+- `crafty.economy`
+- `crafty.ui`
+- `crafty.audio`
+- `crafty.input`
+
+See `/api-reference/crafty-sdk/subsystems-signals` for subsystem APIs.

@@ -1,0 +1,123 @@
+---
+title: "CraftyPlayer"
+description: "Per-player API reference: identity, synced fields, custom vars, actions, and server-read input."
+icon: "user"
+---
+
+## What Is `CraftyPlayer`?
+
+`CraftyPlayer` represents one connected player. Player state is server-authoritative and synced to clients.
+
+## Core Fields and Methods (Signatures)
+
+```gdscript
+# identity
+id: String
+display_name: String
+avatar: Dictionary
+
+# synced state
+position: Vector3
+rotation: Vector3
+health: float
+max_health: float
+is_alive: bool
+
+# custom synced vars
+set_synced(key: String, value: Variant) -> void
+get_synced(key: String) -> Variant
+
+# actions
+respawn(position: Vector3) -> void
+damage(amount: float, source: CraftyPlayer = null) -> void
+heal(amount: float) -> void
+kill() -> void
+teleport(position: Vector3) -> void
+```
+
+## Identity
+
+Read-only identity fields:
+
+```gdscript
+var id = player.id
+var name = player.display_name
+var avatar = player.avatar
+```
+
+- `id: String`
+- `display_name: String`
+- `avatar: Dictionary`
+
+## Synced State
+
+```gdscript
+player.position
+player.rotation
+player.health
+player.max_health
+player.is_alive
+```
+
+Core synced fields:
+
+- `position: Vector3`
+- `rotation: Vector3`
+- `health: float`
+- `max_health: float`
+- `is_alive: bool`
+
+## Custom Synced Variables
+
+Use custom synced values for gameplay state you want visible on both server and clients.
+
+```gdscript
+player.set_synced("score", 10)
+player.set_synced("team", "red")
+var team_name = player.get_synced("team")
+```
+
+- `set_synced(key: String, value: Variant) -> void`
+- `get_synced(key: String) -> Variant`
+
+Use this for creator-defined player state that must be visible both server and client (for example: role, class, score multiplier, carrying flag).
+
+## Player Actions
+
+Server-side control methods:
+
+```gdscript
+player.respawn(Vector3(0, 1, 0))
+player.damage(25.0, attacker)
+player.heal(10.0)
+player.kill()
+player.teleport(Vector3(5, 1, -3))
+```
+
+- `respawn(position: Vector3) -> void`
+- `damage(amount: float, source: CraftyPlayer = null) -> void`
+- `heal(amount: float) -> void`
+- `kill() -> void`
+- `teleport(position: Vector3) -> void`
+
+## Input (Read On Server)
+
+Read per-player input on the server:
+
+```gdscript
+var move = player.input.movement
+var look = player.input.look_direction
+if player.input.is_action_just_pressed("shoot"):
+    fire_weapon(player)
+```
+
+- `player.input.movement -> Vector2`
+- `player.input.look_direction -> Vector2`
+- `player.input.is_action_pressed(action: String) -> bool`
+- `player.input.is_action_just_pressed(action: String) -> bool`
+
+## AI Implementation Rules
+
+- Never trust client-sent input as final game outcome; validate on server.
+- Run damage/scoring logic server-side, then sync resulting state.
+- Keep client UI reactive to synced values instead of local authority state.

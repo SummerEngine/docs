@@ -1,0 +1,77 @@
+---
+title: "CraftyGame"
+description: "Base class for all Crafty games: lifecycle hooks, structure, and server-authoritative usage patterns."
+icon: "workflow"
+---
+
+## What Is `CraftyGame`?
+
+Every Crafty game extends `CraftyGame`. The platform calls lifecycle hooks automatically as players join, leave, and matches start/end.
+
+```gdscript
+extends CraftyGame
+```
+
+## Lifecycle Hooks (Contract)
+
+Override these in your game script:
+
+```gdscript
+func _game_init() -> void:
+    pass
+
+func _game_start() -> void:
+    pass
+
+func _game_end() -> void:
+    pass
+
+func _player_joined(player: CraftyPlayer) -> void:
+    pass
+
+func _player_left(player: CraftyPlayer) -> void:
+    pass
+```
+
+## What To Put In Each Hook
+
+- `_game_init()`: register static setup (teams, economy items, config)
+- `_game_start()`: initialize round runtime state, start timer, spawn logic
+- `_game_end()`: finalize outcomes, cleanup, optional rewards persistence
+- `_player_joined(player)`: apply defaults, team assignment, per-player bootstrap
+- `_player_left(player)`: cleanup player-owned state or temporary entities
+
+## AI Implementation Rules
+
+If you are generating code from this page:
+
+1. Keep win/lose logic and scoring server-side.
+2. Use `crafty` for match-wide state, not per-player custom fields.
+3. Use `CraftyPlayer.set_synced` for values clients need to read.
+4. Keep `_game_init()` idempotent and lightweight.
+
+## Common `crafty` Calls Inside `CraftyGame`
+
+In your `CraftyGame` class, use the `Crafty` singleton:
+
+```gdscript
+func _game_start() -> void:
+    crafty.set_time_limit(180)
+    crafty.send_announcement("Round started")
+
+func _game_end() -> void:
+    crafty.end_game()
+```
+
+## Minimal Example
+
+```gdscript
+extends CraftyGame
+
+func _game_start() -> void:
+    crafty.set_time_limit(300)
+    crafty.send_announcement("Collect the most orbs to win.")
+
+func _player_joined(player: CraftyPlayer) -> void:
+    player.respawn(Vector3.ZERO)
+```

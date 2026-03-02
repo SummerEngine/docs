@@ -1,0 +1,159 @@
+---
+title: "Game Guide: Multiplayer FFA (Coin Collector)"
+description: "Full working free-for-all example with timer, collectibles, scoring, announcements, and game-end results."
+icon: "swords"
+---
+
+## What This Guide Covers
+
+This is a full `CraftyGame` example for a multiplayer free-for-all:
+
+- Round timer
+- Collectible objects via `Crafty.spawn_object`
+- Scoring via `Crafty.score`
+- Announcements via `Crafty.send_announcement`
+- End-of-round winner announcement
+
+## Scene Setup
+
+Create `coin_collector.tscn` with:
+
+- Root: `Node3D` (`CoinCollector`)
+- Child: `Node3D` (`SpawnPoints`) with multiple spawn transforms
+
+Create collectible scene `coin.tscn` (root script should extend `CraftyObject`).
+
+## Complete Game Script (`coin_collector.gd`)
+
+```gdscript
+extends CraftyGame
+
+const MOVE_SPEED := 15.0
+const GRAVITY := 20.0
+const COIN_COUNT := 10
+const COIN_RESPAWN_TIME := 5.0
+const COINS_TO_WIN := 10
+const ROUND_SECONDS := 90.0
+
+var _coin_scene: PackedScene
+var _respawn_queue: Array[Dictionary] = []
+
+func get_prediction_params() -> Dictionary:
+    return {"move_speed": MOVE_SPEED, "gravity": GRAVITY}
+
+func _game_init() -> void:
+    _coin_scene = load("res://coin.tscn") as PackedScene
+    if not _coin_scene:
+        push_error("[CoinCollector] Could not load coin scene")
+
+    var spawn_node := get_node_or_null("SpawnPoints")
+    if spawn_node:
+        for child in spawn_node.get_children():
+            if child is Node3D:
+                spawn_points.append(child.global_position)
+
+    if spawn_points.is_empty():
+        spawn_points = [
+            Vector3(-20, 1, -20),
+            Vector3(20, 1, -20),
+            Vector3(-20, 1, 20),
+            Vector3(20, 1, 20)
+        ]
+
+func _game_start() -> void:
+    Crafty.set_time_limit(ROUND_SECONDS)
+    Crafty.object_collected.connect(_on_coin_collected)
+    Crafty.send_announcement("Collect %d coins to win" % COINS_TO_WIN)
+    _spawn_initial_coins()
+
+func _game_end() -> void:
+    if Crafty.object_collected.is_connected(_on_coin_collected):
+        Crafty.object_collected.disconnect(_on_coin_collected)
+
+    var leaderboard := Crafty.score.get_leaderboard()
+    if leaderboard.is_empty():
+        Crafty.send_announcement("Round over: no winner")
+        return
+
+    var winner := leaderboard[0].player as CraftyPlayer
+    var score := int(leaderboard[0].score)
+    Crafty.send_announcement("%s wins with %d coins!" % [winner.display_name, score])
+
+func _player_joined(player: CraftyPlayer) -> void:
+    player.respawn(get_random_spawn_point())
+    Crafty.score.set_score(player, 0)
+    player.set_synced("score", 0)
+
+func _player_left(_player: CraftyPlayer) -> void:
+    pass
+
+func _process(delta: float) -> void:
+    super._process(delta)
+    if not Crafty.is_server():
+        return
+
+    for p in get_players():
+        apply_default_movement(p, delta, MOVE_SPEED, GRAVITY)
+
+    _tick_coin_respawns(delta)
+
+func _spawn_initial_coins() -> void:
+    for i in range(COIN_COUNT):
+        _spawn_coin_at(_random_coin_pos())
+
+func _spawn_coin_at(pos: Vector3) -> void:
+    if not _coin_scene:
+        return
+    var coin := Crafty.spawn_object(_coin_scene, pos)
+    if coin:
+        coin.set_synced("active", true)
+
+func _random_coin_pos() -> Vector3:
+    return Vector3(
+        randf_range(-25.0, 25.0),
+        1.0,
+        randf_range(-25.0, 25.0)
+    )
+
+func _tick_coin_respawns(delta: float) -> void:
+    var i := 0
+    while i < _respawn_queue.size():
+        _respawn_queue[i].t -= delta
+        if _respawn_queue[i].t <= 0.0:
+            _spawn_coin_at(_respawn_queue[i].pos)
+            _respawn_queue.remove_at(i)
+        else:
+            i += 1
+
+func _on_coin_collected(player: CraftyPlayer, _obj: CraftyObject) -> void:
+    Crafty.score.add(player, 1)
+    var score := Crafty.score.get_score(player)
+    player.set_synced("score", score)
+
+    if score >= COINS_TO_WIN:
+        end_game(false)
+        return
+
+    _respawn_queue.append({
+        "pos": _random_coin_pos(),
+        "t": COIN_RESPAWN_TIME
+    })
+```
+
+## Suggested `manifest.json`
+
+```json
+{
+  "id": "coin-collector",
+  "name": "Coin Collector",
+  "version": "1.0.0",
+  "crafty_sdk": "1.0",
+  "entry_scene": "coin_collector.tscn",
+  "player_scene": "player.tscn",
+  "min_players": 1,
+  "max_players": 8,
+  "tick_rate": 60,
+  "description": "Collect coins before the timer expires.",
+  "tags": ["ffa", "collect", "arcade"]
+}
+```

@@ -1,0 +1,149 @@
+---
+title: "Game Guide: Team-Based Multiplayer"
+description: "Full working team game example with CraftyTeams, auto-balance, team spawn points, and team scoring."
+icon: "users"
+---
+
+## What This Guide Covers
+
+This guide implements a red-vs-blue team mode:
+
+- Team creation with `Crafty.teams.create`
+- Team assignment and auto-balance
+- Team-specific spawn points
+- Team score via `Crafty.score.add_team`
+
+## Scene Setup
+
+Create `team_arena.tscn`:
+
+- Root `Node3D` named `TeamArena`
+- Child `Node3D` named `SpawnPointsRed` with several spawn transforms
+- Child `Node3D` named `SpawnPointsBlue` with several spawn transforms
+
+## Complete Game Script (`team_arena.gd`)
+
+```gdscript
+extends CraftyGame
+
+const MOVE_SPEED := 8.0
+const GRAVITY := 20.0
+const ROUND_SECONDS := 300.0
+const TEAM_SCORE_TO_WIN := 15
+
+const RED_GOAL_X_MIN := 22.0
+const BLUE_GOAL_X_MAX := -22.0
+
+var _red_spawns: Array[Vector3] = []
+var _blue_spawns: Array[Vector3] = []
+
+func get_prediction_params() -> Dictionary:
+    return {"move_speed": MOVE_SPEED, "gravity": GRAVITY}
+
+func _game_init() -> void:
+    Crafty.teams.create("red", {"color": Color.RED, "max_size": 16})
+    Crafty.teams.create("blue", {"color": Color.BLUE, "max_size": 16})
+
+    var red_root := get_node_or_null("SpawnPointsRed")
+    if red_root:
+        for child in red_root.get_children():
+            if child is Node3D:
+                _red_spawns.append(child.global_position)
+
+    var blue_root := get_node_or_null("SpawnPointsBlue")
+    if blue_root:
+        for child in blue_root.get_children():
+            if child is Node3D:
+                _blue_spawns.append(child.global_position)
+
+    if _red_spawns.is_empty():
+        _red_spawns = [Vector3(-15, 1, -8), Vector3(-15, 1, 8)]
+    if _blue_spawns.is_empty():
+        _blue_spawns = [Vector3(15, 1, -8), Vector3(15, 1, 8)]
+
+func _game_start() -> void:
+    Crafty.teams.auto_balance()
+    Crafty.set_time_limit(ROUND_SECONDS)
+    Crafty.send_announcement("Red vs Blue started")
+
+func _game_end() -> void:
+    var red_score := Crafty.score.get_team("red")
+    var blue_score := Crafty.score.get_team("blue")
+    if red_score > blue_score:
+        Crafty.send_announcement("Red wins %d - %d" % [red_score, blue_score])
+    elif blue_score > red_score:
+        Crafty.send_announcement("Blue wins %d - %d" % [blue_score, red_score])
+    else:
+        Crafty.send_announcement("Draw %d - %d" % [red_score, blue_score])
+
+func _player_joined(player: CraftyPlayer) -> void:
+    var assigned := _assign_team(player)
+    var spawn := _team_spawn_for(assigned)
+    player.respawn(spawn)
+    player.set_synced("team", assigned)
+
+func _player_left(player: CraftyPlayer) -> void:
+    Crafty.teams.remove_player(player)
+
+func _process(delta: float) -> void:
+    super._process(delta)
+    if not Crafty.is_server():
+        return
+
+    for p in get_players():
+        apply_default_movement(p, delta, MOVE_SPEED, GRAVITY)
+        _check_goal_score(p)
+
+func _assign_team(player: CraftyPlayer) -> String:
+    var red_count := Crafty.teams.get_members("red").size()
+    var blue_count := Crafty.teams.get_members("blue").size()
+    var target := "red" if red_count <= blue_count else "blue"
+    if not Crafty.teams.assign(player, target):
+        target = "blue" if target == "red" else "red"
+        Crafty.teams.assign(player, target)
+    return target
+
+func _team_spawn_for(team_id: String) -> Vector3:
+    if team_id == "red":
+        return _red_spawns.pick_random()
+    return _blue_spawns.pick_random()
+
+func _check_goal_score(player: CraftyPlayer) -> void:
+    var team_id := Crafty.teams.get_team(player)
+    if team_id == "":
+        return
+
+    if team_id == "red" and player.position.x >= RED_GOAL_X_MIN:
+        _award_team_score("red", player)
+    elif team_id == "blue" and player.position.x <= BLUE_GOAL_X_MAX:
+        _award_team_score("blue", player)
+
+func _award_team_score(team_id: String, scorer: CraftyPlayer) -> void:
+    Crafty.score.add_team(team_id, 1)
+    var score := Crafty.score.get_team(team_id)
+    Crafty.send_announcement("%s team scored (%d/%d) by %s" % [team_id.capitalize(), score, TEAM_SCORE_TO_WIN, scorer.display_name])
+
+    var current_team := Crafty.teams.get_team(scorer)
+    scorer.teleport(_team_spawn_for(current_team))
+
+    if score >= TEAM_SCORE_TO_WIN:
+        end_game(false)
+```
+
+## Suggested `manifest.json`
+
+```json
+{
+  "id": "team-arena",
+  "name": "Team Arena",
+  "version": "1.0.0",
+  "crafty_sdk": "1.0",
+  "entry_scene": "team_arena.tscn",
+  "player_scene": "player.tscn",
+  "min_players": 2,
+  "max_players": 16,
+  "tick_rate": 60,
+  "description": "Red vs Blue objective mode.",
+  "tags": ["teams", "pvp", "objective"]
+}
+```

@@ -1,0 +1,138 @@
+---
+title: "Subsystems and Signals"
+description: "Teams, score, data, economy, UI, audio, input, and gameplay event signals."
+icon: "radio"
+---
+
+## What Are Subsystems?
+
+`Crafty` exposes modular subsystems for common game features.
+
+Use subsystems to avoid rewriting common multiplayer game infrastructure.
+
+## Teams
+
+```gdscript
+crafty.teams.create("red", {color = Color.RED, max_size = 4})
+crafty.teams.create("blue", {color = Color.BLUE, max_size = 4})
+crafty.teams.assign(player, "red")
+var team = crafty.teams.get_team(player)
+var members = crafty.teams.get_members("red")
+crafty.teams.auto_balance()
+```
+
+Best for team modes, role assignment, and balanced lobbies.
+
+## Score
+
+```gdscript
+crafty.score.add(player, 1)
+crafty.score.set(player, 12)
+var score = crafty.score.get(player)
+var leaderboard = crafty.score.get_leaderboard()
+crafty.score.add_team("red", 2)
+var team_score = crafty.score.get_team("red")
+```
+
+Use for per-player and per-team score tracking.
+
+## Data
+
+Persistent player/global data:
+
+```gdscript
+await crafty.data.save(player, "level", 5)
+var level = await crafty.data.load(player, "level")
+var all_data = await crafty.data.load_all(player)
+await crafty.data.delete(player, "legacy_key")
+
+await crafty.global_data.save("season", "spring")
+var season = await crafty.global_data.load("season")
+```
+
+Structured collections and leaderboards:
+
+```gdscript
+await crafty.collection("inventory").add(player, {"name": "Iron Sword", "type": "weapon"})
+var weapons = await crafty.collection("inventory").query(player, {"type": "weapon"})
+await crafty.collection("inventory").remove(player, item_id)
+await crafty.collection("inventory").clear(player)
+
+await crafty.leaderboard("high_scores").submit(player, 1200)
+var top10 = await crafty.leaderboard("high_scores").top(10)
+var rank = await crafty.leaderboard("high_scores").get_rank(player)
+```
+
+Use `await` for all async storage/economy operations.
+
+## Economy
+
+```gdscript
+crafty.economy.register_item("double_xp", {
+    name = "Double XP Boost",
+    description = "2x XP for 1 hour",
+    cost = 50
+})
+
+await crafty.economy.award(player, 5, "match_win")
+var balance = await crafty.economy.get_balance(player)
+var purchased = await crafty.economy.purchase(player, "double_xp", 50)
+```
+
+Use economy for creator-defined purchasables and earned currency flows.
+
+## UI
+
+```gdscript
+crafty.ui.show_scoreboard()
+crafty.ui.hide_scoreboard()
+crafty.ui.show_timer(60)
+crafty.ui.show_announcement("Final minute!", 3.0)
+crafty.ui.show_kill_feed(killer, victim)
+```
+
+Optional helper UI. Creators can still build fully custom UI.
+
+## Audio
+
+```gdscript
+crafty.audio.play_at(sound, Vector3(0, 1, 0))
+crafty.audio.play_global(sound)
+crafty.audio.play_for(player, sound)
+```
+
+## Input
+
+`crafty.input` provides platform input integration for creator gameplay logic. Use with `CraftyPlayer.input` for player-specific actions.
+
+## Signals (Gameplay Events)
+
+Connect game logic to platform gameplay signals:
+
+```gdscript
+crafty.player_killed.connect(_on_player_killed)
+crafty.player_damaged.connect(_on_player_damaged)
+crafty.player_respawned.connect(_on_player_respawned)
+crafty.timer_expired.connect(_on_timer_expired)
+crafty.object_collected.connect(_on_object_collected)
+crafty.npc_killed.connect(_on_npc_killed)
+crafty.return_to_hub_requested.connect(_on_return_to_hub_requested)
+crafty.play_again_requested.connect(_on_play_again_requested)
+```
+
+Available signals:
+
+- `player_killed`
+- `player_damaged`
+- `player_respawned`
+- `timer_expired`
+- `object_collected`
+- `npc_killed`
+- `return_to_hub_requested`
+- `play_again_requested`
+
+## AI Implementation Rules
+
+- Connect signals during game setup (`_game_init` or `_game_start`) in a predictable place.
+- Keep signal handlers short; delegate heavy logic to methods.
+- Perform score/economy mutations on server-authoritative paths.

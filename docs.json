@@ -150,6 +150,34 @@
         ]
       },
       {
+        "tab": "Crafty SDK",
+        "icon": "code",
+        "groups": [
+          {
+            "group": "Creating Games on Crafty",
+            "pages": [
+              "api-reference/crafty-sdk",
+              "api-reference/crafty-sdk/crafty",
+              "api-reference/crafty-sdk/crafty-game",
+              "api-reference/crafty-sdk/crafty-player",
+              "api-reference/crafty-sdk/subsystems-signals",
+              "api-reference/crafty-sdk/build-your-first-crafty-game",
+              "api-reference/crafty-sdk/guides/multiplayer-ffa-coin-collector",
+              "api-reference/crafty-sdk/guides/multiplayer-persistence-rpg",
+              "api-reference/crafty-sdk/guides/team-based-game",
+              "api-reference/crafty-sdk/manifest-json-reference",
+              "api-reference/crafty-sdk/submission-guide"
+            ]
+          },
+          {
+            "group": "MCP",
+            "pages": [
+              "api-reference/mcp"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "Guides",
         "icon": "book-open",
         "groups": [
@@ -230,19 +258,7 @@
         ]
       },
       {
-        "tab": "API Reference",
-        "icon": "code",
-        "groups": [
-          {
-            "group": "MCP",
-            "pages": [
-              "api-reference/mcp"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Security & Privacy",
+        "tab": "Security",
         "icon": "shield",
         "groups": [
           {

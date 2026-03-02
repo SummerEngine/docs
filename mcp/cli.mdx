@@ -1,12 +1,14 @@
 ---
 title: "CLI Quick Start"
-description: "How to use the Summer Engine CLI. Install, login, create projects, run the engine, start MCP."
+description: "Install Summer Engine, create projects, run the engine, and connect your IDE. Claude Code, Cursor, and Windsurf use the MCP to control Summer Engine."
 icon: "terminal"
 ---
 
-## Summer Engine CLI Quick Start
+## What is the CLI?
 
-The Summer Engine CLI lets you install the engine, create projects, run the engine, and start the MCP server for Cursor, Claude Code, or Windsurf. Use `npx summer-engine` (no install) or `summer` (after global install).
+The Summer Engine CLI lets you install the engine, create projects, run the engine, and connect your AI IDE (Claude Code, Cursor, Windsurf) to Summer Engine. Add the MCP config to your IDE and it will spawn the MCP server—you chat with the AI in your IDE, and the AI uses MCP tools to manipulate scenes, run the game, and debug.
+
+Use `npx summer-engine` (no install) or `summer` (after global install).
 
 ## Install the Engine
 
@@ -42,7 +44,7 @@ Launches Summer Engine with your project. The engine must be running for MCP too
 
 ## Start MCP (for Cursor, Claude Code, Windsurf)
 
-Add this to your IDE's MCP config. You don't run `mcp` manually; the IDE does:
+Add this to your IDE's MCP config. The IDE spawns `summer mcp` when it connects—you don't run it manually:
 
 ```json
 {

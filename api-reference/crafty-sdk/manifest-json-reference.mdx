@@ -1,0 +1,92 @@
+---
+title: "manifest.json Reference"
+description: "Complete manifest.json field reference for Crafty games: required keys, optional keys, and validated examples."
+icon: "file-json"
+---
+
+## Overview
+
+Every Crafty game must include a `manifest.json` file in the game pack.
+
+The submission API validates required keys and types before a game can enter review.
+
+## Required Fields
+
+These fields are required by submission validation:
+
+| Field | Type | Required | Description |
+|------|------|----------|-------------|
+| `id` | string | Yes | Stable game identifier. Used for slug generation and updates. |
+| `name` | string | Yes | Display name shown in platform surfaces. |
+| `version` | string | Yes | Semantic or creator-defined version string (for example `1.0.0`). |
+| `crafty_sdk` | string | Yes | SDK version your game targets (for example `1.0`). |
+| `entry_scene` | string | Yes | Main scene path/name loaded by the runtime. |
+| `min_players` | number | Yes | Minimum players required before start flow. |
+| `max_players` | number | Yes | Maximum concurrent players for a match. |
+
+## Optional Fields
+
+| Field | Type | Required | Description |
+|------|------|----------|-------------|
+| `player_scene` | string | No | Player scene path/name used by server/client spawning logic. |
+| `description` | string | No | Short game description. |
+| `tags` | string[] | No | Category/search tags. |
+| `genre` | string | No | Primary genre label. |
+| `tick_rate` | number | No | Server sync tick hint (if supported by runtime config). |
+| `preview` | string | No | Preview asset path/name for discovery UI. |
+| `input_actions` | object | No | Input action metadata for UX/docs tooling. |
+
+## Minimal Valid Example
+
+```json
+{
+  "id": "coin-collector",
+  "name": "Coin Collector",
+  "version": "1.0.0",
+  "crafty_sdk": "1.0",
+  "entry_scene": "coin_collector.tscn",
+  "min_players": 1,
+  "max_players": 8
+}
+```
+
+## Full Example
+
+```json
+{
+  "id": "quest-arena",
+  "name": "Quest Arena",
+  "version": "1.2.0",
+  "crafty_sdk": "1.0",
+  "entry_scene": "quest_arena.tscn",
+  "player_scene": "player.tscn",
+  "min_players": 1,
+  "max_players": 12,
+  "tick_rate": 60,
+  "description": "Persistent multiplayer quests and progression.",
+  "preview": "preview.png",
+  "genre": "rpg",
+  "tags": ["rpg", "quest", "persistence"],
+  "input_actions": {
+    "quest_complete": {"keyboard": "Q", "gamepad": "Y"},
+    "buy_potion": {"keyboard": "B", "gamepad": "X"}
+  }
+}
+```
+
+## Validation Rules That Cause Rejection
+
+- Missing any required key
+- Wrong type for required string fields
+- `min_players` or `max_players` not numeric
+- Invalid JSON
+
+## Versioning and Updates
+
+When you submit a new `.pck`:
+
+- Keep the same `id` for the same game
+- Increase `version`
+- Re-submit through the submission endpoint
+
+The platform stores versions and routes review/publishing from your newest submission.
