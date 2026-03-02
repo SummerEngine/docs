@@ -1,20 +1,20 @@
 ---
 title: "Creating Games on Crafty"
-description: "What the Crafty game API is, how it works, and where to find each creator-facing API surface."
+description: "Build games for Crafty with Summer Engine. Learn what the Crafty SDK is, how it works, and where every creator-facing API lives."
 icon: "gamepad-2"
 ---
 
 ## What Is This API?
 
-`Crafty` is the game platform where players discover and play games (similar to Roblox).
+`Crafty` is a multiplayer game platform where players discover and play community games at [playcrafty.games](https://playcrafty.games). Think Roblox-style distribution, built for modern creators using Summer Engine.
 
-`Crafty SDK` is the creator API you use in Summer Engine to build games that run on Crafty.
+`Crafty SDK` is the creator API you use inside Summer Engine to build, test, and ship games on Crafty.
 
-This documentation is the source of truth for creators and AI coding agents generating creator-side game code.
+If you're building game logic, this is your source of truth. It is also structured so AI coding agents can generate reliable creator-side code without guessing.
 
 ## What Is It For?
 
-Use this API to implement gameplay logic inside your game:
+Use the Crafty SDK to build complete multiplayer game loops:
 
 - Match flow (start/end/timer)
 - Players, damage, respawn, and input
@@ -23,7 +23,8 @@ Use this API to implement gameplay logic inside your game:
 - Persistent data and leaderboards
 - Economy, UI helpers, and gameplay signals
 
-Platform infrastructure like authentication, networking transport, server orchestration, moderation, and payment processing is handled by the Crafty platform.
+Crafty handles the platform layer for you: authentication, networking transport, server orchestration, moderation, submission/review flow, and payments.  
+You focus on building the game. Crafty handles running it at platform scale.
 
 ## How Does It Work?
 
