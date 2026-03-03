@@ -63,7 +63,7 @@ Submission validates:
 
 - auth and creator identity,
 - required manifest fields and basic typing,
-- max upload size (250MB),
+- max upload size (2 GB),
 - static analysis scanner (dangerous APIs, reserved paths, banned binary/native file types).
 
 If validation fails, the API returns structured error details and scanner violations (file, line, pattern).
@@ -96,10 +96,11 @@ Each update goes through review again.
 - Wrong file type.
 - Renamed file without real `.pck` export.
 
-### `PCK file too large (... max 250MB)`
+### `PCK file too large (... max 2GB)`
 
 - Reduce textures/audio size.
 - Remove non-game assets from export filter.
+- For builds that still exceed 2 GB, contact [founders@summerengine.com](mailto:founders@summerengine.com) for large-upload onboarding.
 
 ### `Invalid manifest. Required: ...`
 
@@ -115,9 +116,10 @@ Each update goes through review again.
 ## Recommended Release Checklist
 
 - [ ] `manifest.json` required fields valid.
+- [ ] Creator gameplay scripts authored in `GDScript`.
 - [ ] `entry_scene` and `player_scene` paths load.
 - [ ] Export includes only game files.
-- [ ] `.pck` under 250MB.
+- [ ] `.pck` at or under 2 GB, or large-upload onboarding confirmed.
 - [ ] No banned APIs or reserved paths.
 - [ ] Local test runner flow passes before upload.
 

@@ -8,11 +8,19 @@ icon: "check-check"
 
 This page is the shortest safe route from “new game” to “submitted for review.”
 
+## Current Publishing Checklist (Most Important)
+
+- Build your creator gameplay scripts in `GDScript` for the current Crafty publishing flow.
+- Submit one exportable `.pck` package plus `manifest.json`.
+- Keep total `.pck` package size at or under **2 GB**.
+- If your build is larger than 2 GB, email [founders@summerengine.com](mailto:founders@summerengine.com) for large-upload onboarding.
+
 ## Step 1: Validate Project Contract
 
 - `main.gd` extends `CraftyGame`.
 - `manifest.json` includes required keys.
 - `player_scene` points to a valid scene.
+- gameplay scripts are authored in `GDScript`.
 - choose player model:
   - `CraftyCharacter3D` (3D template), or
   - custom script extending `CraftyPlayer`.
@@ -51,7 +59,8 @@ Reference:
 - use game-only `.pck` preset.
 - update include filter to game folder.
 - confirm exported `.pck` includes only intended content.
-- confirm package size <= 250MB.
+- confirm package size <= **2 GB**.
+- if package size exceeds 2 GB, contact [founders@summerengine.com](mailto:founders@summerengine.com) for large-upload onboarding.
 
 Reference:
 
