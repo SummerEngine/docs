@@ -1,36 +1,33 @@
 ---
 title: "Creating Games on Crafty"
-description: "Crafty is a platform layer (like Steamworks), not a game template. Build any game in Summer/Godot, then integrate multiplayer, persistence, and economy."
+description: "Crafty is a powerful platform layer that provides multiplayer, persistence, and economy features. You bring the game, we bring the infrastructure."
 icon: "gamepad-2"
 ---
 
-## Core Principle
+## Introduction to Crafty
 
-You do **not** “build a Crafty game type.”  
-You build your game in Summer/Godot, then integrate the Crafty SDK platform layer.
+Crafty is a place where you can play games made by the community. It's a platform made to make it easy for developers to make and share their games without having to go through store experiences made +20 years ago. The Crafty SDK works similar to Steams steamworks, and aims to make it more easy to build and share your games. Rather than forcing you into a rigid template or specific game type, Crafty seamlessly integrates with your project to provide robust multiplayer infrastructure and backend services.
 
-Think:
-
-- Godot + your game design + your systems
-- plus Crafty SDK for multiplayer platform features
-
-This is the same mental model as Steam + Steamworks.
+The mental model is simple: you build your game's unique design and systems, and plug in the Crafty SDK to handle all the complex platform features.
 
 ## What Crafty Handles
 
-- server-authoritative multiplayer runtime,
-- player/session infrastructure,
-- persistence and economy APIs,
-- score/team helpers,
-- submission/review/publishing pipeline.
+The Crafty SDK provides out-of-the-box support for:
+
+- **Multiplayer Runtime:** Server-authoritative networking and matchmaking infrastructure.
+- **Player Management:** Unified player identity and session handling.
+- **Backend Services:** Built-in APIs for data persistence and player economy.
+- **Game Utilities:** Ready-to-use helpers for score tracking, teams, and match state.
+- **Publishing Pipeline:** A streamlined submission, review, and deployment flow.
 
 ## What You Build
 
-- gameplay systems,
-- world/scenes,
-- win/loss rules,
-- rendering and game feel,
-- genre-specific mechanics (3D, 2D, RTS, card, puzzle, etc.).
+Because Crafty manages the heavy lifting on the backend, you're free to focus purely on making a great game:
+
+- **Core Gameplay:** Your unique mechanics, controls, and game loops.
+- **Worlds & Scenes:** Environments, levels, and visual rendering.
+- **Rules & Logic:** Win/loss conditions and genre-specific systems (whether that's 3D, 2D, RTS, card, or puzzle games).
+- **Presentation:** UI, audio, and overall game feel.
 
 ## Platform Contract
 
