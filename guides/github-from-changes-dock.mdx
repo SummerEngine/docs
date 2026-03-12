@@ -1,0 +1,160 @@
+---
+title: "Connect Your Project to GitHub"
+description: "Create a GitHub repository, connect it to your Summer project from the Changes dock workflow, and safely commit, push, and sync changes."
+icon: "git-branch"
+---
+
+## Overview
+
+Summer can commit locally right away, but most users should connect their project to GitHub early. That gives you backups, a shared source of truth, and a safer workflow when you start committing often.
+
+The simplest flow is:
+
+1. Create an empty repository on GitHub
+2. Copy the repository URL
+3. Paste that URL into Summer chat
+4. Ask Summer to connect the current project to that repository
+5. Use the `Changes` dock to commit, push, and sync
+
+## Before You Start
+
+Make sure:
+
+- Git is installed on your machine
+- Your Summer project already exists locally
+- You are signed in to GitHub in the browser if you plan to use an HTTPS remote
+
+## Step 1: Create An Empty GitHub Repository
+
+Open GitHub and create a new repository.
+
+Recommended settings:
+
+- Choose a repository name that matches your project
+- Keep it empty if the project already exists locally
+- Do not add a README, `.gitignore`, or license during creation
+
+Why empty matters:
+
+If GitHub creates the first commit for you, your local Summer project and the remote repository start with different histories. That can still be fixed, but it adds extra merge or pull steps you usually do not want for a first-time setup.
+
+If you have never created a GitHub repository before, use GitHub's official guide:
+
+[Create a new repository on GitHub](https://docs.github.com/en/repositories/creating-and-managing-repositories/creating-a-new-repository)
+
+## Step 2: Copy The Repository URL
+
+After the repository is created, copy the repository URL from GitHub.
+
+HTTPS is usually the easiest option for most users:
+
+```text
+https://github.com/your-name/your-project.git
+```
+
+SSH also works if your machine is already configured for it:
+
+```text
+git@github.com:your-name/your-project.git
+```
+
+## Step 3: Ask Summer To Connect The Project
+
+Open your project in Summer.
+
+Then open chat and paste the repository URL with a clear instruction, for example:
+
+```text
+Connect this project to GitHub:
+https://github.com/your-name/your-project.git
+```
+
+Or:
+
+```text
+Initialize Git for this project if needed, attach this GitHub repository as origin, and get the project ready for normal commits and pushes:
+https://github.com/your-name/your-project.git
+```
+
+Summer should then help with the setup steps for the current project.
+
+## Step 4: Verify The Connection In The Changes Dock
+
+Once the remote is connected, open the `Changes` dock.
+
+You should now see a GitHub-backed workflow instead of a local-only state.
+
+Useful things to look for:
+
+- Your branch name
+- Sync state when the branch is ahead or behind
+- Commit and push behavior tied to the remote repository
+- Graph history that reflects normal user-facing Git history
+
+If Summer still shows that commits stay local until you publish, the remote is not connected yet.
+
+## Step 5: Commit And Push
+
+After the project is connected:
+
+1. Make a change in your project
+2. Open the `Changes` dock
+3. Review the changed files
+4. Enter a commit message
+5. Commit
+6. Push or sync if Summer shows outgoing changes
+
+## Understanding The Changes Dock
+
+The `Changes` dock shows the current working tree.
+
+Common status letters:
+
+- `M`: modified
+- `U`: untracked
+- `A`: added
+- `D`: deleted
+- `R`: renamed
+
+Typical behaviors:
+
+- Hover a file row to open, discard, stage, or unstage it
+- Deleted files appear with a strikethrough and a `D`
+- If your branch is ahead or behind, Summer shows a sync action instead of a normal empty state
+
+## Understanding Sync
+
+If Summer shows arrows such as `2↑` or `1↓`, that means your branch and the remote are out of sync.
+
+- `↑` means your local branch has commits that are not on the remote yet
+- `↓` means the remote has commits that are not on your machine yet
+
+The sync action helps bring those states back together.
+
+## Best Practice
+
+For a smooth workflow:
+
+- Connect to GitHub early
+- Keep the first GitHub repository empty if the project already exists locally
+- Commit often
+- Push regularly
+- Sync before continuing if you are behind
+
+## Troubleshooting
+
+### Summer still says commits are local only
+
+That usually means no remote is attached yet. Copy the repository URL again and ask Summer to connect the current project to GitHub.
+
+### I already created a README on GitHub
+
+You may need Summer to pull or reconcile the remote history before your first push.
+
+### I am not sure which URL to use
+
+Use the repository clone URL shown on GitHub. HTTPS is the safest default for most users.
+
+### I want Summer to do the setup for me
+
+That is the intended flow. Paste the repository URL into chat and tell Summer to connect the current project to it.

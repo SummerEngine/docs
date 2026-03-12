@@ -199,7 +199,8 @@
           {
             "group": "Development",
             "pages": [
-              "guides/web-development"
+              "guides/web-development",
+              "guides/github-from-changes-dock"
             ]
           },
           {
