@@ -10,6 +10,28 @@ This guide walks you through exporting your Summer Engine game for macOS. Whethe
 
 **Time to complete**: 10-15 minutes (first time)
 
+## If You See Red Export Errors
+
+Do these 3 steps first:
+
+<Steps>
+  <Step title="Set a real bundle identifier">
+    In the macOS export preset, set **Application → Bundle Identifier** to something unique like `com.yourstudio.yourgame`.
+  </Step>
+
+  <Step title="Enable Mac texture compression">
+    Go to **Project Settings → Rendering → Textures → VRAM Compression** and enable **Import ETC2 ASTC**.
+  </Step>
+
+  <Step title="Choose your signing path">
+    For local testing, you can export unsigned. For direct downloads from your own website, you should configure code signing and notarization so Gatekeeper does not block the app.
+  </Step>
+</Steps>
+
+<Tip>
+  Just trying your game on your own Mac first? Set a bundle identifier and enable **Import ETC2 ASTC**. You can ignore code signing and notarization until you're ready to share the app with other people.
+</Tip>
+
 ## Prerequisites
 
 ### Enable ETC2 ASTC Texture Compression
@@ -98,6 +120,12 @@ Apple Silicon Macs (M1, M2, M3 chips) require ETC2/ASTC texture format.
   - **Testing** (default) - For local testing and itch.io
   - **Distribution** - For Steam and signed releases
   - **App Store** - Only if publishing to Mac App Store
+
+### Why These Errors Show Up
+
+- **Invalid bundle identifier** means the preset still has a placeholder or empty app ID. macOS apps need a unique identifier.
+- **ETC2 ASTC disabled** means the project is not currently importing the texture format required for Apple Silicon (`arm64`) exports.
+- **Notarization disabled** or **ad-hoc signature** are warnings about macOS distribution. They do not mean your project content is broken, only that Gatekeeper will complain if you distribute the app without proper Apple signing.
 
 **Binary Format**:
 - **Architecture**: 
