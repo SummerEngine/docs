@@ -1,69 +1,43 @@
 ---
-title: "API Coming Soon"
-description: "Summer Engine's API is currently in development"
+title: "API Reference"
+description: "Summer Engine's API: MCP tools, CLI, and integrations"
 ---
 
-## Coming Soon
+## Use the MCP API
 
-Summer Engine's API is currently under active development. We're building a comprehensive API that will allow developers to integrate Summer Engine's AI capabilities into their own tools and workflows.
-
-## What's Coming
-
-Our API will include:
-
-### AI Chat Integration
-- Programmatic access to Summer Engine's AI chat functionality
-- Send natural language requests and receive structured responses
-- Integration with your existing development tools and workflows
-
-### Project Management
-- Create and manage Summer Engine projects via API
-- Upload and sync project files
-- Access project intelligence and codebase analysis
-
-### Asset Generation
-- AI-powered art generation through API calls
-- Batch processing for multiple assets
-- Integration with the community asset gallery
-
-### Webhook Support
-- Real-time notifications for AI operations
-- Project change events
-- Asset generation completion callbacks
-
-## Early Access
-
-We're currently working with select partners for early API access. If you're interested in being part of our API beta program:
-
-<Card
-  title="Join the Beta"
-  icon="flask"
-  href="mailto:founders@summerengine.com?subject=API Beta Access"
->
-  Email us at founders@summerengine.com to discuss early access
-</Card>
-
-## Timeline
-
-**Current Status**: In active development  
-**Beta Release**: Q1 2026  
-**General Availability**: Q3 2026  
-
-## Stay Updated
+Summer Engine's primary API is the **MCP (Model Context Protocol)** integration. It exposes 23 tools that let any MCP-compatible AI tool control the engine: add nodes, set properties, import assets, run the game, and debug. This is the same API used by the built-in chat, Cursor, Claude Code, Windsurf, and other IDEs.
 
 <CardGroup cols={2}>
   <Card
-    title="Discord Community"
-    icon="discord"
-    href="https://discord.gg/yUpgtxnZky"
+    title="MCP Setup"
+    icon="plug"
+    href="/mcp/setup"
   >
-    Join our Discord for API development updates
+    Connect your IDE to Summer Engine via MCP
   </Card>
   <Card
-    title="Email Updates"
-    icon="envelope"
-    href="mailto:founders@summerengine.com?subject=API Updates"
+    title="Tools Reference"
+    icon="wrench"
+    href="/mcp/tools-reference"
   >
-    Get notified when the API launches
+    All 23 MCP tools with parameters and examples
+  </Card>
+  <Card
+    title="CLI Reference"
+    icon="terminal"
+    href="/mcp/cli-reference"
+  >
+    Install, login, create, and run via the command line
+  </Card>
+  <Card
+    title="Building a Game"
+    icon="gamepad-2"
+    href="/mcp/building-a-game"
+  >
+    Step-by-step guide for AI agents building games
   </Card>
 </CardGroup>
+
+## REST API
+
+If you need programmatic access beyond MCP (e.g., for custom integrations or automation), contact us at [founders@summerengine.com](mailto:founders@summerengine.com) to discuss your use case.

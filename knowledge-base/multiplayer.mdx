@@ -4,4 +4,25 @@ description: "Yes, with limitations. Basic multiplayer networking works with AI 
 icon: "question"
 ---
 
-**Yes, with limitations.** Basic multiplayer networking works with AI assistance. Advanced multiplayer features are still being developed.
+**Yes, with limitations.** Summer Engine supports multiplayer game development through its Godot foundation, which includes a mature networking stack.
+
+## What Works Today
+
+- **High-level multiplayer API**: Godot's `MultiplayerPeer`, `MultiplayerSpawner`, and `MultiplayerSynchronizer` nodes all work in Summer. The AI can help you set these up through natural language.
+- **ENet and WebSocket transports**: Local LAN multiplayer and WebSocket-based online multiplayer are both supported out of the box.
+- **RPC and state synchronization**: Remote procedure calls (`@rpc`) and automatic property synchronization work as expected. Ask the AI to set up synchronized variables and it will generate the correct annotations.
+- **Dedicated server exports**: You can export headless server builds for Linux deployment.
+
+## What the AI Can Help With
+
+The AI assistant can generate multiplayer boilerplate, set up lobby systems, configure spawners and synchronizers, and debug common networking issues like authority conflicts and desync problems. For example, you can say "make this character controller work in multiplayer" and the AI will add the necessary RPC calls and authority checks.
+
+## Current Limitations
+
+- **No built-in matchmaking or relay servers**: Summer does not yet provide hosted multiplayer infrastructure. You need to bring your own server or use a service like [Crafty](/api-reference/crafty-sdk) for web-based multiplayer games.
+- **Complex netcode patterns**: Advanced techniques like client-side prediction, rollback, and lag compensation require manual implementation. The AI can assist but these are inherently complex.
+- **Testing**: Multiplayer testing requires running multiple instances manually.
+
+## Crafty SDK for Web Multiplayer
+
+If you are building a web-based multiplayer game, the [Crafty SDK](/api-reference/crafty-sdk) provides a managed multiplayer backend with automatic matchmaking, persistence, and server hosting. This is the easiest path to online multiplayer in Summer.

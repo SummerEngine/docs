@@ -96,64 +96,29 @@ Project Indexing (Local)
 - **Edge Computing**: Servers close to users
 - **Load Balancing**: Automatic scaling
 
-## Plugin Architecture
+## Extensibility
 
-Summer Engine supports extensions through a plugin system:
+Summer Engine supports the standard plugin system from its underlying engine:
 
-```gdscript
-# Example plugin structure
-extends SummerPlugin
+- **Editor plugins**: Custom panels, inspectors, and tools
+- **GDScript addons**: Third-party libraries and tools
+- **MCP integration**: Connect external AI tools via the Model Context Protocol
 
-func _ready():
-    register_command("my_command", handle_command)
-    add_menu_item("Tools/My Plugin", show_dialog)
-
-func handle_command(args: Dictionary):
-    # Custom AI command logic
-    pass
-```
-
-### Plugin Capabilities
-- **Custom AI Commands**: Add domain-specific operations
-- **UI Extensions**: New panels and dialogs
-- **File Handlers**: Support for additional file types
-- **Integration Hooks**: Connect to external tools
+Most Godot plugins work in Summer Engine without changes. See [Godot Compatibility](/knowledge-base/godot-compatibility) for details.
 
 ## Development
 
 Summer Engine is built with a modular architecture designed for performance and maintainability.
 
-### Development Setup
+### Getting Started
 
-<CodeGroup>
+Download Summer Engine from [summerengine.com/download](https://summerengine.com/download) or install via CLI:
 
-```bash Clone & Build
-# Clone the repository
-git clone https://github.com/SummerEngine/Summer.git
-cd Summer
-
-# Install dependencies
-./scripts/setup.sh
-
-# Build debug version
-scons platform=linux target=editor dev=yes
-
-# Run Summer Engine
-./bin/summer.linux.editor.dev.x86_64
+```bash
+npx summer-engine install
 ```
 
-```bash Plugin Development
-# Create new plugin
-./scripts/create_plugin.sh my_plugin
-
-# Install for development
-ln -s $(pwd)/plugins/my_plugin ~/.summer/plugins/
-
-# Hot reload during development
-./bin/summer --dev-plugins
-```
-
-</CodeGroup>
+See the [CLI Reference](/mcp/cli-reference) for all commands.
 
 ## Technical Specifications
 
@@ -169,9 +134,8 @@ ln -s $(pwd)/plugins/my_plugin ~/.summer/plugins/
 - **AI Response**: < 10 seconds for simple operations
 - **Memory Usage**: < 1GB for editor + small project
 
-### API Limits
-- **Free Tier**: 100 AI operations/month
-- **Pro Tier**: Unlimited operations
-- **Rate Limits**: 60 requests/minute
-- **File Size**: 100MB max per project upload
+### Usage Limits
+- **Hobby (Free)**: Limited agent use, 100 MCP calls/week
+- **Pro**: Extended usage, 1M MCP calls/week
+- See [Pricing](/essentials/pricing) for full details
 

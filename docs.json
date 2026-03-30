@@ -231,8 +231,7 @@
               "knowledge-base/production-games",
               "knowledge-base/learning-curve",
               "knowledge-base/aaa-games",
-              "knowledge-base/summer-vs-other-tools",
-              "knowledge-base/whats-next"
+              "knowledge-base/summer-vs-other-tools"
             ]
           },
           {
@@ -326,7 +325,7 @@
   },
   "footer": {
     "socials": {
-      "x": "https://x.com/summerengine",
+      "x": "https://x.com/SummerEngineCom",
       "github": "https://github.com/SummerEngine",
       "discord": "https://discord.gg/yUpgtxnZky"
     }
@@ -367,6 +366,26 @@
     {
       "source": "/cli",
       "destination": "/mcp/cli"
+    },
+    {
+      "source": "/quickstart",
+      "destination": "/quickstarts/fresh-project"
+    },
+    {
+      "source": "/mcp/Root",
+      "destination": "/mcp/cursor"
+    },
+    {
+      "source": "/Applications/Summer.app",
+      "destination": "/essentials/installation"
+    },
+    {
+      "source": "/mcp/projects/racer",
+      "destination": "/mcp/cli-reference"
+    },
+    {
+      "source": "/knowledge-base/whats-next",
+      "destination": "/knowledge-base/what-is-summer"
     }
   ]
 }
