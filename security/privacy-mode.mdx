@@ -1,196 +1,56 @@
 ---
 title: "Privacy Mode"
-description: "Enhanced privacy controls for sensitive projects"
+description: "Zero data retention with our model providers, available on all paid plans"
 icon: "shield-check"
 ---
 
-## Privacy is Our Default, Not an Upgrade
+## What Privacy Mode Does
 
-We built Summer Engine with privacy as the foundation because we understand game developers work on proprietary projects. Your code and game ideas are your competitive advantage. We would never risk that.
+**When enabled, we guarantee that code data is never stored by our model providers or used for training.** Privacy Mode is included on all paid plans.
 
-**Privacy Mode is enabled by default** for every Summer Engine user. No complex settings, no premium tiers, no compromises. This isn't a feature we charge extra for. It's how Summer Engine works.
+When Privacy Mode is on:
 
-**Our promise**: Your code stays on your machine. We don't train AI models on user data. We don't store your code long-term. We don't share it with anyone.
+- **Zero data retention** with our model providers for prompts and code snippets you send during chats.
+- **No training-data use.** We do not use your prompts, generated outputs, or code snippets to train our models, and we do not permit third parties to use them for training.
+- **Same Summer Engine.** Privacy Mode does not change which models you can pick or how the engine works. It changes how your data is handled.
 
 <Info>
-**Available Now**: Privacy Mode is our default operating mode. Every Summer Engine user automatically gets these privacy protections.
+Privacy Mode is a paid-plan feature. The Free plan does not include Privacy Mode.
 </Info>
 
-## How Privacy Works in Summer Engine
+## What Happens When Privacy Mode Is Off
 
-### Real Talk About Your Code
+Privacy Mode is **off by default** for all accounts.
 
-**Your code is never used to train AI models. Period.**
+When Privacy Mode is not enabled, we may use and store prompts, editor actions, code snippets, and other code data and actions to improve our AI features and train our models. Free accounts do not have access to Privacy Mode and operate in this mode by default.
 
-We get it. Game developers are paranoid about their ideas being stolen or their code being used to train competing AI. That's why we built Summer Engine with privacy as the default, not an afterthought.
+For the full legal text, see our [Privacy Policy](https://summerengine.com/privacy), specifically the section "How we use your prompts and code".
 
-**What actually happens to your code:**
-- We send it to AI models to generate helpful responses
-- We index it for project intelligence (understanding your codebase)
-- We temporarily hold it during conversations
-- We delete everything when the session ends
+## How to Enable Privacy Mode
 
-**What we absolutely never do:**
-- Train AI models on your code
-- Store your code permanently on our servers
-- Share your code with other users or companies
-- Sell access to your data
-- Use your code for any purpose except helping you
-
-### How AI Actually Works
-
-Your code gets sent to AI models to generate responses, but we use encrypted connections and zero-retention policies. We index your codebase for project intelligence, but this happens locally by default with Privacy Mode.
-
-### How Your Data Flows
-
-```
-Your Code → Summer Engine (encrypted) → AI Provider → Response → You
-                ↓
-        Deleted immediately after response
-        Never stored long-term
-        Never used for training
-        Never shared with others
-```
-
-**That's it.** No complex data retention policies. No "anonymized training data." No selling to third parties. Your code helps you build your game, then it's gone.
-
-## How We Protect Your Code
-
-### Zero Data Retention Guarantee
-
-**Your code is deleted immediately after we respond to you.** Not after 30 days. Not after you close Summer Engine. Immediately.
-
-We don't keep copies "for debugging" or "for analytics" or "to improve the service." When you're done with a conversation, that code is gone forever.
-
-**Exception**: Conversation history within an active chat session is temporarily stored so Summer Engine can understand context. When you start a new chat or close Summer Engine, this is deleted too.
-
-### Local-First Processing
-
-**Your code stays on your machine whenever possible.** Summer Engine's project intelligence runs locally, analyzing your codebase without sending it to our servers.
-
-Only when you specifically ask Summer Engine to generate or modify code do we send the minimal necessary context to AI providers. Even then, we send only what's needed for your specific request.
-
-### Military-Grade Encryption
-
-**Everything is encrypted in transit** with TLS 1.3. Your code is never sent over unencrypted connections.
-
-**Encrypted at rest**: Any temporary data stored during processing is encrypted with AES-256.
-
-**No backdoors**: We don't have special access to decrypt your data. When it's encrypted, only you and the intended recipient can read it.
-
-## What We Protect
-
-**Everything.** Your entire project is protected under these same privacy guarantees:
-
-- **All your code**: Every script, shader, configuration file
-- **Game assets**: Art, audio, models, textures, animations  
-- **Project structure**: How your game is organized and architected
-- **Comments and documentation**: Your thoughts and explanations
-- **Conversation history**: What you've discussed with Summer Engine
-- **Usage patterns**: How you use Summer Engine's features
-- **Error messages**: Any bugs or issues you encounter
-
-We treat all of this as equally sensitive and proprietary to your game development.
+Privacy Mode is available in your account settings on any paid plan. Once enabled, it applies to all chats and operations sent from your account from that point forward.
 
 ## Who Sees Your Code
 
-We're transparent about every service that might see your code:
+Even with Privacy Mode enabled, prompts and code snippets you send are transmitted to our model providers in order to generate responses. Privacy Mode controls **retention and training** by those providers and by us — it does not prevent the content from being processed in real time to answer you.
 
-### AI Providers (Only When You Make Requests)
-- **Anthropic (Claude)**: Sees code only during your active request. Zero retention agreement.
-- **OpenAI (GPT)**: Sees code only during your active request. Zero retention agreement.
-- **Google (Gemini)**: Sees code only during your active request. Zero retention agreement.
+For a full list of subprocessors and infrastructure that may see code data, see our [Security Overview](/security/overview).
 
-**Important**: These providers only see your code when you specifically ask Summer Engine to help with something. They never see your code for analytics, debugging, or improvement purposes.
+## Frequently Asked Questions
 
-### Infrastructure (Encrypted, Never Stored)
-- **Vercel (EU servers only)**: Hosts all our servers exclusively in the European Union for GDPR compliance. Your code passes through encrypted, never stored.
-- **Vercel AI Gateway**: Routes AI requests securely from EU servers. Sees encrypted data only.
+**Is Privacy Mode on by default?**
+No. Privacy Mode is off by default for all accounts. Pro users can enable it in account settings.
 
-### Services That Never See Your Code
-- **Analytics tools**: We don't send code to analytics services
-- **Error monitoring**: Code never appears in error logs
-- **Support systems**: Support staff never see your actual code
-- **Marketing tools**: Zero integration with marketing platforms
+**Is Privacy Mode available on the Free plan?**
+No. Privacy Mode is included on all paid plans. The Free plan does not include Privacy Mode.
 
-## Privacy Mode is Default
+**Does Privacy Mode change which AI models I can use?**
+No. Privacy Mode changes how your data is handled, not which models are available.
 
-**You don't need to enable anything.** Every Summer Engine user gets these privacy protections automatically.
-
-**No premium tiers for privacy.** We don't believe you should have to pay extra to keep your code private. Privacy is a fundamental right, not a luxury feature.
-
-**No complex settings.** Privacy Mode just works. Open Summer Engine, start coding, and your privacy is protected.
-
-## What This Means for You
-
-### The Good
-- **Complete privacy**: Your code never trains competitors' AI tools
-- **No vendor lock-in**: Your data never becomes dependent on Summer Engine
-- **Peace of mind**: Focus on building great games, not worrying about data leaks
-- **Professional confidence**: Use Summer Engine on client projects without concern
-
-### The Trade-offs
-- **Fresh conversations**: Each chat starts without memory of previous sessions
-- **Local processing**: Some features use your computer's resources
-- **No usage insights**: We can't show you analytics about your coding patterns
-
-**We think this trade-off is worth it.** Your proprietary game code is more valuable than convenience features.
-
-## Verification and Auditing
-
-### Our Commitment
-We are committed to transparency and independent verification of our privacy practices.
-
-If you have questions about how your data is handled, contact us at founders@summerengine.com.
-
-## Why We Built This
-
-### Game Development is Competitive
-
-We understand the game development industry. A unique mechanic, innovative algorithm, or creative solution can make the difference between a hit game and another indie title lost in the crowd.
-
-**Your code is your competitive advantage.** We're not going to help your competitors by training AI models on your innovations.
-
-### Trust is Everything
-
-**We're developers too.** We know what it feels like to work on something for years, only to worry about where your code ends up. We built Summer Engine with the privacy we'd want for our own projects.
-
-### Complementary Security Measures
-- **Local development**: Use Privacy Mode with local development environments
-- **VPN usage**: Additional network-level privacy protection
-- **Encrypted storage**: Encrypt your local project files
-- **Access controls**: Limit who has access to Privacy Mode projects
-
-### Team Policies
-- **Default settings**: Make Privacy Mode default for sensitive projects
-- **Training**: Ensure team members understand privacy implications
-- **Compliance**: Align with your organization's data protection requirements
-- **Regular reviews**: Periodically audit privacy settings and usage
-
-## Getting Started
-
-**Privacy Mode is already active.** Download Summer Engine and start using it. Your privacy is protected from day one.
-
-**No configuration needed.** No settings to toggle. No premium accounts required. Just the privacy-first AI coding assistant you deserve.
-
-<Card
-  title="Download Summer Engine"
-  icon="download"
-  href="https://summerengine.com"
->
-  Get Summer Engine with built-in privacy protection
-</Card>
+**What about content I share as Feedback or in a bug report?**
+Content you explicitly share with us as Feedback or in a bug report may be reviewed and used to improve Summer Engine, regardless of Privacy Mode. See our [Privacy Policy](https://summerengine.com/privacy) for details.
 
 ## Questions?
 
-**We're here to help.** Privacy is complex, and we want you to feel completely confident about how Summer Engine handles your code.
-
-- **Email**: founders@summerengine.com (for all inquiries)
+- **Email**: founders@summerengine.com
 - **Discord**: [Join our community](https://discord.gg/yUpgtxnZky)
-- **Response time**: We personally respond to all questions within 24 hours
-
-<Warning>
-**Privacy Mode is not a substitute for good security practices.** Continue to follow security best practices like using strong passwords, keeping software updated, and being careful about what you commit to version control.
-</Warning>
-
-Privacy Mode represents our commitment to giving developers complete control over their code and data. We believe privacy should be a choice, not a compromise.

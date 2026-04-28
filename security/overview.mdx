@@ -27,13 +27,16 @@ We use Vercel AI Gateway as a proxy to improve performance and security for our 
 ### AI Model Providers
 
 **Anthropic** - *Sees code data*  
-We use Claude models for AI responses. Code may be sent to Anthropic for processing. We have a zero data retention agreement with Anthropic.
+We use Claude models for AI responses. Code may be sent to Anthropic for processing. When Privacy Mode is enabled on your account, zero data retention is enforced with Anthropic.
 
 **OpenAI** - *Sees code data*  
-We use GPT models for certain AI features. Code may be sent to OpenAI for processing. We have a zero data retention agreement with OpenAI.
+We use GPT models for certain AI features. Code may be sent to OpenAI for processing. When Privacy Mode is enabled on your account, zero data retention is enforced with OpenAI.
 
 **Google Cloud Vertex API** - *Sees code data*  
-We use Gemini models through Google's Vertex API. We have a zero data retention agreement with Google Cloud Vertex.
+We use Gemini models through Google's Vertex API. When Privacy Mode is enabled on your account, zero data retention is enforced with Google Cloud Vertex.
+
+**Other model providers** - *Sees code data*  
+We use additional model providers as part of routing on Auto and Premium. Privacy Mode applies to all model providers we route to. See [Privacy Mode](/security/privacy-mode) for details.
 
 ### Data Storage and Processing
 

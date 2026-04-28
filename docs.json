@@ -72,6 +72,14 @@
             ]
           },
           {
+            "group": "Models",
+            "pages": [
+              "auto-mode/auto",
+              "auto-mode/premium",
+              "auto-mode/models"
+            ]
+          },
+          {
             "group": "Using Summer",
             "pages": [
               "ai-tools/operations",
