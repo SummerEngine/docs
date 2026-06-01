@@ -1,0 +1,133 @@
+---
+title: "Build Games in Gemini CLI with Summer Engine MCP"
+description: "Connect Summer Engine's MCP server to Gemini CLI and build games with Google's AI driving your engine. One-command setup."
+icon: "sparkles"
+---
+
+## Summer Engine in Gemini CLI
+
+Gemini CLI is Google's open-source terminal agent. With Summer Engine's integration, Gemini can control your game engine: add nodes to scenes, set properties, search and import assets, generate images and 3D models, run the game, and debug, all from the terminal.
+
+Summer ships as a Gemini extension, so setup installs both the MCP bridge and a context primer (`GEMINI.md`) that teaches Gemini the Summer skills. Setup takes about a minute.
+
+## Prerequisites
+
+- **Gemini CLI**: Google's terminal agent
+- **Node.js**: For running the MCP server (Node 18+)
+- **Summer Engine**: Installed and running with your project open
+
+## Configuration
+
+### Option 1: One-command setup (recommended)
+
+Run the Summer setup command. It writes the Gemini extension, installs the recommended skills, and runs diagnostics:
+
+```bash
+npx -y summer-engine@latest setup gemini --yes
+```
+
+This creates the extension at `~/.gemini/extensions/summer-engine/`. Gemini extensions are user-scoped, so the extension applies across your projects.
+
+### Option 2: Manual configuration
+
+If you prefer to write the file yourself, create `~/.gemini/extensions/summer-engine/gemini-extension.json`:
+
+```json gemini-extension.json
+{
+  "name": "summer",
+  "description": "Superpowers for AI game dev. MCP bridge to the local Summer Engine plus a context primer that teaches Gemini the Summer skills.",
+  "contextFileName": "GEMINI.md",
+  "mcpServers": {
+    "summer-engine": {
+      "command": "npx",
+      "args": ["-y", "summer-engine@latest", "mcp"]
+    }
+  }
+}
+```
+
+To preview the exact config without writing files, run:
+
+```bash
+npx -y summer-engine@latest setup gemini --print
+```
+
+### Restart Gemini CLI
+
+Close and restart Gemini CLI so it loads the new extension. The Summer Engine MCP server starts with Gemini; it connects to the engine on the first tool call.
+
+### Verify
+
+In Gemini CLI, list your MCP servers and confirm `summer-engine` appears with its tools. Then try a prompt:
+
+- "Use Summer Engine to add a MeshInstance3D with a BoxMesh to the scene"
+
+If the node appears in Summer Engine, the setup is working.
+
+## Using Summer Engine with Gemini CLI
+
+Once configured, Gemini can use Summer Engine's tools when you ask for game-related changes. Example prompts:
+
+- "Add a Camera3D and DirectionalLight3D to the scene root"
+- "Get the scene tree from Summer Engine"
+- "Generate a low-poly treasure chest and import it under the World node"
+- "Run the game and read the diagnostics"
+- "Set the project's main scene to res://main.tscn"
+
+<Tip>
+**Engine must be running.** Gemini talks to Summer Engine over localhost. Open your project in the engine first, or run `npx summer-engine run` from the project directory.
+</Tip>
+
+## Troubleshooting
+
+### "Summer Engine is not running"
+
+Start Summer Engine and open your project. The MCP server connects to the engine's local API on port 6550. The engine writes a token to `~/.summer/api-token` when it starts.
+
+### Extension not appearing
+
+- **Config path:** Verify `~/.gemini/extensions/summer-engine/gemini-extension.json` exists
+- **JSON validity:** Ensure no trailing commas and valid JSON
+- **Restart:** Fully quit and reopen Gemini CLI
+- **Diagnostics:** Run `npx -y summer-engine@latest doctor` to check the MCP server boot, login, and engine connection
+
+### Tools return errors
+
+See the [Tools Reference](/mcp/tools-reference) for parameter formats. Common issues: wrong node path format (`./World/Player`), invalid property values (use engine string format like `"Vector3(0, 10, 0)"`), or the game running when scene edits are attempted (stop it first with `summer_stop`).
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Tools Reference"
+    icon="wrench"
+    href="/mcp/tools-reference"
+  >
+    All 44 MCP tools with parameters and examples
+  </Card>
+  <Card
+    title="Building a Game"
+    icon="gamepad-2"
+    href="/mcp/building-a-game"
+  >
+    How an AI builds a full game using MCP
+  </Card>
+  <Card
+    title="MCP Setup Overview"
+    icon="plug"
+    href="/mcp/setup"
+  >
+    Architecture, prerequisites, and other IDEs
+  </Card>
+  <Card
+    title="CLI Reference"
+    icon="terminal"
+    href="/mcp/cli-reference"
+  >
+    summer setup, doctor, run, create, and more
+  </Card>
+</CardGroup>
+
+---
+
+Need help or have questions? Reach out to our founders at [founders@summerengine.com](mailto:founders@summerengine.com) or join our community on [Discord](https://discord.gg/yUpgtxnZky) for fast responses.

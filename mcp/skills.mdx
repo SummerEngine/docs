@@ -1,92 +1,216 @@
 ---
 title: "Skills"
-description: "Best-practice guides for AI agents building games with Summer Engine. Install GDScript patterns, FPS controllers, lighting, and more."
+description: "The Summer Engine skill library: 60+ best-practice guides across 20 categories that make AI agents better at building games, from FPS controllers to asset generation to multiplayer."
 icon: "book-open"
 ---
 
 ## What Are Skills?
 
-Skills are downloadable best-practice guides that make AI agents better at game development. When you or an AI agent builds a game with Summer Engine's MCP tools, skills provide patterns for GDScript, scene composition, character controllers, lighting, and UI. Think of them as Cursor rules or Claude Code skills, but specialized for game development.
+Skills are best-practice guides that make AI agents better at game development. Each skill is a Markdown file (a `SKILL.md`) that teaches the agent a specific discipline: how to compose a scene, build an FPS controller, generate a character model, set up multiplayer, or debug a crash. When the situation matches, the agent loads the skill and follows it.
 
-**How they work:** Install a skill with `summer skills install <name>`. The skill (a markdown file with instructions) is copied to `~/.summer/skills/<name>/`. AI agents can read it when relevant—for example, when building an FPS game, the agent reads the fps-controller skill and follows its scene structure and GDScript patterns.
-
-Skills follow the [Agent Skills](https://agentskills.io/) open standard, so they're compatible with Cursor, Claude Code, and other tools that support the format.
+The library ships with the Summer CLI and covers 20 categories spanning the whole game-dev workflow. Skills follow the [Agent Skills](https://agentskills.io/) open standard, so they work with Claude Code, Cursor, Codex, Gemini CLI, GitHub Copilot, OpenCode, and other compatible agents.
 
 ## Quick Start
+
+The recommended skill set installs automatically when you onboard an agent:
+
+```bash
+npx -y summer-engine@latest setup claude-code --yes
+```
+
+Or manage skills directly:
 
 ```bash
 # List available skills
 summer skills list
 
-# Install a skill
-summer skills install fps-controller
+# Install the recommended set for an agent
+summer skills install --recommended --agent claude-code
 
-# Install all skills at once
-summer skills install --all
+# Install one skill
+summer skills install fps-controller --agent cursor
 
-# For Claude Code: install so Claude auto-discovers it
-summer skills install fps-controller --as-claude-skill
-
-# For Cursor: install so Cursor auto-discovers it
-summer skills install fps-controller --as-cursor-skill
+# Install every skill
+summer skills install --all --agent claude-code
 
 # Preview a skill
-summer skills info gdscript-patterns
+summer skills info debug
 ```
 
-## Available Skills
+## Categories
+
+The library is organized into 20 categories. Recommended skills install by default; the rest are available on demand.
+
+### Workflow
+
+Process disciplines that shape how the agent approaches a task before it touches code.
 
 | Skill | Use when |
 |-------|----------|
-| **gdscript-patterns** | Writing GDScript, attaching scripts, connecting signals, defining exports |
+| **brainstorming** | Starting a new game, mechanic, or feature; exploring intent and scope first |
+| **investigating-bugs** | A first fix did not stick and you need root-cause analysis |
+| **verification-before-completion** | About to claim a feature is done; forces a real check first |
+| **playtesting-a-feature** | A gameplay feature is finished and needs a golden-path and edge-case playthrough |
+| **writing-plans** | A multi-step spec needs a written plan with checkpoints |
+| **dispatching-parallel-agents** | Two or more independent tasks can run in parallel |
+| **writing-skills** | Authoring a new Summer skill |
+| **debugging-game-feel** | Tuning feel ("the jump feels floaty") one variable at a time |
+| **diagnosing-perf-regressions** | FPS dropped after a change and you need to bisect the cause |
+
+### Scene and Project
+
+| Skill | Use when |
+|-------|----------|
+| **make-game** | Building a narrow playable prototype from requirements end to end |
+| **brainstorm-game** | Turning "I want to make a game" into a one-page brief at `.summer/GameSoul.md` |
+| **new-project** | Starting a blank project (picks empty vs 3d-basic, opens the engine) |
+| **browse-templates** | Choosing a community template to start from |
 | **scene-composition** | Building scenes, organizing nodes, creating reusable prefabs |
-| **fps-controller** | Building an FPS game, first-person movement, 3D character with WASD + mouse |
-| **3d-lighting** | Setting up 3D lighting, environment, sky, shadows |
-| **ui-basics** | Building menus, HUDs, health bars, responsive UI |
+| **play** | Running the game from a clean state and reporting whether it runs cleanly |
 
-### gdscript-patterns
+### Scripting Patterns
 
-Common GDScript idioms: type hints, signals, exports, lifecycle methods (`_ready`, `_physics_process`), node access, health systems, input handling, simple state machines. Aligns with Godot 4.x and MCP scene operations.
+| Skill | Use when |
+|-------|----------|
+| **gdscript-patterns** | Writing GDScript: type hints, signals, exports, lifecycle methods |
 
-### scene-composition
+### Character Controllers
 
-Node hierarchy conventions, when to use sub-scenes vs inline nodes, parent path format (`./World/Player`), InstantiateScene vs AddNode, save conventions, common mistakes.
+| Skill | Use when |
+|-------|----------|
+| **fps-controller** | Building a first-person CharacterBody3D with movement, camera, and input |
 
-### fps-controller
+### Gameplay Mechanics
 
-First-person character controller: CharacterBody3D + CollisionShape3D (CapsuleShape3D) + Camera3D. InputMap actions for WASD and jump. GDScript for movement and mouse look. MCP ops for setup.
+| Skill | Use when |
+|-------|----------|
+| **design-mechanic** | Designing a mechanic end to end: input, response, feedback, depth |
 
-### 3d-lighting
+### Level Design
 
-DirectionalLight3D (sun), OmniLight3D (point lights), WorldEnvironment, shadow settings, light energy and color. Godot string format for Color values.
+| Skill | Use when |
+|-------|----------|
+| **design-level** | Designing a level as a paced encounter, then producing a node-tree skeleton |
 
-### ui-basics
+### Rendering and Lighting
 
-Control hierarchy (MarginContainer, VBoxContainer, HBoxContainer), Label, Button, ProgressBar, anchors for responsive layout, connecting button signals.
+| Skill | Use when |
+|-------|----------|
+| **3d-lighting** | Setting up sun, fill, WorldEnvironment, sky, and shadows |
+| **art-direction** | Defining art direction and writing the art bible to `.summer/art-bible.md` |
+
+### UI and UX
+
+| Skill | Use when |
+|-------|----------|
+| **ui-basics** | Building menus, HUDs, health bars, and responsive layout |
+
+### Asset Pipeline
+
+| Skill | Use when |
+|-------|----------|
+| **asset-strategy** | Choosing between library, generated, or primitive assets for a level |
+
+### 2D Assets
+
+| Skill | Use when |
+|-------|----------|
+| **concept-art** | Producing variant concept-art prompts on a locked style anchor |
+| **character-portrait** | A final character bust for dialogue UI |
+| **pixel-art** | Pixel-art icons and sprites with nearest-neighbor filtering |
+| **ui-graphics** | Flat-design UI icon sets and atlases |
+| **tileable-texture** | Seamless textures for materials |
+| **sprite-sheet** | Multi-frame sprite animations and SpriteFrames resources |
+| **skybox-panorama** | Equirectangular skybox panoramas |
+
+### 3D Assets
+
+| Skill | Use when |
+|-------|----------|
+| **prop-model** | A single prop via the image-to-3D pipeline |
+| **character-model** | A character: T-pose reference, gated rig pass, CharacterBody3D wiring |
+| **environment-kit** | A modular kit of consistent environment pieces |
+| **vehicle-model** | Hard-surface vehicles |
+| **organic-model** | Organic shapes with emission and instancing |
+
+### Animation
+
+| Skill | Use when |
+|-------|----------|
+| **generate-motion** | Adding a curated mocap clip to a rigged character |
+| **retarget** | Retargeting an existing clip onto a different skeleton |
+| **animation-tree** | Building an AnimationTree with blend spaces driven by speed |
+| **procedural-animation** | Foot IK and other procedural skeleton modifications |
+| **facial-and-lipsync** | Lip-sync and blend-shape facial animation from a voice line |
+
+### Audio
+
+| Skill | Use when |
+|-------|----------|
+| **audio-direction** | Defining audio direction and the bus layout in `.summer/audio-bible.md` |
+| **sound-effect** | A single SFX wired to an AudioStreamPlayer3D |
+| **music-track** | A looping music track on the Music bus |
+| **ambient-bed** | Loop-clean ambience on the Ambient bus |
+| **voice-line** | Character dialogue via TTS with a matching voice |
+| **adaptive-music** | Layered music that responds to combat state |
+
+### Video
+
+| Skill | Use when |
+|-------|----------|
+| **cinematic-cutscene** | A short cutscene wired to a VideoStreamPlayer |
+| **trailer-shot** | A premium hero shot for a trailer |
+| **animated-loop** | A loop-clean backdrop clip for a title screen |
+
+### Visual Effects
+
+| Skill | Use when |
+|-------|----------|
+| **game-feel** | Adding visible juice to flat combat: hit flash, screen shake, particles |
+| **fire** | A torch flame via GPUParticles3D and a custom shader |
+| **muzzle-flash** | A one-shot muzzle flash on a weapon |
+| **water-ripple** | Interactive water ripples |
+| **lightning** | A lightning strike effect with camera shake |
+| **dissolve** | A dissolve-on-death shader effect |
+| **smoke** | Smoke particles with wind |
+| **hit-spark** | Sparks oriented to a surface normal on impact |
+| **magic-glow** | A pulsing magical glow with light and motes |
+
+### AI and NPCs
+
+| Skill | Use when |
+|-------|----------|
+| **design-npc** | A patrol-and-chase enemy with perception, decision logic, and tells |
+
+### Multiplayer and Networking
+
+| Skill | Use when |
+|-------|----------|
+| **setup-multiplayer** | Co-op LAN multiplayer with MultiplayerAPI, Spawner, Synchronizer, and ENet |
+| **peer-to-peer-multiplayer** | A four-layer P2P architecture with prediction and interpolation |
+| **host-authoritative-state** | A state-ownership audit and the canonical Manager pattern |
+
+### Performance
+
+| Skill | Use when |
+|-------|----------|
+| **tune-performance** | Profiling a slow scene, finding the hotspot, and verifying the fix moved the metric |
+
+### Debugging
+
+| Skill | Use when |
+|-------|----------|
+| **debug** | Triaging a runtime crash end to end: read errors, locate code, fix, verify |
+
+### Deployment
+
+| Skill | Use when |
+|-------|----------|
+| **export-and-ship** | Running the Steam pre-flight checklist across Windows, Mac, and Linux |
 
 ## For AI Agents
 
-When building a game, install the relevant skill first:
-
-```
-summer skills install fps-controller
-```
-
-Then read the skill file at `~/.summer/skills/fps-controller/SKILL.md` (or have it loaded into context). Follow the patterns for scene structure, property values, and GDScript. The skill references MCP tools (`summer_add_node`, `summer_set_prop`, etc.) and Godot value formats (`Vector3(0, 10, 0)`, `Color(1, 0.5, 0, 1)`).
-
-## File Locations
-
-| Path | Purpose |
-|------|---------|
-| `~/.summer/skills/<name>/` | Default install (from `summer skills install`) |
-| `~/.claude/skills/<name>/` | With `--as-claude-skill` (Claude Code auto-discovery) |
-| `~/.cursor/skills/<name>/` | With `--as-cursor-skill` (Cursor auto-discovery) |
-
-Override the install location with `SUMMER_SKILLS_DIR`:
-
-```bash
-SUMMER_SKILLS_DIR=/path/to/skills summer skills install fps-controller
-```
+Most agents discover skills automatically once `summer setup <agent> --yes` has installed them. The agent loads the relevant `SKILL.md` when the situation matches, then follows its scene structure, value formats, and tool calls. Skills reference the [MCP tools](/mcp/tools-reference) (`summer_add_node`, `summer_set_prop`, `summer_generate_3d`, etc.) and engine value formats (`Vector3(0, 10, 0)`, `Color(1, 0.5, 0, 1)`).
 
 ## Next Steps
 

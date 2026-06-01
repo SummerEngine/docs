@@ -1,0 +1,148 @@
+---
+title: "Build Games in OpenCode with Summer Engine MCP"
+description: "Connect Summer Engine's MCP server to OpenCode and build games with the open-source terminal agent driving your engine. One-command setup."
+icon: "terminal"
+---
+
+## Summer Engine in OpenCode
+
+OpenCode is an open-source terminal agent that supports MCP (Model Context Protocol). With Summer Engine's integration, OpenCode can control your game engine: add nodes to scenes, set properties, search and import assets, generate images and 3D models, run the game, and debug, all from the terminal.
+
+This guide covers the configuration. Setup takes about a minute.
+
+## Prerequisites
+
+- **OpenCode**: The open-source terminal agent
+- **Node.js**: For running the MCP server (Node 18+)
+- **Summer Engine**: Installed and running with your project open
+
+## Configuration
+
+### Option 1: One-command setup (recommended)
+
+Run the Summer setup command. It writes the OpenCode config, installs the recommended skills, and runs diagnostics:
+
+```bash
+npx -y summer-engine@latest setup opencode --yes
+```
+
+This writes to your user OpenCode config (`~/.config/opencode/opencode.json` on macOS and Linux, `%APPDATA%\opencode\opencode.json` on Windows). For a single project, use `--scope project` to write `opencode.json` in the project root instead.
+
+### Option 2: Manual configuration
+
+Create or edit your OpenCode config and add the `summer-engine` MCP server. OpenCode uses a `command` array and an `environment` object:
+
+<CodeGroup>
+
+```json New file (opencode.json)
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "summer-engine": {
+      "type": "local",
+      "command": ["npx", "-y", "summer-engine@latest", "mcp"]
+    }
+  }
+}
+```
+
+```json Adding to existing mcp
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "other-server": { ... },
+    "summer-engine": {
+      "type": "local",
+      "command": ["npx", "-y", "summer-engine@latest", "mcp"]
+    }
+  }
+}
+```
+
+</CodeGroup>
+
+To preview the exact config without writing files, run:
+
+```bash
+npx -y summer-engine@latest setup opencode --print
+```
+
+### Restart OpenCode
+
+Close and restart OpenCode so it loads the new config. The Summer Engine MCP server starts with OpenCode; it connects to the engine on the first tool call.
+
+### Verify
+
+List your MCP servers in OpenCode and confirm `summer-engine` appears with its tools. Then try a prompt:
+
+- "Use Summer Engine to add a MeshInstance3D with a BoxMesh to the scene"
+
+If the node appears in Summer Engine, the setup is working.
+
+## Using Summer Engine with OpenCode
+
+Once configured, OpenCode can use Summer Engine's tools when you ask for game-related changes. Example prompts:
+
+- "Add a Camera3D and DirectionalLight3D to the scene root"
+- "Get the scene tree from Summer Engine"
+- "Generate a low-poly treasure chest and import it under the World node"
+- "Run the game and read the diagnostics"
+- "Set the project's main scene to res://main.tscn"
+
+<Tip>
+**Engine must be running.** OpenCode talks to Summer Engine over localhost. Open your project in the engine first, or run `npx summer-engine run` from the project directory.
+</Tip>
+
+## Troubleshooting
+
+### "Summer Engine is not running"
+
+Start Summer Engine and open your project. The MCP server connects to the engine's local API on port 6550. The engine writes a token to `~/.summer/api-token` when it starts.
+
+### MCP server not appearing
+
+- **Config path:** Verify the config exists at `~/.config/opencode/opencode.json` (or `opencode.json` in the project root for project scope)
+- **JSON validity:** Ensure no trailing commas and valid JSON
+- **Restart:** Fully quit and reopen OpenCode
+- **Diagnostics:** Run `npx -y summer-engine@latest doctor` to check the MCP server boot, login, and engine connection
+
+### Tools return errors
+
+See the [Tools Reference](/mcp/tools-reference) for parameter formats. Common issues: wrong node path format (`./World/Player`), invalid property values (use engine string format like `"Vector3(0, 10, 0)"`), or the game running when scene edits are attempted (stop it first with `summer_stop`).
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Tools Reference"
+    icon="wrench"
+    href="/mcp/tools-reference"
+  >
+    All 44 MCP tools with parameters and examples
+  </Card>
+  <Card
+    title="Building a Game"
+    icon="gamepad-2"
+    href="/mcp/building-a-game"
+  >
+    How an AI builds a full game using MCP
+  </Card>
+  <Card
+    title="MCP Setup Overview"
+    icon="plug"
+    href="/mcp/setup"
+  >
+    Architecture, prerequisites, and other IDEs
+  </Card>
+  <Card
+    title="CLI Reference"
+    icon="terminal"
+    href="/mcp/cli-reference"
+  >
+    summer setup, doctor, run, create, and more
+  </Card>
+</CardGroup>
+
+---
+
+Need help or have questions? Reach out to our founders at [founders@summerengine.com](mailto:founders@summerengine.com) or join our community on [Discord](https://discord.gg/yUpgtxnZky) for fast responses.

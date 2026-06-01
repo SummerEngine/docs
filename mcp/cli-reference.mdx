@@ -1,26 +1,72 @@
 ---
 title: "CLI Reference"
-description: "Complete reference for the Summer Engine CLI. Install, login, run, create, and more."
+description: "Complete reference for the Summer Engine CLI: setup, doctor, install, login, run, create, plan, memory, skills, and the MCP server."
 icon: "terminal"
 ---
 
 ## Overview
 
-The Summer Engine CLI (`summer`) lets you install the engine, manage projects, sign in, and run the MCP server. Use it from the terminal or via `npx summer-engine <command>` without a global install.
-
-**Install (one-time):**
+The Summer Engine CLI (`summer`) installs the engine, configures your AI agent, manages projects, signs you in, and runs the MCP server. Run any command without a global install using `npx`:
 
 ```bash
-npm install -g summer-engine
+npx -y summer-engine@latest <command>
 ```
 
-**Or use without installing:**
+The fastest way to get started is the one-line setup, which wires up your agent's MCP config, installs the recommended skills, and runs diagnostics in a single step:
 
 ```bash
-npx summer-engine <command>
+npx -y summer-engine@latest setup claude-code --yes
 ```
+
+Swap `claude-code` for any supported agent: `claude-code`, `cursor`, `codex`, `windsurf`, `cline`, `roo-code`, `gemini`, `github-copilot`, `vscode-copilot`, `opencode`.
+
+---
 
 ## Commands
+
+### summer setup
+
+Configure Summer Engine for an AI agent and run diagnostics in one step. This is the recommended onboarding command. It writes the MCP server config for the agent, installs the recommended skills, and prints a doctor report.
+
+```bash
+summer setup <agent> [--yes] [--scope user|project] [--force]
+```
+
+| Argument / Option | Description |
+|-------------------|-------------|
+| `<agent>` | Agent to configure: `claude-code`, `cursor`, `codex`, `windsurf`, `cline`, `roo-code`, `gemini`, `github-copilot`, `vscode-copilot`, `opencode` |
+| `--yes` | Apply the practical setup steps (including skill install) without prompting |
+| `--scope <scope>` | Config scope: `user` (default) or `project` |
+| `--dry-run` | Show planned changes without writing files |
+| `--print` | Print the MCP config snippet instead of writing files |
+| `--force` | Overwrite existing skill content |
+| `--json` | Print the setup result as JSON |
+
+**Examples:**
+
+```bash
+npx -y summer-engine@latest setup claude-code --yes
+npx -y summer-engine@latest setup cursor --yes --scope project
+npx -y summer-engine@latest setup gemini --print          # See the config without writing
+```
+
+---
+
+### summer doctor
+
+Diagnose your setup end-to-end: Node version, CLI version, skills freshness, login, engine install, the local engine API, project memory, and MCP server boot.
+
+```bash
+summer doctor [--json]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--json` | Print diagnostics as JSON |
+
+Run this first whenever something is not working. Each check reports OK, a warning, or a failure with a clear next step (for example, "engine not running" or "not signed in").
+
+---
 
 ### summer install
 
@@ -31,14 +77,12 @@ summer install [--path <dir>]
 ```
 
 | Option | Description |
-|--------|--------------|
-| `--path <dir>` | Custom install directory (macOS: default is `/Applications/Summer.app`) |
+|--------|-------------|
+| `--path <dir>` | Custom install directory (macOS default is `/Applications/Summer.app`) |
 
-**Platforms:** macOS and Windows. Linux users are directed to download manually from [summerengine.com](https://summerengine.com/download).
+**Platforms:** macOS and Windows. Linux users download manually from [summerengine.com](https://www.summerengine.com/download).
 
-**What it does:** Fetches the latest release from Summer Engine's API, downloads the installer (~145MB), and installs the app. On macOS it mounts the DMG and copies `Summer.app` to Applications. On Windows it runs the installer.
-
-**Next steps after install:** Run `summer login` to sign in, then `summer run` to launch.
+**What it does:** Fetches the latest release, downloads the installer, and installs the app. On macOS it mounts the DMG and copies `Summer.app` to Applications. On Windows it runs the installer. After install, run `summer login`, then `summer run`.
 
 ---
 
@@ -51,10 +95,10 @@ summer login [--force]
 ```
 
 | Option | Description |
-|--------|--------------|
+|--------|-------------|
 | `--force` | Re-authenticate even if already logged in |
 
-**What it does:** Opens your browser to the Summer Engine login page. After you sign in with Google, GitHub, or email, the CLI polls for the session and saves the token to `~/.summer/auth-token`. Used for analytics and future cloud features. The MCP server uses a separate local token (`~/.summer/api-token`) for engine communication. You don't need to be logged in for MCP to work, but login is recommended.
+**What it does:** Opens your browser to the login page. After you sign in with Google, GitHub, or email, the CLI saves the token to `~/.summer/auth-token`. Login is required for asset search and AI generation tools, and recommended in general. The MCP server uses a separate local token (`~/.summer/api-token`) for engine communication.
 
 ---
 
@@ -66,7 +110,7 @@ Clear your saved auth tokens.
 summer logout
 ```
 
-**What it does:** Removes `~/.summer/auth-token` and user info. Does not affect the engine's local API token. Run `summer login` again to re-authenticate.
+Removes `~/.summer/auth-token` and cached user info. Does not affect the engine's local API token. Run `summer login` again to re-authenticate.
 
 ---
 
@@ -78,13 +122,7 @@ Check engine status, API connection, and auth state.
 summer status
 ```
 
-**What it does:** Reports:
-
-- **Auth:** Whether you're logged in and with which email
-- **Engine:** Whether Summer Engine is running, which project is open, current scene
-- **API:** Port (default 6550) and token presence
-
-Use this to debug "Summer Engine is not running" errors or verify your setup.
+Reports whether you are logged in (and with which email), whether the engine is running (and which project and scene are open), and the local API port and token presence.
 
 ---
 
@@ -97,17 +135,17 @@ summer run [path]
 ```
 
 | Argument | Description |
-|----------|--------------|
+|----------|-------------|
 | `path` | Path to a project directory (must contain `project.godot`). Optional. |
 
-**What it does:** Finds the Summer Engine binary (e.g., `/Applications/Summer.app` on macOS), spawns it with `--editor`, and optionally passes `--path <projectPath>`. Waits for the local API to respond (up to 20 seconds). If the engine is already running, it reports the current state and exits.
+**What it does:** Finds the Summer Engine binary, spawns it with `--editor`, and optionally passes `--path <projectPath>`. Waits for the local API to respond (up to 20 seconds). If the engine is already running, it reports the current state and exits.
 
 **Examples:**
 
 ```bash
 summer run                    # Launch engine (no project)
 summer run my-game            # Launch and open my-game/
-summer run ./projects/racer   # Launch and open relative path
+summer run ./projects/racer   # Launch and open a relative path
 ```
 
 ---
@@ -121,10 +159,10 @@ summer open <path>
 ```
 
 | Argument | Description |
-|----------|--------------|
-| `path` | Path to project directory (must contain `project.godot`) |
+|----------|-------------|
+| `path` | Path to a project directory (must contain `project.godot`) |
 
-**What it does:** Resolves the path and checks for `project.godot`. If the engine is not running, it launches the engine with that project (same as `summer run <path>`). If the engine is already running, it prints the path and a note: to switch projects, close the current one in the engine first or run `summer run <path>`.
+**What it does:** Resolves the path and checks for `project.godot`. If the engine is not running, it launches with that project. If the engine is already running, it prints the path and a note: to switch projects, close the current one in the engine first or run `summer run <path>`.
 
 ---
 
@@ -137,24 +175,25 @@ summer create <template> [name]
 ```
 
 | Argument | Description |
-|----------|--------------|
-| `template` | Template name: `empty` or `3d-basic` |
-| `name` | Project directory name (defaults to template name) |
+|----------|-------------|
+| `template` | Built-in slug (`empty`, `3d-basic`) or any community template slug |
+| `name` | Project directory name (defaults to the template slug) |
 
-**Templates:**
+**Built-in templates** work offline:
 
 | Template | Description |
 |----------|-------------|
 | `empty` | Empty 3D project with a root Node3D |
 | `3d-basic` | 3D scene with Camera3D, DirectionalLight3D, floor mesh, and sky |
 
-**What it does:** Creates a new directory, writes `project.godot` and a scene file. The project is ready to open with `summer run <name>`.
+Community templates clone from `github.com/SummerEngine/template-*`. Run `summer list templates` to browse them. Pass `--keep-git` to keep the upstream `.git` directory after cloning (default is to detach so you start fresh).
 
 **Examples:**
 
 ```bash
-summer create 3d-basic my-game    # Creates my-game/ with 3d-basic template
-summer create empty                # Creates empty/ with empty template
+summer create 3d-basic my-game     # Built-in template
+summer create empty                # Built-in template
+summer list templates              # Browse community templates
 ```
 
 ---
@@ -168,19 +207,67 @@ summer list <what>
 ```
 
 | Argument | Description |
-|----------|--------------|
+|----------|-------------|
 | `what` | `templates` or `projects` |
 
-**What it does:**
+- **templates:** Shows the built-in templates plus community templates from `github.com/SummerEngine`.
+- **projects:** Scans the current directory for subdirectories containing `project.godot`.
 
-- **templates:** Shows built-in templates (`empty`, `3d-basic`) with short descriptions
-- **projects:** Scans the current directory for subdirectories containing `project.godot` and lists them
+---
 
-**Examples:**
+### summer plan
+
+Plan the right Summer CLI/MCP workflow for an AI game-building task. Takes a goal in plain English and prints the recommended skills, MCP tool groups, host-file work, user gates, and next steps. Useful as a planning aid before you ask your agent to build something.
 
 ```bash
-summer list templates   # See available templates
-summer list projects   # See projects in current folder
+summer plan <goal...> [--json]
+```
+
+| Argument / Option | Description |
+|-------------------|-------------|
+| `<goal...>` | What you want to build, fix, polish, or create |
+| `--mode <mode>` | Optional task mode override |
+| `--target <target>` | Optional task target override |
+| `--asset-policy <policy>` | Optional asset policy override |
+| `--verification <level>` | Optional verification level override |
+| `--json` | Print the plan as JSON |
+
+**Example:**
+
+```bash
+summer plan make a small arena shooter
+```
+
+This is the CLI surface of the same router exposed to agents as the `summer_start_game_task` MCP tool.
+
+---
+
+### summer memory
+
+Inspect a project's durable memory in its `.summer` directory. Project memory is where agents store the game brief, art and audio bibles, the build plan, and locked facts like voice IDs and world canon.
+
+```bash
+summer memory [--project <path>] [--json]
+summer memory show <file> [--project <path>]
+summer memory path [--project <path>]
+```
+
+| Command | Description |
+|---------|-------------|
+| `summer memory` | Print a summary of `.summer` memory: file counts, canonical files, and locked facts |
+| `summer memory show <file>` | Print a specific `.summer` Markdown file (must live inside `.summer`) |
+| `summer memory path` | Print the `.summer` directory path for the current project |
+
+| Option | Description |
+|--------|-------------|
+| `--project <path>` | Project directory to inspect (defaults to the current directory or the running engine's project) |
+| `--json` | Print the summary as JSON |
+
+**Example:**
+
+```bash
+summer memory
+summer memory show .summer/memory/casting/voices.md
 ```
 
 ---
@@ -193,55 +280,32 @@ Start the MCP server for AI tool integration.
 summer mcp
 ```
 
-**What it does:** Starts the MCP server on stdio. This command is typically invoked by your IDE (Cursor, Claude Code, Windsurf) when they load the MCP config. You rarely run it manually. When run directly, it blocks and waits for JSON-RPC messages on stdin. Exposes 23 tools for scene manipulation, debugging, and project operations.
+**What it does:** Starts the MCP server on stdio. Your IDE or agent invokes this automatically when it loads the MCP config you wrote with `summer setup`, so you rarely run it by hand. Exposes 44 tools for scene editing, debugging, project context, asset search, and AI generation. See the [Tools Reference](/mcp/tools-reference).
 
-**Used by:** Cursor, Claude Code, Windsurf, and other MCP-compatible tools. See [MCP Setup](/mcp/setup) for configuration.
+There is also a lower-level `summer mcp setup <agent>` subcommand that writes only the MCP config (no skills, no diagnostics). Prefer the top-level `summer setup <agent>` for onboarding.
 
 ---
 
 ### summer skills
 
-Install and manage best-practice guides for AI agents building games. Skills are markdown files that teach patterns for GDScript, scene composition, FPS controllers, lighting, and UI.
+Install and manage best-practice guides for AI agents building games. Skills are Markdown files that teach the agent patterns for scene composition, character controllers, asset generation, debugging, and more.
 
 ```bash
-summer skills list                    # List available skills
-summer skills install <name>          # Install to ~/.summer/skills/
-summer skills install --all           # Install all skills at once
-summer skills install <name> --as-claude-skill   # Install to ~/.claude/skills/ for Claude Code
-summer skills install <name> --as-cursor-skill   # Install to ~/.cursor/skills/ for Cursor
-summer skills info <name>             # Show description and preview
+summer skills list                          # List available skills
+summer skills install <name> --agent <a>    # Install one skill for an agent
+summer skills install --recommended --agent <a>   # Install the recommended set
+summer skills install --all --agent <a>     # Install every skill
+summer skills info <name>                   # Show description and preview
 ```
 
 | Option | Description |
 |--------|-------------|
-| `--all` | Install all available skills |
-| `--as-claude-skill` | Install to `~/.claude/skills/` so Claude Code auto-discovers the skill |
-| `--as-cursor-skill` | Install to `~/.cursor/skills/` so Cursor auto-discovers the skill |
+| `--agent <agent>` | Target agent (e.g. `claude-code`, `cursor`, `codex`) so the skill installs where that agent auto-discovers it |
+| `--recommended` | Install the recommended skill set |
+| `--all` | Install every available skill |
+| `--force` | Overwrite existing skill content on re-install |
 
-**Available skills:**
-
-| Skill | Description |
-|-------|-------------|
-| `gdscript-patterns` | Common GDScript idioms, signals, exports, type hints |
-| `scene-composition` | Scene structure, sub-scenes, node hierarchy |
-| `fps-controller` | First-person character controller (movement, camera, physics) |
-| `3d-lighting` | Lighting setup, environment, sky, shadows |
-| `ui-basics` | HUD, menus, health bars, responsive layout |
-
-**What it does:** Copies the skill from the bundled package to `~/.summer/skills/<name>/`. AI agents can read the SKILL.md file when building games. Skills follow the [Agent Skills](https://agentskills.io/) open standard.
-
-**Examples:**
-
-```bash
-summer skills list
-summer skills install fps-controller
-summer skills install --all
-summer skills install fps-controller --as-claude-skill   # For Claude Code
-summer skills install fps-controller --as-cursor-skill   # For Cursor
-summer skills info gdscript-patterns
-```
-
-See [Skills](/mcp/skills) for a full overview of the skills system.
+Most users never call this directly: `summer setup <agent> --yes` installs the recommended skills for you. See [Skills](/mcp/skills) for the full catalog and the 20+ categories.
 
 ---
 
@@ -249,8 +313,8 @@ See [Skills](/mcp/skills) for a full overview of the skills system.
 
 | Variable | Description |
 |----------|-------------|
-| `SUMMER_GATEWAY_URL` | Override the auth/gateway URL (default: `https://www.summerengine.com`). Used for local development. |
-| `SUMMER_SKILLS_DIR` | Override skills install directory (default: `~/.summer/skills/`). |
+| `SUMMER_GATEWAY_URL` | Override the auth/gateway URL (default `https://www.summerengine.com`). Used for local development. |
+| `SUMMER_API_PORT` | Override the local engine API port if the default 6550 is occupied. |
 
 ---
 
@@ -260,11 +324,9 @@ See [Skills](/mcp/skills) for a full overview of the skills system.
 |------|---------|
 | `~/.summer/auth-token` | User auth token (from `summer login`) |
 | `~/.summer/user.json` | Cached user info (id, email, name) |
-| `~/.summer/api-token` | Local engine API token (created by engine on startup) |
-| `~/.summer/api-port` | Override port if default 6550 is occupied |
-| `~/.summer/skills/` | Installed skills (from `summer skills install`) |
-| `~/.claude/skills/` | Skills installed with `--as-claude-skill` (Claude Code auto-discovery) |
-| `~/.cursor/skills/` | Skills installed with `--as-cursor-skill` (Cursor auto-discovery) |
+| `~/.summer/api-token` | Local engine API token (created by the engine on startup) |
+| `~/.summer/api-port` | Port override if the default 6550 is occupied |
+| `.summer/` | Per-project durable memory (game brief, bibles, locked facts) |
 
 ---
 
@@ -283,14 +345,14 @@ See [Skills](/mcp/skills) for a full overview of the skills system.
     icon="plug"
     href="/mcp/setup"
   >
-    Connect Cursor, Claude Code, or Windsurf
+    Connect Cursor, Claude Code, and more
   </Card>
   <Card
     title="Tools Reference"
     icon="wrench"
     href="/mcp/tools-reference"
   >
-    All 23 MCP tools with parameters
+    All 44 MCP tools with parameters
   </Card>
   <Card
     title="Building a Game"

@@ -1,0 +1,154 @@
+---
+title: "Build Games in GitHub Copilot CLI with Summer Engine MCP"
+description: "Connect Summer Engine's MCP server to GitHub Copilot CLI and build games with Copilot driving your engine. One-command setup."
+icon: "github"
+---
+
+## Summer Engine in GitHub Copilot CLI
+
+GitHub Copilot CLI is GitHub's terminal agent, and it supports MCP (Model Context Protocol). With Summer Engine's integration, Copilot can control your game engine: add nodes to scenes, set properties, search and import assets, generate images and 3D models, run the game, and debug, all from the terminal.
+
+This guide covers the configuration. Setup takes about a minute.
+
+<Note>
+This page covers **GitHub Copilot CLI**. For Copilot inside VS Code, see the [VS Code](/mcp/vscode) setup.
+</Note>
+
+## Prerequisites
+
+- **GitHub Copilot CLI**: GitHub's terminal agent
+- **Node.js**: For running the MCP server (Node 18+)
+- **Summer Engine**: Installed and running with your project open
+
+## Configuration
+
+### Option 1: One-command setup (recommended)
+
+Run the Summer setup command. It writes the Copilot MCP config, installs the recommended skills, and runs diagnostics:
+
+```bash
+npx -y summer-engine@latest setup github-copilot --yes
+```
+
+This writes the config to `~/.copilot/mcp-config.json` (user scope). For a single project, use `--scope project` to write `.mcp.json` in the project root instead.
+
+### Option 2: Manual configuration
+
+Create or edit `~/.copilot/mcp-config.json` and add the `summer-engine` server. If the file already exists, add `summer-engine` to the `mcpServers` object:
+
+<CodeGroup>
+
+```json New file (~/.copilot/mcp-config.json)
+{
+  "mcpServers": {
+    "summer-engine": {
+      "type": "local",
+      "command": "npx",
+      "args": ["-y", "summer-engine@latest", "mcp"],
+      "tools": ["*"]
+    }
+  }
+}
+```
+
+```json Adding to existing mcpServers
+{
+  "mcpServers": {
+    "other-server": { ... },
+    "summer-engine": {
+      "type": "local",
+      "command": "npx",
+      "args": ["-y", "summer-engine@latest", "mcp"],
+      "tools": ["*"]
+    }
+  }
+}
+```
+
+</CodeGroup>
+
+To preview the exact config without writing files, run:
+
+```bash
+npx -y summer-engine@latest setup github-copilot --print
+```
+
+### Restart Copilot CLI
+
+Close and restart Copilot CLI so it loads the new config. The Summer Engine MCP server starts with Copilot; it connects to the engine on the first tool call.
+
+### Verify
+
+List your MCP servers in Copilot CLI and confirm `summer-engine` appears with its tools. Then try a prompt:
+
+- "Use Summer Engine to add a MeshInstance3D with a BoxMesh to the scene"
+
+If the node appears in Summer Engine, the setup is working.
+
+## Using Summer Engine with Copilot CLI
+
+Once configured, Copilot can use Summer Engine's tools when you ask for game-related changes. Example prompts:
+
+- "Add a Camera3D and DirectionalLight3D to the scene root"
+- "Get the scene tree from Summer Engine"
+- "Generate a low-poly treasure chest and import it under the World node"
+- "Run the game and read the diagnostics"
+- "Set the project's main scene to res://main.tscn"
+
+<Tip>
+**Engine must be running.** Copilot talks to Summer Engine over localhost. Open your project in the engine first, or run `npx summer-engine run` from the project directory.
+</Tip>
+
+## Troubleshooting
+
+### "Summer Engine is not running"
+
+Start Summer Engine and open your project. The MCP server connects to the engine's local API on port 6550. The engine writes a token to `~/.summer/api-token` when it starts.
+
+### MCP server not appearing
+
+- **Config path:** Verify `~/.copilot/mcp-config.json` exists (or `.mcp.json` in the project root for project scope)
+- **JSON validity:** Ensure no trailing commas and valid JSON
+- **Restart:** Fully quit and reopen Copilot CLI
+- **Diagnostics:** Run `npx -y summer-engine@latest doctor` to check the MCP server boot, login, and engine connection
+
+### Tools return errors
+
+See the [Tools Reference](/mcp/tools-reference) for parameter formats. Common issues: wrong node path format (`./World/Player`), invalid property values (use engine string format like `"Vector3(0, 10, 0)"`), or the game running when scene edits are attempted (stop it first with `summer_stop`).
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Tools Reference"
+    icon="wrench"
+    href="/mcp/tools-reference"
+  >
+    All 44 MCP tools with parameters and examples
+  </Card>
+  <Card
+    title="Building a Game"
+    icon="gamepad-2"
+    href="/mcp/building-a-game"
+  >
+    How an AI builds a full game using MCP
+  </Card>
+  <Card
+    title="MCP Setup Overview"
+    icon="plug"
+    href="/mcp/setup"
+  >
+    Architecture, prerequisites, and other IDEs
+  </Card>
+  <Card
+    title="CLI Reference"
+    icon="terminal"
+    href="/mcp/cli-reference"
+  >
+    summer setup, doctor, run, create, and more
+  </Card>
+</CardGroup>
+
+---
+
+Need help or have questions? Reach out to our founders at [founders@summerengine.com](mailto:founders@summerengine.com) or join our community on [Discord](https://discord.gg/yUpgtxnZky) for fast responses.

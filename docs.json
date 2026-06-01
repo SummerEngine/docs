@@ -135,6 +135,9 @@
               "mcp/windsurf",
               "mcp/antigravity",
               "mcp/codex",
+              "mcp/gemini",
+              "mcp/github-copilot",
+              "mcp/opencode",
               "mcp/vscode",
               "mcp/zed"
             ]

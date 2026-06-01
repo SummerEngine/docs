@@ -1,14 +1,16 @@
 ---
 title: "Tools Reference"
-description: "All 23 Summer Engine MCP tools with parameters, value formats, and examples."
+description: "All 44 Summer Engine MCP tools: scene editing, debugging, project context, asset library search, and AI generation of images, 3D models, audio, video, and motion."
 icon: "wrench"
 ---
 
 ## Overview
 
-The Summer Engine MCP server exposes 23 tools in three categories: **Scene** (10), **Debug** (9), and **Project** (4). All tools require the engine to be running with a project open. If the engine isn't running, tools return a clear error message.
+The Summer Engine MCP server exposes 44 tools across five categories: **Scene** (14), **Debug and Play** (9), **Project** (9), **Asset Library** (6), and **Generation** (6).
 
-**Critical: Value formats.** Properties like `position`, `rotation_degrees`, and `mesh` use engine string syntax, not raw JSON objects. See [Value Formats](#value-formats) below.
+Scene, Debug, and Project tools talk to the running engine on `localhost:6550` and require Summer Engine to be open with a project loaded. If the engine is not running, those tools return a clear error and a `summer run` hint. Asset Library and Generation tools call the Summer Engine cloud and require you to be signed in (run `npx summer-engine login` once); the import side of those tools needs the engine running too.
+
+**Critical: value formats.** Properties like `position`, `rotation_degrees`, and `mesh` use engine string syntax, not raw JSON objects. See [Value Formats](#value-formats) below.
 
 ---
 
@@ -28,13 +30,27 @@ When setting properties via `summer_set_prop` or `summer_set_resource_property`,
 | String | Native JSON | `"hello"` |
 
 <Warning>
-**Wrong:** `"position": {x: 0, y: 10, z: 0}` stays Dictionary, fails  
-**Right:** `"position": "Vector3(0, 10, 0)"` parses to Vector3
+**Wrong:** `"position": {x: 0, y: 10, z: 0}` stays a Dictionary and fails.
+**Right:** `"position": "Vector3(0, 10, 0)"` parses to a Vector3.
 </Warning>
+
+Node paths use a `./` prefix for relative paths from the scene root. For example, `./World/Player` means the `Player` child of the `World` node.
 
 ---
 
-## Scene Tools (10)
+## Scene Tools (14)
+
+### summer_create_scene
+
+Create a new empty scene file. To prevent accidental destructive edits you must explicitly pass `allow_temporary_scene_mutation=true`; the tool opens a template scene, removes its children, saves to the new path, then restores the previous scene.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `path` | string | Yes | New scene path, e.g. `res://scenes/empty_level.tscn` |
+| `rootName` | string | No | Root node name for the new scene (default `Main`) |
+| `allow_temporary_scene_mutation` | boolean | No | Safety gate. Must be `true` to proceed (default `false`) |
+
+---
 
 ### summer_add_node
 
@@ -46,7 +62,7 @@ Add a new node to the scene tree.
 | `type` | string | Yes | Node type, e.g. `MeshInstance3D`, `CharacterBody3D` |
 | `name` | string | Yes | Name for the new node |
 
-**Common node types:** Node3D, MeshInstance3D, CharacterBody3D, Camera3D, DirectionalLight3D, CollisionShape3D, Area3D, Node2D, Sprite2D, Control, Button, VBoxContainer, AudioStreamPlayer.
+**Common node types:** Node3D, MeshInstance3D, CharacterBody3D, RigidBody3D, StaticBody3D, Camera3D, DirectionalLight3D, OmniLight3D, SpotLight3D, WorldEnvironment, CollisionShape3D, Area3D, Node2D, Sprite2D, CharacterBody2D, Camera2D, TileMapLayer, Control, Label, Button, VBoxContainer, HBoxContainer, AudioStreamPlayer, AudioStreamPlayer3D.
 
 **Example:** `summer_add_node(parent="./", type="DirectionalLight3D", name="Sun")`
 
@@ -54,7 +70,7 @@ Add a new node to the scene tree.
 
 ### summer_set_prop
 
-Set a property on a node. Primary way to configure nodes after adding them.
+Set a property on a node. The primary way to configure nodes after adding them.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -70,7 +86,7 @@ Set a property on a node. Primary way to configure nodes after adding them.
 
 ### summer_set_resource_property
 
-Set a nested property on a resource attached to a node (e.g., shape size, material color).
+Set a nested property on a resource attached to a node (e.g., a CollisionShape3D shape size or a material color).
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -85,7 +101,7 @@ Set a nested property on a resource attached to a node (e.g., shape size, materi
 
 ### summer_remove_node
 
-Remove a node from the scene tree. All children are removed. Cannot remove root. Supports undo.
+Remove a node from the scene tree. All children are removed too. Cannot remove the root node. Supports undo. Destructive: do not delete multiple top-level nodes unless the user explicitly asks for destructive changes.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -93,19 +109,31 @@ Remove a node from the scene tree. All children are removed. Cannot remove root.
 
 ---
 
-### summer_save_scene
+### summer_replace_node
 
-Save the current scene to disk. Call after making changes to persist them.
+Replace a node with a different type or scene, preserving its position in the tree and its children. Useful for swapping a StaticBody3D for a RigidBody3D, or a placeholder for a proper prefab.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `path` | string | No | Save-as path for creating a new scene file, e.g. `res://levels/level2.tscn` |
+| `path` | string | Yes | Node path to replace |
+| `type` | string | No | New node type, e.g. `RigidBody3D` |
+| `scene` | string | No | Scene to replace with, e.g. `res://enemies/boss.tscn` |
+
+---
+
+### summer_save_scene
+
+Save the current scene to disk. Call after making changes to persist them. Without saving, changes only exist in the editor's memory.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `path` | string | No | Save-as path for a new scene file, e.g. `res://levels/level2.tscn` |
 
 ---
 
 ### summer_open_scene
 
-Open a scene file in the editor. Use to switch between scenes.
+Open a scene file in the editor. Use to switch between scenes. Prefer `summer_get_project_context` and `summer_open_main_scene` over guessing paths.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -115,7 +143,7 @@ Open a scene file in the editor. Use to switch between scenes.
 
 ### summer_instantiate_scene
 
-Add an existing scene or 3D model as a child node. Use for .tscn prefabs or .glb/.gltf models.
+Add an existing scene or 3D model as a child node. Use for `.tscn` prefabs or `.glb`/`.gltf` models. The scene must already exist in the project; import external sources first with `summer_import_from_url`.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -134,7 +162,7 @@ Connect a signal between two nodes. The receiver must have a script with the spe
 | `emitter` | string | Yes | Node that fires the signal |
 | `signal` | string | Yes | Signal name, e.g. `body_entered`, `pressed`, `timeout` |
 | `receiver` | string | Yes | Node with the handler script |
-| `method` | string | Yes | Method name in receiver's script |
+| `method` | string | Yes | Method name in the receiver's script |
 
 **Common signals:** `body_entered`, `body_exited`, `pressed`, `timeout`, `area_entered`, `input_event`.
 
@@ -142,7 +170,7 @@ Connect a signal between two nodes. The receiver must have a script with the spe
 
 ### summer_select_node
 
-Select a node in the editor's scene tree and show it in the inspector.
+Select a node in the editor's scene tree and show it in the inspector panel.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -151,46 +179,77 @@ Select a node in the editor's scene tree and show it in the inspector.
 
 ---
 
-### summer_replace_node
+### summer_inspect_node
 
-Replace a node with a different type or scene, preserving position and children.
+Get all editable properties of a node with their current values, types, and resource info. Returns every property the inspector would show. Call this before modifying a node to understand its current state.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `path` | string | Yes | Node path to replace |
-| `type` | string | No | New node type, e.g. `RigidBody3D` |
-| `scene` | string | No | Scene to replace with, e.g. `res://enemies/boss.tscn` |
+| `path` | string | Yes | Node path from the scene tree, e.g. `Player`, `World/Enemies/Boss` |
 
 ---
 
-## Debug Tools (9)
+### summer_inspect_resource
+
+Get all properties of a resource (material, mesh, shape, environment, etc). Use when you need the sub-properties of a resource attached to a node.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `path` | string | Yes | Resource path, e.g. `res://materials/ground.tres` or `res://models/player.glb` |
+
+---
+
+### summer_batch
+
+Execute multiple operations in a single call, grouped into one undo step. The user can undo everything with a single Ctrl+Z. Use when building something that involves multiple nodes and properties at once.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `ops` | array | Yes | Array of operation objects, each with `op` plus its parameters |
+
+Each op uses the same shape as the individual tools:
+
+```json
+[
+  { "op": "AddNode", "parent": "/", "type": "MeshInstance3D", "name": "Floor" },
+  { "op": "SetProp", "path": "Floor", "key": "mesh", "value": "PlaneMesh" },
+  { "op": "SetResourceProperty", "nodePath": "Floor", "resourceProperty": "mesh", "subProperty": "size", "value": "Vector2(20, 20)" }
+]
+```
+
+---
+
+## Debug and Play Tools (9)
 
 ### summer_get_diagnostics
 
-Quick overview of errors and warnings from the editor console and runtime debugger. **Call this first** before diving into console or debugger details.
+Quick overview of all errors and warnings from both the editor console and the runtime debugger. Returns error counts and a guidance message. **Call this first** before diving into the console or debugger details.
 
 | Parameters | None |
 |------------|------|
 
-**Workflow:** `summer_get_diagnostics` → if errors, use `summer_get_console` or `summer_get_debugger_errors` → fix → `summer_get_diagnostics` again to verify.
+**Workflow:** call `summer_get_diagnostics`; if there are errors, read `summer_get_console`, `summer_get_debugger_errors`, or `summer_get_debugger_warnings`; fix; then call `summer_get_diagnostics` again to verify.
 
 ---
 
 ### summer_get_console
 
-Read recent messages from the editor's Output panel. Use after diagnostics indicate console issues.
+Read recent messages from the editor's Output panel. Output is deduped for token economy: consecutive identical messages collapse into one entry with a `(xN)` count, and the response carries a `_filter` summary of what was hidden.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `max_lines` | number | No | Max lines to return (default 100) |
+| `max_lines` | number | No | Max lines to return after dedupe (default 100) |
 | `filter` | string | No | Only return lines containing this string |
-| `type` | enum | No | Filter by: `error`, `warning`, `std`, `editor` |
+| `type` | enum | No | Filter by message type: `error`, `warning`, `std`, `editor` |
+| `errors_only` | boolean | No | Drop info/std noise, keep errors and warnings (default `true`) |
+| `strict_errors` | boolean | No | Drop warnings too, return errors only (default `false`) |
+| `raw` | boolean | No | Bypass dedupe and level filtering, return engine output verbatim (default `false`) |
 
 ---
 
 ### summer_clear_console
 
-Clear the editor's Output panel. Useful before running the game for a clean slate.
+Clear the editor's Output panel. Useful before running the game to get a clean slate for error checking.
 
 | Parameters | None |
 |------------|------|
@@ -199,28 +258,53 @@ Clear the editor's Output panel. Useful before running the game for a clean slat
 
 ### summer_get_debugger_errors
 
-Read runtime errors and warnings from the debugger (null refs, missing nodes, physics errors). Different from console. These occur while the game is running.
+Read runtime errors from the debugger (null references, missing nodes, physics errors). These occur while the game is running and are distinct from console output. Deduped: identical errors firing every frame collapse into one entry with a `(xN)` count.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `max_errors` | number | No | Max errors to return (default 50) |
-| `include_stack` | boolean | No | Include stack traces |
+| `max_errors` | number | No | Max errors to return after dedupe (default 50) |
+| `include_stack` | boolean | No | Include stack traces for each error |
+| `raw` | boolean | No | Bypass dedupe, return engine output verbatim (default `false`) |
+
+For warning text, use `summer_get_debugger_warnings`.
+
+---
+
+### summer_get_debugger_warnings
+
+Read runtime warnings from the debugger: missing optional resources, dead signal connections, deprecated API use, large allocations, physics warnings. Same structured shape as `summer_get_debugger_errors`, filtered to severity `warning`. Use this when `summer_get_diagnostics` shows a non-zero `debugger.warnings` count.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `max_warnings` | number | No | Max warnings to return after dedupe (default 50) |
+| `include_stack` | boolean | No | Include stack traces (default `true`) |
+| `raw` | boolean | No | Bypass dedupe (default `false`) |
+
+---
+
+### summer_get_script_errors
+
+Check a GDScript file for parse/compile errors without running the game. Returns line numbers, error messages, and severity. Much faster than running the game to discover script errors. Use after writing or editing a `.gd` file.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `path` | string | Yes | Script path, e.g. `res://scripts/player.gd` |
 
 ---
 
 ### summer_play
 
-Start running the game in the engine. Use `summer_game_snapshot` to see what the player sees.
+Start running the game in the engine. The game runs inside Summer Engine's viewport. After starting, use `summer_get_diagnostics` to check for runtime errors. You can run a specific scene instead of the main scene.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `scene` | string | No | Scene to run instead of main scene |
+| `scene` | string | No | Scene to run instead of the main scene, e.g. `res://levels/test_level.tscn` |
 
 ---
 
 ### summer_stop
 
-Stop the running game. Call before making scene changes. Some operations require the game to be stopped.
+Stop the running game. Call before making scene changes; some operations require the game to be stopped.
 
 | Parameters | None |
 |------------|------|
@@ -236,79 +320,273 @@ Check if the game is currently running. Returns the active scene path if running
 
 ---
 
-### summer_viewport_snapshot
+## Project Tools (9)
 
-Capture a screenshot of the editor's 3D/2D viewport (editor camera, not game camera).
+### summer_start_game_task
+
+The router to call at the start of any substantial AI game-building task. Takes the user's goal and returns the recommended Summer workflow: skill routes, MCP tool groups, host-file boundaries, asset policy, user confirmation gates, and verification steps.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `goal` | string | Yes | The user's game-building goal or task |
+| `mode` | enum | No | Task mode override (default `auto`) |
+| `target` | enum | No | Content/system target override (default `auto`) |
+| `assetPolicy` | enum | No | How aggressively to use paid generation (default `ask-before-paid-generation`) |
+| `verification` | enum | No | How much engine verification to plan for (default `full`) |
+
+---
+
+### summer_get_agent_playbook
+
+The AI-first operating guide for Summer Engine MCP. Call at the start of a fresh chat before touching scenes. Returns the safe workflow, anti-patterns, and recovery steps.
 
 | Parameters | None |
 |------------|------|
 
 ---
 
-### summer_game_snapshot
+### summer_get_project_context
 
-Capture a screenshot of the **running game** (player's view). Call `summer_play` first. Returns base64 JPEG.
+Get essential project context before editing: engine health, project name and path, current scene path, main scene path from project settings, and a lightweight `.summer` project memory summary. Use this first in every fresh chat to avoid guessing scene filenames or editing the wrong scene.
 
 | Parameters | None |
 |------------|------|
 
 ---
 
-## Project Tools (4)
+### summer_open_main_scene
+
+Open the project's configured main scene from project settings. Safer than guessing scene names like `main.tscn` or `Main.tscn`. Call this when you get "no scene open".
+
+| Parameters | None |
+|------------|------|
+
+---
+
+### summer_get_scene_tree
+
+Get the full scene tree of the currently open scene. Use before structural edits (add/remove/replace). If you get "no edited scene", call `summer_open_main_scene` first.
+
+| Parameters | None |
+|------------|------|
+
+---
 
 ### summer_project_setting
 
-Set a project setting in project.godot.
+Set a project setting in `project.godot`.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `key` | string | Yes | Setting key path, e.g. `application/config/name` |
 | `value` | string \| number \| boolean | Yes | Setting value |
 
-**Common settings:** `application/config/name`, `application/run/main_scene`, `display/window/size/viewport_width`, `physics/3d/default_gravity`.
+**Common settings:** `application/config/name`, `application/run/main_scene`, `rendering/renderer/rendering_method`, `display/window/size/viewport_width`, `physics/3d/default_gravity`.
 
 ---
 
 ### summer_input_map_bind
 
-Set up input controls. Creates the action if it doesn't exist, then binds events.
+Set up input controls. Creates the action if it does not exist, then binds events to it.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `name` | string | Yes | Action name, e.g. `jump`, `move_forward` |
+| `name` | string | Yes | Action name, e.g. `jump`, `move_forward`, `interact` |
 | `events` | array | Yes | Array of input event objects |
 
 **Event format:** `{ type: "key", key: "W" }` or `{ type: "mouse_button", button: 1 }` (1=left, 2=right, 3=middle).
 
 ---
 
-### summer_get_scene_tree
-
-Get the full scene tree structure of the currently open scene. Returns all nodes with types, paths, and children. Use to understand the scene before making changes.
-
-| Parameters | None |
-|------------|------|
-
----
-
 ### summer_import_from_url
 
-Download a file from a URL and import it into the project. Triggers the engine's full import pipeline. Use for .glb, .gltf, .obj, .png, .ogg, etc.
+Download a file from a URL and import it into the project. Triggers the engine's full import pipeline: generates `.import` files, extracts textures from `.glb` models, creates materials. Use for 3D models (`.glb`, `.gltf`, `.obj`), textures (`.png`, `.jpg`, `.webp`), and audio (`.ogg`, `.wav`, `.mp3`).
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `url` | string | Yes | HTTP(S) URL to download from |
-| `path` | string | No | Target path in project. Auto-inferred from URL if omitted. |
+| `path` | string | No | Target path, e.g. `res://assets/player.glb`. Auto-inferred from the URL if omitted. |
 
 ---
 
 ### summer_import_from_url_batch
 
-Download multiple files from URLs in one operation. Single filesystem scan after all downloads. Faster than importing one at a time.
+Download multiple files from URLs in one operation. Performs a single filesystem scan after all downloads, which is faster than importing one at a time.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `imports` | array | Yes | Array of `{url, path}` objects |
+
+---
+
+## Asset Library Tools (6)
+
+The public asset library is free for all signed-in users, with per-user rate limits. These tools need you signed in (`npx summer-engine login`); the import tools also need the engine running.
+
+### summer_search_assets
+
+Search the Summer Engine asset library and your own assets. Hybrid search combines keywords and semantic similarity, so it finds assets by name and by meaning. Returns names, types, preview URLs, and import-ready file URLs.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `query` | string | Yes | Natural language search, e.g. `low-poly tree`, `sci-fi weapon`. For `my_assets`, can be empty to list recent. |
+| `assetType` | enum | No | `2d_image`, `animation`, `3d_model`, `audio`, `music`, or `all` (default `all`) |
+| `limit` | number | No | Max results, 1 to 20 (default 10) |
+| `source` | enum | No | `library` (public 25k+), `my_assets`, or `all` (default `library`) |
+
+---
+
+### summer_import_asset
+
+Search the asset library and import the best match into the project in one step. Use when the user wants a specific asset added: "Add a tree to the scene", "Import a wooden barrel". Searches, picks the top result, downloads and imports it, then optionally adds it to the scene.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `query` | string | Yes | What to find, e.g. `low-poly tree`, `wooden crate` |
+| `parent` | string | No | Parent node path to add the asset under, e.g. `./World`. Omit to import only. |
+| `assetType` | enum | No | Preferred asset type (default `3d_model`) |
+| `source` | enum | No | `library`, `my_assets`, or `all` (default `all`) |
+
+---
+
+### summer_import_asset_by_id
+
+Import an exact Summer asset ID into the current project. Unlike `summer_import_asset`, this does not search or guess: it fetches the asset by ID, downloads it, and runs the import pipeline. Use it right after generation, after picking from `summer_list_my_assets`, or after a search.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `assetId` | string | Yes | Summer asset ID |
+| `path` | string | No | Target `res://` path. Inferred from asset type and filename if omitted. |
+| `parent` | string | No | Parent node path. For 3D models, imports and instantiates under this node. |
+| `name` | string | No | Scene node name when `parent` is provided |
+
+---
+
+### summer_list_my_assets
+
+List or search the signed-in user's generated and uploaded assets. Use after generation jobs complete, or when the user refers to "the model I made" or "my last character". Returns exact asset IDs plus file and import URLs.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `query` | string | No | Search term. Empty string lists recent assets (default empty) |
+| `assetType` | enum | No | `2d_image`, `animation`, `3d_model`, `audio`, `music`, or `all` (default `all`) |
+| `limit` | number | No | Max results, 1 to 20 (default 10) |
+
+---
+
+### summer_get_asset
+
+Fetch one asset by exact Summer asset ID. Use after a generation job returns `assetId`/`rigAssetId`/`animationAssetId`, or after search results, when you need the stable file URL, download URL, viewer URL, metadata, license, visibility, or provider details.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `assetId` | string | Yes | Summer asset ID |
+
+---
+
+### summer_get_asset_download_url
+
+Get a downloadable URL for a specific asset file. Prefer this over handing users a raw `fileUrl` when they explicitly ask to download; the response shape is future-proofed for signed URLs.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `assetId` | string | Yes | Summer asset ID |
+| `role` | enum | No | `primary` or `thumbnail` (default `primary`) |
+
+---
+
+## Generation Tools (6)
+
+Generation runs in Summer Engine Studio and consumes credits. These tools need you signed in (`npx summer-engine login`). Confirm with the user before spending on paid generation, then import results into the project with `summer_import_asset_by_id` or `summer_import_from_url`.
+
+### summer_generate_image
+
+Generate an image with AI models. Supports text-to-image (just pass `prompt`) and image-to-image editing (pass `prompt` plus `referenceImageUrl`). Returns the asset with a hosted `fileUrl` and a temp `localPath` on disk you can read to show the user for approval.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `prompt` | string | Yes | Description of the image to generate |
+| `model` | string | No | Model name or full provider ID (default `nano-banana-2`) |
+| `style` | string | No | Style preset: `realistic` (default), `cartoon`, `anime`, or `none` |
+| `referenceImageUrl` | string | No | Source image URL for image-to-image / edit mode |
+| `options` | object | No | Provider-specific params (`guidance_scale`, `seed`, `image_size`, `negative_prompt`, etc.) |
+
+**Known models:** `nano-banana-2` (default), `gemini-flash`, `flux-2`, or any fal-ai model ID as a passthrough.
+
+---
+
+### summer_generate_3d
+
+Generate a 3D model. Returns a `jobId`; by default the tool waits for completion (up to 5 minutes) and returns the result directly. Set `wait=false` to poll manually with `summer_check_job`.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `prompt` | string | No | Description of the model, e.g. `a low-poly treasure chest` (required for `text-to-3d`) |
+| `kind` | string | No | `text-to-3d` (default), `image-to-3d`, or `texture` |
+| `model` | string | No | `hunyuan` (default), `trellis`, `meshy`, or any fal-ai model ID |
+| `imageUrl` | string | No | Source image URL for `image-to-3d` or `texture` |
+| `wait` | boolean | No | Wait for completion (default `true`). Set `false` to get the `jobId` immediately. |
+| `options` | object | No | Provider-specific params (`target_polycount`, `topology`, `art_style`, etc.) |
+
+**Optional rig pass (`image-to-3d` only):** set `options.rig = true` to add an auto-rig pass. The job result includes a `rigAssetId` you can feed to `summer_generate_motion` to add animation clips.
+
+---
+
+### summer_generate_audio
+
+Generate audio. The `capability` selects the mode; `options` is passed through to the provider for fine control (`stability`, `similarity_boost`, `style`, `speed`, etc.).
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `capability` | string | Yes | `text_to_speech`, `sound_effects`, `music`, or `text_to_dialogue` |
+| `text` | string | No | Text for TTS, or description for sound effects |
+| `prompt` | string | No | Music description (for `music`) |
+| `voiceId` | string | No | Voice ID for TTS |
+| `modelId` | string | No | Provider model ID, e.g. `eleven_multilingual_v2` |
+| `durationSeconds` | number | No | Duration for SFX or music |
+| `inputs` | array | No | Dialogue lines `{text, voiceId}` for `text_to_dialogue` |
+| `options` | object | No | Provider-specific params |
+
+---
+
+### summer_generate_video
+
+Generate a video. Text-to-video by default; if `imageUrl` is provided, switches to image-to-video mode.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `prompt` | string | Yes | Description of the video content |
+| `model` | string | No | `ltx` (default), `kling`, `kling-turbo`, `minimax`, `veo3`, or any new model |
+| `imageUrl` | string | No | Source image URL; if provided, uses image-to-video mode |
+| `duration` | number | No | Duration in seconds, 5 or 10 (default 5) |
+| `aspectRatio` | string | No | `16:9` (default), `9:16`, `1:1`, `4:3` |
+| `options` | object | No | Provider-specific params (`negative_prompt`, `num_frames`, etc.) |
+
+---
+
+### summer_generate_motion
+
+Generate an animation clip for a rigged humanoid character. Requires a rigged target whose `rigAssetId` came from a prior `summer_generate_3d` call with `options.rig=true`. Picks a clip from a curated mocap set by name. Waits for completion by default; set `wait=false` to poll with `summer_check_job`.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `rigAssetId` | string | Yes | Asset ID of a rigged character |
+| `motionName` | string | Yes | Curated motion name: `walk`, `run`, `attack_sword`, `idle`, `jump`, etc. |
+| `backend` | enum | No | `meshy-library` (the only option today) |
+| `wait` | boolean | No | Wait for completion (default `true`) |
+| `options` | object | No | Backend-specific passthrough |
+
+**Common motion names:** idle, idle_alert, idle_combat, walk, walk_back, run, sprint, crouch_idle, crouch_walk, jump, jump_loop, jump_land, attack_sword, attack_punch, attack_kick, attack_bow, attack_cast, block, dodge_left, dodge_right, hit_react, death, wave, dance, sit_idle.
+
+---
+
+### summer_check_job
+
+Check the status of an async generation job. Use when you called a generation tool with `wait=false`, or to re-check a job that timed out. Status values: `waiting`, `active`, `completed`, `failed`, `delayed`, `unknown`.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `jobId` | string | Yes | The job ID returned by an async generation tool |
 
 ---
 
@@ -327,7 +605,7 @@ Download multiple files from URLs in one operation. Single filesystem scan after
     icon="plug"
     href="/mcp/setup"
   >
-    Connect Cursor, Claude Code, or Windsurf
+    Connect Cursor, Claude Code, Windsurf, and more
   </Card>
 </CardGroup>
 
