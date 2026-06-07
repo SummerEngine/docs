@@ -242,6 +242,7 @@
               "knowledge-base/production-games",
               "knowledge-base/learning-curve",
               "knowledge-base/aaa-games",
+              "knowledge-base/source-status",
               "knowledge-base/summer-vs-other-tools"
             ]
           },
@@ -400,4 +401,3 @@
     }
   ]
 }
-
