@@ -1,6 +1,6 @@
 ---
 title: "CLI Reference"
-description: "Complete reference for the Summer Engine CLI: setup, doctor, install, login, run, create, plan, memory, skills, and the MCP server."
+description: "Complete reference for the Summer Engine CLI: setup, doctor, install, login, run, create, plan, memory, cloud sync, skills, and the MCP server."
 icon: "terminal"
 ---
 
@@ -272,6 +272,24 @@ summer memory show .summer/memory/casting/voices.md
 
 ---
 
+### summer cloud
+
+Sync your project with Summer Cloud: the whole project tree, including big binary assets, follows you across machines without Git.
+
+```bash
+summer cloud init        # Enable Summer Cloud for this project
+summer cloud status      # Show what a sync would push, pull, or delete
+summer cloud push        # Push local changes (uploads only missing bytes)
+summer cloud pull        # Pull cloud changes (verified, checkpointed)
+summer cloud restore     # Restore a cloud version or a local checkpoint
+summer cloud checkpoints # List local pre-sync checkpoints
+summer cloud conflicts   # List or recover preserved conflict files
+```
+
+All subcommands take `--project <path>` and `--json`. Requires `summer login`; the engine does not need to be running. See the [Cloud CLI Reference](/mcp/cloud-cli) for every flag and the [Summer Cloud guide](/guides/summer-cloud) for how sync, conflicts, and storage plans work.
+
+---
+
 ### summer mcp
 
 Start the MCP server for AI tool integration.
@@ -280,7 +298,7 @@ Start the MCP server for AI tool integration.
 summer mcp
 ```
 
-**What it does:** Starts the MCP server on stdio. Your IDE or agent invokes this automatically when it loads the MCP config you wrote with `summer setup`, so you rarely run it by hand. Exposes 44 tools for scene editing, debugging, project context, asset search, and AI generation. See the [Tools Reference](/mcp/tools-reference).
+**What it does:** Starts the MCP server on stdio. Your IDE or agent invokes this automatically when it loads the MCP config you wrote with `summer setup`, so you rarely run it by hand. Exposes 51 tools for scene editing, debugging, project context, asset search, and AI generation. See the [Tools Reference](/mcp/tools-reference).
 
 There is also a lower-level `summer mcp setup <agent>` subcommand that writes only the MCP config (no skills, no diagnostics). Prefer the top-level `summer setup <agent>` for onboarding.
 
@@ -326,7 +344,9 @@ Most users never call this directly: `summer setup <agent> --yes` installs the r
 | `~/.summer/user.json` | Cached user info (id, email, name) |
 | `~/.summer/api-token` | Local engine API token (created by the engine on startup) |
 | `~/.summer/api-port` | Port override if the default 6550 is occupied |
+| `~/.summer/cloud-token` | Summer Cloud token (from `summer login`) |
 | `.summer/` | Per-project durable memory (game brief, bibles, locked facts) |
+| `summer-cloud.json` | Per-project Summer Cloud binding (from `summer cloud init`) |
 
 ---
 
@@ -352,7 +372,7 @@ Most users never call this directly: `summer setup <agent> --yes` installs the r
     icon="wrench"
     href="/mcp/tools-reference"
   >
-    All 44 MCP tools with parameters
+    All 51 MCP tools with parameters
   </Card>
   <Card
     title="Building a Game"

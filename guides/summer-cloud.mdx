@@ -1,0 +1,163 @@
+---
+title: "Summer Cloud: Sync Projects Across Machines"
+description: "Summer Cloud syncs your whole game project, including big binary assets, across machines without Git. Content-addressed storage, version history, checkpoints, and conflict recovery."
+icon: "cloud"
+---
+
+## What is Summer Cloud?
+
+Summer Cloud syncs your full game project across machines. Run one command on your desktop, one command on your laptop, and both machines have the exact same project: scenes, scripts, settings, and every binary asset, byte for byte.
+
+Game projects mix two kinds of files. Small text files (scenes, scripts, config) merge well in Git. Large binary assets (3D models, textures, audio) do not: Git was not built for them, and Git LFS adds bandwidth bills and setup friction. Summer Cloud handles the whole project tree by content hash, so big assets are first-class. If you use Git, your code can keep living there; Summer Cloud and Git do not fight. If you have never touched Git, you do not need to start.
+
+It also means a lost or broken laptop no longer means a lost project.
+
+## Quickstart
+
+<Steps>
+  <Step title="Sign in">
+    ```bash
+    npx -y summer-engine@latest login
+    ```
+    Summer Cloud uses your Summer Engine account. Login saves a cloud token to `~/.summer/cloud-token`.
+  </Step>
+  <Step title="Enable cloud sync for the project">
+    ```bash
+    npx -y summer-engine@latest cloud init
+    ```
+    Run this from the project directory (or pass `--project <path>`). It binds the project to Summer Cloud and writes one small file, `summer-cloud.json`, containing the project's cloud ID. That file is the only cloud artifact you would ever commit to Git.
+  </Step>
+  <Step title="Push">
+    ```bash
+    npx -y summer-engine@latest cloud push
+    ```
+    Hashes the project, uploads only the bytes the cloud does not already have, and commits a new version.
+  </Step>
+  <Step title="Pull on another machine">
+    ```bash
+    npx -y summer-engine@latest cloud pull
+    ```
+    In an empty directory next to a `summer-cloud.json` (for example after a Git clone), or in a directory you point at the same project, this downloads and verifies every file. The project converges to the same bytes on both machines.
+  </Step>
+</Steps>
+
+After the first push, `summer cloud status` shows what would sync, and repeated `push` and `pull` runs keep machines converged.
+
+## How Sync Works
+
+Summer Cloud is content addressed. Every file is identified by the sha256 hash of its bytes, and every project state is a manifest: a list of paths mapping to hashes.
+
+1. **Hash locally.** The client walks the tracked tree and hashes each file, using a local cache so unchanged files are not re-read.
+2. **Upload only missing bytes.** The client asks the API which hashes the cloud already has, then uploads only the missing blobs. Unchanged files, renamed files, and duplicated files cost nothing to push.
+3. **Commit a manifest version.** The client commits a new manifest that points at the verified blobs. The server assigns the next version number. Every version is kept within your plan's retention window and can be restored.
+
+Sync decisions come from a three-way comparison between the last synced state on this machine, the current local tree, and the cloud head. Two facts worth knowing:
+
+- **There are no clocks in the protocol.** When two machines edit concurrently, the first one to sync wins the canonical path, deterministically. It is not "most recent save wins."
+- **An edit always beats a deletion.** If one machine deletes a file and another edits it, the edited file survives, and the sync result tells you about it.
+
+## What Gets Synced
+
+Everything that makes the game run: `project.godot`, scenes and resources (`.tscn`, `.tres`, and friends), scripts, `.import` and `.uid` sidecars, asset binaries, `addons/`, and export presets. Sidecar files travel with their primary file as one unit, so import settings and resource IDs stay consistent across machines.
+
+Some paths are hard excluded and never upload: `.godot/`, `.summer/local/`, `.git/`, `node_modules/`, `.env*` files, OS junk like `.DS_Store`, and temp files.
+
+### .summercloudignore
+
+To exclude more, create a `.summercloudignore` file at the project root. It uses gitignore syntax and is itself synced, so every machine and teammate shares one ruleset:
+
+```text
+# .summercloudignore
+renders/
+*.blend1
+notes/private/
+```
+
+It can only exclude further; it cannot re-include the hard excludes, so secrets and machine-local state stay out by construction.
+
+## Conflicts and Recovery
+
+Summer Cloud is built so a sync can never silently destroy your work.
+
+### Conflicts keep both sides
+
+When two machines change the same file in different ways, the cloud version wins the canonical path and your local bytes are preserved in a conflict set under `.summer/local/cloud/conflicts/`. The losing bytes are also uploaded to the cloud, so they survive even if the losing machine dies. Inspect and recover with:
+
+```bash
+summer cloud conflicts                    # list conflict sets
+summer cloud conflicts restore <path>     # bring a preserved file back as a fresh edit
+```
+
+A restored conflict file re-enters the project as a normal edit; push it to make it the new canonical version.
+
+### Checkpoints before destructive applies
+
+Before a pull modifies or deletes any existing file, the client writes a full local checkpoint of the project. If a sync did something you did not want:
+
+```bash
+summer cloud checkpoints                  # list local pre-sync checkpoints
+summer cloud restore --checkpoint <stamp> # roll the tree back to one
+```
+
+Checkpoint restore brings back the bytes of every checkpointed file. It does not delete files a sync added; the command lists those extra files so you can remove them yourself.
+
+### Version history
+
+Every push creates a retained version on the server. You can restore any retained version:
+
+```bash
+summer cloud restore --version 42
+```
+
+This never rewrites history. It creates a new head version with the contents of version 42, then pulls it, so the rollback itself is recorded and reversible.
+
+### Guardrails
+
+A push that would delete many cloud files (more than 10, more than 20 percent of the project, or the entire project) refuses to run until you pass `--confirm-deletes`. A push from a directory that suddenly reads as empty (an unmounted drive, the wrong folder) aborts outright. Pulls download to a staging area, verify the hash of every blob, and only then move files into place atomically.
+
+## Storage Plans
+
+Cloud storage rides your existing Summer Engine plan:
+
+| Plan | Cloud storage |
+|------|---------------|
+| Free | 1 GiB |
+| Basic | 5 GiB |
+| Pro | 20 GiB |
+| Pro+ | 100 GiB |
+| Ultra | 500 GiB |
+
+Usage counts the distinct bytes your projects reference, so ten copies of the same texture cost one. Quota is enforced when you push; pulls, downloads, and restores are never blocked, even over quota or after a downgrade. Your data is never deleted for billing reasons.
+
+Version retention: free plans keep versions for 7 days or the last 25 versions, whichever is more; paid plans keep 90 days or the last 25 versions. The current head version of every project is always kept.
+
+## Using Summer Cloud with Git
+
+The two coexist by design. `summer-cloud.json` is the only file Summer Cloud asks Git to carry, and it almost never changes, so it never causes merge conflicts. A common setup for teams: code reviewed through Git and GitHub, the whole project (including assets) synced through Summer Cloud.
+
+One caution: switching Git branches changes files on disk, which Summer Cloud reads as local edits. Sync before and after branch operations, or keep cloud-synced projects on a single branch.
+
+See [Connect Your Project to GitHub](/guides/github-from-changes-dock) for the Git side.
+
+## For Agents
+
+Every Summer Cloud operation is available three ways with the same behavior: CLI commands, MCP tools, and an HTTP API under `/api/cloud/` at www.summerengine.com. An agent can initialize, push, pull, inspect status, list checkpoints, restore versions, and recover conflicts without a UI.
+
+<CardGroup cols={2}>
+  <Card title="Cloud CLI Reference" icon="terminal" href="/mcp/cloud-cli">
+    Every summer cloud subcommand with flags and examples
+  </Card>
+  <Card title="MCP Tools Reference" icon="wrench" href="/mcp/tools-reference#summer-cloud-tools-7">
+    The seven summer_cloud_* tools for AI agents
+  </Card>
+</CardGroup>
+
+## Current Limits
+
+- Single files larger than 4.995 GiB are rejected with a clear error.
+- A dropped connection on a multi-GiB upload restarts that file from zero.
+- No file locking or presence yet: two people editing the same binary at once produce a conflict. The conflict is deterministic and recoverable, but it is still a conflict.
+
+---
+
+Need help or have questions? Reach out to our founders at [founders@summerengine.com](mailto:founders@summerengine.com) or join our community on [Discord](https://discord.gg/yUpgtxnZky) for fast responses.

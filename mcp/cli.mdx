@@ -24,7 +24,7 @@ Downloads and installs Summer Engine to your system (macOS: `/Applications/Summe
 npx summer-engine login
 ```
 
-Opens your browser to sign in with Google, GitHub, or email. Saves your session for analytics and future cloud features.
+Opens your browser to sign in with Google, GitHub, or email. Saves your session and the [Summer Cloud](/guides/summer-cloud) token used for project sync.
 
 ## Create a Project
 
@@ -72,6 +72,8 @@ See [MCP setup](/mcp/setup) for IDE-specific instructions.
 | `summer create <template> [name]` | Create project from template |
 | `summer list templates` | Show available templates |
 | `summer list projects` | Show projects in current directory |
+| `summer cloud push` | Sync project changes to Summer Cloud |
+| `summer cloud pull` | Sync Summer Cloud changes into the project |
 | `summer skills list` | List available skills |
 | `summer skills install <name>` | Install a skill to ~/.summer/skills/ |
 | `summer mcp` | Start MCP server (used by IDEs) |

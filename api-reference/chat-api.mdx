@@ -5,7 +5,7 @@ description: "How to use Summer Engine's AI programmatically via MCP tools"
 
 ## AI Integration via MCP
 
-Summer Engine's AI is accessed through the **MCP (Model Context Protocol)** integration. The MCP server exposes 44 tools that let any MCP-compatible AI tool control the engine: add nodes, set properties, import assets, run the game, and debug.
+Summer Engine's AI is accessed through the **MCP (Model Context Protocol)** integration. The MCP server exposes 51 tools that let any MCP-compatible AI tool control the engine: add nodes, set properties, import assets, run the game, and debug.
 
 This is the same interface used by:
 - **Summer Agent** (built-in chat in the editor)
@@ -15,7 +15,7 @@ This is the same interface used by:
 
 1. Summer Engine runs a local API server on `localhost:6550` when a project is open
 2. The MCP server (`npx summer-engine mcp`) connects to this local API
-3. Your IDE's AI uses the 44 MCP tools to manipulate the engine
+3. Your IDE's AI uses the 51 MCP tools to manipulate the engine
 
 No cloud API keys needed for MCP. The engine handles authentication locally via `~/.summer/api-token`.
 
@@ -36,7 +36,7 @@ The node appears in Summer Engine immediately.
     Connect your IDE to Summer Engine
   </Card>
   <Card title="Tools Reference" icon="wrench" href="/mcp/tools-reference">
-    All 44 MCP tools with parameters and examples
+    All 51 MCP tools with parameters and examples
   </Card>
   <Card title="CLI Reference" icon="terminal" href="/mcp/cli-reference">
     Install, login, create, and run from the command line

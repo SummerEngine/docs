@@ -1,14 +1,14 @@
 ---
 title: "Tools Reference"
-description: "All 44 Summer Engine MCP tools: scene editing, debugging, project context, asset library search, and AI generation of images, 3D models, audio, video, and motion."
+description: "All 51 Summer Engine MCP tools: scene editing, debugging, project context, asset library search, AI generation, and Summer Cloud project sync."
 icon: "wrench"
 ---
 
 ## Overview
 
-The Summer Engine MCP server exposes 44 tools across five categories: **Scene** (14), **Debug and Play** (9), **Project** (9), **Asset Library** (6), and **Generation** (6).
+The Summer Engine MCP server exposes 51 tools across six categories: **Scene** (14), **Debug and Play** (9), **Project** (9), **Asset Library** (6), **Generation** (6), and **Summer Cloud** (7).
 
-Scene, Debug, and Project tools talk to the running engine on `localhost:6550` and require Summer Engine to be open with a project loaded. If the engine is not running, those tools return a clear error and a `summer run` hint. Asset Library and Generation tools call the Summer Engine cloud and require you to be signed in (run `npx summer-engine login` once); the import side of those tools needs the engine running too.
+Scene, Debug, and Project tools talk to the running engine on `localhost:6550` and require Summer Engine to be open with a project loaded. If the engine is not running, those tools return a clear error and a `summer run` hint. Asset Library, Generation, and Summer Cloud tools call the Summer Engine cloud and require you to be signed in (run `npx summer-engine login` once); the import side of asset tools needs the engine running too. Summer Cloud tools work on the project directory directly and do not need a running engine.
 
 **Critical: value formats.** Properties like `position`, `rotation_degrees`, and `mesh` use engine string syntax, not raw JSON objects. See [Value Formats](#value-formats) below.
 
@@ -587,6 +587,89 @@ Check the status of an async generation job. Use when you called a generation to
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
 | `jobId` | string | Yes | The job ID returned by an async generation tool |
+
+---
+
+## Summer Cloud Tools (7)
+
+Content-addressed project sync: the whole project tree, including big binary assets, syncs across machines without Git. These tools mirror the `summer cloud` CLI commands 1:1 and operate on the project directory on disk plus the Summer Cloud API; they do not require a running engine. All of them accept an optional `project` parameter (project root path, defaults to the current working directory) and return a JSON result with a message, notices, and details. See the [Summer Cloud guide](/guides/summer-cloud) for the sync model and the [Cloud CLI Reference](/mcp/cloud-cli) for command-line equivalents.
+
+### summer_cloud_init
+
+Enable Summer Cloud for a project. Creates the cloud project at version 0 and writes `summer-cloud.json` (the project's cloud binding, the only cloud file that belongs in Git) at the project root. Safe to call on an already-bound project.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `project` | string | No | Project root path (defaults to the current working directory) |
+
+---
+
+### summer_cloud_status
+
+Show sync status: what a sync would push, pull, or delete, plus any conflicts. Read-only.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `project` | string | No | Project root path |
+
+---
+
+### summer_cloud_push
+
+Push local project changes to Summer Cloud. Hashes the tracked tree, uploads only missing blobs, and commits a new manifest version. Pulls remote changes first if needed so the pushed version reflects a converged tree.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `project` | string | No | Project root path |
+| `confirmDeletes` | boolean | No | Required `true` when the push would delete many cloud files (more than 10, at least 20% of the project, or all of it). Default `false` |
+| `bootstrap` | string | No | First-sync choice when both local tree and cloud have content but no sync history exists on this machine: `keep-cloud`, `keep-local`, or `merge` |
+| `adoptPath` | boolean | No | Accept that the project folder moved on disk and update the recorded path |
+
+---
+
+### summer_cloud_pull
+
+Pull Summer Cloud changes into the local project. Stages downloads, verifies every blob's sha256, writes a local checkpoint before touching existing files, then applies changes atomically.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `project` | string | No | Project root path |
+| `bootstrap` | string | No | First-sync choice: `keep-cloud`, `keep-local`, or `merge` |
+| `adoptPath` | boolean | No | Accept that the project folder moved on disk and update the recorded path |
+
+---
+
+### summer_cloud_restore
+
+Restore a retained cloud version (creates a new head version with that version's contents, then pulls; history is never rewritten), or roll the local tree back to a pre-sync checkpoint via `checkpointStamp`.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `project` | string | No | Project root path |
+| `version` | number | No | Cloud version number to restore |
+| `checkpointStamp` | string | No | Local checkpoint stamp (see `summer_cloud_checkpoints`) |
+
+---
+
+### summer_cloud_checkpoints
+
+List local pre-sync checkpoints. Before any sync modifies or deletes existing files, a full-tree checkpoint is written; the last 20 are kept. Returns the stamps that `summer_cloud_restore` accepts.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `project` | string | No | Project root path |
+
+---
+
+### summer_cloud_conflicts
+
+List local conflict sets, or restore a preserved conflict file with `restorePath`. When concurrent edits collide, the cloud version wins the path and the losing local bytes are preserved; this tool recovers them as a fresh local edit. Push afterwards to make the restored file canonical.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `project` | string | No | Project root path |
+| `restorePath` | string | No | Project-relative path to restore from the conflict sets |
+| `set` | string | No | Conflict set stamp (defaults to the newest set containing the path) |
 
 ---
 

@@ -147,7 +147,8 @@
             "icon": "terminal",
             "pages": [
               "mcp/cli",
-              "mcp/cli-reference"
+              "mcp/cli-reference",
+              "mcp/cloud-cli"
             ]
           },
           {
@@ -211,7 +212,8 @@
             "group": "Development",
             "pages": [
               "guides/web-development",
-              "guides/github-from-changes-dock"
+              "guides/github-from-changes-dock",
+              "guides/summer-cloud"
             ]
           },
           {

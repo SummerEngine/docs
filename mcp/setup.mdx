@@ -150,7 +150,7 @@ If your IDE supports MCP but isn't listed above, add this to your MCP config fil
 
 1. **Start Summer Engine**: Open your project in the engine (or run `npx summer-engine run` from the project directory).
 2. **Restart your IDE**: So it picks up the new MCP config.
-3. **Check the MCP panel**: In Cursor: Settings > MCP. You should see "summer-engine" with 44 tools.
+3. **Check the MCP panel**: In Cursor: Settings > MCP. You should see "summer-engine" with 51 tools.
 4. **Ask the AI**: "Use Summer Engine to add a MeshInstance3D with a BoxMesh to the scene root. Name it TestCube."
 5. **Confirm in the engine**: The node should appear in the scene tree.
 
@@ -158,7 +158,7 @@ If you get "Summer Engine is not running," the engine isn't open or the project 
 
 ## What the AI Can Do
 
-The MCP server exposes 44 tools in five categories:
+The MCP server exposes 51 tools in six categories:
 
 | Category | Tools | What they do |
 |----------|-------|--------------|
@@ -167,6 +167,7 @@ The MCP server exposes 44 tools in five categories:
 | **Project** | 9 tools | Project context, settings, input mappings, scene tree, import assets from URLs |
 | **Asset Library** | 6 tools | Search the 25k+ public library and your assets, then import |
 | **Generation** | 6 tools | Generate images, 3D models, audio, video, and motion clips |
+| **Summer Cloud** | 7 tools | Sync the project across machines: push, pull, status, restore, checkpoints, conflicts |
 
 For a full reference with parameters and examples, see the [Tools Reference](/mcp/tools-reference). For a step-by-step guide on how an AI agent builds a complete game using these tools, see [Building a Game with MCP](/mcp/building-a-game).
 

@@ -1,0 +1,162 @@
+---
+title: "Cloud CLI Reference"
+description: "Reference for the summer cloud command group: init, status, push, pull, restore, checkpoints, and conflicts. Sync Summer Engine projects across machines without Git."
+icon: "cloud"
+---
+
+## Overview
+
+The `summer cloud` command group syncs Summer Engine projects with [Summer Cloud](/guides/summer-cloud): content-addressed sync for the whole project tree, including big binary assets, with version history and local checkpoints. Run any command without a global install:
+
+```bash
+npx -y summer-engine@latest cloud <subcommand>
+```
+
+All subcommands require `summer login` (the cloud token lives at `~/.summer/cloud-token`). All subcommands accept these shared options:
+
+| Option | Description |
+|--------|-------------|
+| `--project <path>` | Project root path (defaults to the current working directory) |
+| `--json` | Print the full result as JSON instead of a summary |
+
+The engine does not need to be running. If it is, the CLI coordinates with it automatically: it asks the engine to save dirty scenes before a push and rescans changed files after a pull.
+
+---
+
+### summer cloud init
+
+Enable Summer Cloud for a project.
+
+```bash
+summer cloud init [--project <path>] [--json]
+```
+
+**What it does:** Creates the cloud project (starting at version 0, an empty manifest) and writes `summer-cloud.json` at the project root with the project's cloud ID. That file is the only cloud artifact that belongs in Git. Running it again on an already-bound project is a safe no-op.
+
+---
+
+### summer cloud status
+
+Show sync status for the project.
+
+```bash
+summer cloud status [--project <path>] [--json]
+```
+
+**What it does:** Compares the local tree against the last synced state and the cloud head, then reports what a sync would do: files to push, files to pull, deletions, and conflicts. Read-only; changes nothing.
+
+---
+
+### summer cloud push
+
+Push local project changes to Summer Cloud.
+
+```bash
+summer cloud push [--confirm-deletes] [--bootstrap <choice>] [--adopt-path] [--project <path>] [--json]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--confirm-deletes` | Required when a push would delete many cloud files: more than 10, at least 20% of the project, or all of it |
+| `--bootstrap <choice>` | First-sync choice when both the local tree and the cloud have content but this machine has no sync history: `keep-cloud`, `keep-local`, or `merge` |
+| `--adopt-path` | Accept that the project folder moved on disk and update the recorded path |
+
+**What it does:** Hashes the tracked tree, asks the API which blobs are missing, uploads only those, and commits a new manifest version. If the cloud also has changes, it pulls them first so the pushed version reflects a converged tree. If another machine commits while the push is in flight, the push automatically re-diffs against the new head and retries.
+
+If `summer-cloud.json` contains a `pinnedVersion` (read-only checkout for CI), push refuses with an explanatory error.
+
+---
+
+### summer cloud pull
+
+Pull Summer Cloud changes into the local project.
+
+```bash
+summer cloud pull [--bootstrap <choice>] [--adopt-path] [--project <path>] [--json]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--bootstrap <choice>` | Same first-sync choice as push: `keep-cloud`, `keep-local`, or `merge` |
+| `--adopt-path` | Accept that the project folder moved on disk and update the recorded path |
+
+**What it does:** Downloads needed blobs to a staging area, verifies the sha256 of every downloaded file, writes a local checkpoint before touching any existing file, then applies changes with atomic renames. An interrupted pull is safe: rerunning it resumes and converges.
+
+**Bootstrap:** the first sync on a machine where both the local tree and the cloud have files (for example, right after a Git clone of a cloud-enabled project) stops and asks you to choose. `merge` converges files with identical content automatically and treats the rest as normal conflicts; `keep-cloud` checkpoints divergent local files before replacing them; `keep-local` makes your tree the next cloud version.
+
+---
+
+### summer cloud restore
+
+Restore a retained cloud version, or roll the local tree back to a pre-sync checkpoint.
+
+```bash
+summer cloud restore --version <number> [--project <path>] [--json]
+summer cloud restore --checkpoint <stamp> [--project <path>] [--json]
+```
+
+| Option | Description |
+|--------|-------------|
+| `--version <number>` | Cloud version to restore. Creates a new head version with that version's contents (history is never rewritten), then pulls it |
+| `--checkpoint <stamp>` | Local checkpoint stamp or full ref (see `summer cloud checkpoints`). Restores the bytes of every checkpointed file |
+
+**Note on checkpoint restore:** it restores file contents but does not delete files a later sync added; the command lists those extra files so you can remove them yourself.
+
+---
+
+### summer cloud checkpoints
+
+List local pre-sync checkpoints.
+
+```bash
+summer cloud checkpoints [--project <path>] [--json]
+```
+
+**What it does:** Lists the full-tree checkpoints written before destructive applies, newest first, with the stamps that `summer cloud restore --checkpoint` accepts. The last 20 checkpoints are kept per project.
+
+---
+
+### summer cloud conflicts
+
+Inspect and recover conflict sets.
+
+```bash
+summer cloud conflicts [--project <path>] [--json]
+summer cloud conflicts restore <path> [--set <stamp>] [--project <path>] [--json]
+```
+
+| Argument / Option | Description |
+|-------------------|-------------|
+| `restore <path>` | Project-relative path to bring back from a conflict set, as a fresh local edit |
+| `--set <stamp>` | Conflict set stamp (defaults to the newest set containing the path) |
+
+**What it does:** When concurrent edits collide, the cloud version wins the path and the losing local bytes are preserved under `.summer/local/cloud/conflicts/`. `conflicts` lists those sets; `conflicts restore` writes a preserved file back into the project. Run `summer cloud push` afterwards to make it the new canonical version.
+
+---
+
+## MCP Tools
+
+Every subcommand has a 1:1 MCP tool (`summer_cloud_init`, `summer_cloud_status`, `summer_cloud_push`, `summer_cloud_pull`, `summer_cloud_restore`, `summer_cloud_checkpoints`, `summer_cloud_conflicts`) so agents can run the same operations. See the [Tools Reference](/mcp/tools-reference#summer-cloud-tools-7).
+
+## Next Steps
+
+<CardGroup cols={2}>
+  <Card
+    title="Summer Cloud Guide"
+    icon="cloud"
+    href="/guides/summer-cloud"
+  >
+    What syncs, how conflicts work, storage plans, and .summercloudignore
+  </Card>
+  <Card
+    title="CLI Reference"
+    icon="terminal"
+    href="/mcp/cli-reference"
+  >
+    All other summer commands: setup, doctor, run, create, and more
+  </Card>
+</CardGroup>
+
+---
+
+Need help or have questions? Reach out to our founders at [founders@summerengine.com](mailto:founders@summerengine.com) or join our community on [Discord](https://discord.gg/yUpgtxnZky) for fast responses.
