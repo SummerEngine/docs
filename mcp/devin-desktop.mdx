@@ -1,30 +1,30 @@
 ---
-title: "Build Games in Windsurf with Summer Engine MCP"
-description: "Connect Summer Engine's MCP server to Windsurf and build games with Windsurf's AI coding assistant controlling your engine."
+title: "Build Games in Devin Desktop with Summer Engine MCP"
+description: "Connect Summer Engine's MCP server to Devin Desktop (formerly Windsurf) and build games with Devin Local controlling your engine."
 icon: "wind"
 ---
 
-## Summer Engine in Windsurf
+## Summer Engine in Devin Desktop
 
-Windsurf is an AI-powered IDE that supports MCP (Model Context Protocol). With Summer Engine's integration, Windsurf's AI can control your game engine: add nodes to scenes, set properties, import assets, run the game, and debug, all from within your coding workflow.
+Devin Desktop (formerly Windsurf) is an AI-powered IDE that supports MCP (Model Context Protocol). With Summer Engine's integration, Devin Local (formerly Cascade) — Devin Desktop's agent panel — can control your game engine: add nodes to scenes, set properties, import assets, run the game, and debug, all from within your coding workflow.
 
 This guide covers the configuration. Setup takes about a minute.
 
 ## Prerequisites
 
-- **Windsurf**: The Codeium-powered IDE
+- **Devin Desktop**: The Cognition-powered IDE (formerly Windsurf)
 - **Node.js**: For running the MCP server (Node 18+)
 - **Summer Engine**: Installed and running with your project open
 
 ## Configuration
 
-Windsurf uses the same MCP config format as Cursor. The config file location may vary by Windsurf version; common locations include:
+Devin Desktop uses the same MCP config format as Cursor. The config file location may vary by version; common locations include:
 
 - **Project-level:** `.cursor/mcp.json` or `.windsurf/mcp.json` in your project root
 - **User-level:** `~/.cursor/mcp.json` or `~/.windsurf/mcp.json`
 
 <Note>
-**Check Windsurf docs.** MCP config paths can change between versions. If the paths above don't work, check [Windsurf's documentation](https://codeium.com/windsurf) or the in-app MCP settings for the correct config file location.
+**Check Devin Desktop docs.** MCP config paths can change between versions. If the paths above don't work, check Devin Desktop's documentation or the in-app MCP settings for the correct config file location.
 </Note>
 
 ### Step 1: Create or Edit the Config File
@@ -32,6 +32,16 @@ Windsurf uses the same MCP config format as Cursor. The config file location may
 Create the MCP config file in your project root or user config directory. If the file already exists (e.g., for other MCP servers), add Summer Engine to the existing `mcpServers` object.
 
 ### Step 2: Add Summer Engine
+
+Use the one-line setup command:
+
+```bash
+npx -y summer-engine@latest setup windsurf --yes
+```
+
+`setup devin` works as an alias and produces the same result.
+
+Or add the config manually:
 
 <CodeGroup>
 
@@ -60,21 +70,21 @@ Create the MCP config file in your project root or user config directory. If the
 
 </CodeGroup>
 
-### Step 3: Restart Windsurf
+### Step 3: Restart Devin Desktop
 
-Close and reopen Windsurf so it loads the new MCP config. The Summer Engine MCP server starts when Windsurf starts; it connects to the engine on the first tool call.
+Close and reopen Devin Desktop so it loads the new MCP config. The Summer Engine MCP server starts when Devin Desktop starts; it connects to the engine on the first tool call.
 
 ### Step 4: Verify
 
-Check Windsurf's MCP or AI settings to confirm "summer-engine" appears with 51 tools. Then try a prompt:
+Check Devin Desktop's MCP or AI settings to confirm "summer-engine" appears with 51 tools. Then try a prompt:
 
 - "Use Summer Engine to add a MeshInstance3D with a BoxMesh to the scene"
 
 If the node appears in Summer Engine, the setup is working.
 
-## Using Summer Engine with Windsurf
+## Using Summer Engine with Devin Desktop
 
-Once configured, the AI can use Summer Engine's tools when you ask for game-related changes. Example prompts:
+Once configured, Devin Local can use Summer Engine's tools when you ask for game-related changes. Example prompts:
 
 - "Add a Camera3D and DirectionalLight3D to the scene root"
 - "Get the scene tree from Summer Engine"
@@ -83,7 +93,7 @@ Once configured, the AI can use Summer Engine's tools when you ask for game-rela
 - "Set the project's main scene to res://main.tscn"
 
 <Tip>
-**Engine must be running.** Windsurf's AI talks to Summer Engine over localhost. Open your project in the engine first, or run `npx summer-engine run` from the project directory.
+**Engine must be running.** Devin Local talks to Summer Engine over localhost. Open your project in the engine first, or run `npx summer-engine run` from the project directory.
 </Tip>
 
 ## Troubleshooting
@@ -94,9 +104,9 @@ Start Summer Engine and open your project. The MCP server connects to the engine
 
 ### MCP server not appearing
 
-- **Config path:** Verify you're using the config file Windsurf actually reads. Check the app's MCP settings or documentation.
+- **Config path:** Verify you're using the config file Devin Desktop actually reads. Check the app's MCP settings or documentation.
 - **JSON validity:** Ensure no trailing commas, proper quotes, and valid JSON structure
-- **Restart:** Fully quit and reopen Windsurf
+- **Restart:** Fully quit and reopen Devin Desktop
 
 ### Tools return errors
 

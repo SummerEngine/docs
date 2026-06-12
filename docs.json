@@ -132,7 +132,7 @@
             "pages": [
               "mcp/cursor",
               "mcp/claude-code",
-              "mcp/windsurf",
+              "mcp/devin-desktop",
               "mcp/antigravity",
               "mcp/codex",
               "mcp/gemini",
@@ -365,6 +365,10 @@
     {
       "source": "/ai-tools/windsurf-setup",
       "destination": "/mcp/windsurf"
+    },
+    {
+      "source": "/mcp/windsurf",
+      "destination": "/mcp/devin-desktop"
     },
     {
       "source": "/ai-tools/cli-reference",
