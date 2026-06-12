@@ -1,0 +1,92 @@
+---
+title: "Make Games for Free with Local LLMs"
+description: "Run a free local model with Ollama, LM Studio, or Goose and drive Summer Engine through MCP. No AI subscription — your GPU does the thinking."
+icon: "microchip"
+---
+
+## Summer Engine with Local Models
+
+You don't need an AI subscription to build games in Summer Engine. Any local model that handles tool calling can drive the engine through MCP: add nodes, set properties, search and import assets, run the game, and debug. Engine control and asset search are free; cloud generation (3D models, images, audio) uses credits.
+
+This page covers the three setups that actually work in 2026.
+
+## Prerequisites
+
+- **A GPU with 12 GB+ of VRAM** (or Apple Silicon with 16 GB+ unified memory). 24 GB is the sweet spot.
+- **Node.js**: For running the MCP server (Node 18+)
+- **Summer Engine**: Installed and running with your project open
+
+## Option 1: LM Studio (easiest)
+
+LM Studio is both the model runtime and an MCP host — one app, no terminal.
+
+```bash
+npx -y summer-engine@latest setup lm-studio --yes
+```
+
+This writes the `summer-engine` server into `~/.lmstudio/mcp.json`. Then, in LM Studio:
+
+1. Download a model in the **Discover** tab (see [model picks](#which-model-to-run) below).
+2. Toggle the `summer-engine` MCP server on in the **Program** tab.
+3. **Raise the model's context length to 32k or higher** when loading it. Models load with the context baked into their metadata — often ~4k, which MCP tool schemas overflow silently.
+4. Keep KV-cache quantization off for long agent sessions. On Apple Silicon, prefer the MLX builds.
+
+Every engine call shows a confirmation dialog you can review before it runs.
+
+## Option 2: OpenCode + Ollama (terminal)
+
+The most common pairing in 2026. Ollama serves the model; OpenCode is the agent.
+
+```bash
+# 1. Fix the context window FIRST — Ollama defaults to 4k under 24 GB VRAM,
+#    which silently breaks MCP tool calling
+OLLAMA_CONTEXT_LENGTH=65536 ollama serve
+
+# 2. Pull a model
+ollama pull qwen3-coder:30b
+
+# 3. Wire Summer Engine into OpenCode
+npx -y summer-engine@latest setup opencode --yes
+```
+
+Then point OpenCode's provider at Ollama (`http://localhost:11434/v1` as an OpenAI-compatible endpoint) and select your model. Run `ollama ps` to confirm the bigger context hasn't pushed the model off the GPU.
+
+The same Ollama backend works with **Kilo Code** in VS Code (`npx -y summer-engine@latest setup kilo-code --yes`) — set the context window to 32k+ in Kilo's provider settings.
+
+## Option 3: Goose (agent-first)
+
+Goose is an open-source agent that treats MCP servers as extensions.
+
+1. Run `goose configure` → **Add Extension** → **Command-line Extension**, command: `npx -y summer-engine@latest mcp`
+2. Run `goose configure` → **Configure Providers** → **Ollama**, host `localhost:11434`
+3. Pick a model with native tool calling — Goose's toolshim mode for non-tool-calling models is slower and less reliable.
+
+In Goose Desktop, both live under **Settings → Extensions** and **Settings → Providers**.
+
+## Which Model to Run
+
+Tool calling is the hard part for local models. Use Q4_K_M quantization or better — heavier quantization breaks tool calls before it breaks chat.
+
+| Hardware | Model | Notes |
+|---|---|---|
+| 12–16 GB VRAM | **gpt-oss-20b** | The tier's default; supported everywhere |
+| 24 GB VRAM (3090/4090) | **Qwen3-Coder-30B** or **Gemma 4 27B** | The community sweet spot for engine work |
+| 8 GB VRAM | Qwen3.5-4B | Small scenes only; expect retries on long tool chains |
+| Apple Silicon 32 GB+ | Same picks, MLX builds | MLX is faster for long agentic loops |
+
+## Troubleshooting
+
+- **The model never calls tools, or hallucinates them**: context window too small. MCP tool schemas plus the system prompt overflow a 4k–8k window instantly. Set 32k minimum, 64k recommended.
+- **Tool calls come out malformed**: quantization too aggressive (use Q4_K_M+), or the model is too small (7B is the practical floor, 14B+ for multi-server setups).
+- **Cline users**: Cline's "compact prompt" option for local models disables MCP entirely. Keep the full system prompt on.
+- **Slow first response**: keep only a couple of MCP servers enabled so tool schemas leave room for actual work.
+
+## What's Free and What Isn't
+
+| | |
+|---|---|
+| Engine control (scenes, nodes, scripts, play, debug) | **Free** |
+| Asset library search (25k+ assets) | **Free**, rate-limited |
+| Cloud generation (3D, image, audio, video) | Credits |
+
+Sign in once with `npx summer-engine login` — the account is the rate-limit key, not a paywall.

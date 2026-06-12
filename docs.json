@@ -138,6 +138,7 @@
               "mcp/gemini",
               "mcp/github-copilot",
               "mcp/opencode",
+              "mcp/local-models",
               "mcp/vscode",
               "mcp/zed"
             ]
@@ -327,15 +328,15 @@
   },
   "contextual": {
     "options": [
-     "copy",
-     "view",
-     "chatgpt",
-     "claude",
-     "perplexity",
-     "mcp",
-     "cursor",
-     "vscode"
-   ]
+      "copy",
+      "view",
+      "chatgpt",
+      "claude",
+      "perplexity",
+      "mcp",
+      "cursor",
+      "vscode"
+    ]
   },
   "footer": {
     "socials": {
