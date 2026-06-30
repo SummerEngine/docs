@@ -127,7 +127,7 @@ Use `summer_import_from_url_batch` with an array of `{url, path}`. One scan afte
 
 1. `summer_play`. Start the game.
 2. Wait a moment for the game to load
-3. `summer_game_snapshot`. Capture what the player sees (base64 image).
+3. `summer_screenshot`. Capture what the player sees (base64 image).
 4. `summer_get_diagnostics`. Check for runtime errors.
 5. `summer_stop`. Stop before making scene changes.
 
@@ -184,7 +184,7 @@ events: [{ type: "key", key: "W" }]
 | Import from URL | `summer_import_from_url` or `summer_import_from_url_batch` |
 | Wire up button | `summer_connect_signal` (emitter, signal: "pressed", receiver, method) |
 | Check errors | `summer_get_diagnostics` |
-| Run game | `summer_play` → `summer_game_snapshot` → `summer_stop` |
+| Run game | `summer_play` → `summer_screenshot` → `summer_stop` |
 | Save scene | `summer_save_scene` |
 
 ---
@@ -197,7 +197,7 @@ events: [{ type: "key", key: "W" }]
     icon="wrench"
     href="/mcp/tools-reference"
   >
-    Full parameter reference for all 51 tools
+    Full parameter reference for all 52 tools
   </Card>
   <Card
     title="MCP Setup"

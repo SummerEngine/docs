@@ -1,12 +1,12 @@
 ---
 title: "Tools Reference"
-description: "All 51 Summer Engine MCP tools: scene editing, debugging, project context, asset library search, AI generation, and Summer Cloud project sync."
+description: "All 52 Summer Engine MCP tools: scene editing, debugging, project context, asset library search, AI generation, and Summer Cloud project sync."
 icon: "wrench"
 ---
 
 ## Overview
 
-The Summer Engine MCP server exposes 51 tools across six categories: **Scene** (14), **Debug and Play** (9), **Project** (9), **Asset Library** (6), **Generation** (6), and **Summer Cloud** (7).
+The Summer Engine MCP server exposes 52 tools across six categories: **Scene** (14), **Debug and Play** (10), **Project** (9), **Asset Library** (6), **Generation** (6), and **Summer Cloud** (7).
 
 Scene, Debug, and Project tools talk to the running engine on `localhost:6550` and require Summer Engine to be open with a project loaded. If the engine is not running, those tools return a clear error and a `summer run` hint. Asset Library, Generation, and Summer Cloud tools call the Summer Engine cloud and require you to be signed in (run `npx summer-engine login` once); the import side of asset tools needs the engine running too. Summer Cloud tools work on the project directory directly and do not need a running engine.
 
@@ -219,7 +219,7 @@ Each op uses the same shape as the individual tools:
 
 ---
 
-## Debug and Play Tools (9)
+## Debug and Play Tools (10)
 
 ### summer_get_diagnostics
 
@@ -317,6 +317,16 @@ Check if the game is currently running. Returns the active scene path if running
 
 | Parameters | None |
 |------------|------|
+
+---
+
+### summer_screenshot
+
+Capture a frame from the running Summer Engine and return it as an image the MCP client can see directly. Use to visually verify scene layout, asset placement, and gameplay state. Captures the editor viewport by default, or the running game with `target="game"`.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `target` | enum | No | What to capture: `viewport` (editor, default) or `game` (running game) |
 
 ---
 
