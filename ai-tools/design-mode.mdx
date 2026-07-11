@@ -1,0 +1,97 @@
+---
+title: "Design Mode. Draw on your game to build it"
+description: "Click nodes or draw on your 2D and 3D viewport to tell Summer what to change. Design Mode and Fullscreen Iteration Mode keep you in the scene while the same chat runs underneath."
+icon: "pen-tool"
+---
+
+Design Mode is how you build without living in the sidebar. You stay in your 2D or 3D scene, point at what matters, and Summer does the work in the same chat you already have.
+
+This is not a separate AI or a stripped-down prompt box. The floating bar on the viewport sends messages into your main conversation. Same model, same history, same project context.
+
+## Two ways to use it
+
+**Design Mode** keeps the editor layout as-is. Select a node and a small bar appears near your selection. Describe the change and send. The bar clears when the turn starts because the sidebar already shows progress. Select another node any time to target again.
+
+**Fullscreen Iteration Mode** fills the window with your scene and pins a bar at the bottom center. Use it when you want the viewport front and center. The bar stays visible and shows a working indicator while Summer runs.
+
+Both modes work on 2D and 3D main screens.
+
+## Getting in
+
+**Design Mode**
+
+- `Cmd+Shift+D` on Mac, `Ctrl+Shift+D` on Windows
+- Select a node first and the bar appears with that node already targeted
+
+**Fullscreen Iteration Mode**
+
+- Collapse the chat sidebar while a 2D or 3D scene is open
+- Click the **Full Screen** chip in the top-right of the viewport
+- `Cmd+Shift+M` on Mac, `Ctrl+Shift+M` on Windows
+- Distraction-free on a scene view (`Ctrl+Shift+F11`)
+
+Press `Esc` to exit either mode. Explicit fullscreen entries restore your layout exactly.
+
+## Click to target
+
+Click a node and it becomes a target chip in the bar. Shift-click to add more targets. Each chip shows the node name. Clear a chip with × or deselect in the editor to hide the Design Mode bar.
+
+Your message goes out with the node paths attached, the same way scene references work in the sidebar chat.
+
+## Draw on the viewport
+
+Drag on the viewport to draw an annotation. Circle an area, mark a spot, sketch where something should go. One drawing equals one message. Starting a new drawing clears the previous one.
+
+When you release, Summer captures a cropped screenshot of your drawing and shows a thumbnail in the bar. Type your instruction and send. The screenshot rides along as an image attachment so the AI sees what you marked.
+
+Examples that work well:
+
+```
+Add a tree here
+Move this platform down
+The lighting is too dark in this corner
+Put the spawn point inside this circle
+```
+
+Esc steps through cancel stroke, clear drawing, exit mode.
+
+## What you see while Summer works
+
+In Design Mode the bar clears on send. Follow the turn in the sidebar chat.
+
+In Fullscreen Iteration Mode the bar shows a spinner, the current action, and elapsed time, then a "Worked for Xs" chip when the turn finishes.
+
+## Same chat, dumb overlay
+
+The sidebar chat is the only place the AI runs. The viewport bar is a lightweight composer that forwards your text, targets, and screenshots into that chat. There is no second stream and no duplicate history.
+
+Selection changes in the editor push to the bar automatically. Turn status flows back so Fullscreen Iteration Mode can show progress.
+
+## Tips
+
+Be specific about what you want and why. A drawing plus "make this feel more ominous" beats "fix it."
+
+If you need the full conversation visible, expand the sidebar. Nothing is lost.
+
+Attach reference images from the overlay bar when you want a style reference alongside your drawing.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="How Summer's AI Agents Work" icon="users" href="/ai-tools/subagents">
+    The team of agents that builds your game
+  </Card>
+  <Card title="Skills" icon="book-open" href="/ai-tools/skills">
+    Teach Summer repeatable ways of building
+  </Card>
+  <Card title="AI Operations" icon="bot" href="/ai-tools/operations">
+    What Summer can do inside your project
+  </Card>
+  <Card title="First Chat" icon="message-circle" href="/essentials/first-chat">
+    Get started building with Summer
+  </Card>
+</CardGroup>
+
+---
+
+Need help or have questions? Reach out at [founders@summerengine.com](mailto:founders@summerengine.com) or join [Discord](https://discord.gg/yUpgtxnZky).

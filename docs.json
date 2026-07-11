@@ -82,6 +82,7 @@
           {
             "group": "Using Summer",
             "pages": [
+              "ai-tools/design-mode",
               "ai-tools/operations",
               "ai-tools/subagents",
               "ai-tools/skills",
@@ -279,6 +280,13 @@
               "knowledge-base/export-mobile"
             ]
           }
+        ]
+      },
+      {
+        "tab": "Changelog",
+        "icon": "history",
+        "pages": [
+          "changelog/overview"
         ]
       },
       {

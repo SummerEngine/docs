@@ -24,13 +24,15 @@ Here is the team in plain terms.
 
 **A researcher** reads your project and answers questions about it. When the main agent needs to know how something is wired before it changes anything, this is who it asks. Read only, fast, and cheap.
 
-**A builder** does the hands-on construction. It writes the scripts, lays out the scene, sets which scene runs when you press Play, and wires up your controls. When you ask for a new game or a new feature, this is usually who ends up building it.
+**A builder** does the hands-on construction. It writes scripts, edits scenes, sets the main scene, binds input actions, and runs compile checks. When you ask for a new game or a feature slice, this is who builds it end to end.
 
-**An asset maker** creates the art, models, audio, and animations, then hands them back for you to review before anything lands in your project.
+**An asset maker** creates art, models, audio, and animations, then hands them back for you to review before anything lands in your project.
 
-**A verifier** checks that things actually work. It traces through the scene, the scripts, and the running game to confirm a feature does what it should, and reports back honestly when something is broken.
+**A verifier** checks that things actually work. It traces the scene, scripts, and running game to confirm a feature does what it should, and reports back honestly when something is broken.
 
 **An advisor** is the one the main agent turns to when it is stuck or unsure. It reasons more carefully than the others and is happy to say when it does not know, which is exactly what you want from a second opinion.
+
+You can also use [Design Mode](/ai-tools/design-mode) to click nodes or draw on your 2D and 3D viewport while this team works. The viewport bar feeds into the same chat the orchestrator supervises.
 
 We keep the exact lineup and the models behind it flexible on purpose, because we are always improving it. What stays the same is the shape. A lead that plans, and specialists that execute.
 
@@ -64,11 +66,16 @@ You never have to decide which path applies. Summer makes that call for you, and
 
 ## You approve anything risky
 
-Summer keeps you in control of the actions that matter. Shell commands never run until you approve them. The agent can propose running your tests, installing a dependency, or executing a script, but nothing happens until you say yes. The building and editing happen freely so you can move fast, and the irreversible or outward facing steps wait for you.
+Summer keeps you in control of the actions that matter. Pick a **permission mode** in the composer to set how much runs automatically. Manual approves every edit and generation. Accept edits auto-runs file changes but asks before spending credits. Auto approve (default) runs edits and generation but still blocks destructive actions. Bypass runs everything except hard safety blocks.
+
+Shell commands, file deletions, and credit-spending generation respect the mode you chose. The building and editing happen freely when you want speed, and the irreversible steps wait for you when you want control.
 
 ## Related
 
 <CardGroup cols={2}>
+  <Card title="Design Mode" icon="pen-tool" href="/ai-tools/design-mode">
+    Click nodes or draw on your viewport to build in the scene
+  </Card>
   <Card title="Skills" icon="book-open" href="/ai-tools/skills">
     Teach Summer your way of building and reuse it across every project
   </Card>

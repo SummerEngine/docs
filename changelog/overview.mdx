@@ -1,0 +1,91 @@
+---
+title: "Changelog"
+description: "What's new in Summer Engine. Release notes and updates."
+icon: "history"
+---
+
+<Update label="0.5.47" description="July 11, 2026">
+
+## Build games by drawing on them
+
+Design Mode is a new way to work inside your scene. Click a node in 2D or 3D and a chat bar floats on the viewport. Describe what you want changed and the message goes into the same chat you already have in the sidebar. Same model, same history, same project context.
+
+You can also draw on the viewport. Circle an area, sketch where something should go, mark a problem spot. Summer captures a screenshot of your annotation and sends it with your message. The AI sees your point of view, not a generic scene dump.
+
+Fullscreen Iteration Mode fills the window with your scene and keeps a bar at the bottom. Collapse the chat sidebar or press Cmd+Shift+M (Ctrl+Shift+M on Windows). You stay in the game view while the conversation continues underneath.
+
+## Skills teach Summer how you build
+
+Skills are short playbooks Summer reads when the moment calls for it. Lighting a 3D scene, scaffolding a survivors game, debugging physics, shipping performance fixes. Summer ships a library covering the full game dev workflow.
+
+Type `/` in the chat to trigger a skill. `/make-game`, `/debug`, `/optimize`, and `/assets` are built in. Open Settings → Skills to read any playbook, customize it for your style, or write a new one. Skills scoped to a project override your global skills, which override Summer defaults.
+
+When you say "remember how we did this," Summer can draft a skill and show it in a card. Nothing saves until you approve. Facts about your game go to Memory. Repeatable workflows become skills.
+
+## A rebuilt agent team
+
+The main agent is the orchestrator. It plans, talks to you, and hands work to specialists that run in parallel.
+
+**Explore** reads your project and answers focused questions. **Builder** is the hands-on expert for scenes and gameplay. It writes scripts, edits scenes, sets the main scene, binds input, and runs compile checks. **Studio Asset Agent** generates images, 3D, audio, and animation. **Summer expert** verifies engine work and repairs what is broken. **General Advisor** is the slower second opinion when the plan is unclear.
+
+Each specialist streams live in a side panel. You can follow the transcript, continue a thread, steer mid-run, or stop a run. Results fold back into the main chat as summaries. Long asset jobs still run on background workers and wake the chat when they finish.
+
+## Permission modes
+
+You choose how much runs without asking. **Manual** approves every edit, command, and generation. **Accept edits** auto-runs file changes but asks before spending credits. **Auto approve** (default) runs edits and generation but still blocks destructive actions. **Bypass** runs everything except hard safety blocks like protected files and catastrophic shell commands.
+
+## Everything else in 0.5.47
+
+**Context breakdown.** See how much of the context window goes to system prompt, tools, rules, skills, subagents, and conversation.
+
+**Dictation.** Hold the mic in the composer, speak your prompt, release to insert.
+
+**Work visibility.** The chat shows what Summer is doing right now, including when it is waiting on a subagent.
+
+**Reliability.** Expert runs persist across reloads. Chat history finds projects by fingerprint. The update banner tracks slow applies correctly. Design Mode overlay stays transparent on Windows WebView2.
+
+**Under the hood.** AI SDK 7, a custom in-process expert harness, first-class OpenAI-family adapters, and Auto mode on GPT-5.6 Luna at high reasoning. The old queued delegation path is gone. Railway now handles long asset generation only.
+
+</Update>
+
+<Update label="0.5.43" description="July 2, 2026">
+
+## Summer can see its own work
+
+We rebuilt the whole loop of making a change, looking at it, and fixing it. Summer now verifies its work with the lightest tool for the job: does it compile, does it look right, does it run, is it interactive. It boots your game quietly instead of grabbing your editor tab, reads the real errors, looks at an actual frame, and tells you what it sees. When it can't see something, it says so instead of guessing, so you no longer get a confident "done" on a broken screen. Game capture now works reliably in the engine and through MCP and Claude Code.
+
+## It works on its own for 30 minutes to 2 hours
+
+Long builds used to hit a wall after about 12 minutes. Now Summer keeps working unattended for 30 minutes up to around 2 hours, continuing across steps automatically without you clicking anything. The run loop is hardened so it can't get stuck or repeat work on resume.
+
+## More reliable
+
+- The most common error, "engine disconnected," was wrong most of the time. The engine was alive and we wrongly reported the connection as dead. Summer now confirms the engine is actually gone before showing the error, and retries busy operations instead of giving up.
+- If the engine drops mid-run, your chat history and work in progress are still there when you reopen.
+- Fixed crashes some users hit when importing 2D and 3D assets.
+
+## Chat and models
+
+- The "Continue" button no longer shows up everywhere. You get at most one clear action on the newest message, and a dropped engine shows a real "Reconnecting" state.
+- Shell command approvals now work like Claude Code: safe read-only commands run automatically, others show the reason with a countdown and an "always allow" option, and skipping never freezes the turn.
+- The model picker shows the cost and how many messages you have left before you switch to a premium model.
+- Scrolling is smooth again, and snapshot cards are collapsed by default so chats stay light.
+
+## Asset store
+
+- Click any asset for an instant in-place preview. No more jumping to a separate page.
+- Fixed a crash that could happen while scrolling the store.
+- 50,000 free assets in the library.
+
+## Billing
+
+- You are charged only for the usage your models actually bill us for. A run that crashes with no cost is free.
+- Upgrading now changes your plan in place instead of creating a second subscription.
+- A slow balance check no longer shows paying users a false "out of credits" message.
+- "Upgrade / Manage plan" is now easy to find in your account menu, and USD top-ups support Link and PayPal.
+
+## Security and privacy
+
+- Fixed an issue where an AI-edited image could be served to the wrong user. Image storage is now isolated per account.
+
+</Update>
