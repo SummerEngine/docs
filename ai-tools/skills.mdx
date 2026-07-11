@@ -1,0 +1,80 @@
+---
+title: "Skills. Teach Summer Your Way of Building"
+description: "Skills are short guides that make Summer better at building your game. Summer ships a library of them, and you can write your own for a single project or all of them. Trigger any skill with a slash command right from the chat."
+icon: "book-open"
+---
+
+A skill is a short guide that teaches Summer how to do something well. Lighting a 3D scene, building a survivors game, wiring up a save system, keeping your art consistent. Summer reads the right one at the right moment and follows it, so you get the good version of a thing instead of a first guess.
+
+Summer ships with a library of skills covering the whole game-dev workflow, and you can add your own. That is the part that makes Summer feel like yours. Once you have taught it how you like something done, it does it that way every time, on every project.
+
+<Note>
+This page is about skills inside the Summer app. If you are using Summer through the command line or an external agent like Cursor or Claude Code, see [Skills for the CLI and MCP](/mcp/skills).
+</Note>
+
+## Why skills matter
+
+Without skills, an AI agent leans on whatever it happened to learn during training. That is fine for common patterns and shaky for the specific, hard-won details that make a game feel good. Skills fix that. They carry the exact steps, the right order to do them in, and the traps to avoid, so Summer does not have to rediscover them every time.
+
+They also keep your chats short. Instead of you re-explaining how your project works in every message, the knowledge lives in a skill and Summer pulls it in when the moment calls for it. You write less and get more.
+
+## The built-in library
+
+Summer comes with a set of skills for the things people build most. Making a game from a genre, character movement, combat, cameras, lighting, asset pipelines, multiplayer, menus, debugging, and performance, among others. You do not install or configure them. Summer sees the whole library and reaches for the one that fits what you are doing.
+
+You never have to name a skill for it to help. If you ask for a horror game, Summer already knows to reach for the lighting and atmosphere guidance on its own.
+
+## Slash commands
+
+When you do want to point Summer at a specific skill, type a slash in the chat box. A menu appears with the skills you can trigger, and picking one loads its guidance for that message.
+
+```
+/debug the player falls through the floor
+/make-game a cozy fishing game
+/optimize the frame rate drops in the forest
+```
+
+Whatever you type after the command is context for the skill. So `/debug the enemies stop spawning after wave 3` gives the debugging skill both the playbook and the exact problem to work on. Slash commands are the fastest way to get Summer into the right mode for the task in front of you.
+
+## Writing your own skills
+
+The library is a starting point. The real power is teaching Summer the way you build.
+
+Say you always structure your inventory a certain way, or you have a house art style, or a checklist you run before calling a level done. Turn any of that into a skill and Summer follows it from then on. You can scope a skill to a single project when it is specific to that game, or make it universal so it applies to everything you build.
+
+There are two ways to create one.
+
+The easy way is to let Summer write it. After you finish something you liked, tell it to remember how you did that, or say you always want it done this way. Summer drafts a skill and shows it to you in a card. Nothing is saved until you approve it, so you are always the one deciding what becomes a rule.
+
+The hands-on way is the skills editor. Open it from your avatar menu, go to Settings, and pick Skills. There you can read every built-in skill, customize one to fit your style, or write a new one from scratch. Customizing a built-in skill quietly replaces it with your version, and you can reset back to the original any time.
+
+## How skills stay out of your way
+
+You might wonder whether a big library of skills slows Summer down or clutters its thinking. It does not. Summer only ever sees a short one-line summary of each skill by default, and reads the full guide only when it actually needs it. Your custom skills sit on top of the built-in ones, so when a skill of yours shares a name with a Summer default, yours wins.
+
+This is why you can teach Summer as much as you want without it getting confused or expensive. The knowledge is there when it is relevant and invisible when it is not.
+
+## Skills and your team
+
+Skills are also how a team levels up together. One person works out the right way to build a boss fight or set up a shader, saves it as a skill, and now everyone building in that project gets the same quality. The senior's workflow becomes the whole team's baseline, without anyone having to remember it.
+
+## Related
+
+<CardGroup cols={2}>
+  <Card title="Memory" icon="brain" href="/ai-tools/memory">
+    How Summer remembers your decisions across chats
+  </Card>
+  <Card title="How Summer's AI Agents Work" icon="users" href="/ai-tools/subagents">
+    The team of agents that builds your game
+  </Card>
+  <Card title="Skills for the CLI and MCP" icon="terminal" href="/mcp/skills">
+    The skill library for external agents and the command line
+  </Card>
+  <Card title="AI Operations" icon="bot" href="/ai-tools/operations">
+    What Summer can do inside your project
+  </Card>
+</CardGroup>
+
+---
+
+Need help or have questions? Reach out at [founders@summerengine.com](mailto:founders@summerengine.com) or join [Discord](https://discord.gg/yUpgtxnZky).

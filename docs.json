@@ -83,8 +83,10 @@
             "group": "Using Summer",
             "pages": [
               "ai-tools/operations",
-              "ai-tools/rag-search",
               "ai-tools/subagents",
+              "ai-tools/skills",
+              "ai-tools/memory",
+              "ai-tools/rag-search",
               "ai-tools/mcp-asset-search"
             ]
           },

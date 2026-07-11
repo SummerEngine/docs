@@ -1,61 +1,84 @@
 ---
-title: "Subagents: Run Game Dev Tasks in Parallel with Summer Engine"
-description: "Use specialized AI subagents in Summer Engine to build games faster, running game dev tasks in parallel while keeping each agent's context focused."
+title: "How Summer's AI Agents Build Your Game"
+description: "Summer Engine builds games with a team of AI agents. One agent plans and talks to you, specialist agents do the hands-on work, and you stay in charge of all of it. Here is how the team works and how to get the most out of it."
 icon: "users"
 ---
 
-## What Are Subagents?
+Summer works a lot like a small game studio. You talk to one agent, and behind the scenes it hands the actual work to specialists. You never have to manage that team. You just describe the game you want, and the right people show up for the job.
 
-Subagents are specialized AI assistants that Summer Engine's agent can delegate work to. Each subagent runs in its own context, handles specific types of work, and returns results to the main agent. Summer Engine uses them automatically when tasks benefit from focused, parallel execution.
+This page explains what that team looks like, why it is built this way, and how to steer it so you get better games faster.
 
-### Why Subagents Matter
+## The agent you talk to
 
-- **Context isolation.** Long research or exploration stays in the subagent. Your main chat stays clean and focused.
-- **Parallel execution.** Summer Engine can run multiple subagents at once, so different parts of your project get worked on without blocking each other.
-- **Specialized expertise.** Different subagents are tuned for different tasks, from research to full code changes.
-- **Efficient research.** Codebase exploration uses fast, cost-effective models so you get answers without slowing down or spending more than needed.
+Everything starts with the main agent. It is the one reading your messages, asking questions when something is unclear, and writing the plan for what to build next. Think of it as the lead on your project.
 
-## How It Works
+The important thing to know is that the main agent spends most of its time thinking and directing, not typing out code itself. When you ask for a jump mechanic or a new enemy or a whole game, it works out what needs to happen, breaks it into pieces, and hands those pieces to the specialists best suited to each one. That keeps the planning focused and lets the hands-on work run cheaply and in parallel.
 
-When a task is complex enough, Summer Engine starts a subagent automatically. The subagent receives what it needs, works on its own (often in a background queue), and returns a final summary when done. 
+You will sometimes see it stop to consult an advisor before committing to a plan. That is a good sign. It means the agent hit something tricky and wanted a second opinion before spending your credits building the wrong thing.
 
-While the subagent works, you can watch it live in the chat via a clean, interleaved transcript showing its real-time thoughts and tool usage. This transparency keeps you fully in the loop, while ensuring the deep-dive investigation happens in its own thread, keeping the main conversation uncluttered.
+## The specialists
 
-## Built-in Subagents
+Summer keeps a team of specialist agents, each shaped for one kind of work. You do not pick them. The main agent chooses based on the task, and often runs several at once.
 
-Summer includes built-in subagents that handle context-heavy work. You don't need to configure them.
+Here is the team in plain terms.
 
-- **Explore.** Read-only codebase exploration. For understanding how things work, finding files, and gathering context across the project.
-- **General purpose.** Full-capability agent with write access. For complex multi-step tasks that need code modifications.
+**A researcher** reads your project and answers questions about it. When the main agent needs to know how something is wired before it changes anything, this is who it asks. Read only, fast, and cheap.
 
-When to use which is automatic. Summer Engine chooses based on the task.
+**A builder** does the hands-on construction. It writes the scripts, lays out the scene, sets which scene runs when you press Play, and wires up your controls. When you ask for a new game or a new feature, this is usually who ends up building it.
 
-## Expert Queue
+**An asset maker** creates the art, models, audio, and animations, then hands them back for you to review before anything lands in your project.
 
-The expert queue lets Summer hand off work to specialist experts in an ordered way. In addition to subagents, Summer has domain experts for 3D and 2D scene creation: lighting, environment, sprites, collision, cameras, platformer setups. The main agent stays in charge; experts do the deep work and report back. Tasks run in the background so you can keep chatting while work completes.
+**A verifier** checks that things actually work. It traces through the scene, the scripts, and the running game to confirm a feature does what it should, and reports back honestly when something is broken.
 
-## Shell Commands
+**An advisor** is the one the main agent turns to when it is stuck or unsure. It reasons more carefully than the others and is happy to say when it does not know, which is exactly what you want from a second opinion.
 
-All shell commands require your approval before they run. Summer Engine can propose commands (run tests, install deps, run scripts), but nothing executes until you approve it. You stay in control.
+We keep the exact lineup and the models behind it flexible on purpose, because we are always improving it. What stays the same is the shape. A lead that plans, and specialists that execute.
 
-## When Summer Uses Subagents
+## Work runs in parallel
 
-Summer Engine uses subagents when:
+Because the specialists each keep their own focused context, Summer can run several of them at the same time. While one builds your player controller, another can be generating the enemy art, and a third can be researching how your save system works. None of them block the others, and none of them clutter your main chat with the details of their work.
 
-- Tasks need deep codebase understanding across many files
-- Multiple workstreams can run in parallel
-- Research or exploration would otherwise clutter the main chat
-- A complex refactor or multi-step change benefits from focused execution
+You get the finished results stitched back together, not the mess of getting there.
 
-For simple tasks (single file, exact lookup, quick edit), Summer Engine handles it directly. No subagent needed.
+## You can watch them work
+
+When a specialist is running, you see it live in your chat as its own clean thread. You can follow what it is doing and thinking in real time without it taking over the conversation. When it finishes, it folds a short summary back into the main chat and the details stay tucked away in that thread if you ever want to look.
+
+This is the balance we care about. Full transparency when you want it, and a calm, uncluttered chat when you do not.
+
+## Working with the team
+
+You do not manage the agents directly, but the way you talk to the main agent shapes how well the team performs.
+
+Be specific about what you want and why. The clearer your intent, the better the brief the main agent can write, and the better the specialists execute it. If you have a reference image or a particular feel in mind, say so early.
+
+If a specialist is heading in the wrong direction, tell the main agent. It supervises the work and can redirect a running specialist mid task, or stop one that has gone off the rails and start fresh with a better approach. You do not have to wait for a bad result to land before course correcting.
+
+And when something genuinely does not work, say that plainly. The verifier exists for exactly this, and the main agent would rather run a real check than take its own word for it.
+
+## When Summer works alone
+
+Not everything needs the full team. For a quick single edit, a direct answer to a question, or a small tweak, the main agent just handles it. Delegation kicks in when the work is bigger than that. A multi step build, art generation, a wide search across your project, or anything that benefits from running several things at once.
+
+You never have to decide which path applies. Summer makes that call for you, and you can always nudge it either way.
+
+## You approve anything risky
+
+Summer keeps you in control of the actions that matter. Shell commands never run until you approve them. The agent can propose running your tests, installing a dependency, or executing a script, but nothing happens until you say yes. The building and editing happen freely so you can move fast, and the irreversible or outward facing steps wait for you.
 
 ## Related
 
 <CardGroup cols={2}>
-  <Card title="AI Operations" icon="bot" href="/ai-tools/operations">
-    What Summer Engine's AI can do in your project
+  <Card title="Skills" icon="book-open" href="/ai-tools/skills">
+    Teach Summer your way of building and reuse it across every project
   </Card>
-  <Card title="Project Intelligence" icon="brain" href="/ai-tools/rag-search">
+  <Card title="Memory" icon="brain" href="/ai-tools/memory">
+    How Summer remembers your decisions across chats
+  </Card>
+  <Card title="AI Operations" icon="bot" href="/ai-tools/operations">
+    What Summer can do inside your project
+  </Card>
+  <Card title="Project Intelligence" icon="search" href="/ai-tools/rag-search">
     How Summer indexes and searches your project
   </Card>
 </CardGroup>
