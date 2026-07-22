@@ -4,6 +4,34 @@ description: "What's new in Summer Engine. Release notes and updates."
 icon: "history"
 ---
 
+<Update label="0.5.54" description="July 22, 2026">
+
+## Your work survives the reconnect
+
+Summer now keeps completed edits and their results attached to the correct
+editor and project when the chat or desktop bridge reconnects. If the embedded
+web interface reloads after an operation was accepted, Summer can recover the
+original result instead of losing it or guessing whether the change happened.
+
+## Safer project changes
+
+Requests now carry the exact project identity and connection generation that
+accepted them. Completed operations keep durable receipts, so an uncertain
+retry cannot apply the same scene or file mutation twice. Stale requests from
+an older connection are rejected instead of reaching the open project.
+
+## Clearer progress after interruptions
+
+Live progress and completed steps remain visible through temporary connection
+failures. Scene files opened from chat or the FileSystem dock also reveal the
+correct 2D or 3D workspace more reliably.
+
+This is a required desktop reliability update for Windows and macOS. There are
+no new settings or migration steps; install the update and continue working in
+the same projects and chats.
+
+</Update>
+
 <Update label="0.5.47" description="July 11, 2026">
 
 ## Build games by drawing on them
