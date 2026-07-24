@@ -120,8 +120,8 @@ Summer Engine imports assets from Summer Studio directly into your project. Desc
 
 For scenes that need many assets at once (a village, a forest, a city block), Summer Engine supports bulk import. It plans the full set, downloads and imports everything in one batch, runs a single filesystem scan, and tells you when it is done. One wait instead of many. Your computer may lag briefly during large imports, but you get a heads-up first. The assets are there when Summer Engine needs them, and it can start placing them in your scene right away.
 
-**Undo-Able Everything**
-Every change Summer Engine makes can be undone with Ctrl+Z. If something doesn't work as expected, you can instantly revert it and try a different approach.
+**Undo and Exact Receipts**
+Scene operations integrate with Ctrl+Z. File operations are applied atomically and return exact receipts, so Summer can detect stale state and recover without pretending an edit landed.
 
 ## Which AI Models Power Summer Engine?
 
@@ -314,7 +314,17 @@ Summer Engine can **find files by pattern** (e.g. `*.gd`, `**/scripts/*.tscn`). 
 
 ### Code editing tools
 
-Summer Engine chooses the right edit tool for each job: **strReplace** for small, surgical changes (rename a variable, fix a typo, swap a snippet) and **replaceText** for larger edits that touch many lines. The AI reads your file first, then applies changes with the most efficient tool.
+Summer Engine chooses the right edit tool for each job: **strReplace** for small, surgical changes and **writeFile** for complete new content. File tools return exact receipts. If a file changed after the AI read it, a stale edit is refused so the AI can reread and adapt instead of overwriting newer work.
+
+### Explicit scene targets
+
+Scene operations name the exact `res://` target with `scenePath`. The scene does not need to be the visible editor tab, and opening a scene is navigation only. A successful mutation includes an engine receipt and one final automatic save.
+
+If a scene cannot load, Summer returns the concrete reason, such as a missing or invalid dependency. The AI can inspect that file, repair it, and retry the same scene rather than treating every tool failure as unrecoverable.
+
+### Concurrent work
+
+The main agent and subagents can work concurrently without a routine whole-project writer lock. Exact project, file, and scene targets keep work scoped. The engine orders operations that must run on its main thread, while content receipts prevent stale same-file overwrites.
 
 ### Infrastructure (Vercel)
 
@@ -332,16 +342,16 @@ The agent can **spawn subagents**: specialized background assistants that run in
 
 ### What's Safe
 
-- **All operations are undoable** - Standard Ctrl+Z works for everything
-- **Editor APIs only** - No direct file manipulation that could corrupt projects
-- **Explicit operations** - AI must specify exactly what it's changing
-- **Immediate feedback** - Changes appear instantly in the editor
+- **Explicit targets** - Every mutation identifies the project file or scene it changes
+- **Exact receipts** - Summer reports what the engine actually applied and saved
+- **Conflict-aware file edits** - Stale overwrites are refused with a reason the AI can recover from
+- **Scene undo support** - Scene operations integrate with the editor's undo history
 
 ### Current Limitations
 
 - **No batch code refactors** - Large refactors across many files are not supported yet (bulk asset import is supported)
 - **Limited import settings** - Asset import options are mostly manual for now
-- **Scene-focused** - Works best with open scenes rather than project-wide changes
+- **One explicit scene at a time** - Cross-scene work is supported, but each scene mutation names its own target
 
 ### Best Practices
 
@@ -351,7 +361,7 @@ The agent can **spawn subagents**: specialized background assistants that run in
   </Accordion>
   
   <Accordion icon="save" title="Save regularly">
-    Save your scenes after AI makes changes you want to keep. This persists the changes to your project files.
+    Scene mutation tools save their explicit target automatically. Use a standalone save only when you intentionally need to save or save-as without another mutation.
   </Accordion>
   
   <Accordion icon="undo" title="Use undo freely">

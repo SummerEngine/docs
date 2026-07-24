@@ -18,7 +18,7 @@ Summer Engine's AI can do a lot directly in your project:
 
 **Game systems.** Character controllers, inventory systems, AI behaviors, network sync. Summer Engine builds complete systems, not just snippets.
 
-All changes go through **safe operations** with full undo support. Every change can be reverted with Ctrl+Z. Nothing breaks unexpectedly.
+Changes go through project-bound tools with explicit targets and exact receipts. Scene operations integrate with the editor's undo history; file operations are applied atomically and reject stale overwrites.
 
 ## Current Limitations
 
@@ -26,22 +26,26 @@ All changes go through **safe operations** with full undo support. Every change 
 
 **Limited import settings.** Asset import options are mostly manual for now. You may need to adjust import settings in the editor for some assets.
 
-**Scene-focused.** Works best with open scenes rather than project-wide changes. For cross-scene refactors, you may need to do it scene by scene.
+**Explicit scene targets.** A scene does not need to be open or visible before Summer changes it. Each mutation names one exact `scenePath`, so cross-scene work proceeds scene by scene without relying on whichever editor tab happens to be active.
+
+**Recoverable tool failures.** A failed tool call is not automatically a failed task. Summer returns the concrete reason—for example, a missing scene dependency or stale file receipt—so the AI can inspect the current state, repair it, and retry.
+
+**Concurrent work.** Main agents and subagents can work at the same time without a routine whole-project writer lock. If two edits collide on the same file, the stale overwrite is refused and the AI must reread before deciding whether to retry.
 
 **Shell commands require approval.** Summer Engine can propose shell commands (run tests, install deps, run scripts), but nothing executes until you approve it. This is by design. You stay in control.
 
 ## What's Safe
 
-- All operations are undoable (Ctrl+Z)
-- Editor APIs only. No direct file manipulation that could corrupt projects
-- Explicit operations. AI must specify exactly what it's changing
-- Immediate feedback. Changes appear instantly so you can verify
+- Explicit project, file, and scene targets
+- Exact engine and file receipts
+- Conflict-aware file writes that refuse stale content
+- Editor undo support for scene operations
 
 ## Best Practices
 
 **Review before applying.** The change review panel shows exactly what will be modified. Check it before confirming.
 
-**Save regularly.** Save your scenes after AI makes changes you want to keep. This persists changes to your project files.
+**Trust, then verify receipts.** Scene mutation tools append one final save automatically. If a receipt reports failure, use its exact reason to repair or reread before retrying.
 
 **Use undo freely.** Don't hesitate to undo AI changes that aren't quite right. You can always ask for a different approach.
 

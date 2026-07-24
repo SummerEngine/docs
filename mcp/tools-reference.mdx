@@ -1,12 +1,12 @@
 ---
 title: "Tools Reference"
-description: "All 52 Summer Engine MCP tools: scene editing, debugging, project context, asset library search, AI generation, and Summer Cloud project sync."
+description: "Summer Engine MCP tools for scene editing, project files, debugging, visual verification, assets, generation, and Summer Cloud."
 icon: "wrench"
 ---
 
 ## Overview
 
-The Summer Engine MCP server exposes 52 tools across six categories: **Scene** (14), **Debug and Play** (10), **Project** (9), **Asset Library** (6), **Generation** (6), and **Summer Cloud** (7).
+The Summer Engine MCP server exposes tools for **Scene**, **Debug and Play**, **Visual Verification**, **Project**, **Project Files**, **Asset Library**, **Generation**, and **Summer Cloud** workflows.
 
 Scene, Debug, and Project tools talk to the running engine on `localhost:6550` and require Summer Engine to be open with a project loaded. If the engine is not running, those tools return a clear error and a `summer run` hint. Asset Library, Generation, and Summer Cloud tools call the Summer Engine cloud and require you to be signed in (run `npx summer-engine login` once); the import side of asset tools needs the engine running too. Summer Cloud tools work on the project directory directly and do not need a running engine.
 
@@ -36,9 +36,17 @@ When setting properties via `summer_set_prop` or `summer_set_resource_property`,
 
 Node paths use a `./` prefix for relative paths from the scene root. For example, `./World/Player` means the `Player` child of the `World` node.
 
+## Scene targeting and persistence
+
+Every scene mutation names its exact target with `scenePath`, such as `res://main.tscn`. The target does not need to be the active editor tab.
+
+`summer_open_scene` only changes what is visible in the editor. It does not select the target for a later mutation. Dedicated mutation tools append one final save automatically and return the engine's operation receipts. Use `summer_save_scene` directly only for a standalone save or save-as.
+
+Different agents can work concurrently because each operation names its project and scene. If the target cannot load—for example, because a referenced script is missing or invalid—the tool returns that reason. Repair the named dependency or reread changed state, then retry the same explicit target.
+
 ---
 
-## Scene Tools (14)
+## Scene Tools
 
 ### summer_create_scene
 
@@ -58,13 +66,14 @@ Add a new node to the scene tree.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
+| `scenePath` | string | Yes | Exact target scene, e.g. `res://main.tscn` |
 | `parent` | string | Yes | Parent path, e.g. `./World` or `./World/Enemies` |
 | `type` | string | Yes | Node type, e.g. `MeshInstance3D`, `CharacterBody3D` |
 | `name` | string | Yes | Name for the new node |
 
 **Common node types:** Node3D, MeshInstance3D, CharacterBody3D, RigidBody3D, StaticBody3D, Camera3D, DirectionalLight3D, OmniLight3D, SpotLight3D, WorldEnvironment, CollisionShape3D, Area3D, Node2D, Sprite2D, CharacterBody2D, Camera2D, TileMapLayer, Control, Label, Button, VBoxContainer, HBoxContainer, AudioStreamPlayer, AudioStreamPlayer3D.
 
-**Example:** `summer_add_node(parent="./", type="DirectionalLight3D", name="Sun")`
+**Example:** `summer_add_node(scenePath="res://main.tscn", parent="./", type="DirectionalLight3D", name="Sun")`
 
 ---
 
@@ -74,13 +83,14 @@ Set a property on a node. The primary way to configure nodes after adding them.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
+| `scenePath` | string | Yes | Exact target scene |
 | `path` | string | Yes | Node path, e.g. `./World/Player` |
 | `key` | string | Yes | Property name, e.g. `position`, `mesh`, `visible` |
 | `value` | string \| number \| boolean | Yes | Value in engine string format for complex types |
 
 **Common properties:** `position`, `rotation_degrees`, `scale`, `visible`, `mesh`, `shadow_enabled`, `light_energy`, `fov`.
 
-**Example:** `summer_set_prop(path="./World/Player", key="position", value="Vector3(0, 1, 0)")`
+**Example:** `summer_set_prop(scenePath="res://main.tscn", path="./World/Player", key="position", value="Vector3(0, 1, 0)")`
 
 ---
 
@@ -90,12 +100,13 @@ Set a nested property on a resource attached to a node (e.g., a CollisionShape3D
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
+| `scenePath` | string | Yes | Exact target scene |
 | `nodePath` | string | Yes | Node path |
 | `resourceProperty` | string | Yes | Resource property on node, e.g. `shape`, `mesh`, `material_override` |
 | `subProperty` | string | Yes | Property on the resource, e.g. `size`, `radius`, `albedo_color` |
 | `value` | string \| number \| boolean | Yes | Value in engine string format |
 
-**Example:** `summer_set_resource_property(nodePath="./Player/CollisionShape3D", resourceProperty="shape", subProperty="size", value="Vector3(1, 2, 1)")`
+**Example:** `summer_set_resource_property(scenePath="res://main.tscn", nodePath="./Player/CollisionShape3D", resourceProperty="shape", subProperty="size", value="Vector3(1, 2, 1)")`
 
 ---
 
@@ -105,6 +116,7 @@ Remove a node from the scene tree. All children are removed too. Cannot remove t
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
+| `scenePath` | string | Yes | Exact target scene |
 | `path` | string | Yes | Node path to remove |
 
 ---
@@ -115,6 +127,7 @@ Replace a node with a different type or scene, preserving its position in the tr
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
+| `scenePath` | string | Yes | Exact target scene |
 | `path` | string | Yes | Node path to replace |
 | `type` | string | No | New node type, e.g. `RigidBody3D` |
 | `scene` | string | No | Scene to replace with, e.g. `res://enemies/boss.tscn` |
@@ -123,17 +136,18 @@ Replace a node with a different type or scene, preserving its position in the tr
 
 ### summer_save_scene
 
-Save the current scene to disk. Call after making changes to persist them. Without saving, changes only exist in the editor's memory.
+Save an explicit scene to disk. Dedicated mutation tools already append one final save; use this tool for a standalone save or save-as.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `path` | string | No | Save-as path for a new scene file, e.g. `res://levels/level2.tscn` |
+| `scenePath` | string | Yes | Scene to save, e.g. `res://main.tscn` |
+| `path` | string | No | Optional save-as destination, e.g. `res://levels/level2.tscn` |
 
 ---
 
 ### summer_open_scene
 
-Open a scene file in the editor. Use to switch between scenes. Prefer `summer_get_project_context` and `summer_open_main_scene` over guessing paths.
+Open a scene file as the visible editor tab. This is navigation only; scene mutation tools use their own `scenePath`. Prefer `summer_get_project_context` and `summer_open_main_scene` over guessing paths.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
@@ -147,6 +161,7 @@ Add an existing scene or 3D model as a child node. Use for `.tscn` prefabs or `.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
+| `scenePath` | string | Yes | Exact scene that receives the instance |
 | `parent` | string | Yes | Parent node path |
 | `scene` | string | Yes | Scene/model path, e.g. `res://player.tscn` or `res://models/tree.glb` |
 | `name` | string | No | Override the instance name |
@@ -159,6 +174,7 @@ Connect a signal between two nodes. The receiver must have a script with the spe
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
+| `scenePath` | string | Yes | Exact target scene |
 | `emitter` | string | Yes | Node that fires the signal |
 | `signal` | string | Yes | Signal name, e.g. `body_entered`, `pressed`, `timeout` |
 | `receiver` | string | Yes | Node with the handler script |
@@ -201,25 +217,29 @@ Get all properties of a resource (material, mesh, shape, environment, etc). Use 
 
 ### summer_batch
 
-Execute multiple operations in a single call, grouped into one undo step. The user can undo everything with a single Ctrl+Z. Use when building something that involves multiple nodes and properties at once.
+Execute multiple operations in a single call, grouped into one undo step. Use `scenePath` whenever the batch contains scene mutations. Do not mix `OpenScene` with scene mutations: opening is a separate UI action. The tool appends one final `SaveScene`; if you supply it yourself, it must appear exactly once and be last.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
+| `scenePath` | string | Conditional | Required when `ops` contains scene mutations |
 | `ops` | array | Yes | Array of operation objects, each with `op` plus its parameters |
 
 Each op uses the same shape as the individual tools:
 
 ```json
-[
-  { "op": "AddNode", "parent": "/", "type": "MeshInstance3D", "name": "Floor" },
-  { "op": "SetProp", "path": "Floor", "key": "mesh", "value": "PlaneMesh" },
-  { "op": "SetResourceProperty", "nodePath": "Floor", "resourceProperty": "mesh", "subProperty": "size", "value": "Vector2(20, 20)" }
-]
+{
+  "scenePath": "res://main.tscn",
+  "ops": [
+    { "op": "AddNode", "parent": "./", "type": "MeshInstance3D", "name": "Floor" },
+    { "op": "SetProp", "path": "./Floor", "key": "mesh", "value": "PlaneMesh" },
+    { "op": "SetResourceProperty", "nodePath": "./Floor", "resourceProperty": "mesh", "subProperty": "size", "value": "Vector2(20, 20)" }
+  ]
+}
 ```
 
 ---
 
-## Debug and Play Tools (10)
+## Debug and Play Tools
 
 ### summer_get_diagnostics
 
@@ -320,17 +340,41 @@ Check if the game is currently running. Returns the active scene path if running
 
 ---
 
-### summer_screenshot
+### summer_create_debug_report
 
-Capture a frame from the running Summer Engine and return it as an image the MCP client can see directly. Use to visually verify scene layout, asset placement, and gameplay state. Captures the editor viewport by default, or the running game with `target="game"`.
+Create a support-ready Markdown report containing engine health, diagnostics, filtered console output, debugger errors and warnings, and an agent handoff prompt. Authentication tokens and project file contents are omitted, but users should review local paths and stack traces before sharing it.
 
 | Parameter | Type | Required | Description |
 |-----------|------|----------|-------------|
-| `target` | enum | No | What to capture: `viewport` (editor, default) or `game` (running game) |
+| `issue` | string | No | User-visible issue or reproduction summary |
+| `output_path` | string | No | Markdown destination; defaults to the project root |
+| `include_play_session` | boolean | No | Briefly launch the game and collect post-play diagnostics |
+| `play_wait_ms` | number | No | Wait after launch when collecting a play session |
+| `max_console_lines` | number | No | Maximum filtered console lines |
+| `max_debugger_entries` | number | No | Maximum debugger errors and warnings |
+| `include_doctor` | boolean | No | Include `summer doctor` checks (default `true`) |
 
 ---
 
-## Project Tools (9)
+## Visual Verification Tools
+
+### summer_screenshot
+
+Capture an engine frame and return the image directly to the MCP client.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `target` | enum | No | `viewport` (default), `scene`, or `game` |
+| `scenePath` | string | No | Exact scene for an offscreen `scene` capture |
+| `framing` | enum | No | `auto`, `top`, `front`, or `iso` for scene capture |
+| `size` | number[] | No | Scene capture size as `[width, height]` |
+| `nodePath` | string | No | Node to frame during scene capture |
+
+`viewport` captures the visible editor view. `scene` renders an exact scene file offscreen without changing the visible tab. `game` captures the currently running game and requires the desktop bridge.
+
+---
+
+## Project Tools
 
 ### summer_start_game_task
 
@@ -375,10 +419,11 @@ Open the project's configured main scene from project settings. Safer than guess
 
 ### summer_get_scene_tree
 
-Get the full scene tree of the currently open scene. Use before structural edits (add/remove/replace). If you get "no edited scene", call `summer_open_main_scene` first.
+Get a scene tree. Pass `scenePath` to inspect that exact loaded scene; omit it only when you intentionally want the visible editor tab.
 
-| Parameters | None |
-|------------|------|
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `scenePath` | string | No | Exact `res://` scene to inspect |
 
 ---
 
@@ -429,7 +474,48 @@ Download multiple files from URLs in one operation. Performs a single filesystem
 
 ---
 
-## Asset Library Tools (6)
+## Project File Tools
+
+These tools operate inside the engine-bound project and return exact file receipts. They do not use a broad project writer lock. If another agent or the editor changed a file after it was read, the stale overwrite is refused; reread the file and decide whether the edit still applies.
+
+### summer_read_file
+
+Read a UTF-8 project file and return its complete contents plus a full-file SHA-256 receipt.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `path` | string | Yes | Project path beginning with `res://` |
+| `max_bytes` | number | No | Maximum bytes to return (default 200,000) |
+
+---
+
+### summer_write_file
+
+Create or safely overwrite a complete text file. Exactly one write guard is required.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `path` | string | Yes | Project path beginning with `res://` |
+| `content` | string | Yes | Complete new UTF-8 content |
+| `create_only` | boolean | Conditional | Use `true` for a new file; refuses if it already exists |
+| `expected_sha256` | string | Conditional | Use the receipt from `summer_read_file` when overwriting |
+
+---
+
+### summer_replace_text
+
+Replace exact text in an existing project file. The tool reads the current file, requires a unique match by default, and submits a SHA-256-guarded write.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `path` | string | Yes | Project path beginning with `res://` |
+| `old_text` | string | Yes | Exact text to replace |
+| `new_text` | string | Yes | Replacement text; may be empty |
+| `replace_all` | boolean | No | Replace every exact occurrence instead of requiring one unique match |
+
+---
+
+## Asset Library Tools
 
 The public asset library is free for all signed-in users, with per-user rate limits. These tools need you signed in (`npx summer-engine login`); the import tools also need the engine running.
 
@@ -454,6 +540,7 @@ Search the asset library and import the best match into the project in one step.
 |-----------|------|----------|-------------|
 | `query` | string | Yes | What to find, e.g. `low-poly tree`, `wooden crate` |
 | `parent` | string | No | Parent node path to add the asset under, e.g. `./World`. Omit to import only. |
+| `scenePath` | string | Conditional | Required with `parent`; exact scene that receives the 3D model |
 | `assetType` | enum | No | Preferred asset type (default `3d_model`) |
 | `source` | enum | No | `library`, `my_assets`, or `all` (default `all`) |
 
@@ -468,6 +555,7 @@ Import an exact Summer asset ID into the current project. Unlike `summer_import_
 | `assetId` | string | Yes | Summer asset ID |
 | `path` | string | No | Target `res://` path. Inferred from asset type and filename if omitted. |
 | `parent` | string | No | Parent node path. For 3D models, imports and instantiates under this node. |
+| `scenePath` | string | Conditional | Required with `parent`; exact scene that receives the 3D model |
 | `name` | string | No | Scene node name when `parent` is provided |
 
 ---
@@ -505,7 +593,7 @@ Get a downloadable URL for a specific asset file. Prefer this over handing users
 
 ---
 
-## Generation Tools (6)
+## Generation Tools
 
 Generation runs in Summer Engine Studio and consumes credits. These tools need you signed in (`npx summer-engine login`). Confirm with the user before spending on paid generation, then import results into the project with `summer_import_asset_by_id` or `summer_import_from_url`.
 
@@ -600,7 +688,7 @@ Check the status of an async generation job. Use when you called a generation to
 
 ---
 
-## Summer Cloud Tools (7)
+## Summer Cloud Tools
 
 Content-addressed project sync: the whole project tree, including big binary assets, syncs across machines without Git. These tools mirror the `summer cloud` CLI commands 1:1 and operate on the project directory on disk plus the Summer Cloud API; they do not require a running engine. All of them accept an optional `project` parameter (project root path, defaults to the current working directory) and return a JSON result with a message, notices, and details. See the [Summer Cloud guide](/guides/summer-cloud) for the sync model and the [Cloud CLI Reference](/mcp/cloud-cli) for command-line equivalents.
 
