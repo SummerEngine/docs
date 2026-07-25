@@ -4,6 +4,35 @@ description: "What's new in Summer Engine. Release notes and updates."
 icon: "history"
 ---
 
+<Update label="0.5.55" description="July 23, 2026">
+
+## The right edit, even with a team at work
+
+Summer now targets scene changes at the exact file you asked for instead of
+depending on whichever editor tab happens to be open. Scene operations carry an
+explicit target, save once at the transaction boundary, and report evidence of
+what actually changed.
+
+## Safer parallel work
+
+Multiple agents can work across a project without routine project-wide
+blocking. Broad restores and Studio imports keep their stronger safety
+boundaries, while ordinary edits can continue concurrently. File writes stage
+and verify complete content before replacing the live file.
+
+## Cleaner stops and reconnects
+
+Stopping an agent no longer leaves later messages waiting behind stale running
+state. Completed results remain attached to the request that produced them
+through reconnects, and failed scene dependencies report the exact path so
+Summer can repair and retry.
+
+This release brings macOS to the same 0.5.55 desktop version as Windows. It
+includes the latest bridge and MCP reliability fixes; there are no project
+migrations or new settings.
+
+</Update>
+
 <Update label="0.5.54" description="July 22, 2026">
 
 ## Your work survives the reconnect
