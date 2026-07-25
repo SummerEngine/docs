@@ -112,7 +112,8 @@
           {
             "group": "Automation",
             "pages": [
-              "automation/headless"
+              "automation/headless",
+              "automation/authoring"
             ]
           },
           {
