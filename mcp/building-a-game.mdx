@@ -128,11 +128,38 @@ Use `summer_import_from_url_batch` with an array of `{url, path}`. One scan afte
 
 ### Run and Inspect
 
+<Warning>
+**`summer_play` opens a real window on the user's screen and takes focus.** If you are an
+agent working while someone else is using their machine, this interrupts them.
+
+Prefer the checks that need no window:
+
+- **`summer_screenshot` with `target="scene"`** renders a scene offscreen without touching
+  the visible tab or starting the game. Use this for "does it look right".
+- **`summer_get_diagnostics`** answers "is anything broken" without running anything.
+
+Reach for `summer_play` when you genuinely need the game running — real physics, real input,
+real runtime state — not as a default way of looking at your work.
+</Warning>
+
+When you do need it running:
+
 1. `summer_play`. Start the game.
-2. Wait a moment for the game to load
+2. Wait a moment for the game to load.
 3. `summer_screenshot`. Capture what the player sees (base64 image).
 4. `summer_get_diagnostics`. Check for runtime errors.
 5. `summer_stop`. Stop before making scene changes.
+
+<Note>
+**One screenshot proves less than you think.** A still frame shows that something rendered,
+not that the game works. Booting the game after every change is expensive and mostly tells
+you nothing new — a check that catches the failure you were actually worried about is worth
+more than a screenshot taken out of habit.
+
+For behaviour rather than appearance, `RunVerification` runs a GDScript probe against the
+live game and can assert over time — node state, counts, group membership, property values —
+rather than leaving you to squint at a frame.
+</Note>
 
 <Warning>
 **Stop before editing.** Some scene operations require the game to be stopped. Call `summer_stop` before adding/removing nodes or changing properties.
@@ -196,7 +223,8 @@ When two edits touch the same file, file writes use content receipts. A stale ov
 | Import from URL | `summer_import_from_url` or `summer_import_from_url_batch` |
 | Wire up button | `summer_connect_signal` with `scenePath` |
 | Check errors | `summer_get_diagnostics` |
-| Run game | `summer_play` → `summer_screenshot(target="game")` → `summer_stop` |
+| See how a scene looks | `summer_screenshot(target="scene", scenePath=...)` — offscreen, no window |
+| Run game | `summer_play` → `summer_screenshot(target="game")` → `summer_stop` — opens a window |
 | Standalone save/save-as | `summer_save_scene(scenePath=...)` |
 
 ---
