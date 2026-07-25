@@ -118,6 +118,22 @@ Gate on stderr, not on `$?`. Streams are cleanly separated: `print()` goes to st
 `printerr()`, `push_error()`, `push_warning()` and all engine `ERROR:` / `WARNING:` lines
 go to stderr. Grep for `SCRIPT ERROR`, `Parse Error`, `Can't load script`, and `ERROR:`.
 
+**Check syntax before you run anything.** `--check-only` parses a script without executing
+it, in well under a second — the cheapest possible gate, and it catches the parse errors that
+would otherwise exit 0 and look like success:
+
+```bash
+Summer --headless --path . --check-only -s res://task.gd
+```
+
+The exit code is still 0, so read stderr. But it costs almost nothing and it runs no code, so
+it cannot hang.
+
+<Warning>
+**Never pass `--quiet`.** It swallows your script's own `print()` output, so a script that
+ran correctly looks like a script that produced nothing.
+</Warning>
+
 One benign exception: `WARNING: ObjectDB instances leaked at exit` prints on **every** run,
 including fully successful ones. Do not gate on it.
 
@@ -410,6 +426,7 @@ Two errors print at the start of every export and are harmless:
 | Rendering, screenshots, any pixel readback | **Impossible headless.** See the warning at the top |
 | `--write-movie` | **Crashes** with signal 11 under `--headless` |
 | Performance measurement | Meaningless. Draw calls read `0.0`, FPS reads `1.0`, video adapter name is empty |
+| UI and Control layout measurement | **Wrong.** The headless viewport is not your configured size — it reports a small placeholder that `--resolution` does not override, while `ProjectSettings` still reports the real one. Every anchor, margin and global position measured headless is meaningless |
 | `LightmapGI.bake()` | **Does not exist** in the scripting API. The node instantiates and every property setter is exposed, but `bake` is absent from the method list — calling it is a *parse-time* failure |
 | `OccluderInstance3D.bake_single_node()` | Same. Not exposed |
 | `EditorScript`, `EditorPlugin`, `EditorInterface`, `EditorFileSystem` | `can_instantiate()` is false for all of them outside the editor |
