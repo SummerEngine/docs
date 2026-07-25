@@ -252,10 +252,19 @@ directly and needs no import pass at all. Equivalents exist for audio
 (`GLTFDocument.append_from_file`).
 
 <Warning>
-**These bypass loaders read your raw source file, and whether that file exists in an
-exported game depends on your export configuration.** They work perfectly in development,
-where the source is obviously present, and can fail in the shipped build, where it may not
-be.
+**Exporting strips your raw source files. Every one of these loaders returns null in the
+shipped game.**
+
+The importer's *product* ships — the `.ctex`, the `.translation`, the imported scene — and
+ordinary `load()` finds it. The original `.png`, `.ogg`, `.ttf` or `.glb` does not ship at
+all, so anything reading the raw file fails.
+
+```
+# inside the exported pack
+res://assets/raw.png  file_exists=false
+    Image.load_from_file  =>  <null>
+    ResourceLoader.load   =>  CompressedTexture2D    # the .ctex, works fine
+```
 
 `FontFile.load_dynamic_font` is the worst case: when the file is missing it returns
 **error code 0 with zero faces**. Success, and no font. Nothing fails at authoring time.
@@ -263,7 +272,28 @@ be.
 Use these loaders for tooling and one-off scripts. Do not build a shipping game on them.
 </Warning>
 
-Two routes that are robust regardless of export settings:
+<Warning>
+**`--main-pack` is silently ignored if the current directory contains a `project.godot`.**
+
+The local project wins, the pack is never mounted, and nothing warns you. So the obvious way
+to check whether your exported game still works — run it against the pack from your project
+folder — **reports a false pass**, because it is reading your development files the whole
+time.
+
+Identical command, only the working directory differs:
+
+```bash
+cd my-project && Summer --headless --main-pack build/game.pck -s res://probe.gd
+#   file_exists=true    Image.load_from_file => Image      <- reading the DEV project
+
+cd /tmp/empty && Summer --headless --main-pack ~/my-project/build/game.pck -s res://probe.gd
+#   file_exists=false   Image.load_from_file => <null>     <- the truth
+```
+
+**Always verify a pack from a directory that has no `project.godot` in it.**
+</Warning>
+
+Three routes that survive export:
 
 1. **Author a real resource and save it.** `ResourceSaver.save()` to `.tres` or `.res` needs
    no import pass, no editor, and no `.godot/` at all, and the result ships correctly.
@@ -272,6 +302,11 @@ Two routes that are robust regardless of export settings:
    and `AudioBusLayout`. One trap: `PortableCompressedTexture2D` saves with error 0 and
    reloads **empty** — use `ImageTexture`.
 2. **Import properly**, then use ordinary `load()`. The compiled `.ctex` always ships.
+3. **Write a `.dds` directly.** It is the one image format that needs no import pass, loads
+   raw, decodes to real pixels, and **ships as-is inside the pack** — a 128-byte header plus
+   pixel data, emittable from a few lines of script. Load it with `ResourceLoader.load()`,
+   which returns an `ImageTexture`; note `Image.load_from_file()` does *not* read DDS and
+   returns null for it.
 
 <Note>
 `.godot/imported/` is **load-bearing, not a disposable cache.** Delete it and every imported
@@ -294,17 +329,30 @@ The resulting artifact genuinely runs, as a real template build with
 `OS.has_feature("template") == true` and `Engine.is_editor_hint() == false`.
 `--export-pack` produces a `.pck` instead.
 
+<Warning>
+**Only the macOS template ships with the app.** Windows, Linux, Android and iOS exports all
+fail with "No export template found" until you supply templates yourself.
+
+Templates are searched for in `Summer.app/Contents/Resources/export_templates/` and then in
+`~/Library/Application Support/Godot/export_templates/` — note **`Godot`**, not `Summer`. A
+`~/Library/Application Support/Summer/export_templates/` directory may exist on your machine;
+the engine never reads it. Putting templates there does nothing.
+</Warning>
+
 <Note>
-**Only macOS templates ship with the app.** Windows, Linux, web, Android and iOS exports
-need templates fetched from the standard Godot mirror list first.
+Web export is not available on this build at all. Summer ships as a Mono (C#/.NET) build, and
+Godot 4 does not support exporting to Web from a Mono build. This is an architectural
+property of the binary, not a missing template.
 </Note>
+
+Use `export_filter="all_resources"`. The dependency-based `resources` filter exits non-zero
+and produces an empty 112-byte pack for a project whose main scene has no resource
+dependencies. Be aware `all_resources` packs everything, including every stray `.gd` file in
+the project.
 
 Two errors print at the start of every export and are harmless:
 `Parent node is busy setting up children, add_child() failed` and
 `Condition "!is_inside_tree()" is true` from `http_request.cpp`.
-
-Be careful with `export_filter="all_resources"` — it packs everything, including every
-stray `.gd` file in the project.
 
 ## What does not work
 
@@ -375,7 +423,8 @@ loop.
 
 ## For AI agents
 
-If you are an agent automating Summer, the five things that will silently burn you:
+If you are an agent automating Summer, the things that will silently burn you — note that
+every one of them fails by *appearing to succeed*:
 
 1. **`--headless` renders nothing.** `get_texture()` looks fine; `get_image()` returns null.
    Never plan around a headless screenshot.
@@ -385,6 +434,12 @@ If you are an agent automating Summer, the five things that will silently burn y
 4. **`await process_frame` after `add_child()`**, or in-tree and physics APIs fail before
    the node is really in the tree.
 5. **Write a file, then `--import` it**, or `load()` will not find it.
+6. **Never read a raw source file at runtime.** Exporting strips them. `Image.load_from_file`
+   and friends return null in the shipped game, and `FontFile.load_dynamic_font` returns
+   error 0 with zero faces.
+7. **Verify a pack from an empty directory.** `--main-pack` is silently ignored when the
+   working directory holds a `project.godot`, so checking your export from the project folder
+   reports a false pass.
 
 Find your own binary with `OS.get_executable_path()` rather than assuming a path, and never
 assume it is called `godot`.
