@@ -36,9 +36,11 @@ When you open a project, Summer Engine scans all files (scripts, scenes, resourc
 
 **Conflict prevention.** Summer Engine avoids naming conflicts and maintains scene integrity. It builds on your existing work rather than overwriting it.
 
-## Local Processing
+## How Your Code Is Processed
 
-Project intelligence runs locally on your machine. Your code is analyzed without being sent to our servers. Only when you ask Summer Engine to generate or modify code do we send the minimal necessary context to AI providers.
+Project intelligence is a server-side feature. When files change, Summer chunks them, computes embeddings, and stores those chunks together with their file paths so search and context selection can run over them. When you ask Summer to generate or modify code, the relevant context is sent to AI providers.
+
+Privacy Mode, available on paid plans, stops your code being used to train models. See [Privacy Mode](/security/privacy-mode) and the full subprocessor list in [Security Overview](/security/overview).
 
 ## Large Projects
 

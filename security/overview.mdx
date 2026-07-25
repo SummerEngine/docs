@@ -40,8 +40,8 @@ We use additional model providers as part of routing on Auto and Premium. Privac
 
 ### Data Storage and Processing
 
-**Turbopuffer** - *Stores obfuscated code data*  
-Embeddings of indexed codebases and obfuscated metadata are stored with Turbopuffer on Google Cloud servers in the US. This enables Summer Engine's project intelligence features. You can read more on [Turbopuffer's security page](https://turbopuffer.com/docs/security).
+**Turbopuffer** - *Stores code data*  
+Powers project intelligence and code search. We store embeddings of your indexed project alongside the source chunks they were computed from, the file path within your project, and file metadata (size, modification time, content hash). The stored source text is indexed for full-text search. This data lives with Turbopuffer on Google Cloud servers in the US. You can read more on [Turbopuffer's security page](https://turbopuffer.com/docs/security).
 
 **Supabase** - *Stores code data*  
 We use Supabase for user data, project metadata, and art assets. All data is encrypted in transit and at rest.
@@ -54,8 +54,8 @@ Handles billing and payments. Only stores your payment information and billing d
 **Vercel** - *Sees and stores code data*  
 Hosts our primary infrastructure including API servers. Code data passes through Vercel's infrastructure during processing.
 
-**Amplitude** - *No code data*  
-Analytics for usage patterns only. No code data is stored - only events like "AI request made" or "project opened".
+**PostHog** - *Product analytics, not code storage*  
+Usage analytics, hosted on PostHog's EU infrastructure. We record events such as "AI request made" or "project opened" together with properties describing the event. We do not send your source files here, and browser autocapture is disabled by default.
 
 **Slack & Google Workspace** - *May store code snippets for debugging*  
 Our internal communication tools. We may share non-sensitive code snippets for debugging purposes, but never full codebases or sensitive information.

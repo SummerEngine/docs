@@ -33,9 +33,9 @@ graph TB
 - **Platform**: Cross-platform (Windows, macOS, Linux)
 
 ### AI Integration
-- **Local Analysis**: Project indexing happens on your machine
-- **Cloud Processing**: Complex AI operations use cloud GPUs
-- **Hybrid Approach**: Sensitive code never leaves your computer
+- **Cloud Indexing**: Project indexing runs server-side; source chunks and embeddings are stored to power code search
+- **Cloud Processing**: AI operations run against hosted model providers
+- **Privacy Mode**: Available on paid plans to stop your code being used to train models. See [Privacy Mode](/security/privacy-mode)
 
 ### Project Management
 - **File Watching**: Real-time monitoring of project changes
@@ -68,10 +68,10 @@ graph TB
 ## Security Model
 
 ### Data Privacy
-- **Local First**: All project analysis happens locally
-- **Encrypted Transit**: API calls use TLS 1.3
-- **No Code Storage**: Your code is never stored on our servers
-- **Anonymized Telemetry**: Only usage patterns, never code content
+- **Encrypted**: Encrypted in transit and at rest
+- **Code Storage**: Indexed source chunks and embeddings are stored to power project intelligence. See [Security Overview](/security/overview) for the full subprocessor list
+- **Telemetry**: Product analytics record events and their properties, not your source files
+- **Privacy Mode**: Controls whether your code is used to train models. Off by default; see [Privacy Mode](/security/privacy-mode)
 
 ### Safe Operations
 - **Undo System**: All changes integrate with editor undo
