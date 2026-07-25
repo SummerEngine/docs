@@ -233,7 +233,17 @@ This is the most common way agent-written assets fail. `ResourceLoader.exists()`
 `false` and `load()` returns null.
 </Warning>
 
-Run the import pass:
+**The best fix is to need no import at all.** Two routes avoid this entirely, and both are
+described under [shipping assets](#do-not-ship-a-game-that-depends-on-raw-source-files)
+below:
+
+- **`ResourceSaver.save()` to `.tres` or `.res`** — no import pass, no editor, no `.godot/`.
+- **Write a `.dds` or a `.po`** — the formats that load raw and ship as-is.
+
+Prefer those. They are simpler, faster, and free of the hazard below.
+
+When you do need the importer — it is the only shell route that generates `.import`
+sidecars — run the import pass:
 
 ```bash
 /Applications/Summer.app/Contents/MacOS/Summer --headless --path /path/to/project --import
@@ -242,6 +252,19 @@ Run the import pass:
 This writes the `.import` file next to your asset and the compiled `.ctex` into
 `.godot/imported/`. Afterwards `load()` returns a `CompressedTexture2D` and everything
 behaves normally.
+
+<Warning>
+**Never run `--import` against a project whose editor is open.**
+
+`--import` is a full editor boot. It starts the local API server, which takes the machine's
+engine binding and mints a fresh auth token — so a client that believes it is talking to the
+open project can have its writes **land in the project you imported instead**, with no error.
+When the import exits, it leaves the binding pointing at a dead port, and the user's editor
+stays unreachable until something restarts.
+
+See [the binding hazard](#what-does-not-work) below for the full mechanism. Plain
+`--headless -s script.gd` is unaffected and completely safe.
+</Warning>
 
 <Note>
 **`-s` script runs never create `.godot/` at all.** Only `--import` (or a normal editor or
@@ -424,6 +447,18 @@ binding. There is no error and no warning. Work silently lands in someone else's
 `--import` and `--export-*` do the same thing. They are full editor boots, not lightweight
 passes. Running `--import` on one project was measured rotating the token while another
 project held the binding.
+
+Which invocations are affected, measured:
+
+| Invocation | Takes the binding |
+|---|---|
+| `--headless -s script.gd` | **No — safe** |
+| `--headless --editor …` | Yes |
+| `--headless --import` | Yes |
+| `--export-release` / `--export-pack` | Yes |
+
+Plain `-s` headless scripting — the bulk of this page — is unaffected. The hazard is
+specific to the invocations that boot the editor.
 
 If your agent reports the engine as disconnected while it is plainly running, this is the
 first thing to check. Restarting the real editor republishes the binding.
