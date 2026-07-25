@@ -311,6 +311,9 @@ func _bake_occluder() -> void:
 
 	var op: Array = []
 	_find_all(top, "OccluderInstance3DEditorPlugin", op)
+	if op.is_empty():
+		push_error("OccluderInstance3DEditorPlugin not found")
+		return
 
 	# `occ` is your OccluderInstance3D, already in the edited scene.
 	# The occluder resource MUST exist on disk before baking.
