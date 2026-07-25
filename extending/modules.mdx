@@ -1,0 +1,140 @@
+---
+title: "Custom Modules"
+description: "How Summer itself is built as a Godot C++ module, why external developers cannot add one, and what to use instead. Includes the init-level and TOOLS_ENABLED discipline that decides whether a class survives into an exported game."
+icon: "boxes"
+---
+
+## Read this first
+
+**You cannot add a custom module to Summer Engine.** Godot C++ modules are compiled into the engine binary, which means adding one requires checking out the engine source and building it. The Summer engine source is not public — `github.com/SummerEngine/SummerEngine` returns 404, verified.
+
+There is no workaround, no flag, and no plugin path that changes this. If you are looking to extend Summer, the two real options are:
+
+<CardGroup cols={2}>
+<Card title="GDExtension" icon="puzzle" href="/extending/gdextension">
+  Native C/C++ code, loaded at runtime from your project. Summer's ABI is byte-identical to stock Godot 4.6.1, and unsigned third-party libraries are proven to load in the shipped macOS editor.
+</Card>
+<Card title="Editor Plugins" icon="blocks" href="/extending/editor-plugins">
+  Pure-GDScript `@tool` plugins. No ABI, no compilation, no code signing.
+</Card>
+</CardGroup>
+
+The rest of this page is context: how Summer is actually built, and the module-level lessons that are worth knowing even when you are writing a GDExtension. It is descriptive, not a set of instructions you can follow.
+
+<Note>
+For the exact split between what is open, what is free, and what is paid, see [What is open in Summer Engine?](/knowledge-base/source-status). Nothing here should be read as a commitment to publish engine source.
+</Note>
+
+---
+
+## What a Godot module is
+
+A module is C++ compiled directly into the engine binary at build time. Unlike a GDExtension, it is not loaded at runtime, cannot be distributed separately, and cannot be added to an engine someone else built. It lives in the `modules/` directory of the engine source tree, and SCons picks it up automatically.
+
+The trade is straightforward: a module gets unrestricted access to engine internals and zero ABI constraints, and costs you the ability to ship it to anyone who is not also building the engine. GDExtension makes the opposite trade.
+
+Summer's own additions live in one module, `modules/1summer_engine/`. Everything the editor does beyond stock Godot — authentication, the chat panel, the embedded webview, the local tool server that MCP talks to, crash reporting, edit coordination, the updater — is inside it.
+
+---
+
+## Anatomy
+
+| File | Role |
+|---|---|
+| `config.py` | `can_build(env, platform)` gates which platforms compile the module; `configure(env)` adjusts the build environment; `get_doc_classes()` and `get_doc_path()` declare class documentation XML |
+| `SCsub` | The SCons build script — source globs, per-platform link flags, generated headers, conditional defines |
+| `register_types.cpp` / `register_types.h` | Registers classes with `ClassDB` at each initialization level, and tears them down in reverse |
+
+Summer's module then subdivides by concern — `core/`, `auth/`, `gateway/`, `chat/`, `webview/`, `editor/`, `analytics/`, `api/`, `crash/`, `verify/`, `util/`.
+
+---
+
+## The two disciplines worth stealing
+
+These are the parts that generalize. Both are about the same question: **does this code exist in an exported game, or only in the editor?**
+
+### Initialization levels
+
+`initialize_<module>_module` receives a `ModuleInitializationLevel` and switches on it. Registering at the wrong level either crashes or silently does nothing.
+
+| Level | What belongs here |
+|---|---|
+| `MODULE_INITIALIZATION_LEVEL_CORE` | Runs before almost everything. Summer uses it to point `DOTNET_ROOT` at the bundled .NET SDK, which must happen before the mono module initializes |
+| `MODULE_INITIALIZATION_LEVEL_SERVERS` | Rendering, physics, and audio servers exist |
+| `MODULE_INITIALIZATION_LEVEL_SCENE` | Where node and resource classes are registered. `GDREGISTER_CLASS` calls belong here |
+| `MODULE_INITIALIZATION_LEVEL_EDITOR` | Editor-only. `EditorPlugins::add_by_type<T>()` belongs here and nowhere else |
+
+`uninitialize_<module>_module` mirrors it. Ordering in teardown is not cosmetic — Summer's module unregisters its error handler *before* tearing down the telemetry client it forwards into, and drops a settings `Ref` while `ObjectDB` is still alive, because letting a static `Ref` destruct during process finalization raced `ObjectDB` teardown and crashed on every clean exit.
+
+The same shape applies to a GDExtension: `minimum_initialization_level` in your `GDExtensionInitialization` struct is the same axis, and your `initialize` callback is invoked per level.
+
+### `#ifdef TOOLS_ENABLED` decides what ships
+
+Export templates are built without `TOOLS_ENABLED`. Anything inside that guard does not exist in an exported game — not the class, not the symbol.
+
+This is exactly why, of the 8 classes Summer adds to the engine, only `SummerEngineSettings` is available in an exported game. The other seven are registered inside `#ifdef TOOLS_ENABLED` and are editor-only. See [Summer's own native classes](/extending/gdextension#summers-own-native-classes).
+
+Get the guard wrong and you do not get a runtime error, you get a link error in the export template build — which is the good outcome. The bad outcome is next.
+
+---
+
+## One cautionary tale: linking a framework unconditionally
+
+Worth reading even if you never write a module, because the same failure is reachable from a GDExtension that links a framework.
+
+Summer's macOS auto-updater uses Sparkle. The updater's implementation file is entirely wrapped in `#ifdef TOOLS_ENABLED`, so export templates reference zero Sparkle symbols — the guard was correct. But the `SCsub` linked the framework **unconditionally**:
+
+```python
+env.Append(LINKFLAGS=["-F" + sparkle_framework_dir, "-framework", "Sparkle"])
+```
+
+A `-framework` link flag creates a load-command dependency in the produced binary whether or not any symbol from it is referenced. So every exported macOS game came out depending on `@rpath/Sparkle.framework`. Exports do not bundle it. `dyld` could not resolve it, and the kernel `SIGKILL`ed the game on launch — presenting as a "Report to Apple" crash dialog, not a Gatekeeper prompt, which sent the first round of debugging in entirely the wrong direction.
+
+The fix was to gate the link flags on the build type, not only the source:
+
+```python
+if env.editor_build:
+    env_summer_engine.Append(CCFLAGS=["-F" + sparkle_framework_dir])
+    env_summer_engine.Append(LINKFLAGS=["-F" + sparkle_framework_dir, "-framework", "Sparkle"])
+    env.Append(LINKFLAGS=["-F" + sparkle_framework_dir, "-framework", "Sparkle"])
+```
+
+**The lesson: `#ifdef` guards your source, not your link line.** If your GDExtension links a system or third-party framework, check the produced binary's load commands with `otool -L` before you ship, and confirm every dependency will actually be present on the user's machine.
+
+---
+
+## If you were going to ask for a module
+
+Almost everything a module is reached for can be done another way in Summer:
+
+| You want | Use instead |
+|---|---|
+| A new node or resource type in C++ | [GDExtension](/extending/gdextension) — same C++, loaded at runtime, and distributable |
+| New editor UI, docks, inspector plugins, import plugins | [Editor plugins](/extending/editor-plugins), or an `EditorPlugin` subclass from a GDExtension |
+| To drive the editor from outside | [MCP server and CLI](/mcp/overview) |
+| A third-party native library | Link it into a GDExtension, subject to the `otool -L` warning above |
+
+If your case genuinely needs engine internals that GDExtension does not expose, tell us what and why — that is useful signal. [founders@summerengine.com](mailto:founders@summerengine.com) or [Discord](https://discord.gg/yUpgtxnZky).
+
+---
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="GDExtension" icon="puzzle" href="/extending/gdextension">
+    The supported native extension path, with a verified end-to-end recipe
+  </Card>
+  <Card title="Editor Plugins" icon="blocks" href="/extending/editor-plugins">
+    Pure-GDScript tooling inside the editor
+  </Card>
+  <Card title="What is open in Summer?" icon="badge-check" href="/knowledge-base/source-status">
+    Open agent layer, free desktop app, paid hosted services
+  </Card>
+  <Card title="Godot Compatibility" icon="git-fork" href="/knowledge-base/godot-compatibility">
+    What Summer shares with stock Godot 4.6.1
+  </Card>
+</CardGroup>
+
+---
+
+Need help or have questions? Reach out to our founders at [founders@summerengine.com](mailto:founders@summerengine.com) or join our community on [Discord](https://discord.gg/yUpgtxnZky) for fast responses.

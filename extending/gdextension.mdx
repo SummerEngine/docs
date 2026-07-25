@@ -1,0 +1,400 @@
+---
+title: "GDExtension"
+description: "Summer runs stock Godot 4.6.1 GDExtension binaries unmodified. The ABI is byte-identical to upstream, unsigned third-party libraries load in the shipped macOS editor, and the only real friction is that godot-cpp has no 4.6 branch."
+icon: "puzzle"
+---
+
+## The short version
+
+Summer Engine is a fork of **Godot 4.6.1.stable** (mono build). Its GDExtension ABI contract is **byte-identical to upstream Godot 4.6.1**, so:
+
+- A GDExtension built against **stock Godot 4.6.1** loads in Summer. There are no Summer-specific headers, no Summer-specific godot-cpp, and no Summer build of anything.
+- **Third-party, non-Summer-signed libraries load in the shipped, notarized macOS editor.** This is proven by loading one, not by reading a plist. See [Proof](#proof-a-third-party-library-running-inside-shipped-summer).
+- The one genuinely hard part is upstream, not ours: **godot-cpp has no 4.6 branch or tag.** See [The godot-cpp gap](#the-godot-cpp-gap).
+
+<Note>
+**Verified against the shipped binary.** Everything on this page was measured against `4.6.1.stable.mono.custom_build.b708b1182` on macOS. Claims that were read from source rather than executed are labelled inline. Nothing here is inferred from Godot's documentation.
+</Note>
+
+---
+
+## Why the ABI is identical
+
+`gdextension_interface.json` is the file the whole GDExtension ABI is generated from. In the Summer tree it is unchanged from upstream 4.6.1:
+
+```
+sha256  34d7058f31af186d36b84567e70a9f9543da0d74f25cfe5266d4fe2d27e090f0
+```
+
+That hash is the same on both `4.6.1-stable` and Summer's `HEAD`. Alongside it:
+
+| Measurement | Result |
+|---|---|
+| `git merge-base HEAD 4.6.1-stable` | Exactly the `4.6.1-stable` tag commit — a clean branch off the tag |
+| Diff of `core/extension/` vs the tag | 7 added lines of logging in `gdextension_library_loader.cpp`, plus one stale generated header |
+| Stock class bindings removed across `scene/`, `servers/`, `core/`, `editor/`, `platform/`, `drivers/` | Zero. Every binding delta is additive |
+| Classes in the live API dump | 1032, of which 8 are Summer additions |
+| Engine singletons added by Summer | Zero. All 39 singletons in the dump are stock Godot |
+
+The practical consequence: **build for Godot 4.6.1, ship to Summer.** Summer imposes no restriction that stock Godot 4.6.1 does not.
+
+---
+
+## Proof: a third-party library running inside shipped Summer
+
+macOS hardened runtime normally refuses to load a library that is not signed by the host application's team. Summer ships with `com.apple.security.cs.disable-library-validation` set to `true` (confirmed with `codesign -d --entitlements -` on the installed, Developer-ID-signed, notarized, stapled app).
+
+Entitlements are a claim. Here is the measurement. A minimal GDExtension written in plain C, compiled with a bare `clang -shared` — so the dylib is ad-hoc signed, `TeamIdentifier=not set`, genuinely third-party — loaded into the shipped binary:
+
+```
+[SE] GDExtension: loading library path=".../bin/libprobe.macos.template_debug.dylib" (from res://bin/probe.gdextension)
+PROBE: entry symbol reached.
+PROBE: host reports 4.6.1 status=stable build=custom_build
+PROBE: initialize callback fired at level 0
+```
+
+The entry symbol resolved, `get_godot_version2` resolved through the interface function table, and the initialization callback fired. **GDExtension is fully functional in the shipped macOS editor.**
+
+You can reproduce that exact result in about a minute — the recipe is below and needs nothing but `clang`.
+
+---
+
+## Build and load a probe extension
+
+This is the fastest way to confirm your toolchain and Summer agree, before you invest in a real extension. It uses no bindings library at all, only the C header the binary emits. Every command and file below was run end to end on the shipped binary.
+
+<Steps>
+<Step title="Create the project skeleton">
+```bash
+mkdir -p ~/probe/src ~/probe/bin ~/probe/.godot
+cd ~/probe
+
+cat > project.godot <<'EOF'
+config_version=5
+
+[application]
+
+config/name="probe"
+config/features=PackedStringArray("4.6")
+EOF
+```
+</Step>
+
+<Step title="Get the interface header from the binary, not from a repo">
+```bash
+cd ~/probe/src
+/Applications/Summer.app/Contents/MacOS/Summer --headless --dump-gdextension-interface
+```
+
+This writes `gdextension_interface.h` into the current working directory. Use this file. Do **not** copy a `gdextension_interface.h` from anywhere else — see [Do not trust a checked-in header](#do-not-trust-a-checked-in-header).
+</Step>
+
+<Step title="Write the extension">
+Save as `~/probe/src/probe.c`:
+
+```c
+#include "gdextension_interface.h"
+#include <stdio.h>
+
+static void probe_initialize(void *userdata, GDExtensionInitializationLevel level) {
+	printf("PROBE: initialize callback fired at level %d\n", (int)level);
+	fflush(stdout);
+}
+
+static void probe_deinitialize(void *userdata, GDExtensionInitializationLevel level) {}
+
+GDExtensionBool probe_library_init(
+		GDExtensionInterfaceGetProcAddress p_get_proc_address,
+		GDExtensionClassLibraryPtr p_library,
+		GDExtensionInitialization *r_initialization) {
+	printf("PROBE: entry symbol reached.\n");
+
+	GDExtensionInterfaceGetGodotVersion2 get_version =
+			(GDExtensionInterfaceGetGodotVersion2)p_get_proc_address("get_godot_version2");
+	if (get_version) {
+		GDExtensionGodotVersion2 v;
+		get_version(&v);
+		printf("PROBE: host reports %d.%d.%d status=%s build=%s\n",
+				v.major, v.minor, v.patch, v.status, v.build);
+	}
+
+	r_initialization->minimum_initialization_level = GDEXTENSION_INITIALIZATION_SCENE;
+	r_initialization->userdata = NULL;
+	r_initialization->initialize = probe_initialize;
+	r_initialization->deinitialize = probe_deinitialize;
+	fflush(stdout);
+	return 1;
+}
+```
+</Step>
+
+<Step title="Write the .gdextension descriptor">
+Save as `~/probe/bin/probe.gdextension`:
+
+```ini
+[configuration]
+entry_symbol = "probe_library_init"
+compatibility_minimum = "4.1"
+
+[libraries]
+macos.debug = "res://bin/libprobe.macos.template_debug.dylib"
+macos.release = "res://bin/libprobe.macos.template_release.dylib"
+```
+</Step>
+
+<Step title="Register it in extension_list.cfg">
+```bash
+echo 'res://bin/probe.gdextension' > ~/probe/.godot/extension_list.cfg
+```
+
+**Do not skip this step for a headless run.** A `.gdextension` file on its own loads nothing. See [extension_list.cfg](#the-extension_listcfg-trap).
+</Step>
+
+<Step title="Compile and run">
+```bash
+cd ~/probe
+clang -shared -fPIC -I src -o bin/libprobe.macos.template_debug.dylib src/probe.c
+cp bin/libprobe.macos.template_debug.dylib bin/libprobe.macos.template_release.dylib
+
+/Applications/Summer.app/Contents/MacOS/Summer --headless --path ~/probe --quit
+```
+
+Expect the four `PROBE:` and `[SE]` lines shown in [Proof](#proof-a-third-party-library-running-inside-shipped-summer). The run then exits with `Can't run project: no main scene defined in the project.` — that is expected and unrelated; the extension has already loaded and initialized by that point.
+</Step>
+</Steps>
+
+---
+
+## The godot-cpp gap
+
+Real extensions use [godot-cpp](https://github.com/godotengine/godot-cpp), the C++ bindings. **There is no godot-cpp for 4.6.** Confirmed against the remote:
+
+| Ref | State |
+|---|---|
+| `refs/heads/4.5` | Newest release branch |
+| `refs/tags/godot-4.5-stable` | Newest stable tag |
+| A `4.6` branch or `godot-4.6-stable` tag | Does not exist |
+| `master` | Already targeting 4.7 |
+
+This is an upstream scarcity, not a Summer restriction — anyone using stock Godot 4.6.1 hits the identical wall.
+
+### Workaround: point godot-cpp at Summer's own API dump
+
+godot-cpp's SCons build exposes a `custom_api_file` option — "Path to a custom GDExtension API JSON file (takes precedence over `gdextension_dir` and `api_version`)", defined in `tools/godotcpp.py`. Feed it the API that Summer itself emits:
+
+```bash
+# 1. Dump the API from the shipped binary (verified: writes extension_api.json to cwd)
+cd /tmp
+/Applications/Summer.app/Contents/MacOS/Summer --headless --dump-extension-api
+
+# 2. Get the bindings
+git clone https://github.com/godotengine/godot-cpp.git
+cd godot-cpp
+
+# 3. Build against the dumped API
+scons platform=macos target=template_debug custom_api_file=/tmp/extension_api.json
+```
+
+<Warning>
+**This recipe is assembled from verified facts but was not executed end to end.** Step 1 is verified — the dump command works and writes a 6.8 MB `extension_api.json` whose header reads `version_major: 4, version_minor: 6, version_patch: 1`. The `custom_api_file` option is verified to exist in godot-cpp. **The SCons build itself was not run.** godot-cpp `master` targets 4.7 and may reference engine symbols that do not exist in 4.6.1 even when pointed at a 4.6.1 API file. If it fails, that is the likely cause. Report what you hit; do not assume this page is right about the outcome.
+</Warning>
+
+<Note>
+The dumped `extension_api.json` carries `version_full_name: "Summer Engine v4.6.1.stable.mono.custom_build"`, so it is not byte-identical to an upstream 4.6.1 dump even though the ABI contract is. The version string is cosmetic; the function table is what binds.
+</Note>
+
+---
+
+## The `.gdextension` file format
+
+Read from `core/extension/gdextension_library_loader.cpp` in the Summer tree, which is unchanged from upstream apart from logging.
+
+### `[configuration]`
+
+| Key | Required | Behavior |
+|---|---|---|
+| `entry_symbol` | **Yes** | Hard error and load abort if absent |
+| `compatibility_minimum` | **Yes** | Hard error if absent. Must be at least `4.1.0` — anything lower is rejected outright. Compared lexicographically against the host's `4` / `6` / `1` |
+| `compatibility_maximum` | No | Missing version components default to `9999`, so `"4.6"` means "4.6.anything" |
+| `reloadable` | No | Defaults to `false`. Only read in editor builds |
+
+### `[libraries]`
+
+Keys are dot-separated feature tags; values are paths. Relative paths resolve against the directory containing the `.gdextension` file.
+
+<Warning>
+**The entry with the most matching tags wins, not the first match.** The loader scans every key, keeps the longest fully-satisfied tag set, and only then resolves the path. So `macos.debug.arm64` beats `macos.debug` on an ARM debug host regardless of file order. Ordering your entries does not control selection; tag specificity does.
+</Warning>
+
+### `[dependencies]`
+
+Extra shared objects to stage alongside the library. **The precedence rule here is the opposite of `[libraries]`:** the loader takes the **first** fully-matching tag set and stops. Order matters in `[dependencies]` and does not in `[libraries]`.
+
+### `[icons]`
+
+Optional. Maps a class name to an editor icon path. Relative paths resolve against the `.gdextension` file's directory.
+
+---
+
+## Gotchas that will bite
+
+### The `extension_list.cfg` trap
+
+**A `.gdextension` file alone is not enough.** The engine loads extensions from `res://.godot/extension_list.cfg`, a plain list of paths. Only the editor's filesystem scan writes that file. A headless or scripted launch against a project where it does not exist loads nothing — and prints nothing, because there is no error to report; the engine simply has an empty list.
+
+Verified by removing the file and re-running: **zero GDExtension output, no warning, no error, silent success.** This is the single most likely way for an agent to conclude an extension works when it never loaded.
+
+```ini
+res://bin/probe.gdextension
+```
+
+Write it by hand for any headless workflow, one `res://` path per line. Opening the project in the editor once also produces it.
+
+### Ship a plain `.dylib`, and make its path resolve
+
+The path in `[libraries]` must resolve to a real file. Do not rely on Apple's bundle or `@rpath` lookup as a fallback.
+
+When the primary load fails, upstream retries with an empty path to let Apple's bundle lookup have a go. In Summer that retry short-circuits:
+
+```
+[SE] GDExtension: first load failed (err=19), retrying with empty path for Apple lookup
+[SE] macOS: open_dynamic_library called with empty path (GDExtension fallback not implemented)
+```
+
+A correctly-pathed plain `.dylib` never reaches this code — that is the configuration proven to load, and it is what you should ship. We have not tested a `.framework`-packaged GDExtension in Summer and make no claim either way about it; a plain `.dylib` avoids the question entirely.
+
+### Do not trust a checked-in header
+
+`core/extension/gdextension_interface.h` exists in the Summer tree and is **stale** — dated August 2025, generated from an older Godot generation, and not tracked by upstream 4.6.1 at all (upstream generates it from the JSON at build time). It is one of only two files that differ under `core/extension/`.
+
+Always get the header from the binary you are targeting:
+
+```bash
+/Applications/Summer.app/Contents/MacOS/Summer --headless --dump-gdextension-interface
+```
+
+---
+
+## Platform support
+
+| Target | GDExtension | Notes |
+|---|---|---|
+| macOS editor | **Yes — proven by load** | Library validation disabled; unsigned third-party dylibs execute |
+| macOS export | Yes, with signing caveats | See below |
+| Windows / Linux export | Yes | Requires stock Godot 4.6.1 export templates (see below) |
+| Web export | **No** | See below |
+
+### macOS exports and library validation
+
+Read from `platform/macos/export/export_plugin.cpp`; not exercised as a full signed export.
+
+The macOS export preset defaults `codesign/entitlements/disable_library_validation` to `false`. The export plugin **auto-enables it** when the export is ad-hoc signed *and* carries shared objects, printing "Ad-hoc signed applications require the 'Disable Library Validation' entitlement to load dynamic libraries."
+
+<Warning>
+**A Developer-ID-signed export does not get that entitlement automatically.** If you sign with a real identity and ship a GDExtension, tick **Disable Library Validation** in the export preset yourself, or the game will fail to load its own extension on a user's machine.
+</Warning>
+
+Signing with `rcodesign` is unsupported when a dynamic library is embedded; the export plugin reports "'rcodesign' doesn't support signing applications with embedded dynamic libraries."
+
+### Web exports
+
+Web GDExtension support requires the engine to be built with WebAssembly dynamic linking. In `platform/web/detect.py`, `dlink_enabled` defaults to `False`, and only that flag switches the build to `-sMAIN_MODULE=1` / `-sSIDE_MODULE=2`. Summer ships no web export template, so a web export uses official Godot templates, which are not built with dlink.
+
+**Conclusion: do not plan on GDExtension in a web export.** Inferred from source; we have not run a web export to confirm the failure mode.
+
+### Export templates on other platforms
+
+Summer bundles **macOS templates only** — `macos.zip` under `4.6.1.stable/` and `4.6.1.stable.mono/` inside the app bundle. Verified by listing the directory. For other platforms you supply templates yourself, and they are stock Godot 4.6.1 builds.
+
+Worth stating plainly: **GDExtension portability across those templates is better than Summer-class portability.** Stock templates contain none of Summer's added classes, but the GDExtension ABI is identical, so a GDExtension built for Godot 4.6.1 runs in them.
+
+---
+
+## Community plugin compatibility
+
+Rules you can apply yourself, rather than a list that will be wrong next month.
+
+<CardGroup cols={2}>
+<Card title="Godot 3.x addons" icon="circle-x">
+**Dead.** The loader hard-errors on any `compatibility_minimum` below `4.1.0`. Independently, GDScript 2.0 and the 4.x scene format break 3.x `@tool` addons. There is no path here.
+</Card>
+
+<Card title="Pure-GDScript @tool addons" icon="circle-check">
+**The safe bet.** No ABI, no compilation, no code signing. If it works on stock Godot 4.6, it works on Summer. See [Editor Plugins](/extending/editor-plugins).
+</Card>
+
+<Card title="Precompiled GDExtension binaries" icon="circle-alert">
+**Version-locked, and 4.6 is a gap year.** Summer adds no restriction beyond stock Godot 4.6.1; the scarcity is entirely upstream, and it is the same scarcity as godot-cpp's.
+</Card>
+
+<Card title="Platform check first" icon="monitor">
+Before recommending any GDExtension, resolve the target: macOS editor yes, macOS export yes with signing caveats, Windows and Linux export yes with stock templates, web no.
+</Card>
+</CardGroup>
+
+**The reader test for a precompiled binary:** does it advertise Godot 4.6 support, and does its `compatibility_minimum` sit at or below `4.6.1` with no `compatibility_maximum` beneath it? Both must be true. Open the `.gdextension` file and read the `[configuration]` block — it is the authoritative answer, and it takes ten seconds.
+
+---
+
+## When a load fails
+
+Summer prints `[SE]`-prefixed diagnostics that stock Godot does not. They name the resolved absolute path, every fallback location tried, and the raw `dlerror` string. Search for them first; the stock `ERROR:` lines below them are less specific.
+
+A missing library produces this, verbatim:
+
+```
+[SE] GDExtension: loading library path=".../bin/libprobe.macos.template_debug.dylib" (from res://bin/probe.gdextension)
+[SE] macOS: dlopen failed path="..." dlerror=dlopen(..., 0x0002): tried: '...' (no such file)
+ERROR: Can't open dynamic library: ... Error: dlopen(...): ... (no such file).
+   at: open_dynamic_library (platform/macos/os_macos.mm:440)
+ERROR: Can't open GDExtension dynamic library: 'res://bin/probe.gdextension'.
+   at: open_library (core/extension/gdextension.cpp:741)
+```
+
+| Symptom | Cause |
+|---|---|
+| No GDExtension output at all | `res://.godot/extension_list.cfg` is missing or does not list your `.gdextension` |
+| `dlopen ... (no such file)` | The `[libraries]` path does not resolve. Check the tag key actually matched your platform |
+| `must contain a "configuration/entry_symbol" key` | Missing `entry_symbol` |
+| `must contain a "configuration/compatibility_minimum" key` | Missing `compatibility_minimum` |
+| `must be at least 4.1.0` | A 3.x-era or malformed `compatibility_minimum` |
+| `No GDExtension library found for current OS and architecture` | No `[libraries]` key matched. The error names the `os.arch` pair it wanted |
+| Entry symbol not found | The symbol name in `[configuration]` does not match the exported symbol. Check with `nm -gU` on the dylib |
+
+Hot reload of a `reloadable` extension is enabled in the editor. It is off everywhere else, by design — the flag is only read in editor builds.
+
+---
+
+## Summer's own native classes
+
+The live API dump contains 1032 classes; 8 are Summer's:
+
+| Class | Availability |
+|---|---|
+| `SummerEngineSettings` | `RefCounted`, `api_type: core`, 15 methods. The only one registered outside `#ifdef TOOLS_ENABLED`, so the only one present in an exported game |
+| `AuthManager`, `SummerEngineGateway`, `ChatPanel`, `WebViewControl`, `PostHogClient`, `LocalApiServer`, `MutationLease` | Editor-only |
+
+These exist to run the editor's own AI surfaces — authentication, the chat panel, the embedded webview, telemetry, the local tool server, edit coordination. They are documented here so you are not surprised to find them in an API dump. **There is no reason to call them from a game.** Relying on any of them makes your project unopenable in stock Godot for no benefit.
+
+---
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Editor Plugins" icon="blocks" href="/extending/editor-plugins">
+    Pure-GDScript `@tool` plugins — no ABI, no compilation, no signing
+  </Card>
+  <Card title="Godot Compatibility" icon="git-fork" href="/knowledge-base/godot-compatibility">
+    What Summer shares with stock Godot, and what it adds
+  </Card>
+  <Card title="macOS Export" icon="apple" href="/publishing/macos-export">
+    Signing, entitlements, and notarization for shipped games
+  </Card>
+  <Card title="What is open in Summer?" icon="badge-check" href="/knowledge-base/source-status">
+    The exact split between open, free, and paid
+  </Card>
+</CardGroup>
+
+---
+
+Need help or have questions? Reach out to our founders at [founders@summerengine.com](mailto:founders@summerengine.com) or join our community on [Discord](https://discord.gg/yUpgtxnZky) for fast responses.
