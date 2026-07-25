@@ -374,7 +374,7 @@
     },
     {
       "source": "/ai-tools/windsurf-setup",
-      "destination": "/mcp/windsurf"
+      "destination": "/mcp/devin-desktop"
     },
     {
       "source": "/mcp/windsurf",
