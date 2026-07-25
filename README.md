@@ -12,6 +12,16 @@ This repository contains:
 
 **[View the full documentation](https://docs.summerengine.com)**
 
+## Before you change anything
+
+Read **[URL-POLICY.md](./URL-POLICY.md)**. One rule matters more than the rest: a
+published URL never moves, and content iterates underneath it. Renaming a live page
+is the easiest way to do lasting damage here, and it will not show up in any test.
+
+That document also lists which pages are generated from source and must not be
+hand-edited, and states the accuracy bar: do not document a capability you have not
+seen work.
+
 ## Development
 
 Install the [Mintlify CLI](https://www.npmjs.com/package/mint) to preview documentation changes locally. To install, use the following command:
