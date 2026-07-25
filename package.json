@@ -1,0 +1,11 @@
+{
+  "name": "summer-docs",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "check": "node scripts/check-docs.mjs"
+  }
+}

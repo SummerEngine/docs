@@ -1,0 +1,22 @@
+name: docs-check
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # Required: check-docs.mjs diffs against the merge base (PR) or HEAD~1
+          # (push) to enforce the URL freeze and redirect permanence.
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - run: node scripts/check-docs.mjs
