@@ -336,17 +336,20 @@ Summer --headless --editor --path /path/to/project -s res://tool.gd
 <Warning>
 **`--editor` is not safe to run casually. Plain `--headless` is.**
 
-In Summer 0.5.55 and earlier, adding `--editor` starts Summer's local API server, which
-**overwrites `~/.summer/api-port` and regenerates `~/.summer/api-token`**. That is how the
-CLI and your agent find a running editor. A headless editor takes the port for itself,
-rotates the token underneath whatever was already running, and on exit leaves the file
-pointing at a dead port.
+On current builds, adding `--editor` starts Summer's local API server, which **overwrites
+`~/.summer/api-port` and regenerates `~/.summer/api-token`**. That is how the CLI and your
+agent find a running editor. A headless editor takes the port for itself, rotates the token
+underneath whatever was already running, and on exit leaves the file pointing at a dead
+port.
 
 Do not run `--headless --editor` against a project the user has open, and expect to have to
-restart the real editor afterwards if you run it at all.
+restart the real editor afterwards if you run it at all. Restarting the editor republishes
+the binding.
 
-This is fixed in later builds, which no longer publish the machine-global binding from
-batch-mode instances. If you are unsure which you have, assume the older behaviour.
+**If your agent reports the engine as disconnected while it is plainly running, this is the
+first thing to check.** A later build suppresses the binding for batch-mode instances; until
+you have confirmed your build does, assume it does not.
+
 
 Plain `--headless -s script.gd` never starts that server and has none of these effects.
 </Warning>
