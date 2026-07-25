@@ -22,6 +22,31 @@ shipped binary rather than reasoned about:
 | [Translations](#localisation-three-formats-three-rules) | Loading the `.csv` you wrote returns null forever, silently |
 | [Tilemaps](#tilemaps-where-hand-writing-a-tscn-stops) | Cells are a packed byte blob, not readable text |
 
+## The failure shape to watch for
+
+Nearly every trap on this page has the same signature, and it is worth naming because once you
+recognise it you will start catching the others yourself:
+
+> **Your own read-back confirms a change that did not take.**
+
+Not an error. Not a crash. You set a value, you read it back to check, the check passes, and
+the thing you asked for did not happen:
+
+- `ProjectSettings.set_setting()` returns fine and reads back fine, and the value is gone next
+  run because nothing called `save()`.
+- A feature-tag override is live and driving the engine, while `get_setting()` reports the base
+  value and tells you it did not apply.
+- `PathFollow2D.progress` set before the node is in the tree reads back exactly what you set,
+  and the node never moves.
+- `PackedScene.pack()` and `ResourceSaver.save()` both return success and write a scene with
+  your nodes missing.
+- `FontFile.load_dynamic_font()` returns error code 0 having loaded zero faces.
+
+This is a worse class of bug than a loud failure, because the natural instinct — *verify by
+reading it back* — is precisely what fails. **Verify by the effect, not by the value.** Did the
+node move? Does the reloaded scene have the child? Does the exported build actually contain the
+file? Those questions cannot be answered by the same in-memory state that lied to you.
+
 ## Where `user://` actually goes
 
 A save file written to `user://save.json` lands here:
