@@ -1,0 +1,282 @@
+---
+title: "Plugin Library"
+description: "A curated, verified list of community Godot 4 addons that fit Summer's compatibility rules — dialogue, behaviour trees, cameras, terrain, testing and debug tools — plus the reusable test for judging any plugin yourself."
+icon: "library"
+---
+
+Summer is Godot 4.6.1 with an unmodified `core/`, so the community's Godot 4 addons are
+your addons. Drop one into `addons/`, enable it, and it behaves exactly as it does on
+stock Godot — see [Extending Summer](/extending/overview) for why, and
+[Editor Plugins](/extending/editor-plugins) for how to write your own.
+
+This page is a **curated list, not a marketplace**. There is no installer, no registry
+and no ranking. It is a short set of addons whose repositories we checked, alongside the
+rules we used — so that when an entry here goes stale, you can replace it yourself.
+
+<Note>
+**What "checked" means, precisely.** Every entry below was verified on **25 July 2026**
+against its actual repository: the repository exists at the URL given, it is not
+archived, its license is a real file we read, its most recent release and most recent
+push are the dates stated, and its stated Godot support and plugin type come from its
+own `README`, `plugin.cfg` or `.gdextension` file.
+
+**We did not install and run each of these inside Summer.** The compatibility argument
+is the one on [Extending Summer](/extending/overview): a pure-GDScript `@tool` addon that
+works on stock Godot 4.6 works on Summer, because Summer is stock Godot 4.6 plus
+additions. Where an entry carries native code, that argument is weaker and the entry
+says so.
+</Note>
+
+## How to judge a plugin yourself
+
+This is the durable part of the page. Entries age; the test does not.
+
+<Steps>
+
+<Step title="Is it Godot 4.x?">
+[Godot 3.x addons are dead](/extending/overview#using-community-godot-addons) and no
+amount of patching brings them back — the 3.x plugin API does not exist in 4.x, GDScript
+2.0 is a different language, and the scene format changed. A repository with a `3.x`
+branch and a `4.x` branch is fine; you want the 4.x one. A repository that only ever
+supported 3.x is a dead end on stock Godot too.
+</Step>
+
+<Step title="Is it pure GDScript, or does it ship a binary?">
+Look in the addon folder. If everything is `.gd` and `.tscn` with a `plugin.cfg`, it is a
+**GDScript addon** — no ABI, no compilation, no code signing, and the safe case.
+
+If you find a `.gdextension` file next to `.dll` / `.so` / `.dylib` / `.framework` files,
+it is a **GDExtension**, and it is version-locked to whatever Godot version those
+binaries were built against. Go to the next step.
+</Step>
+
+<Step title="For a GDExtension, read the .gdextension file">
+It is the authoritative answer and it takes ten seconds. Open the `[configuration]`
+block:
+
+```ini
+[configuration]
+entry_symbol = "..."
+compatibility_minimum = "4.5"
+```
+
+`compatibility_minimum` must be at or below `4.6.1`, and any `compatibility_maximum`
+must be at or above it. The engine hard-errors on anything below `4.1.0`. Then check
+`[libraries]` actually names a key matching your platform. The full rules, including the
+tag-precedence trap, are on [GDExtension](/extending/gdextension#the-gdextension-file-format).
+</Step>
+
+<Step title="Check maintenance against the version you are on, not against today's date">
+"Last commit two weeks ago" is not the question. The question is whether a **released**
+version targets Godot 4.6. Plenty of addons have a healthy default branch and a newest
+tag that predates 4.6 entirely — you can still use them, but you are installing an
+untagged branch head, and you should know that is what you are doing.
+
+Read the project's own compatibility table if it has one. Several of the entries below
+publish one, and it is more reliable than a badge in the README header.
+</Step>
+
+<Step title="Check the license and read the code you are enabling">
+No clear license, no entry on this page. Beyond legality: enabling a plugin runs its
+code inside your editor process with full filesystem access. That is true on stock Godot
+too, and it is worth saying once per page.
+</Step>
+
+<Step title="Verify it actually loaded">
+Enabling a plugin in Summer can return success and still not load it. A broken plugin
+does not crash the editor; it produces an editor that quietly ignores you. After
+enabling, confirm with `IsEditorPluginEnabled` or `EditorInterface.is_plugin_enabled()`.
+This is not optional and the failure mode is genuinely nasty —
+[Verification is not optional](/extending/editor-plugins#verification-is-not-optional).
+</Step>
+
+</Steps>
+
+<Warning>
+The single most common way to conclude "this plugin works" when it never loaded is to
+trust the enable call's acknowledgement. It means *queued*, not *loaded*. Verify
+separately, every time.
+</Warning>
+
+## Dialogue and narrative
+
+| Plugin | What it does | Type | License | State when checked |
+|---|---|---|---|---|
+| [Dialogic](https://github.com/dialogic-godot/dialogic) | Visual editor for dialogue, characters, portraits and timelines; the default choice for visual novels and RPG conversations | GDScript addon | MIT | `2.0-alpha-20`, released 21 Jul 2026. `README` requires Godot 4.3+ |
+| [Dialogue Manager](https://github.com/nathanhoad/godot_dialogue_manager) | Script-like branching dialogue written as text files, with a stateless runtime — the code-first alternative to Dialogic | GDScript addon | MIT | `v3.10.5`, released 20 Jul 2026. See the version note below |
+
+<Note>
+**Dialogue Manager's version split matters.** Its `README` states that Dialogue Manager 4
+targets **Godot 4.6+** and lives on the default branch, while the `v3.10` line — which is
+what the newest *tag*, `v3.10.5`, belongs to — targets Godot 4.4 or 4.5. There is no v4
+tag at the time of checking. For Summer, that means installing the default branch rather
+than the latest release, or taking the Asset Library build if it has caught up.
+</Note>
+
+Dialogic has carried an `alpha` label on its 2.0 line for a long time while being one of
+the most widely used addons in the ecosystem. Treat the label as a versioning habit
+rather than a warning, but read the changelog before upgrading across alphas.
+
+## Behaviour, state machines and cameras
+
+| Plugin | What it does | Type | License | State when checked |
+|---|---|---|---|---|
+| [Godot State Charts](https://github.com/derkork/godot-statecharts) | Hierarchical state charts — finite state machines without the state explosion; nested and parallel states, history, transition guards | GDScript addon | MIT | `v0.22.5`, released 26 Jun 2026. Supports "Godot 4 or later"; `0.22.5` was itself a Godot 4.7 compatibility fix |
+| [Beehave](https://github.com/bitbrain/beehave) | Behaviour trees for enemy and NPC AI, with an in-editor debugger that shows the tree evaluating live | GDScript addon | MIT | Newest tag `v2.9.2`, Dec 2025; default branch last pushed 6 Jul 2026. See the release-gap note below |
+| [Phantom Camera](https://github.com/ramokz/phantom-camera) | Cinemachine-style virtual cameras for `Camera2D` and `Camera3D` — framing, follow modes, blends and priorities without hand-written camera code | GDScript addon | MIT | `v0.11.0.3`, released 19 Jul 2026. README states Godot 4.4+ |
+| [LimboAI](https://github.com/limbonaut/limboai) | Behaviour trees plus hierarchical state machines, with a visual editor and a blackboard system | **GDExtension** | MIT | `v1.8.0`, released 19 Jun 2026. Ships a GDExtension build labelled for 4.6. See below |
+
+<Warning>
+**Beehave's newest release predates its own 4.6 guidance.** The project's compatibility
+table says Godot 4.5+ wants Beehave `2.10+`, but no `2.10` tag exists — the newest tag is
+`v2.9.2` from December 2025, and the branch `plugin.cfg` reads `2.9.3-dev`. Meanwhile the
+default branch has commits titled "upgrade project to godot 4.6" (February 2026) and
+"upgrade deps to Godot 4.7" (July 2026).
+
+So the 4.6-ready code exists and the 4.6-ready *release* does not. Install the
+`godot-4.x` branch head knowingly, or stay on `v2.9.2` and test.
+</Warning>
+
+<Note>
+**LimboAI ships two different things and only one of them works here.** Its release page
+carries both a GDExtension archive (named for Godot 4.6) and a set of full custom engine
+builds for Godot 4.7. The custom engine builds are the module route and
+[cannot be used with Summer](/extending/modules) — there is no way to compile a module
+into Summer. Take the GDExtension archive.
+
+Its `.gdextension` declares `compatibility_minimum = "4.2"` with no maximum, which passes
+the [reader test](/extending/gdextension#community-plugin-compatibility) for 4.6.1. Its
+macOS binaries are `.framework` bundles — see [the macOS caveat](#the-macos-framework-caveat).
+</Note>
+
+## Level, terrain and world tools
+
+| Plugin | What it does | Type | License | State when checked |
+|---|---|---|---|---|
+| [HeightMap Terrain](https://github.com/Zylann/godot_heightmap_plugin) | Heightmap-based 3D terrain with sculpting, texture painting, detail layers and LOD, entirely in GDScript | GDScript addon | MIT | Last pushed 14 Jul 2026. `README` states **Godot 4.6+** explicitly. No tagged releases at all — install from the default branch or the Asset Library |
+| [SmartShape2D](https://github.com/SirRamEsq/SmartShape2D) | Draw 2D terrain as a spline and get textured edges, corners and collision generated for you | GDScript addon | MIT | `v3.3.1`, Dec 2025; last pushed 21 Jun 2026. Author states support for Godot 4.x; the `README` badge still reads 4.3 |
+| [Terrain3D](https://github.com/TokisanGames/Terrain3D) | High-performance clipmap terrain with a full sculpting and painting dock — the heavyweight option when GDScript terrain is not fast enough | **GDExtension** | MIT | `v1.0.2-stable`, released 19 May 2026, whose release notes read "This maintenance release brings support for Godot 4.6" |
+
+Terrain3D's `.gdextension` declares `compatibility_minimum = 4.5` with no maximum, and
+the release explicitly states support for Godot 4.4 through 4.6+. That is the cleanest
+4.6 story of any prebuilt GDExtension we checked. The macOS caveat below still applies.
+
+## Testing and debugging
+
+| Plugin | What it does | Type | License | State when checked |
+|---|---|---|---|---|
+| [GUT](https://github.com/bitwes/Gut) | Unit testing for GDScript — asserts, doubles, stubs, parameterised tests, an in-editor runner and a CLI for continuous integration | GDScript addon | MIT | `v9.7.1`, 10 Jul 2026. Its own version table maps **Godot 4.6.x to `v9.6.1` or the default branch**; `v9.7.1` is the 4.7 line |
+| [gdUnit4](https://github.com/godot-gdunit-labs/gdUnit4) | Testing framework covering both GDScript and C#, with an embedded test inspector, mocking and scene testing | GDScript addon (plus C# support) | MIT | `v6.1.3`, Apr 2026; last pushed 25 Jul 2026. `README` badges list 4.6, 4.6.1, 4.6.2 and 4.6.3 explicitly |
+| [Debug Draw 3D](https://github.com/DmitriySalnikov/godot_debug_draw_3d) | Immediate-mode 3D debug primitives — lines, boxes, spheres, frustums — plus 2D overlays and graphs, drawable from anywhere without leaking nodes | **GDExtension** | MIT | `1.7.3`, released 4 Apr 2026 |
+
+<Warning>
+**Read GUT's version table before installing.** The newest release is not the one you
+want. `v9.7.1` targets Godot 4.7.x; Godot 4.6.x maps to `v9.6.1` or the default branch.
+Installing the newest tag because it is newest is the mistake this table exists to
+prevent, and GUT is unusually good about documenting it.
+</Warning>
+
+Debug Draw 3D's `.gdextension` declares `compatibility_minimum = "4.4.1"` with no
+maximum, so it passes the mechanical half of the reader test. Its documentation does not
+name 4.6 anywhere, so it fails the "does it advertise 4.6" half. Try it, verify it loads,
+and do not assume.
+
+## The macOS `.framework` caveat
+
+Every prebuilt GDExtension on this page — Terrain3D, LimboAI and Debug Draw 3D — ships
+its macOS binary as a `.framework` bundle rather than a plain `.dylib`. That is simply
+what the standard bindings produce for macOS, so it is not a mark against any of them.
+
+It matters here because **Summer's GDExtension loading has been verified against a plain
+`.dylib` and has not been tested with `.framework` packaging**, and Summer does not
+implement upstream's Apple bundle-lookup fallback path. See
+[Ship a plain `.dylib`](/extending/gdextension#ship-a-plain-dylib-and-make-its-path-resolve).
+
+Practically:
+
+- On **Windows and Linux**, these three ship plain `.dll` and `.so` files and the
+  question does not arise.
+- On **macOS**, load them and check the editor console before building anything on top.
+  Summer prints `[SE]`-prefixed diagnostics naming the resolved path and the raw
+  `dlerror` string, which will tell you immediately —
+  [When a load fails](/extending/gdextension#when-a-load-fails).
+- On **web exports**, no GDExtension works at all, regardless of packaging.
+
+If you resolve this either way on macOS, tell us. It is the single most useful missing
+data point on this page.
+
+## What is not here
+
+Some well-known addons were checked and deliberately left out. The reasoning is more
+useful than the names:
+
+- **Anything shipped as an engine module** — the best-known voxel terrain system for
+  Godot is distributed as a module requiring a custom engine build, with GDExtension
+  support still listed as planned work. Summer's engine source is not public, so
+  [modules cannot be used](/extending/modules), and a GDExtension build of the same
+  project is a different artifact you must check separately.
+- **Addons with open, unresolved reports of breaking on Godot 4.6** — including one
+  popular scattering tool with issues filed specifically against 4.6 on Apple Silicon,
+  and one sprite-import tool with two unresolved 4.6 reports. A plugin that is broken on
+  stock 4.6 is broken on Summer.
+- **Projects that have moved off GitHub** — at least one major Steam integration now has
+  archived GitHub repositories that redirect elsewhere. Not a judgement on the project;
+  we only list links we fetched.
+- **Addons whose newest release long predates 4.6 with no compatibility statement.**
+  They may well work. We have no basis for saying so, and a plausible list is worth less
+  than a short verified one.
+
+## Submit a plugin
+
+There is no submission form and no automated review. Two routes, both of which reach us:
+
+<CardGroup cols={2}>
+  <Card title="Open an issue or a pull request" icon="github" href="https://github.com/SummerEngine/docs">
+    This documentation is a public repository. Propose an entry against
+    `extending/plugin-library.mdx`, or file an issue if you would rather we did the
+    checking
+  </Card>
+  <Card title="Tell us on Discord" icon="message-circle" href="https://discord.gg/yUpgtxnZky">
+    The fastest route, and the right one if you want to discuss whether something fits
+    before writing it up
+  </Card>
+</CardGroup>
+
+Include the repository URL, the license, whether it is a GDScript addon or a
+GDExtension, and — if it is a GDExtension — the `compatibility_minimum` from its
+`.gdextension` file. That is most of the verification already done.
+
+## A note on how new this is
+
+**Summer-specific plugins do not really exist yet.** We documented Summer's extension
+surface — [editor plugins](/extending/editor-plugins),
+[GDExtension](/extending/gdextension), the [headless editor](/automation/headless) — very
+recently, and nobody has had time to build against it.
+
+So this list starts where it honestly can: general Godot 4.x addons that Summer inherits
+by being a faithful fork. As people build things that use what Summer adds on top —
+agent-driven editor tooling, generation pipelines, project automation — this page is
+where they will go. If you are building one, the
+[editor plugin page](/extending/editor-plugins) is the whole API surface, and Discord is
+where to tell us it exists.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Write your own plugin" icon="plug" href="/extending/editor-plugins">
+    Templates, the three ways to enable one, and the traps that fail silently
+  </Card>
+  <Card title="Extending Summer" icon="blocks" href="/extending/overview">
+    The three extension paths and which one applies to you
+  </Card>
+  <Card title="GDExtension" icon="puzzle" href="/extending/gdextension">
+    Native libraries: the ABI, the loader rules, and how to debug a failed load
+  </Card>
+  <Card title="Headless scripting" icon="terminal" href="/automation/headless">
+    Driving the engine from a shell with no window
+  </Card>
+</CardGroup>
+
+---
+
+Need help or have questions? Reach out to our founders at [founders@summerengine.com](mailto:founders@summerengine.com) or join our community on [Discord](https://discord.gg/yUpgtxnZky) for fast responses.
