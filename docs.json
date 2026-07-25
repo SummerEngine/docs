@@ -110,6 +110,21 @@
             ]
           },
           {
+            "group": "Automation",
+            "pages": [
+              "automation/headless"
+            ]
+          },
+          {
+            "group": "Extending Summer",
+            "pages": [
+              "extending/overview",
+              "extending/editor-plugins",
+              "extending/gdextension",
+              "extending/modules"
+            ]
+          },
+          {
             "group": "Reference",
             "pages": [
               "desktop/troubleshooting"

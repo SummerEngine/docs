@@ -1,0 +1,387 @@
+---
+title: "Headless Scripting"
+description: "Run Summer from a shell with no window: bake navmeshes, generate collision and LODs, author resources, import assets, and export builds from a plain GDScript file."
+icon: "terminal"
+---
+
+Summer's engine binary runs without a window. Point it at a project and a script, and it
+will execute that script with the whole engine available — physics, resources, importing,
+exporting, the lot. This is how you automate work that has no reason to involve a person
+clicking through the editor.
+
+```bash
+/Applications/Summer.app/Contents/MacOS/Summer --headless --path /path/to/project -s res://task.gd
+```
+
+<Warning>
+**`--headless` produces no pixels. None.**
+
+There is no rendering. `viewport.get_texture()` returns a healthy-looking `ViewportTexture`
+with a plausible size, and then `get_image()` on it returns **null**:
+
+```
+ERROR: Parameter "t" is null.
+   at: texture_2d_get (servers/rendering/dummy/storage/texture_storage.h:106)
+```
+
+Every readback route fails the same way: the root viewport, a `SubViewport` set to
+`UPDATE_ALWAYS`, calling `RenderingServer.force_draw()` first, and
+`RenderingServer.texture_2d_get()`. `--write-movie` does not rescue you either — under
+`--headless` it **crashes with signal 11**.
+
+If you do not null-check, `save_png()` is never reached, no file is written, and nothing
+reports a failure. Your script exits 0 and you believe it worked.
+
+**Any plan of the form "run headless and take a screenshot" is dead on arrival.** Headless
+can simulate. It cannot see.
+</Warning>
+
+## The script template
+
+Copy this. It is the exact file used to verify the behaviour on this page.
+
+```gdscript
+extends SceneTree
+
+# Entry point for: Summer --headless --path <proj> -s res://task.gd
+# _init() is the entry point. _run() is NEVER called and will hang the process.
+
+func _init() -> void:
+	var exit_code := 0
+	print("[task] start")
+
+	# Nodes added here are NOT in the tree until at least one frame passes.
+	var n := Node3D.new()
+	get_root().add_child(n)
+	await process_frame          # required before physics / in-tree APIs
+	print("[task] node in tree: ", n.is_inside_tree())
+
+	# ... do work ...
+	var ok := true
+	if not ok:
+		push_error("[task] FAILED: reason here")
+		exit_code = 1
+
+	print("[task] done")
+	quit(exit_code)   # REQUIRED. Without it the process hangs forever.
+```
+
+<Warning>
+**`_init()` is the entry point, not `_run()`.**
+
+`_run()` belongs to `EditorScript`, which cannot be instantiated outside the editor. A
+script using `_run()` with `-s` **hangs forever and prints absolutely nothing** — no error,
+no warning, no output at all. `--quit-after` does not rescue it.
+
+This is the single easiest way to lose an afternoon. If your headless script produces no
+output and never returns, check this first.
+</Warning>
+
+Only two base classes work. Everything else hangs silently:
+
+| Script shape | Result |
+|---|---|
+| `extends SceneTree` + `_init()` | **Works** |
+| `extends MainLoop` + `_initialize()` / `_process()` / `_finalize()` | **Works** — return `true` from `_process` to quit |
+| `extends SceneTree` + `_run()` only | Hangs, zero output |
+| `extends Node`, `extends Object`, `extends RefCounted` | Hangs forever, zero output |
+
+`@tool` on a `-s` script is a no-op — `Engine.is_editor_hint()` is `false` here.
+
+## Exit codes lie
+
+<Warning>
+**Only an explicit `quit(N)` produces a non-zero exit code.** Everything else exits **0**,
+including total failure:
+
+| What happened | Exit code |
+|---|---|
+| `quit(0)` | 0 |
+| `quit(42)` | 42 |
+| GDScript **parse** error | **0** |
+| GDScript **runtime** error | **0** |
+| **Script file does not exist at all** | **0** |
+| `push_error()` | **0** |
+
+A typo in your script path exits 0 and your CI reports success on a script that never ran.
+</Warning>
+
+Gate on stderr, not on `$?`. Streams are cleanly separated: `print()` goes to stdout;
+`printerr()`, `push_error()`, `push_warning()` and all engine `ERROR:` / `WARNING:` lines
+go to stderr. Grep for `SCRIPT ERROR`, `Parse Error`, `Can't load script`, and `ERROR:`.
+
+One benign exception: `WARNING: ObjectDB instances leaked at exit` prints on **every** run,
+including fully successful ones. Do not gate on it.
+
+## Finding the binary
+
+<Warning>
+The binary is **not** called `godot`. `godot --headless` fails on every user's machine
+because no such binary is installed.
+</Warning>
+
+On macOS the engine is at `/Applications/Summer.app/Contents/MacOS/Summer`. From inside a
+running script, ask the engine directly rather than guessing:
+
+```gdscript
+print(OS.get_executable_path())
+# /Applications/Summer.app/Contents/MacOS/Summer
+```
+
+That path is the real executable, not the `.app` wrapper, so it is safe to re-invoke
+directly for self-spawning work.
+
+## What works
+
+Verified by running each against the shipped binary.
+
+<AccordionGroup>
+
+<Accordion title="Collision shapes from a mesh" icon="box">
+`create_trimesh_shape()` and `create_convex_shape()` both work and round-trip through
+`.tres` losslessly. A `BoxMesh` produces 36 face vec3s (12 triangles) trimesh and an
+8-point convex hull.
+
+Simplification is effective: a 32x16 sphere gives a 514-point convex hull, or **32 points**
+with `create_convex_shape(true, true)`.
+</Accordion>
+
+<Accordion title="Navmesh baking" icon="route">
+Use `NavigationServer3D.bake_from_source_geometry_data(nav_mesh, source_geometry)`.
+`NavigationServer2D` has the same method.
+
+Prefer building `NavigationMeshSourceGeometryData3D` procedurally with `add_faces()` /
+`add_mesh()`. Parsing a live scene tree also works, but only **after** a frame has passed —
+before that you get `The root node needs to be inside the SceneTree` and a silent zero-poly
+bake. Parsing visual meshes also triggers a real performance warning, because it reads
+mesh data back from the RenderingServer.
+
+Bakes save to `.tres` and reload with identical vertex and polygon counts.
+</Accordion>
+
+<Accordion title="LOD generation" icon="layers">
+`ImporterMesh` is instantiable outside the editor. In Summer the signature takes **three**
+arguments:
+
+```gdscript
+importer_mesh.generate_lods(normal_merge_angle, normal_split_angle, bone_transform_array)
+```
+
+The two-argument form is a parse error. A 4,224-triangle sphere produced **9 LOD levels**
+down to 8 triangles in 3ms. `get_mesh()` returns an `ArrayMesh` that saves and reloads
+cleanly. Note `generate_shadow_mesh` is not exposed.
+</Accordion>
+
+<Accordion title="Animation authoring" icon="film">
+Value, bezier, method, position_3d and rotation_3d tracks can all be created
+programmatically, saved to `.tres`, and reloaded intact. Bezier handles, method names **and
+their argument arrays**, loop mode, step and length all survive exactly.
+`AnimationLibrary` round-trips too.
+
+Track type integers: `0` value, `1` position_3d, `2` rotation_3d, `5` method, `6` bezier.
+</Accordion>
+
+<Accordion title="TileSet, Theme, Shader, AudioBusLayout" icon="palette">
+All four author and round-trip through `.tres`.
+
+`TileSet` keeps atlas sources, physics layers, terrain sets, navigation layers, custom data
+layers and per-tile collision polygons. One gotcha: `add_physics_layer()`,
+`add_terrain_set()`, `add_navigation_layer()` and `add_custom_data_layer()` return **void**,
+not the new index, so `var i := ts.add_physics_layer()` is a parse error.
+
+`Shader` source survives byte-identical and uniforms introspect correctly — but this is
+**parsing, not GPU compilation**. The dummy renderer never compiles the shader, so headless
+will not catch driver-level compile errors.
+
+`AudioBusLayout` works with the Dummy audio driver; bus volumes, mutes and effects all
+persist.
+</Accordion>
+
+<Accordion title="Physics and raycasting" icon="crosshair">
+This is the real story: **headless can simulate, it just cannot see.** Physics is entirely
+CPU-side and completely unaffected by the dummy renderer.
+
+3D and 2D `intersect_ray`, `intersect_point` and `intersect_shape` all work, returning full
+hit dictionaries with position, normal, collider and RID. Rigid bodies actually fall under
+gravity.
+
+Prerequisite: `await physics_frame` after `add_child()`, or `direct_space_state` returns
+nothing.
+</Accordion>
+
+</AccordionGroup>
+
+## Importing assets
+
+<Warning>
+**A file written directly to disk cannot be loaded until an import pass runs.**
+
+```
+ERROR: No loader found for resource: res://raw.png (expected type: unknown)
+   at: _load (core/io/resource_loader.cpp:358)
+```
+
+This is the most common way agent-written assets fail. `ResourceLoader.exists()` returns
+`false` and `load()` returns null.
+</Warning>
+
+Run the import pass:
+
+```bash
+/Applications/Summer.app/Contents/MacOS/Summer --headless --path /path/to/project --import
+```
+
+This writes the `.import` file next to your asset and the compiled `.ctex` into
+`.godot/imported/`. Afterwards `load()` returns a `CompressedTexture2D` and everything
+behaves normally.
+
+<Note>
+**`-s` script runs never create `.godot/` at all.** Only `--import` (or a normal editor or
+game run) builds the import database. If you have only ever run scripts, the directory does
+not exist yet.
+
+`--import` costs roughly 5 seconds even with nothing to do, about 15x a trivial script run.
+Do not run it speculatively.
+</Note>
+
+### Do not ship a game that depends on raw source files
+
+There is a tempting shortcut: `Image.load_from_file("res://raw.png")` reads the file
+directly and needs no import pass at all. Equivalents exist for audio
+(`AudioStreamOggVorbis.load_from_file`), fonts (`FontFile.load_dynamic_font`) and models
+(`GLTFDocument.append_from_file`).
+
+<Warning>
+**These bypass loaders read your raw source file, and whether that file exists in an
+exported game depends on your export configuration.** They work perfectly in development,
+where the source is obviously present, and can fail in the shipped build, where it may not
+be.
+
+`FontFile.load_dynamic_font` is the worst case: when the file is missing it returns
+**error code 0 with zero faces**. Success, and no font. Nothing fails at authoring time.
+
+Use these loaders for tooling and one-off scripts. Do not build a shipping game on them.
+</Warning>
+
+Two routes that are robust regardless of export settings:
+
+1. **Author a real resource and save it.** `ResourceSaver.save()` to `.tres` or `.res` needs
+   no import pass, no editor, and no `.godot/` at all, and the result ships correctly.
+   Verified for `ImageTexture`, `Image`, `AudioStreamWAV`, `AudioStreamOggVorbis`,
+   `AudioStreamMP3`, `FontFile` (which embeds the whole TTF), `ArrayMesh`, `Translation`
+   and `AudioBusLayout`. One trap: `PortableCompressedTexture2D` saves with error 0 and
+   reloads **empty** — use `ImageTexture`.
+2. **Import properly**, then use ordinary `load()`. The compiled `.ctex` always ships.
+
+<Note>
+`.godot/imported/` is **load-bearing, not a disposable cache.** Delete it and every imported
+asset returns null, even with all the `.import` files still present. Ignore any advice that
+tells you to clean it.
+</Note>
+
+## Exporting a build
+
+Export works headless from a hand-written `export_presets.cfg`. Summer bundles macOS export
+templates inside the app, so no download is needed for a Mac build:
+
+```bash
+mkdir -p build
+/Applications/Summer.app/Contents/MacOS/Summer --headless --path . \
+  --export-release "macOS" build/game.zip
+```
+
+The resulting artifact genuinely runs, as a real template build with
+`OS.has_feature("template") == true` and `Engine.is_editor_hint() == false`.
+`--export-pack` produces a `.pck` instead.
+
+<Note>
+**Only macOS templates ship with the app.** Windows, Linux, web, Android and iOS exports
+need templates fetched from the standard Godot mirror list first.
+</Note>
+
+Two errors print at the start of every export and are harmless:
+`Parent node is busy setting up children, add_child() failed` and
+`Condition "!is_inside_tree()" is true` from `http_request.cpp`.
+
+Be careful with `export_filter="all_resources"` — it packs everything, including every
+stray `.gd` file in the project.
+
+## What does not work
+
+| Capability | Status |
+|---|---|
+| Rendering, screenshots, any pixel readback | **Impossible headless.** See the warning at the top |
+| `--write-movie` | **Crashes** with signal 11 under `--headless` |
+| Performance measurement | Meaningless. Draw calls read `0.0`, FPS reads `1.0`, video adapter name is empty |
+| `LightmapGI.bake()` | **Does not exist** in the scripting API. The node instantiates and every property setter is exposed, but `bake` is absent from the method list — calling it is a *parse-time* failure |
+| `OccluderInstance3D.bake_single_node()` | Same. Not exposed |
+| `EditorScript`, `EditorPlugin`, `EditorInterface`, `EditorFileSystem` | `can_instantiate()` is false for all of them outside the editor |
+
+<Warning>
+`Engine.has_singleton("EditorInterface")` returns **true** while
+`Engine.get_singleton("EditorInterface")` fails with
+`Can't retrieve singleton 'EditorInterface' outside of editor`. Do not use `has_singleton`
+as your guard — use `Engine.is_editor_hint()`.
+</Warning>
+
+Anything needing editor context has a supported route. Adding `--editor` gives you a live
+`EditorNode` and the full `EditorInterface` — 70 bound methods including `save_scene`,
+`open_scene_from_path` and `get_resource_filesystem()` — even under `--headless`, and even
+with no plugin installed:
+
+```bash
+Summer --headless --editor --path /path/to/project -s res://tool.gd
+```
+
+<Warning>
+**`--editor` is not safe to run casually. Plain `--headless` is.**
+
+In Summer 0.5.55 and earlier, adding `--editor` starts Summer's local API server, which
+**overwrites `~/.summer/api-port` and regenerates `~/.summer/api-token`**. That is how the
+CLI and your agent find a running editor. A headless editor takes the port for itself,
+rotates the token underneath whatever was already running, and on exit leaves the file
+pointing at a dead port.
+
+Do not run `--headless --editor` against a project the user has open, and expect to have to
+restart the real editor afterwards if you run it at all.
+
+This is fixed in later builds, which no longer publish the machine-global binding from
+batch-mode instances. If you are unsure which you have, assume the older behaviour.
+
+Plain `--headless -s script.gd` never starts that server and has none of these effects.
+</Warning>
+
+See [Editor Plugins](/extending/editor-plugins) for the full editor-context story, including
+the enable routes and what `EditorInterface` unlocks.
+
+Draw calls and the video adapter name are useful liveness probes. If
+`Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME)` reads `0.0` or
+`RenderingServer.get_video_adapter_name()` is empty, you are not rendering and never will be.
+
+## Performance
+
+Startup overhead is roughly 0.3 to 0.4 seconds, low enough to call the binary in a tight
+loop.
+
+| Command | Typical |
+|---|---|
+| Trivial `-s` script | 0.41s |
+| Script doing collision generation | 0.63s |
+| `--import` with nothing to do | 5.6s |
+| `--export-release`, 50MB zip | 6.4s |
+
+## For AI agents
+
+If you are an agent automating Summer, the five things that will silently burn you:
+
+1. **`--headless` renders nothing.** `get_texture()` looks fine; `get_image()` returns null.
+   Never plan around a headless screenshot.
+2. **Use `_init()`, never `_run()`.** `_run()` hangs with zero output.
+3. **Exit code 0 means nothing.** Parse errors, runtime errors and missing script files all
+   exit 0. Grep stderr.
+4. **`await process_frame` after `add_child()`**, or in-tree and physics APIs fail before
+   the node is really in the tree.
+5. **Write a file, then `--import` it**, or `load()` will not find it.
+
+Find your own binary with `OS.get_executable_path()` rather than assuming a path, and never
+assume it is called `godot`.
