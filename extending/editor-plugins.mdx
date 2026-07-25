@@ -422,11 +422,15 @@ Adding `--editor` starts Summer's local API server, which overwrites `~/.summer/
 and **regenerates `~/.summer/api-token`**. Those two files are how the CLI, the MCP
 server and Summer's own orchestrator find your running editor.
 
-Measured on **Summer 0.5.55**, the current shipped build: throwaway headless editors took
-ports 6550, 6551 and 6552 across successive runs and rewrote both files while the user's
-real editor was running. On exit, the port file points at a dead port, so nothing can
-find the real editor any more. A later build may suppress this for batch-mode instances;
-assume it does not unless your version's [changelog](/changelog/overview) says so.
+Measured on **macOS, Summer 0.5.55**: throwaway headless editors took ports 6550, 6551
+and 6552 across successive runs and rewrote both files while the user's real editor was
+running. On exit, the port file points at a dead port, so nothing can find the real
+editor any more.
+
+Windows ships under a different version number and was not tested — a higher number
+there does not mean a later build than the one measured. A future build may suppress
+this for batch-mode instances; assume it does not unless your version's
+[changelog](/changelog/overview) says so.
 
 **Plain `--headless -s script.gd`, with no `--editor`, never starts the local API server
 and is completely safe.** If you do not need editor context, do not ask for it — see
