@@ -1,0 +1,107 @@
+---
+title: "Extending Summer"
+description: "Summer is an extensible engine. Three ways to add capability: GDScript editor plugins, native GDExtension libraries, and engine modules — what each one can reach, and which to pick."
+icon: "blocks"
+---
+
+Summer is a fork of Godot 4.6.1-stable with an unmodified `core/`. Everything Godot's
+extension system does, Summer does, and the extension points are the same ones you
+already know.
+
+There are three of them. They differ in what they can reach, what they cost to build,
+and whether you can use them at all.
+
+| You want to | Use | Language | Needs a compiler | Available to you |
+|---|---|---|---|---|
+| Drive the editor: bakes, forced reimports, custom docks, registering autoloads, anything under `EditorInterface` | [Editor plugin](/extending/editor-plugins) | GDScript | No | **Yes, today** |
+| Add fast native types, wrap a C/C++/Rust library, or do heavy per-frame work | [GDExtension](/extending/gdextension) | C++, Rust, others | Yes | **Yes**, ABI-identical to stock Godot 4.6.1 |
+| Change the engine itself: new servers, new core types, editor internals | [Engine module](/extending/modules) | C++ | Yes, plus engine source | **No.** Summer's engine source is not public |
+
+If you are an agent, or you are automating Summer, the answer is almost always the
+first row. An editor plugin is a text file you write and a line you add to
+`project.godot`. It needs no build step, no signing, and no engine source, and it hands
+you the entire `EditorInterface` — which is the only way to reach a large set of engine
+capability that is simply not exposed to ordinary scripts.
+
+## Editor plugins
+
+A `@tool` script extending `EditorPlugin`, declared by a `plugin.cfg` in
+`addons/<name>/`, enabled through `project.godot`. It runs inside the editor process
+with full editor context.
+
+This is the path that turns "the API is not exposed to scripting" into "the API is
+reachable". Occluder baking, forcing the import of a file an agent just wrote, saving a
+scene from code, registering an autoload — none of those are available to a plain
+script, and all of them are available from inside an editor plugin.
+
+It also works without a window. `Summer --headless --editor` boots the editor, loads
+enabled plugins, and gives you a live `EditorInterface` from a shell — with one sharp
+hazard around your running editor that the deep page documents in full.
+
+<Card title="Editor plugins" icon="plug" href="/extending/editor-plugins">
+Templates, the three ways to enable a plugin and why they behave differently, what
+`EditorInterface` actually unlocks, the verification step you must not skip, and the
+headless-editor hazard
+</Card>
+
+## GDExtension
+
+Native shared libraries loaded from a `.gdextension` file. No engine recompile, no
+custom binary — the same mechanism stock Godot uses.
+
+Summer branches from the 4.6.1-stable tag, so the GDExtension ABI is the stock 4.6.1
+ABI. A library built against godot-cpp for 4.6 loads in Summer.
+
+<Card title="GDExtension" icon="puzzle" href="/extending/gdextension">
+Building, loading, and shipping native extensions in Summer
+</Card>
+
+## Engine modules
+
+C++ compiled directly into the binary. This requires building the engine from source,
+and [Summer's engine source is not public](/knowledge-base/source-status), so modules
+are not an option for external developers today.
+
+The page exists because the distinction matters when you are reading Godot
+documentation and deciding which extension mechanism a tutorial is describing.
+
+<Card title="Engine modules" icon="boxes" href="/extending/modules">
+What modules are, why they are internal-only in Summer, and what to use instead
+</Card>
+
+## Using community Godot addons
+
+Most Godot 4 addons work in Summer unchanged. Judge one by these rules rather than by
+whether it names Summer anywhere:
+
+- **Godot 4.6 or 4.x, pure GDScript, `@tool` + `EditorPlugin`** — the safe case. No ABI,
+  no compilation, no signing. Install into `addons/` and enable it like any plugin you
+  wrote yourself.
+- **Godot 4.x with a GDExtension binary** — depends on the addon shipping a build for
+  4.6 and for your platform. The ABI is stock, so if it loads in Godot 4.6 it loads in
+  Summer. Check [GDExtension](/extending/gdextension) before assuming.
+- **Godot 3.x** — dead. The 3.x plugin API does not exist in 4.x. This is not a Summer
+  limitation; the same addon fails on stock Godot 4.
+- **Anything shipped as an engine module or a custom engine build** — cannot be used.
+  There is no way to compile it into Summer.
+
+<Warning>
+Enabling a plugin runs its code inside your editor process with full filesystem access.
+Read what you are enabling. This is true of stock Godot too, but it is worth saying
+once.
+</Warning>
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Editor plugins" icon="plug" href="/extending/editor-plugins">
+    The deep page: templates, enabling, `EditorInterface`, traps
+  </Card>
+  <Card title="Headless scripting" icon="terminal" href="/automation/headless">
+    Run the engine from a shell with no window: baking, importing, exporting
+  </Card>
+</CardGroup>
+
+---
+
+Need help or have questions? Reach out to our founders at [founders@summerengine.com](mailto:founders@summerengine.com) or join our community on [Discord](https://discord.gg/yUpgtxnZky) for fast responses.

@@ -1,0 +1,515 @@
+---
+title: "Editor Plugins"
+description: "Write a @tool EditorPlugin in Summer to get full EditorInterface: force reimports of agent-written files, bake occluders, save scenes from code, register autoloads. Templates, the three ways to enable a plugin, and the traps."
+icon: "plug"
+---
+
+An editor plugin is the supported way to reach engine capability that ordinary scripts
+cannot touch. Two small files and one line in `project.godot` give you the whole
+`EditorInterface`: the resource filesystem, forced reimports, scene saving, autoload
+registration, and the built-in editor plugins that do bakes.
+
+If you are automating Summer and have hit "that API is not exposed to scripting", this
+page is the way through. For everything that works *without* editor context, see
+[Headless Scripting](/automation/headless) first — it is cheaper and has no editor to
+keep alive.
+
+## The minimal plugin
+
+Two files. Copy both exactly. These are the files used to verify everything on this
+page.
+
+`addons/summer_demo/plugin.cfg`:
+
+```ini
+[plugin]
+
+name="Summer Demo"
+description="Example plugin."
+author="you"
+version="1.0"
+script="plugin.gd"
+```
+
+`addons/summer_demo/plugin.gd`:
+
+```gdscript
+@tool
+extends EditorPlugin
+
+func _enter_tree() -> void:
+	print("plugin loaded")
+
+func _exit_tree() -> void:
+	print("plugin unloaded")
+
+func _enable_plugin() -> void:
+	# Fires only on a live enable, NOT on editor startup. Register autoloads here.
+	pass
+```
+
+<Warning>
+**`@tool` is mandatory and the base class must be `EditorPlugin`.** Without `@tool` the
+script never runs in the editor. Neither mistake produces an error the enabling caller
+can see — see [Verification is not optional](#verification-is-not-optional).
+</Warning>
+
+The `script=` value in `plugin.cfg` is resolved relative to the `plugin.cfg` directory,
+so `script="plugin.gd"` means `addons/summer_demo/plugin.gd`.
+
+## Enabling a plugin
+
+Writing the files does nothing on its own. There are three ways to enable one, and they
+are not interchangeable.
+
+| | Route A: write `project.godot` | Route B: `EnableEditorPlugin` operation | Route C: `set_plugin_enabled()` |
+|---|---|---|---|
+| Called from | Any file write | Summer's AI, against a running editor | GDScript, inside an already-loaded plugin |
+| Editor must be running | No | **Yes** | Yes |
+| Takes effect | Next editor start | Deferred, one idle frame | Immediately |
+| `_enable_plugin()` fires | **No** (measured) | Same code path as the Plugins checkbox; not measured end-to-end | **Yes** (measured) |
+| Autoloads register | **No** | See above | **Yes** (measured) |
+| Failure reported to caller | No | **No** — see below | Yes, in the same script |
+
+### Route A — write `editor_plugins/enabled` into `project.godot`
+
+Add this section to `project.godot`:
+
+```ini
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/summer_demo/plugin.cfg")
+```
+
+At the next editor start the plugin loads, `_enter_tree()` fires, and `EditorInterface`
+and `get_resource_filesystem()` are live.
+
+<Warning>
+**`_enable_plugin()` does not fire on a startup enable.** Reproduced on every
+startup-enable run. Anything you put in `_enable_plugin()` — most importantly
+`add_autoload_singleton()` — never executes, so the autoload is never registered and
+scripts referencing it fail to parse.
+
+Put work you need on every load in `_enter_tree()`. Use `_enable_plugin()` only for
+one-time registration, and enable via Route B or Route C when you need it to run.
+</Warning>
+
+<Warning>
+**Never write `[editor_plugins]` into a project that has never been opened.**
+
+A brand-new project that has `[editor_plugins]` present and no `.godot/` cache directory
+aborts during startup, before `EditorNode` exists:
+
+```
+ERROR: Parameter "singleton" is null.
+   at: is_cmdline_mode (editor/editor_node.cpp:8048)
+```
+
+Reproduced twice. The fix is ordering: open the project once **without** the plugin
+entry so the cache is built, then add the section. That works every time.
+</Warning>
+
+### Route B — the `EnableEditorPlugin` operation
+
+This is the path Summer's own AI takes when you ask it to enable a plugin. It takes one
+argument, `pluginPath`. A bare name normalises — `summer_demo` becomes
+`res://addons/summer_demo/plugin.cfg` — and a full `res://` path passes through
+unchanged.
+
+It requires a live editor. Without one it returns `EditorNode not available (engine not
+in editor mode?)`. It is idempotent: an already-enabled plugin returns
+`{ok: true, alreadyEnabled: true}` rather than an error.
+
+Pre-checks run synchronously and return structured errors you can act on:
+
+| `code` | Meaning |
+|---|---|
+| `CFG_MISSING` | No `plugin.cfg` at that path |
+| `CFG_PARSE_FAILED` | The `plugin.cfg` is not valid config-file syntax |
+| `NO_SCRIPT_KEY` | No `script=` entry under `[plugin]` |
+| `EMPTY_SCRIPT_PATH` | `script=` is present but empty |
+| `SCRIPT_MISSING` | The script named by `script=` does not exist on disk |
+
+<Warning>
+**`ok: true` means "queued", not "loaded".**
+
+The actual enable is deferred to the next idle frame and the response is already on the
+wire before it runs — the reply carries `{ok: true, deferred: true, addonPath: ...}`.
+
+If the deferred enable then fails — a script parse error, a missing `@tool`, the wrong
+base class — **the caller is never told**. The failure is logged to the editor console
+and the `ok: true` is not retracted. What you observe instead is a GDScript parse error
+on an autoload identifier, one or two tool calls later, with nothing pointing back at
+the plugin.
+
+Treat the acknowledgement as a receipt for a request, and verify separately.
+</Warning>
+
+<Warning>
+**Enabling a plugin through Summer's AI rewrites the whole plugin list.**
+
+`editor_plugins/enabled` is a `PackedStringArray` that is **replaced**, not merged. The
+in-app enable path writes the array and then dispatches the operation. If the array it
+writes does not contain the user's other plugins, those plugins are silently disabled.
+
+Read `project.godot` first, collect every existing entry, and pass them through so they
+are preserved. This applies to Route A by hand as well: you are writing the entire list,
+not appending to it.
+</Warning>
+
+### Route C — `EditorInterface.set_plugin_enabled()` from GDScript
+
+Called from inside a plugin that is already loaded, this enables a further plugin with
+`_enable_plugin()` firing. Measured: the second plugin's `_enter_tree()`,
+`_enable_plugin()` and its `add_autoload_singleton()` all ran, and `project.godot` on
+disk gained the second entry.
+
+```gdscript
+@tool
+extends EditorPlugin
+
+func _enter_tree() -> void:
+	EditorInterface.set_plugin_enabled("res://addons/other_plugin/plugin.cfg", true)
+	print("other enabled: ",
+		EditorInterface.is_plugin_enabled("res://addons/other_plugin/plugin.cfg"))
+```
+
+One bootstrapping plugin can therefore enable as many further plugins as it likes,
+correctly, from GDScript, with no editor restart. If you need `_enable_plugin()`
+semantics and want the result in the same script where you can check it, this is the
+route.
+
+## Verification is not optional
+
+None of the enable routes reliably tell you the plugin actually loaded. Route A defers
+to the next startup, Route B acknowledges before the work runs, and a broken plugin
+produces an editor that behaves exactly as if nothing was asked for.
+
+After enabling, verify with one of these:
+
+- Dispatch the sibling operation **`IsEditorPluginEnabled`** with the same `pluginPath`.
+  It reports the editor's live state and returns `{ok: true, enabled: <bool>, addonPath: ...}`.
+- Read `project.godot` back and confirm your path is in `editor_plugins/enabled`.
+- From GDScript inside the editor, call `EditorInterface.is_plugin_enabled(path)`.
+
+A plugin that prints something recognisable in `_enter_tree()` also gives you a second,
+independent signal in the editor console.
+
+## What EditorInterface unlocks
+
+Everything below was measured against the shipped binary.
+
+| Capability | Status |
+|---|---|
+| `get_resource_filesystem().scan()` registering an agent-written `.png` | **Works.** The `.import` file appears, `ResourceLoader.load` returns a `CompressedTexture2D`, and `resources_reimported` fires |
+| `reimport_files()` on a registered file | **Works** |
+| `reimport_files()` on a file the filesystem has never seen | **Blocked**: `ERROR: Can't find file '...' during file reimport.` |
+| `scan()` while a scan is already in flight | **Silently dropped.** The call is a no-op with no error |
+| `EditorInterface.save_scene()` persisting nodes added from code | **Works** |
+| `open_scene_from_path()`, `get_open_scenes()`, `save_all_scenes()` | **Works** |
+| `EditorFileSystem.scan_changes()` from GDScript | **Not bound.** C++ only |
+| `LightmapGI.bake()` from GDScript | **Not bound**, in the editor or at runtime. This is upstream Godot behaviour, not a Summer change |
+| `OccluderInstance3D.bake_single_node()` / `bake_scene()` | **Not bound** |
+| Occluder baking via the built-in `OccluderInstance3DEditorPlugin` | **Works**, including headless with no GPU |
+| Lightmap baking via the built-in `LightmapGIEditorPlugin` | **Reachable**, but fails under `--headless`. Unverified in the GUI editor — see below |
+
+The bound methods on `EditorFileSystem` are `scan`, `reimport_files`, `update_file`,
+`get_filesystem`, `get_file_type`, `is_scanning` and `get_scanning_progress`. Anything
+else you have seen in the C++ is not callable from GDScript.
+
+`EditorInterface` itself exposes 70 bound methods, including `save_scene`,
+`save_scene_as`, `save_all_scenes`, `open_scene_from_path`, `reload_scene_from_path`,
+`close_scene`, `edit_node`, `edit_resource`, `set_plugin_enabled` and
+`get_editor_undo_redo`.
+
+## Recipe: registering a file you just wrote
+
+A file written straight to disk is invisible to the engine until the import database
+knows about it. The obvious version of this — call `scan()` and wait — does not reliably
+work, because a `scan()` issued while another scan is running is dropped without a word.
+
+This is the version that works:
+
+```gdscript
+var efs := EditorInterface.get_resource_filesystem()
+if not efs.is_scanning():
+	efs.scan()
+# Unconditional from here. update_file registers the path even if the scan was dropped.
+efs.update_file(path)
+efs.reimport_files(PackedStringArray([path]))
+await efs.resources_reimported
+```
+
+`update_file()` before `reimport_files()` is the part people leave out. Reimporting a
+path the filesystem has never registered fails with `Can't find file '...' during file
+reimport.`
+
+Outside the editor there is a separate route for the same problem: run the binary with
+`--import`. See [Headless Scripting](/automation/headless#importing-assets).
+
+## Recipe: baking occluders from code
+
+`OccluderInstance3D.bake_single_node()` is not exposed to scripting, but the editor
+plugin that implements the Bake button is reachable, and calling it works — verified
+headless, with no GPU, producing a real 8-vertex `ArrayOccluder3D` from a cube.
+
+Two things will stall or break this if you skip them.
+
+<Warning>
+**Pre-assign a saved resource path before baking.** With no occluder resource assigned,
+`_bake` takes the "ask the user where to save" branch and opens an `EditorFileDialog`
+that nothing can answer headless:
+
+```
+ERROR: Attempting to make child window exclusive... @EditorFileDialog@14267
+```
+
+The process then sits there. Save an empty resource first and assign it.
+</Warning>
+
+<Warning>
+**`plugin.call("edit", node)` does not work.** The C++ `edit()` is not script-exposed:
+
+```
+SCRIPT ERROR: Invalid call. Nonexistent function 'edit (via call)' in base 'LightmapGIEditorPlugin'.
+```
+
+Use `EditorInterface.edit_node()` to make the node current instead.
+</Warning>
+
+The traversal that finds a built-in editor plugin, verbatim:
+
+```gdscript
+func _find_all(n, cls: String, out: Array) -> void:
+	# n is deliberately untyped: the walk climbs out of the Control subtree
+	# into EditorNode and then a Window. A `Control` type hint here is a
+	# runtime error.
+	if n.get_class() == cls:
+		out.append(n)
+	for c in n.get_children():
+		_find_all(c, cls, out)
+```
+
+And the bake itself, from inside a `@tool EditorPlugin`:
+
+```gdscript
+@tool
+extends EditorPlugin
+
+func _enter_tree() -> void:
+	# The built-in editor plugins are NOT in the tree yet during _enter_tree.
+	_bake_occluder.call_deferred()
+
+func _bake_occluder() -> void:
+	await get_tree().process_frame
+	await get_tree().process_frame
+
+	# Walk from the editor's base control up to the true tree root (a Window).
+	var top = EditorInterface.get_base_control()
+	while top.get_parent() != null:
+		top = top.get_parent()
+
+	var op: Array = []
+	_find_all(top, "OccluderInstance3DEditorPlugin", op)
+
+	# `occ` is your OccluderInstance3D, already in the edited scene.
+	# The occluder resource MUST exist on disk before baking.
+	var oc := ArrayOccluder3D.new()
+	ResourceSaver.save(oc, "res://occ.occ")
+	occ.occluder = ResourceLoader.load("res://occ.occ")
+
+	EditorInterface.edit_node(occ)
+	await get_tree().process_frame
+	op[0].call("_bake")
+```
+
+<Note>
+Two frame awaits before the traversal, and one more between `edit_node()` and `_bake()`.
+The built-in plugins are not in the tree during `_enter_tree()`, which is why the work is
+`call_deferred()`. Whether the await between `edit_node()` and `_bake()` can be dropped
+was not tested — keep it.
+
+The same traversal finds `LightmapGIEditorPlugin`, `MeshInstance3DEditorPlugin`,
+`MultiMeshEditorPlugin` and `Node3DEditorPlugin`, one match each. There is no
+`NavigationMeshEditorPlugin` under that class name in 4.6.1 — searching for it returns
+nothing.
+
+This was measured from inside a `@tool EditorPlugin` under `--headless --editor`. It was
+not tested from a `-s` script or in the GUI editor.
+</Note>
+
+<Warning>
+**Lightmap baking is not documented as working, because it has not been seen to work.**
+The `LightmapGIEditorPlugin` handle is obtainable by the same traversal and `_bake` is
+callable — it gets past the save-path and no-meshes guards into the real bake, then dies
+on the dummy renderer:
+
+```
+ERROR: Condition "images.is_empty()" is true. Returning: BAKE_ERROR_CANT_CREATE_IMAGE
+```
+
+Whether it succeeds in the GUI editor with a real renderer is **unverified**. Do not
+build an automated pipeline on the assumption that it does.
+</Warning>
+
+## Traps
+
+<AccordionGroup>
+
+<Accordion title="A broken plugin fails silently, it does not crash" icon="triangle-alert">
+Measured across a runtime error, a parse error and a type mismatch: the editor booted
+and carried on every time. That is good for stability and bad for feedback.
+
+The real failure mode is a **silent no-op** — the enable returned `ok: true`, the editor
+looks healthy, and none of your plugin's code ever ran. If a plugin appears to do
+nothing, do not assume it is not enabled and do not re-enable it. Check the editor
+console for the load error, then verify with `IsEditorPluginEnabled`.
+</Accordion>
+
+<Accordion title="Engine.has_singleton is not a liveness check" icon="triangle-alert">
+`Engine.has_singleton("EditorInterface")` returns **true** even outside the editor,
+while `Engine.get_singleton("EditorInterface")` fails with `Can't retrieve singleton
+'EditorInterface' outside of editor`.
+
+Guard on `Engine.is_editor_hint()`, never on `has_singleton`.
+</Accordion>
+
+<Accordion title="scan() while scanning is a silent no-op" icon="triangle-alert">
+A second `scan()` issued while one is in flight is dropped with no error and no return
+value to check. Code that scans and then waits for `resources_reimported` will wait
+forever.
+
+Guard with `is_scanning()` and always call `update_file()` + `reimport_files()`
+unconditionally, as in the [recipe above](#recipe-registering-a-file-you-just-wrote).
+</Accordion>
+
+<Accordion title="Plugins do not participate in Summer's write lease" icon="triangle-alert">
+Summer serialises writes by `res://` path across AI tool operations, editor autosave,
+asset import and Git operations. **User plugins are outside that mechanism.**
+
+A plugin that writes files on a timer can race an AI file write to the same path, and
+neither side will know. Prefer writing on an explicit user action — a button, a menu
+item, a signal you control — over background timers, and keep plugin writes confined to
+paths the AI is not working in.
+</Accordion>
+
+</AccordionGroup>
+
+## The headless editor
+
+`Summer --headless --editor --path <project>` boots the editor with no window, loads
+enabled plugins, and exits 0 on `--quit`. `Engine.is_editor_hint()` is true and
+`EditorInterface` resolves. This is how plugin behaviour is verified without a person
+clicking anything.
+
+There is also a route with no plugin at all:
+
+```bash
+/Applications/Summer.app/Contents/MacOS/Summer --headless --editor --path <project> -s res://tool.gd
+```
+
+With `tool.gd` as `extends SceneTree`, you get a live `EditorNode` and full
+`EditorInterface` — no plugin, no `plugin.cfg`, no `project.godot` edit. `EditorScript`
+becomes instantiable and `EditorInterface.save_scene()` persists nodes the script added.
+The script's loop replaces the editor's `SceneTree` but is still a `SceneTree`, so
+`EditorNode` is constructed as usual.
+
+<Warning>
+**`--headless --editor` hijacks your running editor's connection. Do not run it against
+a project a user has open.**
+
+Adding `--editor` starts Summer's local API server, which overwrites `~/.summer/api-port`
+and **regenerates `~/.summer/api-token`**. Those two files are how the CLI, the MCP
+server and Summer's own orchestrator find your running editor.
+
+Measured on **Summer 0.5.55**, the current shipped build: throwaway headless editors took
+ports 6550, 6551 and 6552 across successive runs and rewrote both files while the user's
+real editor was running. On exit, the port file points at a dead port, so nothing can
+find the real editor any more. A later build may suppress this for batch-mode instances;
+assume it does not unless your version's [changelog](/changelog/overview) says so.
+
+**Plain `--headless -s script.gd`, with no `--editor`, never starts the local API server
+and is completely safe.** If you do not need editor context, do not ask for it — see
+[Headless Scripting](/automation/headless).
+
+If you must run an editor-headless job, run it against a scratch project, and expect to
+restart the user's editor afterwards to republish a valid port and token.
+</Warning>
+
+## For AI agents
+
+To author and enable a plugin, in order. Step 4 is not optional.
+
+<Steps>
+
+<Step title="Confirm the project has been opened at least once">
+Check that `.godot/` exists in the project root. If it does not, **stop** — writing
+`[editor_plugins]` into a never-opened project aborts the editor at startup. Have the
+project opened once first.
+</Step>
+
+<Step title="Write both files">
+`addons/<name>/plugin.cfg` and the script it names. The script must start with `@tool`
+and extend `EditorPlugin`. Use the [templates above](#the-minimal-plugin) verbatim.
+</Step>
+
+<Step title="Read project.godot before enabling">
+Collect every path already in `editor_plugins/enabled`. The array is replaced, not
+merged — anything you omit is silently disabled. Your new path goes in alongside them,
+not instead of them.
+</Step>
+
+<Step title="Enable, then verify">
+Enable through whichever route fits (`EnableEditorPlugin` against a live editor;
+otherwise `project.godot` plus a restart).
+
+Then **verify**: dispatch `IsEditorPluginEnabled`, or read `project.godot` back. An
+`ok: true` from the enable operation only means the request was queued. If the plugin
+failed to load, nothing will tell you, and the symptom arrives later as an unrelated
+parse error on an autoload name.
+</Step>
+
+<Step title="Put load-time work in _enter_tree">
+`_enable_plugin()` does not fire on a startup enable, so autoloads registered there
+never register. If you need `_enable_plugin()` semantics, enable from inside an
+already-loaded plugin with `EditorInterface.set_plugin_enabled()`.
+</Step>
+
+<Step title="Register files you write">
+`update_file()` then `reimport_files()`, unconditionally, guarding only the `scan()`
+with `is_scanning()`. A dropped `scan()` reports nothing.
+</Step>
+
+</Steps>
+
+The four that will burn you silently:
+
+1. **`ok: true` does not mean loaded.** Verify every enable.
+2. **The enabled list is replaced, not merged.** Read it first or you will disable the
+   user's plugins.
+3. **`--headless --editor` rewrites `~/.summer/api-port` and `~/.summer/api-token`**, and
+   breaks the connection to a running editor. Use plain `--headless` unless you truly
+   need editor context.
+4. **A broken plugin does not crash anything.** It produces an editor that quietly
+   ignores you.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Extending Summer" icon="blocks" href="/extending/overview">
+    The three extension paths and which one to pick
+  </Card>
+  <Card title="Headless scripting" icon="terminal" href="/automation/headless">
+    Everything that works with no editor at all: baking, importing, exporting
+  </Card>
+  <Card title="GDExtension" icon="puzzle" href="/extending/gdextension">
+    Native libraries, when GDScript is not enough
+  </Card>
+  <Card title="AI operations" icon="bot" href="/ai-tools/operations">
+    What Summer's AI can do inside your project
+  </Card>
+</CardGroup>
+
+---
+
+Need help or have questions? Reach out to our founders at [founders@summerengine.com](mailto:founders@summerengine.com) or join our community on [Discord](https://discord.gg/yUpgtxnZky) for fast responses.
