@@ -4,6 +4,8 @@ description: "Connect Summer Engine's MCP server to Cursor in under a minute and
 icon: "mouse-pointer"
 ---
 
+{/* Do not reintroduce a hardcoded MCP tool count here. The tool list grows every release and a baked-in number has already gone stale twice. */}
+
 ## Summer Engine in Cursor
 
 Cursor is the most popular IDE for AI-assisted development. With Summer Engine's MCP integration, you can build games without leaving Cursor: the AI adds nodes to your scenes, sets properties, imports assets, runs the game, and debugs errors, all through the same chat you use for code.
@@ -76,7 +78,7 @@ Close and reopen Cursor so it loads the new MCP config. The MCP server starts wh
 
 1. Open **Cursor Settings** (Cmd+, or Ctrl+,)
 2. Go to **MCP** (or search for "MCP")
-3. You should see **summer-engine** listed with 52 tools
+3. You should see **summer-engine** listed, with its tools available
 
 If you don't see it, check that the JSON is valid (no trailing commas, proper quotes) and that the file path is correct.
 
@@ -128,7 +130,7 @@ If a specific tool fails, the error message usually explains why. Common causes:
     icon="wrench"
     href="/mcp/tools-reference"
   >
-    All 23 MCP tools with parameters and examples
+    Every MCP tool with parameters and examples
   </Card>
   <Card
     title="Building a Game"

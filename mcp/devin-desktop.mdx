@@ -4,6 +4,8 @@ description: "Connect Summer Engine's MCP server to Devin Desktop (formerly Wind
 icon: "wind"
 ---
 
+{/* Do not reintroduce a hardcoded MCP tool count here. The tool list grows every release and a baked-in number has already gone stale twice. */}
+
 ## Summer Engine in Devin Desktop
 
 Devin Desktop (formerly Windsurf) is an AI-powered IDE that supports MCP (Model Context Protocol). With Summer Engine's integration, Devin Local (formerly Cascade) — Devin Desktop's agent panel — can control your game engine: add nodes to scenes, set properties, import assets, run the game, and debug, all from within your coding workflow.
@@ -76,7 +78,7 @@ Close and reopen Devin Desktop so it loads the new MCP config. The Summer Engine
 
 ### Step 4: Verify
 
-Check Devin Desktop's MCP or AI settings to confirm "summer-engine" appears with 52 tools. Then try a prompt:
+Check Devin Desktop's MCP or AI settings to confirm "summer-engine" appears and its tools are listed. Then try a prompt:
 
 - "Use Summer Engine to add a MeshInstance3D with a BoxMesh to the scene"
 
@@ -120,7 +122,7 @@ See the [Tools Reference](/mcp/tools-reference) for parameter formats. Common is
     icon="wrench"
     href="/mcp/tools-reference"
   >
-    All 23 MCP tools with parameters and examples
+    Every MCP tool with parameters and examples
   </Card>
   <Card
     title="Building a Game"

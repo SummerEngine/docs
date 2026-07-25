@@ -4,11 +4,13 @@ description: "Connect Cursor, Claude Code, Devin Desktop, Antigravity, Codex, VS
 icon: "settings"
 ---
 
+{/* Do not reintroduce a hardcoded MCP tool count here. The tool list grows every release and a baked-in number has already gone stale twice. */}
+
 ## Build Games from Your IDE
 
 Summer Engine's MCP (Model Context Protocol) integration lets you control the engine directly from Cursor, Claude Code, Devin Desktop, Antigravity, Codex, VS Code, Zed, or any MCP-compatible AI tool. Instead of switching between your IDE and the Summer Engine editor, you stay in one place: describe what you want, and the AI modifies your game scenes, adds nodes, sets up physics, and runs your project, all through natural language.
 
-**What this means in practice:** Open a Summer Engine project, add the MCP config to your IDE, and ask "Add a Camera3D and DirectionalLight3D to the scene." The nodes appear in the engine. Ask "Import a low-poly tree from this URL and add it to the World node." The asset downloads, imports, and lands in your scene tree. The AI has 23 focused tools for scene manipulation, debugging, project settings, and asset import. No copy-paste, no context switching.
+**What this means in practice:** Open a Summer Engine project, add the MCP config to your IDE, and ask "Add a Camera3D and DirectionalLight3D to the scene." The nodes appear in the engine. Ask "Import a low-poly tree from this URL and add it to the World node." The asset downloads, imports, and lands in your scene tree. The AI has focused tools for scene manipulation, debugging, project settings, and asset import. No copy-paste, no context switching.
 
 ## Why Use MCP?
 
@@ -157,7 +159,7 @@ If your IDE supports MCP but isn't listed above, add this to your MCP config fil
 
 1. **Start Summer Engine**: Open your project in the engine (or run `npx summer-engine run` from the project directory).
 2. **Restart your IDE**: So it picks up the new MCP config.
-3. **Check the MCP panel**: In Cursor: Settings > MCP. You should see "summer-engine" with 52 tools.
+3. **Check the MCP panel**: In Cursor: Settings > MCP. You should see "summer-engine" connected, with its tools listed.
 4. **Ask the AI**: "Use Summer Engine to add a MeshInstance3D with a BoxMesh to the scene root. Name it TestCube."
 5. **Confirm in the engine**: The node should appear in the scene tree.
 
@@ -165,16 +167,18 @@ If you get "Summer Engine is not running," the engine isn't open or the project 
 
 ## What the AI Can Do
 
-The MCP server exposes 52 tools in six categories:
+The MCP server exposes tools in these categories:
 
-| Category | Tools | What they do |
-|----------|-------|--------------|
-| **Scene** | 14 tools | Add nodes, set properties, save/open scenes, connect signals, instantiate prefabs, inspect nodes |
-| **Debug and Play** | 10 tools | Run the game, read console output, get diagnostics, script and debugger errors, and screenshot the viewport or running game |
-| **Project** | 9 tools | Project context, settings, input mappings, scene tree, import assets from URLs |
-| **Asset Library** | 6 tools | Search the 25k+ public library and your assets, then import |
-| **Generation** | 6 tools | Generate images, 3D models, audio, video, and motion clips |
-| **Summer Cloud** | 7 tools | Sync the project across machines: push, pull, status, restore, checkpoints, conflicts |
+| Category | What they do |
+|----------|--------------|
+| **Scene** | Add nodes, set properties, save/open scenes, connect signals, instantiate prefabs, inspect nodes and resources |
+| **Debug and Play** | Run the game, read console output, get diagnostics, script and debugger errors |
+| **Visual Verification** | Screenshot the viewport or the running game |
+| **Project** | Project context, settings, input mappings, scene tree, import assets from URLs |
+| **Project Files** | Read, write, and patch script and resource files inside the bound project |
+| **Asset Library** | Search the 25k+ public library and your assets, then import |
+| **Generation** | Generate images, 3D models, audio, video, and motion clips, slice sprite sheets, and poll job status |
+| **Summer Cloud** | Sync the project across machines: push, pull, status, restore, checkpoints, conflicts |
 
 For a full reference with parameters and examples, see the [Tools Reference](/mcp/tools-reference). For a step-by-step guide on how an AI agent builds a complete game using these tools, see [Building a Game with MCP](/mcp/building-a-game).
 

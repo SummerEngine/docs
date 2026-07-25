@@ -3,9 +3,11 @@ title: "API Reference"
 description: "Summer Engine's API: MCP tools, CLI, and integrations"
 ---
 
+{/* Do not reintroduce a hardcoded MCP tool count here. The tool list grows every release and a baked-in number has already gone stale twice. */}
+
 ## Use the MCP API
 
-Summer Engine's primary API is the **MCP (Model Context Protocol)** integration. It exposes 52 tools that let any MCP-compatible AI tool control the engine: add nodes, set properties, import assets, run the game, and debug. This is the same API used by the built-in chat, Cursor, Claude Code, Devin Desktop, and other IDEs.
+Summer Engine's primary API is the **MCP (Model Context Protocol)** integration. It exposes tools that let any MCP-compatible AI tool control the engine: add nodes, set properties, import assets, run the game, and debug. This is the same API used by the built-in chat, Cursor, Claude Code, Devin Desktop, and other IDEs.
 
 <CardGroup cols={2}>
   <Card
@@ -20,7 +22,7 @@ Summer Engine's primary API is the **MCP (Model Context Protocol)** integration.
     icon="wrench"
     href="/mcp/tools-reference"
   >
-    All 52 MCP tools with parameters and examples
+    Every MCP tool with parameters and examples
   </Card>
   <Card
     title="CLI Reference"

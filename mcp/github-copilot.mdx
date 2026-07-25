@@ -4,6 +4,8 @@ description: "Connect Summer Engine's MCP server to GitHub Copilot CLI and build
 icon: "github"
 ---
 
+{/* Do not reintroduce a hardcoded MCP tool count here. The tool list grows every release and a baked-in number has already gone stale twice. */}
+
 ## Summer Engine in GitHub Copilot CLI
 
 GitHub Copilot CLI is GitHub's terminal agent, and it supports MCP (Model Context Protocol). With Summer Engine's integration, Copilot can control your game engine: add nodes to scenes, set properties, search and import assets, generate images and 3D models, run the game, and debug, all from the terminal.
@@ -124,7 +126,7 @@ See the [Tools Reference](/mcp/tools-reference) for parameter formats. Common is
     icon="wrench"
     href="/mcp/tools-reference"
   >
-    All 52 MCP tools with parameters and examples
+    Every MCP tool with parameters and examples
   </Card>
   <Card
     title="Building a Game"

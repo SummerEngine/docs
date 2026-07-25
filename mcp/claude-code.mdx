@@ -4,6 +4,8 @@ description: "Connect Summer Engine's MCP server to Claude Code and build games 
 icon: "message-square"
 ---
 
+{/* Do not reintroduce a hardcoded MCP tool count here. The tool list grows every release and a baked-in number has already gone stale twice. */}
+
 ## Summer Engine in Claude Code
 
 Claude Code (Claude for developers) supports MCP servers. With Summer Engine's integration, Claude can modify your game scenes, add nodes, import assets, run the game, and debug, all from the same conversation where you're writing code.
@@ -111,7 +113,7 @@ Claude may not always choose MCP tools automatically. If you want to force their
     icon="wrench"
     href="/mcp/tools-reference"
   >
-    All 23 MCP tools with parameters and examples
+    Every MCP tool with parameters and examples
   </Card>
   <Card
     title="Building a Game"

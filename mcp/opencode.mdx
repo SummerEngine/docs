@@ -4,6 +4,8 @@ description: "Connect Summer Engine's MCP server to OpenCode and build games wit
 icon: "terminal"
 ---
 
+{/* Do not reintroduce a hardcoded MCP tool count here. The tool list grows every release and a baked-in number has already gone stale twice. */}
+
 ## Summer Engine in OpenCode
 
 OpenCode is an open-source terminal agent that supports MCP (Model Context Protocol). With Summer Engine's integration, OpenCode can control your game engine: add nodes to scenes, set properties, search and import assets, generate images and 3D models, run the game, and debug, all from the terminal.
@@ -118,7 +120,7 @@ See the [Tools Reference](/mcp/tools-reference) for parameter formats. Common is
     icon="wrench"
     href="/mcp/tools-reference"
   >
-    All 52 MCP tools with parameters and examples
+    Every MCP tool with parameters and examples
   </Card>
   <Card
     title="Building a Game"

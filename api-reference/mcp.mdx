@@ -1,8 +1,10 @@
 ---
 title: "MCP API Reference"
-description: "Summer Engine MCP API. Connect Cursor, Claude Code, Devin Desktop. 52 tools for scene, debug, project, assets, and generation."
+description: "Summer Engine MCP API. Connect Cursor, Claude Code, Devin Desktop. Tools for scene, debug, project, assets, and generation."
 icon: "plug"
 ---
+
+{/* Do not reintroduce a hardcoded MCP tool count here. The tool list grows every release and a baked-in number has already gone stale twice. */}
 
 ## MCP API Reference
 
@@ -18,7 +20,7 @@ Summer Engine's Model Context Protocol (MCP) integration is live. Connect Cursor
 
 ## What You Get
 
-- **52 focused tools**: Scene manipulation, debugging, project settings, asset search, asset import, and generation
+- **Focused tools**: Scene manipulation, debugging, project settings, asset search, asset import, and generation
 - **Same operations as built-in chat**: AddNode, SetProp, SaveScene, ImportFromUrl. Identical behavior.
 - **Lazy connection**: MCP server starts when your IDE starts; connects to the engine on first tool call
 - **No API keys**: Engine uses local tokens. Run `summer login` once for account features.
@@ -59,7 +61,7 @@ Summer Engine's Model Context Protocol (MCP) integration is live. Connect Cursor
     icon="wrench"
     href="/mcp/tools-reference"
   >
-    All 52 MCP tools with parameters
+    Every MCP tool with parameters
   </Card>
   <Card
     title="Building a Game"

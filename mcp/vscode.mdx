@@ -4,6 +4,8 @@ description: "Connect Summer Engine's MCP server to VS Code or GitHub Copilot an
 icon: "square-code"
 ---
 
+{/* Do not reintroduce a hardcoded MCP tool count here. The tool list grows every release and a baked-in number has already gone stale twice. */}
+
 ## Summer Engine in VS Code & GitHub Copilot
 
 VS Code and GitHub Copilot's coding agent support MCP (Model Context Protocol). With Summer Engine's integration, the AI can control your game engine: add nodes to scenes, set properties, import assets, run the game, and debug, all from within your coding workflow.
@@ -69,7 +71,7 @@ Close and reopen VS Code (or reload the window) so it loads the new MCP config. 
 ### Step 4: Verify
 
 1. Run **MCP: List Servers** from the Command Palette
-2. You should see **summer-engine** with 52 tools
+2. You should see **summer-engine** listed, with its tools available
 3. Try a prompt in Copilot Chat: "Use Summer Engine to add a MeshInstance3D with a BoxMesh to the scene"
 
 If the node appears in Summer Engine, the setup is working.
@@ -112,7 +114,7 @@ See the [Tools Reference](/mcp/tools-reference) for parameter formats. Common is
     icon="wrench"
     href="/mcp/tools-reference"
   >
-    All 23 MCP tools with parameters and examples
+    Every MCP tool with parameters and examples
   </Card>
   <Card
     title="Building a Game"

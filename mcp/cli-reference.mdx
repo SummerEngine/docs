@@ -4,6 +4,8 @@ description: "Complete reference for the Summer Engine CLI: setup, doctor, insta
 icon: "terminal"
 ---
 
+{/* Do not reintroduce a hardcoded MCP tool count here. This page is slated for generation from the MCP server's own definitions; counts belong in the generator, never in hand-written prose. */}
+
 ## Overview
 
 The Summer Engine CLI (`summer`) installs the engine, configures your AI agent, manages projects, signs you in, and runs the MCP server. Run any command without a global install using `npx`:
@@ -298,7 +300,7 @@ Start the MCP server for AI tool integration.
 summer mcp
 ```
 
-**What it does:** Starts the MCP server on stdio. Your IDE or agent invokes this automatically when it loads the MCP config you wrote with `summer setup`, so you rarely run it by hand. Exposes 52 tools for scene editing, debugging, project context, asset search, and AI generation. See the [Tools Reference](/mcp/tools-reference).
+**What it does:** Starts the MCP server on stdio. Your IDE or agent invokes this automatically when it loads the MCP config you wrote with `summer setup`, so you rarely run it by hand. Exposes tools for scene editing, debugging, project context, asset search, and AI generation. See the [Tools Reference](/mcp/tools-reference).
 
 There is also a lower-level `summer mcp setup <agent>` subcommand that writes only the MCP config (no skills, no diagnostics). Prefer the top-level `summer setup <agent>` for onboarding.
 
@@ -375,7 +377,7 @@ to `6550` when that file is absent.
     icon="wrench"
     href="/mcp/tools-reference"
   >
-    All 52 MCP tools with parameters
+    Every MCP tool with parameters
   </Card>
   <Card
     title="Building a Game"

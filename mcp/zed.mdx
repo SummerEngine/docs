@@ -4,6 +4,8 @@ description: "Connect Summer Engine's MCP server to Zed and build games with AI 
 icon: "zap"
 ---
 
+{/* Do not reintroduce a hardcoded MCP tool count here. The tool list grows every release and a baked-in number has already gone stale twice. */}
+
 ## Summer Engine in Zed
 
 Zed is a fast, AI-powered code editor that supports MCP (Model Context Protocol) through its Agent Panel. With Summer Engine's integration, Zed's AI can control your game engine: add nodes to scenes, set properties, import assets, run the game, and debug, all from within your coding workflow.
@@ -112,7 +114,7 @@ See the [Tools Reference](/mcp/tools-reference) for parameter formats. Common is
     icon="wrench"
     href="/mcp/tools-reference"
   >
-    All 23 MCP tools with parameters and examples
+    Every MCP tool with parameters and examples
   </Card>
   <Card
     title="Building a Game"
