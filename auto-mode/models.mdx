@@ -1,30 +1,61 @@
 ---
 title: "Models"
-description: "Individual models you can pick directly on paid plans"
+description: "How model choice works: Auto, MAX, or a specific model you pick"
 icon: "list"
 ---
 
-On paid plans, you can pick a specific model from the model selector instead of using [Auto](/auto-mode/auto) or [Premium](/auto-mode/premium).
+Summer gives you three ways to choose which model does the work:
 
-The list below reflects models currently available in the selector. It changes over time as new models ship.
+- **[Auto](/auto-mode/auto)** — Summer picks for you. The default for new chats, available on every plan.
+- **[MAX](/auto-mode/premium)** — Summer picks from the frontier models, billed at the API pricing of whatever it selects. Paid plans only.
+- **A specific model** — you pick one yourself from the model selector.
 
-| Model | Description |
+## The selector is the list
+
+The model selector in the chat composer is the source of truth for what you can
+pick right now. It is rendered from the live model catalog, so it is current in a
+way a documentation page cannot be. Open it and you will see every model, grouped
+by provider, with its context window and any cost warning attached.
+
+Models are added and retired regularly. Anything named on this page is a snapshot
+of a moving list; the selector is not.
+
+## What each plan can pick
+
+| | Models you can select |
 | --- | --- |
-| **GPT-5.4** | OpenAI's latest flagship model, great for daily use. |
-| **Sonnet 4.6** | Anthropic's latest model, great for daily use. |
-| **Opus 4.7** | Anthropic's smartest model at extra-high effort. Recommended for coding and long-horizon agentic tasks. |
-| **Opus 4.7 Max** | Opus 4.7 at max effort. Only for the hardest problems; may overthink and burn tokens on simpler tasks. |
-| **Gemini 3 Pro** | Google's latest flagship model, great for daily use. |
-| **Gemini 3.1 Pro** | Google's latest model, great for daily use. |
-| **Gemini Image** | Multimodal with image generation. |
+| **Signed out** | Auto, plus one directly selectable OpenAI model (currently Luna Extra High) |
+| **Free plan** | Auto, plus two directly selectable models (currently Luna Extra High and DeepSeek V4 Pro) |
+| **Paid plans** | Auto, MAX, and every model in the selector |
+
+Auto is not the only thing a free account can use. The two concrete models are
+selectable on purpose, for people who would rather name their model than hand the
+choice to Auto's routing.
+
+Models your plan does not cover still appear in the selector, muted and marked with
+a lock. Picking one opens the upgrade prompt rather than switching your chat.
+
+## Which providers are in the selector
+
+On a paid plan you can pick directly from every provider represented in the
+selector:
+
+| Provider | What it is good for |
+| --- | --- |
+| **OpenAI** | Everyday coding and agentic work, plus a coding-specialist model |
+| **Anthropic** | Hard coding, long-horizon agentic tasks, and planning |
+| **DeepSeek** | Long-context coding when you want more building time per dollar |
+| **GLM (Z.ai)** | Large projects and long-running agentic work at 1M context |
+| **Kimi (Moonshot)** | Long-context reasoning with native vision |
+| **Grok (xAI)** | Fast coding, knowledge work, and STEM reasoning |
+| **Qwen (Alibaba)** | Long-running agentic work and tool use |
+
+Individual model names and versions live in the selector — hover one to see its
+description, context window, and any cost warning. Some frontier models will burn a
+$20 plan quickly; those carry a "Higher cost" marker and an estimate of how many
+messages your balance has left at that model's rate.
 
 <Info>
-The Free plan only includes Auto. To pick a specific model, upgrade to a paid plan.
+If you do not want to think about any of this, leave it on Auto. It is the
+default for a reason and it is what we recommend for most work.
 </Info>
-
-## Auto and Premium
-
-If you don't want to pick a model yourself:
-
-- [Auto](/auto-mode/auto) balances intelligence, cost efficiency, and reliability for everyday tasks.
-- [Premium](/auto-mode/premium) selects the most capable models for the most complex tasks.

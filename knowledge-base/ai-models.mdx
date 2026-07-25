@@ -1,39 +1,55 @@
 ---
 title: "Which AI models does Summer use?"
-description: "Claude, GPT-5, Gemini, Meshy, ElevenLabs, and more. Choose your models in settings."
+description: "Summer routes across many providers. The model selector is the live list; asset generation picks its own backends."
 icon: "question"
 ---
 
-Summer Engine integrates with multiple AI providers to give you the best experience. You can choose which models to use for different tasks.
+Summer Engine runs on many providers rather than one. Which one handles a given
+request depends on what you asked for and what you picked in the model selector.
 
-### Primary AI Models
+### The chat agent
 
-**Claude 4.5 Sonnet (Anthropic)** - Default model for code generation and project assistance
-- Superior reasoning for complex programming tasks
-- Best for game logic, debugging, and architecture decisions
+The agent that writes your code and drives the editor is whatever model is selected
+in the chat composer.
 
-**GPT-5 (OpenAI)** - Alternative model for creative and documentation tasks
-- Most advanced GPT model with multimodal capabilities
-- Great for brainstorming and rapid prototyping
+- **Auto** (the default, on every plan) routes to a fast long-context coding model
+  chosen for the balance of quality, cost, and reliability. The specific model
+  changes as we improve the routing.
+- **MAX** (paid plans) routes to a frontier model and maxes out context and tool
+  calls, billed at the API pricing of whatever it selects.
+- **Picking a model yourself** gives you a specific model from OpenAI, Anthropic,
+  DeepSeek, GLM, Kimi, Grok, or Qwen.
 
-**Custom Summer Engine Models** - Specialized models for game development
-- Optimized for game engine workflows and patterns
-- Enhanced understanding of game development contexts
+The model selector is the live list. It is rendered from the running catalog and it
+tells you each model's context window and cost warning. See
+[Models](/auto-mode/models) for how selection and plan access work.
 
-### Generation Models
+### Asset generation
 
-**Meshy** - 3D model generation
-**ElevenLabs** - Voice and music generation
-**Gemini Flash 2.5 (Google)** - Image generation
-**Sora 2 (OpenAI)** - Video cutscene generation
+Asset generation does not use the chat model. Each asset type has its own backends,
+and Summer picks one based on the job:
 
-### Model Selection
+| Asset | How it is generated |
+| --- | --- |
+| **Images** | Several hosted image models — currently Nano Banana, Seedream, Grok Imagine, GPT Image, and Gemini Flash Image, plus FLUX.2 behind the dedicated pixel-art tab. |
+| **3D models** | Meshy, Rodin, Tripo, Hunyuan, and Trellis, covering text-to-3D, image-to-3D, and multi-view, plus rigging and animation. |
+| **Audio** | ElevenLabs, for voice, dialogue, sound effects, and music. |
+| **Video** | Veo, Kling, Seedance, and Gemini Omni Flash, for cutscenes and image-to-video. |
 
-You can choose which models to use in Summer Engine's settings:
-- Switch between primary AI models based on your preferences
-- Enable/disable specific generation providers
-- Use your own API keys for supported services
+In Summer Studio you choose the backend yourself from a picker that shows each
+model's price. In chat, the agent picks one for the job. Prices differ by orders of
+magnitude — an image costs cents, a textured 3D model can cost most of a dollar —
+which is why the picker shows the cost next to every model.
 
-**Default Settings**: Claude for primary assistance, Meshy for 3D, ElevenLabs for audio.
+### Choosing models
+
+You choose the chat model in the selector next to the composer. Asset backends are
+chosen per generation inside Summer Studio, where the model list and its prices are
+shown live.
+
+Summer does not accept your own provider API keys for hosted generation — hosted AI
+runs on your plan's usage. If you want to run your own model against your project,
+use the [MCP server](/mcp/overview) instead: point Cursor, Claude Code, or any other
+harness at Summer and drive the editor with whatever model you already pay for.
 
 **Staying Current**: When new AI models are released, Summer typically integrates them within 24 hours to ensure you always have access to the latest capabilities.

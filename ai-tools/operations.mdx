@@ -118,47 +118,21 @@ Scene operations integrate with Ctrl+Z. File operations are applied atomically a
 
 ## Which AI Models Power Summer Engine?
 
-Summer Engine integrates with leading AI providers to give you the best experience for different tasks.
+The operations on this page are driven by whichever model is selected in the chat
+composer.
 
-### Primary AI Models
-**Claude 4.5 Sonnet (Anthropic)** - Default model for code generation and project assistance
-- Latest Claude model with superior reasoning for complex programming
-- Best for game logic, debugging, and architecture decisions
-
-**GPT-5 (OpenAI)** - Alternative model for creative and documentation tasks
-- Most advanced GPT model with multimodal capabilities
-- Great for brainstorming and rapid prototyping
-
-**Custom Summer Engine Models** - Specialized models for game development
-- Optimized for game engine workflows and patterns
-- Enhanced understanding of game development contexts
+### Choosing the chat model
+Auto is the default and is available on every plan. MAX routes to a frontier model
+on paid plans. You can also pick a specific model yourself — the selector carries
+models from OpenAI, Anthropic, DeepSeek, GLM, Kimi, Grok, and Qwen, and it is the
+live list rather than anything written here. See [Models](/auto-mode/models).
 
 ### Generation Models
-**Meshy** - 3D model generation
-- Text-to-3D and image-to-3D conversion
-- Game-ready models with proper UV mapping and materials
-
-**ElevenLabs** - Audio and voice generation
-- High-quality voice acting for characters
-- Background music and sound effects
-- Multiple languages and voice styles
-
-**Gemini Flash 2.5 (Google)** - Image generation
-- Fast, high-quality image creation for game art
-- Optimized for concept visualization and asset creation
-
-**Sora 2 (OpenAI)** - Video cutscene generation
-- AI-powered cinematic cutscenes
-- High-quality video content for game narratives
-
-### Model Choice
-You can select which models to use in Summer Engine's settings. Each model has different strengths:
-- **Claude**: Best for technical accuracy and complex logic
-- **GPT-5**: Best for creative tasks and documentation
-- **Custom Models**: Best for engine-specific workflows
-
-### Staying Current with AI
-Summer Engine stays at the forefront of AI technology. When new models are released, we typically integrate them within 24 hours, ensuring you always have access to the latest and most capable AI tools for game development.
+Asset generation runs on separate backends, chosen per job rather than by your chat
+model: hosted image models for 2D art, Meshy / Rodin / Tripo / Hunyuan / Trellis for
+3D, ElevenLabs for voice, dialogue, sound effects and music, and Veo / Kling /
+Seedance for video. See
+[Which AI models does Summer use?](/knowledge-base/ai-models).
 
 <Note>
 Unlike free-form file editing, Summer Engine uses specific operations that ensure your project stays stable and nothing breaks unexpectedly.
