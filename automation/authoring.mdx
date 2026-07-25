@@ -1,0 +1,507 @@
+---
+title: "Authoring Project Data"
+description: "Writing project files directly instead of clicking through the editor: where user:// really lives, how feature-tag overrides hide from get_setting, which translation formats load without an import pass, and the point at which hand-writing a .tscn stops working."
+icon: "file-pen"
+---
+
+Most of a Summer project is text you can write yourself. Scenes, resources, project settings
+and translations are all authorable from a script or straight from disk, which is what makes
+an agent able to build a game without a person clicking anything.
+
+This page is about **what to write**. [Headless Scripting](/automation/headless) covers how to
+*run* the engine from a shell to write it — the script template, exit codes, the import pass.
+Read that one first if you have not.
+
+Four places the "just write the file" approach stops working, all of them measured against the
+shipped binary rather than reasoned about:
+
+| Topic | The trap |
+|---|---|
+| [`user://`](#where-user-actually-goes) | The path on disk has `Godot` in it, not `Summer` |
+| [Feature-tag overrides](#project-settings-and-feature-tag-overrides) | `get_setting()` reports the base value while the engine uses the override |
+| [Translations](#localisation-three-formats-three-rules) | Loading the `.csv` you wrote returns null forever, silently |
+| [Tilemaps](#tilemaps-where-hand-writing-a-tscn-stops) | Cells are a packed byte blob, not readable text |
+
+## Where `user://` actually goes
+
+A save file written to `user://save.json` lands here:
+
+```
+/Users/<you>/Library/Application Support/Godot/app_userdata/<name>
+```
+
+<Note>
+Note **`Godot`**, not `Summer`. This is the same surprise as the export-template directory
+described on the [headless page](/automation/headless) — our product name is not in the path.
+"I wrote a save file and it is not there" almost always ends here.
+</Note>
+
+The `<name>` segment comes from `config/name` in `project.godot`, so it changes when the
+project is renamed. Do not construct the path. Ask the engine:
+
+```gdscript
+print(OS.get_user_data_dir())
+# /Users/you/Library/Application Support/Godot/app_userdata/AuthoringProbe
+```
+
+That is measured output for a project whose `config/name` is `AuthoringProbe`.
+
+## Project settings and feature-tag overrides
+
+`project.godot` supports per-platform overrides with a feature-tag suffix — `difficulty.macos`
+overrides `difficulty` when running on macOS. They work. They are also invisible to the most
+obvious way of checking them.
+
+Given a `project.godot` containing:
+
+```ini
+difficulty=3
+difficulty.macos=99
+hard.macos=1
+```
+
+running on macOS:
+
+```
+difficulty=3                              <- get_setting() returns the BASE value
+with_override difficulty=99               <- override applied
+hard=<null>   hard.macos=1                <- an override alone does NOT create the base key
+```
+
+<Warning>
+**`ProjectSettings.get_setting()` does not apply feature-tag overrides.
+`get_setting_with_override()` does.**
+
+This is nastier than a plain gotcha because the engine's own internal reads *do* apply the
+override. The setting genuinely works at runtime while your verification step reports that it
+did not. **It fails by disagreeing with your check, not by breaking** — so the usual response
+is to "fix" a setting that was already correct.
+
+Measured on `4.6.1.stable.mono.custom_build.b708b1182`.
+</Warning>
+
+Two rules:
+
+1. **Read effective values with `get_setting_with_override()`.** Use plain `get_setting()` only
+   when you specifically want the unoverridden base value.
+2. **Always define a base key alongside any override.** An override on its own leaves the base
+   key null — `hard.macos=1` exists, `hard` does not. Anything reading `hard` gets `null`,
+   including `get_setting_with_override()` on a platform that is not macOS.
+
+```gdscript
+# Effective value, override applied.
+var difficulty = ProjectSettings.get_setting_with_override("difficulty")
+
+# Safe read of a key that may be missing entirely.
+var hard = ProjectSettings.get_setting("hard", false)
+```
+
+## Localisation: three formats, three rules
+
+Three file formats reach the same place by different routes, and only one of them is
+comfortable to write by hand.
+
+<AccordionGroup>
+
+<Accordion title=".po — hand-writable, loads with no import pass" icon="check">
+**This is the format an agent should use.** Write it, load it, done. No import pass, no
+sidecar, no `.godot/` directory.
+
+```po
+msgid ""
+msgstr ""
+"Language: de\n"
+
+msgid "HELLO"
+msgstr "Hallo"
+
+msgid "BYE"
+msgstr "Tschuess"
+```
+
+Loading it directly returns a real `Translation`:
+
+```
+PO=(res://de.po):<Translation> locale=de msg=Hallo count=2
+```
+
+The locale is read from the `Language:` header, so a `.po` file carries its own locale and you
+do not declare it anywhere else.
+</Accordion>
+
+<Accordion title=".csv — needs an import pass, and never loads as itself" icon="triangle-alert">
+A translation `.csv` has a `keys` column and one column per locale:
+
+```csv
+keys,en,es
+HELLO,Hello,Hola
+BYE,Bye,Adios
+```
+
+It requires an import pass, and the importer writes **sibling files**, one per locale:
+
+```
+strings.csv
+strings.csv.import
+strings.en.translation
+strings.es.translation
+```
+
+**Load the sibling, never the `.csv`.** See the warning below — this is the silent one.
+</Accordion>
+
+<Accordion title=".translation — binary, produced by the importer" icon="file-lock">
+Compiled output, not source. `file` reports it as binary, and the loaded resource is an
+`OptimizedTranslation` rather than a plain `Translation`:
+
+```
+ES_sibling=(res://strings.es.translation):<OptimizedTranslation>
+```
+
+You cannot hand-write one. Write a `.po`, or write a `.csv` and import it.
+</Accordion>
+
+</AccordionGroup>
+
+<Warning>
+**Loading a translation `.csv` returns null forever — and gets quieter after you import it.**
+
+```
+# before the import pass
+ERROR: No loader found for resource: res://strings.csv (expected type: unknown)
+CSV_direct=<null>
+
+# after the import pass
+CSV_direct=<null>          <- no error at all now
+ES_sibling=(res://strings.es.translation):<OptimizedTranslation>
+```
+
+Before importing, at least you get an error line. **After importing, it returns null with no
+error whatsoever**, because the importer registered the file as handled — so the state that
+looks most like success is the one that tells you least.
+
+The cause is in the sidecar. `strings.csv.import` has no `path=` key, only `dest_files`:
+
+```ini
+[remap]
+
+importer="csv_translation"
+type="Translation"
+
+[deps]
+
+files=["res://strings.en.translation", "res://strings.es.translation"]
+
+source_file="res://strings.csv"
+dest_files=["res://strings.en.translation", "res://strings.es.translation"]
+```
+
+A single-output importer writes `path=`, which is what lets `load()` on the source file resolve
+to the compiled product. A translation `.csv` produces *many* outputs, so there is no single
+path to remap to, and `load("res://strings.csv")` has nothing to resolve.
+
+**An agent must load the file the importer generated, not the file it wrote.** Measured on
+`4.6.1.stable.mono.custom_build.b708b1182`.
+</Warning>
+
+Register translations through the `internationalization/locale/translations` project setting.
+Both `.po` and `.translation` files can be listed:
+
+```ini
+[internationalization]
+
+locale/translations=PackedStringArray("res://de.po", "res://strings.es.translation")
+```
+
+Measured result — both locales load, and `tr()` resolves against whichever is current:
+
+```
+SETTING=["res://de.po", "res://strings.es.translation"]
+LOADED=["de", "es"]
+de  tr(HELLO)=Hallo
+es  tr(HELLO)=Hola
+```
+
+<Warning>
+**The default locale is the OS locale, not `"en"`.** It measured as `en_DK` on the test
+machine — a locale for which you almost certainly have no translation, and which is not the
+one you assumed.
+
+Set it explicitly if any behaviour depends on it:
+
+```gdscript
+TranslationServer.set_locale("en")
+```
+</Warning>
+
+The `.csv` route is the only one here that needs the import pass. Running it is not free and
+not always safe — see [importing assets](/automation/headless#importing-assets) for the
+`--import` hazard, which matters if an editor is open. **Writing a `.po` avoids the question
+entirely**, which is the main reason to prefer it.
+
+## Saving scenes from a script
+
+`ResourceSaver.save(PackedScene)` is the reliable way to produce a `.tscn`. It has one
+requirement that is easy to miss and fails quietly.
+
+<Warning>
+**Every child must have its `owner` set before `pack()`, or it is not saved.**
+
+`PackedScene.pack()` only serialises nodes owned by the node being packed. Miss it and the
+save still returns `0`:
+
+```
+[with owner] children=1
+[no owner]   children=0
+```
+
+Same code, same success code, an empty scene. Nothing reports a failure at any point.
+</Warning>
+
+```gdscript
+var root := Node2D.new()
+root.name = "Level"
+
+var child := Sprite2D.new()
+child.name = "Player"
+root.add_child(child)
+child.owner = root          # REQUIRED. Without it the saved scene is empty.
+
+var packed := PackedScene.new()
+packed.pack(root)
+var err := ResourceSaver.save(packed, "res://level.tscn")
+if err != OK:
+	push_error("[scene] save failed: %d" % err)
+```
+
+The root itself does not need an owner. Nested children take the **scene root** as owner, not
+their immediate parent.
+
+## Tilemaps: where hand-writing a `.tscn` stops
+
+An agent can hand-write most of a `.tscn`. It cannot hand-write a tilemap.
+
+`TileMapLayer` cells do not serialise as readable text. The entire layer — every cell, its
+source, its atlas coordinate and its alternative — is one packed byte array on the node called
+`tile_map_data`. This is what it looks like in a real saved scene:
+
+```ini
+[node name="Ground" type="TileMapLayer" parent="."]
+tile_map_data = PackedByteArray(0, 0, 253, 255, 7, 0, 0, 0, 2, 0, 1, 0, 0, 0, 11, 0, 254, 255, 0, 0, 1, 0, 3, 0, 0, 0)
+```
+
+That is two cells.
+
+<Warning>
+**Do not try to patch this blob with a text edit.**
+
+There is no string in it to match on. Editing a cell means changing bytes at a computed offset,
+which a find-and-replace cannot express, and a real tilemap's array runs to many thousands of
+characters — past the point where tolerant edit matching applies at all. A near-miss produces a
+misaligned array that still parses into *some* set of cells, so the failure arrives as garbled
+level geometry rather than an error.
+</Warning>
+
+**Use `set_cell()` and let the engine write the bytes.** This is the whole job:
+
+```gdscript
+extends SceneTree
+
+func _init() -> void:
+	var layer := TileMapLayer.new()
+	layer.name = "Ground"
+	layer.tile_set = load("res://tiles.tres")
+
+	# set_cell(coords, source_id, atlas_coords, alternative_tile)
+	layer.set_cell(Vector2i(-3, 7), 5, Vector2i(2, 9), 4)
+	layer.set_cell(Vector2i(11, -2), 8, Vector2i(6, 1), 3)
+
+	var root := Node2D.new()
+	root.name = "Level"
+	root.add_child(layer)
+	layer.owner = root          # or the layer is not saved at all
+
+	var packed := PackedScene.new()
+	packed.pack(root)
+	var err := ResourceSaver.save(packed, "res://level.tscn")
+	if err != OK:
+		push_error("[tilemap] save failed: %d" % err)
+		quit(1)
+
+	print("[tilemap] wrote res://level.tscn")
+	quit(0)
+```
+
+Round-tripped through the shipped binary, `get_used_cells()` on the reloaded scene returns
+`[(-3, 7), (11, -2)]` — coordinates, sources, atlas positions and alternatives all intact.
+
+<AccordionGroup>
+
+<Accordion title="The tile_map_data byte format" icon="binary">
+Documented so you can **read** a blob — to diff two scenes, or to check what an editor-produced
+layer actually contains. It is not an invitation to write one by hand.
+
+A `<H` uint16 **format version**, measured as `0`, followed by **12 bytes per cell**:
+
+| Offset | Type | Field |
+|---|---|---|
+| 0 | `int16` | cell x |
+| 2 | `int16` | cell y |
+| 4 | `uint16` | `source_id` |
+| 6 | `int16` | atlas x |
+| 8 | `int16` | atlas y |
+| 10 | `uint16` | `alternative_tile` |
+
+All little-endian. **Cell order is insertion order, not sorted.** The version field at the head
+is the thing to check before trusting any of this on a future build — if it is not `0`, stop.
+
+A decoder, verified against engine-produced bytes:
+
+```gdscript
+# Decode a TileMapLayer.tile_map_data blob into readable cell records.
+func decode_tile_map_data(data: PackedByteArray) -> Array:
+	var out := []
+	if data.size() < 2:
+		return out
+	var version := data.decode_u16(0)
+	assert(version == 0, "unknown tile_map_data format version")
+	var offset := 2
+	while offset + 12 <= data.size():
+		out.append({
+			"cell": Vector2i(data.decode_s16(offset), data.decode_s16(offset + 2)),
+			"source_id": data.decode_u16(offset + 4),
+			"atlas": Vector2i(data.decode_s16(offset + 6), data.decode_s16(offset + 8)),
+			"alternative": data.decode_u16(offset + 10),
+		})
+		offset += 12
+	return out
+```
+
+Run against a 26-byte layer holding two cells with distinct sources, distinct non-zero
+alternatives and negative coordinates in both axes:
+
+```
+size=26
+{ "cell": (-3, 7),  "source_id": 5, "atlas": (2, 9), "alternative": 4 }
+{ "cell": (11, -2), "source_id": 8, "atlas": (6, 1), "alternative": 3 }
+```
+
+Which is exactly the layer that produced it.
+</Accordion>
+
+</AccordionGroup>
+
+## Ordering and serialisation rules
+
+Two more rules that share the shape of everything else on this page: the operation appears to
+succeed, or fails opaquely, rather than telling you what is wrong.
+
+### A `Path2D` must be in the tree before you position a `PathFollow2D`
+
+<Warning>
+**`progress` set before the `Path2D` is in the scene tree is accepted and does nothing.**
+
+The two properties fail differently, and the quiet one is the one you are more likely to use:
+
+| Property | Set before the `Path2D` is in the tree |
+|---|---|
+| `progress_ratio` | **Errors**, value discarded — reads back `0.0` |
+| `progress` | **No error.** Reads back `50.0`. Node never moves, position stays `(0, 0)` |
+
+The error you get from `progress_ratio`:
+
+```
+ERROR: Can only set progress ratio on a PathFollow2D that is the child of a Path2D
+which is itself part of the scene tree.
+   at: set_progress_ratio (scene/2d/path_2d.cpp:472)
+```
+
+`progress` prints nothing at all. The property holds the value you assigned, so reading it back
+as a check confirms a placement that never happened.
+
+Measured on `4.6.1.stable.mono.custom_build.b708b1182`.
+</Warning>
+
+Add the `Path2D` to the tree, let a frame pass, then set the position:
+
+```gdscript
+var curve := Curve2D.new()
+curve.add_point(Vector2(0, 0))
+curve.add_point(Vector2(100, 0))
+
+var path := Path2D.new()
+path.curve = curve
+
+var follow := PathFollow2D.new()
+path.add_child(follow)
+
+get_root().add_child(path)
+await process_frame          # per the headless page: in-tree APIs need a frame
+
+follow.progress = 50.0
+print(follow.position)       # (50.0, 0.0)
+```
+
+Without the `add_child` and the frame, that last line prints `(0.0, 0.0)`.
+
+### A `Resource` defined as an inner class cannot be serialised
+
+<Warning>
+**An inner-class `Resource` saves with error `0` and reloads with its script gone.**
+
+```
+ERROR: Failed to encode a path to a custom script.
+   at: encode_variant (core/io/marshalls.cpp:1785)
+
+inner var_to_bytes len=0
+inner save err=0
+inner reloaded class=Resource  script=<null>
+```
+
+`var_to_bytes_with_objects` returns a **zero-length** array, and `ResourceSaver.save` reports
+success while writing something that comes back as a bare `Resource` with every exported
+property lost. An inner class has no resource path, so there is nothing to record.
+
+Measured on `4.6.1.stable.mono.custom_build.b708b1182`.
+</Warning>
+
+Give the resource its own script file with a `class_name`:
+
+```gdscript
+# res://inner_data.gd
+extends Resource
+class_name InnerData
+
+@export var hp := 10
+```
+
+```gdscript
+var d := InnerData.new()
+d.hp = 42
+ResourceSaver.save(d, "user://inner.tres")   # round-trips with the script intact
+```
+
+## For AI agents
+
+Authoring project data directly works well. These are the parts that will burn you, and as on
+the [headless page](/automation/headless), every one of them fails by *appearing to succeed*:
+
+1. **`user://` is under `Godot`, not `Summer`.** Call `OS.get_user_data_dir()` rather than
+   building the path. The `<name>` segment is `config/name` and changes with the project.
+2. **`get_setting()` hides feature-tag overrides.** Use `get_setting_with_override()` for the
+   effective value. The engine applies the override internally, so a naive check disagrees with
+   reality and tempts you to "fix" a setting that was already right.
+3. **Always write a base key next to any override.** `foo.macos=1` alone leaves `foo` null.
+4. **Write `.po`, not `.csv`.** `.po` loads directly with no import pass. `load()` on a
+   translation `.csv` returns null before *and* after import — and after import it returns null
+   with no error at all. Load the generated `res://<name>.<locale>.translation` sibling instead.
+5. **Set the locale explicitly.** The default is the OS locale, measured `en_DK`, not `"en"`.
+6. **Set `owner` on every child before `pack()`.** Otherwise `ResourceSaver.save` returns `0`
+   and writes an empty scene.
+7. **Never text-edit `tile_map_data`.** Call `set_cell()` and save a `PackedScene`. The blob is
+   fixed-width binary with no strings to match on, and a misaligned edit yields plausible-looking
+   garbage rather than an error.
+8. **Put the `Path2D` in the tree before setting `progress`.** Setting it early is silently
+   ignored while the property still reads back the value you assigned.
+9. **Never declare a `Resource` as an inner class.** It saves with error `0` and reloads with
+   its script and all exported properties gone. Give it a file and a `class_name`.
