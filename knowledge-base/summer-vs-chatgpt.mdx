@@ -1,6 +1,6 @@
 ---
 title: "What makes Summer Engine different from using ChatGPT?"
-description: "Unified experience, safe operations, specialist agents, and project intelligence. AI directly modifies your game."
+description: "Unified experience, accountable operations, a team of specialist agents, and project intelligence. AI directly modifies your game."
 icon: "question"
 ---
 
@@ -16,13 +16,15 @@ With ChatGPT, Claude Code, Cursor, Codex, or similar, you get text responses. Yo
 
 ## Safe Operations
 
-**Engine APIs, not raw file edits.** Summer Engine doesn't do free-form file manipulation. It uses specific operations: add node, set property, connect signal, import asset. Each operation is explicit and undoable. Nothing breaks unexpectedly.
+**Engine APIs where they matter.** Scene work goes through specific operations: add node, set property, connect signal, import asset. Each one names an exact target and returns a receipt, so a change either lands or tells you why it did not.
 
-**Full undo.** Every change can be reverted with Ctrl+Z. Try something, don't like it, undo. No "oops, the AI rewrote my entire script."
+Summer also does ordinary file work. It writes and edits files, deletes, moves and renames them, and can run shell commands, with anything risky gated behind the permission mode you pick. The point is not that Summer refuses to touch your files. It is that every touch is explicit and accounted for.
+
+**Undo where undo applies.** Scene operations integrate with the editor's undo history, so Ctrl+Z reverts them. File writes are not editor undo steps: they are applied atomically and return exact receipts, and stale overwrites are refused. For file changes, use the Changes panel and your version control rather than Ctrl+Z.
 
 ## Specialist Agents
 
-**Domain experts on demand.** For 3D modeling, audio design, physics, or complex systems, Summer Engine can bring in specialist agents. They run in parallel, stay focused on their area, and report back. ChatGPT, Cursor, and similar are general-purpose models. Summer Engine has specialists for deep dives.
+**A team, not one model.** Summer keeps a fixed team of specialists — a researcher, a general worker, a builder, an asset maker, a verifier, and an advisor — and the main agent hands work to them as it goes. They run in parallel, each with its own focused context, and report back. See [How specialist agents work](/knowledge-base/specialist-agents).
 
 ## Project Intelligence
 
@@ -34,8 +36,8 @@ With ChatGPT, Claude Code, Cursor, Codex, or similar, you get text responses. Yo
 |---|---------|--------|
 | Modifies your project | No: you copy-paste | Yes: directly |
 | Knows your codebase | No | Yes: indexed |
-| Undo support | No | Yes: Ctrl+Z |
-| Specialist expertise | No | Yes: 3D, audio, etc. |
+| Undo support | No | Yes: Ctrl+Z for scene changes |
+| Specialist agents | No | Yes: a team the main agent delegates to |
 | Context switching | High | None |
 
 ## Related

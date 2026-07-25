@@ -6,40 +6,33 @@ icon: "bot"
 
 ## Meet Your AI Game Development Team
 
-Imagine having a team of expert game developers available 24/7 to help you build your game. That's what Summer Engine's AI agents bring to your workflow.
+Summer Engine works like a small studio. You talk to one agent, and behind the scenes it hands the hands-on work to a fixed team of specialists.
 
-### Your Personal Game Development Experts
+### The specialists
 
-**The 3D Specialist**
-When you need help with complex 3D scenes, lighting setups, or material systems, ask Summer Engine to create a 3D specialist:
+You do not create specialists, and you cannot ask for one by name. The main agent picks from the team below based on the task, and often runs several at once.
 
-```
-"Hey Summer Engine, can you create a 3D specialist agent to help me set up realistic lighting for my forest scene?"
-```
+**A researcher** reads your project read-only and answers questions about how something is wired, with file and node anchors. Fast and cheap.
 
-This creates a dedicated conversation thread where an AI expert focuses entirely on your 3D challenges. They'll understand PBR materials, global illumination, and scene optimization.
+**A general worker** handles multi-step tasks that need file reads and writes, like scaffolding scripts or research-then-apply edits.
 
-**The Audio Specialist**
-For immersive sound design, spatial audio, or complex mixing scenarios:
+**A builder** builds scenes and gameplay end to end: writes scripts and scene files, sets the main scene, binds input actions, changes project settings, and compile-checks the result.
 
-```
-"Summer Engine, please create an audio specialist agent to help me design the sound mix for my horror game."
-```
+**An asset maker** creates images, 3D models, audio, rigged characters, and animations from a brief. One variant returns assets for you to review; another also imports them, places them in your scene, and wires up what they need.
 
-Your audio specialist will guide you through creating atmospheric soundscapes, implementing 3D spatial audio, and optimizing audio performance.
+**A verifier** traces the actual scene, scripts, signals, and editor state to confirm a feature works, and reports back honestly when it does not.
 
-### How Specialist Agents Work
+**An advisor** is the second opinion the main agent turns to when it is stuck or unsure.
 
-Unlike regular chat where Summer Engine handles everything, specialist agents are like bringing in a consultant for a specific job. They stay focused on their area of expertise and can dive deep into complex problems.
+<Note>
+There is no 3D specialist and no audio specialist. Ask for realistic forest lighting or a horror sound mix and the main agent takes it on directly, delegating to the team above as needed.
+</Note>
 
-**Example Workflow:**
-1. You: "Create a 3D specialist for my character animation system"
-2. Summer Engine creates a new conversation thread with the 3D specialist
-3. You work with the specialist on detailed animation rigging, bone hierarchies, and IK setups
-4. The specialist remembers your project's animation patterns from previous conversations
-5. You return to your main chat when the animation work is complete
+### How specialists work
 
-This keeps conversations focused and lets you build up expertise in different areas of your game.
+Specialists are not separate conversation threads. They run inside the same conversation as tools the main agent calls, and they do not persist between chats.
+
+You can watch one work live in your chat as its own clean thread. When it finishes, it folds a short summary back into the main chat and the details stay tucked away if you ever want to look. See [Subagents](/ai-tools/subagents) for the full picture.
 
 ### What Summer Engine Can Build For You
 
@@ -329,10 +322,6 @@ The main agent and subagents can work concurrently without a routine whole-proje
 ### Infrastructure (Vercel)
 
 Search and AI infrastructure runs on **Vercel**. Where applicable, services are hosted in the EU for privacy and low latency. This is already implemented and in use.
-
-### Expert queue
-
-The **expert queue** lets the agent hand off work to specialist subagents in order. Instead of one agent doing everything, tasks can be queued for the right expert (e.g. 3D, audio, debugging). The main agent stays in control; experts do the deep work and report back.
 
 ### Subagents
 

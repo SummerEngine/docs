@@ -27,9 +27,9 @@ Before building, install the relevant skill. Skills are bundled with the CLI and
 | Menus, HUD, health bars, UI | `ui-basics` | `npx summer-engine skills install ui-basics` |
 | All of the above | (all) | `npx summer-engine skills install --all` |
 
-**For Claude Code:** Add `--as-claude-skill` to install into `~/.claude/skills/`. **For Cursor:** Add `--as-cursor-skill` to install into `~/.cursor/skills/`. Example: `npx summer-engine skills install fps-controller --as-claude-skill`
+**For Claude Code:** Add `--as-claude-skill` to install into `~/.claude/skills/`. **For Cursor:** Add `--as-cursor-skill` to install into the current project's `.cursor/rules/`, as `summer-<name>.mdc`. Cursor gets a rule file, not a `SKILL.md`, and it is project-scoped rather than written to your home directory. Example: `npx summer-engine skills install fps-controller --as-claude-skill`
 
-**After installing:** Read the skill file at `~/.summer/skills/<name>/SKILL.md` (or `~/.claude/skills/<name>/SKILL.md` if you used `--as-claude-skill`). Follow the patterns when building.
+**After installing:** Read the skill file at `~/.summer/skills/<name>/SKILL.md` (with `--as-claude-skill`, `~/.claude/skills/<name>/SKILL.md`; with `--as-cursor-skill`, `.cursor/rules/summer-<name>.mdc` in the project). Follow the patterns when building.
 
 ---
 

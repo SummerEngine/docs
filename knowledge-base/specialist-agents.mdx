@@ -1,40 +1,40 @@
 ---
 title: "How do specialist agents work?"
-description: "Expert AI agents for 3D modeling, audio design, and complex systems. Brought in on demand."
+description: "Summer keeps a fixed team of expert agents. The main agent picks them for you, and they run inside your chat."
 icon: "question"
 ---
 
 ## What Are Specialist Agents?
 
-Specialist agents are expert AI assistants that Summer Engine can bring in for specific domains. Unlike regular chat where Summer Engine handles everything, specialist agents are like bringing in a consultant for a focused job. They stay in their area of expertise and can dive deep into complex problems.
+Specialist agents are expert AI assistants the main agent hands work to. Each one is shaped for a kind of work rather than a subject area, keeps its own focused context, and reports back with a summary.
 
-## When Summer Engine Uses Specialists
+## The Team
 
-You don't need to configure anything. Summer Engine invokes specialists automatically when your task benefits from focused expertise. For example:
+The lineup is fixed. You do not configure it, and you cannot ask for a specialist by name.
 
-- **3D modeling**: Complex mesh creation, UV mapping, LODs, lighting setups, PBR materials, scene optimization
-- **Audio design**: Music, sound effects, voice generation, spatial audio, mixing for horror games or action sequences
-- **Physics**: Rigid body setup, character controllers, collision systems, platformer mechanics
-- **Character systems**: Animation rigging, bone hierarchies, IK setups, state machines, AI behavior
+- **Researcher**: read-only investigation of your project. Answers "where is X wired" or "does Y exist" with file and node anchors
+- **General worker**: multi-step tasks that need file reads and writes, like scaffolding scripts or research-then-apply edits
+- **Builder**: scenes and gameplay end to end. Scripts, scene files, main scene, input actions, project settings, and a compile check
+- **Asset maker**: images, 3D models, audio, rigged characters, and animations. One variant returns assets for review; another also imports and places them in your scene
+- **Verifier**: traces the real scene, scripts, and editor state to confirm a feature works, and says plainly when it does not
+- **Advisor**: the second opinion the main agent turns to when it is stuck
+
+<Note>
+There is no 3D specialist and no audio specialist. Ask for realistic forest lighting or a horror sound mix and the main agent takes it on, delegating to the team above as it sees fit.
+</Note>
 
 ## How the Workflow Works
 
-1. You ask for help: "Create a 3D specialist to help me set up realistic lighting for my forest scene"
-2. Summer Engine creates a new conversation thread with the 3D specialist
-3. You work with the specialist on the detailed task. They remember your project's patterns from the conversation
-4. When done, you return to your main chat
+1. You describe what you want in your normal chat
+2. The main agent decides whether the work needs a specialist, and which one
+3. The specialist runs and you watch it live in your chat as its own clean thread
+4. It folds a short summary back into the main chat when it finishes
 
-This keeps conversations focused. Long research or exploration stays in the specialist thread; your main chat stays clean.
-
-## Expert Queue and Subagents
-
-Summer Engine also has an **expert queue** that hands off work to specialists in order. The main agent stays in charge; experts do the deep work and report back. Tasks can run in the background so you can keep chatting while work completes.
-
-For even more complex tasks, Summer Engine uses **subagents**, specialized background assistants that run in their own context. The **Explore** subagent does read-only codebase exploration. The **General Purpose** subagent handles complex multi-step tasks with write access. Summer Engine chooses which to use based on the task.
+Specialists are not separate conversation threads you switch into, and they do not persist between chats. They run inside the same conversation as tools the main agent calls, which is why you never have to manage them or come back to them later.
 
 ## Parallel Execution
 
-Specialists and subagents can run in parallel. Different parts of your project can be worked on without blocking each other. You can watch subagents work live in the chat via an interleaved transcript of their thoughts and tool usage.
+Because each specialist keeps its own focused context, several can run at the same time. One can build your player controller while another generates enemy art and a third researches how your save system works, without blocking each other or cluttering your main chat.
 
 ## Related
 

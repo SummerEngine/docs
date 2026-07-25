@@ -332,7 +332,10 @@ Most users never call this directly: `summer setup <agent> --yes` installs the r
 | Variable | Description |
 |----------|-------------|
 | `SUMMER_GATEWAY_URL` | Override the auth/gateway URL (default `https://www.summerengine.com`). Used for local development. |
-| `SUMMER_API_PORT` | Override the local engine API port if the default 6550 is occupied. |
+
+There is no environment variable for the engine port. The CLI reads the port from the
+`~/.summer/api-port` file listed below, which the engine writes on startup, and falls back
+to `6550` when that file is absent.
 
 ---
 

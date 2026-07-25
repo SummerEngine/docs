@@ -20,11 +20,7 @@ Summer Engine's AI can do a lot directly in your project:
 
 Changes go through project-bound tools with explicit targets and exact receipts. Scene operations integrate with the editor's undo history; file operations are applied atomically and reject stale overwrites.
 
-## Current Limitations
-
-**No batch code refactors.** Large refactors across many files (e.g., rename a function in 50 files) are not supported yet. Bulk asset import is supported; bulk code refactors are not.
-
-**Limited import settings.** Asset import options are mostly manual for now. You may need to adjust import settings in the editor for some assets.
+## Things People Expect to Be Limits, But Are Not
 
 **Explicit scene targets.** A scene does not need to be open or visible before Summer changes it. Each mutation names one exact `scenePath`, so cross-scene work proceeds scene by scene without relying on whichever editor tab happens to be active.
 
@@ -32,7 +28,21 @@ Changes go through project-bound tools with explicit targets and exact receipts.
 
 **Concurrent work.** Main agents and subagents can work at the same time without a routine whole-project writer lock. If two edits collide on the same file, the stale overwrite is refused and the AI must reread before deciding whether to retry.
 
+## Current Limitations
+
+**No batch code refactors.** Large refactors across many files (e.g., rename a function in 50 files) are not supported yet. Bulk asset import is supported; bulk code refactors are not.
+
+**Limited import settings.** Asset import options are mostly manual for now. You may need to adjust import settings in the editor for some assets.
+
 **Shell commands require approval.** Summer Engine can propose shell commands (run tests, install deps, run scripts), but nothing executes until you approve it. This is by design. You stay in control.
+
+**A file written to disk is not loadable until it is imported.** Writing `res://raw.png` and then calling `load()` on it fails with `No loader found for resource: res://raw.png`. The editor has to run an import pass before the file becomes a real resource. This is the usual explanation for "the AI wrote my asset but nothing can find it." See [Headless Scripting](/automation/headless) for the import pass and for the resource-authoring route that needs no import at all.
+
+**`LightmapGI.bake()` cannot be called from a script.** The method is not bound in the scripting API — upstream Godot behaviour, not a Summer change — so lightmap baking cannot be driven from GDScript, in the editor or at runtime.
+
+**`OccluderInstance3D.bake_single_node()` is not bound either.** Occlusion baking is still reachable, through the editor's own built-in plugin. [Editor Plugins](/extending/editor-plugins) has the working recipe.
+
+**Anything needing `EditorInterface` is editor-only.** `EditorScript`, `EditorPlugin`, `EditorInterface` and `EditorFileSystem` cannot be instantiated by an ordinary script. The supported route is a `@tool` [editor plugin](/extending/editor-plugins), which gets the whole `EditorInterface`, including forced reimports and saving scenes from code.
 
 ## What's Safe
 
