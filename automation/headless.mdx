@@ -91,19 +91,27 @@ Only two base classes work. Everything else hangs silently:
 ## Exit codes lie
 
 <Warning>
-**Only an explicit `quit(N)` produces a non-zero exit code.** Everything else exits **0**,
-including total failure:
+**Only an explicit `quit(N)` produces a non-zero exit code — and a runtime error produces no
+exit code at all.**
 
-| What happened | Exit code |
+| What happened | Result |
 |---|---|
-| `quit(0)` | 0 |
-| `quit(42)` | 42 |
-| GDScript **parse** error | **0** |
-| GDScript **runtime** error | **0** |
-| **Script file does not exist at all** | **0** |
-| `push_error()` | **0** |
+| `quit(0)` | exits 0 |
+| `quit(42)` | exits 42 |
+| GDScript **parse** error | exits **0** |
+| **Script file does not exist at all** | exits **0** |
+| `push_error()` | exits **0** |
+| GDScript **runtime** error | **hangs forever. No exit, no crash, no timeout** |
 
-A typo in your script path exits 0 and your CI reports success on a script that never ran.
+Two separate failure modes, and you need a defence against each.
+
+A typo in your script path exits 0, so CI reports success on a script that never ran. Guard
+against that by reading stderr.
+
+A runtime error — a null dereference, a division by zero, an out-of-bounds index — prints its
+error and then **sits there indefinitely**, because `quit()` was never reached. Reading stderr
+does not save you, because the process never returns to be inspected. **Every script you run
+unattended needs an external wall-clock timeout.**
 </Warning>
 
 Gate on stderr, not on `$?`. Streams are cleanly separated: `print()` goes to stdout;
@@ -454,8 +462,10 @@ every one of them fails by *appearing to succeed*:
 1. **`--headless` renders nothing.** `get_texture()` looks fine; `get_image()` returns null.
    Never plan around a headless screenshot.
 2. **Use `_init()`, never `_run()`.** `_run()` hangs with zero output.
-3. **Exit code 0 means nothing.** Parse errors, runtime errors and missing script files all
-   exit 0. Grep stderr.
+3. **Exit code 0 means nothing, and a runtime error means no exit code at all.** Parse errors
+   and missing script files exit 0, so grep stderr. Runtime errors hang the process forever,
+   so also impose an external wall-clock timeout — stderr cannot help you if the process
+   never returns.
 4. **`await process_frame` after `add_child()`**, or in-tree and physics APIs fail before
    the node is really in the tree.
 5. **Write a file, then `--import` it**, or `load()` will not find it.

@@ -121,7 +121,8 @@
               "extending/overview",
               "extending/editor-plugins",
               "extending/gdextension",
-              "extending/modules"
+              "extending/modules",
+              "extending/plugin-library"
             ]
           },
           {
