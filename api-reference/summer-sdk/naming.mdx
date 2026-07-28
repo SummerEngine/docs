@@ -85,6 +85,28 @@ The old protocol is removed rather than aliased.
   `crafty.webview.v1` after the cutover is not talking to anything.
 </Note>
 
+## Player Currency
+
+The in-game currency is **Crafties** (display name), `crafties` on the wire and in code.
+
+| Concept | Name |
+|---|---|
+| Player currency, display | Crafties |
+| Player currency, wire and code | `crafties` |
+
+<Warning>
+  **"Credits" is not the player currency.** In Summer Engine, credits are the compute
+  billing unit you spend on AI generation. The two never mix, and no balance is ever
+  converted between them. If you are writing about something a *player* earns or spends
+  inside a game, the word is crafties.
+</Warning>
+
+The name kept its Crafty root deliberately — it is the one identifier where the old brand
+survives as a product noun rather than a leftover. `Summer.economy` amounts are crafties.
+
+Note that "credits" also appears in the docs in its ordinary English sense — crediting an
+asset's creator, and the in-game credits roll. Neither is a currency.
+
 ## Domains
 
 | Old | New |

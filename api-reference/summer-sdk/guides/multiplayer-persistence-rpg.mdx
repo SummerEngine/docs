@@ -11,7 +11,7 @@ This guide shows a persistent multiplayer game loop:
 - Load player save data on join
 - Keep inventory, quest progress, and level in persistent storage
 - Auto-save while players are connected
-- Award and spend credits with `Summer.economy`
+- Award and spend crafties with `Summer.economy`
 
 ## Input Actions Used
 
@@ -29,7 +29,7 @@ const MOVE_SPEED := 7.0
 const GRAVITY := 20.0
 const AUTO_SAVE_INTERVAL := 15.0
 const QUEST_XP_REWARD := 25
-const QUEST_CREDIT_REWARD := 10
+const QUEST_CRAFTIES_REWARD := 10
 const POTION_COST := 8
 
 var _auto_save_accum := 0.0
@@ -107,9 +107,9 @@ func _complete_quest(player) -> void:
     var level := 1 + int(xp / 100)
     Summer.data.save(player, "level", level)
 
-    var awarded := await Summer.economy.award(player, QUEST_CREDIT_REWARD, "quest_complete")
+    var awarded := await Summer.economy.award(player, QUEST_CRAFTIES_REWARD, "quest_complete")
     if awarded:
-        Summer.send_announcement("%s completed a quest (+%d credits)" % [str(player.get("display_name")), QUEST_CREDIT_REWARD])
+        Summer.send_announcement("%s completed a quest (+%d crafties)" % [str(player.get("display_name")), QUEST_CRAFTIES_REWARD])
 
     _sync_player_hud_fields(player)
 
@@ -172,7 +172,7 @@ func _sync_player_hud_fields(player) -> void:
     player.set_synced("xp", xp)
     player.set_synced("potions", int(inventory.get("potions", 0)))
     player.set_synced("quest_main", int(quest_progress.get("main", 0)))
-    player.set_synced("credits", balance)
+    player.set_synced("crafties", balance)
 ```
 
 ## Suggested `manifest.json`
