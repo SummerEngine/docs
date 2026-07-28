@@ -30,6 +30,17 @@ This gives you a real multiplayer loop in one click.
   If it works in this local test-runner flow, it is much closer to how it will behave in production than single-process editor-only testing.
 </Tip>
 
+## Building Outside Summer Engine (Agent / CLI Workflow)
+
+The test runner above ships with Summer Engine's Summercraft template. If you are building standalone — a coding agent, CI, or a bare Godot 4.5 install — the real SDK is not on disk, so full runtime testing is not available locally. What works instead, verified with Godot 4.5.1:
+
+1. Keep local **SDK stubs** in `sdk/` (excluded from export) that mirror the documented class surfaces, so every script parses. The [/agent-setup](/agent-setup) prompt contains ready-made stubs.
+2. **Headless smoke run:** `godot --headless --path . --quit-after 120` must exit cleanly with no `SCRIPT ERROR` lines. A parse error here is the same error that will make the platform runtime refuse your pack.
+3. **Banned-API self-check:** grep your game scripts (not the stubs) against the [blocked pattern list](/api-reference/summer-sdk/banned-apis-reference) before every upload — the API path has no upload-time scanner, so a violation costs you a manual review round-trip.
+4. **Pack-content check:** export, then confirm the `.pck` stores only your game files plus `manifest.json` (the export log lists every stored file).
+
+This validates structure, parsing, and packaging — not gameplay against the real SDK. The review process runs your game on the real runtime; keep gameplay logic simple enough to survive the difference, and treat the smoke run as the floor, not the ceiling.
+
 ## What Happens Under The Hood
 
 When you run the test runner:

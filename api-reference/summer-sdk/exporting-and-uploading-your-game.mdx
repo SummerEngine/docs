@@ -1,130 +1,207 @@
 ---
 title: "Exporting and Uploading Your Game"
-description: "Export a game-only .pck, upload it for review, and understand exactly what validation runs on submission."
+description: "Export a game-only .pck, then publish it through the live Summercraft release API: create game, presigned upload, server-verified finalize, manual review."
 icon: "upload"
 ---
 
 ## Goal
 
-Produce a `.pck` that contains only your game content, then submit it for review.
+Produce a `.pck` that contains only your game content, then publish it for review. There are two live publish paths:
 
-The safest flow is:
+- **The release API** (this page, recommended — what agents and CI use): four HTTP calls against `https://summercraft.ai`, artifact limit 512 MiB.
+- **The browser submit page** at [summercraft.ai/submit](https://summercraft.ai/submit): upload `.pck` + `manifest.json` in the UI, artifact limit 2 GB, runs an automated static scanner at upload time. See [Submission Guide](/api-reference/summer-sdk/submission-guide).
 
-1. Export with the `Summer Game PCK` preset.
-2. Upload `.pck` + `manifest.json` at `/submit`.
-3. Fix any validation findings.
-4. Re-submit with bumped `manifest.version`.
+Both end in the same place: a human reviews the release before anything goes live. No auto-publish.
 
-## 1) Configure Export Preset
+<Note>
+  Working agent-first? [/agent-setup](/agent-setup) has a paste-prompt that walks any coding agent through this entire page, including a verified project template.
+</Note>
 
-Use the starter template preset:
+## 1) Export a game-only .pck
+
+Use a preset that ships your game and nothing else:
 
 - name: `Summer Game PCK`
-- export filter: `resources`
-- include filter: `my_game/*,manifest.json`
-- exclude filter: infrastructure directories (`sdk/*`, `core/*`, `server/*`, etc.)
+- `export_filter="all_resources"`
+- `include_filter="manifest.json"` (non-resource files must be listed here)
+- `exclude_filter` covering infrastructure and local stubs (`sdk/*`, plus `core/*,server/*,client/*` if you develop inside the Summer Engine starter template)
+- `script_export_mode=0` — ship GDScript as readable text so review can read your source
 
-You must update `include_filter` to your actual game folder name.
+Export headlessly (no export templates required for a pack export):
 
-<Warning>
-  If `include_filter` is wrong, your exported `.pck` can miss required scenes or include unintended files.
-</Warning>
+```bash
+godot --headless --path . --export-pack "Summer Game PCK" game.pck
+```
 
-## 2) Export The .pck
+Checks after export:
 
-In Summer/Godot:
+- `manifest.json` is at the pack root and current ([reference](/api-reference/summer-sdk/manifest-json-reference)),
+- the entry scene's root script `extends SummerGame`,
+- no [reserved paths or banned APIs](/api-reference/summer-sdk/banned-apis-reference) in the pack,
+- size between 1024 bytes and 536870912 bytes (512 MiB) for the API path.
 
-1. Open **Project -> Export**.
-2. Select `Summer Game PCK`.
-3. Verify include/exclude filters.
-4. Export to a file like `my_game.pck`.
+Then measure what you will declare:
 
-Quick checks after export:
+```bash
+shasum -a 256 game.pck   # 64-char lowercase hex digest (Linux: sha256sum)
+wc -c game.pck           # exact byte count
+```
 
-- file extension is `.pck`,
-- `manifest.json` exists and is current,
-- entry/player scenes referenced by manifest are present in the exported game scope.
+## 2) Authentication
 
-## 3) Upload On summercraft.ai
+Every endpoint accepts two forms, Bearer first:
 
-Go to `/submit` on the Summercraft web app and upload:
+- `Authorization: Bearer <Supabase access token>` — what agents, CI, and native clients use. See [/agent-setup](/agent-setup#the-one-thing-the-agent-cannot-do-sign-in) for how a signed-in human extracts their token.
+- The web session cookie — what the browser uses.
 
-- `.pck` file (required)
-- `manifest.json` file (required)
+A present-but-invalid Bearer token is a hard `401`; it never falls through to a cookie session. Tokens expire after about an hour.
 
-The page sends a multipart request to:
+## 3) Rate limits — read before calling
 
-- `POST https://crafty-production-5a7c.up.railway.app/games/submit`
-- `Authorization: Bearer <supabase_access_token>`
+Create-game, upload-url, and finalize each have **their own budget of 1 request per hour per account** (window and count are policy values and may widen). Order of checks is deliberate: validation and ownership run first, so a typo never spends your budget — but a successful call does. A `429` body tells you when to come back:
 
-## 4) What Validation Runs
+```json
+{ "error": "rate_limited", "detail": "…", "limit": 1, "windowSeconds": 3600, "retryAt": "2026-07-28T12:00:00.000Z" }
+```
 
-Submission validates:
+Validate everything locally before touching these endpoints.
 
-- auth and creator identity,
-- required manifest fields and basic typing,
-- max upload size (2 GB),
-- static analysis scanner (dangerous APIs, reserved paths, banned binary/native file types).
+## 4) `POST /api/games/engine` — create the game record
 
-If validation fails, the API returns structured error details and scanner violations (file, line, pattern).
+Once per game, not per version. Creates a Godot game (`kind: "engine"`) as metadata; the artifact arrives through the release endpoints.
 
-## 5) Review Lifecycle
+Request:
 
-On successful upload:
+```json
+{ "name": "Hold the Hill", "slug": "hold-the-hill" }
+```
 
-- submission status becomes `review`,
-- admins review the build,
-- game is either:
-  - `published`, or
-  - `rejected` (with a reason).
+- `name` required, 1–80 chars. `slug` optional: explicit slugs collide loudly (`409 slug_taken`); omitted, the server derives one from the name and walks around collisions.
 
-## 6) Updating Your Game
+Success `201`:
 
-For updates:
+```json
+{
+  "gameId": "9f0c1e6a-…",
+  "slug": "hold-the-hill",
+  "kind": "engine",
+  "status": "draft",
+  "uploadUrlEndpoint": "/api/games/9f0c1e6a-…/releases/upload-url"
+}
+```
 
-1. Keep `manifest.id` stable.
-2. Bump `manifest.version`.
-3. Re-export `.pck`.
-4. Re-upload `.pck` + `manifest.json`.
+(`uploadUrlEndpoint` is included when the slug was derived.)
+
+Errors: `401 sign_in_required` · `400 invalid_request` · `409 slug_taken` · `429 rate_limited` · `502 create_failed`.
+
+## 5) `POST /api/games/{gameId}/releases/upload-url` — mint the presigned PUT
+
+Declare exactly what you measured:
+
+```json
+{ "version": "1.0.0", "sha256": "<64-char lowercase hex>", "sizeBytes": 10536 }
+```
+
+- `version`: 1–32 chars of `[A-Za-z0-9._-]`, first char alphanumeric, no `..`. Immutable once released.
+- `sha256`: lowercase hex, no `sha256:` prefix.
+- `sizeBytes`: positive integer, 1024–536870912.
+- `contentType` optional; if sent it must be `"application/octet-stream"`.
+
+Success `200`:
+
+```json
+{
+  "uploadUrl": "https://…r2.cloudflarestorage.com/…",
+  "method": "PUT",
+  "headers": { "content-type": "application/octet-stream", "if-none-match": "*" },
+  "objectKey": "releases/<gameId>/<version>/<sha256>.pck",
+  "maxBytes": 536870912,
+  "expiresAt": "…",
+  "finalizeUrl": "/api/games/<gameId>/releases/finalize"
+}
+```
+
+- The URL expires after 1 hour.
+- **Both returned headers are folded into the URL's signature.** Send them verbatim on the PUT or storage answers `403 SignatureDoesNotMatch`.
+- `if-none-match: *` makes the object key **write-once**: a release artifact can never be swapped after it has been checksummed. A second PUT to the same key answers `412 Precondition Failed`.
+
+Errors: `401 sign_in_required` · `400 invalid_request` · `413 artifact_too_large` · `404 game_not_found_or_forbidden` (wrong id or not yours) · `409 not_a_godot_game` (web games publish via their own flow) · `409 version_exists` (bump the version) · `429 rate_limited` · `503 r2_not_configured` · `502 upload_url_failed`.
+
+## 6) PUT the artifact to `uploadUrl`
+
+```bash
+curl -sS -X PUT "$UPLOAD_URL" \
+  -H "Content-Type: application/octet-stream" \
+  -H "If-None-Match: *" \
+  --data-binary @game.pck
+```
+
+Success is an empty `200`. No `Authorization` header — the presigned URL is the credential. `412` means the key already holds an object (see write-once above); if that object is the same verified artifact, skip to finalize.
+
+## 7) `POST /api/games/{gameId}/releases/finalize` — server-verified record
+
+```json
+{ "version": "1.0.0", "sha256": "<same digest>", "changelog": "Initial release." }
+```
+
+Nothing you claim is trusted: the server checks its own presign-time intent record, HEADs the stored object, streams it through sha256, and compares digest and size against the declaration. Only then does a release row exist — and it is immutable from that moment.
+
+Success `201`:
+
+```json
+{
+  "releaseId": "…",
+  "gameId": "…",
+  "version": "1.0.0",
+  "sha256": "…",
+  "sizeBytes": 10536,
+  "pckUrl": "r2://<bucket>/releases/<gameId>/<version>/<sha256>.pck",
+  "status": "pending_review",
+  "adminNotified": true,
+  "detail": "Release recorded and queued for review. It goes live when an admin approves it."
+}
+```
+
+The release is **not live**: it serves only after an admin approves it and the game's active version moves. On a `checksum_mismatch` or `size_mismatch` the stored object is deleted (so the write-once key is free again for a correct re-upload) and no row is written.
+
+Errors: `401 sign_in_required` · `400 invalid_request` · `404 game_not_found_or_forbidden` · `409 not_a_godot_game` · `409 no_upload_intent` (call upload-url first; declarations must match it exactly) · `409 artifact_missing` (the PUT never landed) · `413 artifact_too_large` · `400 size_mismatch` · `400 checksum_mismatch` · `409 version_exists` · `429 rate_limited` (its own budget) · `503 r2_not_configured` · `502 finalize_failed`.
+
+Errors are self-describing — `{ "error", "detail" }` where `detail` names the next action. Trust it.
+
+## 8) `GET /api/games/{gameId}/releases/{version}/download-url` — verify what you shipped
+
+Auth required, never anonymous. The game's owner and admins can fetch any release, including pending ones; any other signed-in user only the approved release of a published game. Everything unauthorized answers `404` (not `403`), so release existence cannot be probed.
+
+Success `200`:
+
+```json
+{ "url": "…", "sha256": "…", "sizeBytes": 10536, "version": "1.0.0", "releaseId": "…", "isActive": false, "expiresAt": "…" }
+```
+
+`url` is a presigned GET valid for ~5 minutes; `sha256` is read back from the content-addressed key so you can re-verify the bytes after download.
+
+## 9) Review lifecycle
+
+1. Finalize → release `pending_review`; the admin queue is pinged.
+2. A human reviews. Approval re-verifies the stored bytes against the checksum pinned at finalize, then points the game's active version at the release and publishes the game. Rejection records a reason, shown to you on [summercraft.ai/creator](https://summercraft.ai/creator); a live game stays live on its previously approved release.
+3. There is no automated publish, no runtime sandbox yet, and no guaranteed review time.
+
+**What approval does not (yet) mean:** browser play, desktop shell play, and hosted game servers for uploaded Godot games are not live. Approved releases are distributed through the authenticated download endpoint; play surfaces are in development.
+
+## 10) Updating your game
+
+Releases are immutable — updating means a new one:
+
+1. Keep the same `gameId` (and `manifest.id`).
+2. Bump `manifest.version`, and use that same new string as `version` in upload-url and finalize.
+3. Re-export, then repeat steps 5–7.
 
 Each update goes through review again.
 
-## Common Upload Errors
-
-### `Uploaded file must be a .pck`
-
-- Wrong file type.
-- Renamed file without real `.pck` export.
-
-### `PCK file too large (... max 2GB)`
-
-- Reduce textures/audio size.
-- Remove non-game assets from export filter.
-- For builds that still exceed 2 GB, contact [founders@summerengine.com](mailto:founders@summerengine.com) for large-upload onboarding.
-
-### `Invalid manifest. Required: ...`
-
-- Missing required keys.
-- Wrong types.
-- Invalid JSON syntax.
-
-### `Static analysis failed`
-
-- Scanner found banned APIs, reserved paths, or blocked resource types.
-- Open violation list and fix each issue before re-uploading.
-
-## Recommended Release Checklist
-
-- [ ] `manifest.json` required fields valid.
-- [ ] Creator gameplay scripts authored in `GDScript`.
-- [ ] `entry_scene` and `player_scene` paths load.
-- [ ] Export includes only game files.
-- [ ] `.pck` at or under 2 GB, or large-upload onboarding confirmed.
-- [ ] No banned APIs or reserved paths.
-- [ ] Local test runner flow passes before upload.
-
 ## Related Docs
 
+- [Agent Setup](/agent-setup) — the paste-prompt that automates this page
+- [Submission Guide](/api-reference/summer-sdk/submission-guide) — review lifecycle and the browser flow
 - [Testing Your Game Locally](/api-reference/summer-sdk/testing-your-game-locally)
 - [manifest.json Reference](/api-reference/summer-sdk/manifest-json-reference)
 - [Banned APIs Reference](/api-reference/summer-sdk/banned-apis-reference)

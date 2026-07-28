@@ -15,6 +15,10 @@ Fresh AI sessions must be able to generate code that:
 
 This page is the strict contract for that.
 
+<Note>
+  This page is the *output contract* (what generated code must look like). The *end-to-end instruction set* — build, validate, export, and publish through the live API — is the canonical agent prompt at [/agent-setup](/agent-setup), raw at `https://docs.summerengine.com/agent-setup/prompt.md`. Point agents there first.
+</Note>
+
 ## Platform-First Rule
 
 Treat Summercraft as a platform layer:
@@ -125,11 +129,17 @@ An AI-generated game is "done" only if all checks pass:
 5. Player path chosen explicitly (3D template or custom `SummerPlayer` subclass).
 6. No blocked APIs appear in any `.gd` file.
 7. Server-authoritative gameplay logic is on server paths.
-8. Game can be exported to `.pck` and submitted.
+8. Game can be exported to `.pck` and published through the [release API](/api-reference/summer-sdk/exporting-and-uploading-your-game) (release reaches `pending_review`).
 
 ## Safe Starter Prompt (for AI systems)
 
-Use this prompt when generating a new Summercraft game:
+The canonical, always-current agent prompt — including a verified project template, local validation steps, and the live publish calls — is served raw at:
+
+```text
+https://docs.summerengine.com/agent-setup/prompt.md
+```
+
+Use [/agent-setup](/agent-setup) to hand it to any agent. If you only need the generation rules inline:
 
 ```text
 Create a minimal multiplayer Summer game with these files only:
@@ -139,6 +149,7 @@ Rules:
 - main.gd must extend SummerGame and implement all lifecycle hooks.
 - Include at least 4 spawn points in main.tscn.
 - Keep authoritative gameplay state on server paths only.
+- Multiplayer-native defaults: min_players 1, max_players 8.
 - Include player_scene in manifest.json and make sure it matches player.tscn.
 - Choose one player model:
   - 3D template: use SummerCharacter3D in player.tscn

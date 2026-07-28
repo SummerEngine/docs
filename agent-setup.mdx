@@ -1,0 +1,81 @@
+---
+title: "Agent Setup"
+description: "Point any AI coding agent at Summercraft: one paste-prompt that takes it from empty directory to a multiplayer Godot game submitted for review."
+icon: "bot"
+---
+
+Summercraft is built to be published to by AI coding agents. You do not need Summer Engine installed to ship a game: any agent with a shell (Claude Code, Cursor, Codex, Copilot Workspace, anything) can build a multiplayer Godot game as a GDScript-only `.pck` and submit it through the live publish API. A human reviews every submission before it goes live.
+
+## Point your agent at Summercraft
+
+Paste this into any coding agent:
+
+```text
+Fetch https://docs.summerengine.com/agent-setup/prompt.md and follow it exactly,
+top to bottom. It is the canonical instruction set for building a multiplayer
+Godot 4.5 game against the Summer SDK and publishing it to Summercraft.
+
+Context you need before you start:
+- Summercraft (https://summercraft.ai) is the platform where Summer SDK games
+  are published and played. The publish API lives at https://summercraft.ai/api/*.
+- You will build a GDScript-only game that extends SummerGame, export a .pck
+  with Godot 4.5 headless (no export templates needed), and publish it in four
+  API calls: create game -> get presigned upload URL -> PUT the .pck ->
+  finalize (the server re-verifies your sha256).
+- Publishing needs a Summercraft access token in SUMMERCRAFT_ACCESS_TOKEN.
+  Build and export first; stop and ask me for the token before the publish step.
+  The prompt contains the instructions to show me for getting one.
+- Each publish step is limited to 1 request per hour per account, so validate
+  everything locally before touching the API.
+- After finalize the release is "pending_review" in a manual human review
+  queue. There is no auto-publish, and browser/desktop play of uploaded Godot
+  games is not live yet - say so honestly when you report back.
+- Any docs page is fetchable as raw markdown by adding .md to its URL; the
+  index is at https://docs.summerengine.com/llms.txt.
+
+If the prompt URL is unreachable, stop and tell me instead of improvising.
+```
+
+The prompt at [/agent-setup/prompt](/agent-setup/prompt) is the canonical, always-current version — served as plain markdown at `https://docs.summerengine.com/agent-setup/prompt.md` so agents can fetch it directly. It contains a complete, export-verified multiplayer game template (king-of-the-hill, host-authoritative, 1–8 players), the local validation steps, the exact publish calls with every error explained, and the honest post-submission status.
+
+## What the agent will do
+
+1. **Check prerequisites** — Godot 4.5 for headless export, `curl`, a sha256 tool, and (only at publish time) your access token.
+2. **Build a multiplayer-native game** — `extends SummerGame`, all gameplay authority on server paths, player state via `set_synced`, local SDK stubs so everything parses and smoke-runs without the platform runtime.
+3. **Validate locally** — headless smoke run, banned-API self-check, pack-content check. The upload budget is 1/hour, so the prompt front-loads every check.
+4. **Export a game-only `.pck`** — the preset excludes stubs and project config; ships GDScript as readable source.
+5. **Publish through the live API** — create game → presigned upload → server-verified finalize. See [Exporting and Uploading](/api-reference/summer-sdk/exporting-and-uploading-your-game) for the full reference.
+6. **Report honestly** — release `pending_review` in the manual queue; approval publishes it, rejection comes with a reason on [summercraft.ai/creator](https://summercraft.ai/creator).
+
+## The one thing the agent cannot do: sign in
+
+Agents must never handle your password. Create your account and session yourself:
+
+1. Sign up / sign in at [summercraft.ai](https://summercraft.ai).
+2. In that tab, open dev tools → Application → Cookies → `summercraft.ai` and find the cookie whose name ends in `-auth-token` (possibly chunked into `.0`/`.1` — concatenate the values in order).
+3. URL-decode the value; if it starts with `base64-`, base64-decode the rest. The JSON inside has an `access_token` field — that string is the Bearer token.
+4. Hand it to your agent as the `SUMMERCRAFT_ACCESS_TOKEN` environment variable. It expires after about an hour — enough for one publish. Re-extract it when it expires.
+
+There is no dedicated token page yet; this manual step is the current path. The publish API accepts `Authorization: Bearer <token>` on every endpoint.
+
+## What is live vs. coming
+
+| Capability | Status |
+|---|---|
+| Create Godot game records via API | **Live** |
+| Direct-to-storage `.pck` upload (presigned, write-once) | **Live** |
+| Server-side sha256 verification at finalize | **Live** |
+| Manual human review queue | **Live** — every release, no auto-publish |
+| Authenticated release downloads (`download-url`) | **Live** — owner/admins always; others once published |
+| Browser `.pck` submit page ([summercraft.ai/submit](https://summercraft.ai/submit)) | **Live** — multipart flow with automated static scanner |
+| Playing uploaded Godot games in the browser | Coming — not yet available |
+| Playing uploaded Godot games in the desktop shell | Coming — not yet available |
+| Hosted dedicated game servers for uploaded games | Coming — not yet available |
+| Automated runtime sandbox for submissions | Coming — review is manual today |
+| `SummerMultiplayerPeer` transport (stock `@rpc` compatibility) | Coming — contract published, being built in the engine fork; current runtime multiplayer is host-authoritative over ENet |
+
+Docs on this site never promise capabilities that are not deployed. If a page and reality disagree, trust the API's own error text and mail [founders@summerengine.com](mailto:founders@summerengine.com).
+
+## For agents reading this page directly
+
+Fetch `https://docs.summerengine.com/agent-setup/prompt.md` and follow it. Every page here is markdown-addressable: append `.md` to any URL. Index: `https://docs.summerengine.com/llms.txt` (or `llms-full.txt` for full content).
