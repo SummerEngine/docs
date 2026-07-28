@@ -69,7 +69,7 @@ handle names did not change — only the singleton in front of them.
 ## Web Runtime
 
 The browser-side surface of the Summer SDK renames alongside a protocol version bump.
-The old protocol is removed rather than aliased.
+The old names are removed rather than aliased.
 
 | Old | New |
 |---|---|
@@ -84,6 +84,13 @@ The old protocol is removed rather than aliased.
   There is no `v1` compatibility shim and no `CraftyRuntime` alias. A page still speaking
   `crafty.webview.v1` after the cutover is not talking to anything.
 </Note>
+
+**`v2` is a rename and a version bump, not a protocol redesign.** Message shapes are
+unchanged from `v1`, including the legacy normalization that still accepts a bare event
+name — `{type: "game_over"}` remains equivalent to
+`{type: "summer:event", event: "game_over"}`. If your game already spoke `v1` correctly,
+the only edit it needs is the protocol string and the runtime global. Nothing about how
+you construct or handle messages changes.
 
 ## Player Currency
 
