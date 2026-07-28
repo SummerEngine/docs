@@ -449,7 +449,7 @@ Then measure the artifact and keep the values for step 6:
 
 ```bash
 ls -l game.pck   # must be >= 1024 bytes and <= 536870912 (512 MiB)
-SHA256=$(shasum -a 256 game.pck | cut -d' ' -f1)
+SHA256=$(shasum -a 256 game.pck | cut -d' ' -f1)   # Linux: sha256sum game.pck | cut -d' ' -f1
 SIZE_BYTES=$(wc -c < game.pck | tr -d ' ')
 echo "$SHA256 $SIZE_BYTES"
 ```
