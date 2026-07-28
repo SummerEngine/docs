@@ -443,11 +443,15 @@ grep -rnE "OS\.(execute|shell_open|create_process|create_instance|kill)|FileAcce
 $GODOT --headless --path . --export-pack "Summer Game PCK" game.pck
 ```
 
-If the smoke run prints `SCRIPT ERROR`, fix it before exporting — the same error will make the platform runtime refuse your pack. Then verify the artifact:
+Notes on the checks: the pass condition for 5c is **empty output** — `grep` exits non-zero when it finds nothing, so do not treat its exit code as a failure. If the smoke run prints `SCRIPT ERROR`, fix it before exporting — the same error will make the platform runtime refuse your pack.
+
+Then measure the artifact and keep the values for step 6:
 
 ```bash
-ls -l game.pck            # must be >= 1024 bytes and <= 536870912 (512 MiB)
-shasum -a 256 game.pck    # note the 64-char lowercase hex digest
+ls -l game.pck   # must be >= 1024 bytes and <= 536870912 (512 MiB)
+SHA256=$(shasum -a 256 game.pck | cut -d' ' -f1)
+SIZE_BYTES=$(wc -c < game.pck | tr -d ' ')
+echo "$SHA256 $SIZE_BYTES"
 ```
 
 ## 6. Publish through the live API
@@ -465,9 +469,9 @@ curl -sS -X POST "https://summercraft.ai/api/games/engine" \
   -d '{"name": "Hold the Hill"}'
 ```
 
-- `201 { "gameId": "<uuid>", "slug": "hold-the-hill", "kind": "engine", "status": "draft", "uploadUrlEndpoint": "/api/games/<uuid>/releases/upload-url" }`. Save `gameId`.
+- `201 { "gameId": "<uuid>", "slug": "hold-the-hill", "kind": "engine", "status": "draft", "uploadUrlEndpoint": "/api/games/<uuid>/releases/upload-url" }`. Save it: `GAME_ID=<gameId from the response>`.
 - Optional body field `"slug"`: an explicit slug fails with `409 slug_taken` if taken; without it the server derives one and walks around collisions.
-- `401 sign_in_required` → token missing/expired. `429 rate_limited` → body includes `retryAt`; wait. `409 slug_taken` → pick another slug.
+- `401 sign_in_required` → token missing/expired. (This endpoint's 401 text mentions only the session cookie — Bearer tokens are accepted here all the same.) `429 rate_limited` → body includes `retryAt`; wait. `409 slug_taken` → pick another slug.
 - Skip this step for updates to an existing game — reuse its `gameId`.
 
 ### 6b. Request the presigned upload URL
