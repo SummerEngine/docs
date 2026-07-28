@@ -187,6 +187,13 @@
         "icon": "code",
         "groups": [
           {
+            "group": "Agent Setup",
+            "pages": [
+              "agent-setup",
+              "agent-setup/prompt"
+            ]
+          },
+          {
             "group": "Creating Games on Summercraft",
             "pages": [
               "api-reference/summer-sdk",

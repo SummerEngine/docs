@@ -6,9 +6,12 @@ icon: "file-json"
 
 ## Overview
 
-Every Summercraft game must include a `manifest.json` file in the game pack.
+Every Summercraft game must include a `manifest.json` file at the root of the game pack.
 
-The submission API validates required keys and types before a game can enter review.
+The browser submission flow validates required keys and types at upload time; on the API release path the same requirements are enforced by the runtime and by human review. Two runtime rules worth knowing:
+
+- `entry_scene` and `player_scene` are resolved **relative to the manifest's location** in the pack (manifest at the root means `"main.tscn"` → `res://main.tscn`).
+- The entry scene's root script must `extends SummerGame`, or the runtime refuses to load the pack.
 
 ## Required Fields
 
@@ -87,6 +90,6 @@ When you submit a new `.pck`:
 
 - Keep the same `id` for the same game
 - Increase `version`
-- Re-submit through the submission endpoint
+- Re-submit through the [publish flow](/api-reference/summer-sdk/exporting-and-uploading-your-game)
 
-The platform stores versions and routes review/publishing from your newest submission.
+On the API release path, use the manifest's `version` string as the release `version` too — it must match `[A-Za-z0-9][A-Za-z0-9._-]{0,31}` (no `..`), and released versions are immutable: an update is always a new version. The platform stores versions and routes review/publishing from your newest submission.

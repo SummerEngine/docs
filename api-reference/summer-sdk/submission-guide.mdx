@@ -1,122 +1,94 @@
 ---
 title: "Submission Guide"
-description: "How to export .pck, pass static analysis, upload to summercraft.ai, and understand review/update flow."
+description: "The two live ways to submit a Summercraft game, what validation runs where, and how the manual review lifecycle works."
 icon: "upload"
 ---
 
-## Submission Checklist
+## Before you submit
 
-Before uploading:
+- Creator gameplay scripts authored in GDScript
+- Valid [`manifest.json`](/api-reference/summer-sdk/manifest-json-reference) at the pack root
+- Entry scene root `extends SummerGame`
+- No [banned APIs or reserved paths](/api-reference/summer-sdk/banned-apis-reference)
+- [Local testing](/api-reference/summer-sdk/testing-your-game-locally) passes
 
-- Creator gameplay scripts authored in `GDScript`
-- Valid `manifest.json`
-- One exportable `.pck` package + `manifest.json`
-- `.pck` package size at or under **2 GB**
-- No banned API usage in GDScript
+## The two live submission paths
 
-If your package exceeds 2 GB, contact [founders@summerengine.com](mailto:founders@summerengine.com) for large-upload onboarding.
+### Path A — the release API (recommended; agents and CI)
 
-## 1) Export `.pck` from Godot / Summer Engine
+Four JSON/HTTP calls against `https://summercraft.ai`: create game → presigned upload URL → PUT the `.pck` → finalize with server-side sha256 verification. Artifact limits: 1024 bytes – 512 MiB. Each write step is limited to 1 request per hour per account.
 
-Use standard export flow:
+Full request/response reference: [Exporting and Uploading Your Game](/api-reference/summer-sdk/exporting-and-uploading-your-game). Agent bootstrap: [/agent-setup](/agent-setup).
 
-1. Open your game project.
-2. Go to **Project -> Export**.
-3. Choose/create export preset for your build target.
-4. Export and generate a `.pck`.
-5. Confirm your game includes `manifest.json`.
+### Path B — the browser submit page
 
-## 2) Static Analysis Scanner Rules (Blocking)
+Go to [summercraft.ai/submit](https://summercraft.ai/submit) signed in, and upload two files:
 
-During submission, the platform scans:
+- the `.pck` (multipart field `pck`)
+- `manifest.json` (multipart field `manifest`, file or JSON text)
 
-- GDScript files (`.gd`)
-- embedded scripts in `.tscn` and `.tres`
-- reserved infrastructure paths
-- blocked native/binary resource extensions
-
-If scanner violations are found, submission fails with:
-
-- `error: "Static analysis failed"`
-- `violations`: file, line, and blocked pattern
-
-See the complete up-to-date list here:
-
-- [Banned APIs Reference](/api-reference/summer-sdk/banned-apis-reference)
-
-### Important For AI Code Generation
-
-Do not generate "fallback" code paths that use blocked APIs, even if wrapped in conditions.
-
-Example of **still invalid** output:
-
-```gdscript
-if OS.has_feature("editor"):
-    var f = FileAccess.open("user://debug.txt", FileAccess.WRITE)
-```
-
-The scanner is pattern-based and blocks usage regardless of runtime branch.
-
-## 3) Upload on summercraft.ai
-
-V1 submission requires two files:
-
-- `.pck` as multipart field `pck`
-- `manifest.json` as multipart field `manifest` (file or JSON text)
-
-Authenticated request:
-
-- `POST https://crafty-production-5a7c.up.railway.app/games/submit`
-- `Authorization: Bearer <supabase_access_token>`
-
-### Example Request (cURL)
+The page posts a multipart request to the platform API:
 
 ```bash
 curl -X POST "https://crafty-production-5a7c.up.railway.app/games/submit" \
   -H "Authorization: Bearer <SUPABASE_ACCESS_TOKEN>" \
-  -F "pck=@./build/my-game.pck" \
+  -F "pck=@./game.pck" \
   -F "manifest=@./manifest.json;type=application/json"
 ```
 
-## 4) What Happens During Review
+(The Railway hostname is the deployed platform-api identity — it is correct as written.)
 
-On success, API returns:
+This path validates at upload time:
 
-- `ok: true`
-- `gameId`
-- `submissionId`
-- `status: "review"`
-- `scan` metadata
+- auth and creator identity,
+- required manifest fields and basic typing,
+- max upload size (2 GB on this path),
+- **automated static analysis** of `.gd` files and scripts embedded in `.tscn`/`.tres`: banned APIs, reserved paths, blocked binary/native extensions. Failures return `error: "Static analysis failed"` with a `violations` list (file, line, pattern).
 
-Game status lifecycle:
+On success it returns `ok: true`, `gameId`, `submissionId`, `status: "review"`.
 
-- `review` -> waiting for manual/admin review
-- `published` -> approved and live
-- `rejected` -> rejected with reason
+<Note>
+  The static scanner is pattern-based. A banned API inside a dead branch, an editor-only check, or a comment-adjacent string still fails. Do not generate "fallback" code paths that use blocked APIs. On Path A there is no automated scanner at upload time — the same rules are enforced by human review instead, so a violation costs you a review round-trip rather than an instant error.
+</Note>
 
-## 5) Updating an Existing Game
+## Review lifecycle — both paths
 
-To update:
+Every submission is reviewed by a human. No auto-publish.
 
-1. Keep `manifest.id` the same.
-2. Increase `manifest.version`.
-3. Upload new `.pck` + `manifest`.
+| State | Meaning |
+|---|---|
+| `draft` | Game record exists, nothing submitted or approved yet |
+| `pending_review` / `review` | A release/submission is in the admin queue |
+| `published` | Approved — the game is live on the platform with that release active |
+| `rejected` | Rejected with a written reason, shown to you on [summercraft.ai/creator](https://summercraft.ai/creator) |
 
-The platform:
+On Path A, approval re-verifies the stored artifact against the checksum pinned at finalize before the game's active version moves — verification at upload is not trusted at approval time. A rejected release never takes down a live game: the previously approved release stays active.
 
-- updates the game metadata for same creator + slug
-- stores a new version row
-- sets status back to `review` for that update
+**Honest status:** approval publishes your game on the platform and makes its release downloadable through the authenticated [download endpoint](/api-reference/summer-sdk/exporting-and-uploading-your-game). Playing uploaded Godot games in the browser or the desktop shell, and hosted dedicated game servers, are not live yet — do not tell players otherwise.
 
-## Related Docs
+## Updating an existing game
 
-- [Testing Your Game Locally](/api-reference/summer-sdk/testing-your-game-locally)
-- [Exporting and Uploading Your Game](/api-reference/summer-sdk/exporting-and-uploading-your-game)
-- [Banned APIs Reference](/api-reference/summer-sdk/banned-apis-reference)
+Released versions are immutable.
 
-## Common Upload Errors
+1. Keep `manifest.id` (and on Path A the `gameId`) stable.
+2. Bump `manifest.version`; on Path A pass the same new version string to upload-url and finalize.
+3. Re-export and re-submit.
+
+Each update goes through review again. A live game stays live while its update waits.
+
+## Common submission errors
+
+Path A errors are self-describing JSON (`{ "error", "detail" }`) — the `detail` names the fix. The full table is in [Exporting and Uploading](/api-reference/summer-sdk/exporting-and-uploading-your-game). Path B errors:
 
 - `Missing .pck file (multipart field: pck)`
 - `Uploaded file must be a .pck`
+- `PCK file too large (... max 2GB)` — trim assets, or contact [founders@summerengine.com](mailto:founders@summerengine.com) for large-upload onboarding
 - `Invalid manifest. Required: id, name, version, summer_sdk, entry_scene, min_players, max_players`
 - `Static analysis failed` (with violations list)
+
+## Related Docs
+
+- [Exporting and Uploading Your Game](/api-reference/summer-sdk/exporting-and-uploading-your-game)
+- [Testing Your Game Locally](/api-reference/summer-sdk/testing-your-game-locally)
+- [Banned APIs Reference](/api-reference/summer-sdk/banned-apis-reference)
+- [Agent Setup](/agent-setup)

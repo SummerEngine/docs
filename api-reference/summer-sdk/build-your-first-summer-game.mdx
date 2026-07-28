@@ -1,17 +1,24 @@
 ---
 title: "Build Your First Summercraft Game"
-description: "Golden path: integrate Summercraft platform APIs into a simple game, then test, export, and submit."
+description: "Golden path: build a multiplayer-native game on the Summer SDK, test it locally, export a .pck, and submit it for review."
 icon: "rocket"
 ---
 
-## What You Build
+## Multiplayer by default
 
-A minimal multiplayer integration that:
+Every Summercraft game is multiplayer-native. The default template is host-authoritative: the server runs the rules, clients render synced state, and a `min_players` of 1 means the same build is also a solo game. You do not write netcode — you write `SummerGame` hooks and synced state, and the platform runtime carries them over its host-authoritative transport (ENet today; the `SummerMultiplayerPeer` transport with stock `@rpc`/`MultiplayerSynchronizer` compatibility is a published contract still being built in the engine fork).
+
+What you build here:
 
 - extends `SummerGame`,
-- uses server-authoritative gameplay updates,
-- syncs player-visible state with `set_synced`,
-- passes local testing and submission pipeline.
+- server-authoritative gameplay updates (`Summer.is_server()`),
+- player-visible state via `set_synced`,
+- 1–8 players from the same code path,
+- passes local testing and the submission pipeline.
+
+<Note>
+  Want an AI agent to run this whole page for you? Point it at [/agent-setup](/agent-setup) — the prompt there contains a complete verified template (project files, local SDK stubs, export preset) and the publish calls.
+</Note>
 
 ## Step 1: Create `manifest.json`
 
@@ -28,6 +35,8 @@ A minimal multiplayer integration that:
 }
 ```
 
+`min_players: 1, max_players: 8` is the multiplayer-native default — ship it unless your design demands otherwise. Paths are relative to the manifest at the pack root.
+
 ## Step 2: Choose Your Player Path
 
 ### 3D Action Template (fastest start)
@@ -39,6 +48,8 @@ A minimal multiplayer integration that:
 
 - make your own script extending `SummerPlayer`
 - sync your own state model (`set_synced("hand_count", ...)`, etc.).
+
+Either way the authority rule is identical: the server writes synced state, clients read it.
 
 ## Step 3: Build `main.gd`
 
@@ -83,9 +94,11 @@ func _process(delta: float) -> void:
             apply_default_movement(p, delta, MOVE_SPEED, GRAVITY)
 ```
 
+Give `main.tscn` a `SpawnPoints` node with at least 4 child `Node3D` spawn markers and a `Players` node — the multiplayer defaults assume them.
+
 ## Step 4: Add One Multiplayer Rule
 
-Example scoring rule:
+Example scoring rule — note it runs only on the server path, and clients see it through `set_synced`:
 
 ```gdscript
 func score_point(player) -> void:
@@ -103,23 +116,22 @@ Use the two-process test runner flow:
 - starts client and connects to localhost,
 - validates real multiplayer behavior.
 
-Guide:
+Guide: [Testing Your Game Locally](/api-reference/summer-sdk/testing-your-game-locally). Building outside Summer Engine (agent/CLI workflow)? The same page covers stub-based validation, and the [/agent-setup](/agent-setup) prompt automates it.
 
-- [/api-reference/summer-sdk/testing-your-game-locally](/api-reference/summer-sdk/testing-your-game-locally)
+## Step 6: Export and Publish
 
-## Step 6: Export and Upload
+Export a game-only `.pck`, then publish it through the live release API (create game → presigned upload → server-verified finalize → manual review):
 
-Export a game-only `.pck`, then upload with `manifest.json`.
+- [Exporting and Uploading Your Game](/api-reference/summer-sdk/exporting-and-uploading-your-game)
+- [Submission Guide](/api-reference/summer-sdk/submission-guide)
 
-Guides:
+A human reviews every release. Approval publishes the game; the release becomes downloadable through the authenticated download endpoint. Browser and desktop-shell play of uploaded Godot games are not live yet.
 
-- [/api-reference/summer-sdk/exporting-and-uploading-your-game](/api-reference/summer-sdk/exporting-and-uploading-your-game)
-- [/api-reference/summer-sdk/submission-guide](/api-reference/summer-sdk/submission-guide)
-
-## What “Done” Looks Like
+## What "Done" Looks Like
 
 - [ ] All lifecycle hooks implemented.
 - [ ] Server authority enforced (`Summer.is_server()`).
 - [ ] Player-visible state comes from `set_synced`.
+- [ ] Works with 1 player and with several (`min_players: 1`).
 - [ ] Local test runner path passes.
-- [ ] Upload passes scanner + enters review.
+- [ ] Export contains only game files; release enters `pending_review`.

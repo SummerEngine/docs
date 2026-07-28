@@ -1,0 +1,539 @@
+---
+title: "Agent Prompt"
+description: "The canonical instruction set for AI coding agents building and publishing a multiplayer Godot game to Summercraft. Fetch this page raw at /agent-setup/prompt.md."
+icon: "bot"
+noindex: false
+---
+
+You are an AI coding agent. Your job is to build a multiplayer Godot game as a GDScript-only `.pck` and publish it to Summercraft for review. Follow this document top to bottom. Everything in it was verified against the live platform; where a capability is not live yet, this document says so explicitly.
+
+Any page of these docs is fetchable as raw markdown by appending `.md` to its URL. The full page index is at `https://docs.summerengine.com/llms.txt`.
+
+## 1. What Summercraft is
+
+Summercraft (`https://summercraft.ai`) is the platform where games built against the Summer SDK are published and played. You write a plain Godot 4.5 game in GDScript, extend the SDK base class `SummerGame`, export a `.pck` that contains only your game files, and submit it through the publish API. A human reviews every submission before it goes live. There is no auto-publish.
+
+- The publish API lives at `https://summercraft.ai/api/*`.
+- Docs live at `https://docs.summerengine.com`.
+- The Summer SDK classes (`Summer`, `SummerGame`, `SummerPlayer`, `SummerCharacter3D`) are provided by the Summercraft runtime when your pack loads. They are not files you ship.
+
+**What is live today:** creating a game record, direct-to-storage artifact upload with server-side sha256 verification, the manual review queue, and authenticated release downloads.
+
+**What is not live yet (do not promise these to your operator):** playing uploaded Godot games in the browser, playing them inside the desktop shell, hosted dedicated game servers for uploaded games, and the automated runtime sandbox. Multiplayer sessions in the current runtime run host-authoritatively over ENet; the `SummerMultiplayerPeer` transport (stock `@rpc` / `MultiplayerSynchronizer` compatibility) is a published contract still being built in the engine fork.
+
+## 2. Prerequisites — check all three before writing any code
+
+1. **Godot 4.5.x.** Run `godot --version` (or find the binary, e.g. `/Applications/Godot.app/Contents/MacOS/Godot` on macOS). Any 4.5 build works; you only need it for headless export, no export templates required. If it is missing, ask your operator to install Godot 4.5 from `https://godotengine.org/download` before continuing.
+2. **A Summercraft access token.** Check for a `SUMMERCRAFT_ACCESS_TOKEN` environment variable or ask your operator for one. Without it every publish call returns `401 sign_in_required`. **Stop and ask before step 6 if you do not have it** — you can build and export everything first. Show your operator this if they do not know how to get one:
+   > Sign in at `https://summercraft.ai` (create the account yourself — never let an agent handle your password). Then open your browser dev tools on that tab: Application → Cookies → `summercraft.ai`, and find the cookie whose name ends in `-auth-token` (it may be split into `.0`/`.1` chunks — concatenate their values in order). URL-decode the value; if the result starts with `base64-`, base64-decode the rest. Inside the JSON is an `access_token` field: that string is the Bearer token. It expires after about an hour, which is enough for one publish. There is no dedicated token page yet; this manual step is the current path.
+3. **`curl` and a sha256 tool** (`shasum -a 256` or `sha256sum`).
+
+Auth model, exactly: every publish endpoint accepts `Authorization: Bearer <access token>` (or a signed-in browser session cookie). A present-but-invalid Bearer token is a hard `401` — it never falls back to a cookie. If you get `401` with a token set, the token has expired: ask your operator for a fresh one.
+
+## 3. Know the rules before you build
+
+Your `.pck` must contain **only your game**. The platform enforces, at review and in the browser submit scanner:
+
+- **GDScript only.** No `.gdextension`, `.so`, `.dll`, `.dylib`, `.framework`, `.res` files.
+- **No banned APIs** anywhere in your scripts, even in dead or conditional branches. The blocklist includes `OS.execute`, `OS.shell_open`, `OS.create_process`, `FileAccess`, `DirAccess`, `HTTPRequest`, `HTTPClient`, `JavaScriptBridge`, `ClassDB.instantiate`, `Thread.new`, `Expression`, raw sockets (`StreamPeerTCP`, `PacketPeerUDP`, `TCPServer`, `UDPServer`, `WebSocketPeer`), reflection calls (`.call(`, `.callv(`, `.call_deferred(`, `Callable(`), `Engine.get_singleton`, `Marshalls.base64_to_variant`, `ResourceSaver`, `ProjectSettings.load_resource_pack`, and root-tree escapes (`get_node("/root`, `get_tree().root`). Full list with rationale: `https://docs.summerengine.com/api-reference/summer-sdk/banned-apis-reference.md`. Persistence goes through `Summer.data`, economy through `Summer.economy` — never your own I/O or networking.
+- **No reserved paths** in the pack: `res://sdk/`, `res://core/`, `res://server/`, `res://client/`, `res://official_games/`, `res://bootstrap.*`, `res://project.godot`, `res://summer.cfg`, `res://test_runner.*`. The export preset below keeps them out automatically.
+- **`manifest.json` at the pack root** with required keys `id`, `name`, `version`, `summer_sdk` (`"1.0"`), `entry_scene`, `min_players`, `max_players`. The entry scene's root script must `extends SummerGame` or the runtime refuses to load the pack.
+- **Host-authoritative multiplayer is the only mode.** All gameplay decisions run on server paths guarded by `Summer.is_server()`. Clients render synced state via `set_synced`/`get_synced`; they never decide outcomes.
+
+## 4. Build the game — multiplayer-native template
+
+Build multiplayer by default: `min_players: 1` so it works solo, `max_players: 8` so it works with friends, all authority server-side. The template below is a complete king-of-the-hill arena, verified to parse, smoke-run, and export with Godot 4.5.1. Adapt the gameplay; keep the structure.
+
+Create this exact layout in a fresh directory:
+
+```text
+hold-the-hill/
+├── project.godot        # local dev config — never shipped
+├── export_presets.cfg   # export preset — never shipped
+├── manifest.json        # shipped at pack root
+├── main.gd              # your game, extends SummerGame
+├── main.tscn            # entry scene
+├── player.tscn          # player scene (SummerCharacter3D template)
+└── sdk/                 # LOCAL STUBS, excluded from export
+    ├── summer.gd
+    ├── summer_game.gd
+    ├── summer_player.gd
+    └── summer_character_3d.gd
+```
+
+The `sdk/` folder holds **local stubs** that mirror the real SDK surface so your code parses and smoke-runs without the Summercraft runtime. The export preset excludes `sdk/*`, so the stubs never ship; on the platform the runtime provides the real classes at the same paths. Do not add behavior to the stubs — they are compile shims, not the SDK.
+
+`project.godot`:
+
+```ini
+; Engine configuration file.
+config_version=5
+
+[application]
+
+config/name="Hold the Hill"
+run/main_scene="res://main.tscn"
+config/features=PackedStringArray("4.5")
+
+[autoload]
+
+Summer="*res://sdk/summer.gd"
+
+[rendering]
+
+renderer/rendering_method="mobile"
+```
+
+`manifest.json`:
+
+```json
+{
+  "id": "hold-the-hill",
+  "name": "Hold the Hill",
+  "version": "1.0.0",
+  "summer_sdk": "1.0",
+  "entry_scene": "main.tscn",
+  "player_scene": "player.tscn",
+  "min_players": 1,
+  "max_players": 8,
+  "description": "King-of-the-hill arena. Stand in the gold circle to score. First to 100 points wins.",
+  "genre": "action",
+  "tags": ["multiplayer", "arena", "king-of-the-hill"]
+}
+```
+
+Change `id`, `name`, and the descriptive fields for your game. `entry_scene` and `player_scene` are relative to the manifest (pack root).
+
+`main.gd` — the game. Every decision happens on the server path:
+
+```gdscript
+extends SummerGame
+
+const ROUND_SECONDS := 180.0
+const MOVE_SPEED := 7.0
+const GRAVITY := 20.0
+const WIN_SCORE := 100
+const HILL_RADIUS := 4.0
+const POINT_INTERVAL := 1.0
+
+var _hill_center := Vector3.ZERO
+var _tick := 0.0
+var _round_over := false
+
+func _game_init() -> void:
+	var spawn_root := get_node_or_null("SpawnPoints")
+	if spawn_root:
+		for child in spawn_root.get_children():
+			if child is Node3D:
+				spawn_points.append(child.global_position)
+	var hill := get_node_or_null("Hill")
+	if hill is Node3D:
+		_hill_center = hill.global_position
+
+func _game_start() -> void:
+	_round_over = false
+	Summer.set_time_limit(ROUND_SECONDS)
+	Summer.send_announcement("Hold the hill! First to %d points wins." % WIN_SCORE)
+
+func _game_end() -> void:
+	_round_over = true
+	var best = null
+	var best_score := -1
+	for p in get_players():
+		var s := _score_of(p)
+		if s > best_score:
+			best_score = s
+			best = p
+	if best != null:
+		Summer.send_announcement("%s wins with %d points." % [str(best.display_name), best_score])
+
+func _player_joined(player) -> void:
+	player.set_synced("score", 0)
+	if player.has_method("respawn"):
+		player.respawn(get_random_spawn_point())
+
+func _player_left(_player) -> void:
+	pass
+
+func _process(delta: float) -> void:
+	super._process(delta)
+	if not Summer.is_server() or _round_over:
+		return
+	for p in get_players():
+		apply_default_movement(p, delta, MOVE_SPEED, GRAVITY)
+	_tick += delta
+	if _tick < POINT_INTERVAL:
+		return
+	_tick = 0.0
+	for p in get_players():
+		if p is Node3D and p.global_position.distance_to(_hill_center) <= HILL_RADIUS:
+			var s := _score_of(p) + 1
+			p.set_synced("score", s)
+			if s >= WIN_SCORE:
+				Summer.send_announcement("%s takes the crown!" % str(p.display_name))
+				end_game()
+				return
+
+func _score_of(player) -> int:
+	var raw = player.get_synced("score")
+	return int(raw) if raw != null else 0
+```
+
+`main.tscn` — entry scene: floor, hill marker, four spawn points, light, camera:
+
+```text
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://main.gd" id="1"]
+
+[sub_resource type="BoxShape3D" id="floor_shape"]
+size = Vector3(40, 1, 40)
+
+[sub_resource type="BoxMesh" id="floor_mesh"]
+size = Vector3(40, 1, 40)
+
+[sub_resource type="CylinderMesh" id="hill_mesh"]
+top_radius = 4.0
+bottom_radius = 4.0
+height = 0.2
+
+[sub_resource type="StandardMaterial3D" id="hill_mat"]
+albedo_color = Color(0.95, 0.7, 0.2, 1)
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1")
+
+[node name="Floor" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor"]
+shape = SubResource("floor_shape")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor"]
+mesh = SubResource("floor_mesh")
+
+[node name="Hill" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+mesh = SubResource("hill_mesh")
+material_override = SubResource("hill_mat")
+
+[node name="SpawnPoints" type="Node3D" parent="."]
+
+[node name="Spawn1" type="Node3D" parent="SpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 1, 12)
+
+[node name="Spawn2" type="Node3D" parent="SpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 1, 12)
+
+[node name="Spawn3" type="Node3D" parent="SpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 12, 1, -12)
+
+[node name="Spawn4" type="Node3D" parent="SpawnPoints"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -12, 1, -12)
+
+[node name="Players" type="Node3D" parent="."]
+
+[node name="Sun" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.642788, 0.766044, 0, -0.766044, 0.642788, 0, 10, 0)
+shadow_enabled = true
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.819152, 0.573576, 0, -0.573576, 0.819152, 0, 18, 26)
+```
+
+`player.tscn` — references the runtime's 3D character template script. The reference is expected; the file itself must never be in your pack:
+
+```text
+[gd_scene load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://sdk/summer_character_3d.gd" id="1"]
+
+[sub_resource type="CapsuleShape3D" id="player_shape"]
+
+[sub_resource type="CapsuleMesh" id="player_mesh"]
+
+[node name="Player" type="CharacterBody3D"]
+script = ExtResource("1")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("player_shape")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("player_mesh")
+```
+
+The four stub files. `sdk/summer.gd`:
+
+```gdscript
+# LOCAL STUB - excluded from export, never uploaded.
+extends Node
+
+func end_game() -> void: pass
+func set_time_limit(_seconds: float) -> void: pass
+func get_time_remaining() -> float: return 0.0
+func get_players() -> Array: return []
+func get_player_count() -> int: return 0
+func get_max_players() -> int: return 8
+func send_announcement(text: String) -> void: print("[Summer stub] announce: ", text)
+func is_server() -> bool: return true
+func is_client() -> bool: return false
+```
+
+`sdk/summer_game.gd`:
+
+```gdscript
+# LOCAL STUB - excluded from export, never uploaded.
+class_name SummerGame
+extends Node3D
+
+var spawn_points: Array = []
+
+func _ready() -> void:
+	_game_init()
+	_game_start()
+
+func _process(_delta: float) -> void:
+	pass
+
+func _game_init() -> void: pass
+func _game_start() -> void: pass
+func _game_end() -> void: pass
+func _player_joined(_player) -> void: pass
+func _player_left(_player) -> void: pass
+
+func end_game(_from_timer: bool = false) -> void:
+	_game_end()
+
+func set_time_limit(_seconds: float) -> void: pass
+func get_time_remaining() -> float: return 0.0
+func get_players() -> Array: return []
+func get_player_count() -> int: return 0
+func get_max_players() -> int: return 8
+
+func get_random_spawn_point() -> Vector3:
+	if spawn_points.is_empty():
+		return Vector3.ZERO
+	return spawn_points[randi() % spawn_points.size()]
+
+func apply_default_movement(_player, _delta: float, _move_speed: float = 7.0, _gravity: float = 20.0) -> void:
+	pass
+```
+
+`sdk/summer_player.gd`:
+
+```gdscript
+# LOCAL STUB - excluded from export, never uploaded.
+class_name SummerPlayer
+extends Node
+
+var peer_id: int = 0
+var player_id: String = ""
+var display_name: String = "Player"
+var avatar: Dictionary = {}
+
+var _synced: Dictionary = {}
+
+func set_synced(key: String, value) -> void:
+	_synced[key] = value
+
+func get_synced(key: String):
+	return _synced.get(key)
+```
+
+`sdk/summer_character_3d.gd`:
+
+```gdscript
+# LOCAL STUB - excluded from export, never uploaded.
+class_name SummerCharacter3D
+extends CharacterBody3D
+
+var peer_id: int = 0
+var player_id: String = ""
+var display_name: String = "Player"
+var avatar: Dictionary = {}
+
+var health: float = 100.0
+var max_health: float = 100.0
+var is_alive: bool = true
+
+var _synced: Dictionary = {}
+
+func set_synced(key: String, value) -> void:
+	_synced[key] = value
+
+func get_synced(key: String):
+	return _synced.get(key)
+
+func respawn(position_in: Vector3 = Vector3.ZERO) -> void:
+	global_position = position_in
+	health = max_health
+	is_alive = true
+
+func damage(amount: float) -> void:
+	health = maxf(0.0, health - amount)
+	is_alive = health > 0.0
+
+func heal(amount: float) -> void:
+	health = minf(max_health, health + amount)
+
+func kill() -> void:
+	health = 0.0
+	is_alive = false
+
+func teleport(position_in: Vector3) -> void:
+	global_position = position_in
+```
+
+`export_presets.cfg` — this is what keeps stubs and project config out of the pack:
+
+```ini
+[preset.0]
+
+name="Summer Game PCK"
+platform="Linux"
+runnable=true
+advanced_options=false
+dedicated_server=false
+custom_features=""
+export_filter="all_resources"
+include_filter="manifest.json"
+exclude_filter="sdk/*"
+export_path="game.pck"
+patches=PackedStringArray()
+encryption_include_filters=""
+encryption_exclude_filters=""
+seed=0
+encrypt_pck=false
+encrypt_directory=false
+script_export_mode=0
+
+[preset.0.options]
+
+custom_template/debug=""
+custom_template/release=""
+debug/export_console_wrapper=1
+binary_format/embed_pck=false
+texture_format/s3tc_bptc=true
+texture_format/etc2_astc=false
+binary_format/architecture="x86_64"
+ssh_remote_deploy/enabled=false
+```
+
+`script_export_mode=0` ships your GDScript as readable text — required so review can read your source. If you add asset folders, they are included automatically (`all_resources`); add non-resource data files (e.g. extra `.json`) to `include_filter` as a comma-separated list.
+
+## 5. Validate and export
+
+Run all four checks. `$GODOT` is your Godot 4.5 binary path.
+
+```bash
+# 5a. Import resources (first run only; expect exit 0)
+$GODOT --headless --path . --import
+
+# 5b. Smoke run: scene loads, hooks fire, no script errors (expect exit 0,
+#     and the announcement line printed by the stub)
+$GODOT --headless --path . --quit-after 120
+
+# 5c. Banned-API self-check: must print nothing
+grep -rnE "OS\.(execute|shell_open|create_process|create_instance|kill)|FileAccess|DirAccess|HTTPRequest|HTTPClient|JavaScriptBridge|ClassDB\.instantiate|Thread\.new|Mutex\.new|Semaphore\.new|StreamPeerTCP|PacketPeerUDP|TCPServer|UDPServer|WebSocketPeer|\.callv?\(|\.call_deferred\(|Callable\(|Engine\.get_singleton|Expression|Marshalls\.base64_to_variant|ResourceSaver|ProjectSettings\.load_resource_pack|get_node\(\"/root|get_tree\(\)\.root" \
+  --include="*.gd" --include="*.tscn" --include="*.tres" . | grep -v "^\./sdk/"
+
+# 5d. Export the pack (no export templates needed for --export-pack)
+$GODOT --headless --path . --export-pack "Summer Game PCK" game.pck
+```
+
+If the smoke run prints `SCRIPT ERROR`, fix it before exporting — the same error will make the platform runtime refuse your pack. Then verify the artifact:
+
+```bash
+ls -l game.pck            # must be >= 1024 bytes and <= 536870912 (512 MiB)
+shasum -a 256 game.pck    # note the 64-char lowercase hex digest
+```
+
+## 6. Publish through the live API
+
+Base URL `https://summercraft.ai`. All requests JSON unless stated. Every step needs `Authorization: Bearer $SUMMERCRAFT_ACCESS_TOKEN`.
+
+**Budget warning:** each of the three write steps (create game, upload-url, finalize) has its own limit of **1 request per hour per account**. Validation failures (4xx before the limit check) do not spend it, but a successful call does. You get one full publish attempt per hour — do not experiment against these endpoints; get steps 4–5 right first.
+
+### 6a. Create the game record (once per game, not per version)
+
+```bash
+curl -sS -X POST "https://summercraft.ai/api/games/engine" \
+  -H "Authorization: Bearer $SUMMERCRAFT_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Hold the Hill"}'
+```
+
+- `201 { "gameId": "<uuid>", "slug": "hold-the-hill", "kind": "engine", "status": "draft", "uploadUrlEndpoint": "/api/games/<uuid>/releases/upload-url" }`. Save `gameId`.
+- Optional body field `"slug"`: an explicit slug fails with `409 slug_taken` if taken; without it the server derives one and walks around collisions.
+- `401 sign_in_required` → token missing/expired. `429 rate_limited` → body includes `retryAt`; wait. `409 slug_taken` → pick another slug.
+- Skip this step for updates to an existing game — reuse its `gameId`.
+
+### 6b. Request the presigned upload URL
+
+Declare exactly what you measured in step 5. `version` must match `[A-Za-z0-9][A-Za-z0-9._-]{0,31}` with no `..`; `sha256` is the lowercase hex digest; `sizeBytes` the exact byte count.
+
+```bash
+curl -sS -X POST "https://summercraft.ai/api/games/$GAME_ID/releases/upload-url" \
+  -H "Authorization: Bearer $SUMMERCRAFT_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d "{\"version\": \"1.0.0\", \"sha256\": \"$SHA256\", \"sizeBytes\": $SIZE_BYTES}"
+```
+
+- `200 { "uploadUrl", "method": "PUT", "headers": { "content-type": "application/octet-stream", "if-none-match": "*" }, "objectKey", "maxBytes", "expiresAt", "finalizeUrl" }`.
+- The URL expires in 1 hour. **Both returned headers are folded into the URL's signature** — the PUT must send them exactly, nothing extra that conflicts, or storage answers `403 SignatureDoesNotMatch`.
+- Errors: `404 game_not_found_or_forbidden` (wrong `gameId` or not your game) · `409 not_a_godot_game` (that `gameId` is a web game) · `409 version_exists` (bump `version`; released versions are immutable) · `413 artifact_too_large` · `429 rate_limited`.
+
+### 6c. PUT the artifact
+
+```bash
+curl -sS -X PUT "$UPLOAD_URL" \
+  -H "Content-Type: application/octet-stream" \
+  -H "If-None-Match: *" \
+  --data-binary @game.pck
+```
+
+- Success is an empty `200`. No `Authorization` header here — the URL itself is the credential.
+- `412 Precondition Failed` → an object already exists at this key (the key is write-once). If your earlier PUT half-landed, finalize will detect and delete a corrupt one; a clean object under the same (version, sha256) means this exact artifact was already uploaded — just finalize.
+- `403 SignatureDoesNotMatch` → your headers differ from the two returned ones.
+
+### 6d. Finalize — the server verifies your bytes
+
+```bash
+curl -sS -X POST "https://summercraft.ai/api/games/$GAME_ID/releases/finalize" \
+  -H "Authorization: Bearer $SUMMERCRAFT_ACCESS_TOKEN" \
+  -H "Content-Type: application/json" \
+  -d "{\"version\": \"1.0.0\", \"sha256\": \"$SHA256\", \"changelog\": \"Initial release.\"}"
+```
+
+The server HEADs the stored object, streams it through sha256, and compares against your declaration. Nothing you claim is trusted.
+
+- `201 { "releaseId", "gameId", "version", "sha256", "sizeBytes", "pckUrl", "status": "pending_review", "adminNotified", "detail" }` — you are done; the release is queued for human review.
+- `409 no_upload_intent` → you skipped 6b, or the declaration differs from what 6b recorded.
+- `409 artifact_missing` → the PUT never landed; redo 6c.
+- `400 checksum_mismatch` / `400 size_mismatch` → the stored object was corrupt; it has been deleted so the key is free — redo 6c with the same URL if unexpired, then finalize again.
+- `429 rate_limited` → finalize has its own hourly budget; wait for `retryAt`.
+- `changelog` is optional, max 2000 chars.
+
+## 7. After submission — what to tell your operator
+
+Report exactly this, no more:
+
+1. The game record exists at status `draft`; release `<version>` is `pending_review` in the manual review queue. A human reviews every submission; there is no automatic publish and no guaranteed review time.
+2. When approved, the game becomes `published` and the release goes live; if rejected, the reason appears for the creator on `https://summercraft.ai/creator`.
+3. The owner (and admins) can verify the stored artifact any time — response includes a short-lived (5 min) download URL plus the server-verified `sha256`:
+   ```bash
+   curl -sS "https://summercraft.ai/api/games/$GAME_ID/releases/1.0.0/download-url" \
+     -H "Authorization: Bearer $SUMMERCRAFT_ACCESS_TOKEN"
+   ```
+   Other signed-in users can fetch it only after the game is published.
+4. Playing uploaded Godot games in the browser or desktop shell, and hosted game servers, are not live yet — publishing today means entering the catalog pipeline, not instant playability. Do not claim otherwise.
+
+## 8. Updating the game later
+
+Releases are immutable. To ship a fix: bump `manifest.json` `version` **and** use the same new version string in 6b/6d, re-export, and repeat 6b → 6c → 6d with the same `gameId`. Every update goes through review again. Remember the 1/hour budgets.
+
+## 9. If something here does not match reality
+
+Error bodies from this API are self-describing: `{ "error": "<code>", "detail": "<what to do next>" }` — trust the `detail` text. For anything else, fetch the full reference: `https://docs.summerengine.com/api-reference/summer-sdk/exporting-and-uploading-your-game.md` and `https://docs.summerengine.com/api-reference/summer-sdk/submission-guide.md`. Report doc bugs to `founders@summerengine.com`.
