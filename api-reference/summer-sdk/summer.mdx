@@ -1,0 +1,89 @@
+---
+title: "Summer Singleton"
+description: "Platform entrypoint for multiplayer runtime features: lifecycle helpers, players, spawning, context checks, and subsystems."
+icon: "box"
+---
+
+## What Is `Summer`?
+
+`Summer` is the autoload singleton exposed by the SDK.
+
+Use it for platform-level operations that are not tied to one player object.
+
+## `Summer` vs Player Object
+
+- Use `Summer` for match-wide actions (timer, announcements, spawning, subsystem access).
+- Use the player object (`SummerPlayer` or `SummerCharacter3D`) for per-player synced state and input.
+
+## Core Methods (Signatures)
+
+```gdscript
+end_game() -> void
+set_time_limit(seconds: float) -> void
+get_time_remaining() -> float
+get_players() -> Array
+get_player_count() -> int
+get_max_players() -> int
+send_announcement(text: String) -> void
+spawn_npc(scene: PackedScene, position: Vector3) -> SummerNPC
+spawn_object(scene: PackedScene, position: Vector3) -> SummerObject
+spawn_projectile(scene: PackedScene, origin: Vector3, direction: Vector3, speed: float) -> SummerObject
+is_server() -> bool
+is_client() -> bool
+```
+
+## Match Flow
+
+```gdscript
+Summer.set_time_limit(300)
+Summer.send_announcement("Round started")
+
+if Summer.get_time_remaining() <= 0.0:
+    Summer.end_game()
+```
+
+## Players
+
+```gdscript
+var players = Summer.get_players()
+var current = Summer.get_player_count()
+var max_players = Summer.get_max_players()
+```
+
+## Announcements
+
+```gdscript
+Summer.send_announcement("Sudden death starts now!")
+```
+
+## Spawning
+
+```gdscript
+var npc = Summer.spawn_npc(npc_scene, Vector3(0, 0, 0))
+var pickup = Summer.spawn_object(pickup_scene, Vector3(2, 0, 2))
+var projectile = Summer.spawn_projectile(bullet_scene, origin, direction, 30.0)
+```
+
+## Runtime Context
+
+```gdscript
+if Summer.is_server():
+    # scoring, persistence, win conditions
+    update_game_state()
+```
+
+Use `is_server()` and `is_client()` to keep gameplay authority on the server.
+
+## Subsystems
+
+`Summer` exposes optional subsystem handles:
+
+- `Summer.teams`
+- `Summer.score`
+- `Summer.data`
+- `Summer.economy`
+- `Summer.ui`
+- `Summer.audio`
+- `Summer.input`
+
+See `/api-reference/summer-sdk/subsystems-signals` for subsystem APIs.

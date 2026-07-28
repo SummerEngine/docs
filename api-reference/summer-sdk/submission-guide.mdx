@@ -1,6 +1,6 @@
 ---
 title: "Submission Guide"
-description: "How to export .pck, pass static analysis, upload to playcrafty.games, and understand review/update flow."
+description: "How to export .pck, pass static analysis, upload to summercraft.ai, and understand review/update flow."
 icon: "upload"
 ---
 
@@ -42,7 +42,7 @@ If scanner violations are found, submission fails with:
 
 See the complete up-to-date list here:
 
-- [Banned APIs Reference](/api-reference/crafty-sdk/banned-apis-reference)
+- [Banned APIs Reference](/api-reference/summer-sdk/banned-apis-reference)
 
 ### Important For AI Code Generation
 
@@ -57,7 +57,7 @@ if OS.has_feature("editor"):
 
 The scanner is pattern-based and blocks usage regardless of runtime branch.
 
-## 3) Upload on playcrafty.games
+## 3) Upload on summercraft.ai
 
 V1 submission requires two files:
 
@@ -110,13 +110,13 @@ The platform:
 
 ## Related Docs
 
-- [Testing Your Game Locally](/api-reference/crafty-sdk/testing-your-game-locally)
-- [Exporting and Uploading Your Game](/api-reference/crafty-sdk/exporting-and-uploading-your-game)
-- [Banned APIs Reference](/api-reference/crafty-sdk/banned-apis-reference)
+- [Testing Your Game Locally](/api-reference/summer-sdk/testing-your-game-locally)
+- [Exporting and Uploading Your Game](/api-reference/summer-sdk/exporting-and-uploading-your-game)
+- [Banned APIs Reference](/api-reference/summer-sdk/banned-apis-reference)
 
 ## Common Upload Errors
 
 - `Missing .pck file (multipart field: pck)`
 - `Uploaded file must be a .pck`
-- `Invalid manifest. Required: id, name, version, crafty_sdk, entry_scene, min_players, max_players`
+- `Invalid manifest. Required: id, name, version, summer_sdk, entry_scene, min_players, max_players`
 - `Static analysis failed` (with violations list)

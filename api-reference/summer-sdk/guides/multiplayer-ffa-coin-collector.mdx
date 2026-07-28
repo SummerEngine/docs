@@ -1,20 +1,20 @@
 ---
 title: "Game Guide: Multiplayer FFA (Coin Collector)"
-description: "How to make a 3D action game multiplayer on Crafty using the optional CraftyCharacter3D template."
+description: "How to make a 3D action game multiplayer on Summercraft using the optional SummerCharacter3D template."
 icon: "swords"
 ---
 
 ## What This Guide Covers
 
-This is a full `CraftyGame` example for a multiplayer free-for-all:
+This is a full `SummerGame` example for a multiplayer free-for-all:
 
 - Round timer
-- Collectible objects via `Crafty.spawn_object`
-- Scoring via `Crafty.score`
-- Announcements via `Crafty.send_announcement`
+- Collectible objects via `Summer.spawn_object`
+- Scoring via `Summer.score`
+- Announcements via `Summer.send_announcement`
 - End-of-round winner announcement
 
-This guide uses the optional 3D template path (`player.tscn` rooted with `CraftyCharacter3D`).
+This guide uses the optional 3D template path (`player.tscn` rooted with `SummerCharacter3D`).
 
 ## Scene Setup
 
@@ -23,12 +23,12 @@ Create `coin_collector.tscn` with:
 - Root: `Node3D` (`CoinCollector`)
 - Child: `Node3D` (`SpawnPoints`) with multiple spawn transforms
 
-Create collectible scene `coin.tscn` (root script should extend `CraftyObject`).
+Create collectible scene `coin.tscn` (root script should extend `SummerObject`).
 
 ## Complete Game Script (`coin_collector.gd`)
 
 ```gdscript
-extends CraftyGame
+extends SummerGame
 
 const MOVE_SPEED := 15.0
 const GRAVITY := 20.0
@@ -63,28 +63,28 @@ func _game_init() -> void:
         ]
 
 func _game_start() -> void:
-    Crafty.set_time_limit(ROUND_SECONDS)
-    Crafty.object_collected.connect(_on_coin_collected)
-    Crafty.send_announcement("Collect %d coins to win" % COINS_TO_WIN)
+    Summer.set_time_limit(ROUND_SECONDS)
+    Summer.object_collected.connect(_on_coin_collected)
+    Summer.send_announcement("Collect %d coins to win" % COINS_TO_WIN)
     _spawn_initial_coins()
 
 func _game_end() -> void:
-    if Crafty.object_collected.is_connected(_on_coin_collected):
-        Crafty.object_collected.disconnect(_on_coin_collected)
+    if Summer.object_collected.is_connected(_on_coin_collected):
+        Summer.object_collected.disconnect(_on_coin_collected)
 
-    var leaderboard := Crafty.score.get_leaderboard()
+    var leaderboard := Summer.score.get_leaderboard()
     if leaderboard.is_empty():
-        Crafty.send_announcement("Round over: no winner")
+        Summer.send_announcement("Round over: no winner")
         return
 
     var winner = leaderboard[0].player
     var score := int(leaderboard[0].score)
-    Crafty.send_announcement("%s wins with %d coins!" % [str(winner.get("display_name")), score])
+    Summer.send_announcement("%s wins with %d coins!" % [str(winner.get("display_name")), score])
 
 func _player_joined(player) -> void:
     if player.has_method("respawn"):
         player.respawn(get_random_spawn_point())
-    Crafty.score.set_score(player, 0)
+    Summer.score.set_score(player, 0)
     player.set_synced("score", 0)
 
 func _player_left(_player) -> void:
@@ -92,7 +92,7 @@ func _player_left(_player) -> void:
 
 func _process(delta: float) -> void:
     super._process(delta)
-    if not Crafty.is_server():
+    if not Summer.is_server():
         return
 
     for p in get_players():
@@ -107,7 +107,7 @@ func _spawn_initial_coins() -> void:
 func _spawn_coin_at(pos: Vector3) -> void:
     if not _coin_scene:
         return
-    var coin := Crafty.spawn_object(_coin_scene, pos)
+    var coin := Summer.spawn_object(_coin_scene, pos)
     if coin:
         coin.set_synced("active", true)
 
@@ -128,9 +128,9 @@ func _tick_coin_respawns(delta: float) -> void:
         else:
             i += 1
 
-func _on_coin_collected(player, _obj: CraftyObject) -> void:
-    Crafty.score.add(player, 1)
-    var score := Crafty.score.get_score(player)
+func _on_coin_collected(player, _obj: SummerObject) -> void:
+    Summer.score.add(player, 1)
+    var score := Summer.score.get_score(player)
     player.set_synced("score", score)
 
     if score >= COINS_TO_WIN:
@@ -145,7 +145,7 @@ func _on_coin_collected(player, _obj: CraftyObject) -> void:
 
 ## If You Are Not Building A 3D Action Game
 
-Do not use this movement pattern. Use `CraftyPlayer` directly and sync your own state model (for example turn state, board state, inventory, cursor targets).
+Do not use this movement pattern. Use `SummerPlayer` directly and sync your own state model (for example turn state, board state, inventory, cursor targets).
 
 ## Suggested `manifest.json`
 
@@ -154,7 +154,7 @@ Do not use this movement pattern. Use `CraftyPlayer` directly and sync your own 
   "id": "coin-collector",
   "name": "Coin Collector",
   "version": "1.0.0",
-  "crafty_sdk": "1.0",
+  "summer_sdk": "1.0",
   "entry_scene": "coin_collector.tscn",
   "player_scene": "player.tscn",
   "min_players": 1,

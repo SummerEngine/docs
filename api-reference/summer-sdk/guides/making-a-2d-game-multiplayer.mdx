@@ -1,13 +1,13 @@
 ---
 title: "Guide: Making A 2D Game Multiplayer"
-description: "Integrate Crafty into a 2D game by extending CraftyPlayer and syncing your own state."
+description: "Integrate Summercraft into a 2D game by extending SummerPlayer and syncing your own state."
 icon: "square"
 ---
 
 ## Platform Framing
 
-You are not building a “Crafty game type.”  
-You are building a 2D game in Summer/Godot and integrating the Crafty platform layer:
+You are not building a “Summercraft game type.”  
+You are building a 2D game in Summer/Godot and integrating the Summercraft platform layer:
 
 - multiplayer runtime,
 - server authority,
@@ -15,10 +15,10 @@ You are building a 2D game in Summer/Godot and integrating the Crafty platform l
 
 ## Recommended Player Model
 
-For 2D games, create your own 2D player class that extends `CraftyPlayer`.
+For 2D games, create your own 2D player class that extends `SummerPlayer`.
 
 ```gdscript
-extends CraftyPlayer
+extends SummerPlayer
 
 @export var speed := 220.0
 var local_position := Vector2.ZERO
@@ -33,11 +33,11 @@ func _ready() -> void:
 ## Server Authority Loop
 
 ```gdscript
-extends CraftyGame
+extends SummerGame
 
 func _process(delta: float) -> void:
     super._process(delta)
-    if not Crafty.is_server():
+    if not Summer.is_server():
         return
 
     for p in get_players():
@@ -80,10 +80,10 @@ func _player_left(player) -> void:
 
 Use only what you need:
 
-- `Crafty.score` for score/rank,
-- `Crafty.teams` for team modes,
-- `Crafty.data` for persistent inventory/progress,
-- `Crafty.economy` for currency.
+- `Summer.score` for score/rank,
+- `Summer.teams` for team modes,
+- `Summer.data` for persistent inventory/progress,
+- `Summer.economy` for currency.
 
 ## Common Mistakes
 
@@ -93,7 +93,7 @@ Use only what you need:
 
 ## Production Checklist (2D)
 
-- [ ] `Crafty.is_server()` gates all authoritative state updates.
+- [ ] `Summer.is_server()` gates all authoritative state updates.
 - [ ] 2D state is synced via `set_synced`.
 - [ ] Client only renders synced values.
 - [ ] Required manifest fields valid.

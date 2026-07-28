@@ -11,17 +11,17 @@ Subsystems are optional tools. Use only what your game needs.
 This is the core platform framing:
 
 - your game logic stays yours,
-- Crafty subsystems provide multiplayer/platform primitives.
+- Summer SDK subsystems provide multiplayer/platform primitives.
 
 ## Teams
 
 ```gdscript
-Crafty.teams.create("red", {"color": Color.RED, "max_size": 4})
-Crafty.teams.create("blue", {"color": Color.BLUE, "max_size": 4})
-Crafty.teams.assign(player, "red")
-var team = Crafty.teams.get_team(player)
-var members = Crafty.teams.get_members("red")
-Crafty.teams.auto_balance()
+Summer.teams.create("red", {"color": Color.RED, "max_size": 4})
+Summer.teams.create("blue", {"color": Color.BLUE, "max_size": 4})
+Summer.teams.assign(player, "red")
+var team = Summer.teams.get_team(player)
+var members = Summer.teams.get_members("red")
+Summer.teams.auto_balance()
 ```
 
 Methods:
@@ -36,12 +36,12 @@ Methods:
 ## Score
 
 ```gdscript
-Crafty.score.add(player, 1)
-Crafty.score.set_score(player, 12)
-var score = Crafty.score.get_score(player)
-var leaderboard = Crafty.score.get_leaderboard()
-Crafty.score.add_team("red", 2)
-var team_score = Crafty.score.get_team("red")
+Summer.score.add(player, 1)
+Summer.score.set_score(player, 12)
+var score = Summer.score.get_score(player)
+var leaderboard = Summer.score.get_leaderboard()
+Summer.score.add_team("red", 2)
+var team_score = Summer.score.get_team("red")
 ```
 
 Methods:
@@ -58,10 +58,10 @@ Methods:
 Persistent player data:
 
 ```gdscript
-Crafty.data.save(player, "level", 5)
-var level = Crafty.data.load(player, "level")
-var all_data = Crafty.data.load_all(player)
-Crafty.data.delete(player, "legacy_key")
+Summer.data.save(player, "level", 5)
+var level = Summer.data.load(player, "level")
+var all_data = Summer.data.load_all(player)
+Summer.data.delete(player, "legacy_key")
 ```
 
 Methods:
@@ -74,10 +74,10 @@ Methods:
 ## Economy
 
 ```gdscript
-var awarded = await Crafty.economy.award(player, 5, "match_win")
-var spent = await Crafty.economy.spend(player, 3, "buy_hint")
-var balance = await Crafty.economy.get_balance(player)
-var can_pay = await Crafty.economy.has_balance(player, 10)
+var awarded = await Summer.economy.award(player, 5, "match_win")
+var spent = await Summer.economy.spend(player, 3, "buy_hint")
+var balance = await Summer.economy.get_balance(player)
+var can_pay = await Summer.economy.has_balance(player, 10)
 ```
 
 Methods:
@@ -90,11 +90,11 @@ Methods:
 ## UI
 
 ```gdscript
-Crafty.ui.show_scoreboard()
-Crafty.ui.hide_scoreboard()
-Crafty.ui.show_timer(60)
-Crafty.ui.show_announcement("Final minute!", 3.0)
-Crafty.ui.show_kill_feed(killer, victim)
+Summer.ui.show_scoreboard()
+Summer.ui.hide_scoreboard()
+Summer.ui.show_timer(60)
+Summer.ui.show_announcement("Final minute!", 3.0)
+Summer.ui.show_kill_feed(killer, victim)
 ```
 
 Optional helper UI. Creators can still build fully custom UI.
@@ -102,14 +102,14 @@ Optional helper UI. Creators can still build fully custom UI.
 ## Audio
 
 ```gdscript
-Crafty.audio.play_at(sound, Vector3(0, 1, 0))
-Crafty.audio.play_global(sound)
-Crafty.audio.play_for(player, sound)
+Summer.audio.play_at(sound, Vector3(0, 1, 0))
+Summer.audio.play_global(sound)
+Summer.audio.play_for(player, sound)
 ```
 
 ## Input
 
-`Crafty.input` and per-player `player.input` provide server-readable control state.
+`Summer.input` and per-player `player.input` provide server-readable control state.
 
 Use server-authoritative checks for outcomes.
 
@@ -118,14 +118,14 @@ Use server-authoritative checks for outcomes.
 Connect game logic to platform gameplay signals:
 
 ```gdscript
-Crafty.player_killed.connect(_on_player_killed)
-Crafty.player_damaged.connect(_on_player_damaged)
-Crafty.player_respawned.connect(_on_player_respawned)
-Crafty.timer_expired.connect(_on_timer_expired)
-Crafty.object_collected.connect(_on_object_collected)
-Crafty.npc_killed.connect(_on_npc_killed)
-Crafty.return_to_hub_requested.connect(_on_return_to_hub_requested)
-Crafty.play_again_requested.connect(_on_play_again_requested)
+Summer.player_killed.connect(_on_player_killed)
+Summer.player_damaged.connect(_on_player_damaged)
+Summer.player_respawned.connect(_on_player_respawned)
+Summer.timer_expired.connect(_on_timer_expired)
+Summer.object_collected.connect(_on_object_collected)
+Summer.npc_killed.connect(_on_npc_killed)
+Summer.return_to_hub_requested.connect(_on_return_to_hub_requested)
+Summer.play_again_requested.connect(_on_play_again_requested)
 ```
 
 Available signals:

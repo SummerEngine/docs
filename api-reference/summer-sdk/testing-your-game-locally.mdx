@@ -1,6 +1,6 @@
 ---
 title: "Testing Your Game Locally"
-description: "Press play, launch server+client automatically, and test your Crafty game with production-like runtime behavior."
+description: "Press play, launch server+client automatically, and test your Summercraft game with production-like runtime behavior."
 icon: "flask-conical"
 ---
 
@@ -8,10 +8,10 @@ icon: "flask-conical"
 
 Local testing should match production behavior as closely as possible.
 
-In Crafty, a published game runs on:
+In Summercraft, a published game runs on:
 
 - the same Summer/Godot runtime,
-- the same Crafty SDK APIs,
+- the same Summer SDK APIs,
 - server-authoritative networking.
 
 That is why the recommended workflow launches a local headless server and a client, instead of testing gameplay logic in a client-only setup.
@@ -49,8 +49,8 @@ To make local testing reliable:
 
 - Keep `manifest.json` valid and present.
 - Ensure `entry_scene` points to a real scene.
-- Set `player_scene` and keep it in sync with your player scene path (`CraftyCharacter3D` for 3D templates, or your own `CraftyPlayer` subclass for other genres).
-- Keep server-authoritative logic in server paths (`Crafty.is_server()` checks where needed).
+- Set `player_scene` and keep it in sync with your player scene path (`SummerCharacter3D` for 3D templates, or your own `SummerPlayer` subclass for other genres).
+- Keep server-authoritative logic in server paths (`Summer.is_server()` checks where needed).
 
 ## Multiplayer Testing (2+ Players)
 
@@ -91,14 +91,14 @@ Usually one of:
 
 - `manifest.json` missing or invalid.
 - `entry_scene` path wrong.
-- scene root does not extend `CraftyGame`.
+- scene root does not extend `SummerGame`.
 
 ### Player spawns fail
 
 Usually one of:
 
 - `player_scene` path wrong.
-- player scene does not use `CraftyPlayer`.
+- player scene does not use `SummerPlayer`.
 - game scene missing expected spawn/player nodes.
 
 ### Local behavior differs from expected production behavior
@@ -111,6 +111,6 @@ Check:
 
 ## Related Docs
 
-- [manifest.json Reference](/api-reference/crafty-sdk/manifest-json-reference)
-- [Exporting and Uploading Your Game](/api-reference/crafty-sdk/exporting-and-uploading-your-game)
-- [Banned APIs Reference](/api-reference/crafty-sdk/banned-apis-reference)
+- [manifest.json Reference](/api-reference/summer-sdk/manifest-json-reference)
+- [Exporting and Uploading Your Game](/api-reference/summer-sdk/exporting-and-uploading-your-game)
+- [Banned APIs Reference](/api-reference/summer-sdk/banned-apis-reference)

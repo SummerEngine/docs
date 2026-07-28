@@ -1,0 +1,144 @@
+---
+title: "Summer SDK Naming"
+description: "The Crafty to Summer symbol map: every renamed class, autoload, manifest key, and path, plus the identifiers that deliberately did not move."
+icon: "arrow-right-left"
+---
+
+## Why This Page Exists
+
+The platform used to be called Crafty. It is now **Summercraft**, and the thing you
+build against is the **Summer SDK**. The rename reached the code, not just the copy, so
+games written against the old names need a mechanical pass.
+
+This page is the single authority for what each old identifier became. If another
+document, comment, or older repository disagrees with the table below, the table wins.
+
+<Warning>
+  Renaming is mechanical but not free. `summer_sdk` is a **required** manifest key and
+  `SummerGame` is a **required** base class. A game that still declares `crafty_sdk` or
+  extends `CraftyGame` fails submission validation rather than degrading quietly.
+</Warning>
+
+## Autoload Singleton
+
+| Old | New | Where |
+|---|---|---|
+| `Crafty` | `Summer` | Autoload registered at `/root/Summer` |
+| `res://sdk/crafty.gd` | `res://sdk/summer.gd` | Autoload script path |
+
+`Summer` is the Summercraft platform singleton available inside a published game. It is
+unrelated to **Summer Engine**, the editor you build in — the two never appear in the
+same script.
+
+## Classes
+
+Every SDK class drops the `Crafty` prefix for `Summer`.
+
+| Old | New | Documented in |
+|---|---|---|
+| `CraftyGame` | `SummerGame` | [SummerGame](/api-reference/summer-sdk/summer-game) |
+| `CraftyPlayer` | `SummerPlayer` | [SummerPlayer](/api-reference/summer-sdk/summer-player) |
+| `CraftyCharacter3D` | `SummerCharacter3D` | [SummerPlayer](/api-reference/summer-sdk/summer-player), [Multiplayer FFA guide](/api-reference/summer-sdk/guides/multiplayer-ffa-coin-collector) |
+| `CraftyObject` | `SummerObject` | [Summer Singleton](/api-reference/summer-sdk/summer), [Multiplayer FFA guide](/api-reference/summer-sdk/guides/multiplayer-ffa-coin-collector) |
+| `CraftyNPC` | `SummerNPC` | [Summer Singleton](/api-reference/summer-sdk/summer) |
+| `CraftyTeams` | `SummerTeams` | [Subsystems and Signals](/api-reference/summer-sdk/subsystems-signals) |
+| `CraftyScore` | `SummerScore` | [Subsystems and Signals](/api-reference/summer-sdk/subsystems-signals) |
+| `CraftyData` | `SummerData` | [Subsystems and Signals](/api-reference/summer-sdk/subsystems-signals) |
+| `CraftyEconomy` | `SummerEconomy` | [Subsystems and Signals](/api-reference/summer-sdk/subsystems-signals) |
+| `CraftyUI` | `SummerUI` | [Subsystems and Signals](/api-reference/summer-sdk/subsystems-signals) |
+| `CraftyAudio` | `SummerAudio` | [Subsystems and Signals](/api-reference/summer-sdk/subsystems-signals) |
+| `CraftyInput` | `SummerInput` | [Subsystems and Signals](/api-reference/summer-sdk/subsystems-signals) |
+| `CraftyMCP` | `SummerMCP` | Not documented publicly |
+
+Subsystems are reached through the singleton (`Summer.teams`, `Summer.score`,
+`Summer.data`, `Summer.economy`, `Summer.ui`, `Summer.audio`, `Summer.input`). The
+handle names did not change — only the singleton in front of them.
+
+**Method names, signal names, and signatures are unchanged.** `set_synced`,
+`is_server()`, `player_killed`, and the rest all keep their names.
+
+## Manifest, Config, and Paths
+
+| Old | New | Documented in |
+|---|---|---|
+| `crafty_sdk` | `summer_sdk` | [manifest.json Reference](/api-reference/summer-sdk/manifest-json-reference) |
+| `res://crafty.cfg` | `res://summer.cfg` | [Banned APIs Reference](/api-reference/summer-sdk/banned-apis-reference) |
+| `res://sdk/crafty_character_3d.gd` | `res://sdk/summer_character_3d.gd` | [Build Your First Summercraft Game](/api-reference/summer-sdk/build-your-first-summer-game), [AI Agent Playbook](/api-reference/summer-sdk/ai-agent-playbook) |
+| `sdk/crafty_*.gd` | `sdk/summer_*.gd` | SDK source layout |
+
+## Web Runtime
+
+The browser-side surface of the Summer SDK renames alongside a protocol version bump.
+The old names are removed rather than aliased.
+
+| Old | New |
+|---|---|
+| `crafty.webview.v1` | `summer.webview.v2` |
+| `playcrafty.preview` | `summer.preview.v2` |
+| `CraftyRuntime` | `SummerRuntime` |
+| `crafty-runtime.js` | `summer-runtime.js` |
+| `@playcrafty/game-kit` | `@summercraft/game-kit` |
+| `https://playcrafty.games/contracts/*.schema.json` | `https://summercraft.ai/contracts/*.schema.json` |
+
+<Note>
+  There is no `v1` compatibility shim and no `CraftyRuntime` alias. A page still speaking
+  `crafty.webview.v1` after the cutover is not talking to anything.
+</Note>
+
+**`v2` is a rename and a version bump, not a protocol redesign.** Message shapes are
+unchanged from `v1`, including the legacy normalization that still accepts a bare event
+name — `{type: "game_over"}` remains equivalent to
+`{type: "summer:event", event: "game_over"}`. If your game already spoke `v1` correctly,
+the only edit it needs is the protocol string and the runtime global. Nothing about how
+you construct or handle messages changes.
+
+## Player Currency
+
+The in-game currency is **Crafties** (display name), `crafties` on the wire and in code.
+
+| Concept | Name |
+|---|---|
+| Player currency, display | Crafties |
+| Player currency, wire and code | `crafties` |
+
+<Warning>
+  **"Credits" is not the player currency.** In Summer Engine, credits are the compute
+  billing unit you spend on AI generation. The two never mix, and no balance is ever
+  converted between them. If you are writing about something a *player* earns or spends
+  inside a game, the word is crafties.
+</Warning>
+
+Amounts passed to and returned from `Summer.economy` are crafties.
+
+Note that "credits" also appears in the docs in its ordinary English sense — crediting an
+asset's creator, and the in-game credits roll. Neither is a currency.
+
+## Domains
+
+| Old | New |
+|---|---|
+| `playcrafty.games` | `summercraft.ai` |
+
+`summercraft.ai` is the canonical domain. `playcrafty.games` survives only as a legacy
+redirect, not as a second address for the same content.
+
+## What Deliberately Did Not Move
+
+Not every `crafty` string is a branding leftover. These are load-bearing and stay as they
+are:
+
+- **`crafty-production-5a7c.up.railway.app`** — the deployed platform-api host that serves
+  `POST /games/submit`. It is a Railway-generated hostname, it is what actually answers,
+  and rewriting it in documentation would publish a submission endpoint that does not
+  exist. It changes only if the service is redeployed under a new name.
+- **`crafty-game-server`** — the live Fly.io application name, which is also the base for
+  the game-server image tag and its `.fly.dev` hostname. Same reasoning: an app name is a
+  deployed identity, not a label.
+- **`c`-prefixed database tables** (`cFeedItems`, `cGamePublicStats`, and siblings) —
+  internal, invisible to creators, and renaming them would churn every policy, view, and
+  foreign key for no user-visible gain.
+- **The `games.playcrafty.mobile` bundle id** — app-store identity cannot be renamed in
+  place on an existing listing.
+
+The rule these share: a name that some live system resolves is not copy, and it moves only
+when that system moves.

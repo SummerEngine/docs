@@ -1,12 +1,12 @@
 ---
-title: "CraftyPlayer"
-description: "Game-agnostic player contract: peer identity, synced state, and server-read input. Use CraftyCharacter3D for built-in 3D character behavior."
+title: "SummerPlayer"
+description: "Game-agnostic player contract: peer identity, synced state, and server-read input. Use SummerCharacter3D for built-in 3D character behavior."
 icon: "user"
 ---
 
-## What Is `CraftyPlayer`?
+## What Is `SummerPlayer`?
 
-`CraftyPlayer` is the minimal platform contract for a connected player.
+`SummerPlayer` is the minimal platform contract for a connected player.
 
 It is intentionally game-agnostic:
 
@@ -70,7 +70,7 @@ var score = player.get_synced("score")  # client or server
 - `get_synced(key: String) -> Variant`
 
 <Warning>
-  Keep authoritative game logic on server paths (`Crafty.is_server()`). Clients should render synced state, not decide outcomes.
+  Keep authoritative game logic on server paths (`Summer.is_server()`). Clients should render synced state, not decide outcomes.
 </Warning>
 
 ## Input (Read On Server)
@@ -89,9 +89,9 @@ if player.input.is_action_just_pressed("interact"):
 - `player.input.is_action_pressed(action: String) -> bool`
 - `player.input.is_action_just_pressed(action: String) -> bool`
 
-## `CraftyCharacter3D` (Optional 3D Template)
+## `SummerCharacter3D` (Optional 3D Template)
 
-For 3D action games, use `CraftyCharacter3D` in your `player.tscn`.
+For 3D action games, use `SummerCharacter3D` in your `player.tscn`.
 
 It includes:
 
@@ -110,6 +110,6 @@ func _player_joined(player) -> void:
 
 ## Practical Rule
 
-If your game needs built-in 3D character behavior, use `CraftyCharacter3D`.
+If your game needs built-in 3D character behavior, use `SummerCharacter3D`.
 
-If your game is not a 3D character game, extend `CraftyPlayer` directly and sync your own state model.
+If your game is not a 3D character game, extend `SummerPlayer` directly and sync your own state model.
