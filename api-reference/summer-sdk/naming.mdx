@@ -103,6 +103,9 @@ are:
   `POST /games/submit`. It is a Railway-generated hostname, it is what actually answers,
   and rewriting it in documentation would publish a submission endpoint that does not
   exist. It changes only if the service is redeployed under a new name.
+- **`crafty-game-server`** — the live Fly.io application name, which is also the base for
+  the game-server image tag and its `.fly.dev` hostname. Same reasoning: an app name is a
+  deployed identity, not a label.
 - **`c`-prefixed database tables** (`cFeedItems`, `cGamePublicStats`, and siblings) —
   internal, invisible to creators, and renaming them would churn every policy, view, and
   foreign key for no user-visible gain.
