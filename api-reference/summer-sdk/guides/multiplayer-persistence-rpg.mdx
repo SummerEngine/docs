@@ -1,6 +1,6 @@
 ---
 title: "Game Guide: Multiplayer with Persistence (RPG/Quest)"
-description: "How to add persistence and economy to a multiplayer game using Crafty.data and Crafty.economy."
+description: "How to add persistence and economy to a multiplayer game using Summercraft.data and Summercraft.economy."
 icon: "database"
 ---
 
@@ -11,7 +11,7 @@ This guide shows a persistent multiplayer game loop:
 - Load player save data on join
 - Keep inventory, quest progress, and level in persistent storage
 - Auto-save while players are connected
-- Award and spend credits with `Crafty.economy`
+- Award and spend credits with `Summer.economy`
 
 ## Input Actions Used
 
@@ -23,7 +23,7 @@ Configure actions in your project/manifest:
 ## Complete Game Script (`quest_arena.gd`)
 
 ```gdscript
-extends CraftyGame
+extends SummerGame
 
 const MOVE_SPEED := 7.0
 const GRAVITY := 20.0
@@ -53,13 +53,13 @@ func _game_init() -> void:
         ]
 
 func _game_start() -> void:
-    Crafty.set_time_limit(1800.0)
-    Crafty.send_announcement("Quest Arena started")
+    Summer.set_time_limit(1800.0)
+    Summer.send_announcement("Quest Arena started")
 
 func _game_end() -> void:
     for p in get_players():
         _save_player_snapshot(p)
-    Crafty.send_announcement("Quest Arena session saved")
+    Summer.send_announcement("Quest Arena session saved")
 
 func _player_joined(player) -> void:
     if player.has_method("respawn"):
@@ -72,7 +72,7 @@ func _player_left(player) -> void:
 
 func _process(delta: float) -> void:
     super._process(delta)
-    if not Crafty.is_server():
+    if not Summer.is_server():
         return
 
     for p in get_players():
@@ -93,80 +93,80 @@ func _handle_player_actions(player) -> void:
         _buy_potion(player)
 
 func _complete_quest(player) -> void:
-    var progress := Crafty.data.load(player, "quest_progress")
+    var progress := Summer.data.load(player, "quest_progress")
     if progress == null:
         progress = {"main": 0}
 
     progress["main"] = int(progress.get("main", 0)) + 1
-    Crafty.data.save(player, "quest_progress", progress)
+    Summer.data.save(player, "quest_progress", progress)
 
-    var xp := int(Crafty.data.load(player, "xp") if Crafty.data.load(player, "xp") != null else 0)
+    var xp := int(Summer.data.load(player, "xp") if Summer.data.load(player, "xp") != null else 0)
     xp += QUEST_XP_REWARD
-    Crafty.data.save(player, "xp", xp)
+    Summer.data.save(player, "xp", xp)
 
     var level := 1 + int(xp / 100)
-    Crafty.data.save(player, "level", level)
+    Summer.data.save(player, "level", level)
 
-    var awarded := await Crafty.economy.award(player, QUEST_CREDIT_REWARD, "quest_complete")
+    var awarded := await Summer.economy.award(player, QUEST_CREDIT_REWARD, "quest_complete")
     if awarded:
-        Crafty.send_announcement("%s completed a quest (+%d credits)" % [str(player.get("display_name")), QUEST_CREDIT_REWARD])
+        Summer.send_announcement("%s completed a quest (+%d credits)" % [str(player.get("display_name")), QUEST_CREDIT_REWARD])
 
     _sync_player_hud_fields(player)
 
 func _buy_potion(player) -> void:
-    var purchased := await Crafty.economy.spend(player, POTION_COST, "potion_purchase")
+    var purchased := await Summer.economy.spend(player, POTION_COST, "potion_purchase")
     if not purchased:
-        Crafty.send_announcement("%s cannot afford a potion" % str(player.get("display_name")))
+        Summer.send_announcement("%s cannot afford a potion" % str(player.get("display_name")))
         return
 
-    var inventory := Crafty.data.load(player, "inventory")
+    var inventory := Summer.data.load(player, "inventory")
     if inventory == null:
         inventory = {"potions": 0}
     inventory["potions"] = int(inventory.get("potions", 0)) + 1
-    Crafty.data.save(player, "inventory", inventory)
-    Crafty.send_announcement("%s bought a potion" % str(player.get("display_name")))
+    Summer.data.save(player, "inventory", inventory)
+    Summer.send_announcement("%s bought a potion" % str(player.get("display_name")))
     _sync_player_hud_fields(player)
 
 func _load_player_snapshot(player) -> void:
-    var level = Crafty.data.load(player, "level")
+    var level = Summer.data.load(player, "level")
     if level == null:
         level = 1
 
-    var xp = Crafty.data.load(player, "xp")
+    var xp = Summer.data.load(player, "xp")
     if xp == null:
         xp = 0
 
-    var inventory = Crafty.data.load(player, "inventory")
+    var inventory = Summer.data.load(player, "inventory")
     if inventory == null:
         inventory = {"potions": 0}
 
-    var quest_progress = Crafty.data.load(player, "quest_progress")
+    var quest_progress = Summer.data.load(player, "quest_progress")
     if quest_progress == null:
         quest_progress = {"main": 0}
 
-    Crafty.data.save(player, "level", level)
-    Crafty.data.save(player, "xp", xp)
-    Crafty.data.save(player, "inventory", inventory)
-    Crafty.data.save(player, "quest_progress", quest_progress)
+    Summer.data.save(player, "level", level)
+    Summer.data.save(player, "xp", xp)
+    Summer.data.save(player, "inventory", inventory)
+    Summer.data.save(player, "quest_progress", quest_progress)
 
 func _save_player_snapshot(player) -> void:
     # Data API is write-through to in-memory cache; backend flush is handled by SDK.
-    var level = Crafty.data.load(player, "level")
-    var xp = Crafty.data.load(player, "xp")
-    var inventory = Crafty.data.load(player, "inventory")
-    var quest_progress = Crafty.data.load(player, "quest_progress")
+    var level = Summer.data.load(player, "level")
+    var xp = Summer.data.load(player, "xp")
+    var inventory = Summer.data.load(player, "inventory")
+    var quest_progress = Summer.data.load(player, "quest_progress")
 
-    Crafty.data.save(player, "level", 1 if level == null else level)
-    Crafty.data.save(player, "xp", 0 if xp == null else xp)
-    Crafty.data.save(player, "inventory", {"potions": 0} if inventory == null else inventory)
-    Crafty.data.save(player, "quest_progress", {"main": 0} if quest_progress == null else quest_progress)
+    Summer.data.save(player, "level", 1 if level == null else level)
+    Summer.data.save(player, "xp", 0 if xp == null else xp)
+    Summer.data.save(player, "inventory", {"potions": 0} if inventory == null else inventory)
+    Summer.data.save(player, "quest_progress", {"main": 0} if quest_progress == null else quest_progress)
 
 func _sync_player_hud_fields(player) -> void:
-    var level := int(Crafty.data.load(player, "level"))
-    var xp := int(Crafty.data.load(player, "xp"))
-    var inventory := Crafty.data.load(player, "inventory")
-    var quest_progress := Crafty.data.load(player, "quest_progress")
-    var balance := await Crafty.economy.get_balance(player)
+    var level := int(Summer.data.load(player, "level"))
+    var xp := int(Summer.data.load(player, "xp"))
+    var inventory := Summer.data.load(player, "inventory")
+    var quest_progress := Summer.data.load(player, "quest_progress")
+    var balance := await Summer.economy.get_balance(player)
 
     player.set_synced("level", level)
     player.set_synced("xp", xp)
@@ -182,7 +182,7 @@ func _sync_player_hud_fields(player) -> void:
   "id": "quest-arena",
   "name": "Quest Arena",
   "version": "1.0.0",
-  "crafty_sdk": "1.0",
+  "summer_sdk": "1.0",
   "entry_scene": "quest_arena.tscn",
   "player_scene": "player.tscn",
   "min_players": 1,

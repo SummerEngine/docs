@@ -1,6 +1,6 @@
 ---
-title: "Build Your First Crafty Game"
-description: "Golden path: integrate Crafty platform APIs into a simple game, then test, export, and submit."
+title: "Build Your First Summercraft Game"
+description: "Golden path: integrate Summercraft platform APIs into a simple game, then test, export, and submit."
 icon: "rocket"
 ---
 
@@ -8,7 +8,7 @@ icon: "rocket"
 
 A minimal multiplayer integration that:
 
-- extends `CraftyGame`,
+- extends `SummerGame`,
 - uses server-authoritative gameplay updates,
 - syncs player-visible state with `set_synced`,
 - passes local testing and submission pipeline.
@@ -17,10 +17,10 @@ A minimal multiplayer integration that:
 
 ```json
 {
-  "id": "first-crafty-game",
-  "name": "First Crafty Game",
+  "id": "first-summer-game",
+  "name": "First Summer Game",
   "version": "1.0.0",
-  "crafty_sdk": "1.0",
+  "summer_sdk": "1.0",
   "entry_scene": "main.tscn",
   "player_scene": "player.tscn",
   "min_players": 1,
@@ -32,18 +32,18 @@ A minimal multiplayer integration that:
 
 ### 3D Action Template (fastest start)
 
-- set `player.tscn` root script to `res://sdk/crafty_character_3d.gd`
-- use `apply_default_movement(...)` from `CraftyGame`.
+- set `player.tscn` root script to `res://sdk/summer_character_3d.gd`
+- use `apply_default_movement(...)` from `SummerGame`.
 
 ### Custom Genre Path (2D/card/RTS/puzzle)
 
-- make your own script extending `CraftyPlayer`
+- make your own script extending `SummerPlayer`
 - sync your own state model (`set_synced("hand_count", ...)`, etc.).
 
 ## Step 3: Build `main.gd`
 
 ```gdscript
-extends CraftyGame
+extends SummerGame
 
 const ROUND_SECONDS := 120.0
 const MOVE_SPEED := 7.0
@@ -60,11 +60,11 @@ func _game_init() -> void:
                 spawn_points.append(child.global_position)
 
 func _game_start() -> void:
-    Crafty.set_time_limit(ROUND_SECONDS)
-    Crafty.send_announcement("Round started")
+    Summer.set_time_limit(ROUND_SECONDS)
+    Summer.send_announcement("Round started")
 
 func _game_end() -> void:
-    Crafty.send_announcement("Game over")
+    Summer.send_announcement("Game over")
 
 func _player_joined(player) -> void:
     if player.has_method("respawn"):
@@ -76,7 +76,7 @@ func _player_left(_player) -> void:
 
 func _process(delta: float) -> void:
     super._process(delta)
-    if not Crafty.is_server():
+    if not Summer.is_server():
         return
     for p in get_players():
         if p.has_method("respawn"):
@@ -92,7 +92,7 @@ func score_point(player) -> void:
     var current := int(player.get_synced("score") if player.get_synced("score") != null else 0)
     current += 1
     player.set_synced("score", current)
-    Crafty.send_announcement("%s scored (%d)" % [str(player.get("display_name")), current])
+    Summer.send_announcement("%s scored (%d)" % [str(player.get("display_name")), current])
 ```
 
 ## Step 5: Local Test
@@ -105,7 +105,7 @@ Use the two-process test runner flow:
 
 Guide:
 
-- [/api-reference/crafty-sdk/testing-your-game-locally](/api-reference/crafty-sdk/testing-your-game-locally)
+- [/api-reference/summer-sdk/testing-your-game-locally](/api-reference/summer-sdk/testing-your-game-locally)
 
 ## Step 6: Export and Upload
 
@@ -113,13 +113,13 @@ Export a game-only `.pck`, then upload with `manifest.json`.
 
 Guides:
 
-- [/api-reference/crafty-sdk/exporting-and-uploading-your-game](/api-reference/crafty-sdk/exporting-and-uploading-your-game)
-- [/api-reference/crafty-sdk/submission-guide](/api-reference/crafty-sdk/submission-guide)
+- [/api-reference/summer-sdk/exporting-and-uploading-your-game](/api-reference/summer-sdk/exporting-and-uploading-your-game)
+- [/api-reference/summer-sdk/submission-guide](/api-reference/summer-sdk/submission-guide)
 
 ## What “Done” Looks Like
 
 - [ ] All lifecycle hooks implemented.
-- [ ] Server authority enforced (`Crafty.is_server()`).
+- [ ] Server authority enforced (`Summer.is_server()`).
 - [ ] Player-visible state comes from `set_synced`.
 - [ ] Local test runner path passes.
 - [ ] Upload passes scanner + enters review.

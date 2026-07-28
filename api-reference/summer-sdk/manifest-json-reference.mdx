@@ -1,12 +1,12 @@
 ---
 title: "manifest.json Reference"
-description: "Complete manifest.json field reference for Crafty games: required keys, optional keys, and validated examples."
+description: "Complete manifest.json field reference for Summercraft games: required keys, optional keys, and validated examples."
 icon: "file-json"
 ---
 
 ## Overview
 
-Every Crafty game must include a `manifest.json` file in the game pack.
+Every Summercraft game must include a `manifest.json` file in the game pack.
 
 The submission API validates required keys and types before a game can enter review.
 
@@ -19,7 +19,7 @@ These fields are required by submission validation:
 | `id` | string | Yes | Stable game identifier. Used for slug generation and updates. |
 | `name` | string | Yes | Display name shown in platform surfaces. |
 | `version` | string | Yes | Semantic or creator-defined version string (for example `1.0.0`). |
-| `crafty_sdk` | string | Yes | SDK version your game targets (for example `1.0`). |
+| `summer_sdk` | string | Yes | SDK version your game targets (for example `1.0`). |
 | `entry_scene` | string | Yes | Main scene path/name loaded by the runtime. |
 | `min_players` | number | Yes | Minimum players required before start flow. |
 | `max_players` | number | Yes | Maximum concurrent players for a match. |
@@ -43,7 +43,7 @@ These fields are required by submission validation:
   "id": "coin-collector",
   "name": "Coin Collector",
   "version": "1.0.0",
-  "crafty_sdk": "1.0",
+  "summer_sdk": "1.0",
   "entry_scene": "coin_collector.tscn",
   "min_players": 1,
   "max_players": 8
@@ -57,7 +57,7 @@ These fields are required by submission validation:
   "id": "quest-arena",
   "name": "Quest Arena",
   "version": "1.2.0",
-  "crafty_sdk": "1.0",
+  "summer_sdk": "1.0",
   "entry_scene": "quest_arena.tscn",
   "player_scene": "player.tscn",
   "min_players": 1,

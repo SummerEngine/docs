@@ -1,6 +1,6 @@
 ---
 title: "Game Guide: Team-Based Multiplayer"
-description: "How to build team modes with Crafty.teams and Crafty.score, independent of genre."
+description: "How to build team modes with Summercraft.teams and Summercraft.score, independent of genre."
 icon: "users"
 ---
 
@@ -8,10 +8,10 @@ icon: "users"
 
 This guide implements a red-vs-blue team mode:
 
-- Team creation with `Crafty.teams.create`
+- Team creation with `Summer.teams.create`
 - Team assignment and auto-balance
 - Team-specific spawn points
-- Team score via `Crafty.score.add_team`
+- Team score via `Summer.score.add_team`
 
 ## Scene Setup
 
@@ -24,7 +24,7 @@ Create `team_arena.tscn`:
 ## Complete Game Script (`team_arena.gd`)
 
 ```gdscript
-extends CraftyGame
+extends SummerGame
 
 const MOVE_SPEED := 8.0
 const GRAVITY := 20.0
@@ -41,8 +41,8 @@ func get_prediction_params() -> Dictionary:
     return {"move_speed": MOVE_SPEED, "gravity": GRAVITY}
 
 func _game_init() -> void:
-    Crafty.teams.create("red", {"color": Color.RED, "max_size": 16})
-    Crafty.teams.create("blue", {"color": Color.BLUE, "max_size": 16})
+    Summer.teams.create("red", {"color": Color.RED, "max_size": 16})
+    Summer.teams.create("blue", {"color": Color.BLUE, "max_size": 16})
 
     var red_root := get_node_or_null("SpawnPointsRed")
     if red_root:
@@ -62,19 +62,19 @@ func _game_init() -> void:
         _blue_spawns = [Vector3(15, 1, -8), Vector3(15, 1, 8)]
 
 func _game_start() -> void:
-    Crafty.teams.auto_balance()
-    Crafty.set_time_limit(ROUND_SECONDS)
-    Crafty.send_announcement("Red vs Blue started")
+    Summer.teams.auto_balance()
+    Summer.set_time_limit(ROUND_SECONDS)
+    Summer.send_announcement("Red vs Blue started")
 
 func _game_end() -> void:
-    var red_score := Crafty.score.get_team("red")
-    var blue_score := Crafty.score.get_team("blue")
+    var red_score := Summer.score.get_team("red")
+    var blue_score := Summer.score.get_team("blue")
     if red_score > blue_score:
-        Crafty.send_announcement("Red wins %d - %d" % [red_score, blue_score])
+        Summer.send_announcement("Red wins %d - %d" % [red_score, blue_score])
     elif blue_score > red_score:
-        Crafty.send_announcement("Blue wins %d - %d" % [blue_score, red_score])
+        Summer.send_announcement("Blue wins %d - %d" % [blue_score, red_score])
     else:
-        Crafty.send_announcement("Draw %d - %d" % [red_score, blue_score])
+        Summer.send_announcement("Draw %d - %d" % [red_score, blue_score])
 
 func _player_joined(player) -> void:
     var assigned := _assign_team(player)
@@ -84,11 +84,11 @@ func _player_joined(player) -> void:
     player.set_synced("team", assigned)
 
 func _player_left(player) -> void:
-    Crafty.teams.remove_player(player)
+    Summer.teams.remove_player(player)
 
 func _process(delta: float) -> void:
     super._process(delta)
-    if not Crafty.is_server():
+    if not Summer.is_server():
         return
 
     for p in get_players():
@@ -96,12 +96,12 @@ func _process(delta: float) -> void:
         _check_goal_score(p)
 
 func _assign_team(player) -> String:
-    var red_count := Crafty.teams.get_members("red").size()
-    var blue_count := Crafty.teams.get_members("blue").size()
+    var red_count := Summer.teams.get_members("red").size()
+    var blue_count := Summer.teams.get_members("blue").size()
     var target := "red" if red_count <= blue_count else "blue"
-    if not Crafty.teams.assign(player, target):
+    if not Summer.teams.assign(player, target):
         target = "blue" if target == "red" else "red"
-        Crafty.teams.assign(player, target)
+        Summer.teams.assign(player, target)
     return target
 
 func _team_spawn_for(team_id: String) -> Vector3:
@@ -110,7 +110,7 @@ func _team_spawn_for(team_id: String) -> Vector3:
     return _blue_spawns.pick_random()
 
 func _check_goal_score(player) -> void:
-    var team_id := Crafty.teams.get_team(player)
+    var team_id := Summer.teams.get_team(player)
     if team_id == "":
         return
 
@@ -120,11 +120,11 @@ func _check_goal_score(player) -> void:
         _award_team_score("blue", player)
 
 func _award_team_score(team_id: String, scorer) -> void:
-    Crafty.score.add_team(team_id, 1)
-    var score := Crafty.score.get_team(team_id)
-    Crafty.send_announcement("%s team scored (%d/%d) by %s" % [team_id.capitalize(), score, TEAM_SCORE_TO_WIN, str(scorer.get("display_name"))])
+    Summer.score.add_team(team_id, 1)
+    var score := Summer.score.get_team(team_id)
+    Summer.send_announcement("%s team scored (%d/%d) by %s" % [team_id.capitalize(), score, TEAM_SCORE_TO_WIN, str(scorer.get("display_name"))])
 
-    var current_team := Crafty.teams.get_team(scorer)
+    var current_team := Summer.teams.get_team(scorer)
     scorer.teleport(_team_spawn_for(current_team))
 
     if score >= TEAM_SCORE_TO_WIN:
@@ -147,7 +147,7 @@ This team logic works for:
   "id": "team-arena",
   "name": "Team Arena",
   "version": "1.0.0",
-  "crafty_sdk": "1.0",
+  "summer_sdk": "1.0",
   "entry_scene": "team_arena.tscn",
   "player_scene": "player.tscn",
   "min_players": 2,

@@ -86,7 +86,7 @@ These top-level paths are canonical. They do not move.
 | `/migration/*` | Coming from another engine |
 | `/desktop/*` | Desktop application specifics |
 | `/mcp/*` | MCP server, CLI, per-harness setup |
-| `/api-reference/*` | Crafty SDK and public APIs |
+| `/api-reference/*` | Summer SDK and public APIs |
 | `/guides/*` | Task-oriented how-to |
 | `/publishing/*` | Export and ship |
 | `/knowledge-base/*` | Question-shaped pages, answered directly |

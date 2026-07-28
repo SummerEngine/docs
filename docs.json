@@ -183,30 +183,30 @@
         ]
       },
       {
-        "tab": "Crafty SDK",
+        "tab": "Summer SDK",
         "icon": "code",
         "groups": [
           {
-            "group": "Creating Games on Crafty",
+            "group": "Creating Games on Summercraft",
             "pages": [
-              "api-reference/crafty-sdk",
-              "api-reference/crafty-sdk/crafty",
-              "api-reference/crafty-sdk/crafty-game",
-              "api-reference/crafty-sdk/crafty-player",
-              "api-reference/crafty-sdk/subsystems-signals",
-              "api-reference/crafty-sdk/build-your-first-crafty-game",
-              "api-reference/crafty-sdk/guides/multiplayer-ffa-coin-collector",
-              "api-reference/crafty-sdk/guides/multiplayer-persistence-rpg",
-              "api-reference/crafty-sdk/guides/team-based-game",
-              "api-reference/crafty-sdk/guides/making-a-2d-game-multiplayer",
-              "api-reference/crafty-sdk/guides/making-a-turn-based-or-card-game-multiplayer",
-              "api-reference/crafty-sdk/manifest-json-reference",
-              "api-reference/crafty-sdk/production-launch-runbook",
-              "api-reference/crafty-sdk/submission-guide",
-              "api-reference/crafty-sdk/testing-your-game-locally",
-              "api-reference/crafty-sdk/exporting-and-uploading-your-game",
-              "api-reference/crafty-sdk/banned-apis-reference",
-              "api-reference/crafty-sdk/ai-agent-playbook"
+              "api-reference/summer-sdk",
+              "api-reference/summer-sdk/summer",
+              "api-reference/summer-sdk/summer-game",
+              "api-reference/summer-sdk/summer-player",
+              "api-reference/summer-sdk/subsystems-signals",
+              "api-reference/summer-sdk/build-your-first-summer-game",
+              "api-reference/summer-sdk/guides/multiplayer-ffa-coin-collector",
+              "api-reference/summer-sdk/guides/multiplayer-persistence-rpg",
+              "api-reference/summer-sdk/guides/team-based-game",
+              "api-reference/summer-sdk/guides/making-a-2d-game-multiplayer",
+              "api-reference/summer-sdk/guides/making-a-turn-based-or-card-game-multiplayer",
+              "api-reference/summer-sdk/manifest-json-reference",
+              "api-reference/summer-sdk/production-launch-runbook",
+              "api-reference/summer-sdk/submission-guide",
+              "api-reference/summer-sdk/testing-your-game-locally",
+              "api-reference/summer-sdk/exporting-and-uploading-your-game",
+              "api-reference/summer-sdk/banned-apis-reference",
+              "api-reference/summer-sdk/ai-agent-playbook"
             ]
           },
           {
@@ -432,6 +432,78 @@
     {
       "source": "/knowledge-base/whats-next",
       "destination": "/knowledge-base/what-is-summer"
+    },
+    {
+      "source": "/api-reference/crafty-sdk",
+      "destination": "/api-reference/summer-sdk"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/crafty",
+      "destination": "/api-reference/summer-sdk/summer"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/crafty-game",
+      "destination": "/api-reference/summer-sdk/summer-game"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/crafty-player",
+      "destination": "/api-reference/summer-sdk/summer-player"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/build-your-first-crafty-game",
+      "destination": "/api-reference/summer-sdk/build-your-first-summer-game"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/subsystems-signals",
+      "destination": "/api-reference/summer-sdk/subsystems-signals"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/manifest-json-reference",
+      "destination": "/api-reference/summer-sdk/manifest-json-reference"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/production-launch-runbook",
+      "destination": "/api-reference/summer-sdk/production-launch-runbook"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/submission-guide",
+      "destination": "/api-reference/summer-sdk/submission-guide"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/testing-your-game-locally",
+      "destination": "/api-reference/summer-sdk/testing-your-game-locally"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/exporting-and-uploading-your-game",
+      "destination": "/api-reference/summer-sdk/exporting-and-uploading-your-game"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/banned-apis-reference",
+      "destination": "/api-reference/summer-sdk/banned-apis-reference"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/ai-agent-playbook",
+      "destination": "/api-reference/summer-sdk/ai-agent-playbook"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/guides/multiplayer-ffa-coin-collector",
+      "destination": "/api-reference/summer-sdk/guides/multiplayer-ffa-coin-collector"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/guides/multiplayer-persistence-rpg",
+      "destination": "/api-reference/summer-sdk/guides/multiplayer-persistence-rpg"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/guides/team-based-game",
+      "destination": "/api-reference/summer-sdk/guides/team-based-game"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/guides/making-a-2d-game-multiplayer",
+      "destination": "/api-reference/summer-sdk/guides/making-a-2d-game-multiplayer"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/guides/making-a-turn-based-or-card-game-multiplayer",
+      "destination": "/api-reference/summer-sdk/guides/making-a-turn-based-or-card-game-multiplayer"
     }
   ]
 }

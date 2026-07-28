@@ -10,24 +10,24 @@ This page is the shortest safe route from “new game” to “submitted for rev
 
 ## Current Publishing Checklist (Most Important)
 
-- Build your creator gameplay scripts in `GDScript` for the current Crafty publishing flow.
+- Build your creator gameplay scripts in `GDScript` for the current Summercraft publishing flow.
 - Submit one exportable `.pck` package plus `manifest.json`.
 - Keep total `.pck` package size at or under **2 GB**.
 - If your build is larger than 2 GB, email [founders@summerengine.com](mailto:founders@summerengine.com) for large-upload onboarding.
 
 ## Step 1: Validate Project Contract
 
-- `main.gd` extends `CraftyGame`.
+- `main.gd` extends `SummerGame`.
 - `manifest.json` includes required keys.
 - `player_scene` points to a valid scene.
 - gameplay scripts are authored in `GDScript`.
 - choose player model:
-  - `CraftyCharacter3D` (3D template), or
-  - custom script extending `CraftyPlayer`.
+  - `SummerCharacter3D` (3D template), or
+  - custom script extending `SummerPlayer`.
 
 ## Step 2: Validate Authority Boundaries
 
-- gameplay outcomes run under `if not Crafty.is_server(): return`.
+- gameplay outcomes run under `if not Summer.is_server(): return`.
 - clients render synced state (`get_synced`) only.
 - no score/economy/data writes on client paths.
 
@@ -39,7 +39,7 @@ This page is the shortest safe route from “new game” to “submitted for rev
 
 Reference:
 
-- [/api-reference/crafty-sdk/banned-apis-reference](/api-reference/crafty-sdk/banned-apis-reference)
+- [/api-reference/summer-sdk/banned-apis-reference](/api-reference/summer-sdk/banned-apis-reference)
 
 ## Step 4: Local Runtime Validation
 
@@ -52,7 +52,7 @@ Run through test-runner flow and confirm:
 
 Reference:
 
-- [/api-reference/crafty-sdk/testing-your-game-locally](/api-reference/crafty-sdk/testing-your-game-locally)
+- [/api-reference/summer-sdk/testing-your-game-locally](/api-reference/summer-sdk/testing-your-game-locally)
 
 ## Step 5: Export Validation
 
@@ -64,7 +64,7 @@ Reference:
 
 Reference:
 
-- [/api-reference/crafty-sdk/exporting-and-uploading-your-game](/api-reference/crafty-sdk/exporting-and-uploading-your-game)
+- [/api-reference/summer-sdk/exporting-and-uploading-your-game](/api-reference/summer-sdk/exporting-and-uploading-your-game)
 
 ## Step 6: Submission Validation
 
@@ -81,7 +81,7 @@ Expect:
 
 Reference:
 
-- [/api-reference/crafty-sdk/submission-guide](/api-reference/crafty-sdk/submission-guide)
+- [/api-reference/summer-sdk/submission-guide](/api-reference/summer-sdk/submission-guide)
 
 ## Top 10 Failure Modes (And Fixes)
 
@@ -102,7 +102,7 @@ Reference:
 8. **Manifest type mismatch**
    - Enforce required key types.
 9. **Template mismatch**
-   - 3D helper methods used without `CraftyCharacter3D`.
+   - 3D helper methods used without `SummerCharacter3D`.
 10. **Reconnect instability**
     - Reinitialize player synced state on join.
 

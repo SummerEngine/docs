@@ -1,0 +1,115 @@
+---
+title: "Creating Games on Summercraft"
+description: "Summercraft is a powerful platform layer that provides multiplayer, persistence, and economy features. You bring the game, we bring the infrastructure."
+icon: "gamepad-2"
+---
+
+## Introduction to Summercraft
+
+Summercraft is a place where you can play games made by the community in Summer Engine. It's a platform made to make it easy for developers to make and share their games without having to go through store experiences made +20 years ago. The Summer SDK works similar to Steams steamworks, and aims to make it more easy to build and share your games. Rather than forcing you into a rigid template or specific game type, Summercraft seamlessly integrates with your project to provide robust multiplayer infrastructure and backend services.
+
+The mental model is simple: you build your game's unique design and systems, and plug in the Summer SDK to handle all the complex platform features.
+
+## What Summercraft Handles
+
+The Summer SDK provides out-of-the-box support for:
+
+- **Multiplayer Runtime:** Server-authoritative networking and matchmaking infrastructure.
+- **Player Management:** Unified player identity and session handling.
+- **Backend Services:** Built-in APIs for data persistence and player economy.
+- **Game Utilities:** Ready-to-use helpers for score tracking, teams, and match state.
+- **Publishing Pipeline:** A streamlined submission, review, and deployment flow.
+
+## What You Build
+
+Because Summercraft manages the heavy lifting on the backend, you're free to focus purely on making a great game:
+
+- **Core Gameplay:** Your unique mechanics, controls, and game loops.
+- **Worlds & Scenes:** Environments, levels, and visual rendering.
+- **Rules & Logic:** Win/loss conditions and genre-specific systems (whether that's 3D, 2D, RTS, card, or puzzle games).
+- **Presentation:** UI, audio, and overall game feel.
+
+## Platform Contract
+
+The minimum integration contract:
+
+1. `extends SummerGame`
+2. implement lifecycle hooks (`_game_init`, `_game_start`, `_game_end`, `_player_joined`, `_player_left`)
+3. use player synced state (`set_synced` / `get_synced`)
+4. keep authority on server paths (`Summer.is_server()`)
+5. provide valid `manifest.json` and export/upload flow.
+
+## Templates Are Optional
+
+Templates are examples, not requirements.
+
+- `SummerCharacter3D` is the optional 3D character template path.
+- For 2D/RTS/card/turn-based games, extend `SummerPlayer` directly and sync your own game model.
+
+## Recommended Reading Order (Fresh AI / Fresh Dev)
+
+1. `SummerGame` and `Summer` basics
+2. `SummerPlayer` contract and `set_synced`
+3. subsystem modules you need (`data`, `economy`, `teams`, `score`)
+4. local test runner flow
+5. export/upload and banned API constraints.
+
+## API Sections
+
+<CardGroup cols={2}>
+  <Card title="Summer Singleton" icon="box" href="/api-reference/summer-sdk/summer">
+    Match control, player queries, spawning, server/client checks, subsystem access
+  </Card>
+  <Card title="SummerGame" icon="workflow" href="/api-reference/summer-sdk/summer-game">
+    Required base class, lifecycle hooks, and practical game structure
+  </Card>
+  <Card title="SummerPlayer" icon="user" href="/api-reference/summer-sdk/summer-player">
+    Minimal player contract: identity, synced vars, input, and optional 3D template path
+  </Card>
+  <Card title="Subsystems & Signals" icon="radio" href="/api-reference/summer-sdk/subsystems-signals">
+    Optional platform modules: teams, score, data, economy, UI, audio, and signals
+  </Card>
+  <Card title="Build Your First Summercraft Game" icon="rocket" href="/api-reference/summer-sdk/build-your-first-summer-game">
+    Golden-path tutorial from blank project to .pck submission
+  </Card>
+  <Card title="Multiplayer FFA Guide" icon="swords" href="/api-reference/summer-sdk/guides/multiplayer-ffa-coin-collector">
+    Full Coin Collector-style example with timer, collectibles, and scoring
+  </Card>
+  <Card title="Multiplayer Persistence Guide" icon="database" href="/api-reference/summer-sdk/guides/multiplayer-persistence-rpg">
+    RPG/quest example with player saves, progression, and economy
+  </Card>
+  <Card title="Team-Based Game Guide" icon="users" href="/api-reference/summer-sdk/guides/team-based-game">
+    Teams, auto-balance, team spawns, and team scoring
+  </Card>
+  <Card title="2D Multiplayer Guide" icon="square" href="/api-reference/summer-sdk/guides/making-a-2d-game-multiplayer">
+    Extend SummerPlayer for 2D state sync and server-authoritative logic
+  </Card>
+  <Card title="Turn-Based/Card Guide" icon="layout-grid" href="/api-reference/summer-sdk/guides/making-a-turn-based-or-card-game-multiplayer">
+    Sync turn order, hand/board state, and validate all actions on server
+  </Card>
+  <Card title="manifest.json Reference" icon="file-json" href="/api-reference/summer-sdk/manifest-json-reference">
+    Every field, required keys, and validated examples
+  </Card>
+  <Card title="Production Launch Runbook" icon="check-check" href="/api-reference/summer-sdk/production-launch-runbook">
+    One linear path for fresh AI/dev sessions: integrate, test, export, submit
+  </Card>
+  <Card title="Submission Guide" icon="upload" href="/api-reference/summer-sdk/submission-guide">
+    Export .pck, scanner rules, upload flow, review lifecycle, and updates
+  </Card>
+  <Card title="Testing Your Game Locally" icon="flask-conical" href="/api-reference/summer-sdk/testing-your-game-locally">
+    Two-process local workflow, multiplayer testing, and production-like validation loop
+  </Card>
+  <Card title="Exporting and Uploading Your Game" icon="upload-cloud" href="/api-reference/summer-sdk/exporting-and-uploading-your-game">
+    Game-only PCK export preset, upload pipeline, and update workflow
+  </Card>
+  <Card title="Banned APIs Reference" icon="shield-alert" href="/api-reference/summer-sdk/banned-apis-reference">
+    Complete blocked pattern list, rationale, and safe alternatives
+  </Card>
+  <Card title="AI Agent Playbook" icon="bot" href="/api-reference/summer-sdk/ai-agent-playbook">
+    Required file contract, banned API rules, and acceptance checklist for AI-generated games
+  </Card>
+</CardGroup>
+
+## Versioning
+
+Games declare a `summer_sdk` version in `manifest.json`. SDK changes are intended to be additive and backward-compatible.

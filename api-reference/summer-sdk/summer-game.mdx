@@ -1,14 +1,14 @@
 ---
-title: "CraftyGame"
-description: "Required base class that connects your game to the Crafty platform lifecycle."
+title: "SummerGame"
+description: "Required base class that connects your game to the Summercraft platform lifecycle."
 icon: "workflow"
 ---
 
-## What Is `CraftyGame`?
+## What Is `SummerGame`?
 
-Every game published on Crafty must extend `CraftyGame`.
+Every game published on Summercraft must extend `SummerGame`.
 
-`CraftyGame` is the contract between your game and the platform:
+`SummerGame` is the contract between your game and the platform:
 
 - game lifecycle,
 - player join/leave callbacks,
@@ -16,7 +16,7 @@ Every game published on Crafty must extend `CraftyGame`.
 - server-authoritative movement helper for 3D templates.
 
 ```gdscript
-extends CraftyGame
+extends SummerGame
 ```
 
 ## Required Lifecycle Hooks
@@ -42,10 +42,10 @@ func _player_left(player) -> void:
 
 Use untyped `player` for maximum compatibility across:
 
-- `CraftyCharacter3D` players (3D action template),
-- custom `CraftyPlayer` subclasses (2D/RTS/card/turn-based).
+- `SummerCharacter3D` players (3D action template),
+- custom `SummerPlayer` subclasses (2D/RTS/card/turn-based).
 
-## Common Platform Methods On `CraftyGame`
+## Common Platform Methods On `SummerGame`
 
 ```gdscript
 end_game(from_timer: bool = false) -> void
@@ -71,14 +71,14 @@ apply_default_movement(player, delta, move_speed := 7.0, gravity := 20.0) -> voi
 ```gdscript
 func _process(delta: float) -> void:
     super._process(delta)
-    if not Crafty.is_server():
+    if not Summer.is_server():
         return
     # authoritative gameplay logic here
 ```
 
 ## 3D Template Pattern (Optional)
 
-If your player scene uses `CraftyCharacter3D`, you can use the built-in movement helper:
+If your player scene uses `SummerCharacter3D`, you can use the built-in movement helper:
 
 ```gdscript
 const MOVE_SPEED := 8.0
@@ -86,7 +86,7 @@ const GRAVITY := 20.0
 
 func _process(delta: float) -> void:
     super._process(delta)
-    if not Crafty.is_server():
+    if not Summer.is_server():
         return
     for p in get_players():
         apply_default_movement(p, delta, MOVE_SPEED, GRAVITY)
@@ -97,11 +97,11 @@ For non-3D games, ignore `apply_default_movement` and implement your own state m
 ## Minimal Example
 
 ```gdscript
-extends CraftyGame
+extends SummerGame
 
 func _game_start() -> void:
-    Crafty.set_time_limit(180.0)
-    Crafty.send_announcement("Match started")
+    Summer.set_time_limit(180.0)
+    Summer.send_announcement("Match started")
 
 func _player_joined(player) -> void:
     player.set_synced("score", 0)
