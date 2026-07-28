@@ -190,6 +190,7 @@
             "group": "Creating Games on Summercraft",
             "pages": [
               "api-reference/summer-sdk",
+              "api-reference/summer-sdk/naming",
               "api-reference/summer-sdk/summer",
               "api-reference/summer-sdk/summer-game",
               "api-reference/summer-sdk/summer-player",
