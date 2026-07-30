@@ -1,6 +1,6 @@
 ---
-title: "Exporting and Uploading Your Game"
-description: "Export a game-only .pck, then publish it through the live Summercraft release API: create game, presigned upload, server-verified finalize, manual review."
+title: "Export and Upload Your Summer Game"
+description: "Use Summer Engine to export a game-only .pck, then upload it through the live release API for human review."
 icon: "upload"
 ---
 
@@ -27,10 +27,11 @@ Use a preset that ships your game and nothing else:
 - `exclude_filter` covering infrastructure and local stubs (`sdk/*`, plus `core/*,server/*,client/*` if you develop inside the Summer Engine starter template)
 - `script_export_mode=0` — ship GDScript as readable text so review can read your source
 
-Export headlessly (no export templates required for a pack export):
+Export with the same Summer Engine executable used for local testing (no export templates
+are required for a pack export):
 
 ```bash
-godot --headless --path . --export-pack "Summer Game PCK" game.pck
+"$SUMMER_ENGINE" --headless --path . --export-pack "Summer Game PCK" game.pck
 ```
 
 Checks after export:
@@ -68,7 +69,8 @@ Validate everything locally before touching these endpoints.
 
 ## 4) `POST /api/games/engine` — create the game record
 
-Once per game, not per version. Creates a Godot game (`kind: "engine"`) as metadata; the artifact arrives through the release endpoints.
+Once per game, not per version. Creates a Summer game record (`kind: "engine"`) as
+metadata; the artifact arrives through the release endpoints.
 
 Request:
 
@@ -186,7 +188,9 @@ Success `200`:
 2. A human reviews. Approval re-verifies the stored bytes against the checksum pinned at finalize, then points the game's active version at the release and publishes the game. Rejection records a reason, shown to you on [summercraft.ai/creator](https://summercraft.ai/creator); a live game stays live on its previously approved release.
 3. There is no automated publish, no runtime sandbox yet, and no guaranteed review time.
 
-**What approval does not (yet) mean:** browser play, desktop shell play, and hosted game servers for uploaded Godot games are not live. Approved releases are distributed through the authenticated download endpoint; play surfaces are in development.
+**What approval does not (yet) mean:** browser play, desktop shell play, and hosted game
+servers for uploaded Summer games are not live. Approved releases are distributed through
+the authenticated download endpoint; play surfaces are in development.
 
 ## 10) Updating your game
 
@@ -198,10 +202,11 @@ Releases are immutable — updating means a new one:
 
 Each update goes through review again.
 
-## Related Docs
-
-- [Agent Setup](/agent-setup) — the paste-prompt that automates this page
-- [Submission Guide](/api-reference/summer-sdk/submission-guide) — review lifecycle and the browser flow
-- [Testing Your Game Locally](/api-reference/summer-sdk/testing-your-game-locally)
-- [manifest.json Reference](/api-reference/summer-sdk/manifest-json-reference)
-- [Banned APIs Reference](/api-reference/summer-sdk/banned-apis-reference)
+<CardGroup cols={2}>
+  <Card title="Previous: Test locally" icon="arrow-left" href="/api-reference/summer-sdk/testing-your-game-locally">
+    Return to the Summer Engine validation loop.
+  </Card>
+  <Card title="Next: Submit and review" icon="arrow-right" href="/api-reference/summer-sdk/submission-guide">
+    Choose a submission path and understand review states.
+  </Card>
+</CardGroup>

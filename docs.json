@@ -201,7 +201,7 @@
               "api-reference/summer-sdk/testing-your-game-locally",
               "api-reference/summer-sdk/exporting-and-uploading-your-game",
               "api-reference/summer-sdk/submission-guide",
-              "api-reference/summer-sdk/production-launch-runbook"
+              "api-reference/summer-sdk/updating-your-game"
             ]
           },
           {
@@ -218,7 +218,8 @@
               "api-reference/summer-sdk/manifest-json-reference",
               "api-reference/summer-sdk/banned-apis-reference",
               "api-reference/summer-sdk/naming",
-              "reference/compatibility"
+              "reference/compatibility",
+              "api-reference/summer-sdk/production-launch-runbook"
             ]
           },
           {

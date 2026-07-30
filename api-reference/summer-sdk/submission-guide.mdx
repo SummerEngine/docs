@@ -1,6 +1,6 @@
 ---
-title: "Submission Guide"
-description: "The two live ways to submit a Summercraft game, what validation runs where, and how the manual review lifecycle works."
+title: "Submit Your Summer Game for Review"
+description: "Choose a live submission path for a Summer game, understand validation and human review, then follow the update loop."
 icon: "upload"
 ---
 
@@ -64,7 +64,11 @@ Every submission is reviewed by a human. No auto-publish.
 
 On Path A, approval re-verifies the stored artifact against the checksum pinned at finalize before the game's active version moves — verification at upload is not trusted at approval time. A rejected release never takes down a live game: the previously approved release stays active.
 
-**Honest status:** approval publishes your game on the platform and makes its release downloadable through the authenticated [download endpoint](/api-reference/summer-sdk/exporting-and-uploading-your-game). Playing uploaded Godot games in the browser or the desktop shell, and hosted dedicated game servers, are not live yet — do not tell players otherwise.
+**Honest status:** approval publishes your game on the platform and makes its release
+downloadable through the authenticated
+[download endpoint](/api-reference/summer-sdk/exporting-and-uploading-your-game). Playing
+uploaded Summer games in the browser or desktop shell, and hosted dedicated game servers,
+are not live yet — do not tell players otherwise.
 
 ## Updating an existing game
 
@@ -86,9 +90,11 @@ Path A errors are self-describing JSON (`{ "error", "detail" }`) — the `detail
 - `Invalid manifest. Required: id, name, version, summer_sdk, entry_scene, min_players, max_players`
 - `Static analysis failed` (with violations list)
 
-## Related Docs
-
-- [Exporting and Uploading Your Game](/api-reference/summer-sdk/exporting-and-uploading-your-game)
-- [Testing Your Game Locally](/api-reference/summer-sdk/testing-your-game-locally)
-- [Banned APIs Reference](/api-reference/summer-sdk/banned-apis-reference)
-- [Agent Setup](/agent-setup)
+<CardGroup cols={2}>
+  <Card title="Previous: Export and upload" icon="arrow-left" href="/api-reference/summer-sdk/exporting-and-uploading-your-game">
+    Return to pack creation and the release API reference.
+  </Card>
+  <Card title="Next: Update an existing Summer game" icon="arrow-right" href="/api-reference/summer-sdk/updating-your-game">
+    Keep the identity stable, bump the version, retest, and resubmit.
+  </Card>
+</CardGroup>

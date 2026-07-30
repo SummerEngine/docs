@@ -6,8 +6,12 @@
     "node": ">=20"
   },
   "scripts": {
-    "check": "npm run check:compatibility && node scripts/check-docs.mjs",
+    "check": "npm run check:compatibility && npm run check:language && npm run check:routes && node scripts/check-docs.mjs",
     "check:compatibility": "node scripts/sync-engine-compatibility.mjs --check",
-    "generate:compatibility": "node scripts/sync-engine-compatibility.mjs"
+    "check:external-links": "node scripts/check-external-links.mjs",
+    "check:language": "node scripts/check-language.mjs",
+    "check:routes": "node scripts/check-routes.mjs",
+    "generate:compatibility": "node scripts/sync-engine-compatibility.mjs",
+    "generate:routes": "node scripts/check-routes.mjs --write"
   }
 }

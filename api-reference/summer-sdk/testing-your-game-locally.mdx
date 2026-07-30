@@ -1,6 +1,6 @@
 ---
-title: "Testing Your Game Locally"
-description: "Press play, launch server+client automatically, and test your Summercraft game with production-like runtime behavior."
+title: "Test Your Summer Game Locally"
+description: "Use Summer Engine and the Summer SDK test runner first; keep bare upstream checks as an advanced compatibility escape hatch."
 icon: "flask-conical"
 ---
 
@@ -8,9 +8,9 @@ icon: "flask-conical"
 
 Local testing should match production behavior as closely as possible.
 
-In Summercraft, a published game runs on:
+The local workflow exercises:
 
-- the same Summer/Godot runtime,
+- Summer Engine,
 - the same Summer SDK APIs,
 - server-authoritative networking.
 
@@ -30,23 +30,41 @@ This gives you a real multiplayer loop in one click.
   If it works in this local test-runner flow, it is much closer to how it will behave in production than single-process editor-only testing.
 </Tip>
 
-## Building Outside Summer Engine (Agent / CLI Workflow)
+## Agent and CLI workflow with Summer Engine
 
-The test runner above ships with Summer Engine's Summercraft template. If you are building standalone — a coding agent, CI, or a bare Godot 4.5 install — the real SDK is not on disk, so full runtime testing is not available locally. What works instead, verified with Godot 4.5.1:
+The test runner ships with the Summer Engine template. The
+[/agent-setup](/agent-setup) prompt installs and invokes Summer Engine directly, supplies
+local SDK stubs for parsing, and runs import, smoke, banned-API, and pack-content checks.
 
-1. Keep local **SDK stubs** in `sdk/` (excluded from export) that mirror the documented class surfaces, so every script parses. The [/agent-setup](/agent-setup) prompt contains ready-made stubs.
-2. **Headless smoke run:** `godot --headless --path . --quit-after 120` must exit cleanly with no `SCRIPT ERROR` lines. A parse error here is the same error that will make the platform runtime refuse your pack.
-3. **Banned-API self-check:** grep your game scripts (not the stubs) against the [blocked pattern list](/api-reference/summer-sdk/banned-apis-reference) before every upload — the API path has no upload-time scanner, so a violation costs you a manual review round-trip.
-4. **Pack-content check:** export, then confirm the `.pck` stores only your game files plus `manifest.json` (the export log lists every stored file).
+1. Keep local **SDK stubs** in `sdk/` and exclude them from export.
+2. Run Summer Engine headlessly and fail on any `SCRIPT ERROR`.
+3. Check game scripts against the [blocked pattern list](/api-reference/summer-sdk/banned-apis-reference).
+4. Export and confirm the `.pck` contains only game files plus `manifest.json`.
 
 This validates structure, parsing, and packaging — not gameplay against the real SDK. The review process runs your game on the real runtime; keep gameplay logic simple enough to survive the difference, and treat the smoke run as the floor, not the ceiling.
+
+## Advanced compatibility escape hatch
+
+On locked CI infrastructure where Summer Engine cannot be installed, an operator may supply
+a bare upstream Godot binary for syntax, import, and pack-format checks. This is an advanced
+compatibility path, not creator onboarding:
+
+- match the **current upstream base** shown in the
+  [generated compatibility reference](/reference/compatibility);
+- do not treat that number as a Summer Engine product version or a measured project minimum;
+- set `UPSTREAM_ENGINE` explicitly rather than silently falling back from Summer Engine;
+- do not claim this validates Summer SDK runtime behavior.
+
+```bash
+"$UPSTREAM_ENGINE" --headless --path . --quit-after 120
+```
 
 ## What Happens Under The Hood
 
 When you run the test runner:
 
 1. The runner detects your game slug from `manifest.json`.
-2. It starts Summer/Godot in headless mode with server args:
+2. It starts Summer Engine in headless mode with server args:
    - `--server`
    - `--game-id <slug>`
    - `--port 7777`
@@ -120,8 +138,11 @@ Check:
 - no editor-only assumptions in gameplay code,
 - no banned/blocked APIs used by generated code.
 
-## Related Docs
-
-- [manifest.json Reference](/api-reference/summer-sdk/manifest-json-reference)
-- [Exporting and Uploading Your Game](/api-reference/summer-sdk/exporting-and-uploading-your-game)
-- [Banned APIs Reference](/api-reference/summer-sdk/banned-apis-reference)
+<CardGroup cols={2}>
+  <Card title="Previous: Summer SDK" icon="arrow-left" href="/api-reference/summer-sdk">
+    Return to the capability and lifecycle hub.
+  </Card>
+  <Card title="Next: Export your Summer game" icon="arrow-right" href="/api-reference/summer-sdk/exporting-and-uploading-your-game">
+    Produce and verify a game-only pack.
+  </Card>
+</CardGroup>
