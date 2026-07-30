@@ -61,7 +61,7 @@ Auth model, exactly: every publish endpoint accepts `Authorization: Bearer <acce
 Your `.pck` must contain **only your game**. The platform enforces, at review and in the browser submit scanner:
 
 - **GDScript only.** No `.gdextension`, `.so`, `.dll`, `.dylib`, `.framework`, `.res` files.
-- **No banned APIs** anywhere in your scripts, even in dead or conditional branches. The blocklist includes `OS.execute`, `OS.shell_open`, `OS.create_process`, `FileAccess`, `DirAccess`, `HTTPRequest`, `HTTPClient`, `JavaScriptBridge`, `ClassDB.instantiate`, `Thread.new`, `Expression`, raw sockets (`StreamPeerTCP`, `PacketPeerUDP`, `TCPServer`, `UDPServer`, `WebSocketPeer`), reflection calls (`.call(`, `.callv(`, `.call_deferred(`, `Callable(`), `Engine.get_singleton`, `Marshalls.base64_to_variant`, `ResourceSaver`, `ProjectSettings.load_resource_pack`, and root-tree escapes (`get_node("/root`, `get_tree().root`). Full list with rationale: `https://docs.summerengine.com/api-reference/summer-sdk/banned-apis-reference.md`. Persistence goes through `Summer.data`, economy through `Summer.economy` — never your own I/O or networking.
+- **No banned APIs** anywhere in your scripts, even in dead or conditional branches. The blocklist includes `OS.execute`, `OS.shell_open`, `OS.create_process`, `FileAccess`, `DirAccess`, `HTTPRequest`, `HTTPClient`, `JavaScriptBridge`, `ClassDB.instantiate`, `Thread.new`, `Expression`, raw sockets (`StreamPeerTCP`, `PacketPeerUDP`, `TCPServer`, `UDPServer`, `WebSocketPeer`), reflection calls (`.call(`, `.callv(`, `.call_deferred(`, `Callable(`), `Engine.get_singleton`, `Marshalls.base64_to_variant`, `ResourceSaver`, `ProjectSettings.load_resource_pack`, and root-tree escapes (`get_node("/root`, `get_tree().root`). Full list with rationale: `https://docs.summerengine.com/api-reference/summer-sdk/banned-apis-reference.md`. Your code targets the scaffolded `Summer.data` and `Summer.economy` contracts instead of owning I/O or networking; production persistence and economy backends are not live yet.
 - **No reserved paths** in the pack: `res://sdk/`, `res://core/`, `res://server/`, `res://client/`, `res://official_games/`, `res://bootstrap.*`, `res://project.godot`, `res://summer.cfg`, `res://test_runner.*`. The export preset below keeps them out automatically.
 - **`manifest.json` at the pack root** with required keys `id`, `name`, `version`,
   `summer_sdk` (`"1.0"`), `entry_scene`, `min_players`, `max_players`. The entry scene's root
@@ -479,7 +479,7 @@ grep -rnE "OS\.(execute|shell_open|create_process|create_instance|kill)|FileAcce
 "$SUMMER_ENGINE" --headless --path . --export-pack "Summer Game PCK" game.pck
 ```
 
-Notes on the checks: the pass condition for 5c is **empty output** — `grep` exits non-zero when it finds nothing, so do not treat its exit code as a failure. If the smoke run prints `SCRIPT ERROR`, fix it before exporting — the same error will make the platform runtime refuse your pack.
+Notes on the checks: the pass condition for 5c is **empty output** — `grep` exits non-zero when it finds nothing, so do not treat its exit code as a failure. If the smoke run prints `SCRIPT ERROR`, fix it before exporting. Review requires parseable source, but no production platform runtime currently loads or refuses submitted packs.
 
 Then measure the artifact and keep the values for step 6:
 

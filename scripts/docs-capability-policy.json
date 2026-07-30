@@ -13,27 +13,25 @@
     "| Automated production runtime sandbox | **Planned** |"
   ],
   "negativeClaimPatterns": [
-    "\\bnot\\b",
-    "\\bno\\b",
-    "\\bplanned\\b",
-    "\\bscaffold(?:ed)?\\b",
-    "\\bfuture\\b",
-    "\\bcontract\\b",
-    "\\bexample\\b",
-    "\\bintended\\b",
-    "\\bcoming\\b",
-    "\\bnot yet\\b",
-    "\\bcannot\\b",
-    "\\bcan't\\b",
-    "\\bisn't\\b",
-    "\\baren't\\b",
-    "\\bdoes not\\b",
-    "\\bdo not\\b",
-    "\\bwithout\\b",
+    "\\b(?:is|are|remains?)\\s+(?:currently\\s+)?not\\s+(?:production[- ]?)?(?:live|available|deployed|operational|playable|implemented)\\b",
+    "\\b(?:does|do)\\s+not\\s+(?:yet\\s+)?(?:claim|mean|prove|exercise|imply|provide|run|load|execute|enforce|persist|write|host|power|make)\\b",
+    "\\bnot\\s+(?:gameplay against|executed|loaded|run|provided|handled)\\b",
+    "\\b(?:cannot|can't)\\s+(?:launch|play|run|load|execute|persist|connect)\\b",
+    "\\bno\\s+(?:production|deployed|live|hosted|managed|automatic)\\b",
+    "\\bno\\s+(?:built-in|automatic|managed)\\s+(?:matchmaking|relay)\\b",
+    "\\bno\\s+(?:automated\\s+)?(?:production\\s+)?runtime sandbox\\b",
+    "\\b(?:status\\s+(?:is|:)|is|are|remains?)\\s+(?:currently\\s+)?planned\\b",
+    "\\b(?:status\\s+(?:is|:)|is|are|remains?)\\s+(?:currently\\s+)?scaffold(?:ed)?\\b",
+    "\\bscaffolded\\s+(?:interface|surface|contract|adapter|example)\\b",
+    "\\bfuture\\s+(?:runtime|contract|capability|service|transport|interface)\\b",
+    "\\bcontract(?:-level)?\\s+(?:example|only|requirement|interface|behavior)\\b",
+    "\\bnot yet\\s+(?:live|available|deployed|implemented|playable)\\b",
+    "\\bwithout\\s+(?:a|the)?\\s*(?:production|platform|Summercraft)\\s+runtime\\b",
+    "\\bmust\\s+not\\s+(?:promise|claim|describe)\\b",
     "\\bbeing built\\b",
     "\\bin progress\\b",
     "\\bunder implementation\\b",
-    "\\bwhen (?:it is )?available\\b"
+    "\\bwhen\\b.{0,60}\\bavailable\\b"
   ],
   "claimCapabilities": [
     {
@@ -48,8 +46,21 @@
       ],
       "positivePatterns": [
         "\\b(?:players?\\s+)?can\\s+(?:launch|play)\\b",
+        "\\bready\\b.{0,80}\\b(?:launch|play)\\b",
         "\\b(?:playback|play surfaces?|uploaded games?)\\b.{0,100}\\b(?:is|are)\\s+(?:live|available|deployed|playable)\\b",
         "\\bplayable\\b.{0,50}\\b(?:today|now|currently)\\b"
+      ],
+      "subjectTokenFamilies": [
+        ["uploaded", "game"],
+        ["browser", "playback"],
+        ["desktop", "playback"]
+      ],
+      "assertionTokenFamilies": [
+        ["launch"],
+        ["playable"],
+        ["ready", "launch"],
+        ["operational"],
+        ["live"]
       ]
     },
     {
@@ -61,8 +72,19 @@
         "\\brelay(?: service| server)?s?\\b"
       ],
       "positivePatterns": [
-        "\\b(?:matchmaking|relay(?: service| server)?s?)\\b.{0,100}\\b(?:is|are)\\s+(?:live|available|deployed|managed)\\b",
+        "\\b(?:matchmaking|relay(?: service| server)?s?)\\b.{0,100}\\b(?:is|are)\\s+(?:live|available|deployed|managed|operational)\\b",
         "\\b(?:provides?|includes?|offers?|handles?|manages?)\\b.{0,100}\\b(?:matchmaking|relay)\\b"
+      ],
+      "subjectTokenFamilies": [
+        ["matchmak"],
+        ["relay"]
+      ],
+      "assertionTokenFamilies": [
+        ["operational"],
+        ["live"],
+        ["available"],
+        ["provide"],
+        ["offer"]
       ]
     },
     {
@@ -75,7 +97,18 @@
       ],
       "positivePatterns": [
         "\\b(?:is|are)\\s+(?:live|available|deployed|included|managed)\\b",
-        "\\b(?:provides?|includes?|offers?|handles?|manages?)\\b.{0,100}\\b(?:hosting|servers?)\\b"
+        "\\b(?:provides?|includes?|offers?|handles?|manages?|runs?)\\b.{0,100}\\b(?:hosting|servers?)\\b",
+        "\\bruns?\\b.{0,80}\\b(?:dedicated|hosted|managed)\\b.{0,40}\\bservers?\\b"
+      ],
+      "subjectTokenFamilies": [
+        ["dedicated", "server"],
+        ["hosted", "server"],
+        ["server", "hosting"]
+      ],
+      "assertionTokenFamilies": [
+        ["run"],
+        ["live"],
+        ["operational"]
       ]
     },
     {
@@ -88,7 +121,18 @@
       ],
       "positivePatterns": [
         "\\b(?:is|are)\\s+(?:live|available|deployed|running|enabled)\\b",
-        "\\b(?:runs?|executes?|scans?)\\b.{0,80}\\b(?:submitted|uploaded|creator)\\b"
+        "\\b(?:runs?|executes?|scans?)\\b.{0,80}\\b(?:submitted|uploaded|creator|submission)\\b",
+        "\\b(?:submissions?|packs?|games?)\\b.{0,80}\\bexecutes?\\b.{0,80}\\b(?:inside|within)\\b"
+      ],
+      "subjectTokenFamilies": [
+        ["runtime", "sandbox"],
+        ["automated", "sandbox"]
+      ],
+      "assertionTokenFamilies": [
+        ["execute"],
+        ["run"],
+        ["live"],
+        ["operational"]
       ]
     },
     {
@@ -101,7 +145,18 @@
       ],
       "positivePatterns": [
         "\\b(?:is|are)\\s+(?:live|available|deployed|implemented|working)\\b",
-        "\\b(?:provides?|handles?|runs?)\\b.{0,80}\\b(?:transport|networking|replication)\\b"
+        "\\b(?:provides?|handles?|runs?|powers?)\\b.{0,80}\\b(?:production\\s+)?(?:transport|networking|replication)\\b"
+      ],
+      "subjectTokenFamilies": [
+        ["summermultiplayerpeer"],
+        ["production", "transport"]
+      ],
+      "assertionTokenFamilies": [
+        ["power", "network"],
+        ["production", "network"],
+        ["live"],
+        ["operational"],
+        ["implement"]
       ]
     },
     {
@@ -109,12 +164,26 @@
       "label": "Production gameplay runtime",
       "state": "Planned",
       "subjectPatterns": [
-        "\\b(?:production|platform|Summercraft|real)\\s+runtime\\b",
+        "\\b(?:production|platform|Summercraft)\\s+runtime\\b",
         "\\breview process\\b"
       ],
       "positivePatterns": [
         "\\b(?:runtime|platform|review process)\\b.{0,120}\\b(?:runs?|loads?|executes?|enforces?|refuses?|provides?|assigns?|connects?)\\b",
-        "\\b(?:runs?|loads?|executes?)\\b.{0,100}\\b(?:uploaded|approved|creator)\\s+(?:games?|packs?|code)\\b"
+        "\\b(?:runs?|loads?|executes?)\\b.{0,100}\\b(?:uploaded|approved|creator)\\s+(?:games?|packs?|code)\\b",
+        "\\b(?:uploaded|approved|creator)\\s+(?:games?|packs?|code)\\b.{0,100}\\b(?:runs?|loads?|executes?)\\b"
+      ],
+      "subjectTokenFamilies": [
+        ["summercraft", "runtime"],
+        ["production", "runtime"],
+        ["platform", "runtime"]
+      ],
+      "assertionTokenFamilies": [
+        ["execute"],
+        ["load"],
+        ["run"],
+        ["enforce"],
+        ["refuse"],
+        ["assign"]
       ]
     },
     {
@@ -129,9 +198,24 @@
         "\\bauto-?save\\b"
       ],
       "positivePatterns": [
-        "\\b(?:provides?|handles?|persists?|flush(?:es|ed)?|auto-?saves?|loads?|stores?)\\b.{0,100}\\b(?:data|progress|backend|balance|economy|player)\\b",
+        "\\b(?:auto-?saves?|persists?|flush(?:es|ed)?|stores?)\\b.{0,100}\\b(?:data|progress|backend|balance|economy|player|storage)\\b",
         "\\bbackend flush\\b.{0,80}\\b(?:is|are)\\s+(?:handled|live|automatic)\\b",
-        "\\bSummer\\.(?:data|economy)\\b.{0,100}\\b(?:is|are)\\s+(?:live|available|deployed)\\b"
+        "\\bSummer\\.(?:data|economy)\\b.{0,100}\\b(?:is|are)\\s+(?:live|available|deployed)\\b",
+        "\\bSummer\\.data\\b.{0,120}\\b(?:automatically|durable|writes?|persists?|stores?)\\b"
+      ],
+      "subjectTokenFamilies": [
+        ["summer.data"],
+        ["summer.economy"],
+        ["persistence", "backend"],
+        ["backend", "flush"],
+        ["economy", "rail"]
+      ],
+      "assertionTokenFamilies": [
+        ["automatic", "write"],
+        ["durable"],
+        ["flush"],
+        ["live"],
+        ["operational"]
       ]
     }
   ],

@@ -46,6 +46,26 @@
       "name": "GodotSteam universal tutorial mutation",
       "text": "GodotSteam works identically in Summer Engine and all tutorials apply.",
       "rules": ["blanket-works-perfectly", "blanket-all-assets"]
+    },
+    {
+      "name": "caveat prefix cannot exempt absolute",
+      "text": "Plugins may vary, but GodotSteam works identically and all tutorials apply directly.",
+      "rules": ["blanket-works-perfectly", "blanket-all-assets"]
+    },
+    {
+      "name": "unchanged addon mutation",
+      "text": "Most Godot 4 addons work unchanged.",
+      "rules": ["blanket-works-perfectly"]
+    },
+    {
+      "name": "transitive native load mutation",
+      "text": "If it loads in Godot 4.6 it loads in Summer.",
+      "rules": ["blanket-transitive-load"]
+    },
+    {
+      "name": "root as-is mutation",
+      "text": "Open your projects as-is.",
+      "rules": ["blanket-open-as-is"]
     }
   ],
   "compatibilityAllow": [
@@ -56,9 +76,49 @@
   ],
   "capabilityReject": [
     {
-      "name": "browser playback and matchmaking mutation",
-      "text": "Players can launch uploaded Summer games in the browser today, and managed matchmaking is live.",
+      "name": "fenced playback and matchmaking mutation",
+      "text": "```text\nPlayers can launch uploaded Summer games in the browser today, and managed matchmaking is live.\n```",
       "capabilities": ["uploaded-game-playback", "managed-matchmaking"]
+    },
+    {
+      "name": "uploaded game readiness paraphrase",
+      "text": "Uploaded Summer games are ready for players to launch in our browser.",
+      "capabilities": ["uploaded-game-playback"]
+    },
+    {
+      "name": "operational matchmaking paraphrase",
+      "text": "Matchmaking is operational now.",
+      "capabilities": ["managed-matchmaking"]
+    },
+    {
+      "name": "dedicated server run paraphrase",
+      "text": "We run dedicated game servers for every release.",
+      "capabilities": ["hosted-game-servers"]
+    },
+    {
+      "name": "sandbox execution paraphrase",
+      "text": "Every submission executes inside an automated production runtime sandbox.",
+      "capabilities": ["production-sandbox"]
+    },
+    {
+      "name": "transport powers production paraphrase",
+      "text": "SummerMultiplayerPeer powers production networking today.",
+      "capabilities": ["summer-multiplayer-transport"]
+    },
+    {
+      "name": "approved pack runtime paraphrase",
+      "text": "Approved packs are executed by the Summercraft runtime.",
+      "capabilities": ["production-runtime"]
+    },
+    {
+      "name": "durable persistence paraphrase",
+      "text": "Summer.data automatically writes every save to durable storage.",
+      "capabilities": ["hosted-persistence-economy"]
+    },
+    {
+      "name": "negation reversal cannot suppress later sentence",
+      "text": "Playback is not planned anymore. Players can launch uploaded Summer games today.",
+      "capabilities": ["uploaded-game-playback"]
     },
     {
       "name": "runtime enforcement mutation",
@@ -83,6 +143,14 @@
     {
       "name": "live submission claim",
       "text": "The browser submission page and static scanner are Live."
+    },
+    {
+      "name": "explicit scaffolded persistence",
+      "text": "Summer.data is a scaffolded interface and does not write to durable storage."
+    },
+    {
+      "name": "explicit planned matchmaking",
+      "text": "Matchmaking status is Planned; no production service is available."
     }
   ]
 }

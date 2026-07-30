@@ -31,12 +31,12 @@ If a blocked pattern appears in submitted source, upload fails, even when:
 |------|------|------|
 | `OS.execute` | Executes arbitrary system commands on server hosts. | Use Summer SDK gameplay/data APIs. |
 | `OS.shell_open` | Opens external shells/URLs and escapes runtime boundaries. | Use in-game UI flow; no direct OS shell access. |
-| `OS.create_process` | Spawns unmanaged processes from game code. | Keep process control in platform runtime, not game scripts. |
+| `OS.create_process` | Spawns unmanaged processes from game code. | Submitted packs cannot own process control; no production platform runtime is live yet. |
 | `OS.create_instance` | Creates new runtime instances outside allowed flow. | Use standard scene instantiation and SDK systems. |
 | `OS.kill` | Can terminate infrastructure or peer processes. | Use gameplay lifecycle APIs only. |
-| `FileAccess` | Unrestricted read/write to filesystem. | Use `Summer.data` for persistence. |
-| `DirAccess` | Directory traversal/manipulation on host filesystem. | Use SDK-managed storage paths via `Summer.data`. |
-| `HTTPRequest` | Arbitrary outbound HTTP from game logic. | Use `Summer.data` / `Summer.economy` platform APIs. |
+| `FileAccess` | Unrestricted read/write to filesystem. | Target the scaffolded `Summer.data` contract; production persistence is not live yet. |
+| `DirAccess` | Directory traversal/manipulation on host filesystem. | Target the scaffolded `Summer.data` contract; production storage is not live yet. |
+| `HTTPRequest` | Arbitrary outbound HTTP from game logic. | Target the scaffolded `Summer.data` / `Summer.economy` contracts; their production backends are not live yet. |
 | `HTTPClient` | Low-level custom network egress from untrusted scripts. | Use SDK networking and platform endpoints only. |
 | `JavaScriptBridge` | Bridge escape to browser/JS runtime. | Keep logic in GDScript + SDK only. |
 | `ClassDB.instantiate` | Dynamic class loading can bypass allowed surfaces. | Instantiate explicit scene/resources you control. |
@@ -56,8 +56,8 @@ If a blocked pattern appears in submitted source, upload fails, even when:
 | `Expression.new` | Runtime expression eval can execute dynamic untrusted code. | Static, explicit gameplay logic. |
 | `Expression(` | Same runtime eval surface. | Static logic and pre-defined scripts. |
 | `Marshalls.base64_to_variant` | Unsafe/deserialization abuse vector for crafted payloads. | Use validated JSON and typed schema checks. |
-| `ResourceSaver` | Writes resource files at runtime; persistence boundary risk. | Use `Summer.data` for persisted state. |
-| `ProjectSettings.load_resource_pack` | Runtime pack loading from game scripts is not allowed. | Let platform runtime load approved game packs. |
+| `ResourceSaver` | Writes resource files at runtime; persistence boundary risk. | Target the scaffolded `Summer.data` contract; production persistence is not live yet. |
+| `ProjectSettings.load_resource_pack` | Runtime pack loading from game scripts is not allowed. | Pack loading belongs to a future runtime; no production loader is live yet. |
 | `get_node("/root` | Root traversal can reach infrastructure internals. | Use scoped scene tree access in your game subtree. |
 | `get_node(\"/root` | Same root traversal risk (escaped quote variant). | Use local node paths. |
 | `get_tree().root` | Global root access to internals outside game boundary. | Access only local game nodes and SDK APIs. |

@@ -79,7 +79,7 @@ export function scanIdentityText(raw, { currentFeature } = {}) {
 const compatibilityRules = [
   {
     id: "blanket-works-perfectly",
-    pattern: /\bworks?\s+(?:perfectly|identically|exactly|as-is|without changes)\b/gi,
+    pattern: /\bworks?\s+(?:perfectly|identically|exactly|as-is|unchanged|without changes)\b/gi,
     help: "Compatibility ranges are unmeasured; require a committed-copy test and explicit caveats.",
   },
   {
@@ -98,23 +98,31 @@ const compatibilityRules = [
     pattern: /\bcompletely compatible\b/gi,
     help: "Project minimum and recommended compatibility ranges are unmeasured.",
   },
+  {
+    id: "blanket-open-as-is",
+    pattern: /\bopen\b.{0,50}\bprojects?\s+as-is\b/gi,
+    help: "Opening an existing project is a compatibility evaluation, not an as-is guarantee.",
+  },
+  {
+    id: "blanket-transitive-load",
+    pattern: /\bif it loads\b.{0,100}\bit loads\b/gi,
+    help: "An upstream load is evidence, not proof for Summer, another platform, or export.",
+  },
 ];
 
 export function scanCompatibilityClaims(raw) {
   const errors = [];
-  const lines = maskComments(raw).split("\n");
-  for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
-    const line = lines[lineIndex];
-    const hasCaveat = /\b(?:might|may|but|however|not|does not|do not|cannot|unmeasured|verify|test)\b/i.test(
-      line,
-    );
+  for (const unit of claimUnits(raw)) {
     for (const rule of compatibilityRules) {
       rule.pattern.lastIndex = 0;
-      for (const match of line.matchAll(rule.pattern)) {
-        if (hasCaveat) continue;
+      for (const match of unit.text.matchAll(rule.pattern)) {
+        const nonUniversalPossibility =
+          /\bmight\s+work\s+perfectly\b/i.test(unit.text) &&
+          /\b(?:but|however|yet)\b/i.test(unit.text);
+        if (nonUniversalPossibility) continue;
         errors.push({
           rule: rule.id,
-          line: lineIndex + 1,
+          line: unit.line,
           match: match[0],
           help: rule.help,
         });
@@ -124,11 +132,10 @@ export function scanCompatibilityClaims(raw) {
   return errors;
 }
 
-function capabilityProseSegments(raw) {
+function claimUnits(raw) {
   const lines = maskComments(raw).split("\n");
   const visible = lines.map(() => "");
   let inFrontmatter = lines[0]?.trim() === "---";
-  let inFence = null;
 
   for (let index = 0; index < lines.length; index++) {
     const line = lines[index];
@@ -143,17 +150,11 @@ function capabilityProseSegments(raw) {
     }
 
     const fence = line.match(/^\s*(`{3,}|~{3,})/);
-    if (inFence) {
-      if (fence && fence[1][0] === inFence[0] && fence[1].length >= inFence.length) inFence = null;
-      continue;
-    }
     if (fence) {
-      inFence = fence[1];
       continue;
     }
 
     visible[index] = line
-      .replace(/`[^`]*`/g, " ")
       .replace(/\]\([^)]*\)/g, "]")
       .replace(/\b(?:href|src|url)\s*=\s*["'][^"']*["']/g, " ");
   }
@@ -163,7 +164,11 @@ function capabilityProseSegments(raw) {
   let paragraphStart = 1;
   const flush = () => {
     if (!paragraph.length) return;
-    segments.push({ line: paragraphStart, text: paragraph.join(" ") });
+    const text = paragraph.join(" ");
+    for (const sentence of text.split(/(?<=[.!?])\s+/)) {
+      const trimmed = sentence.trim();
+      if (trimmed) segments.push({ line: paragraphStart, text: trimmed });
+    }
     paragraph = [];
   };
 
@@ -175,7 +180,9 @@ function capabilityProseSegments(raw) {
     }
     if (/^(?:#{1,6}\s|[-*+]\s|\d+\.\s|\||<)/.test(line)) {
       flush();
-      segments.push({ line: index + 1, text: line });
+      for (const sentence of line.split(/(?<=[.!?])\s+/)) {
+        if (sentence.trim()) segments.push({ line: index + 1, text: sentence.trim() });
+      }
       continue;
     }
     if (!paragraph.length) paragraphStart = index + 1;
@@ -186,6 +193,28 @@ function capabilityProseSegments(raw) {
 }
 
 const compile = (patterns) => patterns.map((pattern) => new RegExp(pattern, "i"));
+const wordStems = (value) => (value.toLocaleLowerCase("en-US").match(/[a-z0-9_.-]+/g) ?? []);
+const hasStem = (words, rawStem) => {
+  const stem = rawStem.toLocaleLowerCase("en-US");
+  const last = stem.at(-1);
+  const variants = new Set([
+    stem,
+    `${stem}s`,
+    `${stem}es`,
+    `${stem}ed`,
+    `${stem}ing`,
+    `${stem}ly`,
+    `${stem}ally`,
+    `${stem}${last}ing`,
+  ]);
+  if (stem.endsWith("e")) {
+    variants.add(`${stem.slice(0, -1)}ing`);
+    variants.add(`${stem}d`);
+  }
+  return words.some((word) => variants.has(word));
+};
+const matchesTokenFamilies = (words, families) =>
+  (families ?? []).some((family) => family.every((stem) => hasStem(words, stem)));
 
 export function scanCapabilityClaims(raw, policy) {
   const errors = [];
@@ -194,9 +223,15 @@ export function scanCapabilityClaims(raw, policy) {
   for (const capability of policy.claimCapabilities ?? []) {
     const subjects = compile(capability.subjectPatterns ?? []);
     const positives = compile(capability.positivePatterns ?? []);
-    for (const segment of capabilityProseSegments(raw)) {
-      if (!subjects.some((pattern) => pattern.test(segment.text))) continue;
-      if (!positives.some((pattern) => pattern.test(segment.text))) continue;
+    for (const segment of claimUnits(raw)) {
+      const words = wordStems(segment.text);
+      const hasSubject =
+        subjects.some((pattern) => pattern.test(segment.text)) ||
+        matchesTokenFamilies(words, capability.subjectTokenFamilies);
+      const hasAssertion =
+        positives.some((pattern) => pattern.test(segment.text)) ||
+        matchesTokenFamilies(words, capability.assertionTokenFamilies);
+      if (!hasSubject || !hasAssertion) continue;
       if (negative.some((pattern) => pattern.test(segment.text))) continue;
       errors.push({
         capability: capability.id,

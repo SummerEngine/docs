@@ -15,7 +15,7 @@ and whether you can use them at all.
 | You want to | Use | Language | Needs a compiler | Available to you |
 |---|---|---|---|---|
 | Drive the editor: bakes, forced reimports, custom docks, registering autoloads, anything under `EditorInterface` | [Editor plugin](/extending/editor-plugins) | GDScript | No | **Yes, today** |
-| Add fast native types, wrap a C/C++/Rust library, or do heavy per-frame work | [GDExtension](/extending/gdextension) | C++, Rust, others | Yes | **Yes**, ABI-identical to stock Godot 4.6.1 |
+| Add fast native types, wrap a C/C++/Rust library, or do heavy per-frame work | [GDExtension](/extending/gdextension) | C++, Rust, others | Yes | **Conditional** — the current ABI base is measured, but each binary/platform combination needs a load test |
 | Change the engine itself: new servers, new core types, editor internals | [Engine module](/extending/modules) | C++ | Yes, plus engine source | **No.** Summer's engine source is not public |
 
 If you are an agent, or you are automating Summer, the answer is almost always the
@@ -50,8 +50,10 @@ headless-editor hazard
 Native shared libraries loaded from a `.gdextension` file. No engine recompile, no
 custom binary — the same mechanism stock Godot uses.
 
-Summer branches from the 4.6.1-stable tag, so the GDExtension ABI is the stock 4.6.1
-ABI. A library built against godot-cpp for 4.6 loads in Summer.
+Summer branches from the 4.6.1-stable tag, so the current GDExtension ABI target is the
+upstream 4.6.1 ABI. That does not prove an arbitrary library works: match the exact API,
+architecture, operating system, compiler/runtime dependencies, and signing requirements,
+then run a real load/export test.
 
 <Card title="GDExtension" icon="puzzle" href="/extending/gdextension">
 Building, loading, and shipping native extensions in Summer
@@ -72,15 +74,17 @@ What modules are, why they are internal-only in Summer, and what to use instead
 
 ## Using community Godot addons
 
-Most Godot 4 addons work in Summer unchanged. Judge one by these rules rather than by
-whether it names Summer anywhere:
+Community addons are candidates, not blanket-compatible inventory. Pure GDScript addons are
+usually lower-risk than native extensions, but Summer's minimum and recommended project
+compatibility ranges remain unmeasured. Judge every addon by these rules:
 
 - **Godot 4.6 or 4.x, pure GDScript, `@tool` + `EditorPlugin`** — the safe case. No ABI,
   no compilation, no signing. Install into `addons/` and enable it like any plugin you
   wrote yourself.
 - **Godot 4.x with a GDExtension binary** — depends on the addon shipping a build for
-  4.6 and for your platform. The ABI is stock, so if it loads in Godot 4.6 it loads in
-  Summer. Check [GDExtension](/extending/gdextension) before assuming.
+  4.6 and for your platform. A successful upstream load is useful evidence, not proof of a
+  Summer load or export. Check [GDExtension](/extending/gdextension), then test the exact
+  binary in a committed copy.
 - **Godot 3.x** — dead. The 3.x plugin API does not exist in 4.x. This is not a Summer
   limitation; the same addon fails on stock Godot 4.
 - **Anything shipped as an engine module or a custom engine build** — cannot be used.
