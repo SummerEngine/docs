@@ -337,6 +337,8 @@ function compileCapability(capability) {
       })),
     ],
     assertionObjectPatterns: compile(capability.assertionObjectPatterns),
+    coreferenceObjectPatterns: compile(capability.coreferenceObjectPatterns),
+    objectPronounPatterns: compile(capability.objectPronounPatterns),
     statusPatterns: compile(capability.statusTerms),
     disclaimerPatterns: compile(capability.disclaimerPatterns),
     assertionBeforeSubjectPatterns: compile(capability.assertionBeforeSubjectPatterns),
@@ -401,33 +403,51 @@ function assertionTermIsPredicate(clause, assertion, capability) {
   return prefix.replace(/^[,:\s]+/, "").length === 0;
 }
 
-function assertionHasCompatibleObject(clause, assertion, capability) {
+function assertionHasCompatibleObject(
+  clause,
+  assertion,
+  capability,
+  { allowObjectPronoun = false } = {},
+) {
   if (!assertion.requiresObject) return true;
   const scope = localAssertionScope(clause, assertion.index);
-  return capability.assertionObjectPatterns.some((pattern) => pattern.test(scope));
-}
-
-function compatibleAssertionMatches(clause, capability) {
-  return assertionMatches(clause, capability).filter(
-    (assertion) =>
-      assertionTermIsPredicate(clause, assertion, capability) &&
-      assertionHasCompatibleObject(clause, assertion, capability),
+  if (capability.assertionObjectPatterns.some((pattern) => pattern.test(scope))) return true;
+  return (
+    allowObjectPronoun &&
+    capability.objectPronounPatterns.some((pattern) => pattern.test(scope))
   );
 }
 
-function beginsWithEllipticalCapabilityPredicate(clause, capability) {
+function compatibleAssertionMatches(clause, capability, options = {}) {
+  return assertionMatches(clause, capability).filter(
+    (assertion) =>
+      assertionTermIsPredicate(clause, assertion, capability) &&
+      assertionHasCompatibleObject(clause, assertion, capability, options),
+  );
+}
+
+function beginsWithEllipticalCapabilityPredicate(clause, capability, options = {}) {
   const value = clause
     .replace(/^(?:[-*+>#|]|\d+\.)+\s*/, "")
     .replace(/^(?:but|yet|however|nevertheless),?\s+/i, "")
     .replace(/^[,:\s]+/, "")
     .trim();
-  return compatibleAssertionMatches(value, capability).some((assertion) => {
+  return compatibleAssertionMatches(value, capability, options).some((assertion) => {
     if (assertion.index === 0) return true;
     const prefix = value.slice(0, assertion.index).trim();
     return /^(?:(?:is|are|was|were|remains?|becomes?|can|could|may|might|will|would|does|do)\b(?:\s+\w+){0,2})$/i.test(
       prefix,
     );
   });
+}
+
+function introducesExplicitCoreferenceObject(clause, capability) {
+  if (!capability.coreferenceObjectPatterns.some((pattern) => pattern.test(clause))) {
+    return false;
+  }
+  return compatibleAssertionMatches(clause, capability).some(
+    (assertion) => assertion.requiresObject,
+  );
 }
 
 function isLocallyDisclaimed(clause, assertionIndex, capability) {
@@ -444,12 +464,15 @@ export function scanCapabilityClaims(raw, policy) {
     const firstClauseIsAnaphoric = beginsWithCapabilityAnaphor(claim.clauses[0] ?? "");
     let carriedCapabilities = firstClauseIsAnaphoric ? previousSentenceCapabilities : [];
     let sentenceCapabilities = carriedCapabilities;
+    let priorClauseObjectCapabilities = new Set();
     for (const clause of claim.clauses) {
       const explicitCapabilities = capabilities.filter((capability) =>
         clauseHasAlias(clause, capability),
       );
       const ellipticalCapabilities = carriedCapabilities.filter((capability) =>
-        beginsWithEllipticalCapabilityPredicate(clause, capability),
+        beginsWithEllipticalCapabilityPredicate(clause, capability, {
+          allowObjectPronoun: priorClauseObjectCapabilities.has(capability.id),
+        }),
       );
       const activeCapabilities = explicitCapabilities.length
         ? explicitCapabilities
@@ -465,7 +488,9 @@ export function scanCapabilityClaims(raw, policy) {
 
       for (const capability of activeCapabilities) {
         const aliasIndex = firstAliasIndex(clause, capability);
-        const assertions = compatibleAssertionMatches(clause, capability).filter(
+        const assertions = compatibleAssertionMatches(clause, capability, {
+          allowObjectPronoun: priorClauseObjectCapabilities.has(capability.id),
+        }).filter(
           (assertion) =>
             !capability.assertionAfterSubject ||
             !Number.isFinite(aliasIndex) ||
@@ -498,6 +523,11 @@ export function scanCapabilityClaims(raw, policy) {
             "canonical status instead of implying deployed production behavior.",
         });
       }
+      priorClauseObjectCapabilities = new Set(
+        explicitCapabilities
+          .filter((capability) => introducesExplicitCoreferenceObject(clause, capability))
+          .map((capability) => capability.id),
+      );
     }
     previousSentenceCapabilities = sentenceCapabilities;
   }

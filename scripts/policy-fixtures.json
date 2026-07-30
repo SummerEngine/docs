@@ -243,6 +243,16 @@
       "capabilities": ["hosted-persistence-economy"]
     },
     {
+      "name": "elliptical persistence object coreference",
+      "text": "Summer storage may keep saves in a test harness but stores them durably in production.",
+      "capabilities": ["hosted-persistence-economy"]
+    },
+    {
+      "name": "elliptical persistence object coreference variant",
+      "text": "Summer storage may write player saves in a private test; however, persists them between production sessions.",
+      "capabilities": ["hosted-persistence-economy"]
+    },
+    {
       "name": "durable inter-session Summer storage paraphrase",
       "text": "Summer storage keeps player saves durably between sessions.",
       "capabilities": ["hosted-persistence-economy"]
@@ -320,6 +330,14 @@
     {
       "name": "anaphoric unrelated storage URL",
       "text": "Summer storage is Scaffolded. It stores the API reference URL."
+    },
+    {
+      "name": "elliptical docs-example pronoun",
+      "text": "Summer storage documents API examples, but keeps them concise."
+    },
+    {
+      "name": "elliptical reference-example pronoun",
+      "text": "Summer storage may keep examples in a test harness but stores them in the API reference."
     }
   ]
 }
