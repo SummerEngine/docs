@@ -258,6 +258,21 @@
       "capabilities": ["hosted-persistence-economy"]
     },
     {
+      "name": "ordinary production economy assertion",
+      "text": "Summer storage writes player economy in production.",
+      "capabilities": ["hosted-persistence-economy"]
+    },
+    {
+      "name": "ordinary prepositional durable-storage assertion",
+      "text": "Summer storage writes to durable storage in production.",
+      "capabilities": ["hosted-persistence-economy"]
+    },
+    {
+      "name": "ordinary prepositional durable-storage variant",
+      "text": "Summer storage persists to durable storage in production.",
+      "capabilities": ["hosted-persistence-economy"]
+    },
+    {
       "name": "durable inter-session Summer storage paraphrase",
       "text": "Summer storage keeps player saves durably between sessions.",
       "capabilities": ["hosted-persistence-economy"]
@@ -351,6 +366,14 @@
     {
       "name": "save topic does not make examples a persistence object",
       "text": "Summer storage may keep API examples about player saves in a test harness, but stores them in the API reference."
+    },
+    {
+      "name": "save of-topic does not make examples a persistence antecedent",
+      "text": "Summer storage may keep API examples of player saves in a test harness, but stores them on the production documentation site."
+    },
+    {
+      "name": "save showing-topic does not make examples a persistence antecedent",
+      "text": "Summer storage may keep API examples showing player saves in a test harness, but stores them on the production documentation site."
     }
   ]
 }

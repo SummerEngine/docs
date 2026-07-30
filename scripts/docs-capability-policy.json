@@ -191,6 +191,19 @@
       "objectRequiredAssertionPatterns": [
         "\\bauto-?saves?\\b"
       ],
+      "assertionObjectHeads": [
+        "save",
+        "saves",
+        "data",
+        "progress",
+        "state",
+        "inventory",
+        "balance",
+        "economy"
+      ],
+      "assertionPrepositionalObjectPatterns": [
+        "\\bto\\s+durable storage\\b"
+      ],
       "coreferenceObjectHeads": [
         "save",
         "saves",
@@ -199,6 +212,12 @@
         "state",
         "inventory",
         "balance"
+      ],
+      "coreferenceAntecedentBarrierPatterns": [
+        "\\bexamples?\\b",
+        "\\bdocs?\\b",
+        "\\bdocumentation\\b",
+        "\\breferences?\\b"
       ],
       "objectPronounPatterns": [
         "\\bthem\\b"
