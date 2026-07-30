@@ -79,7 +79,8 @@ export function scanIdentityText(raw, { currentFeature } = {}) {
 const compatibilityRules = [
   {
     id: "blanket-works-perfectly",
-    pattern: /\bworks?\s+(?:perfectly|identically|exactly|as-is|unchanged|without changes)\b/gi,
+    pattern:
+      /\bworks?\b(?:\s+in\s+Summer)?\s+(?:perfectly|identically|exactly|as-is|unchanged|without changes)\b/gi,
     help: "Compatibility ranges are unmeasured; require a committed-copy test and explicit caveats.",
   },
   {
@@ -211,15 +212,17 @@ function claimGroups(raw) {
 const LOCAL_NEGATION =
   /(?:^|\b)(?:not|never|cannot|can't|couldn't|doesn't|does\s+not|do\s+not|did\s+not|isn't|is\s+not|aren't|are\s+not|won't|will\s+not|must\s+not|no|without|rather\s+than|instead\s+of)(?:\s+[\w'’.-]+){0,7}\s*$/i;
 const LOCAL_MODAL = /(?:^|\b)(?:may|might|could)(?:\s+[\w'’.-]+){0,4}\s*$/i;
+const LOCAL_HYPOTHETICAL =
+  /(?:^|\b)(?:if|assuming|supposing)(?:\s+[\w'’.-]+){0,10}\s*$/i;
+const ASSERTION_SCOPE_BREAK =
+  /\b(?:and|but|however|nevertheless|while|whereas|then)\b|(?<!\bnot\s)(?<!n't\s)\byet\b/i;
 
 function localAssertionPrefix(text, assertionIndex) {
   const prefix = text
     .slice(0, assertionIndex)
     .replace(/[,:[\](){}]/g, " ")
     .replace(/\s+/g, " ");
-  const scopes = prefix.split(
-    /\b(?:and|but|however|nevertheless|while|whereas|then)\b|(?<!\bnot\s)(?<!n't\s)\byet\b/i,
-  );
+  const scopes = prefix.split(ASSERTION_SCOPE_BREAK);
   return scopes.at(-1);
 }
 
@@ -229,6 +232,44 @@ function isLocallyNegated(text, assertionIndex) {
 
 function isLocallyModal(text, assertionIndex) {
   return LOCAL_MODAL.test(localAssertionPrefix(text, assertionIndex));
+}
+
+function isLocallyHypothetical(text, assertionIndex) {
+  return LOCAL_HYPOTHETICAL.test(localAssertionPrefix(text, assertionIndex));
+}
+
+function localAssertionScope(text, assertionIndex) {
+  const prefix = localAssertionPrefix(text, assertionIndex);
+  const suffix = text.slice(assertionIndex).split(ASSERTION_SCOPE_BREAK)[0];
+  return `${prefix}${suffix}`;
+}
+
+function isLocalOrPrivateTestAssertion(text, assertionIndex) {
+  const scope = localAssertionScope(text, assertionIndex);
+  if (/\bproduction\b/i.test(scope)) return false;
+  return [
+    /\b(?:local|private|test|development|dev-only)\s+(?:test\s+)?(?:harness|runner|environment|session|fixture|simulation|sandbox|mode|build)\b/i,
+    /\bin\s+(?:a|the)?\s*(?:local|private|test|development)\s+(?:test|environment|session|harness|runner|mode|build)\b/i,
+    /\b(?:locally|privately)\b/i,
+    /\b(?:local|private|test)\s+only\b/i,
+  ].some((pattern) => pattern.test(scope));
+}
+
+function beginsWithCapabilityAnaphor(text) {
+  const value = text
+    .replace(/^(?:[-*+>#|]|\d+\.)+\s*/, "")
+    .replace(/^(?:but|yet|however|nevertheless),?\s+/i, "")
+    .replace(/^[,:\s]+/, "")
+    .trim();
+  return (
+    /^(?:it|they)\b/i.test(value) ||
+    /^(?:this|that)\s+(?:is|was|remains?|runs?|loads?|executes?|provides?|keeps?|stores?|writes?|capability|service|runtime|backend|transport|system|feature|path)\b/i.test(
+      value,
+    ) ||
+    /^(?:these|those)\s+(?:are|were|remain|run|load|execute|provide|keep|store|write|capabilities|services|runtimes|backends|transports|systems|features|paths)\b/i.test(
+      value,
+    )
+  );
 }
 
 const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
@@ -315,17 +356,27 @@ function isLocallyDisclaimed(clause, assertionIndex, capability) {
 export function scanCapabilityClaims(raw, policy) {
   const errors = [];
   const capabilities = (policy.claimCapabilities ?? []).map(compileCapability);
+  let previousSentenceCapabilities = [];
 
   for (const claim of claimGroups(raw)) {
-    let carriedCapabilities = [];
+    const firstClauseIsAnaphoric = beginsWithCapabilityAnaphor(claim.clauses[0] ?? "");
+    let carriedCapabilities = firstClauseIsAnaphoric ? previousSentenceCapabilities : [];
+    let sentenceCapabilities = carriedCapabilities;
     for (const clause of claim.clauses) {
       const explicitCapabilities = capabilities.filter((capability) =>
         clauseHasAlias(clause, capability),
       );
       const activeCapabilities = explicitCapabilities.length
         ? explicitCapabilities
-        : carriedCapabilities;
-      if (explicitCapabilities.length) carriedCapabilities = explicitCapabilities;
+        : beginsWithCapabilityAnaphor(clause)
+          ? carriedCapabilities
+          : [];
+      if (explicitCapabilities.length) {
+        carriedCapabilities = explicitCapabilities;
+        sentenceCapabilities = explicitCapabilities;
+      } else if (activeCapabilities.length) {
+        sentenceCapabilities = activeCapabilities;
+      }
 
       for (const capability of activeCapabilities) {
         const aliasIndex = firstAliasIndex(clause, capability);
@@ -344,7 +395,10 @@ export function scanCapabilityClaims(raw, policy) {
         const positive = assertions.find(
           (assertion) =>
             !isLocallyNegated(clause, assertion.index) &&
-            !isLocallyDisclaimed(clause, assertion.index, capability),
+            !isLocallyDisclaimed(clause, assertion.index, capability) &&
+            !isLocallyModal(clause, assertion.index) &&
+            !isLocallyHypothetical(clause, assertion.index) &&
+            !isLocalOrPrivateTestAssertion(clause, assertion.index),
         );
         if (!positive) continue;
 
@@ -360,6 +414,7 @@ export function scanCapabilityClaims(raw, policy) {
         });
       }
     }
+    previousSentenceCapabilities = sentenceCapabilities;
   }
 
   return errors;

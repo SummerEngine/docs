@@ -54,7 +54,7 @@
     },
     {
       "name": "unchanged addon mutation",
-      "text": "Most Godot 4 addons work unchanged.",
+      "text": "Most Godot 4 addons work in Summer unchanged.",
       "rules": ["blanket-works-perfectly"]
     },
     {
@@ -183,6 +183,36 @@
       "capabilities": ["production-runtime"]
     },
     {
+      "name": "cross-sentence matchmaking anaphor",
+      "text": "Matchmaking remains Planned. It is operational now.",
+      "capabilities": ["managed-matchmaking"]
+    },
+    {
+      "name": "cross-sentence runtime anaphor",
+      "text": "Approved packs remain Planned. They run on Summercraft today.",
+      "capabilities": ["production-runtime"]
+    },
+    {
+      "name": "cross-sentence persistence anaphor",
+      "text": "Summer storage is Scaffolded. It keeps player saves durably between sessions.",
+      "capabilities": ["hosted-persistence-economy"]
+    },
+    {
+      "name": "local test qualifier cannot hide later production assertion",
+      "text": "The local test harness pairs players into lobbies. It is operational in production now.",
+      "capabilities": ["managed-matchmaking"]
+    },
+    {
+      "name": "modal private test cannot hide later production assertion",
+      "text": "Matchmaking may be operational in a private test. It is operational in production now.",
+      "capabilities": ["managed-matchmaking"]
+    },
+    {
+      "name": "same-sentence anaphoric production assertion",
+      "text": "Summer storage is Scaffolded; however, it stores saves durably in production.",
+      "capabilities": ["hosted-persistence-economy"]
+    },
+    {
       "name": "durable inter-session Summer storage paraphrase",
       "text": "Summer storage keeps player saves durably between sessions.",
       "capabilities": ["hosted-persistence-economy"]
@@ -220,6 +250,30 @@
     {
       "name": "truthful transport negation",
       "text": "Summer's multiplayer peer cannot power production networking."
+    },
+    {
+      "name": "explicit unrelated semicolon subject",
+      "text": "Matchmaking remains Planned; this documentation page is live."
+    },
+    {
+      "name": "local test harness scope",
+      "text": "The local test harness pairs players into lobbies; production matchmaking remains Planned."
+    },
+    {
+      "name": "modal private test scope",
+      "text": "Matchmaking may be operational in a private test."
+    },
+    {
+      "name": "unrelated cross-sentence demonstrative subject",
+      "text": "Approved packs remain Planned. This documentation page is live."
+    },
+    {
+      "name": "local runtime harness scope",
+      "text": "Approved packs run locally in a private test harness; the production runtime remains Planned."
+    },
+    {
+      "name": "hypothetical private matchmaking scope",
+      "text": "If matchmaking becomes operational in a private test, do not describe it as production."
     }
   ]
 }
