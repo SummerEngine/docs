@@ -253,6 +253,11 @@
       "capabilities": ["hosted-persistence-economy"]
     },
     {
+      "name": "elliptical persistence adjective object coreference",
+      "text": "Summer storage may keep encrypted player saves in a test harness, but stores them durably in production.",
+      "capabilities": ["hosted-persistence-economy"]
+    },
+    {
       "name": "durable inter-session Summer storage paraphrase",
       "text": "Summer storage keeps player saves durably between sessions.",
       "capabilities": ["hosted-persistence-economy"]
@@ -338,6 +343,14 @@
     {
       "name": "elliptical reference-example pronoun",
       "text": "Summer storage may keep examples in a test harness but stores them in the API reference."
+    },
+    {
+      "name": "save modifier does not make examples a persistence object",
+      "text": "Summer storage may keep player save API examples in a test harness, but stores them in the API reference."
+    },
+    {
+      "name": "save topic does not make examples a persistence object",
+      "text": "Summer storage may keep API examples about player saves in a test harness, but stores them in the API reference."
     }
   ]
 }

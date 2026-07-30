@@ -191,19 +191,23 @@
       "objectRequiredAssertionPatterns": [
         "\\bauto-?saves?\\b"
       ],
-      "assertionObjectPatterns": [
-        "\\b(?:player\\s+)?saves?\\b",
-        "\\b(?:player\\s+)?(?:data|progress|state|inventory|balance|economy)\\b",
-        "\\bdurable storage\\b",
-        "\\bbackend flush\\b",
-        "\\bbetween sessions\\b"
-      ],
-      "coreferenceObjectPatterns": [
-        "\\b(?:player\\s+)?saves?\\b",
-        "\\b(?:player\\s+)?(?:data|progress|state|inventory|balance)\\b"
+      "coreferenceObjectHeads": [
+        "save",
+        "saves",
+        "data",
+        "progress",
+        "state",
+        "inventory",
+        "balance"
       ],
       "objectPronounPatterns": [
         "\\bthem\\b"
+      ],
+      "objectPronounAssertionContextPatterns": [
+        "\\bdurabl(?:e|y)\\b",
+        "\\bproduction\\b",
+        "\\bbetween\\s+(?:production\\s+)?sessions\\b",
+        "\\bpersist(?:s|ed|ing|ence|ent)?\\b"
       ],
       "assertionTerms": [
         "\\bhandled\\b",

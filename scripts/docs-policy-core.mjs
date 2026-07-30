@@ -336,9 +336,13 @@ function compileCapability(capability) {
         requiresObject: objectRequiredVerbs.has(verb),
       })),
     ],
-    assertionObjectPatterns: compile(capability.assertionObjectPatterns),
-    coreferenceObjectPatterns: compile(capability.coreferenceObjectPatterns),
+    coreferenceObjectHeads: new Set(
+      (capability.coreferenceObjectHeads ?? []).map((head) => head.toLocaleLowerCase("en-US")),
+    ),
     objectPronounPatterns: compile(capability.objectPronounPatterns),
+    objectPronounAssertionContextPatterns: compile(
+      capability.objectPronounAssertionContextPatterns,
+    ),
     statusPatterns: compile(capability.statusTerms),
     disclaimerPatterns: compile(capability.disclaimerPatterns),
     assertionBeforeSubjectPatterns: compile(capability.assertionBeforeSubjectPatterns),
@@ -403,6 +407,26 @@ function assertionTermIsPredicate(clause, assertion, capability) {
   return prefix.replace(/^[,:\s]+/, "").length === 0;
 }
 
+const DIRECT_OBJECT_BOUNDARY =
+  /[,;.!?]|\b(?:in|on|at|for|with|without|from|to|into|onto|about|regarding|during|between|across|through|via|as|while|when|if|but|yet|however|and|or)\b/i;
+
+function directObjectHead(clause, assertion) {
+  const tail = clause.slice(assertion.index + assertion.text.length);
+  const boundary = tail.search(DIRECT_OBJECT_BOUNDARY);
+  const phrase = (boundary === -1 ? tail : tail.slice(0, boundary))
+    .replace(/[*_`|:[\](){}]/g, " ")
+    .trim();
+  const tokens = phrase.toLocaleLowerCase("en-US").match(/[a-z][a-z'’-]*/g) ?? [];
+  while (
+    tokens.length &&
+    (tokens.at(-1).endsWith("ly") ||
+      ["today", "now", "currently", "automatically"].includes(tokens.at(-1)))
+  ) {
+    tokens.pop();
+  }
+  return tokens.at(-1) ?? null;
+}
+
 function assertionHasCompatibleObject(
   clause,
   assertion,
@@ -410,11 +434,14 @@ function assertionHasCompatibleObject(
   { allowObjectPronoun = false } = {},
 ) {
   if (!assertion.requiresObject) return true;
+  const head = directObjectHead(clause, assertion);
+  if (head && capability.coreferenceObjectHeads.has(head)) return true;
   const scope = localAssertionScope(clause, assertion.index);
-  if (capability.assertionObjectPatterns.some((pattern) => pattern.test(scope))) return true;
   return (
     allowObjectPronoun &&
-    capability.objectPronounPatterns.some((pattern) => pattern.test(scope))
+    head !== null &&
+    capability.objectPronounPatterns.some((pattern) => pattern.test(head)) &&
+    capability.objectPronounAssertionContextPatterns.some((pattern) => pattern.test(scope))
   );
 }
 
@@ -442,11 +469,10 @@ function beginsWithEllipticalCapabilityPredicate(clause, capability, options = {
 }
 
 function introducesExplicitCoreferenceObject(clause, capability) {
-  if (!capability.coreferenceObjectPatterns.some((pattern) => pattern.test(clause))) {
-    return false;
-  }
   return compatibleAssertionMatches(clause, capability).some(
-    (assertion) => assertion.requiresObject,
+    (assertion) =>
+      assertion.requiresObject &&
+      capability.coreferenceObjectHeads.has(directObjectHead(clause, assertion)),
   );
 }
 
