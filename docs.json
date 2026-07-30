@@ -129,6 +129,7 @@
           {
             "group": "Reference",
             "pages": [
+              "reference/compatibility",
               "desktop/troubleshooting"
             ]
           }

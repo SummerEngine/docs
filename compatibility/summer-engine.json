@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "product": {
+    "name": "Summer Engine",
+    "releaseIdentity": {
+      "state": "measured",
+      "strategy": "platform-staggered",
+      "source": "modules/1summer_engine/summer_version.h",
+      "platforms": {
+        "macos": {
+          "displayName": "macOS",
+          "define": "SUMMER_VERSION_MACOS"
+        },
+        "windows": {
+          "displayName": "Windows",
+          "define": "SUMMER_VERSION_WINDOWS"
+        }
+      }
+    }
+  },
+  "upstreamBase": {
+    "name": "Godot Engine",
+    "current": {
+      "version": "4.6.1",
+      "source": "version.py"
+    },
+    "plannedNext": {
+      "state": "planned",
+      "version": "4.7.1",
+      "evidence": [
+        "compatibility/summer-engine.json"
+      ]
+    },
+    "policy": "continuous-upstream",
+    "productIdentity": false
+  },
+  "runtimeCompatibility": {
+    "state": "unmeasured",
+    "version": null,
+    "evidence": []
+  },
+  "projectCompatibility": {
+    "minimum": {
+      "state": "unmeasured",
+      "version": null,
+      "evidence": []
+    },
+    "recommended": {
+      "state": "unmeasured",
+      "version": null,
+      "evidence": []
+    }
+  },
+  "verification": {
+    "verifiedOn": "2026-07-30",
+    "evidence": [
+      "modules/1summer_engine/summer_version.h",
+      "version.py"
+    ]
+  },
+  "languagePolicy": {
+    "creatorProduct": "Summer Engine",
+    "creatorGame": "Summer game",
+    "defaultCreatorLanguage": "GDScript",
+    "technicalCompatibilityProduct": "Godot Engine",
+    "godotUsage": "Use Godot references for technical compatibility, migration, upstream contribution, attribution, and legal contexts—not as the Summer product identity."
+  }
+}

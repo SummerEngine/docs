@@ -6,6 +6,8 @@
     "node": ">=20"
   },
   "scripts": {
-    "check": "node scripts/check-docs.mjs"
+    "check": "npm run check:compatibility && node scripts/check-docs.mjs",
+    "check:compatibility": "node scripts/sync-engine-compatibility.mjs --check",
+    "generate:compatibility": "node scripts/sync-engine-compatibility.mjs"
   }
 }
