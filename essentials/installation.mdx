@@ -1,21 +1,8 @@
 ---
-title: "Installation"
-description: "Download and install Summer on your machine"
+title: "Install Summer Engine"
+description: "Install Summer Engine on macOS or Windows, verify the editor, and continue to your first Summer game."
 icon: "download"
 ---
-
-## Project Compatibility
-
-Summer works with existing projects, tutorials, libraries, and extensions. Open your projects directly. No conversion needed.
-
-**What works out of the box:**
-- All standard project files and structures
-- Official documentation and tutorials
-- Third-party libraries and plugins
-- Community assets and tools
-- Export templates for web, desktop, and mobile
-
-**Version tracking:** Summer maintains compatibility with current project formats.
 
 ## System Requirements
 
@@ -26,14 +13,14 @@ Summer runs on Windows and macOS with the following minimum requirements:
 - **Storage**: 2GB available space
 - **Graphics**: OpenGL 3.3 support
 
-## Download Summer
+## Download Summer Engine
 
 <Card
   title="Download for Your Platform"
   icon="download"
   href="https://summerengine.com/download"
 >
-  Get the latest version of Summer from our website
+  Get the latest Summer Engine installer from our website.
 </Card>
 
 ### Alternative: Install via CLI
@@ -41,10 +28,16 @@ Summer runs on Windows and macOS with the following minimum requirements:
 If you use Cursor, Claude Code, or any MCP-compatible AI tool, you can install Summer Engine from the command line:
 
 ```bash
-npx summer-engine install
+npx -y summer-engine@latest install
 ```
 
-This downloads and installs the engine to your system (macOS: `/Applications/Summer.app`, Windows: default install location). No npm global install required. `npx` runs it on demand. After install, run `npx summer-engine login` and `npx summer-engine run` to get started.
+This downloads and installs Summer Engine (macOS: `/Applications/Summer.app`; Windows:
+the installer-selected location). No global npm install is required. After installation:
+
+```bash
+npx -y summer-engine@latest login
+npx -y summer-engine@latest run
+```
 
 For MCP setup (connecting your IDE to Summer Engine), see [MCP Setup](/mcp/setup).
 
@@ -57,8 +50,8 @@ For MCP setup (connecting your IDE to Summer Engine), see [MCP Setup](/mcp/setup
   <Step title="Run the installer">
     Double-click the downloaded file and follow the installation wizard.
   </Step>
-  <Step title="Launch Summer">
-    Open Summer from your applications folder or start menu.
+  <Step title="Launch Summer Engine">
+    Open Summer Engine from your applications folder or Start menu.
   </Step>
   <Step title="Create your first project">
     Click "New Project" and choose a template to get started.
@@ -71,16 +64,21 @@ Once installed, you can verify everything is working by:
 
 1. Opening Summer
 2. Creating a new project from a template
-3. Testing the AI chat functionality with a simple request like "Add a cube to the scene"
+3. Testing the AI chat with a request such as “Add a cube to the scene”
 
 If you encounter any issues, check our [troubleshooting guide](/desktop/troubleshooting) or reach out on [Discord](https://discord.gg/yUpgtxnZky).
 
-## Next Steps
+## Existing-project compatibility
 
-<Card
-  title="First Chat"
-  icon="message"
-  href="/essentials/first-chat"
->
-  Learn how to use AI to build your first game elements
-</Card>
+Summer Engine uses standard project files. Compatibility, migration, extensions, and the
+measured upstream base live in the dedicated [compatibility reference](/reference/compatibility).
+Do not infer a project-version minimum from a copied setup guide.
+
+<CardGroup cols={2}>
+  <Card title="Previous: Summer Engine docs" icon="arrow-left" href="/">
+    Review the complete creator journey.
+  </Card>
+  <Card title="Next: Create a Summer game" icon="arrow-right" href="/quickstarts/fresh-project">
+    Create a project and begin with GDScript.
+  </Card>
+</CardGroup>

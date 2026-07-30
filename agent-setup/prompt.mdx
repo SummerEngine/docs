@@ -1,17 +1,23 @@
 ---
 title: "Agent Prompt"
-description: "The canonical instruction set for AI coding agents building and publishing a multiplayer Godot game to Summercraft. Fetch this page raw at /agent-setup/prompt.md."
+description: "Canonical instructions for an AI coding agent to build a multiplayer Summer game in GDScript with Summer Engine and publish it for review."
 icon: "bot"
 noindex: false
 ---
 
-You are an AI coding agent. Your job is to build a multiplayer Godot game as a GDScript-only `.pck` and publish it to Summercraft for review. Follow this document top to bottom. Everything in it was verified against the live platform; where a capability is not live yet, this document says so explicitly.
+You are an AI coding agent. Your job is to use **Summer Engine** and the **Summer SDK** to
+build a multiplayer **Summer game** in **GDScript**, export a game-only `.pck`, and publish
+it to Summercraft for review. Follow this document top to bottom. Where a platform
+capability is not live yet, this document says so explicitly.
 
 Any page of these docs is fetchable as raw markdown by appending `.md` to its URL. The full page index is at `https://docs.summerengine.com/llms.txt`.
 
 ## 1. What Summercraft is
 
-Summercraft (`https://summercraft.ai`) is the platform where games built against the Summer SDK are published and played. You write a plain Godot 4.5 game in GDScript, extend the SDK base class `SummerGame`, export a `.pck` that contains only your game files, and submit it through the publish API. A human reviews every submission before it goes live. There is no auto-publish.
+Summercraft (`https://summercraft.ai`) is the platform where Summer games built with the
+Summer SDK are submitted. Use Summer Engine, extend the SDK base class `SummerGame`, export
+a `.pck` containing only game files, and submit it through the publish API. A human reviews
+every submission before it goes live. There is no auto-publish.
 
 - The publish API lives at `https://summercraft.ai/api/*`.
 - Docs live at `https://docs.summerengine.com`.
@@ -19,14 +25,29 @@ Summercraft (`https://summercraft.ai`) is the platform where games built against
 
 **What is live today:** creating a game record, direct-to-storage artifact upload with server-side sha256 verification, the manual review queue, and authenticated release downloads.
 
-**What is not live yet (do not promise these to your operator):** playing uploaded Godot games in the browser, playing them inside the desktop shell, hosted dedicated game servers for uploaded games, and the automated runtime sandbox. Multiplayer sessions in the current runtime run host-authoritatively over ENet; the `SummerMultiplayerPeer` transport (stock `@rpc` / `MultiplayerSynchronizer` compatibility) is a published contract still being built in the engine fork.
+**What is not live yet (do not promise these to your operator):** playing uploaded Summer
+games in the browser or desktop shell, hosted dedicated game servers for uploaded games,
+and the automated runtime sandbox. Multiplayer sessions in the current runtime run
+host-authoritatively over ENet; the `SummerMultiplayerPeer` transport (stock `@rpc` /
+`MultiplayerSynchronizer` compatibility) is a published contract still being built.
 
 ## 2. Prerequisites — check all three before writing any code
 
-1. **Godot 4.5.x.** Run `godot --version` (or find the binary, e.g. `/Applications/Godot.app/Contents/MacOS/Godot` on macOS). Any 4.5 build works; you only need it for headless export, no export templates required. If it is missing, ask your operator to install Godot 4.5 from `https://godotengine.org/download` before continuing.
+1. **Summer Engine.** If it is missing, install it with
+   `npx -y summer-engine@latest install`. Resolve the installed executable and set
+   `SUMMER_ENGINE` to its path. On macOS the default is
+   `/Applications/Summer.app/Contents/MacOS/Summer`. Run
+   `"$SUMMER_ENGINE" --version` before continuing.
 2. **A Summercraft access token.** Check for a `SUMMERCRAFT_ACCESS_TOKEN` environment variable or ask your operator for one. Without it every publish call returns `401 sign_in_required`. **Stop and ask before step 6 if you do not have it** — you can build and export everything first. Show your operator this if they do not know how to get one:
    > Sign in at `https://summercraft.ai` (create the account yourself — never let an agent handle your password). Then open your browser dev tools on that tab: Application → Cookies → `summercraft.ai`, and find the cookie whose name ends in `-auth-token` (it may be split into `.0`/`.1` chunks — concatenate their values in order). URL-decode the value; if the result starts with `base64-`, base64-decode the rest. Inside the JSON is an `access_token` field: that string is the Bearer token. It expires after about an hour, which is enough for one publish. There is no dedicated token page yet; this manual step is the current path.
 3. **`curl` and a sha256 tool** (`shasum -a 256` or `sha256sum`).
+
+<Note>
+  A bare upstream binary is not the default path. On locked CI infrastructure where Summer
+  Engine cannot be installed, use the explicitly labeled compatibility escape hatch in
+  [local testing](/api-reference/summer-sdk/testing-your-game-locally). It can validate
+  file-format behavior only and does not prove Summer SDK runtime compatibility.
+</Note>
 
 Auth model, exactly: every publish endpoint accepts `Authorization: Bearer <access token>` (or a signed-in browser session cookie). A present-but-invalid Bearer token is a hard `401` — it never falls back to a cookie. If you get `401` with a token set, the token has expired: ask your operator for a fresh one.
 
@@ -42,7 +63,10 @@ Your `.pck` must contain **only your game**. The platform enforces, at review an
 
 ## 4. Build the game — multiplayer-native template
 
-Build multiplayer by default: `min_players: 1` so it works solo, `max_players: 8` so it works with friends, all authority server-side. The template below is a complete king-of-the-hill arena, verified to parse, smoke-run, and export with Godot 4.5.1. Adapt the gameplay; keep the structure.
+Build multiplayer by default: `min_players: 1` so it works solo, `max_players: 8` so it
+works with friends, all authority server-side. The template below is a complete
+king-of-the-hill arena. Run every Summer Engine validation step before publishing; adapt
+the gameplay, but keep the structure.
 
 Create this exact layout in a fresh directory:
 
@@ -425,22 +449,22 @@ ssh_remote_deploy/enabled=false
 
 ## 5. Validate and export
 
-Run all four checks. `$GODOT` is your Godot 4.5 binary path.
+Run all four checks. `$SUMMER_ENGINE` is the installed Summer Engine executable.
 
 ```bash
 # 5a. Import resources (first run only; expect exit 0)
-$GODOT --headless --path . --import
+"$SUMMER_ENGINE" --headless --path . --import
 
 # 5b. Smoke run: scene loads, hooks fire, no script errors (expect exit 0,
 #     and the announcement line printed by the stub)
-$GODOT --headless --path . --quit-after 120
+"$SUMMER_ENGINE" --headless --path . --quit-after 120
 
 # 5c. Banned-API self-check: must print nothing
 grep -rnE "OS\.(execute|shell_open|create_process|create_instance|kill)|FileAccess|DirAccess|HTTPRequest|HTTPClient|JavaScriptBridge|ClassDB\.instantiate|Thread\.new|Mutex\.new|Semaphore\.new|StreamPeerTCP|PacketPeerUDP|TCPServer|UDPServer|WebSocketPeer|\.callv?\(|\.call_deferred\(|Callable\(|Engine\.get_singleton|Expression|Marshalls\.base64_to_variant|ResourceSaver|ProjectSettings\.load_resource_pack|get_node\(\"/root|get_tree\(\)\.root" \
   --include="*.gd" --include="*.tscn" --include="*.tres" . | grep -v "^\./sdk/"
 
 # 5d. Export the pack (no export templates needed for --export-pack)
-$GODOT --headless --path . --export-pack "Summer Game PCK" game.pck
+"$SUMMER_ENGINE" --headless --path . --export-pack "Summer Game PCK" game.pck
 ```
 
 Notes on the checks: the pass condition for 5c is **empty output** — `grep` exits non-zero when it finds nothing, so do not treat its exit code as a failure. If the smoke run prints `SCRIPT ERROR`, fix it before exporting — the same error will make the platform runtime refuse your pack.
@@ -532,7 +556,9 @@ Report exactly this, no more:
      -H "Authorization: Bearer $SUMMERCRAFT_ACCESS_TOKEN"
    ```
    Other signed-in users can fetch it only after the game is published.
-4. Playing uploaded Godot games in the browser or desktop shell, and hosted game servers, are not live yet — publishing today means entering the catalog pipeline, not instant playability. Do not claim otherwise.
+4. Playing uploaded Summer games in the browser or desktop shell, and hosted game servers,
+   are not live yet — publishing today means entering the catalog pipeline, not instant
+   playability. Do not claim otherwise.
 
 ## 8. Updating the game later
 
