@@ -6,7 +6,8 @@
     "node": ">=20"
   },
   "scripts": {
-    "check": "npm run check:compatibility && npm run check:language && npm run check:routes && node scripts/check-docs.mjs",
+    "check": "npm run check:compatibility && npm run check:language && npm run check:capabilities && npm run check:routes && node scripts/check-docs.mjs",
+    "check:capabilities": "node scripts/check-capabilities.mjs",
     "check:compatibility": "node scripts/sync-engine-compatibility.mjs --check",
     "check:external-links": "node scripts/check-external-links.mjs",
     "check:language": "node scripts/check-language.mjs",

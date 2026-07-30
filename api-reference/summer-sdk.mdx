@@ -7,8 +7,9 @@ icon: "gamepad-2"
 ## Add platform capabilities to your Summer game
 
 The **Summer SDK** is the creator-facing platform contract for a **Summer game**. Your
-GDScript owns the gameplay, worlds, rules, and presentation. The SDK supplies the published
-multiplayer, player, persistence, economy, and submission surfaces documented here.
+GDScript owns the gameplay, worlds, rules, and presentation. The SDK documents multiplayer,
+player, persistence, economy, and submission interfaces. An interface being documented does
+not mean its hosted runtime is production-live.
 
 Use only the capabilities your game needs. Templates are examples, not requirements.
 
@@ -35,15 +36,25 @@ Use only the capabilities your game needs. Templates are examples, not requireme
   </Card>
 </CardGroup>
 
-## What Summercraft Handles
+## What is available now
 
-The Summer SDK provides out-of-the-box support for:
+- Create a Summer game record.
+- Upload a game-only `.pck` directly to storage with server-side checksum verification.
+- Enter the manual human review queue.
+- Download releases through the authenticated release endpoint.
 
-- **Multiplayer Runtime:** Server-authoritative networking and matchmaking infrastructure.
-- **Player Management:** Unified player identity and session handling.
-- **Backend Services:** Built-in APIs for data persistence and player economy.
-- **Game Utilities:** Ready-to-use helpers for score tracking, teams, and match state.
-- **Publishing Pipeline:** A streamlined submission, review, and deployment flow.
+## What remains a contract or planned capability
+
+- Summer SDK lifecycle, player, sync, persistence, economy, teams, score, UI, and audio
+  interfaces are a creator contract under implementation.
+- Player-facing browser and desktop-shell playback is not live.
+- Hosted dedicated game servers and automatic matchmaking are not live.
+- The automated production runtime sandbox is not live.
+- `SummerMultiplayerPeer` is a published compatibility contract still being built.
+
+See [Product source & platform status](/knowledge-base/source-status#platform-capability-status)
+for the single canonical status table. Do not infer deployment status from an SDK reference
+page or example.
 
 ## What You Build
 
@@ -75,7 +86,7 @@ Templates are examples, not requirements.
 
 <CardGroup cols={2}>
   <Card title="Agent Setup" icon="bot" href="/agent-setup">
-    Point any AI coding agent at one prompt: build, export, and publish through the live API
+    Point any AI coding agent at one prompt: build, export, and submit through the live API
   </Card>
   <Card title="Summer SDK Naming" icon="arrow-right-left" href="/api-reference/summer-sdk/naming">
     Migrating from Crafty: every renamed class, autoload, manifest key, and path
@@ -120,7 +131,7 @@ Templates are examples, not requirements.
     Export .pck, scanner rules, upload flow, review lifecycle, and updates
   </Card>
   <Card title="Testing Your Game Locally" icon="flask-conical" href="/api-reference/summer-sdk/testing-your-game-locally">
-    Two-process local workflow, multiplayer testing, and production-like validation loop
+    Summer Engine smoke checks, optional loopback testing, and the limits of local validation
   </Card>
   <Card title="Exporting and Uploading Your Game" icon="upload-cloud" href="/api-reference/summer-sdk/exporting-and-uploading-your-game">
     Game-only PCK export preset, upload pipeline, and update workflow

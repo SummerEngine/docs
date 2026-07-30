@@ -1,6 +1,6 @@
 ---
 title: "Test Your Summer Game Locally"
-description: "Use Summer Engine and the Summer SDK test runner first; keep bare upstream checks as an advanced compatibility escape hatch."
+description: "Use Summer Engine smoke checks and an optional local loopback runner; understand what neither path proves about production."
 icon: "flask-conical"
 ---
 
@@ -8,33 +8,37 @@ icon: "flask-conical"
 
 Local testing should match production behavior as closely as possible.
 
-The local workflow exercises:
+The canonical agent workflow exercises:
 
 - Summer Engine,
-- the same Summer SDK APIs,
-- server-authoritative networking.
+- local Summer SDK stubs,
+- project import, parsing, smoke execution, banned-pattern checks, and pack contents.
 
-That is why the recommended workflow launches a local headless server and a client, instead of testing gameplay logic in a client-only setup.
+It does **not** exercise the production Summer SDK runtime, ticket redemption, platform
+services, or a destination game server. The separate starter-template loopback runner can
+exercise a local server/client path, but it still does not prove those production paths.
 
-## Default Local Workflow
+## Optional starter-template loopback workflow
 
-Use the starter template test runner:
+If your Summer Engine starter project includes its loopback runner:
 
 - `test_runner.gd` launches a headless server process.
 - It waits for startup.
 - It launches/loads the client flow and connects to `localhost:7777`.
 
-This gives you a real multiplayer loop in one click.
+This gives you a local multiplayer loop. It does not connect to Summercraft, redeem a
+launch ticket, or validate hosted matchmaking, hosting, or sandboxing.
 
 <Tip>
-  If it works in this local test-runner flow, it is much closer to how it will behave in production than single-process editor-only testing.
+  Use the loopback runner when it is present, but report it as local loopback validation,
+  not production-like or end-to-end platform validation.
 </Tip>
 
 ## Agent and CLI workflow with Summer Engine
 
-The test runner ships with the Summer Engine template. The
-[/agent-setup](/agent-setup) prompt installs and invokes Summer Engine directly, supplies
-local SDK stubs for parsing, and runs import, smoke, banned-API, and pack-content checks.
+The [/agent-setup](/agent-setup) prompt installs and invokes Summer Engine directly,
+supplies local SDK stubs for parsing, and runs a single-process import/smoke pass plus
+banned-API and pack-content checks. It does not invoke the starter-template loopback runner.
 
 1. Keep local **SDK stubs** in `sdk/` and exclude them from export.
 2. Run Summer Engine headlessly and fail on any `SCRIPT ERROR`.
@@ -59,9 +63,9 @@ compatibility path, not creator onboarding:
 "$UPSTREAM_ENGINE" --headless --path . --quit-after 120
 ```
 
-## What Happens Under The Hood
+## What the optional loopback runner does
 
-When you run the test runner:
+When you run a starter project that includes the loopback runner:
 
 1. The runner detects your game slug from `manifest.json`.
 2. It starts Summer Engine in headless mode with server args:
@@ -85,15 +89,15 @@ To make local testing reliable:
 
 You have two practical options:
 
-### Option A: First client via test runner, additional clients from editor
+### Option A: First client via an available loopback runner, additional clients from editor
 
-1. Start the first instance with test runner (starts server + client).
+1. Start the first instance with the loopback runner (starts server + client).
 2. Launch another editor instance.
 3. Run the client scene and connect to `localhost:7777` using your quick-connect flow.
 
 ### Option B: Team testing on same network
 
-1. One teammate runs the test runner (hosts local server).
+1. One teammate runs the loopback runner (hosts local server).
 2. Share host IP and port.
 3. Other teammates run client mode and connect to that host.
 

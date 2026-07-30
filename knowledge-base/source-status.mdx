@@ -1,10 +1,14 @@
 ---
-title: "What is open in Summer Engine?"
-description: "The exact split between Summer's open agent layer, free desktop app, and paid hosted services."
+title: "Product Source & Platform Status"
+description: "The canonical status for Summer Engine source access and live, scaffolded, or planned Summercraft platform capabilities."
 icon: "badge-check"
+capabilityStatus: "canonical"
 ---
 
-Summer's AI-agent layer is MIT open source. The Summer Engine desktop app is free to download and use, but its source code is not public right now. Hosted Summer AI, asset generation, storage, multiplayer, orchestration, and cloud services are paid Summer services.
+Summer's AI-agent layer is MIT open source. The Summer Engine desktop app is free to
+download and use, but its source code is not public right now. This page is also the single
+canonical status source for Summercraft capabilities: reference pages describe contracts,
+while this page says whether the supporting production path is live.
 
 ## What is open today?
 
@@ -24,13 +28,40 @@ The Summer Engine desktop app is free to download and use. Local MCP workflows a
 
 ## What is paid?
 
-Hosted Summer services are paid because they run cloud infrastructure and model calls:
+Live hosted Summer services are paid because they run cloud infrastructure and model calls:
 
 - Hosted Summer AI
 - Asset generation
 - Cloud storage
 - Orchestration
-- Managed multiplayer
+
+Managed multiplayer is planned as a paid hosted service; it is not production-live today.
+
+## Platform capability status
+
+| Capability | Status | What that means today |
+|---|---|---|
+| Create Summer game records | **Live** | Authenticated creators can create a game record through the Summercraft API. |
+| Upload and verify a game-only `.pck` | **Live** | Direct-to-storage upload, server-side SHA-256 verification, and immutable release records are deployed. |
+| Manual review queue | **Live** | A submission can enter human review; there is no automatic approval. |
+| Authenticated release download | **Live** | Owners and admins can retrieve pending releases; published catalog releases follow the documented access rules. |
+| Summer SDK gameplay and subsystem interfaces | **Scaffold** | The GDScript contract and examples exist, but documented interfaces do not prove the hosted runtime path is deployed. |
+| `SummerMultiplayerPeer` transport | **Scaffold** | The compatibility contract is published and implementation is in progress. |
+| Browser or desktop-shell play for uploaded games | **Planned** | A `published` catalog status does not make an uploaded game playable. |
+| Hosted dedicated game servers | **Planned** | Creators must not promise managed hosting to players. |
+| Automatic matchmaking and relay | **Planned** | No production matchmaking or relay service is available for uploaded Summer games. |
+| Automated production runtime sandbox | **Planned** | Submission review is manual; the production sandbox path is still being built. |
+
+Status words are deliberate:
+
+- **Live** means the production path is deployed and documented.
+- **Scaffold** means a contract, adapter, or tested local surface exists without a complete
+  production path.
+- **Planned** means creators and agents must not promise the capability.
+
+See [Summer SDK](/api-reference/summer-sdk) for contracts and
+[Submit Your Summer Game for Review](/api-reference/summer-sdk/submission-guide) for the
+currently deployed submission flow.
 
 ## Is the engine app open source?
 

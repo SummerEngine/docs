@@ -17,7 +17,8 @@ Any page of these docs is fetchable as raw markdown by appending `.md` to its UR
 Summercraft (`https://summercraft.ai`) is the platform where Summer games built with the
 Summer SDK are submitted. Use Summer Engine, extend the SDK base class `SummerGame`, export
 a `.pck` containing only game files, and submit it through the publish API. A human reviews
-every submission before it goes live. There is no auto-publish.
+every submission before its catalog status can become `published`. There is no auto-publish,
+and a published catalog release is not playable yet.
 
 - The publish API lives at `https://summercraft.ai/api/*`.
 - Docs live at `https://docs.summerengine.com`.
@@ -97,7 +98,7 @@ config_version=5
 
 config/name="Hold the Hill"
 run/main_scene="res://main.tscn"
-config/features=PackedStringArray("4.5")
+config/features=PackedStringArray("4.6")
 
 [autoload]
 
@@ -549,16 +550,18 @@ The server HEADs the stored object, streams it through sha256, and compares agai
 Report exactly this, no more:
 
 1. The game record exists at status `draft`; release `<version>` is `pending_review` in the manual review queue. A human reviews every submission; there is no automatic publish and no guaranteed review time.
-2. When approved, the game becomes `published` and the release goes live; if rejected, the reason appears for the creator on `https://summercraft.ai/creator`.
+2. When approved, the game and active release receive `published` catalog status; if rejected, the reason appears for the creator on `https://summercraft.ai/creator`. Published catalog status does not make the uploaded game playable yet.
 3. The owner (and admins) can verify the stored artifact any time — response includes a short-lived (5 min) download URL plus the server-verified `sha256`:
    ```bash
    curl -sS "https://summercraft.ai/api/games/$GAME_ID/releases/1.0.0/download-url" \
      -H "Authorization: Bearer $SUMMERCRAFT_ACCESS_TOKEN"
    ```
    Other signed-in users can fetch it only after the game is published.
-4. Playing uploaded Summer games in the browser or desktop shell, and hosted game servers,
-   are not live yet — publishing today means entering the catalog pipeline, not instant
-   playability. Do not claim otherwise.
+4. Playing uploaded Summer games in the browser or desktop shell, hosted game servers,
+   automatic matchmaking, and the runtime sandbox are not live yet — publishing today
+   means entering the catalog pipeline, not instant playability. Do not claim otherwise.
+   The canonical status is
+   `https://docs.summerengine.com/knowledge-base/source-status.md#platform-capability-status`.
 
 ## 8. Updating the game later
 

@@ -43,12 +43,16 @@ Reference:
 
 ## Step 4: Local Runtime Validation
 
-Run through test-runner flow and confirm:
+Run the canonical Summer Engine smoke checks. If the starter project includes the optional
+loopback runner, run that separately and confirm:
 
-- server starts + client connects,
+- local server starts + local client connects,
 - player join/leave stable,
 - gameplay loop runs for 10+ minutes,
 - reconnect path works.
+
+This is local loopback validation only. It does not prove production ticket redemption,
+platform hosting, matchmaking, or the runtime sandbox.
 
 Reference:
 

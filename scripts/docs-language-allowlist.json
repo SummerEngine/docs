@@ -1,5 +1,11 @@
 {
   "schemaVersion": 1,
+  "technicalGodotMetadataFiles": [
+    "migration/godot.mdx",
+    "extending/modules.mdx",
+    "extending/plugin-library.mdx",
+    "extending/gdextension.mdx"
+  ],
   "exceptions": [
     {
       "rule": "godot-game",

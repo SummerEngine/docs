@@ -1,0 +1,53 @@
+{
+  "schemaVersion": 1,
+  "canonicalPage": "knowledge-base/source-status.mdx",
+  "canonicalFrontmatter": "capabilityStatus: \"canonical\"",
+  "requiredCanonicalTerms": [
+    "## Platform capability status",
+    "| Create Summer game records | **Live** |",
+    "| Summer SDK gameplay and subsystem interfaces | **Scaffold** |",
+    "| Browser or desktop-shell play for uploaded games | **Planned** |",
+    "| Hosted dedicated game servers | **Planned** |",
+    "| Automatic matchmaking and relay | **Planned** |",
+    "| Automated production runtime sandbox | **Planned** |"
+  ],
+  "requiredDisclosures": [
+    "agent-setup.mdx",
+    "agent-setup/prompt.mdx",
+    "api-reference/summer-sdk.mdx",
+    "api-reference/summer-sdk/submission-guide.mdx",
+    "api-reference/summer-sdk/exporting-and-uploading-your-game.mdx",
+    "api-reference/summer-sdk/guides/making-a-2d-game-multiplayer.mdx",
+    "knowledge-base/multiplayer.mdx"
+  ],
+  "blockedClaims": [
+    {
+      "match": "are published and played",
+      "reason": "Uploaded Summer games are not playable on the platform yet."
+    },
+    {
+      "match": "managed multiplayer backend",
+      "reason": "The hosted multiplayer production path is not live."
+    },
+    {
+      "match": "server-authoritative networking and matchmaking infrastructure",
+      "reason": "The SDK contract must not be presented as deployed matchmaking."
+    },
+    {
+      "match": "automatic matchmaking, persistence, and server hosting",
+      "reason": "Matchmaking and hosted servers are planned, not live."
+    },
+    {
+      "match": "streamlined submission, review, and deployment flow",
+      "reason": "Submission and review are live; deployment and play are not."
+    },
+    {
+      "match": "the game is live on the platform",
+      "reason": "Published catalog status does not make an uploaded game playable."
+    },
+    {
+      "match": "approval publishes the game",
+      "reason": "Describe approval as published catalog status and state that playback is not live."
+    }
+  ]
+}
