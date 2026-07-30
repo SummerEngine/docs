@@ -11,7 +11,7 @@ Imagine trying to build a game without knowing what functions are available, wha
 **Documentation gives Summer Engine the "missing manual" for game development.**
 
 When you ask Summer Engine to help with something, it needs to know:
-- What Godot functions actually exist and how they work
+- Which Summer Engine APIs actually exist and how they work
 - Current best practices that have evolved since its last training
 - Real examples from working games
 - Solutions to common problems that other developers have figured out
@@ -21,7 +21,8 @@ Without documentation access, Summer Engine can only guess. With it, Summer Engi
 ## Types of Documentation Context
 
 ### External Documentation
-- **Official Framework Docs**: Godot documentation, Unity manuals, Unreal Engine docs
+- **Official Engine and Framework Docs**: Summer Engine docs first, plus relevant upstream
+  API documentation, Unity manuals, and Unreal Engine docs when the project calls for them
 - **API References**: Language specifications, library documentation
 - **Community Resources**: Tutorials, Stack Overflow discussions, GitHub issues
 
@@ -36,11 +37,14 @@ Summer Engine has access to a vast library of game development knowledge that it
 
 ### Summer Engine's Research Tools
 
-**Godot's Official Documentation**
-Summer Engine can read and understand Godot's complete documentation. When you ask about something specific, Summer Engine doesn't guess - it looks up the exact API, properties, and examples.
+**Summer Engine and upstream API documentation**
+Summer Engine starts with its own documentation. For APIs inherited from its upstream
+technical base, it can also consult the relevant Godot Engine API documentation. Match that
+research to the current [compatibility reference](/reference/compatibility) instead of
+turning an upstream number into the Summer Engine product version.
 
 **Community Knowledge Base**
-Summer Engine has access to curated examples of common Godot workflows:
+Summer Engine has access to curated examples of common engine workflows:
 - How to set up different camera systems
 - Material and shader best practices
 - Physics body configurations
@@ -50,7 +54,8 @@ Summer Engine has access to curated examples of common Godot workflows:
 **Real-Time Web Research**
 Summer Engine can search current tutorials, forums, and resources:
 ```
-"Find the latest Godot 4.6 shader examples for water effects"
+"Find current Summer Engine shader examples for water effects and verify inherited APIs
+against the compatibility reference"
 "Look up multiplayer synchronization techniques"
 "Search for performance optimization tips for 2D games"
 ```
@@ -63,7 +68,7 @@ Summer Engine also learns from how you write code, what patterns you use, and ho
 When you know specific documentation exists, reference it directly:
 
 ```
-Following the Godot documentation for CharacterBody2D, 
+Following the Summer Engine API documentation for CharacterBody2D,
 implement a player controller with proper collision detection
 Use the move_and_slide() method as described in the official docs
 ```
@@ -73,9 +78,9 @@ Use the move_and_slide() method as described in the official docs
 Reference documentation patterns for consistency:
 
 ```
-Create a custom Resource class following Godot's documentation patterns
-Implement the _get_property_list() method as shown in the Godot docs
-Use @export annotations according to Godot 4 best practices
+Create a custom Resource class following Summer Engine's documented patterns
+Implement the _get_property_list() method as shown in the engine API docs
+Use @export annotations according to current GDScript best practices
 ```
 
 ## Internal Documentation Integration
@@ -106,7 +111,7 @@ Write comprehensive code documentation that Summer Engine can reference:
 ## Player controller handling movement, jumping, and basic interactions
 ## 
 ## This class manages all player input and translates it into game actions.
-## It follows the standard CharacterBody2D pattern from Godot 4.x documentation.
+## It follows the standard CharacterBody2D pattern in the Summer Engine API documentation.
 ##
 ## Dependencies:
 ## - InputManager for input handling
@@ -192,9 +197,9 @@ This will help us design the API before writing code.
 When referencing external documentation, specify versions:
 
 ```
-Using Godot 4.6 documentation for implementing custom resources
+Using the current Summer Engine compatibility reference and API docs for custom resources
 Follow the GDScript 2.0 syntax guidelines
-Reference the latest Godot networking tutorial for multiplayer setup
+Reference current engine networking documentation for multiplayer setup
 ```
 
 ### Link Documentation to Implementation
@@ -255,9 +260,9 @@ Document project setup procedures:
 # Development Environment Setup
 
 ## Prerequisites
-- Summer Engine 4.6 or later
+- A current Summer Engine release compatible with this project
 - Git for version control
-- Recommended: VS Code with Godot Tools extension
+- Recommended: VS Code with GDScript language support
 
 ## Project Setup
 1. Clone the repository: `git clone [repo-url]`

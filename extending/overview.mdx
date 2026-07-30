@@ -4,9 +4,10 @@ description: "Summer is an extensible engine. Three ways to add capability: GDSc
 icon: "blocks"
 ---
 
-Summer is a fork of Godot 4.6.1-stable with an unmodified `core/`. Everything Godot's
-extension system does, Summer does, and the extension points are the same ones you
-already know.
+Summer Engine is the product. Its current upstream technical base is Godot Engine
+4.6.1-stable with an unmodified `core/`, so extension compatibility is intentionally close
+to that pinned upstream base. Summer follows upstream continuously; 4.6.1 is a compatibility
+fact, not the Summer Engine product version.
 
 There are three of them. They differ in what they can reach, what they cost to build,
 and whether you can use them at all.
@@ -62,8 +63,8 @@ C++ compiled directly into the binary. This requires building the engine from so
 and [Summer's engine source is not public](/knowledge-base/source-status), so modules
 are not an option for external developers today.
 
-The page exists because the distinction matters when you are reading Godot
-documentation and deciding which extension mechanism a tutorial is describing.
+The page exists because the distinction matters when an upstream tutorial describes an
+extension mechanism.
 
 <Card title="Engine modules" icon="boxes" href="/extending/modules">
 What modules are, why they are internal-only in Summer, and what to use instead

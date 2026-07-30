@@ -1,12 +1,12 @@
 ---
 title: "SummerGame"
-description: "Required base class that connects your game to the Summercraft platform lifecycle."
+description: "Required base class for the Summer SDK game-lifecycle contract."
 icon: "workflow"
 ---
 
 ## What Is `SummerGame`?
 
-Every game published on Summercraft must extend `SummerGame`.
+Every Summer game submitted through the Summer SDK contract must extend `SummerGame`.
 
 `SummerGame` is the contract between your game and the platform:
 
@@ -14,6 +14,9 @@ Every game published on Summercraft must extend `SummerGame`.
 - player join/leave callbacks,
 - timer/match control helpers,
 - server-authoritative movement helper for 3D templates.
+
+This page documents an interface, not production deployment status. See
+[platform capability status](/knowledge-base/source-status#platform-capability-status).
 
 ```gdscript
 extends SummerGame

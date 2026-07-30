@@ -6,7 +6,9 @@ icon: "shield-alert"
 
 ## Why These APIs Are Blocked
 
-Summercraft runs creator-submitted code on shared infrastructure.
+Summercraft's submission policy is designed for creator code that may eventually run inside
+a shared production sandbox. The static scanner and human review enforce these boundaries
+today even though the automated production runtime sandbox is not live yet.
 
 To protect platform security and stability, submission blocks patterns that enable:
 
@@ -41,11 +43,11 @@ If a blocked pattern appears in submitted source, upload fails, even when:
 | `Thread.new` | Unmanaged concurrency can impact determinism/stability. | Use deterministic main-loop gameplay logic. |
 | `Mutex.new` | Same as above, often paired with unsafe concurrency patterns. | Keep gameplay state updates on main thread. |
 | `Semaphore.new` | Same as above; can hide blocking/synchronization hazards. | Use frame/tick-driven state machines. |
-| `StreamPeerTCP` | Raw socket networking bypasses platform control. | Use built-in Summercraft networking flow. |
-| `PacketPeerUDP` | Raw UDP bypasses platform-level auth/routing. | Use Summercraft transport and replication APIs. |
-| `TCPServer` | Opens custom server sockets inside creator game scripts. | Use platform-managed game servers only. |
-| `UDPServer` | Same as above for UDP. | Use platform-managed networking only. |
-| `WebSocketPeer` | Arbitrary socket communication channel. | Use Summercraft-managed networking. |
+| `StreamPeerTCP` | Raw socket networking bypasses the platform contract. | Use the Summer SDK transport contract when the production path is available. |
+| `PacketPeerUDP` | Raw UDP bypasses platform-level auth/routing. | Use the Summer SDK transport and replication contract. |
+| `TCPServer` | Opens custom server sockets inside creator game scripts. | Keep server ownership outside the submitted game pack. |
+| `UDPServer` | Same as above for UDP. | Keep networking outside the submitted game pack. |
+| `WebSocketPeer` | Arbitrary socket communication channel. | Use the Summer SDK transport contract when available. |
 | `.call(` | Reflection can be used to bypass direct API checks. | Explicit method calls on known safe objects. |
 | `.callv(` | Same reflection bypass risk. | Explicit typed calls. |
 | `.call_deferred(` | Reflection/deferred execution can hide unsafe paths. | Use explicit logic flow and signals. |
@@ -94,6 +96,10 @@ When generating code from prompts:
 2. Prefer SDK primitives (`Summer.data`, `Summer.economy`, score/teams/sync helpers).
 3. Keep all file/network/process interactions out of creator game scripts.
 4. Use explicit method calls instead of reflective invocation helpers.
+
+The alternatives in this table are contract guidance, not a deployment-status promise.
+Check [platform capability status](/knowledge-base/source-status#platform-capability-status)
+before promising hosting, matchmaking, transport, persistence, or economy behavior.
 
 ## Related Docs
 

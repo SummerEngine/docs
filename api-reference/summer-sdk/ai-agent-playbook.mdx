@@ -1,6 +1,6 @@
 ---
 title: "AI Agent Playbook"
-description: "Production contract for AI-generated Summercraft integrations: platform-first framing, required outputs, and acceptance checks."
+description: "Output contract for AI-generated Summer SDK integrations: Summer-first framing, required files, submission checks, and runtime-status limits."
 icon: "bot"
 ---
 
@@ -8,12 +8,14 @@ icon: "bot"
 
 Fresh AI sessions must be able to generate code that:
 
-- runs in Summercraft runtime,
+- conforms to the Summer SDK runtime contract,
 - passes static analysis + submission checks,
 - stays server-authoritative,
 - does not assume 3D template-only architecture.
 
-This page is the strict contract for that.
+This page is the strict output contract. It does not claim that player-facing playback,
+hosted servers, matchmaking, or the production runtime sandbox is live. See
+[platform capability status](/knowledge-base/source-status#platform-capability-status).
 
 <Note>
   This page is the *output contract* (what generated code must look like). The *end-to-end instruction set* — build, validate, export, and publish through the live API — is the canonical agent prompt at [/agent-setup](/agent-setup), raw at `https://docs.summerengine.com/agent-setup/prompt.md`. Point agents there first.
@@ -129,7 +131,7 @@ An AI-generated game is "done" only if all checks pass:
 5. Player path chosen explicitly (3D template or custom `SummerPlayer` subclass).
 6. No blocked APIs appear in any `.gd` file.
 7. Server-authoritative gameplay logic is on server paths.
-8. Game can be exported to `.pck` and published through the [release API](/api-reference/summer-sdk/exporting-and-uploading-your-game) (release reaches `pending_review`).
+8. Game can be exported to `.pck` and submitted through the [release API](/api-reference/summer-sdk/exporting-and-uploading-your-game) (release reaches `pending_review`).
 
 ## Safe Starter Prompt (for AI systems)
 

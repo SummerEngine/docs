@@ -1,30 +1,39 @@
 ---
-title: "Move Your Godot Project to Summer Engine in Minutes"
-description: "Bring your existing Godot 4 projects, settings, and shortcuts into Summer Engine and keep building with an AI that knows your whole game. Compatible with Godot 4."
+title: "Move an Existing Project to Summer Engine"
+description: "Open an existing upstream-compatible project in Summer Engine, verify it against the current compatibility contract, and continue as a Summer game."
 icon: "arrow-right"
 ---
 
-## Godot Migration
+## Move to Summer Engine
 
-Summer Engine is based upon the Godot codebase, allowing us to focus on making the best AI-powered game development experience while maintaining a familiar editing environment. This makes it easy to migrate your existing Godot settings to Summer Engine.
+Summer Engine is the product you install and use. Its current upstream technical base is
+Godot Engine 4.6.1, and Summer follows upstream continuously. That lineage preserves familiar
+project formats and editing concepts, but it is not the Summer Engine product version and
+does not change the identity of your Summer game.
+
+Check the generated [compatibility reference](/reference/compatibility) before migrating.
+It distinguishes measured facts from project-compatibility claims that have not yet been
+measured.
 
 ## Profile Migration
 
-If you're familiar with Godot, you'll feel right at home in Summer Engine. The interface, node system, and scripting work exactly the same way you're used to.
+If you are coming from Godot Engine, the node, scene, resource, and GDScript concepts are
+familiar. Summer Engine adds its own AI workflow and product surfaces, so verify plugins,
+editor customizations, and export behavior instead of assuming every detail is identical.
 
 ## What's the Same
 
-Everything you know about Godot still applies in Summer Engine:
+The portable foundation includes:
 
-- **Node system** - All the same nodes, properties, and relationships
-- **GDScript** - Your existing scripts work without changes  
-- **Scene structure** - `.tscn` files are byte-for-byte identical
-- **Project settings** - Same export options and configurations
-- **Asset pipeline** - Import settings and resource formats unchanged
+- **Node and scene concepts** — familiar nodes, properties, and relationships
+- **GDScript** — the default creator language in Summer Engine
+- **Text scene and resource formats** — `.tscn`, `.tres`, and `.gd`
+- **Project configuration** — `project.godot`
+- **Asset import metadata** — verify on first open because importers can change upstream
 
 ## Zero Lock-in
 
-Summer Engine projects ARE Godot projects. Identical file formats:
+Summer games use upstream-compatible project formats:
 
 | Format | Description |
 |--------|-------------|
@@ -33,23 +42,28 @@ Summer Engine projects ARE Godot projects. Identical file formats:
 | `.tres` / `.res` | Resource files |
 | `project.godot` | Project configuration |
 
-**No proprietary formats. No metadata injection.** A `git diff` between a Summer Engine-edited file and a Godot-edited file shows only your changes.
+Summer does not require a proprietary replacement for these files. Keep the project in
+version control and review the first Summer Engine import diff before accepting it.
 
 ### Team Workflows
 
-Team members can use Summer Engine and vanilla Godot interchangeably:
-- Artist opens project in Godot, edits scenes
-- Programmer opens same project in Summer Engine, uses AI assistance  
-- Both commit to the same repo
-- No merge conflicts from tooling differences
+Mixed-editor teams can share source formats, but should pin compatible versions and review
+generated import metadata:
+
+- a collaborator may open the project in the compatible upstream editor,
+- a creator opens the same repository in Summer Engine,
+- both commit project files to the same repository,
+- the team resolves real file changes through its normal review process.
 
 ### Worst Case
 
-Summer Engine disappears tomorrow? Your project opens in Godot 4 without modification. You lose AI assistance. Your game, code, and assets are unaffected.
+Your GDScript, text scenes, resources, and assets remain in documented formats. Opening them
+in another compatible editor may require an import pass and will not provide Summer-only AI
+or platform surfaces.
 
 ## What's Different
 
-Summer Engine adds AI capabilities on top of the familiar Godot experience:
+Summer Engine adds its own AI-native workflow to the familiar technical foundation:
 
 ### AI Chat Panel
 
@@ -68,12 +82,12 @@ Instead of manually clicking through menus:
 
 ## Project Compatibility
 
-Your existing Godot projects work in Summer Engine:
+To try an existing Godot Engine project in Summer Engine:
 
 <AccordionGroup>
   <Accordion icon="folder-open" title="Opening Godot projects">
     1. **File → Open Project** (or use Project Manager)
-    2. **Browse to your Godot project folder**
+    2. **Browse to the existing project folder**
     3. **Select project.godot file**
     4. **Click "Open"**
     
@@ -93,15 +107,20 @@ Your existing Godot projects work in Summer Engine:
 
 <AccordionGroup>
   <Accordion icon="question" title="Will my Godot plugins work?">
-    Most Godot plugins work in Summer Engine without changes. However, plugins that modify the editor interface may need updates for AI integration.
+    Pure GDScript addons are the safest case. Native extensions and editor integrations are
+    version-sensitive; use [Extending Summer](/extending/overview) before enabling them.
   </Accordion>
   
   <Accordion icon="question" title="Can I go back to Godot?">
-    Yes! Summer Engine projects are standard Godot projects. You can open them in regular Godot anytime.
+    The source formats are upstream-compatible. Pin the compatible upstream version, commit
+    first, and expect an import pass; Summer-only AI and platform surfaces will not be present.
   </Accordion>
   
   <Accordion icon="question" title="What about version compatibility?">
-    Summer Engine supports Godot 4.x project formats. Projects from Godot 3.x will need the standard Godot 3→4 migration process.
+    The current upstream technical base is 4.6.1 and the planned next base is 4.7.1. Summer
+    follows upstream continuously. The project minimum is currently unmeasured, so do not
+    replace that fact with a blanket “Godot 4.x” compatibility promise. See
+    [Compatibility & upstream](/reference/compatibility).
   </Accordion>
 </AccordionGroup>
 
