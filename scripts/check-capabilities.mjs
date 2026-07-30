@@ -3,6 +3,7 @@
 import { readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+import { scanCapabilityClaims } from "./docs-policy-core.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const policy = JSON.parse(readFileSync(join(ROOT, "scripts/docs-capability-policy.json"), "utf8"));
@@ -37,6 +38,12 @@ const routeToFile = (route) => (route === "index" ? "index.mdx" : `${route.repla
 const publicFiles = navigation.map(routeToFile);
 const publicSet = new Set(publicFiles);
 const canonicalPage = policy.canonicalPage;
+const disclosureIndicators = (policy.scaffoldDisclosureIndicators ?? []).map(
+  (pattern) => new RegExp(pattern),
+);
+const disclosureExemptions = new Map(
+  (policy.scaffoldDisclosureExemptions ?? []).map((entry) => [entry.file, entry]),
+);
 
 if (!publicSet.has(canonicalPage)) {
   errors.push(`canonical capability page is not discoverable in public navigation: ${canonicalPage}`);
@@ -59,6 +66,7 @@ for (const term of policy.requiredCanonicalTerms ?? []) {
 }
 
 let canonicalMarkers = 0;
+let statusTables = 0;
 for (const file of publicFiles) {
   let raw;
   try {
@@ -69,26 +77,62 @@ for (const file of publicFiles) {
   }
 
   if (raw.includes(policy.canonicalFrontmatter)) canonicalMarkers++;
-  const lower = raw.toLocaleLowerCase("en-US");
-  for (const claim of policy.blockedClaims ?? []) {
-    if (lower.includes(String(claim.match).toLocaleLowerCase("en-US"))) {
-      errors.push(`${file} [blocked-capability-claim] ${JSON.stringify(claim.match)} — ${claim.reason}`);
+  const ownsPlatformStatus =
+    file === canonicalPage ||
+    /^(?:agent-setup(?:\/|\.mdx)|api-reference\/summer-sdk(?:\/|\.mdx)|knowledge-base\/multiplayer\.mdx)/.test(
+      file,
+    );
+  if (ownsPlatformStatus && /^\|\s*Capability\s*\|\s*Status\s*\|/im.test(raw)) {
+    statusTables++;
+    if (file !== canonicalPage) {
+      errors.push(`${file} defines a secondary capability/status table; link to ${canonicalPage} instead`);
     }
+  }
+
+  for (const claim of scanCapabilityClaims(raw, policy)) {
+    errors.push(
+      `${file}:${claim.line} [${claim.capability}:${claim.state}] ${JSON.stringify(claim.text)} — ${claim.help}`,
+    );
+  }
+
+  const hasScaffoldContract = disclosureIndicators.some((pattern) => pattern.test(raw));
+  const exemption = disclosureExemptions.get(file);
+  if (
+    hasScaffoldContract &&
+    file !== canonicalPage &&
+    !raw.includes("knowledge-base/source-status") &&
+    !exemption
+  ) {
+    errors.push(`${file} names scaffolded SDK/runtime surfaces but does not link to ${canonicalPage}`);
   }
 }
 
 if (canonicalMarkers !== 1) {
   errors.push(`expected exactly one canonical capability marker across public routes, found ${canonicalMarkers}`);
 }
+if (statusTables !== 1) {
+  errors.push(`expected exactly one Capability/Status table across public routes, found ${statusTables}`);
+}
 
-for (const file of policy.requiredDisclosures ?? []) {
-  if (!publicSet.has(file)) {
-    errors.push(`required capability-disclosure file is not a public navigation route: ${file}`);
+for (const [file, exemption] of disclosureExemptions) {
+  if (!publicSet.has(file)) errors.push(`scaffold disclosure exemption is not a public route: ${file}`);
+  for (const field of ["owner", "reason"]) {
+    if (typeof exemption[field] !== "string" || !exemption[field].trim()) {
+      errors.push(`scaffold disclosure exemption ${file} is missing ${field}`);
+    }
+  }
+}
+
+for (const requirement of policy.requiredRouteTerms ?? []) {
+  if (!publicSet.has(requirement.file)) {
+    errors.push(`required capability-policy route is not public: ${requirement.file}`);
     continue;
   }
-  const raw = readFileSync(join(ROOT, file), "utf8");
-  if (!raw.includes("knowledge-base/source-status")) {
-    errors.push(`${file} must link to the canonical platform capability status`);
+  const raw = readFileSync(join(ROOT, requirement.file), "utf8");
+  for (const term of requirement.terms ?? []) {
+    if (!raw.includes(term)) {
+      errors.push(`${requirement.file} is missing required policy term ${JSON.stringify(term)}`);
+    }
   }
 }
 
@@ -100,5 +144,5 @@ if (errors.length) {
 
 console.log(
   `capability guard: PASS ${publicFiles.length} public routes, one canonical status source, ` +
-    `${(policy.blockedClaims ?? []).length} blocked overclaims`,
+    `${(policy.claimCapabilities ?? []).length} semantic capability policies, route-aware scaffold disclosures`,
 );

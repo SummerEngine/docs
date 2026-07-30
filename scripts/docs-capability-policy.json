@@ -5,49 +5,162 @@
   "requiredCanonicalTerms": [
     "## Platform capability status",
     "| Create Summer game records | **Live** |",
+    "| Browser submission and static scanner | **Live** |",
     "| Summer SDK gameplay and subsystem interfaces | **Scaffold** |",
     "| Browser or desktop-shell play for uploaded games | **Planned** |",
     "| Hosted dedicated game servers | **Planned** |",
     "| Automatic matchmaking and relay | **Planned** |",
     "| Automated production runtime sandbox | **Planned** |"
   ],
-  "requiredDisclosures": [
-    "agent-setup.mdx",
-    "agent-setup/prompt.mdx",
-    "api-reference/summer-sdk.mdx",
-    "api-reference/summer-sdk/submission-guide.mdx",
-    "api-reference/summer-sdk/exporting-and-uploading-your-game.mdx",
-    "api-reference/summer-sdk/guides/making-a-2d-game-multiplayer.mdx",
-    "knowledge-base/multiplayer.mdx"
+  "negativeClaimPatterns": [
+    "\\bnot\\b",
+    "\\bno\\b",
+    "\\bplanned\\b",
+    "\\bscaffold(?:ed)?\\b",
+    "\\bfuture\\b",
+    "\\bcontract\\b",
+    "\\bexample\\b",
+    "\\bintended\\b",
+    "\\bcoming\\b",
+    "\\bnot yet\\b",
+    "\\bcannot\\b",
+    "\\bcan't\\b",
+    "\\bisn't\\b",
+    "\\baren't\\b",
+    "\\bdoes not\\b",
+    "\\bdo not\\b",
+    "\\bwithout\\b",
+    "\\bbeing built\\b",
+    "\\bin progress\\b",
+    "\\bunder implementation\\b",
+    "\\bwhen (?:it is )?available\\b"
   ],
-  "blockedClaims": [
+  "claimCapabilities": [
     {
-      "match": "are published and played",
-      "reason": "Uploaded Summer games are not playable on the platform yet."
+      "id": "uploaded-game-playback",
+      "label": "Uploaded-game browser and desktop-shell playback",
+      "state": "Planned",
+      "subjectPatterns": [
+        "\\buploaded\\s+Summer\\s+games?\\b",
+        "\\bbrowser\\s+(?:or\\s+desktop[- ]shell\\s+)?play(?:back)?\\b",
+        "\\bdesktop[- ]shell\\s+play(?:back)?\\b",
+        "\\bplayer-facing\\s+(?:play|playback|launch)\\b"
+      ],
+      "positivePatterns": [
+        "\\b(?:players?\\s+)?can\\s+(?:launch|play)\\b",
+        "\\b(?:playback|play surfaces?|uploaded games?)\\b.{0,100}\\b(?:is|are)\\s+(?:live|available|deployed|playable)\\b",
+        "\\bplayable\\b.{0,50}\\b(?:today|now|currently)\\b"
+      ]
     },
     {
-      "match": "managed multiplayer backend",
-      "reason": "The hosted multiplayer production path is not live."
+      "id": "managed-matchmaking",
+      "label": "Managed matchmaking and relay",
+      "state": "Planned",
+      "subjectPatterns": [
+        "\\bmatchmaking\\b",
+        "\\brelay(?: service| server)?s?\\b"
+      ],
+      "positivePatterns": [
+        "\\b(?:matchmaking|relay(?: service| server)?s?)\\b.{0,100}\\b(?:is|are)\\s+(?:live|available|deployed|managed)\\b",
+        "\\b(?:provides?|includes?|offers?|handles?|manages?)\\b.{0,100}\\b(?:matchmaking|relay)\\b"
+      ]
     },
     {
-      "match": "server-authoritative networking and matchmaking infrastructure",
-      "reason": "The SDK contract must not be presented as deployed matchmaking."
+      "id": "hosted-game-servers",
+      "label": "Hosted dedicated game servers",
+      "state": "Planned",
+      "subjectPatterns": [
+        "\\b(?:hosted|managed|dedicated)\\b.{0,50}\\b(?:game\\s+)?servers?\\b",
+        "\\bserver hosting\\b"
+      ],
+      "positivePatterns": [
+        "\\b(?:is|are)\\s+(?:live|available|deployed|included|managed)\\b",
+        "\\b(?:provides?|includes?|offers?|handles?|manages?)\\b.{0,100}\\b(?:hosting|servers?)\\b"
+      ]
     },
     {
-      "match": "automatic matchmaking, persistence, and server hosting",
-      "reason": "Matchmaking and hosted servers are planned, not live."
+      "id": "production-sandbox",
+      "label": "Automated production runtime sandbox",
+      "state": "Planned",
+      "subjectPatterns": [
+        "\\b(?:automated\\s+)?(?:production\\s+)?runtime sandbox\\b",
+        "\\bautomated sandbox\\b"
+      ],
+      "positivePatterns": [
+        "\\b(?:is|are)\\s+(?:live|available|deployed|running|enabled)\\b",
+        "\\b(?:runs?|executes?|scans?)\\b.{0,80}\\b(?:submitted|uploaded|creator)\\b"
+      ]
     },
     {
-      "match": "streamlined submission, review, and deployment flow",
-      "reason": "Submission and review are live; deployment and play are not."
+      "id": "summer-multiplayer-transport",
+      "label": "SummerMultiplayerPeer production transport",
+      "state": "Scaffold",
+      "subjectPatterns": [
+        "\\bSummerMultiplayerPeer\\b",
+        "\\bproduction transport\\b"
+      ],
+      "positivePatterns": [
+        "\\b(?:is|are)\\s+(?:live|available|deployed|implemented|working)\\b",
+        "\\b(?:provides?|handles?|runs?)\\b.{0,80}\\b(?:transport|networking|replication)\\b"
+      ]
     },
     {
-      "match": "the game is live on the platform",
-      "reason": "Published catalog status does not make an uploaded game playable."
+      "id": "production-runtime",
+      "label": "Production gameplay runtime",
+      "state": "Planned",
+      "subjectPatterns": [
+        "\\b(?:production|platform|Summercraft|real)\\s+runtime\\b",
+        "\\breview process\\b"
+      ],
+      "positivePatterns": [
+        "\\b(?:runtime|platform|review process)\\b.{0,120}\\b(?:runs?|loads?|executes?|enforces?|refuses?|provides?|assigns?|connects?)\\b",
+        "\\b(?:runs?|loads?|executes?)\\b.{0,100}\\b(?:uploaded|approved|creator)\\s+(?:games?|packs?|code)\\b"
+      ]
     },
     {
-      "match": "approval publishes the game",
-      "reason": "Describe approval as published catalog status and state that playback is not live."
+      "id": "hosted-persistence-economy",
+      "label": "Hosted persistence and economy",
+      "state": "Scaffold",
+      "subjectPatterns": [
+        "\\bSummer\\.(?:data|economy)\\b",
+        "\\bpersistence backend\\b",
+        "\\beconomy rail\\b",
+        "\\bbackend flush\\b",
+        "\\bauto-?save\\b"
+      ],
+      "positivePatterns": [
+        "\\b(?:provides?|handles?|persists?|flush(?:es|ed)?|auto-?saves?|loads?|stores?)\\b.{0,100}\\b(?:data|progress|backend|balance|economy|player)\\b",
+        "\\bbackend flush\\b.{0,80}\\b(?:is|are)\\s+(?:handled|live|automatic)\\b",
+        "\\bSummer\\.(?:data|economy)\\b.{0,100}\\b(?:is|are)\\s+(?:live|available|deployed)\\b"
+      ]
+    }
+  ],
+  "scaffoldDisclosureIndicators": [
+    "\\bSummerMultiplayerPeer\\b",
+    "\\bSummerGame\\b",
+    "\\bSummerPlayer\\b",
+    "\\bSummerCharacter3D\\b",
+    "\\bSummer\\.(?:data|economy|teams|score|input|ui|audio)\\b",
+    "\\bset_synced\\b",
+    "\\bget_synced\\b"
+  ],
+  "scaffoldDisclosureExemptions": [
+    {
+      "file": "changelog/overview.mdx",
+      "owner": "docs-changelog",
+      "reason": "Historical release notes name SDK symbols but do not serve as current capability reference."
+    }
+  ],
+  "requiredRouteTerms": [
+    {
+      "file": "api-reference/summer-sdk/production-launch-runbook.mdx",
+      "terms": [
+        "Recommended release API",
+        "1 KiB–512 MiB",
+        "Browser submission",
+        "up to 2 GB",
+        "does not raise the release API's"
+      ]
     }
   ]
 }

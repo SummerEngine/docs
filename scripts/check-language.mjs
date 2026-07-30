@@ -3,6 +3,7 @@
 import { existsSync, readFileSync, readdirSync } from "node:fs";
 import { dirname, join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
+import { scanCompatibilityClaims, scanIdentityText } from "./docs-policy-core.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ALLOWLIST_PATH = join(ROOT, "scripts/docs-language-allowlist.json");
@@ -109,27 +110,6 @@ function frontmatterMetadata(raw) {
 
 const rules = [
   {
-    id: "godot-game",
-    pattern: /\bGodot games?\b/gi,
-    help: "Use Summer game in creator-facing prose; keep Godot only in an allowlisted technical or migration context.",
-  },
-  {
-    id: "default-godot-45",
-    pattern:
-      /(?:\b(?:install|download|require|required|prerequisite|use|run)\b.{0,80}\bGodot\s+4\.5\b|\bGodot\s+4\.5\b.{0,80}\b(?:install|download|required|prerequisite|use|run)\b)/gi,
-    help: "Default onboarding must install and use Summer Engine, never plain Godot 4.5.",
-  },
-  {
-    id: "summer-godot-product",
-    pattern: /\bSummer\s*\/\s*Godot\b/gi,
-    help: "Call the creator product Summer Engine. Use upstream terminology only in a narrow compatibility context.",
-  },
-  {
-    id: "godot-sdk",
-    pattern: /\bGodot SDK\b/gi,
-    help: "The creator-facing platform contract is the Summer SDK.",
-  },
-  {
     id: "lowercase-gdscript",
     pattern: /\bgdscript\b/g,
     help: "Spell the language GDScript in prose; lowercase is reserved for fenced-code tags, paths, and identifiers.",
@@ -139,6 +119,19 @@ const rules = [
 const exceptions = allowlist.exceptions ?? [];
 const usedExceptions = new Map(exceptions.map((exception, index) => [index, 0]));
 const errors = [];
+
+function consumeException(rule, file, match) {
+  const exceptionIndex = exceptions.findIndex(
+    (exception, index) =>
+      exception.rule === rule &&
+      exception.file === file &&
+      exception.match === match &&
+      usedExceptions.get(index) < exception.maxOccurrences,
+  );
+  if (exceptionIndex < 0) return false;
+  usedExceptions.set(exceptionIndex, usedExceptions.get(exceptionIndex) + 1);
+  return true;
+}
 
 if (!currentFeature) {
   errors.push("compatibility/summer-engine.json is missing a valid upstreamBase.current.version");
@@ -179,16 +172,17 @@ for (const absolute of walkMdx(ROOT)) {
     }
   }
 
-  const featurePattern = /config\/features\s*=\s*PackedStringArray\(\s*"(\d+\.\d+)"/g;
-  for (const match of raw.matchAll(featurePattern)) {
-    const line = raw.slice(0, match.index).split("\n").length;
-    if (match[1] !== currentFeature) {
-      errors.push(
-        `${file}:${line} [stale-project-feature] ${JSON.stringify(match[0])} — ` +
-          `project/config examples must use the current upstream feature tag ${currentFeature}; ` +
-          "Summer Engine follows upstream continuously.",
-      );
-    }
+  for (const violation of scanIdentityText(raw, { currentFeature })) {
+    if (consumeException(violation.rule, file, violation.match)) continue;
+    errors.push(
+      `${file}:${violation.line} [${violation.rule}] ${JSON.stringify(violation.match)} — ${violation.help}`,
+    );
+  }
+  for (const violation of scanCompatibilityClaims(raw)) {
+    if (consumeException(violation.rule, file, violation.match)) continue;
+    errors.push(
+      `${file}:${violation.line} [${violation.rule}] ${JSON.stringify(violation.match)} — ${violation.help}`,
+    );
   }
 
   for (let lineIndex = 0; lineIndex < lines.length; lineIndex++) {
@@ -196,17 +190,7 @@ for (const absolute of walkMdx(ROOT)) {
     for (const rule of rules) {
       rule.pattern.lastIndex = 0;
       for (const match of line.matchAll(rule.pattern)) {
-        const exceptionIndex = exceptions.findIndex(
-          (exception, index) =>
-            exception.rule === rule.id &&
-            exception.file === file &&
-            exception.match === match[0] &&
-            usedExceptions.get(index) < exception.maxOccurrences,
-        );
-        if (exceptionIndex >= 0) {
-          usedExceptions.set(exceptionIndex, usedExceptions.get(exceptionIndex) + 1);
-          continue;
-        }
+        if (consumeException(rule.id, file, match[0])) continue;
         errors.push(`${file}:${lineIndex + 1} [${rule.id}] ${JSON.stringify(match[0])} — ${rule.help}`);
       }
     }
@@ -254,7 +238,8 @@ if (errors.length) {
 }
 
 console.log(
-  `language guard: PASS ${navigation.length} public routes, ${rules.length} targeted rules, ` +
+  `language guard: PASS ${navigation.length} public routes, raw creator prompts/code/config + prose, ` +
+    `${rules.length} prose-only rule, ` +
     `${exceptions.length} owned exceptions, ${(allowlist.requiredTerms ?? []).length} canonical routes, ` +
     `project/config feature tag ${currentFeature}`,
 );

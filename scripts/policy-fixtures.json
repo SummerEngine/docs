@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "languageReject": [
+    {
+      "name": "fenced Godot onboarding identity",
+      "text": "```text\nInstall Godot 4.5 and build a Godot game with the Godot SDK.\n```",
+      "rules": ["default-godot-45", "godot-game", "godot-sdk"]
+    },
+    {
+      "name": "stale fenced project feature",
+      "text": "```ini\nconfig/features=PackedStringArray(\"4.5\")\n```",
+      "rules": ["stale-project-feature"]
+    },
+    {
+      "name": "upstream version used as product release",
+      "text": "Install Summer Engine 4.6.1 and start building.",
+      "rules": ["upstream-as-product-version"]
+    }
+  ],
+  "languageAllow": [
+    {
+      "name": "narrow upstream compatibility fact",
+      "text": "Summer Engine's current upstream technical base is Godot Engine 4.6.1."
+    },
+    {
+      "name": "literal project filename and current feature",
+      "text": "```ini\n# project.godot\nconfig/features=PackedStringArray(\"4.6\")\n```"
+    },
+    {
+      "name": "godot-cpp technical literal",
+      "text": "Build the extension with the godot-cpp bindings pinned to the compatible ABI."
+    }
+  ],
+  "compatibilityReject": [
+    {
+      "name": "FAQ perfect compatibility mutation",
+      "text": "They work perfectly. All scenes, scripts, and plugins work as before.",
+      "rules": ["blanket-works-perfectly", "blanket-all-assets"]
+    },
+    {
+      "name": "zero-conversion mutation",
+      "text": "Open any existing project. No conversion required.",
+      "rules": ["blanket-no-conversion"]
+    },
+    {
+      "name": "GodotSteam universal tutorial mutation",
+      "text": "GodotSteam works identically in Summer Engine and all tutorials apply.",
+      "rules": ["blanket-works-perfectly", "blanket-all-assets"]
+    }
+  ],
+  "compatibilityAllow": [
+    {
+      "name": "measured compatibility caveat",
+      "text": "Familiar formats reduce migration work, but compatibility ranges are unmeasured. Commit first and test plugins, imports, and exports."
+    }
+  ],
+  "capabilityReject": [
+    {
+      "name": "browser playback and matchmaking mutation",
+      "text": "Players can launch uploaded Summer games in the browser today, and managed matchmaking is live.",
+      "capabilities": ["uploaded-game-playback", "managed-matchmaking"]
+    },
+    {
+      "name": "runtime enforcement mutation",
+      "text": "The production runtime loads every approved pack and enforces the manifest automatically.",
+      "capabilities": ["production-runtime"]
+    },
+    {
+      "name": "persistence flush mutation",
+      "text": "Summer.data autosaves player progress and the backend flush is handled for you.",
+      "capabilities": ["hosted-persistence-economy"]
+    }
+  ],
+  "capabilityAllow": [
+    {
+      "name": "planned playback disclosure",
+      "text": "Browser playback for uploaded games is Planned and is not production-live."
+    },
+    {
+      "name": "scaffolded runtime disclosure",
+      "text": "This is a scaffolded runtime contract example; no production runtime currently loads uploaded games."
+    },
+    {
+      "name": "live submission claim",
+      "text": "The browser submission page and static scanner are Live."
+    }
+  ]
+}
