@@ -39,19 +39,19 @@ const identityRules = [
   {
     id: "unqualified-broad-platform-export",
     pattern:
-      /\bexport\b.{0,120}\b(?:Steam|itch\.io)\b.{0,120}\b(?:mobile|consoles?)\b/gi,
+      /^(?=.{0,300}\b(?:export|publish)\b)(?=.{0,300}\bSteam\b)(?=.{0,300}\bitch\.io\b)(?=.{0,300}\b(?:mobile|consoles?)\b).+$/gim,
     help: "Name the installed target templates/toolchains and keep store submission creator-controlled.",
   },
   {
     id: "no-code-complete-game",
     pattern:
-      /(?:\bno cod(?:e|ing) required\b.{0,120}\b(?:build|make|create)\b.{0,40}\bcomplete games?\b|\b(?:build|make|create)\b.{0,40}\bcomplete games?\b.{0,120}\bno cod(?:e|ing) required\b)/gi,
+      /^(?=.{0,240}\b(?:build|make|create)\b.{0,60}\bcomplete games?\b)(?=.{0,240}\b(?:without writing code|no cod(?:e|ing) (?:needed|required))\b).+$/gim,
     help: "Natural-language generation still requires creator review, testing, and integration.",
   },
   {
     id: "fixed-24h-model-promise",
     pattern:
-      /\b(?:all|every)\b.{0,100}\b(?:AI|image|3D|video|models?|breakthrough)\b.{0,120}\b(?:within|in)\s+24\s+hours?\b/gi,
+      /^(?=.{0,300}\b(?:all|every)\b)(?=.{0,300}\b(?:AI|image|3D|video|models?|breakthrough)\b)(?=.{0,300}\b(?:within|in)?\s*(?:24\s+hours?|one day)\b).+$/gim,
     help: "Document evaluated provider availability instead of promising every new model on a fixed schedule.",
   },
 ];
@@ -124,7 +124,8 @@ const compatibilityRules = [
   },
   {
     id: "blanket-open-and-continue",
-    pattern: /\bopen\b.{0,50}\bprojects?\b.{0,50}\bcontinue working\b/gi,
+    pattern:
+      /\bopen\b.{0,60}\b(?:existing\s+)?projects?\b.{0,80}\b(?:continue working|keep (?:building|working))\b/gi,
     help: "Opening an existing project is a compatibility evaluation; require a committed-copy test and explicit checks.",
   },
   {

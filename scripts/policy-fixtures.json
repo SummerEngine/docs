@@ -27,8 +27,33 @@
       "rules": ["no-code-complete-game"]
     },
     {
+      "name": "without-code complete game paraphrase",
+      "text": "Build a complete game without writing code.",
+      "rules": ["no-code-complete-game"]
+    },
+    {
+      "name": "no-code-needed complete game paraphrase",
+      "text": "No code needed: make complete games from a prompt.",
+      "rules": ["no-code-complete-game"]
+    },
+    {
+      "name": "publish platform order paraphrase",
+      "text": "Publish to mobile, consoles, Steam, and itch.io.",
+      "rules": ["unqualified-broad-platform-export"]
+    },
+    {
+      "name": "export platform order paraphrase",
+      "text": "Export your game to consoles, mobile, Steam, and itch.io.",
+      "rules": ["unqualified-broad-platform-export"]
+    },
+    {
       "name": "fixed model integration promise",
       "text": "We integrate every new AI image, 3D, and video breakthrough within 24 hours.",
+      "rules": ["fixed-24h-model-promise"]
+    },
+    {
+      "name": "one-day model integration paraphrase",
+      "text": "We add every new image and 3D model in one day.",
       "rules": ["fixed-24h-model-promise"]
     }
   ],
@@ -85,6 +110,11 @@
     {
       "name": "open and continue mutation",
       "text": "Open your project and continue working with AI assistance.",
+      "rules": ["blanket-open-and-continue"]
+    },
+    {
+      "name": "open and keep building mutation",
+      "text": "Open an existing project and keep building with AI.",
       "rules": ["blanket-open-and-continue"]
     }
   ],
