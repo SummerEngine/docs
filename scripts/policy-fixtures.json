@@ -72,6 +72,18 @@
     {
       "name": "measured compatibility caveat",
       "text": "Familiar formats reduce migration work, but compatibility ranges are unmeasured. Commit first and test plugins, imports, and exports."
+    },
+    {
+      "name": "negated universal addon compatibility",
+      "text": "Not all Godot 4 addons work unchanged."
+    },
+    {
+      "name": "negated identical compatibility",
+      "text": "GodotSteam does not work identically across every Summer release."
+    },
+    {
+      "name": "negated complete plugin compatibility",
+      "text": "No plugin is completely compatible without testing."
     }
   ],
   "capabilityReject": [
@@ -129,6 +141,51 @@
       "name": "persistence flush mutation",
       "text": "Summer.data autosaves player progress and the backend flush is handled for you.",
       "capabilities": ["hosted-persistence-economy"]
+    },
+    {
+      "name": "planned marker cannot suppress contradictory matchmaking clause",
+      "text": "Matchmaking remains Planned, yet it is operational now.",
+      "capabilities": ["managed-matchmaking"]
+    },
+    {
+      "name": "web client playable creator build paraphrase",
+      "text": "Uploaded creator builds are playable in the web client now.",
+      "capabilities": ["uploaded-game-playback"]
+    },
+    {
+      "name": "automatic lobby pairing paraphrase",
+      "text": "The platform automatically pairs players into lobbies today.",
+      "capabilities": ["managed-matchmaking"]
+    },
+    {
+      "name": "cloud game provisioning paraphrase",
+      "text": "Cloud game instances are provisioned for every release.",
+      "capabilities": ["hosted-game-servers"]
+    },
+    {
+      "name": "production uploaded-pack isolation paraphrase",
+      "text": "The platform isolates and runs every uploaded pack in production.",
+      "capabilities": ["production-sandbox"]
+    },
+    {
+      "name": "live replication peer paraphrase",
+      "text": "Summer's multiplayer peer provides live replication.",
+      "capabilities": ["summer-multiplayer-transport"]
+    },
+    {
+      "name": "approved packs run on Summercraft paraphrase",
+      "text": "Approved packs run on Summercraft today.",
+      "capabilities": ["production-runtime"]
+    },
+    {
+      "name": "verb-first approved-pack runtime paraphrase",
+      "text": "We execute approved packs on Summercraft today.",
+      "capabilities": ["production-runtime"]
+    },
+    {
+      "name": "durable inter-session Summer storage paraphrase",
+      "text": "Summer storage keeps player saves durably between sessions.",
+      "capabilities": ["hosted-persistence-economy"]
     }
   ],
   "capabilityAllow": [
@@ -151,6 +208,18 @@
     {
       "name": "explicit planned matchmaking",
       "text": "Matchmaking status is Planned; no production service is available."
+    },
+    {
+      "name": "truthful persistence negation",
+      "text": "Summer storage never writes player saves to durable storage."
+    },
+    {
+      "name": "truthful runtime negation",
+      "text": "The Summercraft runtime never executes approved packs."
+    },
+    {
+      "name": "truthful transport negation",
+      "text": "Summer's multiplayer peer cannot power production networking."
     }
   ]
 }

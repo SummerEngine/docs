@@ -112,27 +112,27 @@ const compatibilityRules = [
 
 export function scanCompatibilityClaims(raw) {
   const errors = [];
-  for (const unit of claimUnits(raw)) {
-    for (const rule of compatibilityRules) {
-      rule.pattern.lastIndex = 0;
-      for (const match of unit.text.matchAll(rule.pattern)) {
-        const nonUniversalPossibility =
-          /\bmight\s+work\s+perfectly\b/i.test(unit.text) &&
-          /\b(?:but|however|yet)\b/i.test(unit.text);
-        if (nonUniversalPossibility) continue;
-        errors.push({
-          rule: rule.id,
-          line: unit.line,
-          match: match[0],
-          help: rule.help,
-        });
+  for (const claim of claimGroups(raw)) {
+    for (const clause of claim.clauses) {
+      for (const rule of compatibilityRules) {
+        rule.pattern.lastIndex = 0;
+        for (const match of clause.matchAll(rule.pattern)) {
+          if (isLocallyNegated(clause, match.index)) continue;
+          if (isLocallyModal(clause, match.index)) continue;
+          errors.push({
+            rule: rule.id,
+            line: claim.line,
+            match: match[0],
+            help: rule.help,
+          });
+        }
       }
     }
   }
   return errors;
 }
 
-function claimUnits(raw) {
+function sentenceUnits(raw) {
   const lines = maskComments(raw).split("\n");
   const visible = lines.map(() => "");
   let inFrontmatter = lines[0]?.trim() === "---";
@@ -192,56 +192,173 @@ function claimUnits(raw) {
   return segments;
 }
 
-const compile = (patterns) => patterns.map((pattern) => new RegExp(pattern, "i"));
-const wordStems = (value) => (value.toLocaleLowerCase("en-US").match(/[a-z0-9_.-]+/g) ?? []);
-const hasStem = (words, rawStem) => {
-  const stem = rawStem.toLocaleLowerCase("en-US");
-  const last = stem.at(-1);
-  const variants = new Set([
-    stem,
-    `${stem}s`,
-    `${stem}es`,
-    `${stem}ed`,
-    `${stem}ing`,
-    `${stem}ly`,
-    `${stem}ally`,
-    `${stem}${last}ing`,
-  ]);
-  if (stem.endsWith("e")) {
-    variants.add(`${stem.slice(0, -1)}ing`);
-    variants.add(`${stem}d`);
+const splitClauses = (text) =>
+  text
+    .split(
+      /\s*(?:;|,\s*(?:but|yet|however|nevertheless)\b|\b(?:but|however|nevertheless)\b|(?<!\bnot\s)(?<!n't\s)\byet\b)\s*/i,
+    )
+    .map((clause) => clause.trim())
+    .filter(Boolean);
+
+function claimGroups(raw) {
+  return sentenceUnits(raw).map((sentence) => ({
+    line: sentence.line,
+    text: sentence.text,
+    clauses: splitClauses(sentence.text),
+  }));
+}
+
+const LOCAL_NEGATION =
+  /(?:^|\b)(?:not|never|cannot|can't|couldn't|doesn't|does\s+not|do\s+not|did\s+not|isn't|is\s+not|aren't|are\s+not|won't|will\s+not|must\s+not|no|without|rather\s+than|instead\s+of)(?:\s+[\w'’.-]+){0,7}\s*$/i;
+const LOCAL_MODAL = /(?:^|\b)(?:may|might|could)(?:\s+[\w'’.-]+){0,4}\s*$/i;
+
+function localAssertionPrefix(text, assertionIndex) {
+  const prefix = text
+    .slice(0, assertionIndex)
+    .replace(/[,:[\](){}]/g, " ")
+    .replace(/\s+/g, " ");
+  const scopes = prefix.split(
+    /\b(?:and|but|however|nevertheless|while|whereas|then)\b|(?<!\bnot\s)(?<!n't\s)\byet\b/i,
+  );
+  return scopes.at(-1);
+}
+
+function isLocallyNegated(text, assertionIndex) {
+  return LOCAL_NEGATION.test(localAssertionPrefix(text, assertionIndex));
+}
+
+function isLocallyModal(text, assertionIndex) {
+  return LOCAL_MODAL.test(localAssertionPrefix(text, assertionIndex));
+}
+
+const escapeRegex = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const irregularVerbForms = new Map([
+  ["keep", ["keep", "keeps", "kept", "keeping"]],
+  ["run", ["run", "runs", "ran", "running"]],
+  ["write", ["write", "writes", "wrote", "written", "writing"]],
+]);
+
+function regularVerbForms(verb) {
+  const forms = new Set([verb]);
+  if (verb.endsWith("e")) {
+    forms.add(`${verb}s`);
+    forms.add(`${verb}d`);
+    forms.add(`${verb.slice(0, -1)}ing`);
+  } else if (/(?:s|x|z|ch|sh)$/.test(verb)) {
+    forms.add(`${verb}es`);
+    forms.add(`${verb}ed`);
+    forms.add(`${verb}ing`);
+  } else if (verb.endsWith("y") && !/[aeiou]y$/.test(verb)) {
+    forms.add(`${verb.slice(0, -1)}ies`);
+    forms.add(`${verb.slice(0, -1)}ied`);
+    forms.add(`${verb}ing`);
+  } else {
+    forms.add(`${verb}s`);
+    forms.add(`${verb}ed`);
+    forms.add(`${verb}ing`);
   }
-  return words.some((word) => variants.has(word));
+  return [...forms];
+}
+
+const verbPattern = (verb) => {
+  const forms = irregularVerbForms.get(verb) ?? regularVerbForms(verb);
+  return new RegExp(`\\b(?:${forms.map(escapeRegex).join("|")})\\b`, "gi");
 };
-const matchesTokenFamilies = (words, families) =>
-  (families ?? []).some((family) => family.every((stem) => hasStem(words, stem)));
+
+const compile = (patterns, flags = "i") =>
+  (patterns ?? []).map((pattern) => new RegExp(pattern, flags));
+
+function compileCapability(capability) {
+  return {
+    ...capability,
+    aliasPatterns: compile(capability.subjectAliases),
+    assertionPatterns: [
+      ...compile(capability.assertionPatterns, "gi"),
+      ...compile(capability.assertionTerms, "gi"),
+      ...(capability.assertionVerbs ?? []).map(verbPattern),
+    ],
+    statusPatterns: compile(capability.statusTerms),
+    disclaimerPatterns: compile(capability.disclaimerPatterns),
+    assertionBeforeSubjectPatterns: compile(capability.assertionBeforeSubjectPatterns),
+  };
+}
+
+function clauseHasAlias(clause, capability) {
+  return capability.aliasPatterns.some((pattern) => pattern.test(clause));
+}
+
+function firstAliasIndex(clause, capability) {
+  let first = Number.POSITIVE_INFINITY;
+  for (const pattern of capability.aliasPatterns) {
+    const match = clause.match(pattern);
+    if (match?.index < first) first = match.index;
+  }
+  return first;
+}
+
+function assertionMatches(clause, capability) {
+  const matches = [];
+  for (const pattern of capability.assertionPatterns) {
+    pattern.lastIndex = 0;
+    for (const match of clause.matchAll(pattern)) {
+      matches.push({ index: match.index, text: match[0] });
+    }
+  }
+  return matches.sort((a, b) => a.index - b.index);
+}
+
+function isLocallyDisclaimed(clause, assertionIndex, capability) {
+  const prefix = localAssertionPrefix(clause, assertionIndex);
+  return capability.disclaimerPatterns.some((pattern) => pattern.test(prefix));
+}
 
 export function scanCapabilityClaims(raw, policy) {
   const errors = [];
-  const negative = compile(policy.negativeClaimPatterns ?? []);
+  const capabilities = (policy.claimCapabilities ?? []).map(compileCapability);
 
-  for (const capability of policy.claimCapabilities ?? []) {
-    const subjects = compile(capability.subjectPatterns ?? []);
-    const positives = compile(capability.positivePatterns ?? []);
-    for (const segment of claimUnits(raw)) {
-      const words = wordStems(segment.text);
-      const hasSubject =
-        subjects.some((pattern) => pattern.test(segment.text)) ||
-        matchesTokenFamilies(words, capability.subjectTokenFamilies);
-      const hasAssertion =
-        positives.some((pattern) => pattern.test(segment.text)) ||
-        matchesTokenFamilies(words, capability.assertionTokenFamilies);
-      if (!hasSubject || !hasAssertion) continue;
-      if (negative.some((pattern) => pattern.test(segment.text))) continue;
-      errors.push({
-        capability: capability.id,
-        state: capability.state,
-        line: segment.line,
-        text: segment.text,
-        help:
-          `${capability.label} is ${capability.state}. Describe a contract/example or link to the ` +
-          "canonical status instead of implying deployed production behavior.",
-      });
+  for (const claim of claimGroups(raw)) {
+    let carriedCapabilities = [];
+    for (const clause of claim.clauses) {
+      const explicitCapabilities = capabilities.filter((capability) =>
+        clauseHasAlias(clause, capability),
+      );
+      const activeCapabilities = explicitCapabilities.length
+        ? explicitCapabilities
+        : carriedCapabilities;
+      if (explicitCapabilities.length) carriedCapabilities = explicitCapabilities;
+
+      for (const capability of activeCapabilities) {
+        const aliasIndex = firstAliasIndex(clause, capability);
+        const assertions = assertionMatches(clause, capability).filter(
+          (assertion) =>
+            !capability.assertionAfterSubject ||
+            !Number.isFinite(aliasIndex) ||
+            assertion.index > aliasIndex ||
+            capability.assertionBeforeSubjectPatterns.some((pattern) =>
+              pattern.test(clause.slice(assertion.index)),
+            ),
+        );
+        const hasStatus = capability.statusPatterns.some((pattern) => pattern.test(clause));
+        if (!assertions.length && hasStatus) continue;
+
+        const positive = assertions.find(
+          (assertion) =>
+            !isLocallyNegated(clause, assertion.index) &&
+            !isLocallyDisclaimed(clause, assertion.index, capability),
+        );
+        if (!positive) continue;
+
+        errors.push({
+          capability: capability.id,
+          state: capability.state,
+          line: claim.line,
+          text: clause,
+          assertion: positive.text,
+          help:
+            `${capability.label} is ${capability.state}. Describe a contract/example or link to the ` +
+            "canonical status instead of implying deployed production behavior.",
+        });
+      }
     }
   }
 

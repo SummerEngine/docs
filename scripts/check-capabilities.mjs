@@ -10,8 +10,32 @@ const policy = JSON.parse(readFileSync(join(ROOT, "scripts/docs-capability-polic
 const config = JSON.parse(readFileSync(join(ROOT, "docs.json"), "utf8"));
 const errors = [];
 
-if (policy.schemaVersion !== 1) {
+if (policy.schemaVersion !== 2) {
   errors.push(`unsupported capability policy schema ${JSON.stringify(policy.schemaVersion)}`);
+}
+const capabilityIds = new Set();
+for (const capability of policy.claimCapabilities ?? []) {
+  if (capabilityIds.has(capability.id)) {
+    errors.push(`duplicate capability policy id: ${capability.id}`);
+  }
+  capabilityIds.add(capability.id);
+  for (const field of ["id", "label", "state"]) {
+    if (typeof capability[field] !== "string" || !capability[field].trim()) {
+      errors.push(`capability policy ${capability.id ?? "<missing-id>"} is missing ${field}`);
+    }
+  }
+  for (const field of ["subjectAliases", "statusTerms", "disclaimerPatterns"]) {
+    if (!Array.isArray(capability[field]) || capability[field].length === 0) {
+      errors.push(`capability policy ${capability.id ?? "<missing-id>"} needs a non-empty ${field}`);
+    }
+  }
+  const assertionCount =
+    (capability.assertionVerbs?.length ?? 0) +
+    (capability.assertionTerms?.length ?? 0) +
+    (capability.assertionPatterns?.length ?? 0);
+  if (assertionCount === 0) {
+    errors.push(`capability policy ${capability.id ?? "<missing-id>"} needs assertion verbs or terms`);
+  }
 }
 
 const navigation = [];
@@ -62,6 +86,25 @@ if (canonicalRaw && !canonicalRaw.includes(policy.canonicalFrontmatter)) {
 for (const term of policy.requiredCanonicalTerms ?? []) {
   if (!canonicalRaw.includes(term)) {
     errors.push(`${canonicalPage} is missing required capability status ${JSON.stringify(term)}`);
+  }
+}
+for (const required of policy.requiredCapabilityStatuses ?? []) {
+  const capability = (policy.claimCapabilities ?? []).find((entry) => entry.id === required.id);
+  if (!capability) {
+    errors.push(`required capability policy is missing: ${required.id}`);
+    continue;
+  }
+  for (const field of ["label", "state"]) {
+    if (capability[field] !== required[field]) {
+      errors.push(
+        `required capability policy ${required.id} has ${field} ${JSON.stringify(capability[field])}; ` +
+          `expected ${JSON.stringify(required[field])}`,
+      );
+    }
+  }
+  const canonicalRow = `| ${required.label} | **${required.state}** |`;
+  if (!canonicalRaw.includes(canonicalRow)) {
+    errors.push(`${canonicalPage} is missing required policy row ${JSON.stringify(canonicalRow)}`);
   }
 }
 
