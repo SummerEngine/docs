@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "technicalGodotMetadataFiles": [
+    "extending/gdextension.mdx"
+  ],
+  "exceptions": [
+    {
+      "rule": "godot-game",
+      "file": "publishing/consoles.mdx",
+      "match": "Godot games",
+      "maxOccurrences": 1,
+      "owner": "docs-publishing",
+      "reason": "Technical platform-holder prerequisite describing an applicant's prior Switch publishing record."
+    },
+    {
+      "rule": "lowercase-gdscript",
+      "file": "mcp/skills.mdx",
+      "match": "gdscript",
+      "maxOccurrences": 1,
+      "owner": "docs-mcp",
+      "reason": "Literal gdscript-patterns skill identifier; the adjacent prose spells GDScript correctly."
+    }
+  ],
+  "requiredTerms": [
+    {
+      "file": "index.mdx",
+      "terms": ["Summer Engine", "Summer game", "GDScript", "Summer SDK"]
+    },
+    {
+      "file": "essentials/installation.mdx",
+      "terms": ["Summer Engine", "Summer game"]
+    },
+    {
+      "file": "quickstarts/fresh-project.mdx",
+      "terms": ["Summer Engine", "Summer game", "GDScript", "Summer SDK"]
+    },
+    {
+      "file": "api-reference/summer-sdk/build-your-first-summer-game.mdx",
+      "terms": ["Summer game", "GDScript", "Summer SDK"]
+    },
+    {
+      "file": "api-reference/summer-sdk.mdx",
+      "terms": ["Summer Engine", "Summer game", "GDScript", "Summer SDK"]
+    },
+    {
+      "file": "api-reference/summer-sdk/testing-your-game-locally.mdx",
+      "terms": ["Summer Engine", "Summer game", "Summer SDK"]
+    },
+    {
+      "file": "api-reference/summer-sdk/exporting-and-uploading-your-game.mdx",
+      "terms": ["Summer Engine", "Summer game", "GDScript"]
+    },
+    {
+      "file": "api-reference/summer-sdk/submission-guide.mdx",
+      "terms": ["Summer game", "GDScript"]
+    },
+    {
+      "file": "api-reference/summer-sdk/updating-your-game.mdx",
+      "terms": ["Summer Engine", "Summer game", "GDScript", "Summer SDK"]
+    },
+    {
+      "file": "agent-setup/prompt.mdx",
+      "terms": ["Summer Engine", "Summer game", "GDScript", "Summer SDK"]
+    }
+  ]
+}

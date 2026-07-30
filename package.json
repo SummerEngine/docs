@@ -6,6 +6,14 @@
     "node": ">=20"
   },
   "scripts": {
-    "check": "node scripts/check-docs.mjs"
+    "check": "npm run check:compatibility && npm run check:language && npm run check:capabilities && npm run check:policy-fixtures && npm run check:routes && node scripts/check-docs.mjs",
+    "check:capabilities": "node scripts/check-capabilities.mjs",
+    "check:policy-fixtures": "node scripts/check-policy-fixtures.mjs",
+    "check:compatibility": "node scripts/sync-engine-compatibility.mjs --check",
+    "check:external-links": "node scripts/check-external-links.mjs",
+    "check:language": "node scripts/check-language.mjs",
+    "check:routes": "node scripts/check-routes.mjs",
+    "generate:compatibility": "node scripts/sync-engine-compatibility.mjs",
+    "generate:routes": "node scripts/check-routes.mjs --write"
   }
 }

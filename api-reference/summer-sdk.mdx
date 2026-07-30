@@ -1,28 +1,64 @@
 ---
-title: "Creating Games on Summercraft"
-description: "Summercraft is a powerful platform layer that provides multiplayer, persistence, and economy features. You bring the game, we bring the infrastructure."
+title: "Summer SDK"
+description: "The lifecycle hub for adding Summer SDK capabilities to a Summer game, testing locally, submitting for review, and updating."
 icon: "gamepad-2"
 ---
 
-## Introduction to Summercraft
+## Add platform capabilities to your Summer game
 
-Summercraft is a place where you can play games made by the community in Summer Engine. It's a platform made to make it easy for developers to make and share their games without having to go through store experiences made +20 years ago. The Summer SDK works similar to Steams steamworks, and aims to make it more easy to build and share your games. Rather than forcing you into a rigid template or specific game type, Summercraft seamlessly integrates with your project to provide robust multiplayer infrastructure and backend services.
+The **Summer SDK** is the creator-facing platform contract for a **Summer game**. Your
+GDScript owns the gameplay, worlds, rules, and presentation. The SDK documents multiplayer,
+player, persistence, economy, and submission interfaces. An interface being documented does
+not mean its hosted runtime is production-live.
 
-The mental model is simple: you build your game's unique design and systems, and plug in the Summer SDK to handle all the complex platform features.
+Use only the capabilities your game needs. Templates are examples, not requirements.
 
-## What Summercraft Handles
+## Lifecycle
 
-The Summer SDK provides out-of-the-box support for:
+<CardGroup cols={2}>
+  <Card title="1. Build the game contract" icon="code" href="/api-reference/summer-sdk/build-your-first-summer-game">
+    Start from the minimal SummerGame lifecycle and manifest.
+  </Card>
+  <Card title="2. Add SDK capabilities" icon="boxes" href="/api-reference/summer-sdk/subsystems-signals">
+    Select player, teams, score, persistence, economy, UI, and audio surfaces.
+  </Card>
+  <Card title="3. Test locally" icon="flask-conical" href="/api-reference/summer-sdk/testing-your-game-locally">
+    Use Summer Engine first and validate before spending a publish request.
+  </Card>
+  <Card title="4. Export" icon="package" href="/api-reference/summer-sdk/exporting-and-uploading-your-game">
+    Produce a game-only pack and verify its digest and contents.
+  </Card>
+  <Card title="5. Submit for review" icon="upload" href="/api-reference/summer-sdk/submission-guide">
+    Choose the API or browser path and follow the human review state.
+  </Card>
+  <Card title="6. Update" icon="refresh-cw" href="/api-reference/summer-sdk/updating-your-game">
+    Keep the game identity stable, bump the version, retest, and resubmit.
+  </Card>
+</CardGroup>
 
-- **Multiplayer Runtime:** Server-authoritative networking and matchmaking infrastructure.
-- **Player Management:** Unified player identity and session handling.
-- **Backend Services:** Built-in APIs for data persistence and player economy.
-- **Game Utilities:** Ready-to-use helpers for score tracking, teams, and match state.
-- **Publishing Pipeline:** A streamlined submission, review, and deployment flow.
+## What is available now
+
+- Create a Summer game record.
+- Upload a game-only `.pck` directly to storage with server-side checksum verification.
+- Enter the manual human review queue.
+- Download releases through the authenticated release endpoint.
+
+## What remains a contract or planned capability
+
+- Summer SDK lifecycle, player, sync, persistence, economy, teams, score, UI, and audio
+  interfaces are a creator contract under implementation.
+- Player-facing browser and desktop-shell playback is not live.
+- Hosted dedicated game servers and automatic matchmaking are not live.
+- The automated production runtime sandbox is not live.
+- `SummerMultiplayerPeer` is a published compatibility contract still being built.
+
+See [Product source & platform status](/knowledge-base/source-status#platform-capability-status)
+for the single canonical status table. Do not infer deployment status from an SDK reference
+page or example.
 
 ## What You Build
 
-Because Summercraft manages the heavy lifting on the backend, you're free to focus purely on making a great game:
+Your game remains responsible for its creative and gameplay layer:
 
 - **Core Gameplay:** Your unique mechanics, controls, and game loops.
 - **Worlds & Scenes:** Environments, levels, and visual rendering.
@@ -46,19 +82,11 @@ Templates are examples, not requirements.
 - `SummerCharacter3D` is the optional 3D character template path.
 - For 2D/RTS/card/turn-based games, extend `SummerPlayer` directly and sync your own game model.
 
-## Recommended Reading Order (Fresh AI / Fresh Dev)
-
-1. `SummerGame` and `Summer` basics
-2. `SummerPlayer` contract and `set_synced`
-3. subsystem modules you need (`data`, `economy`, `teams`, `score`)
-4. local test runner flow
-5. export/upload and banned API constraints.
-
-## API Sections
+## Capability and reference pages
 
 <CardGroup cols={2}>
   <Card title="Agent Setup" icon="bot" href="/agent-setup">
-    Point any AI coding agent at one prompt: build, export, and publish through the live API
+    Point any AI coding agent at one prompt: build, export, and submit through the live API
   </Card>
   <Card title="Summer SDK Naming" icon="arrow-right-left" href="/api-reference/summer-sdk/naming">
     Migrating from Crafty: every renamed class, autoload, manifest key, and path
@@ -75,7 +103,7 @@ Templates are examples, not requirements.
   <Card title="Subsystems & Signals" icon="radio" href="/api-reference/summer-sdk/subsystems-signals">
     Optional platform modules: teams, score, data, economy, UI, audio, and signals
   </Card>
-  <Card title="Build Your First Summercraft Game" icon="rocket" href="/api-reference/summer-sdk/build-your-first-summer-game">
+  <Card title="Build Your First Summer Game" icon="rocket" href="/api-reference/summer-sdk/build-your-first-summer-game">
     Golden-path tutorial from blank project to .pck submission
   </Card>
   <Card title="Multiplayer FFA Guide" icon="swords" href="/api-reference/summer-sdk/guides/multiplayer-ffa-coin-collector">
@@ -103,7 +131,7 @@ Templates are examples, not requirements.
     Export .pck, scanner rules, upload flow, review lifecycle, and updates
   </Card>
   <Card title="Testing Your Game Locally" icon="flask-conical" href="/api-reference/summer-sdk/testing-your-game-locally">
-    Two-process local workflow, multiplayer testing, and production-like validation loop
+    Summer Engine smoke checks, optional loopback testing, and the limits of local validation
   </Card>
   <Card title="Exporting and Uploading Your Game" icon="upload-cloud" href="/api-reference/summer-sdk/exporting-and-uploading-your-game">
     Game-only PCK export preset, upload pipeline, and update workflow
@@ -119,3 +147,12 @@ Templates are examples, not requirements.
 ## Versioning
 
 Games declare a `summer_sdk` version in `manifest.json`. SDK changes are intended to be additive and backward-compatible.
+
+<CardGroup cols={2}>
+  <Card title="Previous: Build your first Summer game" icon="arrow-left" href="/api-reference/summer-sdk/build-your-first-summer-game">
+    Return to the minimal GDScript and manifest contract.
+  </Card>
+  <Card title="Next: Test locally" icon="arrow-right" href="/api-reference/summer-sdk/testing-your-game-locally">
+    Validate the Summer game with Summer Engine before export.
+  </Card>
+</CardGroup>

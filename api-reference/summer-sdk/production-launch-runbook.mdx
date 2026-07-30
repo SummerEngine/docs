@@ -1,6 +1,6 @@
 ---
 title: "Production Launch Runbook"
-description: "Single linear runbook for fresh AI/dev sessions: integrate SDK, validate locally, export safely, submit, and ship."
+description: "Single linear runbook for fresh AI/dev sessions: integrate the SDK contract, validate locally, export safely, and submit for review."
 icon: "check-check"
 ---
 
@@ -11,9 +11,12 @@ This page is the shortest safe route from “new game” to “submitted for rev
 ## Current Publishing Checklist (Most Important)
 
 - Build your creator gameplay scripts in `GDScript` for the current Summercraft publishing flow.
-- Submit one exportable `.pck` package plus `manifest.json`.
-- Keep total `.pck` package size at or under **2 GB**.
-- If your build is larger than 2 GB, email [founders@summerengine.com](mailto:founders@summerengine.com) for large-upload onboarding.
+- **Recommended release API:** submit a game-only `.pck` containing `manifest.json`; size
+  must be 1 KiB–512 MiB.
+- **Browser submission:** upload the `.pck` and a separate `manifest.json`; the browser path
+  accepts up to 2 GB and runs the static scanner at upload time.
+- Choose one path before exporting. A 2 GB browser limit does not raise the release API's
+  512 MiB limit.
 
 ## Step 1: Validate Project Contract
 
@@ -43,12 +46,16 @@ Reference:
 
 ## Step 4: Local Runtime Validation
 
-Run through test-runner flow and confirm:
+Run the canonical Summer Engine smoke checks. If the starter project includes the optional
+loopback runner, run that separately and confirm:
 
-- server starts + client connects,
+- local server starts + local client connects,
 - player join/leave stable,
 - gameplay loop runs for 10+ minutes,
 - reconnect path works.
+
+This is local loopback validation only. It does not prove production ticket redemption,
+platform hosting, matchmaking, or the runtime sandbox.
 
 Reference:
 
@@ -59,8 +66,12 @@ Reference:
 - use game-only `.pck` preset.
 - update include filter to game folder.
 - confirm exported `.pck` includes only intended content.
-- confirm package size &lt;= **2 GB**.
-- if package size exceeds 2 GB, contact [founders@summerengine.com](mailto:founders@summerengine.com) for large-upload onboarding.
+- for the recommended release API, confirm package size is 1 KiB–512 MiB and that
+  `manifest.json` is inside the pack;
+- for browser submission, confirm the `.pck` is at most 2 GB and keep the matching
+  `manifest.json` as the second upload;
+- if neither path fits, contact [founders@summerengine.com](mailto:founders@summerengine.com)
+  before spending a submission attempt.
 
 Reference:
 
@@ -68,16 +79,15 @@ Reference:
 
 ## Step 6: Submission Validation
 
-Upload:
+Choose one submission path:
 
-- `.pck`
-- `manifest.json`
+- **Release API:** create game → mint upload URL → PUT `.pck` → finalize; expect
+  `pending_review`.
+- **Browser:** upload `.pck` + separate `manifest.json`; expect status `review`, a
+  submission id, and no static-analysis violations.
 
-Expect:
-
-- status `review`,
-- submission id returned,
-- no static analysis violations.
+Neither path makes the game playable. Follow the canonical
+[platform capability status](/knowledge-base/source-status#platform-capability-status).
 
 Reference:
 

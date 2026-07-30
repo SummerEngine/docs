@@ -1,6 +1,6 @@
 ---
-title: "Submission Guide"
-description: "The two live ways to submit a Summercraft game, what validation runs where, and how the manual review lifecycle works."
+title: "Submit Your Summer Game for Review"
+description: "Choose a deployed submission path for a Summer game, understand validation and human review, then follow the update loop."
 icon: "upload"
 ---
 
@@ -12,7 +12,7 @@ icon: "upload"
 - No [banned APIs or reserved paths](/api-reference/summer-sdk/banned-apis-reference)
 - [Local testing](/api-reference/summer-sdk/testing-your-game-locally) passes
 
-## The two live submission paths
+## The two deployed submission paths
 
 ### Path A — the release API (recommended; agents and CI)
 
@@ -59,12 +59,20 @@ Every submission is reviewed by a human. No auto-publish.
 |---|---|
 | `draft` | Game record exists, nothing submitted or approved yet |
 | `pending_review` / `review` | A release/submission is in the admin queue |
-| `published` | Approved — the game is live on the platform with that release active |
+| `published` | Approved catalog state — the release is active and downloadable under the documented access rules, but not yet playable on the platform |
 | `rejected` | Rejected with a written reason, shown to you on [summercraft.ai/creator](https://summercraft.ai/creator) |
 
-On Path A, approval re-verifies the stored artifact against the checksum pinned at finalize before the game's active version moves — verification at upload is not trusted at approval time. A rejected release never takes down a live game: the previously approved release stays active.
+On Path A, approval re-verifies the stored artifact against the checksum pinned at finalize
+before the game's active version moves — verification at upload is not trusted at approval
+time. A rejected update leaves the previously approved catalog release active.
 
-**Honest status:** approval publishes your game on the platform and makes its release downloadable through the authenticated [download endpoint](/api-reference/summer-sdk/exporting-and-uploading-your-game). Playing uploaded Godot games in the browser or the desktop shell, and hosted dedicated game servers, are not live yet — do not tell players otherwise.
+**Honest status:** approval publishes your game on the platform and makes its release
+downloadable through the authenticated
+[download endpoint](/api-reference/summer-sdk/exporting-and-uploading-your-game). Playing
+uploaded Summer games in the browser or desktop shell, and hosted dedicated game servers,
+automatic matchmaking, and the runtime sandbox are not live yet — do not tell players
+otherwise. See the canonical
+[platform capability status](/knowledge-base/source-status#platform-capability-status).
 
 ## Updating an existing game
 
@@ -74,7 +82,8 @@ Released versions are immutable.
 2. Bump `manifest.version`; on Path A pass the same new version string to upload-url and finalize.
 3. Re-export and re-submit.
 
-Each update goes through review again. A live game stays live while its update waits.
+Each update goes through review again. The previously approved catalog release stays active
+while its update waits.
 
 ## Common submission errors
 
@@ -86,9 +95,11 @@ Path A errors are self-describing JSON (`{ "error", "detail" }`) — the `detail
 - `Invalid manifest. Required: id, name, version, summer_sdk, entry_scene, min_players, max_players`
 - `Static analysis failed` (with violations list)
 
-## Related Docs
-
-- [Exporting and Uploading Your Game](/api-reference/summer-sdk/exporting-and-uploading-your-game)
-- [Testing Your Game Locally](/api-reference/summer-sdk/testing-your-game-locally)
-- [Banned APIs Reference](/api-reference/summer-sdk/banned-apis-reference)
-- [Agent Setup](/agent-setup)
+<CardGroup cols={2}>
+  <Card title="Previous: Export and upload" icon="arrow-left" href="/api-reference/summer-sdk/exporting-and-uploading-your-game">
+    Return to pack creation and the release API reference.
+  </Card>
+  <Card title="Next: Update an existing Summer game" icon="arrow-right" href="/api-reference/summer-sdk/updating-your-game">
+    Keep the identity stable, bump the version, retest, and resubmit.
+  </Card>
+</CardGroup>

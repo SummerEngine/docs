@@ -1,0 +1,429 @@
+{
+  "schemaVersion": 1,
+  "languageReject": [
+    {
+      "name": "fenced Godot onboarding identity",
+      "text": "```text\nInstall Godot 4.5 and build a Godot game with the Godot SDK.\n```",
+      "rules": ["default-godot-45", "godot-game", "godot-sdk"]
+    },
+    {
+      "name": "stale fenced project feature",
+      "text": "```ini\nconfig/features=PackedStringArray(\"4.5\")\n```",
+      "rules": ["stale-project-feature"]
+    },
+    {
+      "name": "upstream version used as product release",
+      "text": "Install Summer Engine 4.6.1 and start building.",
+      "rules": ["upstream-as-product-version"]
+    },
+    {
+      "name": "unqualified broad platform export",
+      "text": "Export to Steam, itch.io, Mac, Windows, mobile, and consoles.",
+      "rules": ["unqualified-broad-platform-export"]
+    },
+    {
+      "name": "complete no-code game promise",
+      "text": "No coding required: build complete games just by describing them.",
+      "rules": ["no-code-complete-game"]
+    },
+    {
+      "name": "without-code complete game paraphrase",
+      "text": "Build a complete game without writing code.",
+      "rules": ["no-code-complete-game"]
+    },
+    {
+      "name": "no-code-needed complete game paraphrase",
+      "text": "No code needed: make complete games from a prompt.",
+      "rules": ["no-code-complete-game"]
+    },
+    {
+      "name": "publish platform order paraphrase",
+      "text": "Publish to mobile, consoles, Steam, and itch.io.",
+      "rules": ["unqualified-broad-platform-export"]
+    },
+    {
+      "name": "export platform order paraphrase",
+      "text": "Export your game to consoles, mobile, Steam, and itch.io.",
+      "rules": ["unqualified-broad-platform-export"]
+    },
+    {
+      "name": "fixed model integration promise",
+      "text": "We integrate every new AI image, 3D, and video breakthrough within 24 hours.",
+      "rules": ["fixed-24h-model-promise"]
+    },
+    {
+      "name": "one-day model integration paraphrase",
+      "text": "We add every new image and 3D model in one day.",
+      "rules": ["fixed-24h-model-promise"]
+    }
+  ],
+  "languageAllow": [
+    {
+      "name": "narrow upstream compatibility fact",
+      "text": "Summer Engine's current upstream technical base is Godot Engine 4.6.1."
+    },
+    {
+      "name": "literal project filename and current feature",
+      "text": "```ini\n# project.godot\nconfig/features=PackedStringArray(\"4.6\")\n```"
+    },
+    {
+      "name": "godot-cpp technical literal",
+      "text": "Build the extension with the godot-cpp bindings pinned to the compatible ABI."
+    }
+  ],
+  "compatibilityReject": [
+    {
+      "name": "FAQ perfect compatibility mutation",
+      "text": "They work perfectly. All scenes, scripts, and plugins work as before.",
+      "rules": ["blanket-works-perfectly", "blanket-all-assets"]
+    },
+    {
+      "name": "zero-conversion mutation",
+      "text": "Open any existing project. No conversion required.",
+      "rules": ["blanket-no-conversion"]
+    },
+    {
+      "name": "GodotSteam universal tutorial mutation",
+      "text": "GodotSteam works identically in Summer Engine and all tutorials apply.",
+      "rules": ["blanket-works-perfectly", "blanket-all-assets"]
+    },
+    {
+      "name": "caveat prefix cannot exempt absolute",
+      "text": "Plugins may vary, but GodotSteam works identically and all tutorials apply directly.",
+      "rules": ["blanket-works-perfectly", "blanket-all-assets"]
+    },
+    {
+      "name": "unchanged addon mutation",
+      "text": "Most Godot 4 addons work in Summer unchanged.",
+      "rules": ["blanket-works-perfectly"]
+    },
+    {
+      "name": "transitive native load mutation",
+      "text": "If it loads in Godot 4.6 it loads in Summer.",
+      "rules": ["blanket-transitive-load"]
+    },
+    {
+      "name": "root as-is mutation",
+      "text": "Open your projects as-is.",
+      "rules": ["blanket-open-as-is"]
+    },
+    {
+      "name": "open and continue mutation",
+      "text": "Open your project and continue working with AI assistance.",
+      "rules": ["blanket-open-and-continue"]
+    },
+    {
+      "name": "open and keep building mutation",
+      "text": "Open an existing project and keep building with AI.",
+      "rules": ["blanket-open-and-continue"]
+    }
+  ],
+  "compatibilityAllow": [
+    {
+      "name": "measured compatibility caveat",
+      "text": "Familiar formats reduce migration work, but compatibility ranges are unmeasured. Commit first and test plugins, imports, and exports."
+    },
+    {
+      "name": "negated universal addon compatibility",
+      "text": "Not all Godot 4 addons work unchanged."
+    },
+    {
+      "name": "negated identical compatibility",
+      "text": "GodotSteam does not work identically across every Summer release."
+    },
+    {
+      "name": "negated complete plugin compatibility",
+      "text": "No plugin is completely compatible without testing."
+    }
+  ],
+  "capabilityReject": [
+    {
+      "name": "fenced playback and matchmaking mutation",
+      "text": "```text\nPlayers can launch uploaded Summer games in the browser today, and managed matchmaking is live.\n```",
+      "capabilities": ["uploaded-game-playback", "managed-matchmaking"]
+    },
+    {
+      "name": "uploaded game readiness paraphrase",
+      "text": "Uploaded Summer games are ready for players to launch in our browser.",
+      "capabilities": ["uploaded-game-playback"]
+    },
+    {
+      "name": "operational matchmaking paraphrase",
+      "text": "Matchmaking is operational now.",
+      "capabilities": ["managed-matchmaking"]
+    },
+    {
+      "name": "dedicated server run paraphrase",
+      "text": "We run dedicated game servers for every release.",
+      "capabilities": ["hosted-game-servers"]
+    },
+    {
+      "name": "sandbox execution paraphrase",
+      "text": "Every submission executes inside an automated production runtime sandbox.",
+      "capabilities": ["production-sandbox"]
+    },
+    {
+      "name": "transport powers production paraphrase",
+      "text": "SummerMultiplayerPeer powers production networking today.",
+      "capabilities": ["summer-multiplayer-transport"]
+    },
+    {
+      "name": "approved pack runtime paraphrase",
+      "text": "Approved packs are executed by the Summercraft runtime.",
+      "capabilities": ["production-runtime"]
+    },
+    {
+      "name": "durable persistence paraphrase",
+      "text": "Summer.data automatically writes every save to durable storage.",
+      "capabilities": ["hosted-persistence-economy"]
+    },
+    {
+      "name": "negation reversal cannot suppress later sentence",
+      "text": "Playback is not planned anymore. Players can launch uploaded Summer games today.",
+      "capabilities": ["uploaded-game-playback"]
+    },
+    {
+      "name": "runtime enforcement mutation",
+      "text": "The production runtime loads every approved pack and enforces the manifest automatically.",
+      "capabilities": ["production-runtime"]
+    },
+    {
+      "name": "persistence flush mutation",
+      "text": "Summer.data autosaves player progress and the backend flush is handled for you.",
+      "capabilities": ["hosted-persistence-economy"]
+    },
+    {
+      "name": "planned marker cannot suppress contradictory matchmaking clause",
+      "text": "Matchmaking remains Planned, yet it is operational now.",
+      "capabilities": ["managed-matchmaking"]
+    },
+    {
+      "name": "web client playable creator build paraphrase",
+      "text": "Uploaded creator builds are playable in the web client now.",
+      "capabilities": ["uploaded-game-playback"]
+    },
+    {
+      "name": "automatic lobby pairing paraphrase",
+      "text": "The platform automatically pairs players into lobbies today.",
+      "capabilities": ["managed-matchmaking"]
+    },
+    {
+      "name": "cloud game provisioning paraphrase",
+      "text": "Cloud game instances are provisioned for every release.",
+      "capabilities": ["hosted-game-servers"]
+    },
+    {
+      "name": "production uploaded-pack isolation paraphrase",
+      "text": "The platform isolates and runs every uploaded pack in production.",
+      "capabilities": ["production-sandbox"]
+    },
+    {
+      "name": "live replication peer paraphrase",
+      "text": "Summer's multiplayer peer provides live replication.",
+      "capabilities": ["summer-multiplayer-transport"]
+    },
+    {
+      "name": "approved packs run on Summercraft paraphrase",
+      "text": "Approved packs run on Summercraft today.",
+      "capabilities": ["production-runtime"]
+    },
+    {
+      "name": "verb-first approved-pack runtime paraphrase",
+      "text": "We execute approved packs on Summercraft today.",
+      "capabilities": ["production-runtime"]
+    },
+    {
+      "name": "cross-sentence matchmaking anaphor",
+      "text": "Matchmaking remains Planned. It is operational now.",
+      "capabilities": ["managed-matchmaking"]
+    },
+    {
+      "name": "cross-sentence runtime anaphor",
+      "text": "Approved packs remain Planned. They run on Summercraft today.",
+      "capabilities": ["production-runtime"]
+    },
+    {
+      "name": "cross-sentence persistence anaphor",
+      "text": "Summer storage is Scaffolded. It keeps player saves durably between sessions.",
+      "capabilities": ["hosted-persistence-economy"]
+    },
+    {
+      "name": "local test qualifier cannot hide later production assertion",
+      "text": "The local test harness pairs players into lobbies. It is operational in production now.",
+      "capabilities": ["managed-matchmaking"]
+    },
+    {
+      "name": "modal private test cannot hide later production assertion",
+      "text": "Matchmaking may be operational in a private test. It is operational in production now.",
+      "capabilities": ["managed-matchmaking"]
+    },
+    {
+      "name": "same-sentence anaphoric production assertion",
+      "text": "Summer storage is Scaffolded; however, it stores saves durably in production.",
+      "capabilities": ["hosted-persistence-economy"]
+    },
+    {
+      "name": "elliptical matchmaking production predicate",
+      "text": "Matchmaking may be operational in a private test, but is operational in production.",
+      "capabilities": ["managed-matchmaking"]
+    },
+    {
+      "name": "elliptical pack production predicate",
+      "text": "Approved packs remain Planned, but execute in production.",
+      "capabilities": ["production-runtime"]
+    },
+    {
+      "name": "elliptical storage production predicate",
+      "text": "Summer storage is Scaffolded, but stores player saves durably in production.",
+      "capabilities": ["hosted-persistence-economy"]
+    },
+    {
+      "name": "elliptical matchmaking live variant",
+      "text": "Matchmaking remains Planned; however, is live in production.",
+      "capabilities": ["managed-matchmaking"]
+    },
+    {
+      "name": "elliptical pack run variant",
+      "text": "Approved packs remain Planned, yet run in production.",
+      "capabilities": ["production-runtime"]
+    },
+    {
+      "name": "elliptical storage write variant",
+      "text": "Summer storage is Scaffolded, but writes player save data in production.",
+      "capabilities": ["hosted-persistence-economy"]
+    },
+    {
+      "name": "elliptical persistence object coreference",
+      "text": "Summer storage may keep saves in a test harness but stores them durably in production.",
+      "capabilities": ["hosted-persistence-economy"]
+    },
+    {
+      "name": "elliptical persistence object coreference variant",
+      "text": "Summer storage may write player saves in a private test; however, persists them between production sessions.",
+      "capabilities": ["hosted-persistence-economy"]
+    },
+    {
+      "name": "elliptical persistence adjective object coreference",
+      "text": "Summer storage may keep encrypted player saves in a test harness, but stores them durably in production.",
+      "capabilities": ["hosted-persistence-economy"]
+    },
+    {
+      "name": "ordinary production economy assertion",
+      "text": "Summer storage writes player economy in production.",
+      "capabilities": ["hosted-persistence-economy"]
+    },
+    {
+      "name": "ordinary prepositional durable-storage assertion",
+      "text": "Summer storage writes to durable storage in production.",
+      "capabilities": ["hosted-persistence-economy"]
+    },
+    {
+      "name": "ordinary prepositional durable-storage variant",
+      "text": "Summer storage persists to durable storage in production.",
+      "capabilities": ["hosted-persistence-economy"]
+    },
+    {
+      "name": "durable inter-session Summer storage paraphrase",
+      "text": "Summer storage keeps player saves durably between sessions.",
+      "capabilities": ["hosted-persistence-economy"]
+    }
+  ],
+  "capabilityAllow": [
+    {
+      "name": "planned playback disclosure",
+      "text": "Browser playback for uploaded games is Planned and is not production-live."
+    },
+    {
+      "name": "scaffolded runtime disclosure",
+      "text": "This is a scaffolded runtime contract example; no production runtime currently loads uploaded games."
+    },
+    {
+      "name": "live submission claim",
+      "text": "The browser submission page and static scanner are Live."
+    },
+    {
+      "name": "explicit scaffolded persistence",
+      "text": "Summer.data is a scaffolded interface and does not write to durable storage."
+    },
+    {
+      "name": "explicit planned matchmaking",
+      "text": "Matchmaking status is Planned; no production service is available."
+    },
+    {
+      "name": "truthful persistence negation",
+      "text": "Summer storage never writes player saves to durable storage."
+    },
+    {
+      "name": "truthful runtime negation",
+      "text": "The Summercraft runtime never executes approved packs."
+    },
+    {
+      "name": "truthful transport negation",
+      "text": "Summer's multiplayer peer cannot power production networking."
+    },
+    {
+      "name": "explicit unrelated semicolon subject",
+      "text": "Matchmaking remains Planned; this documentation page is live."
+    },
+    {
+      "name": "local test harness scope",
+      "text": "The local test harness pairs players into lobbies; production matchmaking remains Planned."
+    },
+    {
+      "name": "modal private test scope",
+      "text": "Matchmaking may be operational in a private test."
+    },
+    {
+      "name": "unrelated cross-sentence demonstrative subject",
+      "text": "Approved packs remain Planned. This documentation page is live."
+    },
+    {
+      "name": "local runtime harness scope",
+      "text": "Approved packs run locally in a private test harness; the production runtime remains Planned."
+    },
+    {
+      "name": "hypothetical private matchmaking scope",
+      "text": "If matchmaking becomes operational in a private test, do not describe it as production."
+    },
+    {
+      "name": "anaphoric live documentation predicate",
+      "text": "Matchmaking remains Planned. It is documented on a live status page."
+    },
+    {
+      "name": "anaphoric unrelated storage object",
+      "text": "Summer storage is Scaffolded. It keeps the API reference concise."
+    },
+    {
+      "name": "anaphoric live documentation variant",
+      "text": "Approved packs remain Planned. They are mentioned on a live documentation page."
+    },
+    {
+      "name": "anaphoric unrelated storage URL",
+      "text": "Summer storage is Scaffolded. It stores the API reference URL."
+    },
+    {
+      "name": "elliptical docs-example pronoun",
+      "text": "Summer storage documents API examples, but keeps them concise."
+    },
+    {
+      "name": "elliptical reference-example pronoun",
+      "text": "Summer storage may keep examples in a test harness but stores them in the API reference."
+    },
+    {
+      "name": "save modifier does not make examples a persistence object",
+      "text": "Summer storage may keep player save API examples in a test harness, but stores them in the API reference."
+    },
+    {
+      "name": "save topic does not make examples a persistence object",
+      "text": "Summer storage may keep API examples about player saves in a test harness, but stores them in the API reference."
+    },
+    {
+      "name": "save of-topic does not make examples a persistence antecedent",
+      "text": "Summer storage may keep API examples of player saves in a test harness, but stores them on the production documentation site."
+    },
+    {
+      "name": "save showing-topic does not make examples a persistence antecedent",
+      "text": "Summer storage may keep API examples showing player saves in a test harness, but stores them on the production documentation site."
+    }
+  ]
+}

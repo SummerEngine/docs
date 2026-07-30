@@ -1,6 +1,6 @@
 ---
-title: "Testing Your Game Locally"
-description: "Press play, launch server+client automatically, and test your Summercraft game with production-like runtime behavior."
+title: "Test Your Summer Game Locally"
+description: "Use Summer Engine smoke checks and an optional local loopback runner; understand what neither path proves about production."
 icon: "flask-conical"
 ---
 
@@ -8,45 +8,71 @@ icon: "flask-conical"
 
 Local testing should match production behavior as closely as possible.
 
-In Summercraft, a published game runs on:
+The canonical agent workflow exercises:
 
-- the same Summer/Godot runtime,
-- the same Summer SDK APIs,
-- server-authoritative networking.
+- Summer Engine,
+- local Summer SDK stubs,
+- project import, parsing, smoke execution, banned-pattern checks, and pack contents.
 
-That is why the recommended workflow launches a local headless server and a client, instead of testing gameplay logic in a client-only setup.
+It does **not** exercise the production Summer SDK runtime, ticket redemption, platform
+services, or a destination game server. The separate starter-template loopback runner can
+exercise a local server/client path, but it still does not prove those production paths.
+See [platform capability status](/knowledge-base/source-status#platform-capability-status).
 
-## Default Local Workflow
+## Optional starter-template loopback workflow
 
-Use the starter template test runner:
+If your Summer Engine starter project includes its loopback runner:
 
 - `test_runner.gd` launches a headless server process.
 - It waits for startup.
 - It launches/loads the client flow and connects to `localhost:7777`.
 
-This gives you a real multiplayer loop in one click.
+This gives you a local multiplayer loop. It does not connect to Summercraft, redeem a
+launch ticket, or validate hosted matchmaking, hosting, or sandboxing.
 
 <Tip>
-  If it works in this local test-runner flow, it is much closer to how it will behave in production than single-process editor-only testing.
+  Use the loopback runner when it is present, but report it as local loopback validation,
+  not production-like or end-to-end platform validation.
 </Tip>
 
-## Building Outside Summer Engine (Agent / CLI Workflow)
+## Agent and CLI workflow with Summer Engine
 
-The test runner above ships with Summer Engine's Summercraft template. If you are building standalone — a coding agent, CI, or a bare Godot 4.5 install — the real SDK is not on disk, so full runtime testing is not available locally. What works instead, verified with Godot 4.5.1:
+The [/agent-setup](/agent-setup) prompt installs and invokes Summer Engine directly,
+supplies local SDK stubs for parsing, and runs a single-process import/smoke pass plus
+banned-API and pack-content checks. It does not invoke the starter-template loopback runner.
 
-1. Keep local **SDK stubs** in `sdk/` (excluded from export) that mirror the documented class surfaces, so every script parses. The [/agent-setup](/agent-setup) prompt contains ready-made stubs.
-2. **Headless smoke run:** `godot --headless --path . --quit-after 120` must exit cleanly with no `SCRIPT ERROR` lines. A parse error here is the same error that will make the platform runtime refuse your pack.
-3. **Banned-API self-check:** grep your game scripts (not the stubs) against the [blocked pattern list](/api-reference/summer-sdk/banned-apis-reference) before every upload — the API path has no upload-time scanner, so a violation costs you a manual review round-trip.
-4. **Pack-content check:** export, then confirm the `.pck` stores only your game files plus `manifest.json` (the export log lists every stored file).
+1. Keep local **SDK stubs** in `sdk/` and exclude them from export.
+2. Run Summer Engine headlessly and fail on any `SCRIPT ERROR`.
+3. Check game scripts against the [blocked pattern list](/api-reference/summer-sdk/banned-apis-reference).
+4. Export and confirm the `.pck` contains only game files plus `manifest.json`.
 
-This validates structure, parsing, and packaging — not gameplay against the real SDK. The review process runs your game on the real runtime; keep gameplay logic simple enough to survive the difference, and treat the smoke run as the floor, not the ceiling.
+This validates structure, parsing, and packaging — not gameplay against a production Summer
+SDK runtime. Review is currently human; uploaded games are not executed by a production
+runtime or automated sandbox. Treat the smoke run as a structural floor, not platform or
+gameplay proof.
 
-## What Happens Under The Hood
+## Advanced compatibility escape hatch
 
-When you run the test runner:
+On locked CI infrastructure where Summer Engine cannot be installed, an operator may supply
+a bare upstream Godot binary for syntax, import, and pack-format checks. This is an advanced
+compatibility path, not creator onboarding:
+
+- match the **current upstream base** shown in the
+  [generated compatibility reference](/reference/compatibility);
+- do not treat that number as a Summer Engine product version or a measured project minimum;
+- set `UPSTREAM_ENGINE` explicitly rather than silently falling back from Summer Engine;
+- do not claim this validates Summer SDK runtime behavior.
+
+```bash
+"$UPSTREAM_ENGINE" --headless --path . --quit-after 120
+```
+
+## What the optional loopback runner does
+
+When you run a starter project that includes the loopback runner:
 
 1. The runner detects your game slug from `manifest.json`.
-2. It starts Summer/Godot in headless mode with server args:
+2. It starts Summer Engine in headless mode with server args:
    - `--server`
    - `--game-id <slug>`
    - `--port 7777`
@@ -67,15 +93,15 @@ To make local testing reliable:
 
 You have two practical options:
 
-### Option A: First client via test runner, additional clients from editor
+### Option A: First client via an available loopback runner, additional clients from editor
 
-1. Start the first instance with test runner (starts server + client).
+1. Start the first instance with the loopback runner (starts server + client).
 2. Launch another editor instance.
 3. Run the client scene and connect to `localhost:7777` using your quick-connect flow.
 
 ### Option B: Team testing on same network
 
-1. One teammate runs the test runner (hosts local server).
+1. One teammate runs the loopback runner (hosts local server).
 2. Share host IP and port.
 3. Other teammates run client mode and connect to that host.
 
@@ -120,8 +146,11 @@ Check:
 - no editor-only assumptions in gameplay code,
 - no banned/blocked APIs used by generated code.
 
-## Related Docs
-
-- [manifest.json Reference](/api-reference/summer-sdk/manifest-json-reference)
-- [Exporting and Uploading Your Game](/api-reference/summer-sdk/exporting-and-uploading-your-game)
-- [Banned APIs Reference](/api-reference/summer-sdk/banned-apis-reference)
+<CardGroup cols={2}>
+  <Card title="Previous: Summer SDK" icon="arrow-left" href="/api-reference/summer-sdk">
+    Return to the capability and lifecycle hub.
+  </Card>
+  <Card title="Next: Export your Summer game" icon="arrow-right" href="/api-reference/summer-sdk/exporting-and-uploading-your-game">
+    Produce and verify a game-only pack.
+  </Card>
+</CardGroup>

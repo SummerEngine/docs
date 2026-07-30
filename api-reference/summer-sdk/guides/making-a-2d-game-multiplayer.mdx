@@ -6,12 +6,16 @@ icon: "square"
 
 ## Platform Framing
 
-You are not building a “Summercraft game type.”  
-You are building a 2D game in Summer/Godot and integrating the Summercraft platform layer:
+You are building a 2D **Summer game** in **GDScript** and integrating the **Summer SDK**
+platform contract:
 
-- multiplayer runtime,
-- server authority,
-- data/economy/teams/score modules.
+- host-authoritative game rules and synced state,
+- player, data, economy, teams, and score interfaces,
+- a submission contract for review.
+
+The hosted multiplayer runtime, automatic matchmaking, and player-facing play surfaces are
+not production-live yet. See the canonical
+[platform capability status](/knowledge-base/source-status#platform-capability-status).
 
 ## Recommended Player Model
 
@@ -97,4 +101,5 @@ Use only what you need:
 - [ ] 2D state is synced via `set_synced`.
 - [ ] Client only renders synced values.
 - [ ] Required manifest fields valid.
-- [ ] Local test runner flow passes.
+- [ ] Canonical Summer Engine smoke checks pass.
+- [ ] Optional local loopback runner passes when present.

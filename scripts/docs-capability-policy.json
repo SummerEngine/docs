@@ -1,0 +1,274 @@
+{
+  "schemaVersion": 2,
+  "canonicalPage": "knowledge-base/source-status.mdx",
+  "canonicalFrontmatter": "capabilityStatus: \"canonical\"",
+  "requiredCanonicalTerms": [
+    "## Platform capability status",
+    "| Create Summer game records | **Live** |",
+    "| Browser submission and static scanner | **Live** |",
+    "| Summer SDK gameplay and subsystem interfaces | **Scaffold** |",
+    "| Browser or desktop-shell play for uploaded games | **Planned** |",
+    "| Hosted dedicated game servers | **Planned** |",
+    "| Automatic matchmaking and relay | **Planned** |",
+    "| Automated production runtime sandbox | **Planned** |",
+    "| Production gameplay runtime | **Planned** |",
+    "| Hosted persistence and economy | **Scaffold** |"
+  ],
+  "requiredCapabilityStatuses": [
+    {
+      "id": "production-runtime",
+      "label": "Production gameplay runtime",
+      "state": "Planned"
+    },
+    {
+      "id": "hosted-persistence-economy",
+      "label": "Hosted persistence and economy",
+      "state": "Scaffold"
+    }
+  ],
+  "claimCapabilities": [
+    {
+      "id": "uploaded-game-playback",
+      "label": "Uploaded-game browser and desktop-shell playback",
+      "state": "Planned",
+      "subjectAliases": [
+        "\\buploaded\\s+(?:Summer\\s+games?|creator\\s+builds?|games?|builds?)\\b",
+        "\\bbrowser\\s+(?:or\\s+desktop[- ]shell\\s+)?play(?:back)?\\b",
+        "\\bdesktop[- ]shell\\s+play(?:back)?\\b",
+        "\\bplayer-facing\\s+(?:play|playback|launch)\\b",
+        "\\bweb client\\b"
+      ],
+      "assertionVerbs": [],
+      "assertionPatterns": [
+        "\\b(?:players?\\s+)?can\\s+(?:launch|play)\\b",
+        "\\b(?:is|are)\\s+ready\\s+(?:for\\s+(?:players?\\s+to\\s+)?|to\\s+)?(?:launch|play)\\b"
+      ],
+      "assertionTerms": [
+        "\\bplayable\\b",
+        "\\boperational\\b",
+        "\\bproduction[- ]live\\b"
+      ],
+      "statusTerms": ["\\bPlanned\\b", "\\bnot\\s+(?:production[- ]?)?live\\b"],
+      "disclaimerPatterns": [
+        "\\b(?:does|do)\\s+not\\s+(?:claim|mean|prove|imply)\\b",
+        "\\bmust\\s+not\\s+promise\\b"
+      ]
+    },
+    {
+      "id": "managed-matchmaking",
+      "label": "Managed matchmaking and relay",
+      "state": "Planned",
+      "subjectAliases": [
+        "\\bmatchmaking\\b",
+        "\\brelay(?: service| server)?s?\\b",
+        "\\bplayers?\\b.{0,50}\\blobb(?:y|ies)\\b"
+      ],
+      "assertionVerbs": ["pair", "provide", "offer", "handle", "manage"],
+      "assertionTerms": [
+        "\\blive\\b",
+        "\\bavailable\\b",
+        "\\bdeployed\\b",
+        "\\boperational\\b"
+      ],
+      "statusTerms": ["\\bPlanned\\b", "\\bnot\\s+(?:production[- ]?)?live\\b"],
+      "disclaimerPatterns": [
+        "\\b(?:does|do)\\s+not\\s+(?:claim|mean|prove|imply)\\b",
+        "\\bmust\\s+not\\s+promise\\b"
+      ]
+    },
+    {
+      "id": "hosted-game-servers",
+      "label": "Hosted dedicated game servers",
+      "state": "Planned",
+      "subjectAliases": [
+        "\\b(?:hosted|managed|dedicated)\\b.{0,50}\\b(?:game\\s+)?servers?\\b",
+        "\\bserver hosting\\b",
+        "\\bcloud game instances?\\b"
+      ],
+      "assertionVerbs": [],
+      "assertionPatterns": [
+        "\\b(?:we|Summer|Summercraft|the platform|platform)\\s+(?:runs?|provisions?|provides?|offers?|manages?|hosts?)\\b",
+        "\\b(?:servers?|instances?)\\s+(?:are|is)\\s+(?:run|running|provisioned|provided|available|live|operational|deployed)\\b"
+      ],
+      "assertionTerms": [
+        "\\blive\\b",
+        "\\bavailable\\b",
+        "\\bdeployed\\b",
+        "\\boperational\\b"
+      ],
+      "statusTerms": ["\\bPlanned\\b", "\\bnot\\s+(?:production[- ]?)?live\\b"],
+      "disclaimerPatterns": [
+        "\\b(?:does|do)\\s+not\\s+(?:claim|mean|prove|imply)\\b",
+        "\\bmust\\s+not\\s+promise\\b"
+      ]
+    },
+    {
+      "id": "production-sandbox",
+      "label": "Automated production runtime sandbox",
+      "state": "Planned",
+      "subjectAliases": [
+        "\\b(?:automated\\s+)?(?:production\\s+)?runtime sandbox\\b",
+        "\\bautomated sandbox\\b",
+        "\\buploaded packs?\\b.{0,50}\\bin production\\b"
+      ],
+      "assertionVerbs": ["execute", "run", "isolate", "scan"],
+      "assertionTerms": [
+        "\\blive\\b",
+        "\\bavailable\\b",
+        "\\bdeployed\\b",
+        "\\boperational\\b"
+      ],
+      "statusTerms": ["\\bPlanned\\b", "\\bnot\\s+(?:production[- ]?)?live\\b"],
+      "disclaimerPatterns": [
+        "\\b(?:does|do)\\s+not\\s+(?:claim|mean|prove|imply)\\b",
+        "\\bmust\\s+not\\s+promise\\b"
+      ]
+    },
+    {
+      "id": "summer-multiplayer-transport",
+      "label": "SummerMultiplayerPeer production transport",
+      "state": "Scaffold",
+      "subjectAliases": [
+        "\\bSummerMultiplayerPeer\\b",
+        "\\bSummer(?:'s|’s) multiplayer peer\\b",
+        "\\bproduction transport\\b"
+      ],
+      "assertionVerbs": ["power", "provide", "handle", "run", "implement"],
+      "assertionTerms": [
+        "\\blive\\b",
+        "\\bavailable\\b",
+        "\\bdeployed\\b",
+        "\\bworking\\b",
+        "\\boperational\\b"
+      ],
+      "statusTerms": ["\\bScaffold(?:ed)?\\b", "\\bnot\\s+(?:production[- ]?)?live\\b"],
+      "disclaimerPatterns": [
+        "\\b(?:does|do)\\s+not\\s+(?:claim|mean|prove|imply)\\b",
+        "\\bcontract(?:-level)?\\s+(?:example|only|requirement|interface|behavior)\\b"
+      ]
+    },
+    {
+      "id": "production-runtime",
+      "label": "Production gameplay runtime",
+      "state": "Planned",
+      "subjectAliases": [
+        "\\b(?:production(?: gameplay)?|platform|Summercraft)\\s+runtime\\b",
+        "\\bapproved packs?\\b",
+        "\\breview process\\b"
+      ],
+      "assertionAfterSubject": true,
+      "assertionBeforeSubjectPatterns": [
+        "\\b(?:runs?|ran|running|loads?|loaded|loading|executes?|executed|executing)\\b.{0,80}\\bapproved packs?\\b"
+      ],
+      "assertionVerbs": ["execute", "load", "run", "enforce", "refuse", "assign", "connect"],
+      "assertionTerms": [
+        "\\blive\\b",
+        "\\bavailable\\b",
+        "\\bdeployed\\b",
+        "\\boperational\\b"
+      ],
+      "statusTerms": ["\\bPlanned\\b", "\\bnot\\s+(?:production[- ]?)?live\\b"],
+      "disclaimerPatterns": [
+        "\\b(?:does|do)\\s+not\\s+(?:claim|mean|prove|imply)\\b",
+        "\\bcontract(?:-level)?\\s+(?:example|only|requirement|interface|behavior)\\b",
+        "\\bmust\\s+not\\s+promise\\b"
+      ]
+    },
+    {
+      "id": "hosted-persistence-economy",
+      "label": "Hosted persistence and economy",
+      "state": "Scaffold",
+      "subjectAliases": [
+        "\\bSummer\\.(?:data|economy)\\b",
+        "\\bSummer storage\\b",
+        "\\bhosted persistence and economy\\b",
+        "\\bpersistence backend\\b",
+        "\\beconomy rail\\b",
+        "\\bbackend flush\\b"
+      ],
+      "assertionVerbs": ["persist", "store", "write", "keep"],
+      "objectRequiredAssertionVerbs": ["persist", "store", "write", "keep"],
+      "objectRequiredAssertionPatterns": [
+        "\\bauto-?saves?\\b"
+      ],
+      "assertionObjectHeads": [
+        "save",
+        "saves",
+        "data",
+        "progress",
+        "state",
+        "inventory",
+        "balance",
+        "economy"
+      ],
+      "assertionPrepositionalObjectPatterns": [
+        "\\bto\\s+durable storage\\b"
+      ],
+      "coreferenceObjectHeads": [
+        "save",
+        "saves",
+        "data",
+        "progress",
+        "state",
+        "inventory",
+        "balance"
+      ],
+      "coreferenceAntecedentBarrierPatterns": [
+        "\\bexamples?\\b",
+        "\\bdocs?\\b",
+        "\\bdocumentation\\b",
+        "\\breferences?\\b"
+      ],
+      "objectPronounPatterns": [
+        "\\bthem\\b"
+      ],
+      "objectPronounAssertionContextPatterns": [
+        "\\bdurabl(?:e|y)\\b",
+        "\\bproduction\\b",
+        "\\bbetween\\s+(?:production\\s+)?sessions\\b",
+        "\\bpersist(?:s|ed|ing|ence|ent)?\\b"
+      ],
+      "assertionTerms": [
+        "\\bhandled\\b",
+        "\\bdurable\\b",
+        "\\blive\\b",
+        "\\bavailable\\b",
+        "\\bdeployed\\b",
+        "\\boperational\\b"
+      ],
+      "statusTerms": ["\\bScaffold(?:ed)?\\b", "\\bnot\\s+(?:production[- ]?)?live\\b"],
+      "disclaimerPatterns": [
+        "\\b(?:does|do)\\s+not\\s+(?:claim|mean|prove|imply)\\b",
+        "\\bcontract(?:-level)?\\s+(?:example|only|requirement|interface|behavior)\\b"
+      ]
+    }
+  ],
+  "scaffoldDisclosureIndicators": [
+    "\\bSummerMultiplayerPeer\\b",
+    "\\bSummerGame\\b",
+    "\\bSummerPlayer\\b",
+    "\\bSummerCharacter3D\\b",
+    "\\bSummer\\.(?:data|economy|teams|score|input|ui|audio)\\b",
+    "\\bset_synced\\b",
+    "\\bget_synced\\b"
+  ],
+  "scaffoldDisclosureExemptions": [
+    {
+      "file": "changelog/overview.mdx",
+      "owner": "docs-changelog",
+      "reason": "Historical release notes name SDK symbols but do not serve as current capability reference."
+    }
+  ],
+  "requiredRouteTerms": [
+    {
+      "file": "api-reference/summer-sdk/production-launch-runbook.mdx",
+      "terms": [
+        "Recommended release API",
+        "1 KiB–512 MiB",
+        "Browser submission",
+        "up to 2 GB",
+        "does not raise the release API's"
+      ]
+    }
+  ]
+}

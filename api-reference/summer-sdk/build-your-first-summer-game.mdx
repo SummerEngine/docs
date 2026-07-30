@@ -1,12 +1,18 @@
 ---
-title: "Build Your First Summercraft Game"
-description: "Golden path: build a multiplayer-native game on the Summer SDK, test it locally, export a .pck, and submit it for review."
+title: "Build Your First Summer Game"
+description: "Build a multiplayer-native Summer game in GDScript with the Summer SDK, then continue to local testing and review."
 icon: "rocket"
 ---
 
 ## Multiplayer by default
 
-Every Summercraft game is multiplayer-native. The default template is host-authoritative: the server runs the rules, clients render synced state, and a `min_players` of 1 means the same build is also a solo game. You do not write netcode — you write `SummerGame` hooks and synced state, and the platform runtime carries them over its host-authoritative transport (ENet today; the `SummerMultiplayerPeer` transport with stock `@rpc`/`MultiplayerSynchronizer` compatibility is a published contract still being built in the engine fork).
+The Summer SDK contract is multiplayer-native. The default example is host-authoritative:
+the server runs the rules, clients render synced state, and a
+`min_players` of 1 means the same build is also a solo game. You write `SummerGame` hooks
+and synced state in GDScript; the Summer SDK defines the creator-facing contract.
+The SDK/runtime surfaces on this page are scaffolded, not a deployed hosted gameplay path.
+Check [platform capability status](/knowledge-base/source-status#platform-capability-status)
+before making production promises.
 
 What you build here:
 
@@ -110,11 +116,15 @@ func score_point(player) -> void:
 
 ## Step 5: Local Test
 
-Use the two-process test runner flow:
+Start with the canonical one-process Summer Engine smoke checks. If your starter project
+includes the optional loopback runner, also use it to exercise a local server/client path:
 
-- starts local headless server,
-- starts client and connects to localhost,
-- validates real multiplayer behavior.
+- the canonical agent prompt validates import, parsing, smoke execution, banned patterns,
+  and pack contents with local SDK stubs;
+- the optional loopback runner starts a local headless server and connects a client to
+  localhost;
+- neither path validates production platform services, ticket redemption, or hosted
+  matchmaking.
 
 Guide: [Testing Your Game Locally](/api-reference/summer-sdk/testing-your-game-locally). Building outside Summer Engine (agent/CLI workflow)? The same page covers stub-based validation, and the [/agent-setup](/agent-setup) prompt automates it.
 
@@ -125,7 +135,9 @@ Export a game-only `.pck`, then publish it through the live release API (create 
 - [Exporting and Uploading Your Game](/api-reference/summer-sdk/exporting-and-uploading-your-game)
 - [Submission Guide](/api-reference/summer-sdk/submission-guide)
 
-A human reviews every release. Approval publishes the game; the release becomes downloadable through the authenticated download endpoint. Browser and desktop-shell play of uploaded Godot games are not live yet.
+A human reviews every release. Approval assigns `published` catalog status and makes the
+release available under the documented authenticated download rules. Browser and
+desktop-shell play of uploaded Summer games are not live yet.
 
 ## What "Done" Looks Like
 
@@ -133,5 +145,15 @@ A human reviews every release. Approval publishes the game; the release becomes 
 - [ ] Server authority enforced (`Summer.is_server()`).
 - [ ] Player-visible state comes from `set_synced`.
 - [ ] Works with 1 player and with several (`min_players: 1`).
-- [ ] Local test runner path passes.
+- [ ] Canonical Summer Engine smoke checks pass.
+- [ ] Optional local loopback runner passes when present.
 - [ ] Export contains only game files; release enters `pending_review`.
+
+<CardGroup cols={2}>
+  <Card title="Previous: Create a Summer game" icon="arrow-left" href="/quickstarts/fresh-project">
+    Return to project creation and the GDScript starting point.
+  </Card>
+  <Card title="Next: Choose Summer SDK capabilities" icon="arrow-right" href="/api-reference/summer-sdk">
+    Use the lifecycle hub to select the SDK systems your game needs.
+  </Card>
+</CardGroup>

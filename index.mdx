@@ -1,38 +1,62 @@
 ---
-title: "Summer Engine: Build Games with AI, Compatible with Godot 4"
-description: "Describe your game in plain English and Summer Engine writes the code, scenes, and assets. Compatible with Godot 4, connects to your IDE through MCP, CLI, and API."
+title: "Summer Engine: Build a Summer game with AI"
+description: "Install Summer Engine, create a Summer game in GDScript, add Summer SDK capabilities, test locally, and publish."
 icon: "sparkles"
 ---
 
-Summer Engine is an AI game engine and coding agent, built to make it as fun to make games as it is to play them. Describe what you want to build or change in natural language and Summer Engine will write the code for you and help you create the first game assets for your game.
-Instead of bouncing between ChatGPT, VS Code, and your game engine, you work in one unified environment where AI understands your entire game project and can modify scenes, code, and assets through natural language commands.
+Summer Engine is the AI game engine for building a **Summer game**. Start in the editor,
+write gameplay in **GDScript**, add the **Summer SDK** capabilities your game needs, then
+test and publish from one documented path.
+
+Describe what you want to build or change in natural language. Summer Engine can work across
+your scenes, scripts, and assets while you review the changes in the same project.
 
 **What makes Summer Engine different:**
-- **Works with existing projects**: Open your projects and keep working. Tutorials, libraries, and extensions work out of the box.
-- **No lock-in**: Your projects stay yours. Open them in Summer Engine or your preferred editor anytime.
+- **One creator path**: Install, create, integrate the Summer SDK, test, publish, and update.
+- **GDScript by default**: Start with the creator language used throughout these guides.
+- **Portable source**: Your project stays yours. Familiar formats improve portability, but
+  editor-version, import, plugin, native-extension, and export compatibility still need
+  verification.
 - **Project Intelligence**: AI understands your scenes, scripts, assets, and game logic
-- **Safe Operations**: Changes go through safe APIs, so nothing breaks unexpectedly
+- **Reviewable Operations**: Changes go through editor APIs; review the diff and test the project after each operation
 - **Privacy controls**: Pro accounts can enable Privacy Mode to opt out of training-data use
 
-## Quickstarts
+## Start here
 
-Get started in 5 minutes. Pick your path:
+Follow this path in order:
 
-<CardGroup cols={1}>
-  <Card title="How do I publish a game with any AI coding agent?" icon="bot" href="/agent-setup">
-    Point Claude Code, Cursor, Codex, or any agent at one prompt: it builds a multiplayer Godot game and submits it to Summercraft for review
+<CardGroup cols={2}>
+  <Card title="1. Install Summer Engine" icon="download" href="/essentials/installation">
+    Install the editor on macOS or Windows and verify it opens.
+  </Card>
+  <Card title="2. Create a Summer game" icon="rocket" href="/quickstarts/fresh-project">
+    Create a project and make GDScript your default gameplay language.
+  </Card>
+  <Card title="3. Build your first GDScript game" icon="code" href="/api-reference/summer-sdk/build-your-first-summer-game">
+    Add the minimal game structure and connect the Summer SDK.
+  </Card>
+  <Card title="4. Use the Summer SDK" icon="boxes" href="/api-reference/summer-sdk">
+    Choose multiplayer, player, persistence, economy, and publishing capabilities.
+  </Card>
+  <Card title="5. Test locally" icon="flask-conical" href="/api-reference/summer-sdk/testing-your-game-locally">
+    Validate the Summer game before using a limited publish request.
+  </Card>
+  <Card title="6. Export and submit" icon="upload" href="/api-reference/summer-sdk/exporting-and-uploading-your-game">
+    Export a game-only pack, submit it for human review, and follow the update path.
+  </Card>
+</CardGroup>
+
+## Other ways to start
+
+<CardGroup cols={2}>
+  <Card title="Give the task to an AI coding agent" icon="bot" href="/agent-setup">
+    Use the canonical prompt to build a Summer game with Summer Engine and the Summer SDK.
   </Card>
   <Card title="How do I make a game with Summer Agent?" icon="sparkles" href="/quickstarts/ai-game-dev">
-    Use Summer Agent in Summer Engine: build a complete game with full AI assistance, no coding required
-  </Card>
-  <Card title="How do I start a fresh project?" icon="rocket" href="/quickstarts/fresh-project">
-    Start from scratch and build your first game with Summer Agent in minutes
+    Use Summer Agent to draft scenes and GDScript, then review and test the generated work.
   </Card>
   <Card title="How do I use the Summer Engine CLI and MCP?" icon="terminal" href="/mcp/cli">
     CLI lets Claude Code, Cursor, Devin Desktop install and run Summer Engine. You chat in your IDE; the AI uses MCP tools.
-  </Card>
-  <Card title="I have an existing project. How do I add Summer Engine?" icon="folder" href="/quickstarts/existing-godot">
-    Open your existing project in Summer Engine and get Summer Agent assistance immediately
   </Card>
   <Card title="How do I make a PC game with Summer Agent?" icon="monitor" href="/quickstarts/pc-game">
     Build and export a Windows game with Summer Agent
@@ -60,6 +84,9 @@ Get started in 5 minutes. Pick your path:
   </Card>
   <Card title="How do I migrate from Unreal to Summer Engine?" icon="arrow-right" href="/quickstarts/unreal-migration">
     Rebuild your Unreal project in Summer Engine with Summer Agent
+  </Card>
+  <Card title="Bringing an existing Godot project?" icon="git-compare-arrows" href="/quickstarts/existing-godot">
+    Use the compatibility and migration path instead of the new-creator sequence.
   </Card>
 </CardGroup>
 
@@ -109,7 +136,7 @@ Deep dives into Summer Engine's capabilities:
     Create 2D art, 3D models, and audio with AI
   </Card>
   <Card title="Publishing Your Game" icon="upload" href="/publishing/overview">
-    Export to Steam, itch.io, Mac, Windows, mobile, and consoles
+    Prepare an export with the templates and toolchains installed for your target. Store submission remains creator-controlled.
   </Card>
 </CardGroup>
 
@@ -122,7 +149,7 @@ Common questions about Summer Engine:
     The AI game engine. Build games by describing them.
   </Card>
   <Card title="Is Summer Engine compatible with my existing project?" href="/knowledge-base/godot-compatibility">
-    Yes. Open your project and continue working with AI assistance.
+    Commit a copy first, then verify the editor, imports, plugins, native extensions, and exports against the compatibility reference.
   </Card>
   <Card title="Is my code safe?" href="/knowledge-base/privacy-and-code-safety">
     Privacy Mode is available on paid plans. When enabled, code is never stored by model providers or used for training.
@@ -131,7 +158,7 @@ Common questions about Summer Engine:
     Great for prototyping and indie games. Learn the tradeoffs.
   </Card>
   <Card title="Can I make a game with just AI, no coding?" href="/knowledge-base/ai-game-dev">
-    Yes. Describe what you want and Summer Engine writes the code.
+    Start in natural language. Summer Agent can draft scenes and GDScript while you review, test, and integrate the result.
   </Card>
   <Card title="How do I get support?" href="/knowledge-base/support">
     Founders respond personally. Discord, email, and more.
@@ -178,8 +205,8 @@ Summer Engine brings AI directly into your game development workflow. Whether yo
 Summer Engine is designed for everyone who wants to make games. It combines the ease of "vibe coding" with the power of a professional game engine.
 
 ### For Creators & Vibe Coders
-- **No code required**: Build complete games just by describing them in plain English
-- **Instant Assets**: Generate 3D models, music, and sound effects on the fly
+- **Start in natural language**: Ask Summer Agent to draft scenes and GDScript, then review and test the result
+- **Documented asset workflow**: Follow the asset-generation guide for currently supported providers, licensing, and quality tradeoffs
 - **Learn as you go**: Watch how Summer Engine builds things to learn game development naturally
 - **Focus on fun**: Skip the boilerplate and get straight to the gameplay
 
@@ -189,7 +216,7 @@ Summer Engine is designed for everyone who wants to make games. It combines the 
 - **Code Quality**: AI writes clean, structured GDScript that follows best practices
 - **Accelerated Workflow**: Handle tedious tasks instantly so you can focus on architecture and polish
 
-Summer Engine removes boilerplate, accelerates iteration, and handles the hard parts, while giving you the option to dive as deep as you want. We integrate every new AI breakthrough (image, 3D, video models) within 24 hours of release.
+Summer Engine removes boilerplate and accelerates iteration while giving you the option to dive as deep as you want. New models are evaluated before they are exposed; availability is documented instead of promised on a fixed schedule.
 
 <Columns cols={2}>
   <Card
@@ -218,7 +245,9 @@ Summer Engine removes boilerplate, accelerates iteration, and handles the hard p
     icon="check"
     href="/essentials/installation"
   >
-    Open your projects as-is. Keep your plugins, docs, and muscle memory.
+    Evaluate a committed copy of an existing project. Familiar formats and concepts reduce
+    migration work; verify imports, plugins, native extensions, and exports against the
+    current Summer Engine release.
   </Card>
 </Columns>
 

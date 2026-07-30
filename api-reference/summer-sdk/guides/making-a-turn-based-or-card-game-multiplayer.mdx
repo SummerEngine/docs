@@ -6,15 +6,19 @@ icon: "layout-grid"
 
 ## Platform Framing
 
-Turn-based and card games are first-class on Summercraft.
+The Summer SDK contract supports turn-based and card-game models without requiring a 3D
+character template. The hosted runtime and player-facing play surfaces are not
+production-live yet.
 
 Use:
 
 - `SummerGame` for match lifecycle,
-- `SummerPlayer` for connected player identity + synced state,
+- `SummerPlayer` for the future player-identity and synced-state shape,
 - `set_synced` for turn/board/hand summaries.
 
-No 3D character system is required.
+No 3D character system is required. This is a scaffolded contract example; it does not run
+on a production hosted runtime today. See
+[platform capability status](/knowledge-base/source-status#platform-capability-status).
 
 ## Minimal Player Setup
 

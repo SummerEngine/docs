@@ -1,12 +1,14 @@
 ---
 title: "I have an existing project. How do I add Summer Engine?"
-description: "Open your existing project in Summer Engine and get AI assistance immediately. No conversion required."
+description: "Evaluate an existing upstream-compatible project in Summer Engine, review the first import, and verify version-sensitive integrations."
 icon: "folder"
 ---
 
 ## Use Summer Engine with Your Existing Project
 
-Summer Engine works with industry-standard project formats. Open your project and continue working, with AI assistance.
+Summer Engine uses familiar upstream-derived project formats, but its minimum and recommended
+project compatibility ranges remain unmeasured. Work from a committed copy, open it in
+Summer Engine, and treat the first import as a compatibility evaluation.
 
 ## Step 1: Download and Install Summer Engine
 
@@ -33,16 +35,19 @@ Summer Engine works with industry-standard project formats. Open your project an
   </Step>
 </Steps>
 
-## What Works Out of the Box
+## What to expect
 
-- **All your scenes, scripts, and assets**: No conversion needed
-- **Third-party libraries and plugins**: Most work without changes
-- **Export templates**: Web, desktop, and mobile export all supported
-- **Team workflows**: Team members can use Summer Engine and the standard editor interchangeably
+- **GDScript, text scenes, resources, and assets** use familiar formats.
+- **Third-party libraries and plugins** need explicit testing when they are native,
+  editor-integrated, or version-pinned.
+- **Imports and exports** should be verified on the target Summer Engine release.
+- **Team workflows** should pin compatible editor versions and review generated diffs.
 
 ## Zero Lock-in
 
-Your project files stay in standard formats. You can open the same project in the standard editor anytime. No proprietary formats, no metadata injection.
+Your project files stay in documented formats. Commit before the first open so imports and
+configuration changes are reviewable. See
+[Compatibility & upstream](/reference/compatibility) for current measured facts.
 
 ## Next Steps
 

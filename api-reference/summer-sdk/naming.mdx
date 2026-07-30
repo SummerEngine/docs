@@ -12,6 +12,8 @@ games written against the old names need a mechanical pass.
 
 This page is the single authority for what each old identifier became. If another
 document, comment, or older repository disagrees with the table below, the table wins.
+Names in this mapping define the SDK contract; they do not imply a live hosted runtime. See
+[platform capability status](/knowledge-base/source-status#platform-capability-status).
 
 <Warning>
   Renaming is mechanical but not free. `summer_sdk` is a **required** manifest key and
@@ -26,9 +28,10 @@ document, comment, or older repository disagrees with the table below, the table
 | `Crafty` | `Summer` | Autoload registered at `/root/Summer` |
 | `res://sdk/crafty.gd` | `res://sdk/summer.gd` | Autoload script path |
 
-`Summer` is the Summercraft platform singleton available inside a published game. It is
-unrelated to **Summer Engine**, the editor you build in — the two never appear in the
-same script.
+`Summer` is the singleton defined by the Summercraft runtime contract for an approved
+Summer game. Production playback is not live yet, so “defined by the contract” is not a
+claim that uploaded games can currently launch. The singleton is unrelated to **Summer
+Engine**, the editor you build in — the two never appear in the same script.
 
 ## Classes
 

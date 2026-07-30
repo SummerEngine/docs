@@ -1,0 +1,30 @@
+---
+title: "Update an Existing Summer Game"
+description: "Keep a Summer game identity stable, bump its version, retest with Summer Engine, and submit a new immutable release for review."
+icon: "refresh-cw"
+---
+
+Released artifacts are immutable. An update is a new reviewed release for the same
+**Summer game**, not a replacement of the bytes already approved. Keep the **Summer SDK**
+contract and stable identifiers while changing the versioned game content.
+
+## Update loop
+
+1. Keep `manifest.id` stable. On the release API path, reuse the same `gameId`.
+2. Bump `manifest.version`; pass the same version to upload-url and finalize.
+3. Make the GDScript or asset changes needed for the update.
+4. Run the [Summer Engine local test flow](/api-reference/summer-sdk/testing-your-game-locally).
+5. Re-export the game-only `.pck` and recompute its SHA-256 and byte count.
+6. Submit the new version through the [review flow](/api-reference/summer-sdk/submission-guide).
+
+Each update goes through human review. The previously approved release stays active while
+the update is pending or if the new release is rejected.
+
+<CardGroup cols={2}>
+  <Card title="Previous: Submit and review" icon="arrow-left" href="/api-reference/summer-sdk/submission-guide">
+    Review submission paths and platform states.
+  </Card>
+  <Card title="Next: Test the next update" icon="arrow-right" href="/api-reference/summer-sdk/testing-your-game-locally">
+    Return to the test loop before exporting another release.
+  </Card>
+</CardGroup>

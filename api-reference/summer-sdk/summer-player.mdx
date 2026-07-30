@@ -1,12 +1,15 @@
 ---
-title: "SummerPlayer"
-description: "Game-agnostic player contract: peer identity, synced state, and server-read input. Use SummerCharacter3D for built-in 3D character behavior."
+title: "SummerPlayer Contract"
+description: "Scaffolded player interface for peer identity, synced state, and server-read input, plus an optional SummerCharacter3D template."
 icon: "user"
 ---
 
 ## What Is `SummerPlayer`?
 
-`SummerPlayer` is the minimal platform contract for a connected player.
+`SummerPlayer` is the scaffolded platform contract for a future connected-player record.
+The production gameplay runtime and transport are not live, so the signatures below are
+authoring targets rather than deployed connection behavior. See
+[platform capability status](/knowledge-base/source-status#platform-capability-status).
 
 It is intentionally game-agnostic:
 
@@ -14,7 +17,8 @@ It is intentionally game-agnostic:
 - no required health model,
 - no required scene structure.
 
-This is what allows card games, RTS, 2D games, and 3D action games to all use the same multiplayer platform.
+The contract is intended to support card games, RTS, 2D games, and 3D action games without
+forcing one movement model.
 
 ## Core Contract (Signatures)
 
@@ -32,7 +36,7 @@ get_synced(key: String) -> Variant
 
 ## Identity
 
-Player identity fields are assigned by the platform during connection:
+The future runtime contract assigns identity fields during connection:
 
 ```gdscript
 var peer = player.peer_id
@@ -75,7 +79,7 @@ var score = player.get_synced("score")  # client or server
 
 ## Input (Read On Server)
 
-Each connected player has an input proxy you read on the server:
+The future runtime contract gives a connected player an input proxy for server-side reads:
 
 ```gdscript
 var move = player.input.movement
@@ -93,7 +97,7 @@ if player.input.is_action_just_pressed("interact"):
 
 For 3D action games, use `SummerCharacter3D` in your `player.tscn`.
 
-It includes:
+The template contract includes:
 
 - `CharacterBody3D` movement-compatible node type,
 - health fields (`health`, `max_health`, `is_alive`),

@@ -45,11 +45,32 @@
         "icon": "book-open",
         "groups": [
           {
-            "group": "Getting Started",
+            "group": "Start here",
             "pages": [
               "index",
+              "essentials/installation",
               "quickstarts/fresh-project",
-              "quickstarts/existing-godot",
+              "api-reference/summer-sdk/build-your-first-summer-game"
+            ]
+          },
+          {
+            "group": "Summer SDK",
+            "pages": [
+              "api-reference/summer-sdk"
+            ]
+          },
+          {
+            "group": "Test and publish",
+            "pages": [
+              "api-reference/summer-sdk/testing-your-game-locally",
+              "api-reference/summer-sdk/exporting-and-uploading-your-game",
+              "api-reference/summer-sdk/submission-guide",
+              "api-reference/summer-sdk/updating-your-game"
+            ]
+          },
+          {
+            "group": "Other ways to start",
+            "pages": [
               "quickstarts/ai-game-dev",
               "quickstarts/web-game",
               "quickstarts/pc-game",
@@ -63,7 +84,6 @@
           {
             "group": "Essentials",
             "pages": [
-              "essentials/installation",
               "essentials/authentication",
               "essentials/account-billing",
               "essentials/pricing",
@@ -102,9 +122,8 @@
             ]
           },
           {
-            "group": "Engine Migration",
+            "group": "Other Engine Migration",
             "pages": [
-              "migration/godot",
               "quickstarts/unity-migration",
               "quickstarts/unreal-migration"
             ]
@@ -114,16 +133,6 @@
             "pages": [
               "automation/headless",
               "automation/authoring"
-            ]
-          },
-          {
-            "group": "Extending Summer",
-            "pages": [
-              "extending/overview",
-              "extending/editor-plugins",
-              "extending/gdextension",
-              "extending/modules",
-              "extending/plugin-library"
             ]
           },
           {
@@ -187,34 +196,47 @@
         "icon": "code",
         "groups": [
           {
-            "group": "Agent Setup",
+            "group": "Summer SDK reference",
             "pages": [
-              "agent-setup",
-              "agent-setup/prompt"
-            ]
-          },
-          {
-            "group": "Creating Games on Summercraft",
-            "pages": [
-              "api-reference/summer-sdk",
-              "api-reference/summer-sdk/naming",
               "api-reference/summer-sdk/summer",
               "api-reference/summer-sdk/summer-game",
               "api-reference/summer-sdk/summer-player",
               "api-reference/summer-sdk/subsystems-signals",
-              "api-reference/summer-sdk/build-your-first-summer-game",
               "api-reference/summer-sdk/guides/multiplayer-ffa-coin-collector",
               "api-reference/summer-sdk/guides/multiplayer-persistence-rpg",
               "api-reference/summer-sdk/guides/team-based-game",
               "api-reference/summer-sdk/guides/making-a-2d-game-multiplayer",
-              "api-reference/summer-sdk/guides/making-a-turn-based-or-card-game-multiplayer",
-              "api-reference/summer-sdk/manifest-json-reference",
-              "api-reference/summer-sdk/production-launch-runbook",
-              "api-reference/summer-sdk/submission-guide",
-              "api-reference/summer-sdk/testing-your-game-locally",
-              "api-reference/summer-sdk/exporting-and-uploading-your-game",
-              "api-reference/summer-sdk/banned-apis-reference",
+              "api-reference/summer-sdk/guides/making-a-turn-based-or-card-game-multiplayer"
+            ]
+          },
+          {
+            "group": "Automation",
+            "pages": [
+              "agent-setup",
+              "agent-setup/prompt",
               "api-reference/summer-sdk/ai-agent-playbook"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "api-reference/summer-sdk/manifest-json-reference",
+              "api-reference/summer-sdk/banned-apis-reference",
+              "api-reference/summer-sdk/naming",
+              "reference/compatibility",
+              "api-reference/summer-sdk/production-launch-runbook"
+            ]
+          },
+          {
+            "group": "Migration and extensions",
+            "pages": [
+              "quickstarts/existing-godot",
+              "migration/godot",
+              "extending/overview",
+              "extending/editor-plugins",
+              "extending/gdextension",
+              "extending/modules",
+              "extending/plugin-library"
             ]
           },
           {

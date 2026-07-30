@@ -1,22 +1,34 @@
 ---
 title: "Is Summer Engine compatible with my existing project?"
-description: "Yes. Open your project and continue working with AI assistance. No conversion required."
+description: "Summer uses familiar upstream-compatible formats, while minimum and recommended project compatibility ranges remain unmeasured."
 icon: "question"
 ---
 
-## Yes, Completely Compatible
+## Start with the measured compatibility contract
 
-Summer Engine works with industry-standard project formats. You can open any existing Godot project in Summer Engine and continue working on it immediately. No conversion, no migration, no lock-in.
+Summer Engine uses familiar text scene, resource, script, and project formats. The current
+upstream technical base is 4.6.1, the planned next base is 4.7.1, and Summer follows upstream
+continuously. The minimum and recommended project compatibility ranges are not yet measured,
+so this page does not promise that every historical project opens unchanged.
 
-## What Works Out of the Box
+## What to evaluate
 
-**All existing Godot projects.** Summer Engine is built on the Godot codebase. Your `.tscn` scene files, `.gd` scripts, `.tres` resources, and `project.godot` configuration are identical. A `git diff` between a Summer Engine-edited file and a Godot-edited file shows only your changes. No proprietary metadata injection.
+**Portable source formats.** `.tscn` scenes, `.gd` scripts, `.tres` resources, and
+`project.godot` configuration use familiar upstream-derived formats. This is a format fact,
+not proof that every file produced by every upstream release loads unchanged. Commit before
+the first open, then review import and configuration changes normally.
 
-**Third-party libraries and plugins.** Most Godot plugins work in Summer Engine without changes. Plugins that modify the editor interface may need updates for AI integration, but the vast majority work as-is.
+**Third-party libraries and plugins.** Pure GDScript addons are the safest case. Native
+extensions, custom editor integrations, and addons pinned to a different upstream version
+need explicit compatibility testing.
 
-**Export templates.** Web, desktop (Windows, Mac, Linux), and mobile (iOS, Android) export all work. You can build for any platform Summer Engine supports.
+**Export targets.** Verify the installed templates and run an exported-build smoke test for
+each target. Do not infer web, desktop, mobile, or native-extension compatibility from the
+upstream base alone.
 
-**Team workflows.** Team members can use Summer Engine and vanilla Godot interchangeably. An artist opens the project in Godot to edit scenes; a programmer opens the same project in Summer Engine for AI assistance. Both commit to the same repo. No merge conflicts from tooling differences.
+**Team workflows.** Mixed-editor teams can share the repository when they pin compatible
+versions and review generated changes. Shared formats reduce friction; they do not guarantee
+zero differences between editors or importers.
 
 ## What Happens When You Open Your Project
 
@@ -27,11 +39,15 @@ Summer Engine works with industry-standard project formats. You can open any exi
 
 ## Zero Lock-in
 
-Summer Engine projects *are* Godot projects. Identical file formats. If Summer Engine disappeared tomorrow, your project would open in Godot 4 without modification. You'd lose AI assistance, but your game, code, and assets would be unaffected.
+Your Summer game remains yours: GDScript, text scenes, resources, and assets stay in
+documented formats. Opening them in another compatible editor may require an import pass and
+does not carry Summer-only AI or platform surfaces.
 
 ## Version Compatibility
 
-Summer Engine supports Godot 4.x project formats. Projects from Godot 3.x need the standard Godot 3→4 migration process before opening in Summer Engine.
+Use the generated [Compatibility & upstream](/reference/compatibility) page for the current
+base and measured claims. Projects from Godot Engine 3.x need the upstream 3→4 migration
+before they can be evaluated against Summer Engine's current base.
 
 ## Related
 

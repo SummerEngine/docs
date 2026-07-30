@@ -1,0 +1,268 @@
+{
+  "schemaVersion": 1,
+  "navigation": [
+    "index",
+    "essentials/installation",
+    "quickstarts/fresh-project",
+    "api-reference/summer-sdk/build-your-first-summer-game",
+    "api-reference/summer-sdk",
+    "api-reference/summer-sdk/testing-your-game-locally",
+    "api-reference/summer-sdk/exporting-and-uploading-your-game",
+    "api-reference/summer-sdk/submission-guide",
+    "api-reference/summer-sdk/updating-your-game",
+    "quickstarts/ai-game-dev",
+    "quickstarts/web-game",
+    "quickstarts/pc-game",
+    "quickstarts/mac-game",
+    "quickstarts/ios-game",
+    "quickstarts/android-game",
+    "quickstarts/console-game",
+    "quickstarts/playstation-game",
+    "essentials/authentication",
+    "essentials/account-billing",
+    "essentials/pricing",
+    "essentials/first-chat",
+    "essentials/faq",
+    "auto-mode/auto",
+    "auto-mode/premium",
+    "auto-mode/models",
+    "ai-tools/design-mode",
+    "ai-tools/operations",
+    "ai-tools/subagents",
+    "ai-tools/skills",
+    "ai-tools/memory",
+    "ai-tools/rag-search",
+    "ai-tools/mcp-asset-search",
+    "art-system/overview",
+    "art-system/ai-generation",
+    "art-system/gallery",
+    "art-system/collections",
+    "art-system/licensing",
+    "quickstarts/unity-migration",
+    "quickstarts/unreal-migration",
+    "automation/headless",
+    "automation/authoring",
+    "desktop/troubleshooting",
+    "mcp/overview",
+    "mcp/setup",
+    "mcp/cursor",
+    "mcp/claude-code",
+    "mcp/devin-desktop",
+    "mcp/antigravity",
+    "mcp/codex",
+    "mcp/gemini",
+    "mcp/github-copilot",
+    "mcp/opencode",
+    "mcp/local-models",
+    "mcp/vscode",
+    "mcp/zed",
+    "mcp/cli",
+    "mcp/cli-reference",
+    "mcp/cloud-cli",
+    "mcp/tools-reference",
+    "mcp/building-a-game",
+    "mcp/skills",
+    "api-reference/summer-sdk/summer",
+    "api-reference/summer-sdk/summer-game",
+    "api-reference/summer-sdk/summer-player",
+    "api-reference/summer-sdk/subsystems-signals",
+    "api-reference/summer-sdk/guides/multiplayer-ffa-coin-collector",
+    "api-reference/summer-sdk/guides/multiplayer-persistence-rpg",
+    "api-reference/summer-sdk/guides/team-based-game",
+    "api-reference/summer-sdk/guides/making-a-2d-game-multiplayer",
+    "api-reference/summer-sdk/guides/making-a-turn-based-or-card-game-multiplayer",
+    "agent-setup",
+    "agent-setup/prompt",
+    "api-reference/summer-sdk/ai-agent-playbook",
+    "api-reference/summer-sdk/manifest-json-reference",
+    "api-reference/summer-sdk/banned-apis-reference",
+    "api-reference/summer-sdk/naming",
+    "reference/compatibility",
+    "api-reference/summer-sdk/production-launch-runbook",
+    "quickstarts/existing-godot",
+    "migration/godot",
+    "extending/overview",
+    "extending/editor-plugins",
+    "extending/gdextension",
+    "extending/modules",
+    "extending/plugin-library",
+    "api-reference/mcp",
+    "guides/working-with-context",
+    "guides/large-codebases",
+    "guides/working-with-documentation",
+    "guides/web-development",
+    "guides/github-from-changes-dock",
+    "guides/summer-cloud",
+    "publishing/overview",
+    "publishing/macos-export",
+    "publishing/windows-export",
+    "publishing/local-testing",
+    "publishing/steam",
+    "publishing/itch-io",
+    "publishing/consoles",
+    "publishing/troubleshooting",
+    "knowledge-base/what-is-summer",
+    "knowledge-base/summer-vs-chatgpt",
+    "knowledge-base/beginners-or-professionals",
+    "knowledge-base/production-games",
+    "knowledge-base/learning-curve",
+    "knowledge-base/aaa-games",
+    "knowledge-base/source-status",
+    "knowledge-base/summer-vs-other-tools",
+    "knowledge-base/godot-compatibility",
+    "knowledge-base/godot-projects",
+    "knowledge-base/ai-models",
+    "knowledge-base/ai-asset-quality",
+    "knowledge-base/ai-game-dev",
+    "knowledge-base/specialist-agents",
+    "knowledge-base/project-intelligence",
+    "knowledge-base/ai-operations-limitations",
+    "knowledge-base/multiplayer",
+    "knowledge-base/custom-assets",
+    "knowledge-base/web-games",
+    "knowledge-base/unity-unreal-migration",
+    "knowledge-base/privacy-and-code-safety",
+    "knowledge-base/pricing",
+    "knowledge-base/support",
+    "knowledge-base/no-experience",
+    "knowledge-base/publish-steam",
+    "knowledge-base/export-mobile",
+    "changelog/overview",
+    "security/overview",
+    "security/privacy-mode"
+  ],
+  "redirects": [
+    {
+      "source": "/api-reference/coming-soon",
+      "destination": "/api-reference/mcp"
+    },
+    {
+      "source": "/ai-tools/mcp-setup",
+      "destination": "/mcp/setup"
+    },
+    {
+      "source": "/ai-tools/cursor-setup",
+      "destination": "/mcp/cursor"
+    },
+    {
+      "source": "/ai-tools/claude-code-setup",
+      "destination": "/mcp/claude-code"
+    },
+    {
+      "source": "/ai-tools/windsurf-setup",
+      "destination": "/mcp/devin-desktop"
+    },
+    {
+      "source": "/mcp/windsurf",
+      "destination": "/mcp/devin-desktop"
+    },
+    {
+      "source": "/ai-tools/cli-reference",
+      "destination": "/mcp/cli-reference"
+    },
+    {
+      "source": "/ai-tools/tools-reference",
+      "destination": "/mcp/tools-reference"
+    },
+    {
+      "source": "/ai-tools/building-a-game",
+      "destination": "/mcp/building-a-game"
+    },
+    {
+      "source": "/cli",
+      "destination": "/mcp/cli"
+    },
+    {
+      "source": "/quickstart",
+      "destination": "/quickstarts/fresh-project"
+    },
+    {
+      "source": "/mcp/Root",
+      "destination": "/mcp/cursor"
+    },
+    {
+      "source": "/Applications/Summer.app",
+      "destination": "/essentials/installation"
+    },
+    {
+      "source": "/mcp/projects/racer",
+      "destination": "/mcp/cli-reference"
+    },
+    {
+      "source": "/knowledge-base/whats-next",
+      "destination": "/knowledge-base/what-is-summer"
+    },
+    {
+      "source": "/api-reference/crafty-sdk",
+      "destination": "/api-reference/summer-sdk"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/crafty",
+      "destination": "/api-reference/summer-sdk/summer"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/crafty-game",
+      "destination": "/api-reference/summer-sdk/summer-game"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/crafty-player",
+      "destination": "/api-reference/summer-sdk/summer-player"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/build-your-first-crafty-game",
+      "destination": "/api-reference/summer-sdk/build-your-first-summer-game"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/subsystems-signals",
+      "destination": "/api-reference/summer-sdk/subsystems-signals"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/manifest-json-reference",
+      "destination": "/api-reference/summer-sdk/manifest-json-reference"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/production-launch-runbook",
+      "destination": "/api-reference/summer-sdk/production-launch-runbook"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/submission-guide",
+      "destination": "/api-reference/summer-sdk/submission-guide"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/testing-your-game-locally",
+      "destination": "/api-reference/summer-sdk/testing-your-game-locally"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/exporting-and-uploading-your-game",
+      "destination": "/api-reference/summer-sdk/exporting-and-uploading-your-game"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/banned-apis-reference",
+      "destination": "/api-reference/summer-sdk/banned-apis-reference"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/ai-agent-playbook",
+      "destination": "/api-reference/summer-sdk/ai-agent-playbook"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/guides/multiplayer-ffa-coin-collector",
+      "destination": "/api-reference/summer-sdk/guides/multiplayer-ffa-coin-collector"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/guides/multiplayer-persistence-rpg",
+      "destination": "/api-reference/summer-sdk/guides/multiplayer-persistence-rpg"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/guides/team-based-game",
+      "destination": "/api-reference/summer-sdk/guides/team-based-game"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/guides/making-a-2d-game-multiplayer",
+      "destination": "/api-reference/summer-sdk/guides/making-a-2d-game-multiplayer"
+    },
+    {
+      "source": "/api-reference/crafty-sdk/guides/making-a-turn-based-or-card-game-multiplayer",
+      "destination": "/api-reference/summer-sdk/guides/making-a-turn-based-or-card-game-multiplayer"
+    }
+  ]
+}

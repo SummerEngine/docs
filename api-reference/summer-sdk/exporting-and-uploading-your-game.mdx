@@ -1,17 +1,19 @@
 ---
-title: "Exporting and Uploading Your Game"
-description: "Export a game-only .pck, then publish it through the live Summercraft release API: create game, presigned upload, server-verified finalize, manual review."
+title: "Export and Upload Your Summer Game"
+description: "Use Summer Engine to export a game-only .pck, then upload it through the live release API for human review."
 icon: "upload"
 ---
 
 ## Goal
 
-Produce a `.pck` that contains only your game content, then publish it for review. There are two live publish paths:
+Produce a `.pck` that contains only your game content, then submit it for review. There are
+two deployed submission paths:
 
 - **The release API** (this page, recommended — what agents and CI use): four HTTP calls against `https://summercraft.ai`, artifact limit 512 MiB.
 - **The browser submit page** at [summercraft.ai/submit](https://summercraft.ai/submit): upload `.pck` + `manifest.json` in the UI, artifact limit 2 GB, runs an automated static scanner at upload time. See [Submission Guide](/api-reference/summer-sdk/submission-guide).
 
-Both end in the same place: a human reviews the release before anything goes live. No auto-publish.
+Both end in the same place: a human reviews the release before its catalog status can
+become `published`. No auto-publish, and no player-facing playback yet.
 
 <Note>
   Working agent-first? [/agent-setup](/agent-setup) has a paste-prompt that walks any coding agent through this entire page, including a verified project template.
@@ -27,10 +29,11 @@ Use a preset that ships your game and nothing else:
 - `exclude_filter` covering infrastructure and local stubs (`sdk/*`, plus `core/*,server/*,client/*` if you develop inside the Summer Engine starter template)
 - `script_export_mode=0` — ship GDScript as readable text so review can read your source
 
-Export headlessly (no export templates required for a pack export):
+Export with the same Summer Engine executable used for local testing (no export templates
+are required for a pack export):
 
 ```bash
-godot --headless --path . --export-pack "Summer Game PCK" game.pck
+"$SUMMER_ENGINE" --headless --path . --export-pack "Summer Game PCK" game.pck
 ```
 
 Checks after export:
@@ -68,7 +71,8 @@ Validate everything locally before touching these endpoints.
 
 ## 4) `POST /api/games/engine` — create the game record
 
-Once per game, not per version. Creates a Godot game (`kind: "engine"`) as metadata; the artifact arrives through the release endpoints.
+Once per game, not per version. Creates a Summer game record (`kind: "engine"`) as
+metadata; the artifact arrives through the release endpoints.
 
 Request:
 
@@ -162,7 +166,11 @@ Success `201`:
 }
 ```
 
-The release is **not live**: it serves only after an admin approves it and the game's active version moves. On a `checksum_mismatch` or `size_mismatch` the stored object is deleted (so the write-once key is free again for a correct re-upload) and no row is written.
+The release is `pending_review`: it is available only to the owner and admins until an
+admin approves it and the game's active version moves. Approval changes catalog/download
+access; it does not make the game playable on the platform. On a `checksum_mismatch` or
+`size_mismatch` the stored object is deleted (so the write-once key is free again for a
+correct re-upload) and no row is written.
 
 Errors: `401 sign_in_required` · `400 invalid_request` · `404 game_not_found_or_forbidden` · `409 not_a_godot_game` · `409 no_upload_intent` (call upload-url first; declarations must match it exactly) · `409 artifact_missing` (the PUT never landed) · `413 artifact_too_large` · `400 size_mismatch` · `400 checksum_mismatch` · `409 version_exists` · `429 rate_limited` (its own budget) · `503 r2_not_configured` · `502 finalize_failed`.
 
@@ -183,10 +191,17 @@ Success `200`:
 ## 9) Review lifecycle
 
 1. Finalize → release `pending_review`; the admin queue is pinged.
-2. A human reviews. Approval re-verifies the stored bytes against the checksum pinned at finalize, then points the game's active version at the release and publishes the game. Rejection records a reason, shown to you on [summercraft.ai/creator](https://summercraft.ai/creator); a live game stays live on its previously approved release.
+2. A human reviews. Approval re-verifies the stored bytes against the checksum pinned at
+   finalize, then points the game's active version at the release and assigns `published`
+   catalog status. Rejection records a reason, shown to you on
+   [summercraft.ai/creator](https://summercraft.ai/creator); the previously approved catalog
+   release stays active.
 3. There is no automated publish, no runtime sandbox yet, and no guaranteed review time.
 
-**What approval does not (yet) mean:** browser play, desktop shell play, and hosted game servers for uploaded Godot games are not live. Approved releases are distributed through the authenticated download endpoint; play surfaces are in development.
+**What approval does not (yet) mean:** browser play, desktop shell play, and hosted game
+servers for uploaded Summer games are not live. Approved releases are distributed through
+the authenticated download endpoint; play surfaces are in development. The canonical table
+is [platform capability status](/knowledge-base/source-status#platform-capability-status).
 
 ## 10) Updating your game
 
@@ -198,10 +213,11 @@ Releases are immutable — updating means a new one:
 
 Each update goes through review again.
 
-## Related Docs
-
-- [Agent Setup](/agent-setup) — the paste-prompt that automates this page
-- [Submission Guide](/api-reference/summer-sdk/submission-guide) — review lifecycle and the browser flow
-- [Testing Your Game Locally](/api-reference/summer-sdk/testing-your-game-locally)
-- [manifest.json Reference](/api-reference/summer-sdk/manifest-json-reference)
-- [Banned APIs Reference](/api-reference/summer-sdk/banned-apis-reference)
+<CardGroup cols={2}>
+  <Card title="Previous: Test locally" icon="arrow-left" href="/api-reference/summer-sdk/testing-your-game-locally">
+    Return to the Summer Engine validation loop.
+  </Card>
+  <Card title="Next: Submit and review" icon="arrow-right" href="/api-reference/summer-sdk/submission-guide">
+    Choose a submission path and understand review states.
+  </Card>
+</CardGroup>

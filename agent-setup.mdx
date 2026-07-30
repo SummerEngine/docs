@@ -1,10 +1,13 @@
 ---
 title: "Agent Setup"
-description: "Point any AI coding agent at Summercraft: one paste-prompt that takes it from empty directory to a multiplayer Godot game submitted for review."
+description: "Point an AI coding agent at the canonical Summer Engine prompt: build a multiplayer Summer game in GDScript and submit it for review."
 icon: "bot"
 ---
 
-Summercraft is built to be published to by AI coding agents. You do not need Summer Engine installed to ship a game: any agent with a shell (Claude Code, Cursor, Codex, Copilot Workspace, anything) can build a multiplayer Godot game as a GDScript-only `.pck` and submit it through the live publish API. A human reviews every submission before it goes live.
+An AI coding agent can use Summer Engine to build a multiplayer **Summer game** in
+**GDScript**, integrate the **Summer SDK**, validate it locally, and submit it through the
+live submission API. A human reviews every submission before its catalog status can become
+`published`; published catalog status does not make an uploaded game playable yet.
 
 ## Point your agent at Summercraft
 
@@ -13,13 +16,15 @@ Paste this into any coding agent:
 ```text
 Fetch https://docs.summerengine.com/agent-setup/prompt.md and follow it exactly,
 top to bottom. It is the canonical instruction set for building a multiplayer
-Godot 4.5 game against the Summer SDK and publishing it to Summercraft.
+Summer game in GDScript with Summer Engine and the Summer SDK, then publishing
+it to Summercraft.
 
 Context you need before you start:
-- Summercraft (https://summercraft.ai) is the platform where Summer SDK games
-  are published and played. The publish API lives at https://summercraft.ai/api/*.
-- You will build a GDScript-only game that extends SummerGame, export a .pck
-  with Godot 4.5 headless (no export templates needed), and publish it in four
+- Summercraft (https://summercraft.ai) accepts Summer SDK games for review.
+  The submission API lives at https://summercraft.ai/api/*; uploaded games are
+  not playable on the platform yet.
+- You will install and use Summer Engine, build a GDScript-only game that
+  extends SummerGame, export a .pck with the Summer Engine binary, and publish it in four
   API calls: create game -> get presigned upload URL -> PUT the .pck ->
   finalize (the server re-verifies your sha256).
 - Publishing needs a Summercraft access token in SUMMERCRAFT_ACCESS_TOKEN.
@@ -28,7 +33,7 @@ Context you need before you start:
 - Each publish step is limited to 1 request per hour per account, so validate
   everything locally before touching the API.
 - After finalize the release is "pending_review" in a manual human review
-  queue. There is no auto-publish, and browser/desktop play of uploaded Godot
+  queue. There is no auto-publish, and browser/desktop play of uploaded Summer
   games is not live yet - say so honestly when you report back.
 - Any docs page is fetchable as raw markdown by adding .md to its URL; the
   index is at https://docs.summerengine.com/llms.txt.
@@ -40,12 +45,12 @@ The prompt at [/agent-setup/prompt](/agent-setup/prompt) is the canonical, alway
 
 ## What the agent will do
 
-1. **Check prerequisites** — Godot 4.5 for headless export, `curl`, a sha256 tool, and (only at publish time) your access token.
+1. **Check prerequisites** — Summer Engine for local validation/export, `curl`, a sha256 tool, and (only at publish time) your access token.
 2. **Build a multiplayer-native game** — `extends SummerGame`, all gameplay authority on server paths, player state via `set_synced`, local SDK stubs so everything parses and smoke-runs without the platform runtime.
 3. **Validate locally** — headless smoke run, banned-API self-check, pack-content check. The upload budget is 1/hour, so the prompt front-loads every check.
 4. **Export a game-only `.pck`** — the preset excludes stubs and project config; ships GDScript as readable source.
 5. **Publish through the live API** — create game → presigned upload → server-verified finalize. See [Exporting and Uploading](/api-reference/summer-sdk/exporting-and-uploading-your-game) for the full reference.
-6. **Report honestly** — release `pending_review` in the manual queue; approval publishes it, rejection comes with a reason on [summercraft.ai/creator](https://summercraft.ai/creator).
+6. **Report honestly** — release `pending_review` in the manual queue; approval changes its catalog status to `published`, but does not make it playable yet. Rejection comes with a reason on [summercraft.ai/creator](https://summercraft.ai/creator).
 
 ## The one thing the agent cannot do: sign in
 
@@ -58,23 +63,16 @@ Agents must never handle your password. Create your account and session yourself
 
 There is no dedicated token page yet; this manual step is the current path. The publish API accepts `Authorization: Bearer <token>` on every endpoint.
 
-## What is live vs. coming
+## Platform status
 
-| Capability | Status |
-|---|---|
-| Create Godot game records via API | **Live** |
-| Direct-to-storage `.pck` upload (presigned, write-once) | **Live** |
-| Server-side sha256 verification at finalize | **Live** |
-| Manual human review queue | **Live** — every release, no auto-publish |
-| Authenticated release downloads (`download-url`) | **Live** — owner/admins always; others once published |
-| Browser `.pck` submit page ([summercraft.ai/submit](https://summercraft.ai/submit)) | **Live** — multipart flow with automated static scanner |
-| Playing uploaded Godot games in the browser | Coming — not yet available |
-| Playing uploaded Godot games in the desktop shell | Coming — not yet available |
-| Hosted dedicated game servers for uploaded games | Coming — not yet available |
-| Automated runtime sandbox for submissions | Coming — review is manual today |
-| `SummerMultiplayerPeer` transport (stock `@rpc` compatibility) | Coming — contract published, being built in the engine fork; current runtime multiplayer is host-authoritative over ENet |
+The release API, browser submission with static scanning, manual review queue, and
+authenticated release downloads are deployed. That does not make an approved game playable.
 
-Docs on this site never promise capabilities that are not deployed. If a page and reality disagree, trust the API's own error text and mail [founders@summerengine.com](mailto:founders@summerengine.com).
+Use the single canonical [Product source & platform status](/knowledge-base/source-status)
+table for every Live / Scaffold / Planned decision. It covers playback, hosted servers,
+matchmaking, the runtime sandbox, and the transport contract without duplicating a second
+status table here. If documentation and reality disagree, trust the API's own error text and
+mail [founders@summerengine.com](mailto:founders@summerengine.com).
 
 ## For agents reading this page directly
 
