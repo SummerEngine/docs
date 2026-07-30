@@ -45,7 +45,10 @@ banned-API and pack-content checks. It does not invoke the starter-template loop
 3. Check game scripts against the [blocked pattern list](/api-reference/summer-sdk/banned-apis-reference).
 4. Export and confirm the `.pck` contains only game files plus `manifest.json`.
 
-This validates structure, parsing, and packaging — not gameplay against the real SDK. The review process runs your game on the real runtime; keep gameplay logic simple enough to survive the difference, and treat the smoke run as the floor, not the ceiling.
+This validates structure, parsing, and packaging — not gameplay against a production Summer
+SDK runtime. Review is currently human; uploaded games are not executed by a production
+runtime or automated sandbox. Treat the smoke run as a structural floor, not platform or
+gameplay proof.
 
 ## Advanced compatibility escape hatch
 

@@ -1,14 +1,18 @@
 ---
-title: "Summer Singleton"
-description: "Platform entrypoint for multiplayer runtime features: lifecycle helpers, players, spawning, context checks, and subsystems."
+title: "Summer Singleton Contract"
+description: "Scaffolded Summer SDK entrypoint for lifecycle helpers, players, spawning, context checks, and subsystem interfaces."
 icon: "box"
 ---
 
 ## What Is `Summer`?
 
-`Summer` is the autoload singleton exposed by the SDK.
+`Summer` is the autoload singleton defined by the Summer SDK contract.
 
-Use it for platform-level operations that are not tied to one player object.
+The methods below are scaffolded interface examples. Uploaded games cannot currently launch
+in a production platform runtime, and hosted multiplayer, persistence, economy, matchmaking,
+and sandboxing are not live. Use this page to author against the future contract, not as
+evidence that a hosted service exists. See
+[platform capability status](/knowledge-base/source-status#platform-capability-status).
 
 ## `Summer` vs Player Object
 
@@ -72,11 +76,12 @@ if Summer.is_server():
     update_game_state()
 ```
 
-Use `is_server()` and `is_client()` to keep gameplay authority on the server.
+The contract uses `is_server()` and `is_client()` to express server authority. Local stubs
+and loopback tests do not prove production authority enforcement.
 
 ## Subsystems
 
-`Summer` exposes optional subsystem handles:
+The `Summer` contract defines optional subsystem handles:
 
 - `Summer.teams`
 - `Summer.score`

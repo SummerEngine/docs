@@ -1,17 +1,22 @@
 ---
-title: "Game Guide: Multiplayer with Persistence (RPG/Quest)"
-description: "How to add persistence and economy to a multiplayer game using Summer.data and Summer.economy."
+title: "Contract Example: RPG Persistence and Economy"
+description: "Author an RPG against the scaffolded Summer.data and Summer.economy interfaces without implying a live backend."
 icon: "database"
 ---
 
 ## What This Guide Covers
 
-This guide shows a persistent multiplayer game loop:
+This guide is a future-contract example for a persistent multiplayer game loop:
 
-- Load player save data on join
-- Keep inventory, quest progress, and level in persistent storage
-- Auto-save while players are connected
-- Award and spend crafties with `Summer.economy`
+- express player-data loads and saves,
+- model inventory, quest progress, and level,
+- issue periodic contract-level save calls,
+- model awards and spends through `Summer.economy`.
+
+There is no production gameplay runtime, persistence backend, economy rail, autosave, or
+backend flush for uploaded games today. This example is not executable proof of those
+services. See
+[platform capability status](/knowledge-base/source-status#platform-capability-status).
 
 ## Input Actions Used
 
@@ -150,7 +155,7 @@ func _load_player_snapshot(player) -> void:
     Summer.data.save(player, "quest_progress", quest_progress)
 
 func _save_player_snapshot(player) -> void:
-    # Data API is write-through to in-memory cache; backend flush is handled by SDK.
+    # Contract example only: no production persistence backend or flush is live.
     var level = Summer.data.load(player, "level")
     var xp = Summer.data.load(player, "xp")
     var inventory = Summer.data.load(player, "inventory")

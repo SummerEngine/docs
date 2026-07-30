@@ -1,17 +1,22 @@
 ---
-title: "Game Guide: Team-Based Multiplayer"
-description: "How to build team modes with Summer.teams and Summer.score, independent of genre."
+title: "Contract Example: Team-Based Multiplayer"
+description: "Author a team-mode model against the scaffolded Summer.teams and Summer.score interfaces."
 icon: "users"
 ---
 
 ## What This Guide Covers
 
-This guide implements a red-vs-blue team mode:
+This guide illustrates a red-vs-blue team-mode contract:
 
 - Team creation with `Summer.teams.create`
 - Team assignment and auto-balance
 - Team-specific spawn points
 - Team score via `Summer.score.add_team`
+
+The hosted gameplay runtime, player connection flow, team service, and score service are not
+production-live. The code is an authoring example for scaffolded interfaces, not runtime
+proof. See
+[platform capability status](/knowledge-base/source-status#platform-capability-status).
 
 ## Scene Setup
 
@@ -133,7 +138,7 @@ func _award_team_score(team_id: String, scorer) -> void:
 
 ## Genre Note
 
-This team logic works for:
+This team model can be adapted for:
 
 - 3D objective shooters,
 - 2D objective games,

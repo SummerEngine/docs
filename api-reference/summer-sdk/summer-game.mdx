@@ -66,7 +66,7 @@ apply_default_movement(player, delta, move_speed := 7.0, gravity := 20.0) -> voi
 - `_game_init()`: one-time setup (spawn points, static data, signal wiring).
 - `_game_start()`: begin active match flow.
 - `_game_end()`: finalize and cleanup.
-- `_player_joined(player)`: attach defaults for a newly connected player.
+- `_player_joined(player)`: future-runtime hook for attaching defaults when a player joins.
 - `_player_left(player)`: cleanup per-player transient state.
 
 ## Server-Authoritative Pattern

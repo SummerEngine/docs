@@ -22,15 +22,19 @@ and a published catalog release is not playable yet.
 
 - The publish API lives at `https://summercraft.ai/api/*`.
 - Docs live at `https://docs.summerengine.com`.
-- The Summer SDK classes (`Summer`, `SummerGame`, `SummerPlayer`, `SummerCharacter3D`) are provided by the Summercraft runtime when your pack loads. They are not files you ship.
+- The Summer SDK contract defines `Summer`, `SummerGame`, `SummerPlayer`, and
+  `SummerCharacter3D`. Local stubs let the project parse, and the export excludes those
+  stubs. A future production runtime is intended to provide the real classes, but uploaded
+  games cannot launch there today.
 
 **What is live today:** creating a game record, direct-to-storage artifact upload with server-side sha256 verification, the manual review queue, and authenticated release downloads.
 
 **What is not live yet (do not promise these to your operator):** playing uploaded Summer
 games in the browser or desktop shell, hosted dedicated game servers for uploaded games,
-and the automated runtime sandbox. Multiplayer sessions in the current runtime run
-host-authoritatively over ENet; the `SummerMultiplayerPeer` transport (stock `@rpc` /
-`MultiplayerSynchronizer` compatibility) is a published contract still being built.
+automatic matchmaking, and the automated runtime sandbox. The examples use a
+host-authoritative model, but no production transport is live. `SummerMultiplayerPeer`
+(stock `@rpc` / `MultiplayerSynchronizer` compatibility) is a scaffolded contract still
+being built.
 
 ## 2. Prerequisites — check all three before writing any code
 
@@ -59,7 +63,10 @@ Your `.pck` must contain **only your game**. The platform enforces, at review an
 - **GDScript only.** No `.gdextension`, `.so`, `.dll`, `.dylib`, `.framework`, `.res` files.
 - **No banned APIs** anywhere in your scripts, even in dead or conditional branches. The blocklist includes `OS.execute`, `OS.shell_open`, `OS.create_process`, `FileAccess`, `DirAccess`, `HTTPRequest`, `HTTPClient`, `JavaScriptBridge`, `ClassDB.instantiate`, `Thread.new`, `Expression`, raw sockets (`StreamPeerTCP`, `PacketPeerUDP`, `TCPServer`, `UDPServer`, `WebSocketPeer`), reflection calls (`.call(`, `.callv(`, `.call_deferred(`, `Callable(`), `Engine.get_singleton`, `Marshalls.base64_to_variant`, `ResourceSaver`, `ProjectSettings.load_resource_pack`, and root-tree escapes (`get_node("/root`, `get_tree().root`). Full list with rationale: `https://docs.summerengine.com/api-reference/summer-sdk/banned-apis-reference.md`. Persistence goes through `Summer.data`, economy through `Summer.economy` — never your own I/O or networking.
 - **No reserved paths** in the pack: `res://sdk/`, `res://core/`, `res://server/`, `res://client/`, `res://official_games/`, `res://bootstrap.*`, `res://project.godot`, `res://summer.cfg`, `res://test_runner.*`. The export preset below keeps them out automatically.
-- **`manifest.json` at the pack root** with required keys `id`, `name`, `version`, `summer_sdk` (`"1.0"`), `entry_scene`, `min_players`, `max_players`. The entry scene's root script must `extends SummerGame` or the runtime refuses to load the pack.
+- **`manifest.json` at the pack root** with required keys `id`, `name`, `version`,
+  `summer_sdk` (`"1.0"`), `entry_scene`, `min_players`, `max_players`. The entry scene's root
+  script must `extends SummerGame` to satisfy submission review and the future runtime
+  contract; no production runtime currently loads uploaded packs.
 - **Host-authoritative multiplayer is the only mode.** All gameplay decisions run on server paths guarded by `Summer.is_server()`. Clients render synced state via `set_synced`/`get_synced`; they never decide outcomes.
 
 ## 4. Build the game — multiplayer-native template
@@ -86,7 +93,11 @@ hold-the-hill/
     └── summer_character_3d.gd
 ```
 
-The `sdk/` folder holds **local stubs** that mirror the real SDK surface so your code parses and smoke-runs without the Summercraft runtime. The export preset excludes `sdk/*`, so the stubs never ship; on the platform the runtime provides the real classes at the same paths. Do not add behavior to the stubs — they are compile shims, not the SDK.
+The `sdk/` folder holds **local stubs** that mirror the SDK contract so your code parses and
+smoke-runs without a Summercraft runtime. The export preset excludes `sdk/*`, so the stubs
+never ship. The future runtime is intended to provide real classes at the same paths, but
+that production path is not live. Do not add behavior to the stubs — they are compile shims,
+not the SDK.
 
 `project.godot`:
 

@@ -1,6 +1,6 @@
 ---
 title: "Is Summer Engine compatible with my existing project?"
-description: "Yes. Open your project and continue working with AI assistance. No conversion required."
+description: "Summer uses familiar upstream-compatible formats, while minimum and recommended project compatibility ranges remain unmeasured."
 icon: "question"
 ---
 
@@ -11,17 +11,20 @@ upstream technical base is 4.6.1, the planned next base is 4.7.1, and Summer fol
 continuously. The minimum and recommended project compatibility ranges are not yet measured,
 so this page does not promise that every historical project opens unchanged.
 
-## What Works Out of the Box
+## What to evaluate
 
 **Portable source formats.** `.tscn` scenes, `.gd` scripts, `.tres` resources, and
-`project.godot` configuration use upstream-compatible formats. Commit before the first open,
-then review import and configuration changes normally.
+`project.godot` configuration use familiar upstream-derived formats. This is a format fact,
+not proof that every file produced by every upstream release loads unchanged. Commit before
+the first open, then review import and configuration changes normally.
 
 **Third-party libraries and plugins.** Pure GDScript addons are the safest case. Native
 extensions, custom editor integrations, and addons pinned to a different upstream version
 need explicit compatibility testing.
 
-**Export templates.** Web, desktop (Windows, Mac, Linux), and mobile (iOS, Android) export all work. You can build for any platform Summer Engine supports.
+**Export targets.** Verify the installed templates and run an exported-build smoke test for
+each target. Do not infer web, desktop, mobile, or native-extension compatibility from the
+upstream base alone.
 
 **Team workflows.** Mixed-editor teams can share the repository when they pin compatible
 versions and review generated changes. Shared formats reduce friction; they do not guarantee

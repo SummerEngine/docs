@@ -43,6 +43,7 @@ Managed multiplayer is planned as a paid hosted service; it is not production-li
 |---|---|---|
 | Create Summer game records | **Live** | Authenticated creators can create a game record through the Summercraft API. |
 | Upload and verify a game-only `.pck` | **Live** | Direct-to-storage upload, server-side SHA-256 verification, and immutable release records are deployed. |
+| Browser submission and static scanner | **Live** | The signed-in submit page accepts a `.pck` plus `manifest.json` and runs pattern-based static analysis before creating a review submission. |
 | Manual review queue | **Live** | A submission can enter human review; there is no automatic approval. |
 | Authenticated release download | **Live** | Owners and admins can retrieve pending releases; published catalog releases follow the documented access rules. |
 | Summer SDK gameplay and subsystem interfaces | **Scaffold** | The GDScript contract and examples exist, but documented interfaces do not prove the hosted runtime path is deployed. |

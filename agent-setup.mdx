@@ -63,25 +63,16 @@ Agents must never handle your password. Create your account and session yourself
 
 There is no dedicated token page yet; this manual step is the current path. The publish API accepts `Authorization: Bearer <token>` on every endpoint.
 
-## What is live vs. coming
+## Platform status
 
-| Capability | Status |
-|---|---|
-| Create Summer game records via API | **Live** |
-| Direct-to-storage `.pck` upload (presigned, write-once) | **Live** |
-| Server-side sha256 verification at finalize | **Live** |
-| Manual human review queue | **Live** — every release, no auto-publish |
-| Authenticated release downloads (`download-url`) | **Live** — owner/admins always; others once published |
-| Browser `.pck` submit page ([summercraft.ai/submit](https://summercraft.ai/submit)) | **Live** — multipart flow with automated static scanner |
-| Playing uploaded Summer games in the browser | Coming — not yet available |
-| Playing uploaded Summer games in the desktop shell | Coming — not yet available |
-| Hosted dedicated game servers for uploaded games | Coming — not yet available |
-| Automated runtime sandbox for submissions | Coming — review is manual today |
-| `SummerMultiplayerPeer` transport (stock `@rpc` compatibility) | Coming — contract published, being built in the engine fork; current runtime multiplayer is host-authoritative over ENet |
+The release API, browser submission with static scanning, manual review queue, and
+authenticated release downloads are deployed. That does not make an approved game playable.
 
-Docs on this site never promise capabilities that are not deployed. The canonical table is
-[Product source & platform status](/knowledge-base/source-status). If a page and reality
-disagree, trust the API's own error text and mail [founders@summerengine.com](mailto:founders@summerengine.com).
+Use the single canonical [Product source & platform status](/knowledge-base/source-status)
+table for every Live / Scaffold / Planned decision. It covers playback, hosted servers,
+matchmaking, the runtime sandbox, and the transport contract without duplicating a second
+status table here. If documentation and reality disagree, trust the API's own error text and
+mail [founders@summerengine.com](mailto:founders@summerengine.com).
 
 ## For agents reading this page directly
 
