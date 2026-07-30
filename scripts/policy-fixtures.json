@@ -15,6 +15,21 @@
       "name": "upstream version used as product release",
       "text": "Install Summer Engine 4.6.1 and start building.",
       "rules": ["upstream-as-product-version"]
+    },
+    {
+      "name": "unqualified broad platform export",
+      "text": "Export to Steam, itch.io, Mac, Windows, mobile, and consoles.",
+      "rules": ["unqualified-broad-platform-export"]
+    },
+    {
+      "name": "complete no-code game promise",
+      "text": "No coding required: build complete games just by describing them.",
+      "rules": ["no-code-complete-game"]
+    },
+    {
+      "name": "fixed model integration promise",
+      "text": "We integrate every new AI image, 3D, and video breakthrough within 24 hours.",
+      "rules": ["fixed-24h-model-promise"]
     }
   ],
   "languageAllow": [
@@ -66,6 +81,11 @@
       "name": "root as-is mutation",
       "text": "Open your projects as-is.",
       "rules": ["blanket-open-as-is"]
+    },
+    {
+      "name": "open and continue mutation",
+      "text": "Open your project and continue working with AI assistance.",
+      "rules": ["blanket-open-and-continue"]
     }
   ],
   "compatibilityAllow": [

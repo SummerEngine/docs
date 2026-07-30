@@ -45,9 +45,32 @@
         "icon": "book-open",
         "groups": [
           {
-            "group": "Getting Started",
+            "group": "Start here",
             "pages": [
               "index",
+              "essentials/installation",
+              "quickstarts/fresh-project",
+              "api-reference/summer-sdk/build-your-first-summer-game"
+            ]
+          },
+          {
+            "group": "Summer SDK",
+            "pages": [
+              "api-reference/summer-sdk"
+            ]
+          },
+          {
+            "group": "Test and publish",
+            "pages": [
+              "api-reference/summer-sdk/testing-your-game-locally",
+              "api-reference/summer-sdk/exporting-and-uploading-your-game",
+              "api-reference/summer-sdk/submission-guide",
+              "api-reference/summer-sdk/updating-your-game"
+            ]
+          },
+          {
+            "group": "Other ways to start",
+            "pages": [
               "quickstarts/ai-game-dev",
               "quickstarts/web-game",
               "quickstarts/pc-game",
@@ -173,17 +196,8 @@
         "icon": "code",
         "groups": [
           {
-            "group": "Start here",
+            "group": "Summer SDK reference",
             "pages": [
-              "essentials/installation",
-              "quickstarts/fresh-project",
-              "api-reference/summer-sdk/build-your-first-summer-game"
-            ]
-          },
-          {
-            "group": "Summer SDK",
-            "pages": [
-              "api-reference/summer-sdk",
               "api-reference/summer-sdk/summer",
               "api-reference/summer-sdk/summer-game",
               "api-reference/summer-sdk/summer-player",
@@ -193,15 +207,6 @@
               "api-reference/summer-sdk/guides/team-based-game",
               "api-reference/summer-sdk/guides/making-a-2d-game-multiplayer",
               "api-reference/summer-sdk/guides/making-a-turn-based-or-card-game-multiplayer"
-            ]
-          },
-          {
-            "group": "Test and publish",
-            "pages": [
-              "api-reference/summer-sdk/testing-your-game-locally",
-              "api-reference/summer-sdk/exporting-and-uploading-your-game",
-              "api-reference/summer-sdk/submission-guide",
-              "api-reference/summer-sdk/updating-your-game"
             ]
           },
           {
