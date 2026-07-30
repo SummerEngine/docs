@@ -187,8 +187,16 @@
         "\\bbackend flush\\b"
       ],
       "assertionVerbs": ["persist", "store", "write", "keep"],
-      "assertionPatterns": [
+      "objectRequiredAssertionVerbs": ["persist", "store", "write", "keep"],
+      "objectRequiredAssertionPatterns": [
         "\\bauto-?saves?\\b"
+      ],
+      "assertionObjectPatterns": [
+        "\\b(?:player\\s+)?saves?\\b",
+        "\\b(?:player\\s+)?(?:data|progress|state|inventory|balance|economy)\\b",
+        "\\bdurable storage\\b",
+        "\\bbackend flush\\b",
+        "\\bbetween sessions\\b"
       ],
       "assertionTerms": [
         "\\bhandled\\b",

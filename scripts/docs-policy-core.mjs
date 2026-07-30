@@ -310,14 +310,33 @@ const compile = (patterns, flags = "i") =>
   (patterns ?? []).map((pattern) => new RegExp(pattern, flags));
 
 function compileCapability(capability) {
+  const objectRequiredVerbs = new Set(capability.objectRequiredAssertionVerbs ?? []);
   return {
     ...capability,
     aliasPatterns: compile(capability.subjectAliases),
     assertionPatterns: [
-      ...compile(capability.assertionPatterns, "gi"),
-      ...compile(capability.assertionTerms, "gi"),
-      ...(capability.assertionVerbs ?? []).map(verbPattern),
+      ...compile(capability.assertionPatterns, "gi").map((pattern) => ({
+        pattern,
+        kind: "pattern",
+        requiresObject: false,
+      })),
+      ...compile(capability.objectRequiredAssertionPatterns, "gi").map((pattern) => ({
+        pattern,
+        kind: "pattern",
+        requiresObject: true,
+      })),
+      ...compile(capability.assertionTerms, "gi").map((pattern) => ({
+        pattern,
+        kind: "term",
+        requiresObject: false,
+      })),
+      ...(capability.assertionVerbs ?? []).map((verb) => ({
+        pattern: verbPattern(verb),
+        kind: "verb",
+        requiresObject: objectRequiredVerbs.has(verb),
+      })),
     ],
+    assertionObjectPatterns: compile(capability.assertionObjectPatterns),
     statusPatterns: compile(capability.statusTerms),
     disclaimerPatterns: compile(capability.disclaimerPatterns),
     assertionBeforeSubjectPatterns: compile(capability.assertionBeforeSubjectPatterns),
@@ -339,13 +358,76 @@ function firstAliasIndex(clause, capability) {
 
 function assertionMatches(clause, capability) {
   const matches = [];
-  for (const pattern of capability.assertionPatterns) {
+  for (const assertion of capability.assertionPatterns) {
+    const { pattern } = assertion;
     pattern.lastIndex = 0;
     for (const match of clause.matchAll(pattern)) {
-      matches.push({ index: match.index, text: match[0] });
+      matches.push({
+        index: match.index,
+        text: match[0],
+        kind: assertion.kind,
+        requiresObject: assertion.requiresObject,
+      });
     }
   }
   return matches.sort((a, b) => a.index - b.index);
+}
+
+function assertionTermIsPredicate(clause, assertion, capability) {
+  if (assertion.kind !== "term") return true;
+  const prefix = localAssertionPrefix(clause, assertion.index).trim();
+  if (
+    /(?:^|\b)(?:is|are|was|were|remains?|becomes?|stays?)(?:\s+(?:not|never|currently|presently|production[- ]?))*\s*$/i.test(
+      prefix,
+    )
+  ) {
+    return true;
+  }
+
+  for (const alias of capability.aliasPatterns) {
+    const match = clause.match(alias);
+    if (!match || match.index > assertion.index) continue;
+    const gap = clause.slice(match.index + match[0].length, assertion.index);
+    const normalizedGap = gap.replace(/^(?:\s|[*_`|:()-])+|(?:\s|[*_`|:()-])+$/g, "");
+    if (
+      !normalizedGap ||
+      /^(?:is|are|was|were|remains?|becomes?|stays?)(?:\s+(?:not|never|currently|presently|production[- ]?))*$/i.test(
+        normalizedGap,
+      )
+    ) {
+      return true;
+    }
+  }
+  return prefix.replace(/^[,:\s]+/, "").length === 0;
+}
+
+function assertionHasCompatibleObject(clause, assertion, capability) {
+  if (!assertion.requiresObject) return true;
+  const scope = localAssertionScope(clause, assertion.index);
+  return capability.assertionObjectPatterns.some((pattern) => pattern.test(scope));
+}
+
+function compatibleAssertionMatches(clause, capability) {
+  return assertionMatches(clause, capability).filter(
+    (assertion) =>
+      assertionTermIsPredicate(clause, assertion, capability) &&
+      assertionHasCompatibleObject(clause, assertion, capability),
+  );
+}
+
+function beginsWithEllipticalCapabilityPredicate(clause, capability) {
+  const value = clause
+    .replace(/^(?:[-*+>#|]|\d+\.)+\s*/, "")
+    .replace(/^(?:but|yet|however|nevertheless),?\s+/i, "")
+    .replace(/^[,:\s]+/, "")
+    .trim();
+  return compatibleAssertionMatches(value, capability).some((assertion) => {
+    if (assertion.index === 0) return true;
+    const prefix = value.slice(0, assertion.index).trim();
+    return /^(?:(?:is|are|was|were|remains?|becomes?|can|could|may|might|will|would|does|do)\b(?:\s+\w+){0,2})$/i.test(
+      prefix,
+    );
+  });
 }
 
 function isLocallyDisclaimed(clause, assertionIndex, capability) {
@@ -366,11 +448,14 @@ export function scanCapabilityClaims(raw, policy) {
       const explicitCapabilities = capabilities.filter((capability) =>
         clauseHasAlias(clause, capability),
       );
+      const ellipticalCapabilities = carriedCapabilities.filter((capability) =>
+        beginsWithEllipticalCapabilityPredicate(clause, capability),
+      );
       const activeCapabilities = explicitCapabilities.length
         ? explicitCapabilities
         : beginsWithCapabilityAnaphor(clause)
           ? carriedCapabilities
-          : [];
+          : ellipticalCapabilities;
       if (explicitCapabilities.length) {
         carriedCapabilities = explicitCapabilities;
         sentenceCapabilities = explicitCapabilities;
@@ -380,7 +465,7 @@ export function scanCapabilityClaims(raw, policy) {
 
       for (const capability of activeCapabilities) {
         const aliasIndex = firstAliasIndex(clause, capability);
-        const assertions = assertionMatches(clause, capability).filter(
+        const assertions = compatibleAssertionMatches(clause, capability).filter(
           (assertion) =>
             !capability.assertionAfterSubject ||
             !Number.isFinite(aliasIndex) ||

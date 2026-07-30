@@ -213,6 +213,36 @@
       "capabilities": ["hosted-persistence-economy"]
     },
     {
+      "name": "elliptical matchmaking production predicate",
+      "text": "Matchmaking may be operational in a private test, but is operational in production.",
+      "capabilities": ["managed-matchmaking"]
+    },
+    {
+      "name": "elliptical pack production predicate",
+      "text": "Approved packs remain Planned, but execute in production.",
+      "capabilities": ["production-runtime"]
+    },
+    {
+      "name": "elliptical storage production predicate",
+      "text": "Summer storage is Scaffolded, but stores player saves durably in production.",
+      "capabilities": ["hosted-persistence-economy"]
+    },
+    {
+      "name": "elliptical matchmaking live variant",
+      "text": "Matchmaking remains Planned; however, is live in production.",
+      "capabilities": ["managed-matchmaking"]
+    },
+    {
+      "name": "elliptical pack run variant",
+      "text": "Approved packs remain Planned, yet run in production.",
+      "capabilities": ["production-runtime"]
+    },
+    {
+      "name": "elliptical storage write variant",
+      "text": "Summer storage is Scaffolded, but writes player save data in production.",
+      "capabilities": ["hosted-persistence-economy"]
+    },
+    {
       "name": "durable inter-session Summer storage paraphrase",
       "text": "Summer storage keeps player saves durably between sessions.",
       "capabilities": ["hosted-persistence-economy"]
@@ -274,6 +304,22 @@
     {
       "name": "hypothetical private matchmaking scope",
       "text": "If matchmaking becomes operational in a private test, do not describe it as production."
+    },
+    {
+      "name": "anaphoric live documentation predicate",
+      "text": "Matchmaking remains Planned. It is documented on a live status page."
+    },
+    {
+      "name": "anaphoric unrelated storage object",
+      "text": "Summer storage is Scaffolded. It keeps the API reference concise."
+    },
+    {
+      "name": "anaphoric live documentation variant",
+      "text": "Approved packs remain Planned. They are mentioned on a live documentation page."
+    },
+    {
+      "name": "anaphoric unrelated storage URL",
+      "text": "Summer storage is Scaffolded. It stores the API reference URL."
     }
   ]
 }
