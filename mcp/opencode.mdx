@@ -25,10 +25,34 @@ This guide covers the configuration. Setup takes about a minute.
 Run the Summer setup command. It writes the OpenCode config, installs the recommended skills, and runs diagnostics:
 
 ```bash
-npx -y summer-engine@latest setup opencode --yes
+npx -y summer-engine@latest setup opencode --yes --force --project "$PWD"
 ```
 
-This writes to your user OpenCode config (`~/.config/opencode/opencode.json` on macOS and Linux, `%APPDATA%\opencode\opencode.json` on Windows). For a single project, use `--scope project` to write `opencode.json` in the project root instead.
+With `--project` and no explicit scope, this writes `opencode.json` in the
+project root, binds MCP to that exact project, and installs Summer guidance.
+It preserves every model and provider setting. OpenCode receives the same
+complete Summer MCP tool registry as every other supported client.
+
+<Note>
+OpenCode setup does not imply LM Studio. It works with an existing cloud
+provider, Ollama, LM Studio, or any other provider already configured in
+OpenCode without changing it.
+</Note>
+
+### Optional OpenCode + LM Studio recipe
+
+Only when LM Studio should also become the OpenCode provider, get the exact
+loaded model ID from `http://127.0.0.1:1234/v1/models` and run:
+
+```bash
+npx -y summer-engine@latest setup opencode --yes \
+  --project "$PWD" \
+  --lm-studio-model "your-loaded-model-id"
+```
+
+Add `--lm-studio-vision` only for a model that accepts image input. This recipe
+is opt-in; the plain setup command never writes `provider`, `model`, or
+`small_model` keys.
 
 ### Option 2: Manual configuration
 
@@ -42,7 +66,7 @@ Create or edit your OpenCode config and add the `summer-engine` MCP server. Open
   "mcp": {
     "summer-engine": {
       "type": "local",
-      "command": ["npx", "-y", "summer-engine@latest", "mcp"]
+      "command": ["npx", "-y", "summer-engine@latest", "mcp", "--project", "/absolute/path/to/project"]
     }
   }
 }
@@ -55,7 +79,7 @@ Create or edit your OpenCode config and add the `summer-engine` MCP server. Open
     "other-server": { ... },
     "summer-engine": {
       "type": "local",
-      "command": ["npx", "-y", "summer-engine@latest", "mcp"]
+      "command": ["npx", "-y", "summer-engine@latest", "mcp", "--project", "/absolute/path/to/project"]
     }
   }
 }
@@ -75,11 +99,21 @@ Close and restart OpenCode so it loads the new config. The Summer Engine MCP ser
 
 ### Verify
 
-List your MCP servers in OpenCode and confirm `summer-engine` appears with its tools. Then try a prompt:
+Run `opencode mcp list` and confirm `summer-engine` appears. `summer doctor`
+reporting registered tools is only a server boot check; it is not evidence that
+OpenCode loaded those tools. Then use a
+read-only prompt first:
 
-- "Use Summer Engine to add a MeshInstance3D with a BoxMesh to the scene"
+- "Call summer_get_agent_playbook and read its result. Then inspect the exact
+  project and scene tree without changing anything."
 
-If the node appears in Summer Engine, the setup is working.
+Only mutate after OpenCode both calls the tools and correctly consumes their
+results.
+
+In an end-to-end smoke, the next safe step is one reversible node: add a named
+`Node3D`, confirm it in `summer_get_scene_tree`, remove it, and confirm the final
+tree matches the baseline. This proves client discovery, result consumption,
+mutation, save, read-back, and cleanup.
 
 ## Using Summer Engine with OpenCode
 
@@ -92,14 +126,16 @@ Once configured, OpenCode can use Summer Engine's tools when you ask for game-re
 - "Set the project's main scene to res://main.tscn"
 
 <Tip>
-**Engine must be running.** OpenCode talks to Summer Engine over localhost. Open your project in the engine first, or run `npx summer-engine run` from the project directory.
+**Engine must be running.** OpenCode talks to Summer Engine over localhost. Open your project in the engine first, or run `npx -y summer-engine@latest run` from the project directory.
 </Tip>
 
 ## Troubleshooting
 
 ### "Summer Engine is not running"
 
-Start Summer Engine and open your project. The MCP server connects to the engine's local API on port 6550. The engine writes a token to `~/.summer/api-token` when it starts.
+Start Summer Engine and open your project. Summer discovers live local editor
+instances and binds to the project passed with `--project`; do not hardcode an
+API port or copy an editor token into OpenCode.
 
 ### MCP server not appearing
 

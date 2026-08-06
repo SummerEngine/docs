@@ -1,10 +1,10 @@
 ---
 title: "MCP: Build Games with AI"
-description: "How to make games with AI: Cursor, Claude Code, Devin Desktop, Antigravity, Codex, Gemini, GitHub Copilot, OpenCode, VS Code, Zed. Summer Engine MCP, CLI, and API. 50+ tools."
+description: "How to make games with AI: Cursor, Claude Code, Devin Desktop, Antigravity, Codex, Gemini, GitHub Copilot, OpenCode, VS Code, Zed. Summer Engine MCP, CLI, and API."
 icon: "plug"
 ---
 
-{/* Do not reintroduce a hardcoded MCP tool count here. The tool list grows every release and a baked-in number has already gone stale twice. */}
+{/* Do not add an unversioned "current" MCP count here. The release comparison below is deliberately versioned and checked against the 2.8 registry contract. */}
 
 ## How Do I Make Games with AI?
 
@@ -64,7 +64,10 @@ Devin Desktop's AI can use Summer Engine's MCP tools. Configure the MCP server, 
 
 ## How Do I Make Games with Antigravity?
 
-Antigravity's AI can use Summer Engine's MCP tools. Add the config to `.vscode/mcp.json`, open your project in the engine, and build games from Antigravity: add nodes, import assets, run and debug.
+Antigravity's AI can use Summer Engine's MCP tools. Run `summer setup
+antigravity` to write its current `.agents/mcp_config.json` and Agent Skills,
+open the same project in Summer Engine, and verify a read-only tool call before
+making changes.
 
 <Card
   title="Antigravity Setup"
@@ -157,6 +160,13 @@ The CLI lets you install Summer Engine, create projects, run the engine, and con
 
 Summer Engine's MCP server exposes its tools over the Model Context Protocol. The same operations the built-in chat uses (AddNode, SetProp, SaveScene, ImportFromUrl) are available to any MCP-compatible AI tool, plus asset library search, AI generation of images, 3D models, audio, video, and motion, and [Summer Cloud](/guides/summer-cloud) project sync. See the [API Reference](/api-reference/mcp) and [Tools Reference](/mcp/tools-reference).
 
+The `summer-engine` 2.8 candidate exposes 62 MCP tools through `tools/list`. That
+is the complete package registry, not the smaller local-operation registry in
+a particular desktop engine build. The published 2.7.0 package exposes 58;
+2.8 adds exactly `summer_creator_publish`, `summer_creator_releases`,
+`summer_creator_logs`, and `summer_creator_config`. The client onboarding,
+project binding, and editor-routing changes do not add any other tools.
+
 <Card
   title="MCP API Reference"
   icon="book"
@@ -178,7 +188,7 @@ Summer Engine's MCP server exposes its tools over the Model Context Protocol. Th
 
 Summer Engine gives you:
 
-- **A full MCP toolset**: Scene (AddNode, SetProp, SaveScene, etc.), Debug and Play (Play, Stop, diagnostics, script and debugger errors, and screenshot the viewport or running game), Project (settings, input, import, context), Asset Library (search and import), Generation (image, 3D, audio, video, motion), and Summer Cloud (push, pull, restore, conflicts)
+- **A full MCP toolset**: Scene (AddNode, SetProp, SaveScene, etc.), Debug and Play (Play, Stop, diagnostics, script and debugger errors, and screenshot the viewport or running game), Project (settings, input, import, context), Asset Library (search and import), Generation (image, asset-sheet slicing, 3D, audio, video, motion), Summer Cloud (push, pull, restore, conflicts), and Creator (publish, releases, logs capability state, and shared non-secret configuration)
 - **Evaluate existing projects**: Familiar source formats reduce migration work, but
   compatibility ranges are not fully measured. Commit first and verify imports, tutorials,
   plugins, native extensions, and exports against the current Summer Engine release.

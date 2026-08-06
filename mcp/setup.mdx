@@ -30,11 +30,64 @@ The MCP server starts immediately. It doesn't require the engine to be running u
 
 Before setting up MCP, you need:
 
-1. **Summer Engine**: Either the desktop app (from [summerengine.com](https://www.summerengine.com)) or installed via `npx summer-engine install`
-2. **Node.js**: For running the MCP server via `npx summer-engine mcp` (Node 18+)
+1. **Summer Engine**: Either the desktop app (from [summerengine.com](https://www.summerengine.com)) or installed via `npx -y summer-engine@latest install`
+2. **Node.js**: For running the MCP server via `npx -y summer-engine@latest mcp` (Node 18+)
 3. **A Summer Engine project**: Open it in the engine so the local API server is active
 
-The engine runs a local HTTP server on `localhost:6550` when it's open. The MCP server connects to it using a token stored in `~/.summer/api-token` (created automatically when the engine starts). No API keys to manage. It just works.
+Summer MCP discovers running local editor instances and can bind to an exact
+project. Use `--project` during setup when more than one project may be open;
+the server fails closed rather than guessing.
+
+## One-command setup
+
+Choose the MCP client independently from its model provider, then run setup in
+the project:
+
+```bash
+npx -y summer-engine@latest setup <client> --yes --force --project "$PWD"
+```
+
+Or paste this bounded instruction into a coding agent that has shell access.
+Do not paste it into LM Studio Chat; use the separate manual LM Studio path
+below.
+
+```text
+Set up Summer MCP for this coding agent and the current project. The MCP client
+and model provider are separate choices. Before writing anything, run
+`npx -y summer-engine@latest setup --help` and confirm that the exact client
+target and the `--project` option are both listed. Use `opencode` for OpenCode
+and `antigravity` for Antigravity. If either requirement is missing, STOP and
+report that npm latest is older than these instructions. Do not substitute a
+different client, omit `--project`, change to user/global scope, or hand-edit a
+fallback config. Otherwise run `npx -y summer-engine@latest setup <client>
+--yes --force --project "$PWD"`. Do not change my model provider, install the
+engine, sign me in, or create a project. Show the config path. A doctor result
+such as "MCP Tools registered" proves only that the server can load; it does
+not prove this agent can see or call the tools. If the client needs a restart,
+ask me to restart it. Before any mutation, call `summer_get_agent_playbook`,
+`summer_get_project_context`, and `summer_get_scene_tree`, consume their
+results, and report the exact bound project and scene. If any tool is missing
+or rejected, quote the error and STOP.
+```
+
+| What you are using | Client target | Provider behavior |
+|---|---|---|
+| OpenCode with any provider | `opencode` | Provider/model config is preserved |
+| LM Studio chat directly | `lm-studio` | No OpenCode required |
+| Antigravity | `antigravity` | Antigravity's selected model is preserved |
+| OpenCode + LM Studio | `opencode` plus explicit `--lm-studio-model <id>` | Optional combined recipe |
+
+<Warning>
+Do not select a client target from the model runtime alone. Ollama is a model
+runtime, not an MCP client. OpenCode is still `opencode` whether it uses Ollama,
+LM Studio, or a cloud provider.
+</Warning>
+
+<Note>
+LM Studio Chat is an MCP host, not a shell-capable coding agent. Run
+`setup lm-studio` yourself in a terminal, or use LM Studio's **Edit mcp.json**
+action and the [manual local-model guide](/mcp/local-models).
+</Note>
 
 ## Quick Setup by IDE
 
@@ -45,6 +98,13 @@ The engine runs a local HTTP server on `localhost:6550` when it's open. The MCP 
     href="/mcp/cursor"
   >
     One-click or manual config. Most popular choice for AI-assisted development.
+  </Card>
+  <Card
+    title="OpenCode"
+    icon="terminal"
+    href="/mcp/opencode"
+  >
+    Provider-neutral one-command setup, with optional local-model recipes.
   </Card>
   <Card
     title="Claude Code"
@@ -108,7 +168,7 @@ If your IDE supports MCP but isn't listed above, add this to your MCP config fil
   "mcpServers": {
     "summer-engine": {
       "command": "npx",
-      "args": ["summer-engine", "mcp"]
+      "args": ["-y", "summer-engine@latest", "mcp", "--project", "/absolute/path/to/project"]
     }
   }
 }
@@ -119,19 +179,19 @@ If your IDE supports MCP but isn't listed above, add this to your MCP config fil
   "mcpServers": {
     "summer-engine": {
       "command": "npx",
-      "args": ["summer-engine", "mcp"]
+      "args": ["-y", "summer-engine@latest", "mcp", "--project", "/absolute/path/to/project"]
     }
   }
 }
 ```
 
-```json VS Code / Antigravity (.vscode/mcp.json)
+```json VS Code (.vscode/mcp.json)
 {
   "servers": {
     "summer-engine": {
       "type": "stdio",
       "command": "npx",
-      "args": ["summer-engine", "mcp"]
+      "args": ["-y", "summer-engine@latest", "mcp", "--project", "/absolute/path/to/project"]
     }
   }
 }
@@ -142,7 +202,7 @@ If your IDE supports MCP but isn't listed above, add this to your MCP config fil
   "context_servers": {
     "summer-engine": {
       "command": "npx",
-      "args": ["summer-engine", "mcp"],
+      "args": ["-y", "summer-engine@latest", "mcp", "--project", "/absolute/path/to/project"],
       "env": {}
     }
   }
@@ -151,17 +211,33 @@ If your IDE supports MCP but isn't listed above, add this to your MCP config fil
 
 </CodeGroup>
 
+Antigravity uses its own current native config rather than the VS Code block:
+
+```json Antigravity (.agents/mcp_config.json)
+{
+  "mcpServers": {
+    "summer-engine": {
+      "command": "npx",
+      "args": ["-y", "summer-engine@latest", "mcp", "--project", "/absolute/path/to/project"]
+    }
+  }
+}
+```
+
 <Tip>
-**No global install required.** Using `npx summer-engine mcp` runs the server on demand. For faster startup, you can install globally: `npm install -g summer-engine`, then use `"args": ["summer", "mcp"]` instead.
+**No global install required.** `npx -y summer-engine@latest mcp` runs the
+current server on demand and avoids stale npx cache entries.
 </Tip>
 
 ## Verify It Works
 
-1. **Start Summer Engine**: Open your project in the engine (or run `npx summer-engine run` from the project directory).
+1. **Start Summer Engine**: Open your project in the engine (or run `npx -y summer-engine@latest run` from the project directory).
 2. **Restart your IDE**: So it picks up the new MCP config.
-3. **Check the MCP panel**: In Cursor: Settings > MCP. You should see "summer-engine" connected, with its tools listed.
-4. **Ask the AI**: "Use Summer Engine to add a MeshInstance3D with a BoxMesh to the scene root. Name it TestCube."
-5. **Confirm in the engine**: The node should appear in the scene tree.
+3. **Check the MCP panel**: Confirm `summer-engine` is connected and tools are listed. `doctor` alone cannot verify this client-side state.
+4. **Run a read-only test**: Ask for `summer_get_agent_playbook`, then
+   `summer_get_project_context` and `summer_get_scene_tree` with no changes.
+5. **Check the answer**: It must report the exact project and scene returned by
+   the tools. Tool visibility without result consumption is not enough.
 
 If you get "Summer Engine is not running," the engine isn't open or the project isn't loaded. Start the engine and try again.
 

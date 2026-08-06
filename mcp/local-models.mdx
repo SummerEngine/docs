@@ -8,7 +8,16 @@ icon: "microchip"
 
 You don't need an AI subscription to build games in Summer Engine. Any local model that handles tool calling can drive the engine through MCP: add nodes, set properties, search and import assets, run the game, and debug. Engine control and asset search are free; cloud generation (3D models, images, audio) uses credits.
 
-This page covers the three setups that actually work in 2026.
+First choose an MCP client. Then choose the model runtime/provider. They are
+independent layers:
+
+| MCP client | Model runtime/provider | Setup status |
+|---|---|---|
+| LM Studio chat | LM Studio | Direct CLI-managed MCP setup |
+| OpenCode | Any existing provider | CLI-managed, provider-neutral MCP setup |
+| OpenCode | LM Studio | Explicit combined recipe |
+| OpenCode or Kilo Code | Ollama | MCP setup is managed; provider setup remains client-owned |
+| Goose | Ollama or another provider | Manual MCP extension setup |
 
 ## Prerequisites
 
@@ -16,22 +25,40 @@ This page covers the three setups that actually work in 2026.
 - **Node.js**: For running the MCP server (Node 18+)
 - **Summer Engine**: Installed and running with your project open
 
-## Option 1: LM Studio (easiest)
+## Option 1: LM Studio directly
 
-LM Studio is both the model runtime and an MCP host — one app, no terminal.
+LM Studio is both the model runtime and an MCP host. One terminal command writes
+the integration; the actual model chat and tool calls then stay inside LM Studio.
+
+LM Studio Chat cannot run the installer for you. Do not paste the coding-agent
+setup prompt into the model and expect it to edit its own MCP file. Run the
+following command yourself in a normal terminal, or use LM Studio's in-app
+**Edit mcp.json** action and merge the manual entry.
 
 ```bash
-npx -y summer-engine@latest setup lm-studio --yes
+npx -y summer-engine@latest setup lm-studio --yes --project "/absolute/path/to/project"
 ```
 
-This writes the `summer-engine` server into `~/.lmstudio/mcp.json`. Then, in LM Studio:
+This updates the active LM Studio MCP config, preserves other servers, binds
+Summer to the named project, and exposes the same complete Summer MCP tool
+registry used by other clients. It does not require OpenCode. LM Studio has
+changed config paths between releases; use **Edit mcp.json** inside LM Studio
+as the source of truth rather than assuming `~/.lmstudio/mcp.json`.
+
+Then, in LM Studio:
 
 1. Download a model in the **Discover** tab (see [model picks](#which-model-to-run) below).
-2. Toggle the `summer-engine` MCP server on in the **Program** tab.
-3. **Raise the model's context length to 32k or higher** when loading it. Models load with the context baked into their metadata — often ~4k, which MCP tool schemas overflow silently.
+2. Toggle `summer-engine` under **Chat > Integrations** (**Program** in older versions).
+3. Use a multi-turn tool-calling model with **64k context or more**.
 4. Keep KV-cache quantization off for long agent sessions. On Apple Silicon, prefer the MLX builds.
 
 Every engine call shows a confirmation dialog you can review before it runs.
+
+Start with `summer_get_agent_playbook`, project context, and scene tree without
+mutating anything. A model that emits a tool call but cannot consume its result
+is not safe for scene edits. If LM Studio reports Jinja errors such as
+`Unknown ArrayValue filter: upper` or `Unknown test: sequence`, fix or replace
+the model's prompt template; reducing the tool count alone does not repair it.
 
 ## Option 2: OpenCode + Ollama (terminal)
 
@@ -46,10 +73,12 @@ OLLAMA_CONTEXT_LENGTH=65536 ollama serve
 ollama pull qwen3-coder:30b
 
 # 3. Wire Summer Engine into OpenCode
-npx -y summer-engine@latest setup opencode --yes
+npx -y summer-engine@latest setup opencode --yes --project "$PWD"
 ```
 
-Then point OpenCode's provider at Ollama (`http://localhost:11434/v1` as an OpenAI-compatible endpoint) and select your model. Run `ollama ps` to confirm the bigger context hasn't pushed the model off the GPU.
+This command changes only OpenCode's Summer MCP entry and guidance. Configure
+the Ollama provider in OpenCode separately, then run `ollama ps` to confirm the
+bigger context has not pushed the model off the GPU.
 
 The same Ollama backend works with **Kilo Code** in VS Code (`npx -y summer-engine@latest setup kilo-code --yes`) — set the context window to 32k+ in Kilo's provider settings.
 
@@ -89,4 +118,6 @@ Tool calling is the hard part for local models. Use Q4_K_M quantization or bette
 | Asset library search (25k+ assets) | **Free**, rate-limited |
 | Cloud generation (3D, image, audio, video) | Credits |
 
-Sign in once with `npx summer-engine login` — the account is the rate-limit key, not a paywall.
+Local engine control does not require signing in. Sign in with
+`npx -y summer-engine@latest login` only when you want account-backed asset
+search or cloud generation; cloud generation uses credits.
