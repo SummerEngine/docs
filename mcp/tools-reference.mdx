@@ -1,14 +1,14 @@
 ---
 title: "Tools Reference"
-description: "Summer Engine MCP tools for scene editing, project files, debugging, visual verification, assets, generation, and Summer Cloud."
+description: "Summer Engine MCP tools for scene editing, project files, debugging, visual verification, assets, generation, Summer Cloud, and creator workflows."
 icon: "wrench"
 ---
 
-{/* Do not reintroduce a hardcoded MCP tool count here. This page is slated for generation from the MCP server's own definitions; counts belong in the generator, never in hand-written prose. */}
+{/* This checked-in reference is synchronized with the canonical 2.8 MCP definitions. `npm run check:mcp-registry` rejects missing, duplicate, or extra tool headings. */}
 
 ## Overview
 
-The Summer Engine MCP server exposes tools for **Scene**, **Debug and Play**, **Visual Verification**, **Project**, **Project Files**, **Asset Library**, **Generation**, and **Summer Cloud** workflows.
+The Summer Engine 2.8 MCP candidate registers 62 tools for **Scene**, **Debug and Play**, **Visual Verification**, **Project**, **Project Files**, **Asset Library**, **Generation**, **Summer Cloud**, and **Creator** workflows. Published 2.7.0 registers 58; the four additions are the Creator tools documented below. Client onboarding and editor routing do not add separate tools.
 
 Scene, Debug, and Project tools talk to the running engine on `localhost:6550` and require Summer Engine to be open with a project loaded. If the engine is not running, those tools return a clear error and a `summer run` hint. Asset Library, Generation, and Summer Cloud tools call the Summer Engine cloud and require you to be signed in (run `npx summer-engine login` once); the import side of asset tools needs the engine running too. Summer Cloud tools work on the project directory directly and do not need a running engine.
 
@@ -597,7 +597,20 @@ Get a downloadable URL for a specific asset file. Prefer this over handing users
 
 ## Generation Tools
 
-Generation runs in Summer Engine Studio and consumes credits. These tools need you signed in (`npx summer-engine login`). Confirm with the user before spending on paid generation, then import results into the project with `summer_import_asset_by_id` or `summer_import_from_url`.
+AI generation runs in Summer Engine Studio and consumes credits. Workflow discovery is read-only, and asset-sheet slicing processes an existing Summer asset. These tools need you signed in (`npx summer-engine login`). Confirm with the user before spending on paid generation, then import results into the project with `summer_import_asset_by_id` or `summer_import_from_url`.
+
+### summer_get_studio_workflow
+
+List Summer Engine Studio's Guided workflow recipes, or retrieve one exact
+recipe with its starter prompt, ordered steps, required MCP tools, support
+level, and honest limitations. This read-only discovery tool does not spend
+credits.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `workflowId` | string | No | Guided workflow ID, for example `sprite-sheet`, `character-pack`, `asset-pack`, or `component-compiler`. Omit to list all workflows. |
+
+---
 
 ### summer_generate_image
 
@@ -612,6 +625,19 @@ Generate an image with AI models. Supports text-to-image (just pass `prompt`) an
 | `options` | object | No | Provider-specific params (`guidance_scale`, `seed`, `image_size`, `negative_prompt`, etc.) |
 
 **Known models:** `nano-banana-2` (default), `gemini-flash`, `flux-2`, or any fal-ai model ID as a passthrough.
+
+---
+
+### summer_slice_asset_sheet
+
+Detect and crop every distinct game asset from an existing Summer image asset
+sheet. The workflow can remove the background, detect named or category-aware
+bounding boxes, upload the slices, and return their URLs, names, categories,
+bounds, and UI widget metadata.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `assetId` | string | Yes | Summer image asset ID, usually returned by `summer_generate_image` |
 
 ---
 
@@ -770,6 +796,73 @@ List local conflict sets, or restore a preserved conflict file with `restorePath
 | `project` | string | No | Project root path |
 | `restorePath` | string | No | Project-relative path to restore from the conflict sets |
 | `set` | string | No | Conflict set stamp (defaults to the newest set containing the path) |
+
+---
+
+## Creator Tools
+
+These four tools are the only MCP registrations added between published 2.7.0
+and 2.8. Creator publishing uses the versioned Summercraft API and requires
+explicit confirmation of the exact artifact and target. Configuration is
+local and non-secret; tokens are never accepted or returned.
+
+### summer_creator_publish
+
+Prepare and publish one exact exported Summer `.pck`. First call with
+`confirm=false`, show the returned project, version, digest, size, artifact,
+channel, and notes to the user, then retry with `confirm=true` only after the
+user approves that exact target.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `artifact` | string | Yes | Exact path to the exported `.pck` |
+| `version` | string | Yes | Immutable release version |
+| `project` | string | No | Project root; defaults to the current working directory |
+| `manifest` | string | No | Optional JSON release manifest path |
+| `projectId` | string | No | Creator project ID; defaults to shared Summer configuration |
+| `channel` | string | No | Release channel; defaults to configured channel or `production` |
+| `notes` | string | No | Release notes included in confirmation and the local audit |
+| `confirm` | boolean | No | Must be `true` only after exact user approval (default `false`) |
+
+---
+
+### summer_creator_releases
+
+List real creator-owned releases from the versioned creator API.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `projectId` | string | No | Creator project ID; defaults to shared Summer configuration |
+| `limit` | number | No | Page size from 1 to 100 (default 20) |
+| `cursor` | string | No | Opaque `nextCursor` from the previous page |
+
+---
+
+### summer_creator_logs
+
+Request runtime logs for a creator project or release. This tool fails closed
+with the exact recovery action when the required platform route or token scope
+is unavailable; it does not invent placeholder logs.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `projectId` | string | No | Creator project ID; defaults to shared Summer configuration |
+| `releaseId` | string | No | Optional release ID |
+| `limit` | number | No | Maximum rows from 1 to 1000 (default 100) |
+
+---
+
+### summer_creator_config
+
+Read or update shared non-secret Summer configuration. Mutations require
+`confirm=true`; tokens are never accepted or returned.
+
+| Parameter | Type | Required | Description |
+|-----------|------|----------|-------------|
+| `action` | enum | Yes | `list`, `get`, `set`, or `unset` |
+| `key` | enum | Conditional | Required for `get`, `set`, and `unset` |
+| `value` | string | Conditional | Required for `set` |
+| `confirm` | boolean | No | Required `true` for `set` and `unset` (default `false`) |
 
 ---
 

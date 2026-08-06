@@ -100,20 +100,23 @@ Some namespace names do not match their sidebar label — `/auto-mode/*` is labe
 "Using Summer". **Leave them.** The label is free to change; the path is not. This
 mismatch is a small permanent ugliness and it is the correct trade.
 
-## Generated pages
+## Generated-page targets
 
-Some pages are generated from source and must not be hand-edited. They carry a
-banner saying so. Editing them by hand produces a change that is silently reverted on
-the next generation, and worse, a page that disagrees with what actually ships.
+Some reference pages are intended to be generated from product source. A page
+is actually generated only when its frontmatter contains `generated: true` and
+names its `generator`; those pages must not be hand-edited. The checker enforces
+that contract. Pages without that marker remain checked-in documentation and
+must be updated from the owning source plus their repository checks until their
+generator exists.
 
 Generated pages publish to their existing frozen URLs rather than to a new
 `/reference/*` namespace, for the reason this whole document exists:
 
-| Page | Generated from |
+| Page | Current source contract |
 |---|---|
-| `/ai-tools/operations` | The engine's unified operation registry |
-| `/mcp/tools-reference` | The MCP server's tool definitions |
-| `/mcp/cli-reference` | The CLI's command definitions |
+| `/ai-tools/operations` | Keep aligned with the engine's unified operation registry until a generator is attached. |
+| `/mcp/tools-reference` | Keep aligned with the canonical MCP server definitions; `npm run check:mcp-registry` verifies the complete 2.8 inventory. |
+| `/mcp/cli-reference` | Keep aligned with the CLI command definitions until a generator is attached. |
 
 If a generated page is wrong, fix the source. Never the page.
 
