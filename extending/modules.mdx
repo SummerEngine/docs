@@ -12,7 +12,7 @@ There is no workaround, no flag, and no plugin path that changes this. If you ar
 
 <CardGroup cols={2}>
 <Card title="GDExtension" icon="puzzle" href="/extending/gdextension">
-  Native C/C++ code, loaded at runtime from your project. Summer's ABI is byte-identical to stock Godot 4.6.1, and unsigned third-party libraries are proven to load in the shipped macOS editor.
+  Native C/C++ code loaded at runtime from your project. Summer now uses the Godot 4.7.2 base; generate against the installed binary and test the exact library because the current compatibility range is unmeasured.
 </Card>
 <Card title="Editor Plugins" icon="blocks" href="/extending/editor-plugins">
   Pure-GDScript `@tool` plugins. No ABI, no compilation, no code signing.
@@ -131,7 +131,7 @@ If your case genuinely needs engine internals that GDExtension does not expose, 
     Open agent layer, free desktop app, paid hosted services
   </Card>
   <Card title="Godot Compatibility" icon="git-fork" href="/knowledge-base/godot-compatibility">
-    What Summer shares with stock Godot 4.6.1
+    What Summer shares with its current Godot 4.7.2 base
   </Card>
 </CardGroup>
 

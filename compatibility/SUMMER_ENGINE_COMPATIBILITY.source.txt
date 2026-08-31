@@ -9,16 +9,16 @@ same thing as the upstream technical base.
 
 | Platform | Summer Engine release | Authoritative source |
 |---|---:|---|
-| macOS | `0.5.58` | `modules/1summer_engine/summer_version.h` → `SUMMER_VERSION_MACOS` |
-| Windows | `0.5.59` | `modules/1summer_engine/summer_version.h` → `SUMMER_VERSION_WINDOWS` |
+| macOS | `0.5.65` | `modules/1summer_engine/summer_version.h` → `SUMMER_VERSION_MACOS` |
+| Windows | `0.5.65` | `modules/1summer_engine/summer_version.h` → `SUMMER_VERSION_WINDOWS` |
 
 ## Upstream technical base
 
 | Field | Value |
 |---|---|
-| Current upstream base | `4.6.1` (`stable`) |
-| Planned next upstream base | `4.7.1` |
-| Planned target evidence | User-approved decision recorded in `compatibility/summer-engine.json` |
+| Current upstream base | `4.7.2` (`stable`) |
+| Planned next upstream base | Unmeasured; no next version is claimed. |
+| Planned target evidence | None; no next version is claimed. |
 | Upstream policy | `continuous-upstream` |
 | Build evidence | `version.py` |
 
@@ -45,7 +45,7 @@ minimum from `project.godot`, copied prose, or an older skill.
 
 ## Verification
 
-Verified on `2026-07-30` against:
+Verified on `2026-08-31` against:
 
 - `modules/1summer_engine/summer_version.h`
 - `version.py`

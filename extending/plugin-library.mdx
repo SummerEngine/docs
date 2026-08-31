@@ -4,8 +4,8 @@ description: "A curated list of community addons that fit Summer's current compa
 icon: "library"
 ---
 
-Summer Engine's current upstream technical base is Godot Engine 4.6.1 with an unmodified
-`core/`, so compatible community addons can be used in a Summer project. Drop one into
+Summer Engine's current upstream technical base is Godot Engine 4.7.2. Compatible community
+addons can be used in a Summer project after an exact-version test. Drop one into
 `addons/`, enable it, and test it against the current Summer Engine release — see
 [Extending Summer](/extending/overview) for the compatibility rules, and
 [Editor Plugins](/extending/editor-plugins) for how to write your own. The upstream number
@@ -22,11 +22,10 @@ archived, its license is a real file we read, its most recent release and most r
 push are the dates stated, and its stated Godot support and plugin type come from its
 own `README`, `plugin.cfg` or `.gdextension` file.
 
-**We did not install and run each of these inside Summer.** The compatibility argument
-is the one on [Extending Summer](/extending/overview): a pure-GDScript `@tool` addon that
-works on stock Godot 4.6 works on Summer, because Summer is stock Godot 4.6 plus
-additions. Where an entry carries native code, that argument is weaker and the entry
-says so.
+**This inventory predates the 4.7.2 base and has not been re-run end to end.** We did not
+install and run each entry inside Summer. Pure-GDScript `@tool` addons remain the lower-risk
+case; native code must be revalidated against the installed 4.7.2 binary. Treat the dated
+repository notes below as research evidence, not a current compatibility guarantee.
 </Note>
 
 ## How to judge a plugin yourself
@@ -62,7 +61,7 @@ entry_symbol = "..."
 compatibility_minimum = "4.5"
 ```
 
-`compatibility_minimum` must be at or below `4.6.1`, and any `compatibility_maximum`
+`compatibility_minimum` must be at or below `4.7.2`, and any `compatibility_maximum`
 must be at or above it. The engine hard-errors on anything below `4.1.0`. Then check
 `[libraries]` actually names a key matching your platform. The full rules, including the
 tag-precedence trap, are on [GDExtension](/extending/gdextension#the-gdextension-file-format).
@@ -70,8 +69,8 @@ tag-precedence trap, are on [GDExtension](/extending/gdextension#the-gdextension
 
 <Step title="Check maintenance against the version you are on, not against today's date">
 "Last commit two weeks ago" is not the question. The question is whether a **released**
-version targets Godot 4.6. Plenty of addons have a healthy default branch and a newest
-tag that predates 4.6 entirely — you can still use them, but you are installing an
+version targets Godot 4.7. Plenty of addons have a healthy default branch and a newest
+tag that predates 4.7 entirely — you can still use them, but you are installing an
 untagged branch head, and you should know that is what you are doing.
 
 Read the project's own compatibility table if it has one. Several of the entries below
@@ -140,14 +139,15 @@ So the 4.6-ready code exists and the 4.6-ready *release* does not. Install the
 </Warning>
 
 <Note>
-**LimboAI ships two different things and only one of them works here.** Its release page
+**LimboAI ships two different things, and neither should be assumed current without a test.** Its release page
 carries both a GDExtension archive (named for Godot 4.6) and a set of full custom engine
 builds for Godot 4.7. The custom engine builds are the module route and
 [cannot be used with Summer](/extending/modules) — there is no way to compile a module
-into Summer. Take the GDExtension archive.
+into Summer. The GDExtension archive is the candidate, but its 4.6-labelled binary still
+needs a 4.7.2 load test.
 
 Its `.gdextension` declares `compatibility_minimum = "4.2"` with no maximum, which passes
-the [reader test](/extending/gdextension#community-plugin-compatibility) for 4.6.1. Its
+the mechanical [reader test](/extending/gdextension#community-plugin-compatibility) for 4.7.2. Its
 macOS binaries are `.framework` bundles — see [the macOS caveat](#the-macos-framework-caveat).
 </Note>
 
@@ -172,15 +172,14 @@ the release explicitly states support for Godot 4.4 through 4.6+. That is the cl
 | [Debug Draw 3D](https://github.com/DmitriySalnikov/godot_debug_draw_3d) | Immediate-mode 3D debug primitives — lines, boxes, spheres, frustums — plus 2D overlays and graphs, drawable from anywhere without leaking nodes | **GDExtension** | MIT | `1.7.3`, released 4 Apr 2026 |
 
 <Warning>
-**Read GUT's version table before installing.** The newest release is not the one you
-want. `v9.7.1` targets Godot 4.7.x; Godot 4.6.x maps to `v9.6.1` or the default branch.
-Installing the newest tag because it is newest is the mistake this table exists to
-prevent, and GUT is unusually good about documenting it.
+**Read GUT's version table before installing.** Summer now uses the 4.7.2 base, so the
+4.7.x line is the relevant candidate; the older 4.6.x mapping is historical. Still check
+for a newer 4.7-compatible release and verify the plugin inside Summer before relying on it.
 </Warning>
 
 Debug Draw 3D's `.gdextension` declares `compatibility_minimum = "4.4.1"` with no
 maximum, so it passes the mechanical half of the reader test. Its documentation does not
-name 4.6 anywhere, so it fails the "does it advertise 4.6" half. Try it, verify it loads,
+name 4.7 anywhere, so it fails the "does it advertise 4.7" half. Try it, verify it loads,
 and do not assume.
 
 ## The macOS `.framework` caveat

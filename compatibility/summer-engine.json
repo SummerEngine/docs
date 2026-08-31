@@ -21,15 +21,13 @@
   "upstreamBase": {
     "name": "Godot Engine",
     "current": {
-      "version": "4.6.1",
+      "version": "4.7.2",
       "source": "version.py"
     },
     "plannedNext": {
-      "state": "planned",
-      "version": "4.7.1",
-      "evidence": [
-        "compatibility/summer-engine.json"
-      ]
+      "state": "unmeasured",
+      "version": null,
+      "evidence": []
     },
     "policy": "continuous-upstream",
     "productIdentity": false
@@ -52,7 +50,7 @@
     }
   },
   "verification": {
-    "verifiedOn": "2026-07-30",
+    "verifiedOn": "2026-08-31",
     "evidence": [
       "modules/1summer_engine/summer_version.h",
       "version.py"

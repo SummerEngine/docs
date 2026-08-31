@@ -1,24 +1,27 @@
 ---
 title: "GDExtension"
-description: "Summer's current GDExtension ABI matches its pinned upstream 4.6.1 base; learn the verified binary path, platform limits, and the current godot-cpp branch gap."
+description: "Build native extensions against Summer's current Godot 4.7.2 base, and distinguish current guidance from historical 4.6.1 measurements."
 icon: "puzzle"
 ---
 
 ## The short version
 
-Summer Engine is a fork of **Godot 4.6.1.stable** (mono build). Its GDExtension ABI contract is **byte-identical to upstream Godot 4.6.1**, so:
+Summer Engine's current upstream technical base is **Godot 4.7.2-stable**. Generate
+`gdextension_interface.h` and `extension_api.json` from the installed Summer binary, build
+against that exact interface, and load-test the result on every target platform. The current
+GDExtension compatibility range is unmeasured; do not assume a precompiled 4.6 binary is
+compatible just because it loaded in the previous release.
 
-- A GDExtension built against **stock Godot 4.6.1** loads in Summer. There are no Summer-specific headers, no Summer-specific godot-cpp, and no Summer build of anything.
-- **Third-party, non-Summer-signed libraries load in the shipped, notarized macOS editor.** This is proven by loading one, not by reading a plist. See [Proof](#proof-a-third-party-library-running-inside-shipped-summer).
-- The one genuinely hard part is upstream, not ours: **godot-cpp has no 4.6 branch or tag.** See [The godot-cpp gap](#the-godot-cpp-gap).
-
-<Note>
-**Verified against the shipped binary.** Everything on this page was measured against `4.6.1.stable.mono.custom_build.b708b1182` on macOS. Claims that were read from source rather than executed are labelled inline. Nothing here is inferred from Godot's documentation.
-</Note>
+<Warning>
+The detailed probe, ABI hashes, class counts, and plugin observations below were measured on
+the previous `4.6.1.stable.mono.custom_build.b708b1182` macOS binary. They remain useful as a
+historical method and entitlement check, but they are not proof for the 4.7.2 release. Repeat
+the probe with the current binary before relying on a native extension.
+</Warning>
 
 ---
 
-## Why the ABI is identical
+## Historical 4.6.1 ABI measurement
 
 `gdextension_interface.json` is the file the whole GDExtension ABI is generated from. In the Summer tree it is unchanged from upstream 4.6.1:
 
@@ -36,11 +39,12 @@ That hash is the same on both `4.6.1-stable` and Summer's `HEAD`. Alongside it:
 | Classes in the live API dump | 1032, of which 8 are Summer additions |
 | Engine singletons added by Summer | Zero. All 39 singletons in the dump are stock Godot |
 
-The practical consequence: **build for Godot 4.6.1, ship to Summer.** Summer imposes no restriction that stock Godot 4.6.1 does not.
+The historical consequence was: build for Godot 4.6.1, then test in that Summer release.
+Do not carry this conclusion forward to 4.7.2 without a fresh API comparison and load test.
 
 ---
 
-## Proof: a third-party library running inside shipped Summer
+## Historical proof: a third-party library running inside shipped Summer
 
 macOS hardened runtime normally refuses to load a library that is not signed by the host application's team. Summer ships with `com.apple.security.cs.disable-library-validation` set to `true` (confirmed with `codesign -d --entitlements -` on the installed, Developer-ID-signed, notarized, stapled app).
 
@@ -61,7 +65,10 @@ You can reproduce that exact result in about a minute — the recipe is below an
 
 ## Build and load a probe extension
 
-This is the fastest way to confirm your toolchain and Summer agree, before you invest in a real extension. It uses no bindings library at all, only the C header the binary emits. Every command and file below was run end to end on the shipped binary.
+This remains the fastest way to confirm your toolchain and the installed Summer binary agree,
+before you invest in a real extension. It uses no bindings library at all, only the C header
+the binary emits. The recorded output below came from 4.6.1; rerun it and require the host to
+report 4.7.2 before treating the result as current evidence.
 
 <Steps>
 <Step title="Create the project skeleton">
@@ -75,7 +82,7 @@ config_version=5
 [application]
 
 config/name="probe"
-config/features=PackedStringArray("4.6")
+config/features=PackedStringArray("4.7")
 EOF
 ```
 </Step>
@@ -165,7 +172,7 @@ Expect the four `PROBE:` and `[SE]` lines shown in [Proof](#proof-a-third-party-
 
 ---
 
-## The godot-cpp gap
+## Historical godot-cpp 4.6 gap
 
 Real extensions use [godot-cpp](https://github.com/godotengine/godot-cpp), the C++ bindings. **There is no godot-cpp for 4.6.** Confirmed against the remote:
 
@@ -176,7 +183,8 @@ Real extensions use [godot-cpp](https://github.com/godotengine/godot-cpp), the C
 | A `4.6` branch or `godot-4.6-stable` tag | Does not exist |
 | `master` | Already targeting 4.7 |
 
-This is an upstream scarcity, not a Summer restriction — anyone using stock Godot 4.6.1 hits the identical wall.
+This was an upstream 4.6 scarcity, not a Summer restriction. For the current release, choose
+the godot-cpp line intended for Godot 4.7 and still generate against Summer's own API dump.
 
 ### Workaround: point godot-cpp at Summer's own API dump
 
@@ -214,8 +222,8 @@ Read from `core/extension/gdextension_library_loader.cpp` in the Summer tree, wh
 | Key | Required | Behavior |
 |---|---|---|
 | `entry_symbol` | **Yes** | Hard error and load abort if absent |
-| `compatibility_minimum` | **Yes** | Hard error if absent. Must be at least `4.1.0` — anything lower is rejected outright. Compared lexicographically against the host's `4` / `6` / `1` |
-| `compatibility_maximum` | No | Missing version components default to `9999`, so `"4.6"` means "4.6.anything" |
+| `compatibility_minimum` | **Yes** | Hard error if absent. Must be at least `4.1.0` — anything lower is rejected outright. Compared lexicographically against the current host version (`4` / `7` / `2`) |
+| `compatibility_maximum` | No | Missing version components default to `9999`, so `"4.7"` means "4.7.anything" |
 | `reloadable` | No | Defaults to `false`. Only read in editor builds |
 
 ### `[libraries]`
@@ -265,9 +273,8 @@ A correctly-pathed plain `.dylib` never reaches this code — that is the config
 
 ### Do not trust a checked-in header
 
-`core/extension/gdextension_interface.h` exists in the Summer tree and is **stale** — dated August 2025, generated from an older Godot generation, and not tracked by upstream 4.6.1 at all (upstream generates it from the JSON at build time). It is one of only two files that differ under `core/extension/`.
-
-Always get the header from the binary you are targeting:
+Do not trust a header copied from an older source checkout or release. Always get the header
+from the exact binary you are targeting:
 
 ```bash
 /Applications/Summer.app/Contents/MacOS/Summer --headless --dump-gdextension-interface
@@ -277,12 +284,15 @@ Always get the header from the binary you are targeting:
 
 ## Platform support
 
+The 4.6.1 rows below are a historical test snapshot. For 4.7.2, treat every native target as
+requiring a fresh load/export test until the compatibility contract records new measurements.
+
 | Target | GDExtension | Notes |
 |---|---|---|
-| macOS editor | **Yes — proven by load** | Library validation disabled; unsigned third-party dylibs execute |
-| macOS export | Yes, with signing caveats | See below |
-| Windows / Linux export | Yes | Requires stock Godot 4.6.1 export templates (see below) |
-| Web export | **No** | See below |
+| macOS editor | Historical proof only | An unsigned third-party dylib loaded on 4.6.1; revalidate on 4.7.2 |
+| macOS export | Unmeasured on 4.7.2 | See signing caveats below |
+| Windows / Linux export | Unmeasured on 4.7.2 | Test with the exact current templates |
+| Web export | **No current support claim** | See below |
 
 ### macOS exports and library validation
 
@@ -304,9 +314,9 @@ Web GDExtension support requires the engine to be built with WebAssembly dynamic
 
 ### Export templates on other platforms
 
-Summer bundles **macOS templates only** — `macos.zip` under `4.6.1.stable/` and `4.6.1.stable.mono/` inside the app bundle. Verified by listing the directory. For other platforms you supply templates yourself, and they are stock Godot 4.6.1 builds.
-
-Worth stating plainly: **GDExtension portability across those templates is better than Summer-class portability.** Stock templates contain none of Summer's added classes, but the GDExtension ABI is identical, so a GDExtension built for Godot 4.6.1 runs in them.
+Summer 0.5.65 bundles freshly built macOS templates for the 4.7.2 base. Do not substitute
+templates from an older release. For every other target, verify the exact installed template
+and run an exported-build smoke test; no cross-template GDExtension range is currently claimed.
 
 ---
 
@@ -320,19 +330,25 @@ Rules you can apply yourself, rather than a list that will be wrong next month.
 </Card>
 
 <Card title="Pure-GDScript @tool addons" icon="circle-check">
-**The safe bet.** No ABI, no compilation, no code signing. If it works on stock Godot 4.6, it works on Summer. See [Editor Plugins](/extending/editor-plugins).
+**The lower-risk bet.** No native ABI, compilation, or code signing. Use a 4.7-compatible
+release and still verify that the plugin enables and runs in Summer. See [Editor Plugins](/extending/editor-plugins).
 </Card>
 
 <Card title="Precompiled GDExtension binaries" icon="circle-alert">
-**Version-locked, and 4.6 is a gap year.** Summer adds no restriction beyond stock Godot 4.6.1; the scarcity is entirely upstream, and it is the same scarcity as godot-cpp's.
+**Version-locked.** Require an advertised Godot 4.7 range, a matching platform binary, and an
+actual load/export test in Summer 0.5.65.
 </Card>
 
 <Card title="Platform check first" icon="monitor">
-Before recommending any GDExtension, resolve the target: macOS editor yes, macOS export yes with signing caveats, Windows and Linux export yes with stock templates, web no.
+Before recommending any GDExtension, resolve the target and test the exact 4.7.2 editor and
+template combination. Historical 4.6.1 results are not a substitute.
 </Card>
 </CardGroup>
 
-**The reader test for a precompiled binary:** does it advertise Godot 4.6 support, and does its `compatibility_minimum` sit at or below `4.6.1` with no `compatibility_maximum` beneath it? Both must be true. Open the `.gdextension` file and read the `[configuration]` block — it is the authoritative answer, and it takes ten seconds.
+**The reader test for a precompiled binary:** does it advertise Godot 4.7 support, and does
+its `compatibility_minimum` sit at or below `4.7.2` with no `compatibility_maximum` beneath it?
+Both must be true, and neither replaces a real load test. Open the `.gdextension` file and
+read the `[configuration]` block—it is the authoritative version declaration.
 
 ---
 

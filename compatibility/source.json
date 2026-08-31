@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
   "repository": "SummerEngine/SummerEngine",
-  "commit": "b44e47792819fb402a2984cd79c7023cc8aa57f8",
+  "commit": "a8e5ca520efa927bde6131c9fb36557f19c1bb18",
   "manifestPath": "compatibility/summer-engine.json",
-  "manifestGitBlobSha": "2cd944bb2fea49930fffd63a1db9f4a27e57b41f",
-  "manifestSha256": "741bd8237868a395cad89bfa1c5a70ef5ca2cfcc829674047cab1b9e180c054a",
+  "manifestGitBlobSha": "792ff9c4d6bd2c5845f75fa58de920617b371be0",
+  "manifestSha256": "132753b796ba8371641f9705b6919d49744d98b11053c167e2146e293e88e0f6",
   "generatedReferencePath": "compatibility/generated/SUMMER_ENGINE_COMPATIBILITY.md",
   "generatedReferenceSnapshot": "compatibility/SUMMER_ENGINE_COMPATIBILITY.source.txt",
-  "generatedReferenceGitBlobSha": "e8c1a1cbcde450b2ce700e13d98ab4a67c60d9fb",
-  "generatedReferenceSha256": "6d92477fcffd2a0ff7ab8d665c542b9669f7514fa9c2e3f7d97cbadcf2a83963",
-  "syncedOn": "2026-07-30"
+  "generatedReferenceGitBlobSha": "dbd5d010f391e344d2c8b9ccc42c84b3fbb576d2",
+  "generatedReferenceSha256": "24fbc6b7ca72a1800fde4e5ca397fbc6cbf6bb6cee871a1fd629671dc704ddda",
+  "syncedOn": "2026-08-31"
 }
