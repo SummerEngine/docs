@@ -242,10 +242,10 @@
           }
         ],
         "signature": "add_node(type: String, name: String, parent: Node = null, props: Dictionary = {}) -> Node",
-        "description": "Creation helper — adds to the edited scene root when no parent is given, sets owner to the edited scene root by default (the #1 silent persistence gotcha, made structurally impossible), and returns the created node.",
-        "description_source": "class-comment",
-        "notes": "",
-        "doc_comment": "",
+        "description": "Instantiates `type` (any ClassDB Node class) as `name` under parent (the edited root when null), name made unique on collision, owned recursively; props apply via set() per key with prop_warnings on miss.",
+        "description_source": "header",
+        "notes": "Unknown, non-instantiable or non-Node class -> error + null.",
+        "doc_comment": "Instantiates `type` (any ClassDB Node class) as `name` under parent (the edited root when null), name made unique on collision, owned recursively; props apply via set() per key with prop_warnings on miss. Unknown, non-instantiable or non-Node class -> error + null.",
         "contract": {
           "signature": "add_node(type: String, name: String, parent: Node = null, props: Dictionary = {}) -> Node",
           "comment": "",
@@ -320,10 +320,10 @@
           }
         ],
         "signature": "get_or_create(type: String, name: String, parent: Node = null) -> Node",
-        "description": "Creation helper — adds to the edited scene root when no parent is given, sets owner to the edited scene root by default (the #1 silent persistence gotcha, made structurally impossible), and returns the created node.",
-        "description_source": "class-comment",
-        "notes": "",
-        "doc_comment": "",
+        "description": "Recursive find_child(name) under parent (the edited root when null): a match that is_class(type) (subclasses count) is returned as is; a match of another class is confessed in prop_warnings and a new node is created beside it (renamed on collision).",
+        "description_source": "header",
+        "notes": "No match -> add_node(type, name, parent).",
+        "doc_comment": "Recursive find_child(name) under parent (the edited root when null): a match that is_class(type) (subclasses count) is returned as is; a match of another class is confessed in prop_warnings and a new node is created beside it (renamed on collision). No match -> add_node(type, name, parent).",
         "contract": {
           "signature": "get_or_create(type: String, name: String, parent: Node = null) -> Node",
           "comment": "",
@@ -366,10 +366,10 @@
           }
         ],
         "signature": "instance_scene(res_path: String, parent: Node = null, name: String = \"\") -> Node",
-        "description": "Creation helper — adds to the edited scene root when no parent is given, sets owner to the edited scene root by default (the #1 silent persistence gotcha, made structurally impossible), and returns the created node.",
-        "description_source": "class-comment",
-        "notes": "",
-        "doc_comment": "",
+        "description": "ResourceLoader::load(res_path) as a PackedScene, instantiated (GEN_EDIT_STATE_INSTANCE) under parent (the edited root when null) and renamed to `name` when one is given.",
+        "description_source": "header",
+        "notes": "Only the instance ROOT is owned by the edited scene; its internals stay owned by the instance, exactly as a .tscn stores them. Unloadable path or failed instantiate -> error + null.",
+        "doc_comment": "ResourceLoader::load(res_path) as a PackedScene, instantiated (GEN_EDIT_STATE_INSTANCE) under parent (the edited root when null) and renamed to `name` when one is given. Only the instance ROOT is owned by the edited scene; its internals stay owned by the instance, exactly as a .tscn stores them. Unloadable path or failed instantiate -> error + null.",
         "contract": {
           "signature": "instance_scene(res_path: String, parent: Node = null, name: String = \"\") -> Node",
           "comment": "",
@@ -540,10 +540,10 @@
           }
         ],
         "signature": "mesh_from_arrays(vertices: PackedVector3Array, indices: PackedInt32Array, uvs: PackedVector2Array = [], name: String = \"Mesh\", parent: Node = null) -> MeshInstance3D",
-        "description": "Creation helper — adds to the edited scene root when no parent is given, sets owner to the edited scene root by default (the #1 silent persistence gotcha, made structurally impossible), and returns the created node.",
-        "description_source": "class-comment",
-        "notes": "",
-        "doc_comment": "",
+        "description": "Triangle ArrayMesh built with SurfaceTool from vertices (+ indices; with no indices the vertex count must be a multiple of 3), normals generated (no tangents), on an owned MeshInstance3D named `name` under parent (the edited root when null).",
+        "description_source": "header",
+        "notes": "uvs are used only when their count matches the vertices (mismatch -> ignored + prop_warnings); empty vertices or an out-of-range index -> error + null.",
+        "doc_comment": "Triangle ArrayMesh built with SurfaceTool from vertices (+ indices; with no indices the vertex count must be a multiple of 3), normals generated (no tangents), on an owned MeshInstance3D named `name` under parent (the edited root when null). uvs are used only when their count matches the vertices (mismatch -> ignored + prop_warnings); empty vertices or an out-of-range index -> error + null.",
         "contract": {
           "signature": "mesh_from_arrays(vertices: PackedVector3Array, indices: PackedInt32Array, uvs: PackedVector2Array = [], name: String = \"Mesh\", parent: Node = null) -> MeshInstance3D",
           "comment": "",
@@ -608,10 +608,10 @@
           }
         ],
         "signature": "apply_material(node: Node, material: Material) -> bool",
-        "description": "",
-        "description_source": "none",
-        "notes": "",
-        "doc_comment": "",
+        "description": "MeshInstance3D with a mesh: set_surface_override_material on EVERY surface (override on the instance, never on the shared mesh resource); any other GeometryInstance3D (or a mesh-less MeshInstance3D): set_material_override; anything else: set(\"material\") when such a property exists.",
+        "description_source": "header",
+        "notes": "No material slot -> prop_warnings + false; null node or material -> error + false.",
+        "doc_comment": "MeshInstance3D with a mesh: set_surface_override_material on EVERY surface (override on the instance, never on the shared mesh resource); any other GeometryInstance3D (or a mesh-less MeshInstance3D): set_material_override; anything else: set(\"material\") when such a property exists. No material slot -> prop_warnings + false; null node or material -> error + false.",
         "contract": {
           "signature": "apply_material(node: Node, material: Material) -> bool",
           "comment": "",
@@ -826,10 +826,10 @@
           }
         ],
         "signature": "add_camera(position: Vector3, look_at: Vector3 = Vector3.ZERO, make_current: bool = false) -> Camera3D",
-        "description": "Creation helper — adds to the edited scene root when no parent is given, sets owner to the edited scene root by default (the #1 silent persistence gotcha, made structurally impossible), and returns the created node.",
-        "description_source": "class-comment",
-        "notes": "",
-        "doc_comment": "",
+        "description": "Camera3D named \"Camera3D\" ALWAYS under the edited root (no parent argument), owned, at position; when look_at differs from position the camera is aimed at it via look_at_from_position (the default look_at Vector3.ZERO aims at the origin; up flips to +Z for a straight up/down view so the basis never degenerates).",
+        "description_source": "header",
+        "notes": "make_current -> set_current(true). No scene open -> error + null.",
+        "doc_comment": "Camera3D named \"Camera3D\" ALWAYS under the edited root (no parent argument), owned, at position; when look_at differs from position the camera is aimed at it via look_at_from_position (the default look_at Vector3.ZERO aims at the origin; up flips to +Z for a straight up/down view so the basis never degenerates). make_current -> set_current(true). No scene open -> error + null.",
         "contract": {
           "signature": "add_camera(position: Vector3, look_at: Vector3 = Vector3.ZERO, make_current: bool = false) -> Camera3D",
           "comment": "",
@@ -938,14 +938,12 @@
         "notes": "a and b are consumed (freed) unless keep_inputs; the result keeps a's parent and transform. Bound as \"boolean\" (named boolean_op in C++ only to dodge platform macros).",
         "doc_comment": "union|difference|intersection via the Manifold-backed CSG kernel, baked; per-surface materials survive the boolean. a and b are consumed (freed) unless keep_inputs; the result keeps a's parent and transform. Bound as \"boolean\" (named boolean_op in C++ only to dodge platform macros).",
         "contract": {
-          "signature": "boolean(a: Node, b: Node, op: String = \"union\") -> MeshInstance3D",
+          "signature": "boolean(a: Node, b: Node, op: String = \"union\", keep_inputs: bool = false) -> MeshInstance3D",
           "comment": "union|difference|intersection via CSG/Manifold, baked; a and b are consumed (freed) by default; keep_inputs: bool = false final param",
           "wave": "F"
         },
         "contract_notes": [],
-        "mismatches": [
-          "parameter count: header 4 vs contract 3"
-        ]
+        "mismatches": []
       },
       {
         "name": "extrude_polygon",
@@ -1373,10 +1371,10 @@
           }
         ],
         "signature": "uv_box(node: Node, scale: float = 1.0) -> bool",
-        "description": "",
-        "description_source": "none",
-        "notes": "",
-        "doc_comment": "",
+        "description": "Box (tri-planar) projection: each vertex takes the plane of its normal's dominant axis (flat normals are rebuilt first when the surface has none), UV = mesh-space coordinates * scale (tiles per unit), tangents regenerated.",
+        "description_source": "header",
+        "notes": "Same worker as uv_planar: node must be a MeshInstance3D with a mesh and scale non-zero (else error + false); non-triangle surfaces are copied untouched with a prop_warnings note.",
+        "doc_comment": "Box (tri-planar) projection: each vertex takes the plane of its normal's dominant axis (flat normals are rebuilt first when the surface has none), UV = mesh-space coordinates * scale (tiles per unit), tangents regenerated. Same worker as uv_planar: node must be a MeshInstance3D with a mesh and scale non-zero (else error + false); non-triangle surfaces are copied untouched with a prop_warnings note.",
         "contract": {
           "signature": "uv_box(node: Node, scale: float = 1.0) -> bool",
           "comment": "",
@@ -1985,10 +1983,10 @@
           }
         ],
         "signature": "paint_rect(layer: TileMapLayer, rect: Rect2i, source_id: int, atlas_coords: Vector2i = Vector2i.ZERO) -> int",
-        "description": "Unknown source_id / atlas_coords in the layer's TileSet -> `paint_tiles`/`paint_rect` report entry (listing the source ids that exist) and 0 painted; returns the count painted.",
-        "description_source": "shared-with:paint_tiles",
-        "notes": "",
-        "doc_comment": "",
+        "description": "Fills every cell of rect (position inclusive, position + size exclusive) with the same tile via set_cell; same TileSet validation and report entry as paint_tiles.",
+        "description_source": "header",
+        "notes": "Empty rect or more than 1,000,000 cells -> error + 0; returns the count painted (the rect area).",
+        "doc_comment": "Fills every cell of rect (position inclusive, position + size exclusive) with the same tile via set_cell; same TileSet validation and report entry as paint_tiles. Empty rect or more than 1,000,000 cells -> error + 0; returns the count painted (the rect area).",
         "contract": {
           "signature": "paint_rect(layer: TileMapLayer, rect: Rect2i, source_id: int, atlas_coords: Vector2i = Vector2i.ZERO) -> int",
           "comment": "",
@@ -2258,10 +2256,10 @@
           }
         ],
         "signature": "add_canvas_layer(name: String, layer: int = 1, parent: Node = null) -> CanvasLayer",
-        "description": "Creation helper — adds to the edited scene root when no parent is given, sets owner to the edited scene root by default (the #1 silent persistence gotcha, made structurally impossible), and returns the created node.",
-        "description_source": "class-comment",
+        "description": "CanvasLayer named `name` at layer index `layer` (default 1) under parent (the edited root when null), owned; no other property is touched.",
+        "description_source": "header",
         "notes": "",
-        "doc_comment": "",
+        "doc_comment": "CanvasLayer named `name` at layer index `layer` (default 1) under parent (the edited root when null), owned; no other property is touched.",
         "contract": {
           "signature": "add_canvas_layer(name: String, layer: int = 1, parent: Node = null) -> CanvasLayer",
           "comment": "",
@@ -2634,8 +2632,8 @@
         "default": "false",
         "required": false,
         "internal": false,
-        "qualifier": "",
-        "description": "Not described on its own in the header; referenced in the description of `checkpoint`."
+        "qualifier": "default false",
+        "description": "the capability gate read alongside checkpoint (op.get(\"checkpointCapabilityEnabled\", false)): a checkpoint is attempted only when BOTH are true; false -> checkpoint:{ok:false, reason:\"checkpoint_capability_disabled\"} and the run proceeds un-rewindable. Same gate as RunEditorScript's pre-run checkpoint (editor_script_ops.h)."
       },
       {
         "name": "max_seconds",
@@ -2675,7 +2673,7 @@
       }
     ],
     "ctx_listing_text": "The ctx handed to run() carries the frozen stdlib (SCENE_SCRIPTING_CONTRACTS Waves C + F): get_scene_root, report, set_owner_recursive, frames_budget_exceeded, add_node, find, get_or_create, instance_scene, add_mesh (box|sphere|capsule|cylinder|plane|torus|text), add_mesh_with_collision, mesh_from_arrays, make_material, apply_material, grid, scatter, add_light_rig, ensure_environment, add_camera, summary, save_scene, plus the geometry stdlib v2: boolean, extrude_polygon, lathe, sweep, set_smooth, terrain, decimate, convex_collision, uv_planar, uv_box, mirror, animate, make_shader, plus the Wave G animation stdlib (ctx v3): animate v2 (per-key {interpolation: \"nearest\"|\"linear\"|\"cubic\"} — per-track in Animation, first keyed mode wins; bone targets \"<skeleton>:<bone>/position|rotation|scale\"; blend shapes via value tracks on \"blend_shapes/<name>\"), animate_method (method-call tracks), anim_state_machine (AnimationTree + AnimationNodeStateMachine over the player's clips), bone_pose, look_at_modifier, plus the Wave H game completeness stdlib (ctx v4): 2D — add_sprite, add_animated_sprite, add_tilemap, paint_tiles, paint_rect, add_body_2d, add_camera_2d, add_parallax; UI — add_ui, add_canvas_layer, set_theme_overrides, connect_signal (CONNECT_PERSIST, saved into the .tscn); gameplay-code lane — attach_script (validate -> write -> load -> set_script), make_prefab (pack a subtree to its own .tscn, optionally swap for an instance), add_autoload, add_input_action, set_main_scene. Creation helpers own-by-default and return the node; unknown props keys land in the `prop_warnings` report entry.",
-    "returns_text": "\n   { ok, op:\"RunSceneScript\", ran, result:<script return value>,\n     reports:<ctx dict>, output:[String], stderr:[String], errors:[String],\n     duration_ms, checkpoint:{...}, normalizations:[String], line_offset,\n     had_edited_scene, budget_exceeded, budget_enforced,\n     rolled_back (undo:\"action\" only), undo_action:\"registered\"|\"unavailable\"\n     (+ undo_unavailable_reason), rollback_error (only when a rollback was\n     attempted and failed) }\n   plus no_rewind_point:true + no_rewind_reason:String when no checkpoint\n   exists, plus — only when a Wave H helper wrote outside the scene —\n   files_written:[res:// paths], project_settings_changed:[keys] and\n   undo_action_note:String stating that those are covered by the pre-run\n   checkpoint ONLY (neither the undo step nor an error rollback touches\n   files on disk or project.godot).",
+    "returns_text": "\n   { ok, op:\"RunSceneScript\", ran, result:<script return value>,\n     reports:<ctx dict>, output:[String], stderr:[String], errors:[String],\n     lines_truncated:int (count of output/stderr/errors lines dropped past the\n     capture caps; 0 when nothing was dropped),\n     duration_ms, checkpoint:{...}, normalizations:[String], line_offset,\n     had_edited_scene, budget_exceeded, budget_enforced,\n     rolled_back (undo:\"action\" only), undo_action:\"registered\"|\"unavailable\"\n     (+ undo_unavailable_reason), rollback_error (only when a rollback was\n     attempted and failed) }\n   plus no_rewind_point:true + no_rewind_reason:String when no checkpoint\n   exists, plus — only when a Wave H helper wrote outside the scene —\n   files_written:[res:// paths], project_settings_changed:[keys] and\n   undo_action_note:String stating that those are covered by the pre-run\n   checkpoint ONLY (neither the undo step nor an error rollback touches\n   files on disk or project.godot). The parse_error failure additionally\n   carries parse_errors:[{line, column, message}] from the compile-first\n   validation, line numbers relative to the normalized source (see\n   line_offset).",
     "result_fields": [
       {
         "name": "budget_enforced",
@@ -2919,19 +2917,5 @@
       }
     }
   },
-  "warnings": [
-    "header: `add_node` has no doc comment above its declaration (description falls back to class-comment) — add one in modules/1summer_engine/editor/ops/scene_script_ops.h",
-    "header: `get_or_create` has no doc comment above its declaration (description falls back to class-comment) — add one in modules/1summer_engine/editor/ops/scene_script_ops.h",
-    "header: `instance_scene` has no doc comment above its declaration (description falls back to class-comment) — add one in modules/1summer_engine/editor/ops/scene_script_ops.h",
-    "header: `mesh_from_arrays` has no doc comment above its declaration (description falls back to class-comment) — add one in modules/1summer_engine/editor/ops/scene_script_ops.h",
-    "header: `apply_material` has no doc comment above its declaration (and no fallback source describes it) — add one in modules/1summer_engine/editor/ops/scene_script_ops.h",
-    "header: `add_camera` has no doc comment above its declaration (description falls back to class-comment) — add one in modules/1summer_engine/editor/ops/scene_script_ops.h",
-    "header/contract: `boolean` — parameter count: header 4 vs contract 3",
-    "header: `uv_box` has no doc comment above its declaration (and no fallback source describes it) — add one in modules/1summer_engine/editor/ops/scene_script_ops.h",
-    "header: `paint_rect` has no doc comment above its declaration (description falls back to shared-with:paint_tiles) — add one in modules/1summer_engine/editor/ops/scene_script_ops.h",
-    "header: `add_canvas_layer` has no doc comment above its declaration (description falls back to class-comment) — add one in modules/1summer_engine/editor/ops/scene_script_ops.h",
-    "registry/header: op param `checkpointCapabilityEnabled` is in the registry entry but not in the header's Parameters block",
-    "cpp/header: result key `lines_truncated` is written by the implementation but not mentioned in the header's Returns block",
-    "cpp/header: result key `parse_errors` is written by the implementation but not mentioned in the header's Returns block"
-  ]
+  "warnings": []
 }

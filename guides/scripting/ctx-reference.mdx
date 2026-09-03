@@ -26,22 +26,22 @@ Signatures use GDScript spelling: `name: Type = default -> ReturnType`. A defaul
 |---|---|---|---|
 | [`get_scene_root`](#get_scene_root) | Scene and nodes | v1 | Current edited scene root, or null when no scene is open. |
 | [`set_owner_recursive`](#set_owner_recursive) | Scene and nodes | v1 | Set owner to the edited scene root on `p_node` and every descendant — a node without an owner is silently dropped by SaveScene. |
-| [`add_node`](#add_node) | Scene and nodes | C | Creation helper — adds to the edited scene root when no parent is given, sets owner to the edited scene root by default (the #1 silent persistence gotcha, made structurally impossible), and returns the created node. |
+| [`add_node`](#add_node) | Scene and nodes | C | Instantiates `type` (any ClassDB Node class) as `name` under parent (the edited root when null), name made unique on collision, owned recursively; props apply via set() per key with `prop_warnings` on miss. |
 | [`find`](#find) | Scene and nodes | C | Recursive find in the edited scene (root included); null on miss. |
-| [`get_or_create`](#get_or_create) | Scene and nodes | C | Creation helper — adds to the edited scene root when no parent is given, sets owner to the edited scene root by default (the #1 silent persistence gotcha, made structurally impossible), and returns the created node. |
-| [`instance_scene`](#instance_scene) | Scene and nodes | C | Creation helper — adds to the edited scene root when no parent is given, sets owner to the edited scene root by default (the #1 silent persistence gotcha, made structurally impossible), and returns the created node. |
+| [`get_or_create`](#get_or_create) | Scene and nodes | C | Recursive `find_child(name)` under parent (the edited root when null): a match that `is_class(type)` (subclasses count) is returned as is; a match of another class is confessed in `prop_warnings` and a new node is created beside it (renamed on collision). |
+| [`instance_scene`](#instance_scene) | Scene and nodes | C | ResourceLoader::load(`res_path`) as a PackedScene, instantiated (GEN_EDIT_STATE_INSTANCE) under parent (the edited root when null) and renamed to `name` when one is given. |
 | [`grid`](#grid) | Scene and nodes | C | maker(i: int, pos: Vector3) -&gt; Node. |
 | [`scatter`](#scatter) | Scene and nodes | C | Deterministic for a given seed (RandomNumberGenerator, fixed draw order). |
 | [`add_light_rig`](#add_light_rig) | Scene and nodes | C | Key/fill/rim DirectionalLight3Ds under one Node3D; positioned at the target when one is given (orientation is what matters for directionals). |
 | [`ensure_environment`](#ensure_environment) | Scene and nodes | C | Get-or-create WorldEnvironment (+ Environment + procedural sky). |
-| [`add_camera`](#add_camera) | Scene and nodes | C | Creation helper — adds to the edited scene root when no parent is given, sets owner to the edited scene root by default (the #1 silent persistence gotcha, made structurally impossible), and returns the created node. |
+| [`add_camera`](#add_camera) | Scene and nodes | C | Camera3D named "Camera3D" ALWAYS under the edited root (no parent argument), owned, at position; when `look_at` differs from position the camera is aimed at it via `look_at_from_position` (the default `look_at` Vector3.ZERO aims at the origin; up flips to +Z for a straight up/down view so the basis never degenerates). |
 | [`save_scene`](#save_scene) | Scene and nodes | C | Ownership audit FIRST: any unowned node in the edited subtree fails the save with the offending paths in the `unowned_nodes` report entry. |
 | [`make_material`](#make_material) | Materials and shaders | C | props: albedo (Color\|"#hex"), metallic, roughness, emission (Color\|"#hex"), `emission_energy`, texture ("`res://…`"), transparent (bool), unshaded (bool); anything else applies via set() with `prop_warnings` on miss. |
-| [`apply_material`](#apply_material) | Materials and shaders | C | (no description in source) |
+| [`apply_material`](#apply_material) | Materials and shaders | C | MeshInstance3D with a mesh: `set_surface_override_material` on EVERY surface (override on the instance, never on the shared mesh resource); any other GeometryInstance3D (or a mesh-less MeshInstance3D): `set_material_override`; anything else: set("material") when such a property exists. |
 | [`make_shader`](#make_shader) | Materials and shaders | F | `Shader.set_code` + one `shader_parameter` per params key. |
 | [`add_mesh`](#add_mesh) | Geometry | C | shape: box\|sphere\|capsule\|cylinder\|plane\|torus\|text (text reads props.text, TextMesh). |
 | [`add_mesh_with_collision`](#add_mesh_with_collision) | Geometry | C | `add_mesh` + StaticBody3D/CollisionShape3D child matching the mesh AABB. |
-| [`mesh_from_arrays`](#mesh_from_arrays) | Geometry | C | Creation helper — adds to the edited scene root when no parent is given, sets owner to the edited scene root by default (the #1 silent persistence gotcha, made structurally impossible), and returns the created node. |
+| [`mesh_from_arrays`](#mesh_from_arrays) | Geometry | C | Triangle ArrayMesh built with SurfaceTool from vertices (+ indices; with no indices the vertex count must be a multiple of 3), normals generated (no tangents), on an owned MeshInstance3D named `name` under parent (the edited root when null). |
 | [`boolean`](#boolean) | Geometry | F | union\|difference\|intersection via the Manifold-backed CSG kernel, baked; per-surface materials survive the boolean. |
 | [`extrude_polygon`](#extrude_polygon) | Geometry | F | CSGPolygon3D MODE_DEPTH: polygon in the XY plane extruded along -Z. |
 | [`lathe`](#lathe) | Geometry | F | CSGPolygon3D MODE_SPIN: profile in the XY plane (x = radius, y = height) revolved around the local Y axis by `spin_degrees` over `sides` segments. |
@@ -51,7 +51,7 @@ Signatures use GDScript spelling: `name: Type = default -> ReturnType`. A defaul
 | [`decimate`](#decimate) | Geometry | F | meshoptimizer simplification toward ratio (0..1] of the current index count; the honestly ACHIEVED ratio lands in the `decimate` report entry. |
 | [`convex_collision`](#convex_collision) | Geometry | F | Single convex hull or V-HACD decomposition as an owned StaticBody3D child (owner set recursively — the unowned-save-trap fix). |
 | [`uv_planar`](#uv_planar) | Geometry | F | axis: x\|y\|z projection plane normal. |
-| [`uv_box`](#uv_box) | Geometry | F | (no description in source) |
+| [`uv_box`](#uv_box) | Geometry | F | Box (tri-planar) projection: each vertex takes the plane of its normal's dominant axis (flat normals are rebuilt first when the surface has none), UV = mesh-space coordinates \* scale (tiles per unit), tangents regenerated. |
 | [`mirror`](#mirror) | Geometry | F | Mirrored duplicate across the parent-space axis plane: the reflection is baked into the mesh (winding + normals corrected), not left as a negative scale. |
 | [`animate`](#animate) | Animation | F | keys: [[`time_s`, value], ...] or [\{time, value, transition\}, ...]. |
 | [`animate_method`](#animate_method) | Animation | G | calls: [[`time_s`, `method_name`, `args_array`], ...] -&gt; ONE method-call track on the node's path (same player/library/clip append semantics as animate). |
@@ -62,12 +62,12 @@ Signatures use GDScript spelling: `name: Type = default -> ReturnType`. A defaul
 | [`add_animated_sprite`](#add_animated_sprite) | 2D | H | frames: \{`anim_name`: \{frames: [`texture_paths`], fps: float, loop: bool\}\} -&gt; one SpriteFrames (the seeded "default" animation is dropped unless the spec defines it). |
 | [`add_tilemap`](#add_tilemap) | 2D | H | TileMapLayer (4.3+ class, verified in-tree) with the TileSet loaded from `tileset_path`; missing/invalid tileset -&gt; `add_tilemap` report + null. |
 | [`paint_tiles`](#paint_tiles) | 2D | H | cells: [Vector2i]. |
-| [`paint_rect`](#paint_rect) | 2D | H | Unknown `source_id` / `atlas_coords` in the layer's TileSet -&gt; `paint_tiles`/`paint_rect` report entry (listing the source ids that exist) and 0 painted; returns the count painted. |
+| [`paint_rect`](#paint_rect) | 2D | H | Fills every cell of rect (position inclusive, position + size exclusive) with the same tile via `set_cell`; same TileSet validation and report entry as `paint_tiles`. |
 | [`add_body_2d`](#add_body_2d) | 2D | H | kind: static\|rigid\|character\|area -&gt; StaticBody2D\|RigidBody2D\| CharacterBody2D\|Area2D + an owned CollisionShape2D child. |
 | [`add_camera_2d`](#add_camera_2d) | 2D | H | Camera2D under the edited root. |
 | [`add_parallax`](#add_parallax) | 2D | H | layers: [\{texture: path, `motion_scale`: Vector2, repeat: Vector2i\}] -&gt; one Parallax2D (4.3+ class, present in-tree; no ParallaxBackground fallback needed) per layer, each holding an un-centered Sprite2D, under one Node2D group named `name`. |
 | [`add_ui`](#add_ui) | UI | H | kind -&gt; class: label Label, button Button, panel PanelContainer, vbox VBoxContainer, hbox HBoxContainer, grid GridContainer, margin MarginContainer, `texture_rect` TextureRect, `progress_bar` ProgressBar, `line_edit` LineEdit, `rich_text` RichTextLabel, `color_rect` ColorRect, center CenterContainer. |
-| [`add_canvas_layer`](#add_canvas_layer) | UI | H | Creation helper — adds to the edited scene root when no parent is given, sets owner to the edited scene root by default (the #1 silent persistence gotcha, made structurally impossible), and returns the created node. |
+| [`add_canvas_layer`](#add_canvas_layer) | UI | H | CanvasLayer named `name` at layer index `layer` (default 1) under parent (the edited root when null), owned; no other property is touched. |
 | [`set_theme_overrides`](#set_theme_overrides) | UI | H | \{`font_size`: int, `font_color`: Color, &lt;`theme_item`&gt;: value\} -&gt; the matching `add_theme_*_override` by value type + key: Color (or "#hex") -&gt; color; int/float -&gt; `font_size` when the key is/ends with `font_size`, else constant; StyleBox/Font/Texture2D (or a "res://" path to one) -&gt; style/ font/icon. |
 | [`connect_signal`](#connect_signal) | UI | H | Object::connect with CONNECT_PERSIST so PackedScene saves it into the .tscn — exactly the flag the editor's ConnectionsDock sets. |
 | [`attach_script`](#attach_script) | Gameplay code and project settings | H | GDScriptLanguage::validate FIRST (parse errors -&gt; `attach_script_errors` report entry with line/column/message, null, nothing written). |
@@ -141,9 +141,11 @@ Skips the scene root itself (a node cannot own itself).
 add_node(type: String, name: String, parent: Node = null, props: Dictionary = {}) -> Node
 ```
 
-Creation helper — adds to the edited scene root when no parent is given, sets owner to the edited scene root by default (the #1 silent persistence gotcha, made structurally impossible), and returns the created node.
+Instantiates `type` (any ClassDB Node class) as `name` under parent (the edited root when null), name made unique on collision, owned recursively; props apply via set() per key with `prop_warnings` on miss.
 
-<sub>Header section: v2 ctx stdlib (frozen API, `SCENE_SCRIPTING_CONTRACTS.md` Wave C) · Description taken from the class-level comment (no comment on this declaration)</sub>
+Unknown, non-instantiable or non-Node class -&gt; error + null.
+
+<sub>Header section: v2 ctx stdlib (frozen API, `SCENE_SCRIPTING_CONTRACTS.md` Wave C)</sub>
 
 ### find
 
@@ -165,9 +167,11 @@ From the contract document's implementation notes:
 get_or_create(type: String, name: String, parent: Node = null) -> Node
 ```
 
-Creation helper — adds to the edited scene root when no parent is given, sets owner to the edited scene root by default (the #1 silent persistence gotcha, made structurally impossible), and returns the created node.
+Recursive `find_child(name)` under parent (the edited root when null): a match that `is_class(type)` (subclasses count) is returned as is; a match of another class is confessed in `prop_warnings` and a new node is created beside it (renamed on collision).
 
-<sub>Header section: v2 ctx stdlib (frozen API, `SCENE_SCRIPTING_CONTRACTS.md` Wave C) · Description taken from the class-level comment (no comment on this declaration)</sub>
+No match -&gt; `add_node`(type, name, parent).
+
+<sub>Header section: v2 ctx stdlib (frozen API, `SCENE_SCRIPTING_CONTRACTS.md` Wave C)</sub>
 
 ### instance_scene
 
@@ -175,13 +179,15 @@ Creation helper — adds to the edited scene root when no parent is given, sets 
 instance_scene(res_path: String, parent: Node = null, name: String = "") -> Node
 ```
 
-Creation helper — adds to the edited scene root when no parent is given, sets owner to the edited scene root by default (the #1 silent persistence gotcha, made structurally impossible), and returns the created node.
+ResourceLoader::load(`res_path`) as a PackedScene, instantiated (GEN_EDIT_STATE_INSTANCE) under parent (the edited root when null) and renamed to `name` when one is given.
+
+Only the instance ROOT is owned by the edited scene; its internals stay owned by the instance, exactly as a .tscn stores them. Unloadable path or failed instantiate -&gt; error + null.
 
 From the contract document's implementation notes:
 
 - `instance_scene` owns only the instance root (instance internals stay owned by the instance, as in a .tscn).
 
-<sub>Header section: v2 ctx stdlib (frozen API, `SCENE_SCRIPTING_CONTRACTS.md` Wave C) · Description taken from the class-level comment (no comment on this declaration)</sub>
+<sub>Header section: v2 ctx stdlib (frozen API, `SCENE_SCRIPTING_CONTRACTS.md` Wave C)</sub>
 
 ### grid
 
@@ -241,9 +247,11 @@ From the contract document's implementation notes:
 add_camera(position: Vector3, look_at: Vector3 = Vector3.ZERO, make_current: bool = false) -> Camera3D
 ```
 
-Creation helper — adds to the edited scene root when no parent is given, sets owner to the edited scene root by default (the #1 silent persistence gotcha, made structurally impossible), and returns the created node.
+Camera3D named "Camera3D" ALWAYS under the edited root (no parent argument), owned, at position; when `look_at` differs from position the camera is aimed at it via `look_at_from_position` (the default `look_at` Vector3.ZERO aims at the origin; up flips to +Z for a straight up/down view so the basis never degenerates).
 
-<sub>Header section: v2 ctx stdlib (frozen API, `SCENE_SCRIPTING_CONTRACTS.md` Wave C) · Description taken from the class-level comment (no comment on this declaration)</sub>
+`make_current` -&gt; `set_current(true)`. No scene open -&gt; error + null.
+
+<sub>Header section: v2 ctx stdlib (frozen API, `SCENE_SCRIPTING_CONTRACTS.md` Wave C)</sub>
 
 ### save_scene
 
@@ -275,7 +283,9 @@ props: albedo (Color|"#hex"), metallic, roughness, emission (Color|"#hex"), `emi
 apply_material(node: Node, material: Material) -> bool
 ```
 
-_No description in the engine source yet. The signature above is authoritative; add a doc comment above the declaration in the header to fill this in._
+MeshInstance3D with a mesh: `set_surface_override_material` on EVERY surface (override on the instance, never on the shared mesh resource); any other GeometryInstance3D (or a mesh-less MeshInstance3D): `set_material_override`; anything else: set("material") when such a property exists.
+
+No material slot -&gt; `prop_warnings` + false; null node or material -&gt; error + false.
 
 <sub>Header section: v2 ctx stdlib (frozen API, `SCENE_SCRIPTING_CONTRACTS.md` Wave C)</sub>
 
@@ -327,9 +337,11 @@ add_mesh_with_collision(shape: String, name: String, parent: Node = null, props:
 mesh_from_arrays(vertices: PackedVector3Array, indices: PackedInt32Array, uvs: PackedVector2Array = [], name: String = "Mesh", parent: Node = null) -> MeshInstance3D
 ```
 
-Creation helper — adds to the edited scene root when no parent is given, sets owner to the edited scene root by default (the #1 silent persistence gotcha, made structurally impossible), and returns the created node.
+Triangle ArrayMesh built with SurfaceTool from vertices (+ indices; with no indices the vertex count must be a multiple of 3), normals generated (no tangents), on an owned MeshInstance3D named `name` under parent (the edited root when null).
 
-<sub>Header section: v2 ctx stdlib (frozen API, `SCENE_SCRIPTING_CONTRACTS.md` Wave C) · Description taken from the class-level comment (no comment on this declaration)</sub>
+uvs are used only when their count matches the vertices (mismatch -&gt; ignored + `prop_warnings`); empty vertices or an out-of-range index -&gt; error + null.
+
+<sub>Header section: v2 ctx stdlib (frozen API, `SCENE_SCRIPTING_CONTRACTS.md` Wave C)</sub>
 
 ### boolean
 
@@ -433,7 +445,9 @@ scale = UV tiles per world unit.
 uv_box(node: Node, scale: float = 1.0) -> bool
 ```
 
-_No description in the engine source yet. The signature above is authoritative; add a doc comment above the declaration in the header to fill this in._
+Box (tri-planar) projection: each vertex takes the plane of its normal's dominant axis (flat normals are rebuilt first when the surface has none), UV = mesh-space coordinates \* scale (tiles per unit), tangents regenerated.
+
+Same worker as `uv_planar`: node must be a MeshInstance3D with a mesh and scale non-zero (else error + false); non-triangle surfaces are copied untouched with a `prop_warnings` note.
 
 <sub>Header section: Wave F geometry stdlib v2 (frozen API, `SCENE_SCRIPTING_CONTRACTS.md`)</sub>
 
@@ -573,9 +587,11 @@ Unknown `source_id` / `atlas_coords` in the layer's TileSet -&gt; `paint_tiles`/
 paint_rect(layer: TileMapLayer, rect: Rect2i, source_id: int, atlas_coords: Vector2i = Vector2i.ZERO) -> int
 ```
 
-Unknown `source_id` / `atlas_coords` in the layer's TileSet -&gt; `paint_tiles`/`paint_rect` report entry (listing the source ids that exist) and 0 painted; returns the count painted.
+Fills every cell of rect (position inclusive, position + size exclusive) with the same tile via `set_cell`; same TileSet validation and report entry as `paint_tiles`.
 
-<sub>Header section: Wave H game completeness ctx v4 (frozen API, `SCENE_SCRIPTING_CONTRACTS.md`) · Description shared with `paint_tiles` (the comment above it names both)</sub>
+Empty rect or more than 1,000,000 cells -&gt; error + 0; returns the count painted (the rect area).
+
+<sub>Header section: Wave H game completeness ctx v4 (frozen API, `SCENE_SCRIPTING_CONTRACTS.md`)</sub>
 
 ### add_body_2d
 
@@ -654,9 +670,9 @@ From the contract document's implementation notes:
 add_canvas_layer(name: String, layer: int = 1, parent: Node = null) -> CanvasLayer
 ```
 
-Creation helper — adds to the edited scene root when no parent is given, sets owner to the edited scene root by default (the #1 silent persistence gotcha, made structurally impossible), and returns the created node.
+CanvasLayer named `name` at layer index `layer` (default 1) under parent (the edited root when null), owned; no other property is touched.
 
-<sub>Header section: Wave H game completeness ctx v4 (frozen API, `SCENE_SCRIPTING_CONTRACTS.md`) · Description taken from the class-level comment (no comment on this declaration)</sub>
+<sub>Header section: Wave H game completeness ctx v4 (frozen API, `SCENE_SCRIPTING_CONTRACTS.md`)</sub>
 
 ### set_theme_overrides
 

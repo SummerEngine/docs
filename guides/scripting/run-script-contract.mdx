@@ -45,7 +45,7 @@ Everything the script can call on `ctx` is on the [ctx API reference](/guides/sc
 |---|---|---|---|---|
 | `chatId` | `string` | `""` | no | required by `GitOps::create_checkpoint`. Filled in by the transport. |
 | `checkpoint` | `boolean` | `true` | no | (default true) request a SummerGit checkpoint before execution. Honored only with checkpointCapabilityEnabled:true, and a missing checkpoint NEVER blocks the run (`no_rewind_point` pattern). |
-| `checkpointCapabilityEnabled` | `boolean` | `false` | no | Not described on its own in the header; referenced in the description of `checkpoint`. |
+| `checkpointCapabilityEnabled` | `boolean` | `false` | no | (default false) the capability gate read alongside checkpoint (op.get("checkpointCapabilityEnabled", false)): a checkpoint is attempted only when BOTH are true; false -&gt; checkpoint:\{ok:false, `reason:"checkpoint_capability_disabled"`\} and the run proceeds un-rewindable. Same gate as RunEditorScript's pre-run checkpoint (`editor_script_ops.h`). |
 | `max_seconds` | `integer` | `20` | no | (default 20, clamped 1..120) HARD wall-clock budget: the GDScript VM deadline guard raises "Summer script budget exceeded (Ns)." at the first loop edge past the deadline (also still surfaced cooperatively via `ctx.frames_budget_exceeded()`). Blocking single calls (delays, awaits, native code) are outside the guard's reach. |
 | `projectId` | `string` | `""` | no | required by `GitOps::create_checkpoint`. Filled in by the transport. |
 | `script_source` | `string` | `""` | yes | GDScript defining `func run(ctx):`. If it has no `extends` line we prepend `extends RefCounted`, and if it has no `@tool` we prepend `@tool` (a non-tool script only gets a placeholder instance in the editor and never runs); both are REPORTED back in `normalizations`, never silent. |
@@ -69,6 +69,8 @@ The result shape as documented in the engine header:
 ```text
 { ok, op:"RunSceneScript", ran, result:<script return value>,
   reports:<ctx dict>, output:[String], stderr:[String], errors:[String],
+  lines_truncated:int (count of output/stderr/errors lines dropped past the
+  capture caps; 0 when nothing was dropped),
   duration_ms, checkpoint:{...}, normalizations:[String], line_offset,
   had_edited_scene, budget_exceeded, budget_enforced,
   rolled_back (undo:"action" only), undo_action:"registered"|"unavailable"
@@ -79,7 +81,10 @@ exists, plus — only when a Wave H helper wrote outside the scene —
 files_written:[res:// paths], project_settings_changed:[keys] and
 undo_action_note:String stating that those are covered by the pre-run
 checkpoint ONLY (neither the undo step nor an error rollback touches
-files on disk or project.godot).
+files on disk or project.godot). The parse_error failure additionally
+carries parse_errors:[{line, column, message}] from the compile-first
+validation, line numbers relative to the normalized source (see
+line_offset).
 ```
 
 Every key the implementation writes, with what it means:
