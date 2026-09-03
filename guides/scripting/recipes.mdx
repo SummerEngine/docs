@@ -1,0 +1,296 @@
+---
+title: "Recipes"
+description: "Verified Summer scene scripts, quoted from the engine's end-to-end test suite: a grid by hand and with the ctx helpers, a boolean doorway, a lathed goblet, terrain with collision, a camera flythrough, a shader with the compile-error loop, and an animation state machine."
+icon: "chef-hat"
+---
+
+Every script on this page is quoted verbatim from the engine's scene-scripting end-to-end
+suite, where it runs against a live editor and the saved scene is checked afterwards. That is
+the bar for appearing here: the code is not illustrative, it is the test.
+
+Two conventions come from the suite and are worth keeping in your own scripts:
+
+- Each script **returns a flat dictionary of booleans and numbers** — the facts the harness
+  asserts on. Do the same; it turns "did it work?" into a lookup in `result` instead of a
+  screenshot hunt.
+- Scripts that depend on an earlier one say so. The suite runs them in order against one
+  editor, and so should you.
+
+The [ctx API reference](/guides/scripting/ctx-reference) has every helper these recipes call.
+
+## 1. A grid of boxes, by hand
+
+The v1 surface: `get_scene_root`, `set_owner_recursive`, `report`. Everything is built with
+plain engine calls; the one line that matters is `ctx.set_owner_recursive(grid)`.
+
+```gdscript
+func run(ctx):
+	var root = ctx.get_scene_root()
+	if root == null:
+		ctx.report("error", "no scene root")
+		return null
+	var grid = Node3D.new()
+	grid.name = "Grid"
+	root.add_child(grid)
+	var count = 0
+	for x in range(5):
+		for z in range(5):
+			var mi = MeshInstance3D.new()
+			mi.name = "Box_%d_%d" % [x, z]
+			mi.mesh = BoxMesh.new()
+			mi.position = Vector3(x * 2.0, 0.0, z * 2.0)
+			grid.add_child(mi)
+			count += 1
+	ctx.set_owner_recursive(grid)
+	ctx.report("count", count)
+	print("grid built: ", count)
+	return {"built": count, "origin": Vector3(0, 0, 0)}
+```
+
+**Check afterwards:** `result.built == 25`, `reports.count == 25`, `output` contains
+`grid built: 25`. After a save, the `.tscn` contains `Box_4_4`.
+
+## 2. The same idea with the ctx stdlib
+
+One pass over the whole creation stdlib: a material with a deliberately unknown key (to see
+`prop_warnings` in action), a grid via callback, a collidable sphere, a light rig, an
+environment, a camera, a summary, and an ownership-audited save.
+
+```gdscript
+func run(ctx):
+	var mat = ctx.make_material({"albedo": "#4488ff", "roughness": 0.3, "bogus_key": 1})
+	var made = ctx.grid(3, 3, Vector3(2, 0, 2), func(i, _pos):
+		var m = ctx.add_mesh("box", "GridBox_%d" % i)
+		ctx.apply_material(m, mat)
+		return m
+	)
+	ctx.add_mesh_with_collision("sphere", "CollidableSphere", null, {"radius": 0.75})
+	ctx.add_light_rig()
+	ctx.ensure_environment()
+	ctx.add_camera(Vector3(8, 6, 8), Vector3(2, 0, 2), true)
+	var s = ctx.summary()
+	ctx.report("summary", s)
+	var saved = ctx.save_scene()
+	ctx.report("saved", saved)
+	return {"made": made.size(), "found_box4": ctx.find("GridBox_4") != null, "saved": saved}
+```
+
+**Check afterwards:** `result.made == 9`, `result.saved == true`, and
+`reports.prop_warnings` names `bogus_key` — the engine did not drop the unknown key silently.
+Nothing here calls `set_owner_recursive`; every helper owned its node. The `grid` callback
+receives `(i, pos)`; returning a `Node3D` places it at `pos`, and a result with no parent is
+added under the scene root.
+
+## 3. Carve a doorway: `boolean`
+
+Box minus box, baked to a plain mesh through the Manifold-backed CSG kernel. The inputs are
+consumed by default; only the result remains, named after the first input and the operation.
+
+```gdscript
+func run(ctx):
+	var a = ctx.add_mesh("box", "BoolA", null, {"size": Vector3(2, 2, 2)})
+	var b = ctx.add_mesh("box", "BoolB", null, {"size": Vector3(1, 1, 1), "position": Vector3(1, 1, 1)})
+	var out = ctx.boolean(a, b, "difference")
+	var saved = ctx.save_scene()
+	return {
+		"made": out != null,
+		"a_gone": ctx.find("BoolA") == null,
+		"b_gone": ctx.find("BoolB") == null,
+		"has_result": ctx.find("BoolA_difference") != null,
+		"surfaces": out.mesh.get_surface_count() if out else 0,
+		"saved": saved,
+	}
+```
+
+**Check afterwards:** `a_gone`, `b_gone` and `has_result` are all `true`, and the saved scene
+contains no live CSG node — the result is an `ArrayMesh` on a `MeshInstance3D`. In a
+snapshot diff, `BoolA` and `BoolB` appear under `removed` and `BoolA_difference` under
+`added`; leftover inputs mean the boolean returned `null` and the reason is in `reports`.
+Pass `keep_inputs: true` as the fourth argument to keep the operands.
+
+## 4. Lathe a goblet
+
+`lathe` revolves a 2D profile (x is radius, y is height) around the local Y axis. Design the
+profile from the axis outward, bottom to top.
+
+```gdscript
+func run(ctx):
+	var profile = PackedVector2Array([
+		Vector2(0.05, 0.0), Vector2(0.5, 0.05), Vector2(0.45, 0.12), Vector2(0.08, 0.2),
+		Vector2(0.08, 0.7), Vector2(0.35, 0.85), Vector2(0.38, 1.15), Vector2(0.3, 1.18),
+		Vector2(0.28, 0.9), Vector2(0.05, 0.78),
+	])
+	var goblet = ctx.lathe(profile, "Goblet", null, 360.0, 48)
+	return {
+		"made": goblet != null,
+		"lathe_surfaces": goblet.mesh.get_surface_count() if goblet else 0,
+		"lathe_verts": goblet.mesh.surface_get_array_len(0) if goblet else 0,
+	}
+```
+
+**Check afterwards:** `made` is `true` and `lathe_verts` is well above zero. Lathes look
+faceted at 48 sides without `ctx.set_smooth(goblet, 40.0)`; a `spin_degrees` of 180 gives a
+half-dome, and a square profile with `sides: 8` a chamfered pillar.
+
+## 5. Terrain with collision
+
+A noise heightfield sized 24 by 24 units, 4 units tall, seeded so re-runs are identical. The
+collider arrives with it: a `StaticBody3D` child holding a `HeightMapShape3D`, already owned.
+
+```gdscript
+func run(ctx):
+	var t = ctx.terrain(Vector2(24, 24), 4.0, 1234, "Ground")
+	if t == null:
+		return {"made": false}
+	var body = t.get_node_or_null("StaticBody3D")
+	var col = body.get_node_or_null("CollisionShape3D") if body else null
+	var shape = col.shape if col else null
+	var aabb = t.mesh.get_aabb()
+	var saved = ctx.save_scene()
+	return {
+		"made": true,
+		"has_body": body != null,
+		"has_heightmap": shape is HeightMapShape3D,
+		"map_width": shape.map_width if shape else 0,
+		"body_owned": body.owner == ctx.get_scene_root() if body else false,
+		"height_in_range": aabb.size.y > 0.1 and aabb.size.y <= 4.01,
+		"saved": saved,
+	}
+```
+
+**Check afterwards:** `has_heightmap`, `body_owned` and `height_in_range` are `true`. The
+`body_owned` line is the point of the recipe — collision that a script creates is the classic
+thing to lose on save, and here it is owned. Pass a grayscale image as `image_path` to drive
+heights from a heightmap instead of noise. Terrain reads wrong from top-down preset framings;
+verify it with `summer_screenshot` and `framing: "camera"`.
+
+## 6. Camera flythrough: `animate`
+
+Two calls with the same clip name append tracks to the same animation. `position` and
+`rotation` on a `Node3D` get dedicated 3D tracks; rotation values given as `Vector3` are Euler
+radians and are converted to the quaternion track for you.
+
+```gdscript
+func run(ctx):
+	var cam = ctx.add_camera(Vector3(0, 5, 10), Vector3.ZERO, false)
+	var player = ctx.animate(cam, "position", [[0.0, Vector3(0, 5, 10)], [2.0, Vector3(10, 5, 0)], [4.0, Vector3(10, 8, -10)]], "flythrough", true)
+	ctx.animate(cam, "rotation", [[0.0, Vector3(0, 0, 0)], [4.0, Vector3(0, PI, 0)]], "flythrough", true, player)
+	var anim = player.get_animation("flythrough")
+	var saved = ctx.save_scene()
+	return {
+		"has_player": player != null,
+		"tracks": anim.get_track_count(),
+		"anim_len": anim.get_length(),
+		"looping": anim.get_loop_mode() == Animation.LOOP_LINEAR,
+		"saved": saved,
+	}
+```
+
+**Check afterwards:** `tracks == 2`, `anim_len == 4.0`, `looping` is `true`. To see it move,
+play the game (`summer_play`), trigger the clip or set the player to autoplay, and capture a
+frame with `summer_screenshot` and `target: "game"`. Keys may also be dictionaries
+(`{"time": 0.0, "value": ..., "interpolation": "cubic"}`); interpolation is per track, so the
+first key that names a mode wins and a mixed set is confessed in `prop_warnings`.
+
+## 7. A shader, and the compile-error loop: `make_shader`
+
+`make_shader` runs the engine's shader compiler on your code first. Good code becomes a
+`ShaderMaterial` with its parameters set; bad code returns `null` and the compiler's message,
+line number included, lands verbatim in the `make_shader_errors` report entry. This script
+does both on purpose. It expects `BoolA_difference` from recipe 3 to exist.
+
+```gdscript
+func run(ctx):
+	var good = ctx.make_shader("shader_type spatial;\nuniform vec4 tint : source_color = vec4(1.0);\nvoid fragment() { ALBEDO = tint.rgb; }", {"tint": Color(1, 0, 0)})
+	var target = ctx.find("BoolA_difference")
+	var applied = false
+	if target and good:
+		applied = ctx.apply_material(target, good)
+	var bad = ctx.make_shader("shader_type spatial;\nvoid fragment() { ALBEDO = missing_symbol; }")
+	return {"good_made": good != null, "applied": applied, "bad_null": bad == null}
+```
+
+**Check afterwards:** `good_made` and `applied` are `true`, `bad_null` is `true`, and
+`reports.make_shader_errors` names `missing_symbol` with a line number. The editor is still
+alive — a shader compile error is a reported fact, not a crash. The loop when your own shader
+fails: read the line the entry names, fix that line, run again. Do not guess.
+
+The `\n` inside the shader string is a GDScript escape and reaches the shader compiler as a
+line break; that is what makes the reported line numbers meaningful.
+
+## 8. Method track and state machine: `animate_method`, `anim_state_machine`
+
+Two scripts, run in order. The first creates `CueBox` and keys a method-call track with one
+method the node has (`show`) and one it does not (`no_such_method`) — the missing method is
+still keyed, because it may come from a script attached later, and the miss is confessed in
+`prop_warnings` and the report entry's `missing_methods`.
+
+```gdscript
+func run(ctx):
+	var box = ctx.add_mesh("box", "CueBox")
+	var p = ctx.animate_method(box, [[0.5, "show", []], [1.0, "no_such_method", [1, "x"]]], "cues", false)
+	var anim = p.get_animation("cues")
+	var t = anim.find_track(NodePath("CueBox"), Animation.TYPE_METHOD)
+	var saved = ctx.save_scene()
+	return {
+		"has_track": t != -1,
+		"method_keys": anim.track_get_key_count(t) if t != -1 else 0,
+		"m0": anim.method_track_get_name(t, 0) if t != -1 else "",
+		"saved": saved,
+	}
+```
+
+The second gives `CueBox` two clips and builds an `AnimationTree` state machine over them. One
+state names a clip the player does not have; it is skipped, and the `anim_state_machine`
+report entry lists the clips that do exist. Calling the helper twice returns the same tree —
+it is get-or-create.
+
+```gdscript
+func run(ctx):
+	var box = ctx.find("CueBox")
+	var p = ctx.animate(box, "position", [[0.0, Vector3.ZERO], [1.0, Vector3.UP]], "idle", true)
+	ctx.animate(box, "position", [[0.0, Vector3.UP], [1.0, Vector3.ZERO]], "walk", true, p)
+	var spec = {
+		"states": {"Idle": "idle", "Walk": "walk", "Broken": "no_such_clip"},
+		"transitions": [["Idle", "Walk", {"auto": true, "blend_s": 0.25}], ["Walk", "Idle", {}]],
+		"start": "Idle",
+	}
+	var tree = ctx.anim_state_machine(box, spec)
+	var tree2 = ctx.anim_state_machine(box, spec)
+	var sm = tree2.tree_root
+	var saved = ctx.save_scene()
+	# The engine's AnimationMixer defaults active=true, so PackedScene's
+	# delta-serialization rightly omits `active = true` from the .tscn.
+	# Assert the semantic instead: a fresh load of the saved scene comes
+	# back with an ACTIVE state machine.
+	var reloaded = ResourceLoader.load("res://waveg.tscn", "PackedScene", ResourceLoader.CACHE_MODE_IGNORE_DEEP)
+	var inst = reloaded.instantiate()
+	var rtrees = inst.find_children("*", "AnimationTree", true, false)
+	var reload_active = rtrees.size() == 1 and rtrees[0].active
+	inst.free()
+	return {
+		"has_tree": tree != null,
+		"is_sm": sm is AnimationNodeStateMachine,
+		"has_idle": sm.has_node("Idle"),
+		"has_walk": sm.has_node("Walk"),
+		"broken_skipped": not sm.has_node("Broken"),
+		"sm_active": tree.active,
+		"reload_active": reload_active,
+		"player_wired": tree.get_node(tree.anim_player) == p,
+		"reused_tree": tree2 == tree,
+		"saved": saved,
+	}
+```
+
+**Check afterwards:** `broken_skipped`, `reused_tree`, `player_wired` and `reload_active` are
+all `true`. The second script reloads its own saved file (`res://waveg.tscn` in the suite;
+substitute your scene's path) to prove the state machine is active after a fresh load — a
+good pattern in general: when a property's default hides it from the saved text, verify the
+behaviour on reload rather than grepping the file.
+
+## Reading a recipe's result
+
+For every recipe the sequence is the same: read `ok` and `errors`; read `reports` — first
+`prop_warnings`, then the helper-named entries; compare `result` with what you expected; then
+take the [structural and visual receipts](/guides/scripting/verifying). A recipe that returns
+`ok: true` with a non-empty `prop_warnings` did not do what you asked.

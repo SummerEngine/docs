@@ -1,0 +1,176 @@
+---
+title: "Concepts"
+description: "The ideas behind Summer scene scripting: node ownership and saving, the undo step versus the checkpoint, the time budget, compile-first errors, prop_warnings and report entries, and why the operation runs alone."
+icon: "lightbulb"
+---
+
+The [ctx API reference](/guides/scripting/ctx-reference) and the
+[run(ctx) contract](/guides/scripting/run-script-contract) are generated from the engine and
+tell you *what* every method and result key is. This page is the *why*: the handful of ideas
+that explain the whole design, so the facts on those pages read as consequences instead of
+trivia.
+
+## One function, one transaction
+
+A scene script is a single `func run(ctx):`. The engine compiles it, snapshots the scene,
+calls the function once on the editor's main thread, snapshots again, and hands you back a
+result. Everything below is about what happens inside that bracket and what is guaranteed on
+either side of it.
+
+## Ownership and saving
+
+This is the one concept that bites everyone once.
+
+The editor saves a scene by *packing* it, and packing only includes nodes whose `owner` is the
+scene root. A node you create with `Node3D.new()` and `add_child()` is in the tree — it
+renders, it shows in the Scene dock, it appears in a screenshot — but its owner is `null`, so
+the packed scene does not contain it. The save succeeds. The file has a hole in it. Nothing
+warns you.
+
+Scene scripting deals with this in three layers:
+
+1. **Every creation helper owns what it creates.** `ctx.add_node`, `ctx.add_mesh`,
+   `ctx.instance_scene`, `ctx.terrain`, `ctx.convex_collision`, `ctx.add_ui`, and the rest
+   set the owner to the edited scene root (recursively, where they create subtrees) and
+   return the node. If you use the helpers you do not think about owners.
+2. **`ctx.set_owner_recursive(node)`** stamps a subtree you built by hand — the node and
+   every descendant. Call it *after* `add_child`; a node that is not in the tree cannot be
+   owned. Being under an owned parent is not enough; each descendant needs its own owner.
+3. **`ctx.save_scene()` audits first.** Any unowned node in the edited subtree fails the save
+   and lists the offending paths in the `unowned_nodes` report entry. The alternative — the
+   plain `SaveScene` operation — will happily write the file without them.
+
+The same rule shapes the transaction below: the undo snapshots are packed scenes too, so an
+unowned node is invisible to undo exactly as it is invisible to save.
+
+## Undo step versus checkpoint rollback
+
+Two different safety nets cover two different kinds of change. Knowing which one applies is
+most of what "is this safe?" means.
+
+| | Undo step (`undo: "action"`, the default) | Checkpoint (`checkpoint: true`, the default) |
+|---|---|---|
+| What it is | A packed-scene snapshot of the edited scene before and after the run | A source-control checkpoint of the project taken before the run |
+| What it covers | Nodes owned by the edited scene root, and their properties and sub-resources — exactly what a save would persist | Files on disk: scripts written by `attach_script`, prefabs from `make_prefab`, `project.godot` changes from `add_autoload` / `add_input_action` / `set_main_scene` |
+| How you use it | Ctrl+Z in the editor reverts the whole run as one step | Rewind through the project's checkpoint history |
+| On a runtime error | The pre-run snapshot is restored immediately; the result says `rolled_back: true` | Nothing automatic: the files the script wrote stay written, and the result's `error` text says so |
+| What it does not cover | Unowned nodes, external resources, files, editor-only state such as selection and folding | The edited scene's in-memory state |
+
+Some consequences worth spelling out:
+
+- **A restore replaces the scene root.** Undo, redo and error rollback re-instantiate the
+  snapshot, so any node reference you held from before the restore is stale.
+- **The result never claims a rollback it did not perform.** If restoring failed,
+  `rolled_back` stays `false` and `rollback_error` explains; the scene may hold half-applied
+  changes and you should look before running anything else.
+- **Undo can be unavailable.** If the pre-run snapshot could not be taken (a pack error, no
+  scene history), the run still executes and the result says
+  `undo_action: "unavailable"` with a reason. Then the checkpoint is your only net.
+- **A missing checkpoint never blocks a run.** When no checkpoint could be taken the result
+  carries `no_rewind_point: true` and `no_rewind_reason`. Surface that before doing
+  anything destructive.
+- **Writes outside the scene are announced.** When a gameplay-code helper writes a file or a
+  project setting, the result gains `files_written` and/or `project_settings_changed` plus an
+  `undo_action_note` stating, in so many words, that those are covered by the checkpoint
+  only.
+- **`undo: "none"`** skips the snapshots entirely — checkpoint only, the original v1
+  behaviour. A runtime error can then leave a partial mutation in the scene.
+
+Errors that never reach the function body (a parse error, a missing `run` method, a failed
+call into `run`) have nothing to roll back, and the result does not pretend otherwise.
+
+## The budget
+
+The script runs on the editor's main thread, so while it runs the editor does nothing else.
+`max_seconds` (default 20, clamped to 1–120) is a **hard** budget: the GDScript VM checks an
+armed wall-clock deadline every time a loop goes round, and the first loop edge past the
+deadline raises the script error `Summer script budget exceeded (Ns).` The editor keeps
+running; the end-to-end suite proves it by submitting `while true:` with a two-second budget
+and measuring the editor's pulse afterwards.
+
+Two honest limits:
+
+- The guard catches **loops**. A single call that blocks by itself — a long `OS.delay_msec`,
+  an `await` on a signal that never fires, a wedge inside a native call — is outside its
+  reach. `budget_enforced` in the result tells you whether the guard was armed at all (it
+  needs an editor build with debugging enabled).
+- `ctx.frames_budget_exceeded()` is the cooperative version: it turns `true` once the budget
+  is spent, and the bulk helpers `grid` and `scatter` check it and stop early (and say so).
+  Long procedural loops of your own should check it too.
+
+The practical rule: keep scene scripts short and specific, and split large jobs into several
+runs rather than raising the budget. Cold, project-wide batch work — re-saving every scene,
+sweeping resources — belongs in the [headless lane](/automation/headless), which does not
+share the live editor's thread.
+
+## Compile first
+
+The engine validates the script before anything touches the scene:
+
+1. **Normalization.** If the source has no `extends` line, `extends RefCounted` is prepended;
+   if it has no `@tool`, `@tool` is prepended (a non-tool script only gets a placeholder
+   instance in the editor and would never run). Both additions are listed in
+   `normalizations`, and `line_offset` says how many lines they shifted your code by.
+2. **Parse.** A syntax error returns `failure_reason: "parse_error"` with `parse_errors`
+   as a list of `{line, column, message}` relative to the normalized source. The scene is
+   untouched.
+3. **Shape.** No `func run(ctx):` is `missing_run_method`; a base class that cannot be
+   instantiated is `instantiate_failed`; a script that only produced a placeholder instance
+   is `not_tool_instance`.
+4. **Run.** Only now does the transaction open. A script error during the run is
+   `script_runtime_error`, and the undo snapshot is restored as described above.
+
+The same compile-first stance is inside `ctx` too. `make_shader` validates shader code with
+the engine's shader compiler before building a material and returns `null` with the compiler's
+message, verbatim, in the `make_shader_errors` report entry — instead of a silently broken
+material. `attach_script` validates GDScript source before writing a file and reports parse
+errors in `attach_script_errors` with nothing written.
+
+## `prop_warnings` and report entries
+
+Most helpers take a `props` dictionary and apply it with `set()` per key. The engine does not
+know what you *meant*, but it does know when a key matched no property — and it never drops
+one silently. Every miss is collected into the `prop_warnings` report entry. Read it after
+every run; a misspelled property is the most common reason a script "worked" and the scene
+looks wrong.
+
+Beyond `prop_warnings`, helpers write **structured report entries** when something did not go
+as asked, named after the helper: `unowned_nodes` from `save_scene`, `decimate` with the
+ratio actually achieved, `bone_pose` listing the bones that exist when yours did not,
+`anim_state_machine` listing the player's real clips when a state named one it lacks,
+`add_sprite` / `add_tilemap` / `add_parallax` for textures and tilesets that failed to load,
+`connect_signal` when the signal or method is unknown, `attach_script` with the file's hash
+and whether it overwrote a previous one, `make_prefab`, `add_autoload`, `add_input_action`.
+The rule is consistent: bad input produces a report entry and a `null` or `false` return,
+never a crash and never silence.
+
+Your own facts go through `ctx.report(key, value)`, and everything ends up together in the
+result's `reports` dictionary. `ctx.summary()` gives you counts by class, the lights, the
+cameras and the scene's merged bounds in one call — useful as a final report entry.
+
+## The operation runs alone
+
+Over the local API and MCP, `RunSceneScript` is a *single-only* operation: it must be the only
+operation in its request. The request envelope is still `{"ops": [...]}`, with exactly one
+entry. Other operations you want around it — opening a scene first, saving after — go in
+their own calls. Only one scene script can run at a time in an editor; a second one arriving
+while the first is still running fails with `failure_reason: "busy"`.
+
+## Two lanes, one rule of thumb
+
+| Tool | Runs where | Sees | Use for |
+|---|---|---|---|
+| `summer_run_script` (`RunSceneScript`) | Inside the live editor, on its main thread | The scene that is open, unsaved edits included | Building and changing the open scene; anything with a loop or computed placement |
+| `summer_run_editor_script` (`RunEditorScript`) | A separate headless editor process | The project on disk only | Batch and project-wide jobs; work that should not block the editor |
+
+Three or more related edits, or any computed placement, is a scene script. One property is
+`summer_set_prop`. A sweep across the whole project is the headless lane.
+
+<CardGroup cols={2}>
+  <Card title="Recipes" icon="chef-hat" href="/guides/scripting/recipes">
+    See these ideas in verified scripts.
+  </Card>
+  <Card title="Verifying" icon="search-check" href="/guides/scripting/verifying">
+    Snapshot, diff, screenshot and runtime reads — and the honesty rules.
+  </Card>
+</CardGroup>

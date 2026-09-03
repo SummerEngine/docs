@@ -1,0 +1,122 @@
+---
+title: "For agents"
+description: "How the Summer MCP tools map to the scene-scripting operations, where the skills that teach the loop live, and exactly which parts are preview until the engine's scene-scripting pull request ships."
+icon: "bot"
+---
+
+This page is for the agent side of Summer: the harness author wiring up tools, and the agent
+reading its own documentation. It states what exists, where, and in what state.
+
+## Tool to operation map
+
+The Summer MCP server exposes one tool per engine operation. For the scripting loop these are
+the ones that matter, with their status in the toolkit's own library:
+
+| MCP tool | Engine operation | Status | Use it for |
+|---|---|---|---|
+| `summer_run_script` | `RunSceneScript` | preview | Run `func run(ctx):` inside the live editor against the open scene |
+| `summer_run_editor_script` | `RunEditorScript` | stable | Run an `EditorScript` (`func _run():`) in a fresh headless child editor against the project on disk |
+| `summer_world_snapshot` | `GetWorldSnapshot` | preview | Structured before/after read of the edited scene |
+| `summer_snapshot_diff` | `DiffWorldSnapshot` | preview | The structural receipt for a mutation |
+| `summer_screenshot` | `ScenePreview` and the viewport/game captures | stable | Pixels; `framing: "camera"` for lighting truth |
+| `summer_get_runtime_tree` | `GetRuntimeSceneTree` | preview | The running game's live tree |
+| `summer_inspect_runtime_node` | `GetRuntimeNode` | preview | One live node's properties |
+| `summer_get_scene_tree` | scene-tree state read | stable | Hierarchy shape with explicit depth and limit |
+| `summer_api_docs` | offline class reference | stable | Verify a property or method name before writing it into a script |
+| `summer_play` / `summer_stop` / `summer_is_running` | play controls | stable | Start, stop and check the game |
+| `summer_open_scene` / `summer_save_scene` | `OpenScene` / `SaveScene` | stable | Make the target scene the edited one; standalone save |
+| `summer_get_project_context` | project binding and health | stable | The first call of any session |
+| `summer_get_agent_playbook` | — | stable | The operating guide: safe workflow, verification ladder, honesty rules |
+
+`summer_run_script` takes `source` (the function; no `extends`, no `@tool`), and optionally
+`max_seconds`, `checkpoint` and `undo`. It forwards them as the `RunSceneScript` parameters
+described on the [run(ctx) contract](/guides/scripting/run-script-contract); the engine
+clamps `max_seconds` to its own limits and reports the budget and undo status back in the
+result.
+
+The complete tool list, with value formats and scene targeting rules, is the
+[Tools Reference](/mcp/tools-reference).
+
+## What is preview, and why
+
+The scripting and perception tools above are marked **preview** in the toolkit because they
+depend on engine operations that are not yet in a shipped Summer Engine release. The toolkit's
+own status page records the position plainly:
+
+- The engine side — `RunSceneScript` with its checkpoint and rollback, the world snapshot and
+  diff operations, the runtime reads — lands with engine pull request #156 (scene
+  scripting). Until it is merged and shipped, a preview tool called against a released engine
+  returns a structured `engine_lacks_op` result on both the CLI and MCP faces. Nothing is
+  attempted, nothing is half-done.
+- `summer_run_editor_script` (`RunEditorScript`) and the `RunVerification` probes **do**
+  ship in the current release: agents can already run editor-side GDScript against the
+  project on disk and drive input-based probes. That is the working scripting lane today,
+  and its discipline is the [headless page](/automation/headless).
+- `summer setup` installs preview tools and skills by default, labelled as such; pass
+  `--stable-only` to leave them out. The preflight that produces `engine_lacks_op` can be
+  switched off with the environment variable `SUMMER_CAPABILITY_PREFLIGHT=off` — do that
+  only against an engine build you know has the operations.
+- Live verification of the preview tools against a running engine is, by the same account,
+  impossible until the engine side merges. The recipes and contract on these pages are drawn
+  from the engine's own end-to-end suite, which runs against a built editor from that branch;
+  the toolkit's wiring of the tools to those operations is unit-tested, not yet live-tested.
+
+For the pinned engine release and upstream base, read the
+[compatibility page](/reference/compatibility); do not infer a version from these pages.
+
+## Where the skills live
+
+Skills are the Markdown guides that teach an agent a discipline. They ship with the Summer
+toolkit under `library/skills/<name>/SKILL.md`, are installed by `summer setup <agent>`, and
+can be managed with `summer skills list` / `summer skills install <name> --agent <agent>` as
+described on [Skills](/mcp/skills). The ones this loop depends on:
+
+| Skill | Teaches |
+|---|---|
+| `scene-scripting` | The `run(ctx)` contract, the ctx stdlib by wave, owner rules, the mutation loop, the red flags. Preview, because it depends on the preview tools. |
+| `verifying-scenes` | The before/after discipline, choosing the right screenshot, runtime reads, honest-claim rules. |
+| `headless-scripting` | The `summer_run_editor_script` lane: shell-launched engine scripts, imports, exports. |
+| `character-animation-wiring` | Wiring an imported rig end to end with `animate`, `anim_state_machine`, `animate_method`, `bone_pose`, `look_at_modifier`. |
+| `verification-before-completion` | Proving a result before claiming it is done. |
+
+The skills and these pages describe the same API. When they disagree, the
+[generated reference](/guides/scripting/ctx-reference) is the tie-breaker, because it is
+produced from the engine header on every change; a skill is authored and can lag.
+
+## The recommended sequence
+
+1. `summer_get_project_context` — bind; read current and main scene.
+2. `summer_open_scene` — make the target the edited scene.
+3. `summer_world_snapshot` — keep `snapshot_id`.
+4. `summer_api_docs` — confirm every class or property name you are not certain of.
+5. `summer_run_script` — one script; return a flat dictionary of facts.
+6. Read `ok`, `errors`, `reports.prop_warnings`, the helper report entries, `rolled_back`.
+7. `summer_snapshot_diff from_id:<id>` — compare with intent.
+8. `summer_screenshot` — `framing: "camera"` when light, environment or emission is involved.
+9. `summer_play` → `summer_get_runtime_tree` / `summer_inspect_runtime_node` /
+   `summer_screenshot target:"game"` → `summer_stop` when the change is gameplay.
+10. Save with `ctx.save_scene()` in the script or `summer_save_scene` after.
+
+## Rules of thumb the tools encode
+
+- **Three or more related edits, or any computed placement, is one script.** A single
+  property is `summer_set_prop`.
+- **Never guess a name.** `summer_api_docs` answers in one call; a wrong name fails after
+  half the mutation applied.
+- **Values in scripts are literal.** `Vector3(0, 10, 0)` in GDScript; the quoted
+  `"Vector3(0, 10, 0)"` form belongs to `summer_set_prop`.
+- **Own what you create**, or use the helpers that do it for you.
+- **Read `prop_warnings` every run.** `ok: true` with warnings means the scene is not what
+  was asked for.
+- **Heavy batch loops do not belong in the live editor.** Move them to
+  `summer_run_editor_script`.
+- **Claim what you saw.** A capture is a fact; describing an unseen frame is fabrication.
+
+<CardGroup cols={2}>
+  <Card title="ctx API reference" icon="braces" href="/guides/scripting/ctx-reference">
+    Generated from the engine header — the tie-breaker.
+  </Card>
+  <Card title="Tools Reference" icon="wrench" href="/mcp/tools-reference">
+    Every Summer MCP tool, with value formats and targeting rules.
+  </Card>
+</CardGroup>

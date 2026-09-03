@@ -1,0 +1,189 @@
+---
+title: "Getting started"
+description: "Connect an agent to Summer Engine through the Summer MCP server, run a first scene script that builds a grid of boxes, and verify the result with a snapshot diff and a screenshot."
+icon: "rocket"
+---
+
+This page walks one script from "nothing" to "verified and saved". It uses the Summer MCP
+tools by their exact names, because that is how an agent will call them; if you are driving
+by hand, every step maps to the same engine operation.
+
+<Warning>
+**Availability.** Scene scripting needs two things at once: a Summer Engine build that ships
+the `RunSceneScript` operation, and the Summer toolkit's scripting tools. In the toolkit those
+tools (`summer_run_script`, `summer_world_snapshot`, `summer_snapshot_diff`,
+`summer_get_runtime_tree`, `summer_inspect_runtime_node`) are marked **preview**: on an engine
+that does not have the operation they return a structured `engine_lacks_op` result instead of
+doing anything. The engine side is tracked as engine pull request #156 (scene scripting).
+Until your engine and toolkit both have it, `summer_run_editor_script` — the
+[headless lane](/automation/headless) — is the scripting tool that works today.
+[For agents](/guides/scripting/for-agents) has the full status table.
+</Warning>
+
+## 1. Connect an agent
+
+Open Summer Engine with a project loaded, then point your coding agent at the Summer MCP
+server. The per-harness pages under [MCP setup](/mcp/setup) have the exact commands for
+Claude Code, Cursor, Codex and the rest; the shape is always the same one-liner:
+
+```bash
+npx -y summer-engine@latest setup claude-code --yes
+```
+
+This installs the MCP server configuration and the recommended skill set, including the
+`scene-scripting` and `verifying-scenes` skills that teach the agent the loop on this page.
+
+Confirm the binding before doing anything else:
+
+```
+summer_get_project_context
+```
+
+The result names the open project, the current scene and the main scene. If the engine is not
+reachable the tool says so and points you at `summer run`.
+
+## 2. Open the scene you want to change
+
+Scene scripts run against the **edited** scene — the tab that is open in the editor. Make it
+explicit:
+
+```
+summer_open_scene  path: "res://main.tscn"
+```
+
+## 3. Take the "before" snapshot
+
+```
+summer_world_snapshot
+```
+
+Keep the `snapshot_id` from the result. The snapshot is a compact structured read of the scene
+— paths, classes, transforms, world bounds, counts — and it is the baseline the diff in step 6
+is measured against.
+
+## 4. Run the first script: a grid of boxes
+
+This is the engine's own smoke test for scene scripting, quoted verbatim from the end-to-end
+suite. It builds a 5 by 5 grid of boxes under a `Grid` node, owns the whole subtree so it
+survives a save, reports the count, and returns a dictionary.
+
+```gdscript
+func run(ctx):
+	var root = ctx.get_scene_root()
+	if root == null:
+		ctx.report("error", "no scene root")
+		return null
+	var grid = Node3D.new()
+	grid.name = "Grid"
+	root.add_child(grid)
+	var count = 0
+	for x in range(5):
+		for z in range(5):
+			var mi = MeshInstance3D.new()
+			mi.name = "Box_%d_%d" % [x, z]
+			mi.mesh = BoxMesh.new()
+			mi.position = Vector3(x * 2.0, 0.0, z * 2.0)
+			grid.add_child(mi)
+			count += 1
+	ctx.set_owner_recursive(grid)
+	ctx.report("count", count)
+	print("grid built: ", count)
+	return {"built": count, "origin": Vector3(0, 0, 0)}
+```
+
+Send it as the `source` of `summer_run_script`. Only the function is needed — no `extends`,
+no `@tool`; the engine prepends both and lists what it added under `normalizations` in the
+result.
+
+```json
+{
+  "source": "func run(ctx):\n\tvar root = ctx.get_scene_root()\n\t...",
+  "max_seconds": 20
+}
+```
+
+The tool sends the engine one `RunSceneScript` operation. If you are talking to the local API
+directly instead of through MCP, the request body is the same one the test suite posts to
+`/api/ops`:
+
+```json
+{ "ops": [ { "op": "RunSceneScript", "script_source": "func run(ctx):\n\t..." } ] }
+```
+
+Notice the line: `ctx.set_owner_recursive(grid)`. Leave it out and the boxes appear in the
+viewport, survive a screenshot, and are not in the saved file. The
+[ctx helpers](/guides/scripting/ctx-reference) exist so you never have to remember this; the
+same grid with `ctx.grid` and `ctx.add_mesh` is the second recipe on the
+[Recipes](/guides/scripting/recipes) page.
+
+## 5. Read the result
+
+The result is a dictionary, not a log. The keys to look at first:
+
+| Key | What you expect here |
+|---|---|
+| `ok` | `true` |
+| `ran` | `true` — the script compiled and `run(ctx)` was entered |
+| `result` | `{"built": 25, "origin": "Vector3(0, 0, 0)"}` — your return value |
+| `reports` | `{"count": 25}` — what you passed to `ctx.report` |
+| `output` | `["grid built: 25"]` — captured `print` lines |
+| `errors` | `[]` |
+| `undo_action` | `"registered"` — one editor undo step covers the run |
+| `budget_enforced` | whether the hard time limit was armed for this run |
+| `normalizations` | the `@tool` / `extends` lines the engine prepended |
+
+If `ok` is `false`, `failure_reason` tells you which stage failed (`parse_error`,
+`missing_run_method`, `script_runtime_error`, …) and `error` says why in words. On a runtime
+error the scene has already been put back the way it was and the result says
+`rolled_back: true`. The complete key list is on the
+[run(ctx) contract](/guides/scripting/run-script-contract).
+
+## 6. Verify with a diff
+
+```
+summer_snapshot_diff  from_id: "<the id from step 3>"
+```
+
+Leaving out `to_id` makes the engine snapshot the scene now and diff against your baseline.
+Check the receipt against what you meant to do: `added` should list `Grid` and the 25
+`Box_x_z` nodes, `removed` should be empty, and `changed` should not name anything you did not
+touch. An unowned node shows up as *missing* from a diff taken after a save — which is exactly
+why the diff, not the viewport, is the receipt.
+
+## 7. Look at it
+
+```
+summer_screenshot                       # the editor viewport as it is now
+summer_screenshot  target: "scene", framing: "iso"
+```
+
+For anything involving lighting, environment or emissive materials use
+`framing: "camera"`, which renders through the scene's own `Camera3D` with its real
+`WorldEnvironment`. The preset framings render a substitute environment and cannot show you
+mood or light. The grid has neither, so the viewport is enough here.
+
+## 8. Save, or undo
+
+Nothing is on disk yet. Either save from the tool:
+
+```
+summer_save_scene
+```
+
+or, in the next script, end with `ctx.save_scene()`, which audits ownership first and fails
+with the offending paths in the `unowned_nodes` report entry rather than writing a file with
+holes in it.
+
+Changed your mind? Ctrl+Z in the editor reverts the entire run as one step — that is what
+`undo_action: "registered"` promised.
+
+## What to read next
+
+<CardGroup cols={2}>
+  <Card title="Concepts" icon="lightbulb" href="/guides/scripting/concepts">
+    Why ownership matters, what undo covers and what the checkpoint covers, the budget, compile-first errors.
+  </Card>
+  <Card title="Recipes" icon="chef-hat" href="/guides/scripting/recipes">
+    The same grid with the ctx helpers, then booleans, lathe, terrain, animation, shaders.
+  </Card>
+</CardGroup>

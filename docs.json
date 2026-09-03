@@ -268,6 +268,19 @@
             ]
           },
           {
+            "group": "Scripting Summer",
+            "pages": [
+              "guides/scripting/overview",
+              "guides/scripting/getting-started",
+              "guides/scripting/concepts",
+              "guides/scripting/recipes",
+              "guides/scripting/verifying",
+              "guides/scripting/ctx-reference",
+              "guides/scripting/run-script-contract",
+              "guides/scripting/for-agents"
+            ]
+          },
+          {
             "group": "Publishing Your Game",
             "pages": [
               "publishing/overview",

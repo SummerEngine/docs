@@ -1,0 +1,2937 @@
+{
+  "$schema_version": 1,
+  "generated_by": "modules/1summer_engine/dev/docs/generate_scripting_docs.py",
+  "warning": "GENERATED FILE. Do not edit by hand. Re-run the generator.",
+  "sources": {
+    "header": "modules/1summer_engine/editor/ops/scene_script_ops.h",
+    "cpp": "modules/1summer_engine/editor/ops/scene_script_ops.cpp",
+    "contracts": "doc/SUMMER/SCENE_SCRIPTING_CONTRACTS.md",
+    "registry": "modules/1summer_engine/dev/op_registry/op_registry.json"
+  },
+  "areas": [
+    {
+      "id": "scene",
+      "title": "Scene and nodes",
+      "blurb": "Reading the edited scene, creating and finding nodes, lights, camera, environment, saving."
+    },
+    {
+      "id": "materials",
+      "title": "Materials and shaders",
+      "blurb": "StandardMaterial3D from a props dictionary, applying materials, text shaders with compile-first validation."
+    },
+    {
+      "id": "geometry",
+      "title": "Geometry",
+      "blurb": "Primitive meshes and the baked geometry stdlib: booleans, extrude, lathe, sweep, terrain, decimation, collision, UVs, mirroring."
+    },
+    {
+      "id": "animation",
+      "title": "Animation",
+      "blurb": "Keyframe tracks, method-call tracks, state machines, bone poses and look-at modifiers."
+    },
+    {
+      "id": "2d",
+      "title": "2D",
+      "blurb": "Sprites, animated sprites, tile maps, 2D bodies, 2D cameras and parallax layers."
+    },
+    {
+      "id": "ui",
+      "title": "UI",
+      "blurb": "Control nodes, canvas layers, theme overrides and persisted signal connections."
+    },
+    {
+      "id": "gameplay",
+      "title": "Gameplay code and project settings",
+      "blurb": "Scripts, prefabs, autoloads, input actions and the main scene — the helpers that write outside the scene."
+    },
+    {
+      "id": "perception",
+      "title": "Perception and reporting",
+      "blurb": "What the script hands back: report entries, the scene summary, the cooperative budget check."
+    }
+  ],
+  "ctx": {
+    "class": "SummerSceneScriptContext",
+    "intro": "The `ctx` argument handed to the script's `func run(ctx):`. Registered in register_types.cpp (SCENE level, TOOLS_ENABLED block). v2 carries the full frozen ctx stdlib from doc/SUMMER/SCENE_SCRIPTING_CONTRACTS.md: every creation helper adds to the edited scene root when no parent is given, sets owner to the edited scene root by default (the #1 silent persistence gotcha, made structurally impossible), and returns the created node. `props` dictionaries apply via set() per key; keys that match no property are collected into the `prop_warnings` report entry, never silently dropped.",
+    "sections": [
+      {
+        "title": "v1 surface (unchanged)",
+        "wave": "v1",
+        "preamble": []
+      },
+      {
+        "title": "v2 ctx stdlib (frozen API, SCENE_SCRIPTING_CONTRACTS.md Wave C)",
+        "wave": "C",
+        "preamble": []
+      },
+      {
+        "title": "Wave F geometry stdlib v2 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "wave": "F",
+        "preamble": [
+          "All mesh-producing helpers bake to an ArrayMesh on an owned MeshInstance3D (normals always, tangents where UVs exist); no live CSG nodes are left in the scene. Bad input -> per-helper error (captured in the result's errors[]) + null/false return, never a crash."
+        ]
+      },
+      {
+        "title": "Wave G animation completeness ctx v3 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "wave": "G",
+        "preamble": []
+      },
+      {
+        "title": "Wave H game completeness ctx v4 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "wave": "H",
+        "preamble": [
+          "Everything a script needs to produce a GAME: 2D, UI, and the gameplay-code lane. Same conventions (owner-by-default, return the node, prop_warnings, structured report entries on failure — never silent). 2D helpers work in any edited scene (root may be Node2D or Node); Control helpers parent under the edited root unless a parent is given.",
+          "Gameplay-code lane. All three write OUTSIDE the scene (files, project settings): covered by the pre-run checkpoint only, never by the packed-scene undo step — surfaced through the result's files_written / project_settings_changed + undo_action_note."
+        ]
+      }
+    ],
+    "methods": [
+      {
+        "name": "get_scene_root",
+        "cpp_name": "get_scene_root",
+        "area": "scene",
+        "wave": "v1",
+        "section": "v1 surface (unchanged)",
+        "returns": "Node",
+        "params": [],
+        "signature": "get_scene_root() -> Node",
+        "description": "Current edited scene root, or null when no scene is open.",
+        "description_source": "header",
+        "notes": "",
+        "doc_comment": "Current edited scene root, or null when no scene is open.",
+        "contract": {
+          "signature": "get_scene_root()",
+          "comment": "",
+          "wave": "v1"
+        },
+        "contract_notes": [
+          "Existing: `get_scene_root()`, `report(key, value)`, `set_owner_recursive(node)`,"
+        ],
+        "mismatches": []
+      },
+      {
+        "name": "report",
+        "cpp_name": "report",
+        "area": "perception",
+        "wave": "v1",
+        "section": "v1 surface (unchanged)",
+        "returns": "void",
+        "params": [
+          {
+            "name": "key",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_key",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "value",
+            "type": "Variant",
+            "default": null,
+            "cpp_name": "p_value",
+            "cpp_type": "const Variant &",
+            "cpp_default": null
+          }
+        ],
+        "signature": "report(key: String, value: Variant) -> void",
+        "description": "Accumulate a key/value into the op result's `reports` dictionary.",
+        "description_source": "header",
+        "notes": "",
+        "doc_comment": "Accumulate a key/value into the op result's `reports` dictionary.",
+        "contract": {
+          "signature": "report(key, value)",
+          "comment": "",
+          "wave": "v1"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "set_owner_recursive",
+        "cpp_name": "set_owner_recursive",
+        "area": "scene",
+        "wave": "v1",
+        "section": "v1 surface (unchanged)",
+        "returns": "void",
+        "params": [
+          {
+            "name": "node",
+            "type": "Node",
+            "default": null,
+            "cpp_name": "p_node",
+            "cpp_type": "Node *",
+            "cpp_default": null
+          }
+        ],
+        "signature": "set_owner_recursive(node: Node) -> void",
+        "description": "Set owner to the edited scene root on p_node and every descendant — a node without an owner is silently dropped by SaveScene.",
+        "description_source": "header",
+        "notes": "Skips the scene root itself (a node cannot own itself).",
+        "doc_comment": "Set owner to the edited scene root on p_node and every descendant — a node without an owner is silently dropped by SaveScene. Skips the scene root itself (a node cannot own itself).",
+        "contract": {
+          "signature": "set_owner_recursive(node)",
+          "comment": "",
+          "wave": "v1"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "frames_budget_exceeded",
+        "cpp_name": "frames_budget_exceeded",
+        "area": "perception",
+        "wave": "v1",
+        "section": "v1 surface (unchanged)",
+        "returns": "bool",
+        "params": [],
+        "signature": "frames_budget_exceeded() -> bool",
+        "description": "True once wall-clock time has passed the op's max_seconds budget.",
+        "description_source": "header",
+        "notes": "Soft, cooperative signal; the VM deadline guard is the hard backstop.",
+        "doc_comment": "True once wall-clock time has passed the op's max_seconds budget. Soft, cooperative signal; the VM deadline guard is the hard backstop.",
+        "contract": {
+          "signature": "frames_budget_exceeded()",
+          "comment": "",
+          "wave": "v1"
+        },
+        "contract_notes": [
+          "`frames_budget_exceeded()`."
+        ],
+        "mismatches": []
+      },
+      {
+        "name": "add_node",
+        "cpp_name": "add_node",
+        "area": "scene",
+        "wave": "C",
+        "section": "v2 ctx stdlib (frozen API, SCENE_SCRIPTING_CONTRACTS.md Wave C)",
+        "returns": "Node",
+        "params": [
+          {
+            "name": "type",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_type",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "name",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_name",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "parent",
+            "type": "Node",
+            "default": "null",
+            "cpp_name": "p_parent",
+            "cpp_type": "Node *",
+            "cpp_default": "nullptr"
+          },
+          {
+            "name": "props",
+            "type": "Dictionary",
+            "default": "{}",
+            "cpp_name": "p_props",
+            "cpp_type": "const Dictionary &",
+            "cpp_default": "Dictionary()"
+          }
+        ],
+        "signature": "add_node(type: String, name: String, parent: Node = null, props: Dictionary = {}) -> Node",
+        "description": "Creation helper — adds to the edited scene root when no parent is given, sets owner to the edited scene root by default (the #1 silent persistence gotcha, made structurally impossible), and returns the created node.",
+        "description_source": "class-comment",
+        "notes": "",
+        "doc_comment": "",
+        "contract": {
+          "signature": "add_node(type: String, name: String, parent: Node = null, props: Dictionary = {}) -> Node",
+          "comment": "",
+          "wave": "C"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "find",
+        "cpp_name": "find",
+        "area": "scene",
+        "wave": "C",
+        "section": "v2 ctx stdlib (frozen API, SCENE_SCRIPTING_CONTRACTS.md Wave C)",
+        "returns": "Node",
+        "params": [
+          {
+            "name": "name",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_name",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          }
+        ],
+        "signature": "find(name: String) -> Node",
+        "description": "Recursive find in the edited scene (root included); null on miss.",
+        "description_source": "header",
+        "notes": "",
+        "doc_comment": "Recursive find in the edited scene (root included); null on miss.",
+        "contract": {
+          "signature": "find(name: String) -> Node # recursive in edited scene; null on miss",
+          "comment": "recursive in edited scene; null on miss",
+          "wave": "C"
+        },
+        "contract_notes": [
+          "Every other ctx name was checked against the Object/RefCounted bindings — no further collisions (`add_ui`, `set_main_scene`, `find`, … are clear)."
+        ],
+        "mismatches": []
+      },
+      {
+        "name": "get_or_create",
+        "cpp_name": "get_or_create",
+        "area": "scene",
+        "wave": "C",
+        "section": "v2 ctx stdlib (frozen API, SCENE_SCRIPTING_CONTRACTS.md Wave C)",
+        "returns": "Node",
+        "params": [
+          {
+            "name": "type",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_type",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "name",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_name",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "parent",
+            "type": "Node",
+            "default": "null",
+            "cpp_name": "p_parent",
+            "cpp_type": "Node *",
+            "cpp_default": "nullptr"
+          }
+        ],
+        "signature": "get_or_create(type: String, name: String, parent: Node = null) -> Node",
+        "description": "Creation helper — adds to the edited scene root when no parent is given, sets owner to the edited scene root by default (the #1 silent persistence gotcha, made structurally impossible), and returns the created node.",
+        "description_source": "class-comment",
+        "notes": "",
+        "doc_comment": "",
+        "contract": {
+          "signature": "get_or_create(type: String, name: String, parent: Node = null) -> Node",
+          "comment": "",
+          "wave": "C"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "instance_scene",
+        "cpp_name": "instance_scene",
+        "area": "scene",
+        "wave": "C",
+        "section": "v2 ctx stdlib (frozen API, SCENE_SCRIPTING_CONTRACTS.md Wave C)",
+        "returns": "Node",
+        "params": [
+          {
+            "name": "res_path",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_res_path",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "parent",
+            "type": "Node",
+            "default": "null",
+            "cpp_name": "p_parent",
+            "cpp_type": "Node *",
+            "cpp_default": "nullptr"
+          },
+          {
+            "name": "name",
+            "type": "String",
+            "default": "\"\"",
+            "cpp_name": "p_name",
+            "cpp_type": "const String &",
+            "cpp_default": "String()"
+          }
+        ],
+        "signature": "instance_scene(res_path: String, parent: Node = null, name: String = \"\") -> Node",
+        "description": "Creation helper — adds to the edited scene root when no parent is given, sets owner to the edited scene root by default (the #1 silent persistence gotcha, made structurally impossible), and returns the created node.",
+        "description_source": "class-comment",
+        "notes": "",
+        "doc_comment": "",
+        "contract": {
+          "signature": "instance_scene(res_path: String, parent: Node = null, name: String = \"\") -> Node",
+          "comment": "",
+          "wave": "C"
+        },
+        "contract_notes": [
+          "`instance_scene` owns only the instance root (instance internals stay owned by the instance, as in a .tscn)."
+        ],
+        "mismatches": []
+      },
+      {
+        "name": "add_mesh",
+        "cpp_name": "add_mesh",
+        "area": "geometry",
+        "wave": "C",
+        "section": "v2 ctx stdlib (frozen API, SCENE_SCRIPTING_CONTRACTS.md Wave C)",
+        "returns": "MeshInstance3D",
+        "params": [
+          {
+            "name": "shape",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_shape",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "name",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_name",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "parent",
+            "type": "Node",
+            "default": "null",
+            "cpp_name": "p_parent",
+            "cpp_type": "Node *",
+            "cpp_default": "nullptr"
+          },
+          {
+            "name": "props",
+            "type": "Dictionary",
+            "default": "{}",
+            "cpp_name": "p_props",
+            "cpp_type": "const Dictionary &",
+            "cpp_default": "Dictionary()"
+          }
+        ],
+        "signature": "add_mesh(shape: String, name: String, parent: Node = null, props: Dictionary = {}) -> MeshInstance3D",
+        "description": "shape: box|sphere|capsule|cylinder|plane|torus|text (text reads props.text, TextMesh).",
+        "description_source": "header",
+        "notes": "props try the MeshInstance3D first, then its mesh resource (so \"size\"/\"radius\"/\"text\" reach the primitive).",
+        "doc_comment": "shape: box|sphere|capsule|cylinder|plane|torus|text (text reads props.text, TextMesh). props try the MeshInstance3D first, then its mesh resource (so \"size\"/\"radius\"/\"text\" reach the primitive).",
+        "contract": {
+          "signature": "add_mesh(shape: String, name: String, parent: Node = null, props: Dictionary = {}) -> MeshInstance3D",
+          "comment": "shape: box|sphere|capsule|cylinder|plane",
+          "wave": "C"
+        },
+        "contract_notes": [
+          "ctx helpers: `add_mesh` props try the MeshInstance3D first, then the mesh resource (so `size`/`radius` reach the primitive); `ensure_environment` props try the WorldEnvironment node, then its Environment resource."
+        ],
+        "mismatches": []
+      },
+      {
+        "name": "add_mesh_with_collision",
+        "cpp_name": "add_mesh_with_collision",
+        "area": "geometry",
+        "wave": "C",
+        "section": "v2 ctx stdlib (frozen API, SCENE_SCRIPTING_CONTRACTS.md Wave C)",
+        "returns": "MeshInstance3D",
+        "params": [
+          {
+            "name": "shape",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_shape",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "name",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_name",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "parent",
+            "type": "Node",
+            "default": "null",
+            "cpp_name": "p_parent",
+            "cpp_type": "Node *",
+            "cpp_default": "nullptr"
+          },
+          {
+            "name": "props",
+            "type": "Dictionary",
+            "default": "{}",
+            "cpp_name": "p_props",
+            "cpp_type": "const Dictionary &",
+            "cpp_default": "Dictionary()"
+          }
+        ],
+        "signature": "add_mesh_with_collision(shape: String, name: String, parent: Node = null, props: Dictionary = {}) -> MeshInstance3D",
+        "description": "add_mesh + StaticBody3D/CollisionShape3D child matching the mesh AABB.",
+        "description_source": "header",
+        "notes": "",
+        "doc_comment": "add_mesh + StaticBody3D/CollisionShape3D child matching the mesh AABB.",
+        "contract": {
+          "signature": "add_mesh_with_collision(shape, name, parent = null, props = {}) -> MeshInstance3D",
+          "comment": "+ StaticBody3D/CollisionShape3D child matching the mesh",
+          "wave": "C"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "mesh_from_arrays",
+        "cpp_name": "mesh_from_arrays",
+        "area": "geometry",
+        "wave": "C",
+        "section": "v2 ctx stdlib (frozen API, SCENE_SCRIPTING_CONTRACTS.md Wave C)",
+        "returns": "MeshInstance3D",
+        "params": [
+          {
+            "name": "vertices",
+            "type": "PackedVector3Array",
+            "default": null,
+            "cpp_name": "p_vertices",
+            "cpp_type": "const PackedVector3Array &",
+            "cpp_default": null
+          },
+          {
+            "name": "indices",
+            "type": "PackedInt32Array",
+            "default": null,
+            "cpp_name": "p_indices",
+            "cpp_type": "const PackedInt32Array &",
+            "cpp_default": null
+          },
+          {
+            "name": "uvs",
+            "type": "PackedVector2Array",
+            "default": "[]",
+            "cpp_name": "p_uvs",
+            "cpp_type": "const PackedVector2Array &",
+            "cpp_default": "PackedVector2Array()"
+          },
+          {
+            "name": "name",
+            "type": "String",
+            "default": "\"Mesh\"",
+            "cpp_name": "p_name",
+            "cpp_type": "const String &",
+            "cpp_default": "\"Mesh\""
+          },
+          {
+            "name": "parent",
+            "type": "Node",
+            "default": "null",
+            "cpp_name": "p_parent",
+            "cpp_type": "Node *",
+            "cpp_default": "nullptr"
+          }
+        ],
+        "signature": "mesh_from_arrays(vertices: PackedVector3Array, indices: PackedInt32Array, uvs: PackedVector2Array = [], name: String = \"Mesh\", parent: Node = null) -> MeshInstance3D",
+        "description": "Creation helper — adds to the edited scene root when no parent is given, sets owner to the edited scene root by default (the #1 silent persistence gotcha, made structurally impossible), and returns the created node.",
+        "description_source": "class-comment",
+        "notes": "",
+        "doc_comment": "",
+        "contract": {
+          "signature": "mesh_from_arrays(vertices: PackedVector3Array, indices: PackedInt32Array, uvs: PackedVector2Array = [], name: String = \"Mesh\", parent: Node = null) -> MeshInstance3D",
+          "comment": "",
+          "wave": "C"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "make_material",
+        "cpp_name": "make_material",
+        "area": "materials",
+        "wave": "C",
+        "section": "v2 ctx stdlib (frozen API, SCENE_SCRIPTING_CONTRACTS.md Wave C)",
+        "returns": "StandardMaterial3D",
+        "params": [
+          {
+            "name": "props",
+            "type": "Dictionary",
+            "default": null,
+            "cpp_name": "p_props",
+            "cpp_type": "const Dictionary &",
+            "cpp_default": null
+          }
+        ],
+        "signature": "make_material(props: Dictionary) -> StandardMaterial3D",
+        "description": "props: albedo (Color|\"#hex\"), metallic, roughness, emission (Color|\"#hex\"), emission_energy, texture (\"res://…\"), transparent (bool), unshaded (bool); anything else applies via set() with prop_warnings on miss.",
+        "description_source": "header",
+        "notes": "",
+        "doc_comment": "props: albedo (Color|\"#hex\"), metallic, roughness, emission (Color|\"#hex\"), emission_energy, texture (\"res://…\"), transparent (bool), unshaded (bool); anything else applies via set() with prop_warnings on miss.",
+        "contract": {
+          "signature": "make_material(props: Dictionary) -> StandardMaterial3D",
+          "comment": "",
+          "wave": "C"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "apply_material",
+        "cpp_name": "apply_material",
+        "area": "materials",
+        "wave": "C",
+        "section": "v2 ctx stdlib (frozen API, SCENE_SCRIPTING_CONTRACTS.md Wave C)",
+        "returns": "bool",
+        "params": [
+          {
+            "name": "node",
+            "type": "Node",
+            "default": null,
+            "cpp_name": "p_node",
+            "cpp_type": "Node *",
+            "cpp_default": null
+          },
+          {
+            "name": "material",
+            "type": "Material",
+            "default": null,
+            "cpp_name": "p_material",
+            "cpp_type": "const Ref<Material> &",
+            "cpp_default": null
+          }
+        ],
+        "signature": "apply_material(node: Node, material: Material) -> bool",
+        "description": "",
+        "description_source": "none",
+        "notes": "",
+        "doc_comment": "",
+        "contract": {
+          "signature": "apply_material(node: Node, material: Material) -> bool",
+          "comment": "",
+          "wave": "C"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "grid",
+        "cpp_name": "grid",
+        "area": "scene",
+        "wave": "C",
+        "section": "v2 ctx stdlib (frozen API, SCENE_SCRIPTING_CONTRACTS.md Wave C)",
+        "returns": "Array",
+        "params": [
+          {
+            "name": "count_x",
+            "type": "int",
+            "default": null,
+            "cpp_name": "p_count_x",
+            "cpp_type": "int",
+            "cpp_default": null
+          },
+          {
+            "name": "count_z",
+            "type": "int",
+            "default": null,
+            "cpp_name": "p_count_z",
+            "cpp_type": "int",
+            "cpp_default": null
+          },
+          {
+            "name": "spacing",
+            "type": "Vector3",
+            "default": null,
+            "cpp_name": "p_spacing",
+            "cpp_type": "const Vector3 &",
+            "cpp_default": null
+          },
+          {
+            "name": "maker",
+            "type": "Callable",
+            "default": null,
+            "cpp_name": "p_maker",
+            "cpp_type": "const Callable &",
+            "cpp_default": null
+          }
+        ],
+        "signature": "grid(count_x: int, count_z: int, spacing: Vector3, maker: Callable) -> Array",
+        "description": "maker(i: int, pos: Vector3) -> Node.",
+        "description_source": "header",
+        "notes": "Positions are origin-anchored on the X/Z plane (ix*spacing.x, 0, iz*spacing.z); Node3D results are placed at pos, parent-less results are added under the scene root, all are owned.",
+        "doc_comment": "maker(i: int, pos: Vector3) -> Node. Positions are origin-anchored on the X/Z plane (ix*spacing.x, 0, iz*spacing.z); Node3D results are placed at pos, parent-less results are added under the scene root, all are owned.",
+        "contract": {
+          "signature": "grid(count_x: int, count_z: int, spacing: Vector3, maker: Callable) -> Array",
+          "comment": "maker(i:int, pos:Vector3) -> Node",
+          "wave": "C"
+        },
+        "contract_notes": [
+          "`grid` positions are origin-anchored on X/Z (`ix*spacing.x, 0, iz*spacing.z`); grid/scatter place Node3D results at `pos`, add parent-less results under the scene root, and stop early (reported) past the soft budget."
+        ],
+        "mismatches": []
+      },
+      {
+        "name": "scatter",
+        "cpp_name": "scatter",
+        "area": "scene",
+        "wave": "C",
+        "section": "v2 ctx stdlib (frozen API, SCENE_SCRIPTING_CONTRACTS.md Wave C)",
+        "returns": "Array",
+        "params": [
+          {
+            "name": "area",
+            "type": "AABB",
+            "default": null,
+            "cpp_name": "p_area",
+            "cpp_type": "const AABB &",
+            "cpp_default": null
+          },
+          {
+            "name": "count",
+            "type": "int",
+            "default": null,
+            "cpp_name": "p_count",
+            "cpp_type": "int",
+            "cpp_default": null
+          },
+          {
+            "name": "maker",
+            "type": "Callable",
+            "default": null,
+            "cpp_name": "p_maker",
+            "cpp_type": "const Callable &",
+            "cpp_default": null
+          },
+          {
+            "name": "seed",
+            "type": "int",
+            "default": "0",
+            "cpp_name": "p_seed",
+            "cpp_type": "int",
+            "cpp_default": "0"
+          }
+        ],
+        "signature": "scatter(area: AABB, count: int, maker: Callable, seed: int = 0) -> Array",
+        "description": "Deterministic for a given seed (RandomNumberGenerator, fixed draw order).",
+        "description_source": "header",
+        "notes": "",
+        "doc_comment": "Deterministic for a given seed (RandomNumberGenerator, fixed draw order).",
+        "contract": {
+          "signature": "scatter(area: AABB, count: int, maker: Callable, seed: int = 0) -> Array",
+          "comment": "",
+          "wave": "C"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "add_light_rig",
+        "cpp_name": "add_light_rig",
+        "area": "scene",
+        "wave": "C",
+        "section": "v2 ctx stdlib (frozen API, SCENE_SCRIPTING_CONTRACTS.md Wave C)",
+        "returns": "Node3D",
+        "params": [
+          {
+            "name": "target",
+            "type": "Node",
+            "default": "null",
+            "cpp_name": "p_target",
+            "cpp_type": "Node *",
+            "cpp_default": "nullptr"
+          }
+        ],
+        "signature": "add_light_rig(target: Node = null) -> Node3D",
+        "description": "Key/fill/rim DirectionalLight3Ds under one Node3D; positioned at the target when one is given (orientation is what matters for directionals).",
+        "description_source": "header",
+        "notes": "",
+        "doc_comment": "Key/fill/rim DirectionalLight3Ds under one Node3D; positioned at the target when one is given (orientation is what matters for directionals).",
+        "contract": {
+          "signature": "add_light_rig(target: Node = null) -> Node3D # key/fill/rim under one Node3D",
+          "comment": "key/fill/rim under one Node3D",
+          "wave": "C"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "ensure_environment",
+        "cpp_name": "ensure_environment",
+        "area": "scene",
+        "wave": "C",
+        "section": "v2 ctx stdlib (frozen API, SCENE_SCRIPTING_CONTRACTS.md Wave C)",
+        "returns": "WorldEnvironment",
+        "params": [
+          {
+            "name": "props",
+            "type": "Dictionary",
+            "default": "{}",
+            "cpp_name": "p_props",
+            "cpp_type": "const Dictionary &",
+            "cpp_default": "Dictionary()"
+          }
+        ],
+        "signature": "ensure_environment(props: Dictionary = {}) -> WorldEnvironment",
+        "description": "Get-or-create WorldEnvironment (+ Environment + procedural sky).",
+        "description_source": "header",
+        "notes": "props try the WorldEnvironment node, then its Environment resource.",
+        "doc_comment": "Get-or-create WorldEnvironment (+ Environment + procedural sky). props try the WorldEnvironment node, then its Environment resource.",
+        "contract": {
+          "signature": "ensure_environment(props: Dictionary = {}) -> WorldEnvironment",
+          "comment": "",
+          "wave": "C"
+        },
+        "contract_notes": [
+          "ctx helpers: `add_mesh` props try the MeshInstance3D first, then the mesh resource (so `size`/`radius` reach the primitive); `ensure_environment` props try the WorldEnvironment node, then its Environment resource."
+        ],
+        "mismatches": []
+      },
+      {
+        "name": "add_camera",
+        "cpp_name": "add_camera",
+        "area": "scene",
+        "wave": "C",
+        "section": "v2 ctx stdlib (frozen API, SCENE_SCRIPTING_CONTRACTS.md Wave C)",
+        "returns": "Camera3D",
+        "params": [
+          {
+            "name": "position",
+            "type": "Vector3",
+            "default": null,
+            "cpp_name": "p_position",
+            "cpp_type": "const Vector3 &",
+            "cpp_default": null
+          },
+          {
+            "name": "look_at",
+            "type": "Vector3",
+            "default": "Vector3.ZERO",
+            "cpp_name": "p_look_at",
+            "cpp_type": "const Vector3 &",
+            "cpp_default": "Vector3()"
+          },
+          {
+            "name": "make_current",
+            "type": "bool",
+            "default": "false",
+            "cpp_name": "p_make_current",
+            "cpp_type": "bool",
+            "cpp_default": "false"
+          }
+        ],
+        "signature": "add_camera(position: Vector3, look_at: Vector3 = Vector3.ZERO, make_current: bool = false) -> Camera3D",
+        "description": "Creation helper — adds to the edited scene root when no parent is given, sets owner to the edited scene root by default (the #1 silent persistence gotcha, made structurally impossible), and returns the created node.",
+        "description_source": "class-comment",
+        "notes": "",
+        "doc_comment": "",
+        "contract": {
+          "signature": "add_camera(position: Vector3, look_at: Vector3 = Vector3.ZERO, make_current: bool = false) -> Camera3D",
+          "comment": "",
+          "wave": "C"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "summary",
+        "cpp_name": "summary",
+        "area": "perception",
+        "wave": "C",
+        "section": "v2 ctx stdlib (frozen API, SCENE_SCRIPTING_CONTRACTS.md Wave C)",
+        "returns": "Dictionary",
+        "params": [],
+        "signature": "summary() -> Dictionary",
+        "description": "{counts: {class: n}, lights: [path], cameras: [path], aabb: AABB|null, total_nodes: int} — merged world AABB over VisualInstance3D nodes.",
+        "description_source": "header",
+        "notes": "",
+        "doc_comment": "{counts: {class: n}, lights: [path], cameras: [path], aabb: AABB|null, total_nodes: int} — merged world AABB over VisualInstance3D nodes.",
+        "contract": {
+          "signature": "summary() -> Dictionary # counts by class, lights, cameras, scene AABB",
+          "comment": "counts by class, lights, cameras, scene AABB",
+          "wave": "C"
+        },
+        "contract_notes": [
+          "`summary()` returns `{counts, lights, cameras, aabb (null when no 3D visuals), total_nodes}`."
+        ],
+        "mismatches": []
+      },
+      {
+        "name": "save_scene",
+        "cpp_name": "save_scene",
+        "area": "scene",
+        "wave": "C",
+        "section": "v2 ctx stdlib (frozen API, SCENE_SCRIPTING_CONTRACTS.md Wave C)",
+        "returns": "bool",
+        "params": [
+          {
+            "name": "path",
+            "type": "String",
+            "default": "\"\"",
+            "cpp_name": "p_path",
+            "cpp_type": "const String &",
+            "cpp_default": "String()"
+          }
+        ],
+        "signature": "save_scene(path: String = \"\") -> bool",
+        "description": "Ownership audit FIRST: any unowned node in the edited subtree fails the save with the offending paths in the `unowned_nodes` report entry.",
+        "description_source": "header",
+        "notes": "",
+        "doc_comment": "Ownership audit FIRST: any unowned node in the edited subtree fails the save with the offending paths in the `unowned_nodes` report entry.",
+        "contract": {
+          "signature": "save_scene(path: String = \"\") -> bool # ownership audit first; false + report on audit failure",
+          "comment": "ownership audit first; false + report on audit failure",
+          "wave": "C"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "boolean",
+        "cpp_name": "boolean_op",
+        "area": "geometry",
+        "wave": "F",
+        "section": "Wave F geometry stdlib v2 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "MeshInstance3D",
+        "params": [
+          {
+            "name": "a",
+            "type": "Node",
+            "default": null,
+            "cpp_name": "p_a",
+            "cpp_type": "Node *",
+            "cpp_default": null
+          },
+          {
+            "name": "b",
+            "type": "Node",
+            "default": null,
+            "cpp_name": "p_b",
+            "cpp_type": "Node *",
+            "cpp_default": null
+          },
+          {
+            "name": "op",
+            "type": "String",
+            "default": "\"union\"",
+            "cpp_name": "p_op",
+            "cpp_type": "const String &",
+            "cpp_default": "\"union\""
+          },
+          {
+            "name": "keep_inputs",
+            "type": "bool",
+            "default": "false",
+            "cpp_name": "p_keep_inputs",
+            "cpp_type": "bool",
+            "cpp_default": "false"
+          }
+        ],
+        "signature": "boolean(a: Node, b: Node, op: String = \"union\", keep_inputs: bool = false) -> MeshInstance3D",
+        "description": "union|difference|intersection via the Manifold-backed CSG kernel, baked; per-surface materials survive the boolean.",
+        "description_source": "header",
+        "notes": "a and b are consumed (freed) unless keep_inputs; the result keeps a's parent and transform. Bound as \"boolean\" (named boolean_op in C++ only to dodge platform macros).",
+        "doc_comment": "union|difference|intersection via the Manifold-backed CSG kernel, baked; per-surface materials survive the boolean. a and b are consumed (freed) unless keep_inputs; the result keeps a's parent and transform. Bound as \"boolean\" (named boolean_op in C++ only to dodge platform macros).",
+        "contract": {
+          "signature": "boolean(a: Node, b: Node, op: String = \"union\") -> MeshInstance3D",
+          "comment": "union|difference|intersection via CSG/Manifold, baked; a and b are consumed (freed) by default; keep_inputs: bool = false final param",
+          "wave": "F"
+        },
+        "contract_notes": [],
+        "mismatches": [
+          "parameter count: header 4 vs contract 3"
+        ]
+      },
+      {
+        "name": "extrude_polygon",
+        "cpp_name": "extrude_polygon",
+        "area": "geometry",
+        "wave": "F",
+        "section": "Wave F geometry stdlib v2 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "MeshInstance3D",
+        "params": [
+          {
+            "name": "points",
+            "type": "PackedVector2Array",
+            "default": null,
+            "cpp_name": "p_points",
+            "cpp_type": "const PackedVector2Array &",
+            "cpp_default": null
+          },
+          {
+            "name": "depth",
+            "type": "float",
+            "default": null,
+            "cpp_name": "p_depth",
+            "cpp_type": "float",
+            "cpp_default": null
+          },
+          {
+            "name": "name",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_name",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "parent",
+            "type": "Node",
+            "default": "null",
+            "cpp_name": "p_parent",
+            "cpp_type": "Node *",
+            "cpp_default": "nullptr"
+          }
+        ],
+        "signature": "extrude_polygon(points: PackedVector2Array, depth: float, name: String, parent: Node = null) -> MeshInstance3D",
+        "description": "CSGPolygon3D MODE_DEPTH: polygon in the XY plane extruded along -Z.",
+        "description_source": "header",
+        "notes": "",
+        "doc_comment": "CSGPolygon3D MODE_DEPTH: polygon in the XY plane extruded along -Z.",
+        "contract": {
+          "signature": "extrude_polygon(points: PackedVector2Array, depth: float, name: String, parent: Node = null) -> MeshInstance3D # CSGPolygon DEPTH, baked",
+          "comment": "CSGPolygon DEPTH, baked",
+          "wave": "F"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "lathe",
+        "cpp_name": "lathe",
+        "area": "geometry",
+        "wave": "F",
+        "section": "Wave F geometry stdlib v2 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "MeshInstance3D",
+        "params": [
+          {
+            "name": "points",
+            "type": "PackedVector2Array",
+            "default": null,
+            "cpp_name": "p_points",
+            "cpp_type": "const PackedVector2Array &",
+            "cpp_default": null
+          },
+          {
+            "name": "name",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_name",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "parent",
+            "type": "Node",
+            "default": "null",
+            "cpp_name": "p_parent",
+            "cpp_type": "Node *",
+            "cpp_default": "nullptr"
+          },
+          {
+            "name": "spin_degrees",
+            "type": "float",
+            "default": "360.0",
+            "cpp_name": "p_spin_degrees",
+            "cpp_type": "float",
+            "cpp_default": "360.0f"
+          },
+          {
+            "name": "sides",
+            "type": "int",
+            "default": "32",
+            "cpp_name": "p_sides",
+            "cpp_type": "int",
+            "cpp_default": "32"
+          }
+        ],
+        "signature": "lathe(points: PackedVector2Array, name: String, parent: Node = null, spin_degrees: float = 360.0, sides: int = 32) -> MeshInstance3D",
+        "description": "CSGPolygon3D MODE_SPIN: profile in the XY plane (x = radius, y = height) revolved around the local Y axis by spin_degrees over `sides` segments.",
+        "description_source": "header",
+        "notes": "",
+        "doc_comment": "CSGPolygon3D MODE_SPIN: profile in the XY plane (x = radius, y = height) revolved around the local Y axis by spin_degrees over `sides` segments.",
+        "contract": {
+          "signature": "lathe(points: PackedVector2Array, name: String, parent: Node = null, spin_degrees: float = 360.0, sides: int = 32) -> MeshInstance3D # SPIN, baked",
+          "comment": "SPIN, baked",
+          "wave": "F"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "sweep",
+        "cpp_name": "sweep",
+        "area": "geometry",
+        "wave": "F",
+        "section": "Wave F geometry stdlib v2 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "MeshInstance3D",
+        "params": [
+          {
+            "name": "points",
+            "type": "PackedVector2Array",
+            "default": null,
+            "cpp_name": "p_points",
+            "cpp_type": "const PackedVector2Array &",
+            "cpp_default": null
+          },
+          {
+            "name": "path_points",
+            "type": "PackedVector3Array",
+            "default": null,
+            "cpp_name": "p_path_points",
+            "cpp_type": "const PackedVector3Array &",
+            "cpp_default": null
+          },
+          {
+            "name": "name",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_name",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "parent",
+            "type": "Node",
+            "default": "null",
+            "cpp_name": "p_parent",
+            "cpp_type": "Node *",
+            "cpp_default": "nullptr"
+          }
+        ],
+        "signature": "sweep(points: PackedVector2Array, path_points: PackedVector3Array, name: String, parent: Node = null) -> MeshInstance3D",
+        "description": "CSGPolygon3D MODE_PATH: profile swept along a transient Path3D built from path_points (>= 2, parent-space coordinates), path-follow rotation.",
+        "description_source": "header",
+        "notes": "",
+        "doc_comment": "CSGPolygon3D MODE_PATH: profile swept along a transient Path3D built from path_points (>= 2, parent-space coordinates), path-follow rotation.",
+        "contract": {
+          "signature": "sweep(points: PackedVector2Array, path_points: PackedVector3Array, name: String, parent: Node = null) -> MeshInstance3D # PATH via Path3D, baked",
+          "comment": "PATH via Path3D, baked",
+          "wave": "F"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "set_smooth",
+        "cpp_name": "set_smooth",
+        "area": "geometry",
+        "wave": "F",
+        "section": "Wave F geometry stdlib v2 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "bool",
+        "params": [
+          {
+            "name": "node",
+            "type": "Node",
+            "default": null,
+            "cpp_name": "p_node",
+            "cpp_type": "Node *",
+            "cpp_default": null
+          },
+          {
+            "name": "angle_deg",
+            "type": "float",
+            "default": "30.0",
+            "cpp_name": "p_angle_deg",
+            "cpp_type": "float",
+            "cpp_default": "30.0f"
+          }
+        ],
+        "signature": "set_smooth(node: Node, angle_deg: float = 30.0) -> bool",
+        "description": "Angle-based shade smooth: rebuilds the mesh with per-corner normals averaged over adjacent faces within angle_deg of each other.",
+        "description_source": "header",
+        "notes": "",
+        "doc_comment": "Angle-based shade smooth: rebuilds the mesh with per-corner normals averaged over adjacent faces within angle_deg of each other.",
+        "contract": {
+          "signature": "set_smooth(node: Node, angle_deg: float = 30.0) -> bool",
+          "comment": "",
+          "wave": "F"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "terrain",
+        "cpp_name": "terrain",
+        "area": "geometry",
+        "wave": "F",
+        "section": "Wave F geometry stdlib v2 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "MeshInstance3D",
+        "params": [
+          {
+            "name": "size",
+            "type": "Vector2",
+            "default": null,
+            "cpp_name": "p_size",
+            "cpp_type": "const Vector2 &",
+            "cpp_default": null
+          },
+          {
+            "name": "height",
+            "type": "float",
+            "default": null,
+            "cpp_name": "p_height",
+            "cpp_type": "float",
+            "cpp_default": null
+          },
+          {
+            "name": "seed",
+            "type": "int",
+            "default": null,
+            "cpp_name": "p_seed",
+            "cpp_type": "int",
+            "cpp_default": null
+          },
+          {
+            "name": "name",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_name",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "parent",
+            "type": "Node",
+            "default": "null",
+            "cpp_name": "p_parent",
+            "cpp_type": "Node *",
+            "cpp_default": "nullptr"
+          },
+          {
+            "name": "image_path",
+            "type": "String",
+            "default": "\"\"",
+            "cpp_name": "p_image_path",
+            "cpp_type": "const String &",
+            "cpp_default": "String()"
+          }
+        ],
+        "signature": "terrain(size: Vector2, height: float, seed: int, name: String, parent: Node = null, image_path: String = \"\") -> MeshInstance3D",
+        "description": "Heightfield terrain: FastNoiseLite(seed) or a heightmap image when image_path is given; y in [0, height].",
+        "description_source": "header",
+        "notes": "Adds a HeightMapShape3D collider under an owned StaticBody3D child.",
+        "doc_comment": "Heightfield terrain: FastNoiseLite(seed) or a heightmap image when image_path is given; y in [0, height]. Adds a HeightMapShape3D collider under an owned StaticBody3D child.",
+        "contract": {
+          "signature": "terrain(size: Vector2, height: float, seed: int, name: String, parent: Node = null, image_path: String = \"\") -> MeshInstance3D",
+          "comment": "noise heightfield (modules/noise) or heightmap image; adds HeightMapShape3D collision under a StaticBody3D child",
+          "wave": "F"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "decimate",
+        "cpp_name": "decimate",
+        "area": "geometry",
+        "wave": "F",
+        "section": "Wave F geometry stdlib v2 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "bool",
+        "params": [
+          {
+            "name": "node",
+            "type": "Node",
+            "default": null,
+            "cpp_name": "p_node",
+            "cpp_type": "Node *",
+            "cpp_default": null
+          },
+          {
+            "name": "ratio",
+            "type": "float",
+            "default": null,
+            "cpp_name": "p_ratio",
+            "cpp_type": "float",
+            "cpp_default": null
+          }
+        ],
+        "signature": "decimate(node: Node, ratio: float) -> bool",
+        "description": "meshoptimizer simplification toward ratio (0..1] of the current index count; the honestly ACHIEVED ratio lands in the `decimate` report entry.",
+        "description_source": "header",
+        "notes": "",
+        "doc_comment": "meshoptimizer simplification toward ratio (0..1] of the current index count; the honestly ACHIEVED ratio lands in the `decimate` report entry.",
+        "contract": {
+          "signature": "decimate(node: Node, ratio: float) -> bool # meshoptimizer LOD/simplify",
+          "comment": "meshoptimizer LOD/simplify",
+          "wave": "F"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "convex_collision",
+        "cpp_name": "convex_collision",
+        "area": "geometry",
+        "wave": "F",
+        "section": "Wave F geometry stdlib v2 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "Node",
+        "params": [
+          {
+            "name": "node",
+            "type": "Node",
+            "default": null,
+            "cpp_name": "p_node",
+            "cpp_type": "Node *",
+            "cpp_default": null
+          },
+          {
+            "name": "decompose",
+            "type": "bool",
+            "default": "false",
+            "cpp_name": "p_decompose",
+            "cpp_type": "bool",
+            "cpp_default": "false"
+          }
+        ],
+        "signature": "convex_collision(node: Node, decompose: bool = false) -> Node",
+        "description": "Single convex hull or V-HACD decomposition as an owned StaticBody3D child (owner set recursively — the unowned-save-trap fix).",
+        "description_source": "header",
+        "notes": "",
+        "doc_comment": "Single convex hull or V-HACD decomposition as an owned StaticBody3D child (owner set recursively — the unowned-save-trap fix).",
+        "contract": {
+          "signature": "convex_collision(node: Node, decompose: bool = false) -> Node",
+          "comment": "single convex or V-HACD multi-shape; ALL created bodies owned (the unowned-save-trap fix from 05 §9)",
+          "wave": "F"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "uv_planar",
+        "cpp_name": "uv_planar",
+        "area": "geometry",
+        "wave": "F",
+        "section": "Wave F geometry stdlib v2 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "bool",
+        "params": [
+          {
+            "name": "node",
+            "type": "Node",
+            "default": null,
+            "cpp_name": "p_node",
+            "cpp_type": "Node *",
+            "cpp_default": null
+          },
+          {
+            "name": "axis",
+            "type": "String",
+            "default": "\"y\"",
+            "cpp_name": "p_axis",
+            "cpp_type": "const String &",
+            "cpp_default": "\"y\""
+          },
+          {
+            "name": "scale",
+            "type": "float",
+            "default": "1.0",
+            "cpp_name": "p_scale",
+            "cpp_type": "float",
+            "cpp_default": "1.0f"
+          }
+        ],
+        "signature": "uv_planar(node: Node, axis: String = \"y\", scale: float = 1.0) -> bool",
+        "description": "axis: x|y|z projection plane normal.",
+        "description_source": "header",
+        "notes": "scale = UV tiles per world unit.",
+        "doc_comment": "axis: x|y|z projection plane normal. scale = UV tiles per world unit.",
+        "contract": {
+          "signature": "uv_planar(node: Node, axis: String = \"y\", scale: float = 1.0) -> bool",
+          "comment": "",
+          "wave": "F"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "uv_box",
+        "cpp_name": "uv_box",
+        "area": "geometry",
+        "wave": "F",
+        "section": "Wave F geometry stdlib v2 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "bool",
+        "params": [
+          {
+            "name": "node",
+            "type": "Node",
+            "default": null,
+            "cpp_name": "p_node",
+            "cpp_type": "Node *",
+            "cpp_default": null
+          },
+          {
+            "name": "scale",
+            "type": "float",
+            "default": "1.0",
+            "cpp_name": "p_scale",
+            "cpp_type": "float",
+            "cpp_default": "1.0f"
+          }
+        ],
+        "signature": "uv_box(node: Node, scale: float = 1.0) -> bool",
+        "description": "",
+        "description_source": "none",
+        "notes": "",
+        "doc_comment": "",
+        "contract": {
+          "signature": "uv_box(node: Node, scale: float = 1.0) -> bool",
+          "comment": "",
+          "wave": "F"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "mirror",
+        "cpp_name": "mirror",
+        "area": "geometry",
+        "wave": "F",
+        "section": "Wave F geometry stdlib v2 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "Node",
+        "params": [
+          {
+            "name": "node",
+            "type": "Node",
+            "default": null,
+            "cpp_name": "p_node",
+            "cpp_type": "Node *",
+            "cpp_default": null
+          },
+          {
+            "name": "axis",
+            "type": "String",
+            "default": "\"x\"",
+            "cpp_name": "p_axis",
+            "cpp_type": "const String &",
+            "cpp_default": "\"x\""
+          }
+        ],
+        "signature": "mirror(node: Node, axis: String = \"x\") -> Node",
+        "description": "Mirrored duplicate across the parent-space axis plane: the reflection is baked into the mesh (winding + normals corrected), not left as a negative scale.",
+        "description_source": "header",
+        "notes": "",
+        "doc_comment": "Mirrored duplicate across the parent-space axis plane: the reflection is baked into the mesh (winding + normals corrected), not left as a negative scale.",
+        "contract": {
+          "signature": "mirror(node: Node, axis: String = \"x\") -> Node # mirrored duplicate",
+          "comment": "mirrored duplicate",
+          "wave": "F"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "animate",
+        "cpp_name": "animate",
+        "area": "animation",
+        "wave": "F",
+        "section": "Wave F geometry stdlib v2 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "AnimationPlayer",
+        "params": [
+          {
+            "name": "node",
+            "type": "Node",
+            "default": null,
+            "cpp_name": "p_node",
+            "cpp_type": "Node *",
+            "cpp_default": null
+          },
+          {
+            "name": "property",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_property",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "keys",
+            "type": "Array",
+            "default": null,
+            "cpp_name": "p_keys",
+            "cpp_type": "const Array &",
+            "cpp_default": null
+          },
+          {
+            "name": "anim_name",
+            "type": "String",
+            "default": "\"\"",
+            "cpp_name": "p_anim_name",
+            "cpp_type": "const String &",
+            "cpp_default": "String()"
+          },
+          {
+            "name": "loop",
+            "type": "bool",
+            "default": "false",
+            "cpp_name": "p_loop",
+            "cpp_type": "bool",
+            "cpp_default": "false"
+          },
+          {
+            "name": "player",
+            "type": "AnimationPlayer",
+            "default": "null",
+            "cpp_name": "p_player",
+            "cpp_type": "AnimationPlayer *",
+            "cpp_default": "nullptr"
+          }
+        ],
+        "signature": "animate(node: Node, property: String, keys: Array, anim_name: String = \"\", loop: bool = false, player: AnimationPlayer = null) -> AnimationPlayer",
+        "description": "keys: [[time_s, value], ...] or [{time, value, transition}, ...].",
+        "description_source": "header",
+        "notes": "Get-or-create AnimationPlayer + \"\" library; position/rotation/scale on a Node3D use dedicated 3D tracks (rotation keys normalized Quaternions; Vector3 rotation values are Euler radians, rotation_degrees degrees); everything else a value track. Re-calling with the same anim_name appends/extends tracks instead of clobbering the clip. v2 (Wave G), additive: dict keys also take `interpolation: \"nearest\"|\"linear\"|\"cubic\"` — Animation interpolation is PER TRACK, so the track takes the mode of its first key carrying one and a mixed-mode key set is confessed in prop_warnings. property may target bones as \"<skeleton_node>:<bone_name>/position|rotation|scale\" -> bone 3D tracks with path \"<skeleton_path>:<bone>\", the same NodePath form imported animations use, so retarget/BoneMap machinery recognizes them. Blend shapes animate as value tracks on \"blend_shapes/<name>\" (MeshInstance3D property surface) — no dedicated helper needed.",
+        "doc_comment": "keys: [[time_s, value], ...] or [{time, value, transition}, ...]. Get-or-create AnimationPlayer + \"\" library; position/rotation/scale on a Node3D use dedicated 3D tracks (rotation keys normalized Quaternions; Vector3 rotation values are Euler radians, rotation_degrees degrees); everything else a value track. Re-calling with the same anim_name appends/extends tracks instead of clobbering the clip. v2 (Wave G), additive: dict keys also take `interpolation: \"nearest\"|\"linear\"|\"cubic\"` — Animation interpolation is PER TRACK, so the track takes the mode of its first key carrying one and a mixed-mode key set is confessed in prop_warnings. property may target bones as \"<skeleton_node>:<bone_name>/position|rotation|scale\" -> bone 3D tracks with path \"<skeleton_path>:<bone>\", the same NodePath form imported animations use, so retarget/BoneMap machinery recognizes them. Blend shapes animate as value tracks on \"blend_shapes/<name>\" (MeshInstance3D property surface) — no dedicated helper needed.",
+        "contract": {
+          "signature": "animate(node: Node, property: String, keys: Array, anim_name: String = \"\", loop: bool = false, player: AnimationPlayer = null) -> AnimationPlayer",
+          "comment": "keys: [[time_s, value], ...]; get-or-create player + library per 07 §4 (dedicated position_3d/rotation_3d/scale_3d tracks; quaternion trap) keys entries also accept {time, value, interpolation: \"nearest\"|\"linear\"|\"cubic\"} property may target bones: \"<skeleton_node>:<bone_name>/position|rotation|scale\" -> creates bone position_3d/rotation_3d/scale_3d tracks (path \"Skeleton:bone\")",
+          "wave": "F"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "make_shader",
+        "cpp_name": "make_shader",
+        "area": "materials",
+        "wave": "F",
+        "section": "Wave F geometry stdlib v2 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "ShaderMaterial",
+        "params": [
+          {
+            "name": "code",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_code",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "params",
+            "type": "Dictionary",
+            "default": "{}",
+            "cpp_name": "p_params",
+            "cpp_type": "const Dictionary &",
+            "cpp_default": "Dictionary()"
+          }
+        ],
+        "signature": "make_shader(code: String, params: Dictionary = {}) -> ShaderMaterial",
+        "description": "Shader.set_code + one shader_parameter per params key.",
+        "description_source": "header",
+        "notes": "The code is validated with the engine's own ShaderLanguage compiler FIRST; a compile error is reported verbatim (errors[] + `make_shader_errors` report entry) and returns null instead of a silently-broken material.",
+        "doc_comment": "Shader.set_code + one shader_parameter per params key. The code is validated with the engine's own ShaderLanguage compiler FIRST; a compile error is reported verbatim (errors[] + `make_shader_errors` report entry) and returns null instead of a silently-broken material.",
+        "contract": {
+          "signature": "make_shader(code: String, params: Dictionary = {}) -> ShaderMaterial",
+          "comment": "ShaderLanguage pre-validation + Shader.set_code + shader_parameter sets; compile errors reported verbatim (line + text) as a `make_shader_errors` report entry, null returned (07 §3)",
+          "wave": "F"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "animate_method",
+        "cpp_name": "animate_method",
+        "area": "animation",
+        "wave": "G",
+        "section": "Wave G animation completeness ctx v3 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "AnimationPlayer",
+        "params": [
+          {
+            "name": "node",
+            "type": "Node",
+            "default": null,
+            "cpp_name": "p_node",
+            "cpp_type": "Node *",
+            "cpp_default": null
+          },
+          {
+            "name": "calls",
+            "type": "Array",
+            "default": null,
+            "cpp_name": "p_calls",
+            "cpp_type": "const Array &",
+            "cpp_default": null
+          },
+          {
+            "name": "anim_name",
+            "type": "String",
+            "default": "\"\"",
+            "cpp_name": "p_anim_name",
+            "cpp_type": "const String &",
+            "cpp_default": "String()"
+          },
+          {
+            "name": "loop",
+            "type": "bool",
+            "default": "false",
+            "cpp_name": "p_loop",
+            "cpp_type": "bool",
+            "cpp_default": "false"
+          },
+          {
+            "name": "player",
+            "type": "AnimationPlayer",
+            "default": "null",
+            "cpp_name": "p_player",
+            "cpp_type": "AnimationPlayer *",
+            "cpp_default": "nullptr"
+          }
+        ],
+        "signature": "animate_method(node: Node, calls: Array, anim_name: String = \"\", loop: bool = false, player: AnimationPlayer = null) -> AnimationPlayer",
+        "description": "calls: [[time_s, method_name, args_array], ...] -> ONE method-call track on the node's path (same player/library/clip append semantics as animate).",
+        "description_source": "header",
+        "notes": "A method the node does not have RIGHT NOW is still keyed — the method may come from a script attached later — with the miss confessed in prop_warnings and the report entry's missing_methods.",
+        "doc_comment": "calls: [[time_s, method_name, args_array], ...] -> ONE method-call track on the node's path (same player/library/clip append semantics as animate). A method the node does not have RIGHT NOW is still keyed — the method may come from a script attached later — with the miss confessed in prop_warnings and the report entry's missing_methods.",
+        "contract": {
+          "signature": "animate_method(node: Node, calls: Array, anim_name: String = \"\", loop: bool = false, player: AnimationPlayer = null) -> AnimationPlayer",
+          "comment": "calls: [[time_s, method_name, args_array], ...] -> one method-call track",
+          "wave": "G"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "anim_state_machine",
+        "cpp_name": "anim_state_machine",
+        "area": "animation",
+        "wave": "G",
+        "section": "Wave G animation completeness ctx v3 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "AnimationTree",
+        "params": [
+          {
+            "name": "target",
+            "type": "Node",
+            "default": null,
+            "cpp_name": "p_target",
+            "cpp_type": "Node *",
+            "cpp_default": null
+          },
+          {
+            "name": "spec",
+            "type": "Dictionary",
+            "default": null,
+            "cpp_name": "p_spec",
+            "cpp_type": "const Dictionary &",
+            "cpp_default": null
+          },
+          {
+            "name": "player",
+            "type": "AnimationPlayer",
+            "default": "null",
+            "cpp_name": "p_player",
+            "cpp_type": "AnimationPlayer *",
+            "cpp_default": "nullptr"
+          }
+        ],
+        "signature": "anim_state_machine(target: Node, spec: Dictionary, player: AnimationPlayer = null) -> AnimationTree",
+        "description": "spec: {states: {name: clip_name}, transitions: [[from, to, {auto?: bool, blend_s?: float}], ...], start: name}.",
+        "description_source": "header",
+        "notes": "Get-or-create: the first AnimationTree whose anim_player resolves to the (found or given) player is rewired, else a new owned tree is created under target. States become AnimationNodeAnimation nodes; a clip name the player does not have skips that state with an `anim_state_machine` report entry listing the player's actual clips (never silent). auto -> ADVANCE_MODE_AUTO + SWITCH_MODE_AT_END, blend_s -> xfade_time. start wires the machine's implicit \"Start\" node to that state with an auto transition (how the editor marks the initial state). tree_root = the machine, active = true.",
+        "doc_comment": "spec: {states: {name: clip_name}, transitions: [[from, to, {auto?: bool, blend_s?: float}], ...], start: name}. Get-or-create: the first AnimationTree whose anim_player resolves to the (found or given) player is rewired, else a new owned tree is created under target. States become AnimationNodeAnimation nodes; a clip name the player does not have skips that state with an `anim_state_machine` report entry listing the player's actual clips (never silent). auto -> ADVANCE_MODE_AUTO + SWITCH_MODE_AT_END, blend_s -> xfade_time. start wires the machine's implicit \"Start\" node to that state with an auto transition (how the editor marks the initial state). tree_root = the machine, active = true.",
+        "contract": {
+          "signature": "anim_state_machine(target: Node, spec: Dictionary, player: AnimationPlayer = null) -> AnimationTree",
+          "comment": "spec: { states: {name: clip_name}, transitions: [[from, to, {auto?: bool, blend_s?: float}], ...], start: name } get-or-create AnimationTree wired to the (found or given) player, AnimationNodeStateMachine, active=true; unknown clip names -> report entry listing the player's actual clips (never silent)",
+          "wave": "G"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "bone_pose",
+        "cpp_name": "bone_pose",
+        "area": "animation",
+        "wave": "G",
+        "section": "Wave G animation completeness ctx v3 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "bool",
+        "params": [
+          {
+            "name": "skeleton",
+            "type": "Node",
+            "default": null,
+            "cpp_name": "p_skeleton",
+            "cpp_type": "Node *",
+            "cpp_default": null
+          },
+          {
+            "name": "bone",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_bone",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "pose",
+            "type": "Dictionary",
+            "default": null,
+            "cpp_name": "p_pose",
+            "cpp_type": "const Dictionary &",
+            "cpp_default": null
+          }
+        ],
+        "signature": "bone_pose(skeleton: Node, bone: String, pose: Dictionary) -> bool",
+        "description": "pose keys position (Vector3) / rotation (Quaternion, Vector3 Euler radians or Basis) / scale (Vector3) -> set_bone_pose_* on the resolved Skeleton3D (the node, an ancestor, or the first descendant).",
+        "description_source": "header",
+        "notes": "Unknown bone -> false + a `bone_pose` report entry listing bone names (capped 64).",
+        "doc_comment": "pose keys position (Vector3) / rotation (Quaternion, Vector3 Euler radians or Basis) / scale (Vector3) -> set_bone_pose_* on the resolved Skeleton3D (the node, an ancestor, or the first descendant). Unknown bone -> false + a `bone_pose` report entry listing bone names (capped 64).",
+        "contract": {
+          "signature": "bone_pose(skeleton: Node, bone: String, pose: Dictionary) -> bool",
+          "comment": "pose keys position/rotation/scale -> set_bone_pose_* on Skeleton3D; unknown bone -> false + report listing bone names (capped 64)",
+          "wave": "G"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "look_at_modifier",
+        "cpp_name": "look_at_modifier",
+        "area": "animation",
+        "wave": "G",
+        "section": "Wave G animation completeness ctx v3 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "Node",
+        "params": [
+          {
+            "name": "node",
+            "type": "Node",
+            "default": null,
+            "cpp_name": "p_node",
+            "cpp_type": "Node *",
+            "cpp_default": null
+          },
+          {
+            "name": "target",
+            "type": "Node",
+            "default": null,
+            "cpp_name": "p_target",
+            "cpp_type": "Node *",
+            "cpp_default": null
+          },
+          {
+            "name": "props",
+            "type": "Dictionary",
+            "default": "{}",
+            "cpp_name": "p_props",
+            "cpp_type": "const Dictionary &",
+            "cpp_default": "Dictionary()"
+          }
+        ],
+        "signature": "look_at_modifier(node: Node, target: Node, props: Dictionary = {}) -> Node",
+        "description": "LookAtModifier3D under the resolved skeleton (or the node itself when no skeleton is found — confessed in prop_warnings), owned; target_node wired to target.",
+        "description_source": "header",
+        "notes": "bone_name etc. apply through props.",
+        "doc_comment": "LookAtModifier3D under the resolved skeleton (or the node itself when no skeleton is found — confessed in prop_warnings), owned; target_node wired to target. bone_name etc. apply through props.",
+        "contract": {
+          "signature": "look_at_modifier(node: Node, target: Node, props: Dictionary = {}) -> Node",
+          "comment": "LookAtModifier3D under the skeleton/node, owned",
+          "wave": "G"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "add_sprite",
+        "cpp_name": "add_sprite",
+        "area": "2d",
+        "wave": "H",
+        "section": "Wave H game completeness ctx v4 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "Sprite2D",
+        "params": [
+          {
+            "name": "texture_path",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_texture_path",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "name",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_name",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "parent",
+            "type": "Node",
+            "default": "null",
+            "cpp_name": "p_parent",
+            "cpp_type": "Node *",
+            "cpp_default": "nullptr"
+          },
+          {
+            "name": "props",
+            "type": "Dictionary",
+            "default": "{}",
+            "cpp_name": "p_props",
+            "cpp_type": "const Dictionary &",
+            "cpp_default": "Dictionary()"
+          }
+        ],
+        "signature": "add_sprite(texture_path: String, name: String, parent: Node = null, props: Dictionary = {}) -> Sprite2D",
+        "description": "Missing texture -> `add_sprite` report entry + null.",
+        "description_source": "header",
+        "notes": "",
+        "doc_comment": "Missing texture -> `add_sprite` report entry + null.",
+        "contract": {
+          "signature": "add_sprite(texture_path: String, name: String, parent: Node = null, props: Dictionary = {}) -> Sprite2D # missing texture -> report + null",
+          "comment": "missing texture -> report + null",
+          "wave": "H"
+        },
+        "contract_notes": [
+          "Textures (`add_sprite`, `add_animated_sprite`, `add_parallax`, `add_ui.props.texture`): ResourceLoader first; a file that exists but has no import yet (an Image the script just saved) is imported synchronously via EditorFileSystem::update_file + reimport_files so the scene references the imported texture as an ExtResource; last resort an embedded ImageTexture, confessed in prop_warnings."
+        ],
+        "mismatches": []
+      },
+      {
+        "name": "add_animated_sprite",
+        "cpp_name": "add_animated_sprite",
+        "area": "2d",
+        "wave": "H",
+        "section": "Wave H game completeness ctx v4 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "AnimatedSprite2D",
+        "params": [
+          {
+            "name": "frames",
+            "type": "Dictionary",
+            "default": null,
+            "cpp_name": "p_frames",
+            "cpp_type": "const Dictionary &",
+            "cpp_default": null
+          },
+          {
+            "name": "name",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_name",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "parent",
+            "type": "Node",
+            "default": "null",
+            "cpp_name": "p_parent",
+            "cpp_type": "Node *",
+            "cpp_default": "nullptr"
+          },
+          {
+            "name": "autoplay",
+            "type": "String",
+            "default": "\"\"",
+            "cpp_name": "p_autoplay",
+            "cpp_type": "const String &",
+            "cpp_default": "String()"
+          }
+        ],
+        "signature": "add_animated_sprite(frames: Dictionary, name: String, parent: Node = null, autoplay: String = \"\") -> AnimatedSprite2D",
+        "description": "frames: {anim_name: {frames: [texture_paths], fps: float, loop: bool}} -> one SpriteFrames (the seeded \"default\" animation is dropped unless the spec defines it).",
+        "description_source": "header",
+        "notes": "Unloadable frames are skipped and listed in the `add_animated_sprite` report entry; zero loadable frames -> null.",
+        "doc_comment": "frames: {anim_name: {frames: [texture_paths], fps: float, loop: bool}} -> one SpriteFrames (the seeded \"default\" animation is dropped unless the spec defines it). Unloadable frames are skipped and listed in the `add_animated_sprite` report entry; zero loadable frames -> null.",
+        "contract": {
+          "signature": "add_animated_sprite(frames: Dictionary, name: String, parent: Node = null, autoplay: String = \"\") -> AnimatedSprite2D",
+          "comment": "frames: { anim_name: { frames: [texture_paths], fps: float, loop: bool } } -> SpriteFrames",
+          "wave": "H"
+        },
+        "contract_notes": [
+          "Textures (`add_sprite`, `add_animated_sprite`, `add_parallax`, `add_ui.props.texture`): ResourceLoader first; a file that exists but has no import yet (an Image the script just saved) is imported synchronously via EditorFileSystem::update_file + reimport_files so the scene references the imported texture as an ExtResource; last resort an embedded ImageTexture, confessed in prop_warnings."
+        ],
+        "mismatches": []
+      },
+      {
+        "name": "add_tilemap",
+        "cpp_name": "add_tilemap",
+        "area": "2d",
+        "wave": "H",
+        "section": "Wave H game completeness ctx v4 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "TileMapLayer",
+        "params": [
+          {
+            "name": "tileset_path",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_tileset_path",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "name",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_name",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "parent",
+            "type": "Node",
+            "default": "null",
+            "cpp_name": "p_parent",
+            "cpp_type": "Node *",
+            "cpp_default": "nullptr"
+          }
+        ],
+        "signature": "add_tilemap(tileset_path: String, name: String, parent: Node = null) -> TileMapLayer",
+        "description": "TileMapLayer (4.3+ class, verified in-tree) with the TileSet loaded from tileset_path; missing/invalid tileset -> `add_tilemap` report + null.",
+        "description_source": "header",
+        "notes": "",
+        "doc_comment": "TileMapLayer (4.3+ class, verified in-tree) with the TileSet loaded from tileset_path; missing/invalid tileset -> `add_tilemap` report + null.",
+        "contract": {
+          "signature": "add_tilemap(tileset_path: String, name: String, parent: Node = null) -> TileMapLayer",
+          "comment": "",
+          "wave": "H"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "paint_tiles",
+        "cpp_name": "paint_tiles",
+        "area": "2d",
+        "wave": "H",
+        "section": "Wave H game completeness ctx v4 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "int",
+        "params": [
+          {
+            "name": "layer",
+            "type": "TileMapLayer",
+            "default": null,
+            "cpp_name": "p_layer",
+            "cpp_type": "TileMapLayer *",
+            "cpp_default": null
+          },
+          {
+            "name": "cells",
+            "type": "Array",
+            "default": null,
+            "cpp_name": "p_cells",
+            "cpp_type": "const Array &",
+            "cpp_default": null
+          },
+          {
+            "name": "source_id",
+            "type": "int",
+            "default": null,
+            "cpp_name": "p_source_id",
+            "cpp_type": "int",
+            "cpp_default": null
+          },
+          {
+            "name": "atlas_coords",
+            "type": "Vector2i",
+            "default": "Vector2i.ZERO",
+            "cpp_name": "p_atlas_coords",
+            "cpp_type": "const Vector2i &",
+            "cpp_default": "Vector2i()"
+          }
+        ],
+        "signature": "paint_tiles(layer: TileMapLayer, cells: Array, source_id: int, atlas_coords: Vector2i = Vector2i.ZERO) -> int",
+        "description": "cells: [Vector2i].",
+        "description_source": "header",
+        "notes": "Unknown source_id / atlas_coords in the layer's TileSet -> `paint_tiles`/`paint_rect` report entry (listing the source ids that exist) and 0 painted; returns the count painted.",
+        "doc_comment": "cells: [Vector2i]. Unknown source_id / atlas_coords in the layer's TileSet -> `paint_tiles`/`paint_rect` report entry (listing the source ids that exist) and 0 painted; returns the count painted.",
+        "contract": {
+          "signature": "paint_tiles(layer: TileMapLayer, cells: Array, source_id: int, atlas_coords: Vector2i = Vector2i.ZERO) -> int # cells: [Vector2i]; returns count",
+          "comment": "cells: [Vector2i]; returns count",
+          "wave": "H"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "paint_rect",
+        "cpp_name": "paint_rect",
+        "area": "2d",
+        "wave": "H",
+        "section": "Wave H game completeness ctx v4 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "int",
+        "params": [
+          {
+            "name": "layer",
+            "type": "TileMapLayer",
+            "default": null,
+            "cpp_name": "p_layer",
+            "cpp_type": "TileMapLayer *",
+            "cpp_default": null
+          },
+          {
+            "name": "rect",
+            "type": "Rect2i",
+            "default": null,
+            "cpp_name": "p_rect",
+            "cpp_type": "const Rect2i &",
+            "cpp_default": null
+          },
+          {
+            "name": "source_id",
+            "type": "int",
+            "default": null,
+            "cpp_name": "p_source_id",
+            "cpp_type": "int",
+            "cpp_default": null
+          },
+          {
+            "name": "atlas_coords",
+            "type": "Vector2i",
+            "default": "Vector2i.ZERO",
+            "cpp_name": "p_atlas_coords",
+            "cpp_type": "const Vector2i &",
+            "cpp_default": "Vector2i()"
+          }
+        ],
+        "signature": "paint_rect(layer: TileMapLayer, rect: Rect2i, source_id: int, atlas_coords: Vector2i = Vector2i.ZERO) -> int",
+        "description": "Unknown source_id / atlas_coords in the layer's TileSet -> `paint_tiles`/`paint_rect` report entry (listing the source ids that exist) and 0 painted; returns the count painted.",
+        "description_source": "shared-with:paint_tiles",
+        "notes": "",
+        "doc_comment": "",
+        "contract": {
+          "signature": "paint_rect(layer: TileMapLayer, rect: Rect2i, source_id: int, atlas_coords: Vector2i = Vector2i.ZERO) -> int",
+          "comment": "",
+          "wave": "H"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "add_body_2d",
+        "cpp_name": "add_body_2d",
+        "area": "2d",
+        "wave": "H",
+        "section": "Wave H game completeness ctx v4 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "Node",
+        "params": [
+          {
+            "name": "kind",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_kind",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "name",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_name",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "parent",
+            "type": "Node",
+            "default": "null",
+            "cpp_name": "p_parent",
+            "cpp_type": "Node *",
+            "cpp_default": "nullptr"
+          },
+          {
+            "name": "shape",
+            "type": "Dictionary",
+            "default": "{}",
+            "cpp_name": "p_shape",
+            "cpp_type": "const Dictionary &",
+            "cpp_default": "Dictionary()"
+          },
+          {
+            "name": "props",
+            "type": "Dictionary",
+            "default": "{}",
+            "cpp_name": "p_props",
+            "cpp_type": "const Dictionary &",
+            "cpp_default": "Dictionary()"
+          }
+        ],
+        "signature": "add_body_2d(kind: String, name: String, parent: Node = null, shape: Dictionary = {}, props: Dictionary = {}) -> Node",
+        "description": "kind: static|rigid|character|area -> StaticBody2D|RigidBody2D| CharacterBody2D|Area2D + an owned CollisionShape2D child.",
+        "description_source": "header",
+        "notes": "shape: {type: rect|circle|capsule, size: Vector2 | radius: float, height: float}; an empty shape dict means a 32x32 rect (confessed in prop_warnings). props try the body first, then the CollisionShape2D.",
+        "doc_comment": "kind: static|rigid|character|area -> StaticBody2D|RigidBody2D| CharacterBody2D|Area2D + an owned CollisionShape2D child. shape: {type: rect|circle|capsule, size: Vector2 | radius: float, height: float}; an empty shape dict means a 32x32 rect (confessed in prop_warnings). props try the body first, then the CollisionShape2D.",
+        "contract": {
+          "signature": "add_body_2d(kind: String, name: String, parent: Node = null, shape: Dictionary = {}, props: Dictionary = {}) -> Node",
+          "comment": "kind: static|rigid|character|area ; shape: {type: rect|circle|capsule, size|radius|height} -> body + owned CollisionShape2D child",
+          "wave": "H"
+        },
+        "contract_notes": [
+          "`add_body_2d`: an empty `shape` dict means a 32x32 rect (prop_warnings); shape.size may be a float (square)."
+        ],
+        "mismatches": []
+      },
+      {
+        "name": "add_camera_2d",
+        "cpp_name": "add_camera_2d",
+        "area": "2d",
+        "wave": "H",
+        "section": "Wave H game completeness ctx v4 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "Camera2D",
+        "params": [
+          {
+            "name": "position",
+            "type": "Vector2",
+            "default": null,
+            "cpp_name": "p_position",
+            "cpp_type": "const Vector2 &",
+            "cpp_default": null
+          },
+          {
+            "name": "zoom",
+            "type": "Vector2",
+            "default": "Vector2(1, 1)",
+            "cpp_name": "p_zoom",
+            "cpp_type": "const Vector2 &",
+            "cpp_default": "Vector2(1, 1)"
+          },
+          {
+            "name": "make_current",
+            "type": "bool",
+            "default": "true",
+            "cpp_name": "p_make_current",
+            "cpp_type": "bool",
+            "cpp_default": "true"
+          },
+          {
+            "name": "limits",
+            "type": "Rect2i",
+            "default": "Rect2i()",
+            "cpp_name": "p_limits",
+            "cpp_type": "const Rect2i &",
+            "cpp_default": "Rect2i()"
+          }
+        ],
+        "signature": "add_camera_2d(position: Vector2, zoom: Vector2 = Vector2(1, 1), make_current: bool = true, limits: Rect2i = Rect2i()) -> Camera2D",
+        "description": "Camera2D under the edited root.",
+        "description_source": "header",
+        "notes": "Camera2D has no saved \"current\" flag — `enabled` is what persists (an enabled camera becomes current on enter when its viewport has none), so make_current mirrors into enabled and the live make_current() call. limits with zero area = unlimited.",
+        "doc_comment": "Camera2D under the edited root. Camera2D has no saved \"current\" flag — `enabled` is what persists (an enabled camera becomes current on enter when its viewport has none), so make_current mirrors into enabled and the live make_current() call. limits with zero area = unlimited.",
+        "contract": {
+          "signature": "add_camera_2d(position: Vector2, zoom: Vector2 = Vector2.ONE, make_current: bool = true, limits: Rect2i = Rect2i()) -> Camera2D # empty limits = unlimited",
+          "comment": "empty limits = unlimited",
+          "wave": "H"
+        },
+        "contract_notes": [
+          "`add_camera_2d`: Camera2D has no saved \"current\" flag, so make_current maps to `enabled` (+ a live make_current()); make_current:false saves the camera disabled."
+        ],
+        "mismatches": []
+      },
+      {
+        "name": "add_parallax",
+        "cpp_name": "add_parallax",
+        "area": "2d",
+        "wave": "H",
+        "section": "Wave H game completeness ctx v4 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "Node",
+        "params": [
+          {
+            "name": "layers",
+            "type": "Array",
+            "default": null,
+            "cpp_name": "p_layers",
+            "cpp_type": "const Array &",
+            "cpp_default": null
+          },
+          {
+            "name": "name",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_name",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "parent",
+            "type": "Node",
+            "default": "null",
+            "cpp_name": "p_parent",
+            "cpp_type": "Node *",
+            "cpp_default": "nullptr"
+          }
+        ],
+        "signature": "add_parallax(layers: Array, name: String, parent: Node = null) -> Node",
+        "description": "layers: [{texture: path, motion_scale: Vector2, repeat: Vector2i}] -> one Parallax2D (4.3+ class, present in-tree; no ParallaxBackground fallback needed) per layer, each holding an un-centered Sprite2D, under one Node2D group named `name`.",
+        "description_source": "header",
+        "notes": "Layers whose texture fails to load are skipped and listed in the `add_parallax` report entry.",
+        "doc_comment": "layers: [{texture: path, motion_scale: Vector2, repeat: Vector2i}] -> one Parallax2D (4.3+ class, present in-tree; no ParallaxBackground fallback needed) per layer, each holding an un-centered Sprite2D, under one Node2D group named `name`. Layers whose texture fails to load are skipped and listed in the `add_parallax` report entry.",
+        "contract": {
+          "signature": "add_parallax(layers: Array, name: String, parent: Node = null) -> Node",
+          "comment": "layers: [{texture: path, motion_scale: Vector2, repeat: Vector2i}] -> Parallax2D per layer under one Node2D group (Parallax2D is 4.3+; verify in-tree, fall back to ParallaxBackground)",
+          "wave": "H"
+        },
+        "contract_notes": [
+          "Textures (`add_sprite`, `add_animated_sprite`, `add_parallax`, `add_ui.props.texture`): ResourceLoader first; a file that exists but has no import yet (an Image the script just saved) is imported synchronously via EditorFileSystem::update_file + reimport_files so the scene references the imported texture as an ExtResource; last resort an embedded ImageTexture, confessed in prop_warnings.",
+          "`add_parallax`: Parallax2D exists in this tree (4.7.2) — no ParallaxBackground fallback is compiled."
+        ],
+        "mismatches": []
+      },
+      {
+        "name": "add_ui",
+        "cpp_name": "add_ui",
+        "area": "ui",
+        "wave": "H",
+        "section": "Wave H game completeness ctx v4 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "Control",
+        "params": [
+          {
+            "name": "kind",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_kind",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "name",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_name",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "parent",
+            "type": "Node",
+            "default": "null",
+            "cpp_name": "p_parent",
+            "cpp_type": "Node *",
+            "cpp_default": "nullptr"
+          },
+          {
+            "name": "props",
+            "type": "Dictionary",
+            "default": "{}",
+            "cpp_name": "p_props",
+            "cpp_type": "const Dictionary &",
+            "cpp_default": "Dictionary()"
+          }
+        ],
+        "signature": "add_ui(kind: String, name: String, parent: Node = null, props: Dictionary = {}) -> Control",
+        "description": "kind -> class: label Label, button Button, panel PanelContainer, vbox VBoxContainer, hbox HBoxContainer, grid GridContainer, margin MarginContainer, texture_rect TextureRect, progress_bar ProgressBar, line_edit LineEdit, rich_text RichTextLabel, color_rect ColorRect, center CenterContainer.",
+        "description_source": "header",
+        "notes": "props.anchor: full_rect|center|top_left|top_right| bottom_left|bottom_right|top_wide|bottom_wide (plus the remaining Control::PRESET_* names) -> set_anchors_and_offsets_preset, applied before the other props so explicit size/position win; props.custom_minimum_size and the rest reach the Control via set() (a name that is not a property lands in prop_warnings); props.texture as a String path is loaded first.",
+        "doc_comment": "kind -> class: label Label, button Button, panel PanelContainer, vbox VBoxContainer, hbox HBoxContainer, grid GridContainer, margin MarginContainer, texture_rect TextureRect, progress_bar ProgressBar, line_edit LineEdit, rich_text RichTextLabel, color_rect ColorRect, center CenterContainer. props.anchor: full_rect|center|top_left|top_right| bottom_left|bottom_right|top_wide|bottom_wide (plus the remaining Control::PRESET_* names) -> set_anchors_and_offsets_preset, applied before the other props so explicit size/position win; props.custom_minimum_size and the rest reach the Control via set() (a name that is not a property lands in prop_warnings); props.texture as a String path is loaded first.",
+        "contract": {
+          "signature": "add_ui(kind: String, name: String, parent: Node = null, props: Dictionary = {}) -> Control",
+          "comment": "kind: label|button|panel|vbox|hbox|grid|margin|texture_rect|progress_bar|line_edit| rich_text|color_rect|center ; props.anchor: full_rect|center|top_left|top_right| bottom_left|bottom_right|top_wide|bottom_wide (set_anchors_and_offsets_preset); props.text/custom_minimum_size/etc via set()",
+          "wave": "H"
+        },
+        "contract_notes": [
+          "Every other ctx name was checked against the Object/RefCounted bindings — no further collisions (`add_ui`, `set_main_scene`, `find`, … are clear).",
+          "Textures (`add_sprite`, `add_animated_sprite`, `add_parallax`, `add_ui.props.texture`): ResourceLoader first; a file that exists but has no import yet (an Image the script just saved) is imported synchronously via EditorFileSystem::update_file + reimport_files so the scene references the imported texture as an ExtResource; last resort an embedded ImageTexture, confessed in prop_warnings.",
+          "`add_ui`: kind `panel` -> PanelContainer (container semantics for HUD layouts; a plain Panel is `add_node(\"Panel\")`)."
+        ],
+        "mismatches": []
+      },
+      {
+        "name": "add_canvas_layer",
+        "cpp_name": "add_canvas_layer",
+        "area": "ui",
+        "wave": "H",
+        "section": "Wave H game completeness ctx v4 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "CanvasLayer",
+        "params": [
+          {
+            "name": "name",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_name",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "layer",
+            "type": "int",
+            "default": "1",
+            "cpp_name": "p_layer",
+            "cpp_type": "int",
+            "cpp_default": "1"
+          },
+          {
+            "name": "parent",
+            "type": "Node",
+            "default": "null",
+            "cpp_name": "p_parent",
+            "cpp_type": "Node *",
+            "cpp_default": "nullptr"
+          }
+        ],
+        "signature": "add_canvas_layer(name: String, layer: int = 1, parent: Node = null) -> CanvasLayer",
+        "description": "Creation helper — adds to the edited scene root when no parent is given, sets owner to the edited scene root by default (the #1 silent persistence gotcha, made structurally impossible), and returns the created node.",
+        "description_source": "class-comment",
+        "notes": "",
+        "doc_comment": "",
+        "contract": {
+          "signature": "add_canvas_layer(name: String, layer: int = 1, parent: Node = null) -> CanvasLayer",
+          "comment": "",
+          "wave": "H"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "set_theme_overrides",
+        "cpp_name": "set_theme_overrides",
+        "area": "ui",
+        "wave": "H",
+        "section": "Wave H game completeness ctx v4 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "int",
+        "params": [
+          {
+            "name": "control",
+            "type": "Control",
+            "default": null,
+            "cpp_name": "p_control",
+            "cpp_type": "Control *",
+            "cpp_default": null
+          },
+          {
+            "name": "overrides",
+            "type": "Dictionary",
+            "default": null,
+            "cpp_name": "p_overrides",
+            "cpp_type": "const Dictionary &",
+            "cpp_default": null
+          }
+        ],
+        "signature": "set_theme_overrides(control: Control, overrides: Dictionary) -> int",
+        "description": "{font_size: int, font_color: Color, <theme_item>: value} -> the matching add_theme_*_override by value type + key: Color (or \"#hex\") -> color; int/float -> font_size when the key is/ends with font_size, else constant; StyleBox/Font/Texture2D (or a \"res://\" path to one) -> style/ font/icon.",
+        "description_source": "header",
+        "notes": "Returns the count applied; an item the control's theme type does not define is still stored but confessed in prop_warnings.",
+        "doc_comment": "{font_size: int, font_color: Color, <theme_item>: value} -> the matching add_theme_*_override by value type + key: Color (or \"#hex\") -> color; int/float -> font_size when the key is/ends with font_size, else constant; StyleBox/Font/Texture2D (or a \"res://\" path to one) -> style/ font/icon. Returns the count applied; an item the control's theme type does not define is still stored but confessed in prop_warnings.",
+        "contract": {
+          "signature": "set_theme_overrides(control: Control, overrides: Dictionary) -> int",
+          "comment": "{font_size: int, font_color: Color, <theme_item>: value} -> add_theme_*_override; count applied",
+          "wave": "H"
+        },
+        "contract_notes": [
+          "`set_theme_overrides` dispatch: Color or \"#hex\" string -> color override; int/float -> font_size override when the key is/ends with `font_size`, else constant override; StyleBox/Font/Texture2D (or a \"res://\" path to one) -> style/font/icon override."
+        ],
+        "mismatches": []
+      },
+      {
+        "name": "connect_signal",
+        "cpp_name": "connect_signal",
+        "area": "ui",
+        "wave": "H",
+        "section": "Wave H game completeness ctx v4 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "bool",
+        "params": [
+          {
+            "name": "emitter",
+            "type": "Node",
+            "default": null,
+            "cpp_name": "p_emitter",
+            "cpp_type": "Node *",
+            "cpp_default": null
+          },
+          {
+            "name": "signal_name",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_signal",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "target",
+            "type": "Node",
+            "default": null,
+            "cpp_name": "p_target",
+            "cpp_type": "Node *",
+            "cpp_default": null
+          },
+          {
+            "name": "method",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_method",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "binds",
+            "type": "Array",
+            "default": "[]",
+            "cpp_name": "p_binds",
+            "cpp_type": "const Array &",
+            "cpp_default": "Array()"
+          }
+        ],
+        "signature": "connect_signal(emitter: Node, signal_name: String, target: Node, method: String, binds: Array = []) -> bool",
+        "description": "Object::connect with CONNECT_PERSIST so PackedScene saves it into the .tscn — exactly the flag the editor's ConnectionsDock sets.",
+        "description_source": "header",
+        "notes": "The target must have the method NOW (has_method), or carry a script whose source declares `func <method>(` (a script attached this run that has not compiled yet); otherwise `connect_signal` report entry + false. Unknown signal -> report entry listing the emitter's signals + false. binds via Callable.bindv. Already connected -> reported, true. Bound as \"connect_signal\" (a ctx method named `connect` would shadow the virtual Object::connect on this RefCounted class).",
+        "doc_comment": "Bound as \"connect_signal\" (a ctx method named `connect` would shadow the virtual Object::connect on this RefCounted class). Object::connect with CONNECT_PERSIST so PackedScene saves it into the .tscn — exactly the flag the editor's ConnectionsDock sets. The target must have the method NOW (has_method), or carry a script whose source declares `func <method>(` (a script attached this run that has not compiled yet); otherwise `connect_signal` report entry + false. Unknown signal -> report entry listing the emitter's signals + false. binds via Callable.bindv. Already connected -> reported, true.",
+        "contract": {
+          "signature": "connect_signal(emitter: Node, signal_name: String, target: Node, method: String, binds: Array = []) -> bool # PERSIST flag so it saves in .tscn;",
+          "comment": "PERSIST flag so it saves in .tscn; unknown signal/method -> report, false (was `connect` in the first draft: a ctx method of that name shadows the virtual Object::connect on the RefCounted ctx class — renamed, nothing named `connect` is bound)",
+          "wave": "H"
+        },
+        "contract_notes": [
+          "Naming: `connect_signal` is the bound name (see above).",
+          "`connect_signal` method gate: `has_method`, else the target's script `has_method`, else the script SOURCE contains `func <method>(` (a script attached this run that has not compiled yet) — otherwise report + false."
+        ],
+        "mismatches": []
+      },
+      {
+        "name": "attach_script",
+        "cpp_name": "attach_script",
+        "area": "gameplay",
+        "wave": "H",
+        "section": "Wave H game completeness ctx v4 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "Script",
+        "params": [
+          {
+            "name": "node",
+            "type": "Node",
+            "default": null,
+            "cpp_name": "p_node",
+            "cpp_type": "Node *",
+            "cpp_default": null
+          },
+          {
+            "name": "source",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_source",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "path",
+            "type": "String",
+            "default": "\"\"",
+            "cpp_name": "p_path",
+            "cpp_type": "const String &",
+            "cpp_default": "String()"
+          }
+        ],
+        "signature": "attach_script(node: Node, source: String, path: String = \"\") -> Script",
+        "description": "GDScriptLanguage::validate FIRST (parse errors -> `attach_script_errors` report entry with line/column/message, null, nothing written).",
+        "description_source": "header",
+        "notes": "path empty -> res://scripts/<edited scene file basename>/<NodeName>.gd (dirs created). An existing file is overwritten with its previous sha256 recorded in the `attach_script` report entry. Writes, registers the file with EditorFileSystem, loads with CACHE_MODE_REPLACE, checks the script's native base against the node's class (mismatch -> report, file kept, script NOT attached, null), set_script, verifies it took. Returns the Script.",
+        "doc_comment": "GDScriptLanguage::validate FIRST (parse errors -> `attach_script_errors` report entry with line/column/message, null, nothing written). path empty -> res://scripts/<edited scene file basename>/<NodeName>.gd (dirs created). An existing file is overwritten with its previous sha256 recorded in the `attach_script` report entry. Writes, registers the file with EditorFileSystem, loads with CACHE_MODE_REPLACE, checks the script's native base against the node's class (mismatch -> report, file kept, script NOT attached, null), set_script, verifies it took. Returns the Script.",
+        "contract": {
+          "signature": "attach_script(node: Node, source: String, path: String = \"\") -> Script",
+          "comment": "compile-validate first (GDScriptLanguage::validate; parse errors -> report entry, null); path empty -> res://scripts/<SceneName>/<NodeName>.gd (dirs created); writes the file, FS rescan, set_script. Existing file at path is overwritten only if props… no: report `script_exists` and require explicit path to overwrite? -> DECISION: overwrite, and record previous sha in the report (checkpoint covers rollback).",
+          "wave": "H"
+        },
+        "contract_notes": [
+          "`attach_script`: report entry `attach_script_errors` = {node, path, errors:[{line, column, message}]} (1-based, validate() text verbatim); on success `attach_script` = {node, path, sha256, overwritten?, previous_sha256?}."
+        ],
+        "mismatches": []
+      },
+      {
+        "name": "make_prefab",
+        "cpp_name": "make_prefab",
+        "area": "gameplay",
+        "wave": "H",
+        "section": "Wave H game completeness ctx v4 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "Node",
+        "params": [
+          {
+            "name": "node",
+            "type": "Node",
+            "default": null,
+            "cpp_name": "p_node",
+            "cpp_type": "Node *",
+            "cpp_default": null
+          },
+          {
+            "name": "path",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_path",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "replace_with_instance",
+            "type": "bool",
+            "default": "true",
+            "cpp_name": "p_replace_with_instance",
+            "cpp_type": "bool",
+            "cpp_default": "true"
+          }
+        ],
+        "signature": "make_prefab(node: Node, path: String, replace_with_instance: bool = true) -> Node",
+        "description": "Packs the node's subtree to a PackedScene at path (owner fix-up first: descendants owned by the edited root are re-owned to the node for the pack and ALWAYS put back; the node's own position is zeroed for the pack and restored, like the editor's Save Branch), saves, registers the file.",
+        "description_source": "header",
+        "notes": "replace_with_instance: the node is swapped for an instance of the new file (same name, index, parent, transform; outgoing persisted connections re-established; owned by the edited root), the old node is freed and the instance returned. Else returns node. A save/pack failure returns null; a failure AFTER the file was written keeps the original node and returns it, with the reason in the `make_prefab` report entry.",
+        "doc_comment": "Packs the node's subtree to a PackedScene at path (owner fix-up first: descendants owned by the edited root are re-owned to the node for the pack and ALWAYS put back; the node's own position is zeroed for the pack and restored, like the editor's Save Branch), saves, registers the file. replace_with_instance: the node is swapped for an instance of the new file (same name, index, parent, transform; outgoing persisted connections re-established; owned by the edited root), the old node is freed and the instance returned. Else returns node. A save/pack failure returns null; a failure AFTER the file was written keeps the original node and returns it, with the reason in the `make_prefab` report entry.",
+        "contract": {
+          "signature": "make_prefab(node: Node, path: String, replace_with_instance: bool = true) -> Node",
+          "comment": "pack the subtree to res:// path as a PackedScene (owner fix-up first), save; when replace_with_instance the node is swapped for an instance of the new file (same name/transform/parent) and the instance is returned; else returns node",
+          "wave": "H"
+        },
+        "contract_notes": [
+          "`make_prefab`: the node's own position is zeroed for the pack (prefab authored at its origin, the editor's Save Branch default) and restored / copied onto the instance; rotation and scale stay in the prefab.",
+          "A failure AFTER the file was written keeps and returns the original node with `error` in the `make_prefab` report entry."
+        ],
+        "mismatches": []
+      },
+      {
+        "name": "add_autoload",
+        "cpp_name": "add_autoload",
+        "area": "gameplay",
+        "wave": "H",
+        "section": "Wave H game completeness ctx v4 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "bool",
+        "params": [
+          {
+            "name": "name",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_name",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "path",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_path",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          }
+        ],
+        "signature": "add_autoload(name: String, path: String) -> bool",
+        "description": "autoload/<name> = \"*res://path\" (leading \"*\" = singleton, the editor's convention).",
+        "description_source": "header",
+        "notes": "Same validity gates as the editor's autoload dock: valid identifier, no engine/global-class collision, res:// path that exists and is a Script or PackedScene. Report entry `add_autoload`.",
+        "doc_comment": "autoload/<name> = \"*res://path\" (leading \"*\" = singleton, the editor's convention). Same validity gates as the editor's autoload dock: valid identifier, no engine/global-class collision, res:// path that exists and is a Script or PackedScene. Report entry `add_autoload`.",
+        "contract": {
+          "signature": "add_autoload(name: String, path: String) -> bool # ProjectSettings autoload/<name>=\"*res://…\"",
+          "comment": "ProjectSettings autoload/<name>=\"*res://…\"",
+          "wave": "H"
+        },
+        "contract_notes": [],
+        "mismatches": []
+      },
+      {
+        "name": "add_input_action",
+        "cpp_name": "add_input_action",
+        "area": "gameplay",
+        "wave": "H",
+        "section": "Wave H game completeness ctx v4 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "bool",
+        "params": [
+          {
+            "name": "action",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_action",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          },
+          {
+            "name": "events",
+            "type": "Array",
+            "default": null,
+            "cpp_name": "p_events",
+            "cpp_type": "const Array &",
+            "cpp_default": null
+          }
+        ],
+        "signature": "add_input_action(action: String, events: Array) -> bool",
+        "description": "events: [{type: key, keycode: String|int} | {type: mouse_button, button_index: int} | {type: joypad_button, button_index: int} | {type: joypad_axis, axis: int, value: float}] -> input/<action> = {deadzone, events: [InputEvent...]}, the exact dictionary the editor's InputMap editor writes.",
+        "description_source": "header",
+        "notes": "Every event is built BEFORE anything is written; an unknown shape -> `add_input_action` report + false. An existing action keeps its deadzone and gains the events it does not already match.",
+        "doc_comment": "events: [{type: key, keycode: String|int} | {type: mouse_button, button_index: int} | {type: joypad_button, button_index: int} | {type: joypad_axis, axis: int, value: float}] -> input/<action> = {deadzone, events: [InputEvent...]}, the exact dictionary the editor's InputMap editor writes. Every event is built BEFORE anything is written; an unknown shape -> `add_input_action` report + false. An existing action keeps its deadzone and gains the events it does not already match.",
+        "contract": {
+          "signature": "add_input_action(action: String, events: Array) -> bool",
+          "comment": "events: [{type: key, keycode: String|int} | {type: mouse_button, button_index: int} | {type: joypad_button, button_index: int} | {type: joypad_axis, axis:int, value:float}] writes input/<action> in ProjectSettings + saves; unknown shape -> report, false",
+          "wave": "H"
+        },
+        "contract_notes": [
+          "`add_input_action` on an existing action keeps its deadzone and appends only events it does not already `is_match`; deadzone for a new action is `InputMap::DEFAULT_DEADZONE`."
+        ],
+        "mismatches": []
+      },
+      {
+        "name": "set_main_scene",
+        "cpp_name": "set_main_scene",
+        "area": "gameplay",
+        "wave": "H",
+        "section": "Wave H game completeness ctx v4 (frozen API, SCENE_SCRIPTING_CONTRACTS.md)",
+        "returns": "bool",
+        "params": [
+          {
+            "name": "path",
+            "type": "String",
+            "default": null,
+            "cpp_name": "p_path",
+            "cpp_type": "const String &",
+            "cpp_default": null
+          }
+        ],
+        "signature": "set_main_scene(path: String) -> bool",
+        "description": "application/run/main_scene = path (must exist and be a PackedScene).",
+        "description_source": "header",
+        "notes": "",
+        "doc_comment": "application/run/main_scene = path (must exist and be a PackedScene).",
+        "contract": {
+          "signature": "set_main_scene(path: String) -> bool # application/run/main_scene + save",
+          "comment": "application/run/main_scene + save",
+          "wave": "H"
+        },
+        "contract_notes": [
+          "Every other ctx name was checked against the Object/RefCounted bindings — no further collisions (`add_ui`, `set_main_scene`, `find`, … are clear)."
+        ],
+        "mismatches": []
+      }
+    ],
+    "cpp_only_public_methods": [
+      "setup_deadline",
+      "get_reports",
+      "budget_was_exceeded",
+      "get_files_written",
+      "get_project_settings_changed"
+    ],
+    "counts": {
+      "bound_methods": 54,
+      "by_area": {
+        "scene": 12,
+        "materials": 3,
+        "geometry": 14,
+        "animation": 5,
+        "2d": 8,
+        "ui": 4,
+        "gameplay": 5,
+        "perception": 3
+      }
+    }
+  },
+  "op": {
+    "name": "RunSceneScript",
+    "mcp_tool": "summer_run_script",
+    "registry_description": "Compile and run one AI-authored GDScript in-process on the editor main thread against the live edited scene.",
+    "header_intro": "RunSceneScript — compile and run one AI-authored GDScript in-process against the live edited scene.",
+    "params": [
+      {
+        "name": "chatId",
+        "type": "string",
+        "default": "\"\"",
+        "required": false,
+        "internal": true,
+        "qualifier": "",
+        "description": "required by GitOps::create_checkpoint."
+      },
+      {
+        "name": "checkpoint",
+        "type": "boolean",
+        "default": "true",
+        "required": false,
+        "internal": false,
+        "qualifier": "default true",
+        "description": "request a SummerGit checkpoint before execution. Honored only with checkpointCapabilityEnabled:true, and a missing checkpoint NEVER blocks the run (no_rewind_point pattern)."
+      },
+      {
+        "name": "checkpointCapabilityEnabled",
+        "type": "boolean",
+        "default": "false",
+        "required": false,
+        "internal": false,
+        "qualifier": "",
+        "description": "Not described on its own in the header; referenced in the description of `checkpoint`."
+      },
+      {
+        "name": "max_seconds",
+        "type": "integer",
+        "default": "20",
+        "required": false,
+        "internal": false,
+        "qualifier": "default 20, clamped 1..120",
+        "description": "HARD wall-clock budget: the GDScript VM deadline guard raises \"Summer script budget exceeded (Ns).\" at the first loop edge past the deadline (also still surfaced cooperatively via ctx.frames_budget_exceeded()). Blocking single calls (delays, awaits, native code) are outside the guard's reach."
+      },
+      {
+        "name": "projectId",
+        "type": "string",
+        "default": "\"\"",
+        "required": false,
+        "internal": true,
+        "qualifier": "",
+        "description": "required by GitOps::create_checkpoint."
+      },
+      {
+        "name": "script_source",
+        "type": "string",
+        "default": "\"\"",
+        "required": true,
+        "internal": false,
+        "qualifier": "required, max 256 KB",
+        "description": "GDScript defining `func run(ctx):`. If it has no `extends` line we prepend `extends RefCounted`, and if it has no `@tool` we prepend `@tool` (a non-tool script only gets a placeholder instance in the editor and never runs); both are REPORTED back in `normalizations`, never silent."
+      },
+      {
+        "name": "undo",
+        "type": "string",
+        "default": "\"action\"",
+        "required": false,
+        "internal": false,
+        "qualifier": "default \"action\"",
+        "description": "\"action\" snapshots the edited scene around the run: a GDScript runtime error restores the pre-run state (rolled_back:true) and a successful run registers ONE editor undo step covering the whole script (see the design block at the top of this header for exact coverage). \"none\" keeps v1 behavior (checkpoint only)."
+      }
+    ],
+    "ctx_listing_text": "The ctx handed to run() carries the frozen stdlib (SCENE_SCRIPTING_CONTRACTS Waves C + F): get_scene_root, report, set_owner_recursive, frames_budget_exceeded, add_node, find, get_or_create, instance_scene, add_mesh (box|sphere|capsule|cylinder|plane|torus|text), add_mesh_with_collision, mesh_from_arrays, make_material, apply_material, grid, scatter, add_light_rig, ensure_environment, add_camera, summary, save_scene, plus the geometry stdlib v2: boolean, extrude_polygon, lathe, sweep, set_smooth, terrain, decimate, convex_collision, uv_planar, uv_box, mirror, animate, make_shader, plus the Wave G animation stdlib (ctx v3): animate v2 (per-key {interpolation: \"nearest\"|\"linear\"|\"cubic\"} — per-track in Animation, first keyed mode wins; bone targets \"<skeleton>:<bone>/position|rotation|scale\"; blend shapes via value tracks on \"blend_shapes/<name>\"), animate_method (method-call tracks), anim_state_machine (AnimationTree + AnimationNodeStateMachine over the player's clips), bone_pose, look_at_modifier, plus the Wave H game completeness stdlib (ctx v4): 2D — add_sprite, add_animated_sprite, add_tilemap, paint_tiles, paint_rect, add_body_2d, add_camera_2d, add_parallax; UI — add_ui, add_canvas_layer, set_theme_overrides, connect_signal (CONNECT_PERSIST, saved into the .tscn); gameplay-code lane — attach_script (validate -> write -> load -> set_script), make_prefab (pack a subtree to its own .tscn, optionally swap for an instance), add_autoload, add_input_action, set_main_scene. Creation helpers own-by-default and return the node; unknown props keys land in the `prop_warnings` report entry.",
+    "returns_text": "\n   { ok, op:\"RunSceneScript\", ran, result:<script return value>,\n     reports:<ctx dict>, output:[String], stderr:[String], errors:[String],\n     duration_ms, checkpoint:{...}, normalizations:[String], line_offset,\n     had_edited_scene, budget_exceeded, budget_enforced,\n     rolled_back (undo:\"action\" only), undo_action:\"registered\"|\"unavailable\"\n     (+ undo_unavailable_reason), rollback_error (only when a rollback was\n     attempted and failed) }\n   plus no_rewind_point:true + no_rewind_reason:String when no checkpoint\n   exists, plus — only when a Wave H helper wrote outside the scene —\n   files_written:[res:// paths], project_settings_changed:[keys] and\n   undo_action_note:String stating that those are covered by the pre-run\n   checkpoint ONLY (neither the undo step nor an error rollback touches\n   files on disk or project.godot).",
+    "result_fields": [
+      {
+        "name": "budget_enforced",
+        "note": "Whether the hard VM deadline guard was armed for this run."
+      },
+      {
+        "name": "budget_exceeded",
+        "note": "true when the run passed `max_seconds` (soft check, VM guard or measured duration)."
+      },
+      {
+        "name": "checkpoint",
+        "note": "The SummerGit checkpoint result when one was requested and taken."
+      },
+      {
+        "name": "duration_ms",
+        "note": "Wall-clock time of the run in milliseconds."
+      },
+      {
+        "name": "error",
+        "note": "Human-readable failure text (failures and runtime errors only)."
+      },
+      {
+        "name": "errors",
+        "note": "Script error messages raised during the run (capped, see limits)."
+      },
+      {
+        "name": "failure_reason",
+        "note": "Machine-readable failure class (see below)."
+      },
+      {
+        "name": "files_written",
+        "note": "res:// paths a helper wrote outside the scene (only when it happened)."
+      },
+      {
+        "name": "had_edited_scene",
+        "note": "Whether a scene was open when the script ran."
+      },
+      {
+        "name": "line_offset",
+        "note": "How many lines the normalizations shifted the script's line numbers by."
+      },
+      {
+        "name": "lines_truncated",
+        "note": "true when `output` or `errors` hit their line caps and later lines were dropped."
+      },
+      {
+        "name": "no_rewind_point",
+        "note": "true when no checkpoint exists for this run."
+      },
+      {
+        "name": "no_rewind_reason",
+        "note": "Why no checkpoint exists (only with `no_rewind_point`)."
+      },
+      {
+        "name": "normalizations",
+        "note": "What was prepended to the source (`@tool`, `extends RefCounted`) — never silent."
+      },
+      {
+        "name": "ok",
+        "note": "true when the script compiled, ran and raised no script error."
+      },
+      {
+        "name": "op",
+        "note": "Always \"RunSceneScript\"."
+      },
+      {
+        "name": "output",
+        "note": "Captured `print()` lines (capped, see limits)."
+      },
+      {
+        "name": "parse_errors",
+        "note": "parse_error only — the compile-first validation's `[{line, column, message}]`, relative to the normalized source."
+      },
+      {
+        "name": "project_settings_changed",
+        "note": "project.godot keys a helper changed (only when it happened)."
+      },
+      {
+        "name": "ran",
+        "note": "true when `run(ctx)` was actually entered (false on compile/instantiate failures)."
+      },
+      {
+        "name": "reports",
+        "note": "The `ctx.report()` dictionary plus helper-written entries such as `prop_warnings`."
+      },
+      {
+        "name": "result",
+        "note": "The script's return value, sanitized for JSON."
+      },
+      {
+        "name": "rollback_error",
+        "note": "Only when a rollback was attempted and failed; the scene may hold half-applied changes."
+      },
+      {
+        "name": "rolled_back",
+        "note": "undo:\"action\" only — true when a runtime error restored the pre-run scene."
+      },
+      {
+        "name": "stderr",
+        "note": "Captured error-stream lines."
+      },
+      {
+        "name": "undo_action",
+        "note": "\"registered\" when one editor undo step covers the run, else \"unavailable\"."
+      },
+      {
+        "name": "undo_action_note",
+        "note": "States that files/settings are covered by the checkpoint only (only when they were written)."
+      },
+      {
+        "name": "undo_unavailable_reason",
+        "note": "Why no undo step could be registered (only with undo_action:\"unavailable\")."
+      }
+    ],
+    "failure_reasons": [
+      {
+        "reason": "bad_args",
+        "messages": [
+          "script_source is required.",
+          "script_source exceeds the 256 KB limit.",
+          "undo must be \"action\" or \"none\"."
+        ]
+      },
+      {
+        "reason": "busy",
+        "messages": [
+          "Another scene script is already running in this editor."
+        ]
+      },
+      {
+        "reason": "no_editor",
+        "messages": [
+          "RunSceneScript requires a running editor (no EditorInterface)."
+        ]
+      },
+      {
+        "reason": "parse_error",
+        "messages": [
+          "The script does not compile. Line numbers are relative to the normalized source (see line_offset).",
+          "The script failed to compile (err …)."
+        ]
+      },
+      {
+        "reason": "missing_run_method",
+        "messages": [
+          "The script must define `func run(ctx):` — that is the entry point RunSceneScript calls."
+        ]
+      },
+      {
+        "reason": "instantiate_failed",
+        "messages": [
+          "Could not instantiate the script's base type '…'. Extend RefCounted (the default) or another instantiable class."
+        ]
+      },
+      {
+        "reason": "not_tool_instance",
+        "messages": [
+          "The compiled script only produced a placeholder instance, so it cannot run in the editor. Keep the `@tool` annotation on the first line."
+        ]
+      },
+      {
+        "reason": "call_failed",
+        "messages": []
+      },
+      {
+        "reason": "script_runtime_error",
+        "messages": []
+      }
+    ],
+    "constants": {
+      "SUMMER_SCENE_SCRIPT_DEFAULT_SECONDS": 20,
+      "SUMMER_SCENE_SCRIPT_MIN_SECONDS": 1,
+      "SUMMER_SCENE_SCRIPT_MAX_SECONDS": 120,
+      "SUMMER_SCENE_SCRIPT_MAX_SOURCE_BYTES": 262144,
+      "SUMMER_SCENE_SCRIPT_MAX_OUTPUT_LINES": 2000,
+      "SUMMER_SCENE_SCRIPT_MAX_ERROR_LINES": 500
+    },
+    "undo_action_note": "files_written and project_settings_changed are covered ONLY by the pre-run SummerGit checkpoint: the packed-scene undo step and an error rollback restore the scene, never files on disk or project.godot.",
+    "design_block": [
+      " [SUMMER] RunSceneScript op — in-process scene scripting, the",
+      " execute_blender_code equivalent.",
+      "",
+      " Runs one AI-authored GDScript IN THIS EDITOR PROCESS, on the editor main",
+      " thread, against the LIVE edited scene. This is deliberately the opposite",
+      " trade to RunEditorScript (editor/ops/editor_script_ops.h), which spawns a",
+      " short-lived headless CHILD editor: the child is killable but blind to the",
+      " live scene tree; this op sees and mutates the open scene directly, exactly",
+      " like typing into a bpy console, at the cost of sharing our main thread.",
+      "",
+      " THE ACCEPTED RISK, RESTATED FOR v2",
+      " v1 accepted that a `while true:` in the supplied script wedges the editor",
+      " main thread. v2 mitigates the wedge with a fork-only HARD budget: the",
+      " GDScript VM's backward-jump path checks an armed wall-clock deadline",
+      " (GDScriptLanguage::summer_arm_exec_deadline, modules/gdscript/gdscript_vm.cpp)",
+      " and raises the script error \"Summer script budget exceeded (Ns).\" at the",
+      " first loop edge past the deadline. Every GDScript loop construct passes a",
+      " backward OPCODE_JUMP once per iteration, so any loop-shaped wedge is caught;",
+      " what the guard canNOT catch is a single opcode that blocks by itself",
+      " (OS.delay_msec(1e9), a blocking await on a signal that never fires, or a",
+      " wedge inside a native call). Those remain accepted: there is still no safe",
+      " way to preempt a synchronous native call on the LIVE editor's main thread.",
+      " Result field `budget_enforced` reports honestly whether the guard was armed.",
+      "",
+      " UNDO / ROLLBACK (v2), THE DESIGN ACTUALLY SHIPPED",
+      " Recording true do/undo pairs for arbitrary script effects is impractical —",
+      " the script mutates the scene directly, not through an API we can intercept.",
+      " Instead, with undo:\"action\" (the default) the op snapshots the SAVABLE state",
+      " of the edited scene (PackedScene::pack of the edited root) before and after",
+      " the run:",
+      "   * on a GDScript runtime error the BEFORE state is restored immediately and",
+      "     the result carries rolled_back:true (rolled_back:false + rollback_error",
+      "     if the restore itself failed — the result never claims a rollback it did",
+      "     not perform);",
+      "   * on success ONE undo step is registered on the edited scene's",
+      "     EditorUndoRedoManager history whose undo/redo closures re-instantiate",
+      "     the before/after snapshots, so human Ctrl+Z reverts the whole run. When",
+      "     the op executor already holds an open action for this op, the step is",
+      "     folded into it (it surfaces under the op's action name); a direct caller",
+      "     outside an executor action gets a step named \"AI: Scene Script\".",
+      " EXACT COVERAGE, honestly stated: the snapshot round-trips exactly what",
+      " SaveScene would persist — nodes owned by the edited root (instanced child",
+      " scenes collapse to their instance reference, as in a .tscn). NOT covered:",
+      " nodes the script left unowned (invisible to pack(), exactly as they are",
+      " invisible to save), edits to EXTERNAL resources or files on disk (undo",
+      " covers the scene, not the filesystem — that is what the SummerGit checkpoint",
+      " is for), and editor-only state (selection, folding). Undo/redo/rollback",
+      " replace the scene root with a fresh instantiation, so node references from",
+      " before the restore go stale. If a snapshot cannot be taken (pack error, no",
+      " scene history), the result says so via undo_action:\"unavailable\" — the run",
+      " still executes. undo:\"none\" skips all snapshots (checkpoint-only, v1",
+      " behavior)."
+    ],
+    "registry": {
+      "mutates": true,
+      "needs_editor": true,
+      "needs_running_game": false,
+      "execution_context": "editor_process_only",
+      "transports": {
+        "web_bridge": "sync_batchable",
+        "local_api_mcp": "async_single_op_only"
+      }
+    }
+  },
+  "warnings": [
+    "header: `add_node` has no doc comment above its declaration (description falls back to class-comment) — add one in modules/1summer_engine/editor/ops/scene_script_ops.h",
+    "header: `get_or_create` has no doc comment above its declaration (description falls back to class-comment) — add one in modules/1summer_engine/editor/ops/scene_script_ops.h",
+    "header: `instance_scene` has no doc comment above its declaration (description falls back to class-comment) — add one in modules/1summer_engine/editor/ops/scene_script_ops.h",
+    "header: `mesh_from_arrays` has no doc comment above its declaration (description falls back to class-comment) — add one in modules/1summer_engine/editor/ops/scene_script_ops.h",
+    "header: `apply_material` has no doc comment above its declaration (and no fallback source describes it) — add one in modules/1summer_engine/editor/ops/scene_script_ops.h",
+    "header: `add_camera` has no doc comment above its declaration (description falls back to class-comment) — add one in modules/1summer_engine/editor/ops/scene_script_ops.h",
+    "header/contract: `boolean` — parameter count: header 4 vs contract 3",
+    "header: `uv_box` has no doc comment above its declaration (and no fallback source describes it) — add one in modules/1summer_engine/editor/ops/scene_script_ops.h",
+    "header: `paint_rect` has no doc comment above its declaration (description falls back to shared-with:paint_tiles) — add one in modules/1summer_engine/editor/ops/scene_script_ops.h",
+    "header: `add_canvas_layer` has no doc comment above its declaration (description falls back to class-comment) — add one in modules/1summer_engine/editor/ops/scene_script_ops.h",
+    "registry/header: op param `checkpointCapabilityEnabled` is in the registry entry but not in the header's Parameters block",
+    "cpp/header: result key `lines_truncated` is written by the implementation but not mentioned in the header's Returns block",
+    "cpp/header: result key `parse_errors` is written by the implementation but not mentioned in the header's Returns block"
+  ]
+}

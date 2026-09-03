@@ -1,0 +1,160 @@
+---
+title: "Verifying"
+description: "How to prove a Summer scene script did what you meant: world snapshots and diffs for structure, screenshots through the scene's own camera for appearance, live reads from the running game, and the honesty rules that go with them."
+icon: "search-check"
+---
+
+A scene script's result tells you what the script *did*. It cannot tell you whether the scene
+is now *right*. For that there are two kinds of evidence, and they answer different questions:
+
+- **Structured state** — a world snapshot, a snapshot diff, a scene-tree read, a live read
+  from the running game — proves **facts**: which nodes exist, where they are, how big they
+  are, what changed.
+- **Pixels** — a screenshot of the viewport, a render of the scene, a frame of the running
+  game — prove **appearance**: composition, scale to the eye, lighting, whether it reads as a
+  forest.
+
+Neither substitutes for the other. A diff can report forty trees added at plausible positions
+while the screenshot shows them all untextured; a screenshot can look right while the diff
+shows half the trees unowned and gone after the save. Take both, every time.
+
+## The before/after discipline
+
+Around **every** run:
+
+1. **Before:** `summer_world_snapshot`. Keep the `snapshot_id`. The first time in a session,
+   screenshot too, so you know what you started from.
+2. **Run** the script.
+3. **After, structure:** `summer_snapshot_diff` with `from_id` set to the id you kept. Omit
+   `to_id` and the engine snapshots the current state and diffs against your baseline.
+4. **After, pixels:** `summer_screenshot`, and look at it.
+5. Fix before stacking more work on a broken base. An empty diff after a "successful"
+   mutation is a red flag, not a success.
+
+## World snapshots
+
+`summer_world_snapshot` (the `GetWorldSnapshot` operation) is a compact, deterministic read of
+the edited scene built to be diffed:
+
+- Every node carries `path`, `class`, `name`, `visible`, and for 3D nodes `pos`, `rot_deg`,
+  `scale` and a scene-root-relative world `aabb`. Instanced scenes carry `scene_file`.
+- Resources are **fingerprinted, not dumped**: `script_fp` and `material_fps` are short
+  checksums that change when the resource changes. They tell you *that* something changed,
+  never what it contains.
+- Floats are rounded to three decimals and nodes are sorted by path, so two snapshots of an
+  unchanged scene are identical and a diff has no phantom changes.
+- Caps are explicit: 4000 nodes and 20 lights by default, with `truncated`,
+  `lights_truncated` and per-node `material_fps_truncated` flags. A capped list is never
+  presented as complete. 2D nodes are included only when asked (`include_2d`).
+- The result also summarizes `lights` (path, class, energy, color), `cameras` (path and the
+  stored `current` flag), an `environment_fp`, and `counts` by class.
+
+The engine keeps the last eight snapshots per session. Diffing against an id that has expired
+returns `failure_reason: "unknown_snapshot"`; take a fresh baseline and redo the pair.
+
+## Snapshot diffs
+
+`summer_snapshot_diff` (`DiffWorldSnapshot`) returns `added`, `removed` and `changed` node
+paths, a `counts_delta` by class, `environment_changed` when the environment fingerprint
+moved, and a `truncation_warning` if either snapshot was capped. For `changed` entries the
+`fields` list names what moved: class, position, rotation, scale, bounds, visibility, script
+or material fingerprint, scene file.
+
+Read the receipt against your intent, not against "did anything happen":
+
+- `added` is exactly what you meant to add — no more, no less.
+- `removed` is empty unless you deleted on purpose. A node you created appearing here, or
+  missing from `added` after a save, is the ownership bug explained in
+  [Concepts](/guides/scripting/concepts#ownership-and-saving).
+- `changed` names only nodes you touched. Anything else means your script had side effects.
+
+A snapshot's world bounds also make physical plausibility checkable: nothing floats above or
+sinks into its support, neighbours do not interpenetrate, and sizes are sane — a door around
+two units, a person around 1.7, a car around 4.5. A prop with a 40-unit bound is an import
+scale problem, not a placement problem.
+
+## Screenshots, and which framing to trust
+
+`summer_screenshot` has three targets and, for scene renders, a set of framings:
+
+| Question | Call |
+|---|---|
+| How does the open tab look right now? | `target: "viewport"` (the default) |
+| Is the composition and scale of a scene file right? | `target: "scene"` with a preset framing (`iso`, `top`, `front`, `back`, `left`, `right`) and optionally `scenePath` |
+| Is one node placed right? | `target: "scene"` with `nodePath` — the camera fits that node's bounds; an unresolvable path fails with `node_not_found` rather than silently framing the whole scene |
+| Is the **lighting, mood or environment** right? | `target: "scene"` with `framing: "camera"` |
+| What does the running game show? | `target: "game"` (after `summer_play`) |
+
+`framing: "camera"` is the framing that tells the truth about light. It renders through the
+scene's own current (or first) `Camera3D`, or the one you name with `camera_path`, with the
+scene's **real** `WorldEnvironment` and no synthetic light injected. The preset framings
+substitute an environment so that an unlit scene is still visible, which makes them useless
+for judging emissive materials, sky, fog or exposure. The result confesses which is which:
+`used_scene_camera`, `camera_path`, and `environment_used` with one of
+`scene_world_environment`, `none_default_clear_color` or `synthetic_preview_environment`.
+A scene with no camera fails camera framing with `no_scene_camera`; a wrong `camera_path`
+with `camera_not_found`; combining `nodePath` with camera framing is `node_focus_unsupported`.
+
+Preset renders are static (time zero), synthetic-camera, substitute-environment images. Do
+not draw conclusions about animation, particles, lighting or mood from them.
+
+## Runtime reads during a playtest
+
+The edited scene is not the running game. Spawned enemies, pooled projectiles, autoloads and
+runtime-built UI exist only while the game runs, and often at different paths.
+
+- `summer_get_runtime_tree` (`GetRuntimeSceneTree`) reads the live tree — a subtree by
+  `path`, to a `depth` (default 3) and `limit` (default 500), with `total_nodes` and
+  `truncated` so a cap is never silent. Paths are absolute runtime paths such as
+  `/root/Main/Player`, and the result is stamped `provenance.source: "runtime"` so it can
+  never be mistaken for an editor read.
+- `summer_inspect_runtime_node` (`GetRuntimeNode`) reads one node's live properties — actual
+  position, actual stats, actual flags.
+
+Inspect live rather than stopping the game: stopping usually resets the state you are chasing.
+Without a running game both return `failure_reason: "game_not_running"`; start one with
+`summer_play` and re-run. Other failures name themselves: `node_not_found`, `timeout`,
+`request_failed` when no debug session is up yet.
+
+## Reading the run result itself
+
+Before any of the above, the script's own result is evidence:
+
+- `ok: false` with `failure_reason` and `error` — nothing to verify yet; read the message.
+- `ok: true` but `errors` non-empty — should not happen for a clean run; treat it as a
+  failure.
+- `reports.prop_warnings` non-empty — a property name was ignored. The scene is not what you
+  asked for even though the run "succeeded".
+- Helper report entries (`make_shader_errors`, `unowned_nodes`, `decimate`, …) — each one is
+  a helper telling you it did less than asked, or something different, and why.
+- `rolled_back: true` — the scene is back to its pre-run state; fix and re-run.
+- `undo_action: "unavailable"`, `no_rewind_point: true`, `files_written`,
+  `project_settings_changed` — your safety nets have changed shape; note it before the next
+  run.
+
+## Honesty rules
+
+These pages are read by agents that act on them without a human's skepticism, so the rules are
+blunt:
+
+- **Claim only what a diff, a frame or a diagnostic proved, and cite it.** "The diff shows 25
+  boxes added; the camera-framing screenshot shows them lit on the terrain." Not "the grid
+  looks great."
+- **Never describe an image you did not receive.** A failed capture is a result — report it,
+  fall back a level (scene render to viewport), or ask.
+- **Pass structured failures through verbatim.** `failure_reason`, `terminalState`,
+  `rolled_back: false` with a `rollback_error` — not "it didn't quite work".
+- **Verify by the effect, not by the value you just set.** Reading back a property you wrote
+  proves nothing; the reloaded scene having the node, the diff showing it, the frame showing
+  it — those do.
+- **Do not compound on an unverified base.** Two mutations without a diff or screenshot
+  between them means the second one is building on guesswork.
+
+<CardGroup cols={2}>
+  <Card title="For agents" icon="bot" href="/guides/scripting/for-agents">
+    How the MCP tools map to the engine operations, where the skills live, and what is preview today.
+  </Card>
+  <Card title="Concepts" icon="lightbulb" href="/guides/scripting/concepts">
+    Why unowned nodes vanish, and what undo does and does not cover.
+  </Card>
+</CardGroup>

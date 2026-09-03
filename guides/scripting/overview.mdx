@@ -1,0 +1,162 @@
+---
+title: "Scripting Summer"
+description: "Build and change a Summer game's scene with one GDScript function that runs inside the live editor: the run(ctx) model, why it is GDScript, how it compares to Blender's bpy, and the see, do, verify, play loop."
+icon: "scroll"
+---
+
+Most of what you do in Summer Engine you do by talking to the agent, and most of what the
+agent does lands as individual operations: add a node, set a property, save. That works for
+one change. It does not work for "scatter forty trees", "carve a doorway into that wall" or
+"build a 5 by 5 grid of boxes and give them collision" — anything with a loop, a random
+number, a piece of math, or a decision that depends on what is already in the scene.
+
+Scripting Summer is the other lane. You (or your agent) write **one GDScript function**, the
+engine runs it **inside the editor process, against the scene that is open right now**, and
+the whole run becomes **one undo step**. The function gets a helper object called `ctx` that
+knows how to create nodes that survive a save, bake geometry, animate, build UI, and report
+back what it did.
+
+```gdscript
+func run(ctx):
+	var mat = ctx.make_material({"albedo": "#4488ff", "roughness": 0.3})
+	var made = ctx.grid(3, 3, Vector3(2, 0, 2), func(i, _pos):
+		var m = ctx.add_mesh("box", "GridBox_%d" % i)
+		ctx.apply_material(m, mat)
+		return m
+	)
+	ctx.add_light_rig()
+	ctx.ensure_environment()
+	ctx.add_camera(Vector3(8, 6, 8), Vector3(2, 0, 2), true)
+	return {"made": made.size(), "saved": ctx.save_scene()}
+```
+
+That script is a trimmed version of one in the engine's own end-to-end test suite, where it
+runs against a live editor and its saved `.tscn` is checked afterwards (the verbatim original
+is the second entry on the [Recipes](/guides/scripting/recipes) page). Every recipe on these
+pages comes from the same place: nothing here is documented that has not been seen to work.
+
+## The mental model: `func run(ctx):`
+
+Three things to hold in your head, and everything else follows from them.
+
+**It runs where you are.** The script executes on the editor's main thread, against the
+edited scene — the same tree you see in the Scene dock. It can read what is there before it
+decides what to add. This is deliberately the opposite of the
+[headless lane](/automation/headless), which boots a separate editor and sees only what is on
+disk. Because the script shares the editor's thread, it has a time budget (20 seconds by
+default) and the engine stops runaway loops at the deadline.
+
+**`ctx` is how you do things that stick.** In the engine, a node that has been added to the
+scene but not *owned* by the scene root is silently left out when the scene saves. Every
+creation helper on `ctx` (`add_node`, `add_mesh`, `instance_scene`, `terrain`, `add_ui`, …)
+sets the owner for you and returns the node. The one-liner `ctx.set_owner_recursive(node)`
+covers anything you built by hand. `ctx.save_scene()` refuses to save while any node in the
+scene is unowned and tells you which ones.
+
+**The run is a transaction.** Before the script runs, the engine snapshots the savable state
+of the scene; after it finishes, it snapshots again and registers one undo step, so Ctrl+Z
+reverts the whole run. If the script raises a runtime error, the pre-run state is restored
+immediately and the result says `rolled_back: true`. A source-control checkpoint is taken
+before the run as well, and that is what covers anything the script wrote *outside* the scene
+— script files, prefabs, project settings. The [Concepts](/guides/scripting/concepts) page
+draws the exact line between the two.
+
+What comes back is a structured result, not a wall of console text: whether the script ran,
+its return value, everything it `print`ed, every error, the `reports` dictionary it filled in
+with `ctx.report(key, value)`, plus the engine's own entries (unknown property names it
+ignored, meshes it decimated, shaders that failed to compile, and so on). The full shape is on
+[the run(ctx) contract](/guides/scripting/run-script-contract).
+
+## GDScript, not Python — and why
+
+Summer game code is GDScript, and so are Summer scene scripts. There is no Python lane. That
+is not an accident of history; it is what makes the lane safe to run inside a live editor:
+
+- **The engine compiles the script before it runs it.** A parse error comes back as a
+  structured `parse_error` result with line and column, and the scene is untouched. Nothing
+  else has to be installed, versioned, or kept in sync with the engine.
+- **The deadline guard lives in the GDScript VM.** Every loop passes a check on the way
+  round; when the budget is spent the script raises `Summer script budget exceeded` at the
+  next loop edge and the editor keeps running. That guard exists because the engine owns the
+  language runtime.
+- **It is the same language and the same API as your game.** A `MeshInstance3D` is a
+  `MeshInstance3D`; `Vector3(0, 10, 0)` is a real vector, not a string to be parsed. What the
+  agent knows about writing game scripts transfers directly, and the class reference the
+  agent already consults (`summer_api_docs`) answers scripting questions too.
+- **Values are literal.** Other Summer operations take engine values as strings
+  (`"Vector3(0, 10, 0)"`). Inside a script you write the value itself.
+
+The cost is that GDScript has less of an ecosystem than Python for pure computation. In
+practice the work a scene script does — placing, building, wiring — is all engine API, and
+the engine API is where GDScript is strongest.
+
+## If you know Blender's `bpy`
+
+Blender's MCP integration became useful the day it grew a single tool that executed arbitrary
+Python inside Blender against the open document. Summer's scene scripting is that idea,
+rebuilt for a game engine, with the lessons of that ecosystem applied:
+
+| | Blender + bpy over MCP | Summer scene scripting |
+|---|---|---|
+| Where code runs | In Blender's process, against the live file | In the editor process, against the live scene |
+| Language | Python | GDScript, compiled by the engine first |
+| Runaway loops | Wedge Blender | Stopped at the next loop edge when the budget is spent |
+| Mistakes | "Save your work first" | One undo step per run; runtime errors roll the scene back |
+| What comes back | Whatever was printed | A structured result: return value, reports, output, errors, undo status |
+| Seeing the result | Screenshot | Structured scene snapshot and diff, plus screenshots through the scene's own camera |
+
+The part worth copying from the Blender world is the *discipline*, not the API: look before
+you change anything, change it in one shot, look again, and never describe a result you have
+not seen. That is the loop below.
+
+## The loop: see, do, verify, play
+
+Every good session with scene scripting has the same rhythm, whether a person or an agent is
+driving.
+
+<Steps>
+  <Step title="See">
+    Take a structured snapshot of the scene (`summer_world_snapshot`) and keep its
+    `snapshot_id`. Look at the viewport if you have not yet (`summer_screenshot`). Check any
+    class or property name you are not sure about (`summer_api_docs`). Wrong names fail after
+    half the mutation has applied.
+  </Step>
+  <Step title="Do">
+    Run one script (`summer_run_script`). Prefer the `ctx` helpers over hand-rolled
+    `new()` / `add_child()` — they own, they report, they fail loudly. Return a small
+    dictionary of facts you will want to check.
+  </Step>
+  <Step title="Verify">
+    Read the result: `ok`, `errors`, `reports` (including `prop_warnings`), `rolled_back`.
+    Diff against the snapshot you kept (`summer_snapshot_diff`): exactly the nodes you meant
+    to add were added, nothing else changed, nothing vanished. Then look
+    (`summer_screenshot`, with `framing: "camera"` whenever lighting or materials are in
+    question).
+  </Step>
+  <Step title="Play">
+    Structure and pixels tell you the scene is right; only the running game tells you the
+    game is right. `summer_play`, read the live tree (`summer_get_runtime_tree`), inspect a
+    node's live values (`summer_inspect_runtime_node`), capture the game frame
+    (`summer_screenshot` with `target: "game"`), then `summer_stop`.
+  </Step>
+</Steps>
+
+[Verifying](/guides/scripting/verifying) covers each of those tools and the honesty rules that
+go with them.
+
+## Where to go next
+
+<CardGroup cols={2}>
+  <Card title="Getting started" icon="rocket" href="/guides/scripting/getting-started">
+    Connect an agent, run a first script, and verify it landed.
+  </Card>
+  <Card title="Concepts" icon="lightbulb" href="/guides/scripting/concepts">
+    Ownership, undo versus checkpoint, the budget, compile-first errors, report entries.
+  </Card>
+  <Card title="Recipes" icon="chef-hat" href="/guides/scripting/recipes">
+    Verified scripts: grids, booleans, lathe, terrain, animation, shaders, state machines.
+  </Card>
+  <Card title="ctx API reference" icon="braces" href="/guides/scripting/ctx-reference">
+    Every helper, generated from the engine source.
+  </Card>
+</CardGroup>
