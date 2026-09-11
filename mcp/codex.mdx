@@ -12,6 +12,10 @@ Codex is OpenAI's AI coding assistant that supports MCP (Model Context Protocol)
 
 This guide covers the configuration. Setup takes about a minute.
 
+<Tip>
+**Fastest path.** `npx -y summer-engine@latest setup codex --yes` writes the config below into `~/.codex/config.toml`, installs the skill library to `~/.agents/skills`, and runs `summer doctor`. The steps that follow are the manual version of the same thing.
+</Tip>
+
 ## Prerequisites
 
 - **Codex**: OpenAI's AI coding assistant (CLI or IDE extension)
@@ -44,7 +48,7 @@ Create or edit `~/.codex/config.toml` and add:
 ```toml New file (~/.codex/config.toml)
 [mcp_servers.summer-engine]
 command = "npx"
-args = ["summer-engine", "mcp"]
+args = ["-y", "summer-engine@latest", "mcp"]
 ```
 
 ```toml Adding to existing config
@@ -54,7 +58,7 @@ args = ["-y", "@some/other-mcp"]
 
 [mcp_servers.summer-engine]
 command = "npx"
-args = ["summer-engine", "mcp"]
+args = ["-y", "summer-engine@latest", "mcp"]
 ```
 
 </CodeGroup>

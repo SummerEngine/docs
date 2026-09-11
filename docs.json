@@ -159,6 +159,7 @@
             "group": "Setup",
             "icon": "settings",
             "pages": [
+              "mcp/agents",
               "mcp/cursor",
               "mcp/claude-code",
               "mcp/devin-desktop",

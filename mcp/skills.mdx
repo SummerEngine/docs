@@ -1,233 +1,303 @@
 ---
 title: "Skills"
-description: "The Summer Engine skill library: 60+ best-practice guides across 20 categories that make AI agents better at building games, from FPS controllers to asset generation to multiplayer."
+description: "The Summer Engine skill library: 94 best-practice guides for AI agents building games, grouped by domain, with where each agent reads them and how to install and update them."
 icon: "book-open"
 ---
 
+{/* The catalog and the folder table are rendered from the toolkit's generated registry (registry/generated/index.json) and agent table on 2026-09-11. Regenerate them rather than hand-editing rows. */}
+
 ## What Are Skills?
 
-Skills are best-practice guides that make AI agents better at game development. Each skill is a Markdown file (a `SKILL.md`) that teaches the agent a specific discipline: how to compose a scene, build an FPS controller, generate a character model, set up multiplayer, or debug a crash. When the situation matches, the agent loads the skill and follows it.
+Skills are best-practice guides that make AI agents better at game development. Each skill is a folder with a `SKILL.md` that teaches the agent one discipline: composing a scene, building an FPS controller, generating a character model, setting up multiplayer, debugging a crash. The agent sees each skill's name and one-line description, and loads the full body only when the situation matches.
 
-The library ships with the Summer CLI and covers 20 categories spanning the whole game-dev workflow. Skills follow the [Agent Skills](https://agentskills.io/) open standard, so they work with Claude Code, Cursor, Codex, Gemini CLI, GitHub Copilot, OpenCode, and other compatible agents.
+Skills follow the [Agent Skills](https://agentskills.io/) open standard (`<folder>/<skill>/SKILL.md`), so the same files work in every agent listed on [Every Supported Agent](/mcp/agents). The library ships inside the `summer-engine` npm package and is developed in the open at [github.com/SummerEngine/summer](https://github.com/SummerEngine/summer/tree/main/library/skills); the browsable index there is [library/skills/README.md](https://github.com/SummerEngine/summer/blob/main/library/skills/README.md).
 
 ## Quick Start
 
-The recommended skill set installs automatically when you onboard an agent:
+`summer setup` installs the whole library for the agent you name, in the same scope as the MCP config:
 
 ```bash
 npx -y summer-engine@latest setup claude-code --yes
 ```
 
-Or manage skills directly:
+Manage skills directly:
 
 ```bash
-# List available skills
-summer skills list
-
-# Install the recommended set for an agent
-summer skills install --recommended --agent claude-code
-
-# Install one skill
-summer skills install fps-controller --agent cursor
-
-# Install every skill
-summer skills install --all --agent claude-code
-
-# Preview a skill
-summer skills info debug
+summer skills list                         # every skill, one line each
+summer skills list --by-domain             # grouped like this page
+summer skills info debug                   # one skill's description and body
+summer skills install --all --agent cursor # every skill for an agent
+summer skills install --recommended --agent codex
+summer skills install fps-controller --agent claude-code
+summer skills install --all --agent cursor --force   # refresh after an upgrade
 ```
 
-## Categories
+- `--all` installs every skill (default for `summer setup`). `--recommended` installs the smaller starter subset marked ★ below.
+- `--stable-only` skips skills marked preview. Preview means the Summer team has not yet exercised the skill in-engine; the skill's own text says so.
+- `--force` rewrites every installed skill and removes the copies older Summer versions wrote elsewhere (Cursor `.mdc` rules, OpenCode `agents/summer`, per-agent folders from 3.1.0).
+- `--scope project` installs into the project folder so the skills travel with the game.
 
-The library is organized into 20 categories. Recommended skills install by default; the rest are available on demand.
+## Where Skills Live
 
-### Workflow
+Most agents read the agentskills.io folder, so one install serves them all:
 
-Process disciplines that shape how the agent approaches a task before it touches code.
+| Agent | Skills folder (user) | Skills folder (project) |
+|---|---|---|
+| Codex, Cursor, Devin Desktop (formerly Windsurf), GitHub Copilot in VS Code, OpenCode, Zed, Kimi Code CLI, Crush, Amp, Factory Droid, Warp, Rovo Dev CLI, Grok Build | `~/.agents/skills` (shared) | `.agents/skills` |
+| Claude Code | `~/.claude/skills` | `.claude/skills` |
+| Antigravity | `~/.gemini/config/skills` | `.agents/skills` |
+| Cline (VS Code) | `~/.cline/skills` | `.cline/skills` |
+| Cline CLI | `~/.cline/skills` | `.cline/skills` |
+| Kilo Code | `~/.kilo/skills` | `.kilo/skills` |
+| GitHub Copilot CLI | `~/.copilot/skills` | `.github/skills` |
+| Kiro | `~/.kiro/skills` | `.kiro/skills` |
+| Goose | `~/.config/agents/skills` | `.agents/skills` |
+| Hermes Agent | `~/.hermes/skills` | `.agents/skills` |
+| Qwen Code | `~/.qwen/skills` | `.qwen/skills` |
+| Qoder CLI | `~/.qoder/skills` | `.qoder/skills` |
+| Mistral Vibe | `~/.vibe/skills` | `.agents/skills` |
 
-| Skill | Use when |
-|-------|----------|
-| **brainstorming** | Starting a new game, mechanic, or feature; exploring intent and scope first |
-| **investigating-bugs** | A first fix did not stick and you need root-cause analysis |
-| **verification-before-completion** | About to claim a feature is done; forces a real check first |
-| **playtesting-a-feature** | A gameplay feature is finished and needs a golden-path and edge-case playthrough |
-| **writing-plans** | A multi-step spec needs a written plan with checkpoints |
-| **dispatching-parallel-agents** | Two or more independent tasks can run in parallel |
-| **writing-skills** | Authoring a new Summer skill |
-| **debugging-game-feel** | Tuning feel ("the jump feels floaty") one variable at a time |
-| **diagnosing-perf-regressions** | FPS dropped after a change and you need to bisect the cause |
+Claude Desktop, GitHub Copilot in Visual Studio, GitHub Copilot in JetBrains IDEs, Trae, Junie, LM Studio have no skills folder. They get the MCP server only; the model can pull the same guidance in-chat through the `summer_get_agent_playbook` tool.
 
-### Scene and Project
+`summer doctor` reports when installed skills are older than the CLI. Refresh with `summer setup <agent> --yes --force`.
 
-| Skill | Use when |
-|-------|----------|
-| **make-game** | Building a narrow playable prototype from requirements end to end |
-| **brainstorm-game** | Turning "I want to make a game" into a one-page brief at `.summer/GameSoul.md` |
-| **new-project** | Starting a blank project (picks empty vs 3d-basic, opens the engine) |
-| **browse-templates** | Choosing a community template to start from |
-| **scene-composition** | Building scenes, organizing nodes, creating reusable prefabs |
-| **play** | Running the game from a clean state and reporting whether it runs cleanly |
+## Catalog
 
-### Scripting Patterns
+94 skills grouped by primary domain. ★ = in the recommended set. A skill can belong to several domains; it is listed once, under its first.
 
-| Skill | Use when |
-|-------|----------|
-| **gdscript-patterns** | Writing GDScript: type hints, signals, exports, lifecycle methods |
-
-### Character Controllers
+### 2D art
 
 | Skill | Use when |
 |-------|----------|
-| **fps-controller** | Building a first-person CharacterBody3D with movement, camera, and input |
+| **character-portrait** ★ | Generate a single polished character bust for dialogue UI, character select, lore cards, or codex entries. One character, locked composition, VN-style. |
+| **concept-art** ★ | Explore art direction with 3-4 rough concept variants of a character, environment, or prop to pick a vibe before committing to a final asset. |
+| **create-asset-sheet** | Generate a pack of 2D game assets from one prompt — tile sheet, UI kit, character pack, or biome set — sliced, classified, and saved as one pack ArtAsset. |
+| **instantiate-asset-pack** | Import a whole create-asset-sheet pack into the scene: groups composites, sorts paint order, emits Sprite2D/Node2D/NinePatchRect ops to lay it out. |
+| **pixel-art** ★ | Generate pixel-art assets — sprites, items, tiles, portraits — at a specific resolution with pixel-perfect grid, limited palette, retro feel. |
+| **skybox-panorama** | Generate a 360-degree equirectangular sky panorama and wire it as a PanoramaSkyMaterial Sky resource on WorldEnvironment in a 3D scene. |
+| **sprite-sheet** | Generate animated 2D character sprites laid out as a sprite sheet — walk cycle, attack, idle, death — wired into AnimatedSprite2D / SpriteFrames. |
+| **tileable-texture** | Generate a seamless tileable texture for walls, floors, or terrain — repeats cleanly on all four edges, wired as a StandardMaterial3D albedo. |
+| **ui-graphics** | Generate game-UI elements — icons, buttons, panels, frames, HUD widgets, badges — flat design, transparent background, wired via TextureRect/NinePatchRect. |
+| **use-widget-asset** | Wire a widget slice from a create-asset-sheet pack (panel, button, slider, bar, toggle) into NinePatchRect, TextureProgressBar, or TextureRect via sliceMeta. |
 
-### Gameplay Mechanics
-
-| Skill | Use when |
-|-------|----------|
-| **design-mechanic** | Designing a mechanic end to end: input, response, feedback, depth |
-
-### Level Design
-
-| Skill | Use when |
-|-------|----------|
-| **design-level** | Designing a level as a paced encounter, then producing a node-tree skeleton |
-
-### Rendering and Lighting
+### 3D models
 
 | Skill | Use when |
 |-------|----------|
-| **3d-lighting** | Setting up sun, fill, WorldEnvironment, sky, and shadows |
-| **art-direction** | Defining art direction and writing the art bible to `.summer/art-bible.md` |
+| **character-model** ★ | Generate a rigged humanoid — player, NPC, enemy, boss — via T-pose reference, user-gated preview, and Meshy auto-rig, wired as CharacterBody3D or Node3D. |
+| **environment-kit** | Generate a modular environment kit — wall pieces, floor tiles, pillars, doors, arches, corners — snap-together meshes sharing one visual style. |
+| **fabricating-assets** (preview) | Fabricate meshes with a bpy script in the user's own Blender (summer_fabricate_3d) — kits with exact dimensions, VFX meshes, post-processing generated models. |
+| **organic-model** | Generate organic 3D shapes — trees, rocks, mushrooms, coral, plants, vines, crystals — where AI artifacts read as natural irregularity. |
+| **prop-model** ★ | Generate a single static 3D prop — sword, barrel, chest, lantern, throne, statue — one isolated object, no rigging, wired as a MeshInstance3D. |
+| **vehicle-model** | Generate a hard-surface vehicle — car, spaceship, mech, boat, tank — static mesh with optional detail-texture pass, wired as Vehicle3D or MeshInstance3D. |
 
-### UI and UX
-
-| Skill | Use when |
-|-------|----------|
-| **ui-basics** | Building menus, HUDs, health bars, and responsive layout |
-
-### Asset Pipeline
+### Agent workflow
 
 | Skill | Use when |
 |-------|----------|
-| **asset-strategy** | Choosing between library, generated, or primitive assets for a level |
-
-### 2D Assets
-
-| Skill | Use when |
-|-------|----------|
-| **concept-art** | Producing variant concept-art prompts on a locked style anchor |
-| **character-portrait** | A final character bust for dialogue UI |
-| **pixel-art** | Pixel-art icons and sprites with nearest-neighbor filtering |
-| **ui-graphics** | Flat-design UI icon sets and atlases |
-| **tileable-texture** | Seamless textures for materials |
-| **sprite-sheet** | Multi-frame sprite animations and SpriteFrames resources |
-| **skybox-panorama** | Equirectangular skybox panoramas |
-
-### 3D Assets
-
-| Skill | Use when |
-|-------|----------|
-| **prop-model** | A single prop via the image-to-3D pipeline |
-| **character-model** | A character: T-pose reference, gated rig pass, CharacterBody3D wiring |
-| **environment-kit** | A modular kit of consistent environment pieces |
-| **vehicle-model** | Hard-surface vehicles |
-| **organic-model** | Organic shapes with emission and instancing |
-
-### Animation
-
-| Skill | Use when |
-|-------|----------|
-| **generate-motion** | Adding a curated mocap clip to a rigged character |
-| **retarget** | Retargeting an existing clip onto a different skeleton |
-| **animation-tree** | Building an AnimationTree with blend spaces driven by speed |
-| **procedural-animation** | Foot IK and other procedural skeleton modifications |
-| **facial-and-lipsync** | Lip-sync and blend-shape facial animation from a voice line |
-
-### Audio
-
-| Skill | Use when |
-|-------|----------|
-| **audio-direction** | Defining audio direction and the bus layout in `.summer/audio-bible.md` |
-| **sound-effect** | A single SFX wired to an AudioStreamPlayer3D |
-| **music-track** | A looping music track on the Music bus |
-| **ambient-bed** | Loop-clean ambience on the Ambient bus |
-| **voice-line** | Character dialogue via TTS with a matching voice |
-| **adaptive-music** | Layered music that responds to combat state |
-
-### Video
-
-| Skill | Use when |
-|-------|----------|
-| **cinematic-cutscene** | A short cutscene wired to a VideoStreamPlayer |
-| **trailer-shot** | A premium hero shot for a trailer |
-| **animated-loop** | A loop-clean backdrop clip for a title screen |
-
-### Visual Effects
-
-| Skill | Use when |
-|-------|----------|
-| **game-feel** | Adding visible juice to flat combat: hit flash, screen shake, particles |
-| **fire** | A torch flame via GPUParticles3D and a custom shader |
-| **muzzle-flash** | A one-shot muzzle flash on a weapon |
-| **water-ripple** | Interactive water ripples |
-| **lightning** | A lightning strike effect with camera shake |
-| **dissolve** | A dissolve-on-death shader effect |
-| **smoke** | Smoke particles with wind |
-| **hit-spark** | Sparks oriented to a surface normal on impact |
-| **magic-glow** | A pulsing magical glow with light and motes |
+| **brainstorming** ★ | Explore user intent, requirements, and design before implementation — must run before any creative work: features, components, mechanics, behavior. |
+| **debugging-game-feel** | Debug features that work but feel wrong — floaty jumps, mushy combat, sluggish camera — subjective bugs living in tuning, timing, and feedback layers. |
+| **diagnosing-perf-regressions** | Find why frame rate, frame time, or load time got worse since a known-good state — regression hunting, not general performance tuning. |
+| **dispatching-parallel-agents** | Work 2+ independent tasks in parallel when they share no state and have no sequential dependencies. |
+| **gameskill** | Capture what a game-dev session just learned as a reusable skill (project, user or Summer library) so the next session starts smarter. |
+| **godogen-visual-proof-game-generation** (preview) | Godogen-style game generation with a visual QC loop — capture frames from the running game, self-verify against the brief, bounded fix rounds, proof clip. |
+| **headless-scripting** ★ | Run a GDScript file against Summer Engine from the shell for operations no MCP tool exposes — navmesh baking, collision shapes, TileSets, re-imports. |
+| **investigating-bugs** ★ | Systematic investigation of any bug, test failure, or unexpected behavior before proposing fixes. |
+| **playtesting-a-feature** ★ | Before claiming a gameplay feature done: actually run the game and walk through the feature. Static diagnostics and type checks do not count. |
+| **running-in-the-cloud** | Run Summer Engine on a Linux box with no display — install it, launch headless, know when xvfb + software GL are needed, authenticate without a browser. |
+| **skill-create** | Bootstrap a new Summer library skill (library/skills/<slug>/ with resource.yaml and SKILL.md), frontmatter, and stub sections. |
+| **skill-improve** | Upgrade an underperforming Summer skill — run it against a behavioral spec with and without changes via a parallel-eval harness; ship the winner. |
+| **skill-test** | Lint a Summer skill before commit, audit the whole library, or check a behavioral spec assertion — static structural rules plus behavioral specs. |
+| **using-summer** | Session bootstrap for Summer projects — establishes how to find and use Summer skills and the summer-engine MCP before any response. |
+| **verification-before-completion** ★ | Run verification commands and confirm output before claiming work complete, fixed, or passing — evidence before assertions, always. |
+| **writing-plans** | Turn a spec or requirements for a multi-step task into a written implementation plan before touching code. |
+| **writing-skills** | Create, edit, and verify agent skills — format, structure, testing with subagents, and best practices. |
 
 ### AI and NPCs
 
 | Skill | Use when |
 |-------|----------|
-| **design-npc** | A patrol-and-chase enemy with perception, decision logic, and tells |
+| **design-npc** ★ | Design enemy/NPC/boss/companion behavior — perception, personality, intent, action state machine, telegraphs — outputs a GDScript stub plus node tree. |
 
-### Multiplayer and Networking
-
-| Skill | Use when |
-|-------|----------|
-| **setup-multiplayer** | Co-op LAN multiplayer with MultiplayerAPI, Spawner, Synchronizer, and ENet |
-| **peer-to-peer-multiplayer** | A four-layer P2P architecture with prediction and interpolation |
-| **host-authoritative-state** | A state-ownership audit and the canonical Manager pattern |
-
-### Performance
+### Animation
 
 | Skill | Use when |
 |-------|----------|
-| **tune-performance** | Profiling a slow scene, finding the hotspot, and verifying the fix moved the metric |
+| **animation-tree** | Design and wire AnimationTree state machines and blend trees so clips respond to gameplay — locomotion blends, attack interrupts, hit reactions. |
+| **character-animation-wiring** | Wire a rigged, animated character end to end — inspect real clips and bones, locomotion state machine, method-track events, poses, blend shapes, root motion. |
+| **facial-and-lipsync** | Make a character's mouth move with a voice-over — phoneme extraction from audio, viseme blendshape mapping, and emotional facial expressions. |
+| **generate-motion** ★ | Attach an animation clip to a rigged character from the curated Meshy motion library — idle, walk, run, attack — wired via AnimationPlayer. |
+| **procedural-animation** | Runtime bone modification on top of clips — head look-at, foot IK, hand-grabs-prop, additive lean, recoil. Code-and-modifier patterns, not generation. |
+| **retarget** | Apply existing animation clips from one rigged character to a different rigged character — same library, multiple models, no regeneration. |
+
+### Asset pipeline
+
+| Skill | Use when |
+|-------|----------|
+| **asset-strategy** ★ | Route any 'I need a [thing]' asset request to the right specialist skill — disambiguates 2D / 3D / audio / video / VFX / animation pipelines. |
+| **lumera-single-image-scene-reconstruction** (preview) | Lumera-style single image to editable 3D scene — VLM-parsed object boxes and parametric lights, per-object meshes, HDR probe, .tscn assembly, refinement loop. |
+| **skintokens-auto-rigging** (preview) | Offline auto-rigging with skin-tokens.cpp (GGML SkinTokens/TokenRig port) — skeleton and skin weights from a static GLB mesh on CPU/Vulkan, into Godot 4. |
+
+### Audio
+
+| Skill | Use when |
+|-------|----------|
+| **adaptive-music** | Wire music stems to game state — combat/explore/boss/tension crossfades on a shared bus, paired with a state machine and AudioBus structure. |
+| **ambient-bed** | Generate a long looping location ambience — forest, dungeon, city, spaceship, cave — a looping AudioStreamPlayer on the Ambient bus with a seamless loop. |
+| **audio-direction** ★ | Define the game's sonic identity — music style, instruments, SFX vocabulary, dynamic music plan — output as an audio bible at .summer/audio-bible.md. |
+| **music-track** ★ | Generate a looped or cinematic music track — loops authored at >=30s with a marked loop point, cinematic tracks at >=60s linear. |
+| **sound-effect** ★ | Generate short SFX one-shots — footsteps, weapon swings, UI clicks, hit impacts — wired as AudioStreamPlayer/2D/3D that auto-frees on finished. |
+| **voice-line** ★ | Generate TTS voice lines — NPC barks, narrator, dialogue — with voice-id sourcing, a character-to-voice decision tree, and multi-line dialogue support. |
+
+### Character controllers
+
+| Skill | Use when |
+|-------|----------|
+| **fps-controller** ★ | Production-quality first-person controller — WASD, mouse look, jump, coyote time, jump buffering, air control, and external-velocity handling. |
 
 ### Debugging
 
 | Skill | Use when |
 |-------|----------|
-| **debug** | Triaging a runtime crash end to end: read errors, locate code, fix, verify |
+| **debug** ★ | Disciplined bug/crash/error loop for Summer projects — script errors, console, debugger, hypothesis, fix, verify — before making code or scene changes. |
 
 ### Deployment
 
 | Skill | Use when |
 |-------|----------|
-| **export-and-ship** | Running the Steam pre-flight checklist across Windows, Mac, and Linux |
+| **export-and-ship** ★ | Assess and prepare a game export: inventory installed templates and targets, validate release assets and config, produce supported builds after approval. |
+| **remote-deploy** ★ | Run or test the game on a real device — phone, tablet, another computer — via the Remote Deploy button, runnable export presets, and on-device debugging. |
+
+### Editor
+
+| Skill | Use when |
+|-------|----------|
+| **driving-the-editor-ui** (preview) | Drive the editor UI by name: invoke actions, clear blocking dialogs, switch the main screen, read a dock — and route scene work to the scene tools instead. |
+
+### Gameplay
+
+| Skill | Use when |
+|-------|----------|
+| **auto-fire-targeting** | Design or fix auto-fire weapon targeting (survivors, top-down ARPG, tower defense) — the pending-damage pattern that prevents over-commit and overkill. |
+| **celeste-momentum-platforming** (preview) | Celeste-style 2D precision platformer movement — momentum running, coyote time, variable jumps, dash, wall jump/slide, climb stamina, pixel corner correction. |
+| **design-mechanic** ★ | Design one game mechanic in detail — input, response, feedback, failure modes, depth, tunables — outputs a design doc, node-graph sketch, GDScript stub. |
+
+### Level design
+
+| Skill | Use when |
+|-------|----------|
+| **design-level** ★ | Design a single level — layout, pacing, encounters, secrets, reward gating — outputs a level design doc and a node-tree skeleton for summer_create_scene. |
+| **scene-to-level** | Go from a scene reference image or concept art to a playable scene — orchestrates concept, asset pack, terrain, composition, and scene assembly. |
+
+### Multiplayer
+
+| Skill | Use when |
+|-------|----------|
+| **host-authoritative-state** ★ | Design the state layer of a multiplayer game — what the host owns, how clients request changes, and how the host validates and broadcasts. |
+| **peer-to-peer-multiplayer** ★ | Start a multiplayer game from scratch with peer-to-peer host authority — network architecture built top-down, before writing game logic. |
+| **setup-multiplayer** ★ | Add multiplayer to an existing game — LAN/online co-op, PvP, lobbies — via MultiplayerAPI, MultiplayerSpawner, and MultiplayerSynchronizer. |
+
+### Navigation
+
+| Skill | Use when |
+|-------|----------|
+| **navigate-summer** ★ | When to open a Summer web page or editor surface FOR the user (billing, their games, the scene just built) versus acting through the API, using summer_open. |
+
+### Performance
+
+| Skill | Use when |
+|-------|----------|
+| **tune-performance** ★ | Profile a slow game via summer_get_diagnostics, identify rendering/physics/scripting hotspots, propose fixes with before/after metric expectations. |
+
+### Rendering and lighting
+
+| Skill | Use when |
+|-------|----------|
+| **3d-lighting** ★ | Set up 3D scene lighting — DirectionalLight3D vs Omni vs Spot, WorldEnvironment, sky, shadow tuning, ambient — per current Summer conventions. |
+| **art-direction** ★ | Define the game's visual style — references, palette, mood, lighting plan, post-processing, do/don't list — output as an art bible at .summer/art-bible.md. |
+| **psx-retro-rendering** (preview) | Hardware-informed PlayStation 1 rendering in Godot 4 — low-res output, RGB5 and exact dither, affine textures, vertex snapping, blend modes, fog; limits named. |
+| **realtime-wet-surfaces** (preview) | Real-time wetness on existing Godot 4 materials without losing their values — value-copying wet shader, geometry-driven wet mask, instance-uniform wet amount. |
+
+### Runtime
+
+| Skill | Use when |
+|-------|----------|
+| **agent-playtesting** ★ (preview) | Playtest by driving the LIVE game — deterministic launch, frame-stamped probes before/after each action, exact frame steps, scripted or recorded input. |
+
+### Scenes and project
+
+| Skill | Use when |
+|-------|----------|
+| **brainstorm-game** ★ | Turn a vague idea into a buildable plan — genre, scope, core loop, mechanics, art direction — written as a 1-page brief to .summer/GameSoul.md. |
+| **browse-templates** ★ | List available Summer Engine project templates, present the choices, and create a project from the chosen one via summer create. |
+| **make-game** ★ | Orchestration spine for 'make me a game': brainstorm, plan, scaffold, mechanics, art, audio, polish, verify, ship — delegates to specialist skills. |
+| **new-project** ★ | Create a fresh blank Summer Engine project — asks one question (project name) and runs summer create empty. |
+| **play** ★ | Run the project in Summer Engine, wait briefly, then report what's happening — clean run, errors, or warnings. |
+| **scene-composition** ★ | Scene structure conventions — node hierarchy, when to extract sub-scenes, reusable prefab patterns, and instance-versus-add-node decisions. |
+| **scene-hierarchy-design** (preview) | Structure Summer Engine scenes by access pattern — asset vs live hierarchies, wrapper nodes per operation, sub-scenes for reuse, path-agnostic logic. |
+| **scene-scripting** ★ (preview) | One GDScript in the live editor (summer_run_script) builds scenes, 2D levels, HUDs and gameplay wiring instead of CRUD chains; verify with diff + screenshot. |
+| **spatial-placement** ★ (preview) | Place and verify 3D objects with Starcast evidence — inspect, place, starcast, correct, verify; floor, shelf, wall, alcove recipes and overlap repair. |
+| **verifying-scenes** ★ (preview) | Prove scene work landed — snapshot before, diff + screenshot after (bookmarked viewpoint, labels), live runtime reads during playtests — then claim. |
+| **world-building-3d** ★ (preview) | Compose, ground, space, and validate 3D scenes with Summer's four bounded spatial tools — exact paths, one geometric decision at a time, verified. |
+
+### Scripting
+
+| Skill | Use when |
+|-------|----------|
+| **gdscript-patterns** ★ | GDScript conventions — type hints, signals, exports, onready, lifecycle methods, get_node vs $NodePath, naming. |
+
+### UI
+
+| Skill | Use when |
+|-------|----------|
+| **ui-basics** ★ | Build Summer Engine UI — HUDs, menus, health bars, dialogue boxes, Control trees — anchors, containers, responsive layout, theme vs inline styling. |
+
+### Visual effects
+
+| Skill | Use when |
+|-------|----------|
+| **game-feel** ★ | Add juice: hit-flash, trauma-based camera shake, and audio ducking wired so one hit fires all three — for games that feel flat or lack impact. |
+| **vfx-dissolve** | Dissolve effect — a mesh disintegrating with a glowing burning edge, driven by a noise-threshold ShaderMaterial overriding the target's material. |
+| **vfx-fire** ★ | Fire effect — animated flames built with a particle shader, GPUParticles3D, and a noise-based color ramp — torches, campfires, candles. |
+| **vfx-hit-spark** | Hit-spark effect — a one-shot burst of additive billboard particles oriented to a surface normal, fired on impact. |
+| **vfx-lightning** | Lightning bolt effect — procedural jagged path drawn via ImmediateMesh, glow shader, sparks at endpoints, screen shake. |
+| **vfx-magic-glow** | Magic-glow effect — a pulsing OmniLight3D plus drifting additive motes plus optional emission shader on the source mesh. |
+| **vfx-muzzle-flash** ★ | Muzzle-flash effect — a one-shot ~80 ms burst at a gun barrel built with a particle one-shot or a flashing quad with a star-burst shader. |
+| **vfx-smoke** | Smoke effect — a slow-rising column or puff of soft particles built with a noise + density falloff shader on a quad mesh, GPUParticles3D. |
+| **vfx-water-ripple** | Water-ripple effect — animated normal-distortion ripples on a water plane (or as a Decal) triggered by impacts. |
+
+### Video
+
+| Skill | Use when |
+|-------|----------|
+| **animated-loop** | Generate a short seamlessly-looping video clip — splash background, animated logo backdrop, idle title-screen footage — wired as a looping VideoStreamPlayer. |
+| **cinematic-cutscene** ★ | Generate a non-interactive cutscene — reference-locked look, a 5-10s image-to-video shot, optional TTS dialogue — wired as a fading VideoStreamPlayer. |
+| **trailer-shot** | Generate marketing or trailer footage — slow-mo combat, establishing shots, hero beats, splash screens, pitch-deck B-roll — max punch in 5-10 seconds. |
 
 ## For AI Agents
 
-Most agents discover skills automatically once `summer setup <agent> --yes` has installed them. The agent loads the relevant `SKILL.md` when the situation matches, then follows its scene structure, value formats, and tool calls. Skills reference the [MCP tools](/mcp/tools-reference) (`summer_add_node`, `summer_set_prop`, `summer_generate_3d`, etc.) and engine value formats (`Vector3(0, 10, 0)`, `Color(1, 0.5, 0, 1)`).
+Once installed, the agent discovers skills on its own. Start a session by reading `using-summer` (the bootstrap skill): it explains how to find the right skill and the right `summer_*` MCP tool before answering a game-development request. Skills reference the [MCP tools](/mcp/tools-reference) and engine value formats (`Vector3(0, 10, 0)`, `Color(1, 0.5, 0, 1)`).
+
+## Contributing a Skill
+
+A skill is one folder in `library/skills/<slug>/` with a `resource.yaml` (id, summary, `use_when`, `facets.domains`) and a `SKILL.md`. Run `npm run generate:registry` and the tests; the index, the agent manifests and this catalog's source regenerate from it. The `writing-skills` skill in the library walks an agent through it.
 
 ## Next Steps
 
-<CardGroup cols={2}>
+<CardGroup cols=2>
+  <Card
+    title="Every Supported Agent"
+    icon="list"
+    href="/mcp/agents"
+  >
+    Config file and skills folder for each agent
+  </Card>
   <Card
     title="CLI Reference"
     icon="terminal"
     href="/mcp/cli-reference"
   >
     All CLI commands including skills
-  </Card>
-  <Card
-    title="Building a Game"
-    icon="gamepad-2"
-    href="/mcp/building-a-game"
-  >
-    Step-by-step MCP workflow for AI agents
   </Card>
 </CardGroup>
 

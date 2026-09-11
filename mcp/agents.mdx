@@ -1,0 +1,1184 @@
+---
+title: "Every Supported Agent"
+description: "The full list of AI coding agents and IDEs summer setup can configure for Summer Engine, with the exact MCP config file, file shape, and skills folder each one uses."
+icon: "list"
+---
+
+{/* Generated from the toolkit's agent table (src/installer/agent-table.ts in SummerEngine/summer) on 2026-09-11. Regenerate rather than hand-edit the per-agent sections; the prose above the first agent is hand-written. */}
+
+One command configures any of these agents:
+
+```bash
+npx -y summer-engine@latest setup <agent> --yes
+```
+
+It writes the MCP server entry into the agent's own config file, installs the Summer skill library where that agent reads skills, and runs `summer doctor`. Every path below is what the command writes; paste the snippet yourself if you prefer to edit files by hand. Paths were checked against each product's official documentation on 2026-09-11. Where a vendor's docs are ambiguous, the section says so.
+
+**31 active agents.** Agents marked legacy still work but warn on use.
+
+Add `--scope project` to write the project-level file instead of the user-level one where the agent has one. Add `--print` to see the snippet without writing anything, `--dry-run` to see the plan. `--channel next` points the entry at a pre-release build.
+
+<Tip>
+**One skills folder for most agents.** Codex, Cursor, Zed, OpenCode, Copilot in VS Code, Devin Desktop, Amp, Crush, Warp, Kimi Code, Factory Droid, Rovo Dev and Grok Build all read the agentskills.io folder `~/.agents/skills` (and `.agents/skills` inside a project). Setting up any one of them installs the skills for all of them. See [Skills](/mcp/skills).
+</Tip>
+
+## Claude Code
+
+Full guide: [Claude Code](/mcp/claude-code). The essentials:
+
+```bash
+npx -y summer-engine@latest setup claude-code --yes
+```
+
+Id: `claude-code`. Also accepted: `claude`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/.claude.json` · Windows `%USERPROFILE%\.claude.json` |
+| MCP config (project) | `.mcp.json` |
+| Skills (user) | `~/.claude/skills` |
+| Skills (project) | `.claude/skills` |
+| After setup | Restart Claude Code or run /mcp in a new session. |
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```json ~/.claude.json
+{
+  "mcpServers": {
+    "summer-engine": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "summer-engine@latest",
+        "mcp"
+      ]
+    }
+  }
+}
+```
+
+## Claude Desktop
+
+```bash
+npx -y summer-engine@latest setup claude-desktop --yes
+```
+
+Id: `claude-desktop`. Also accepted: `claude-app`, `claudedesktop`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/Library/Application Support/Claude/claude_desktop_config.json` · Linux `~/.config/Claude/claude_desktop_config.json` · Windows `%APPDATA%\Claude\claude_desktop_config.json` |
+| MCP config (project) | none; a `--scope project` request writes the user file with a warning |
+| Skills | none. Claude Desktop has no skills folder. The MCP server ships summer_get_agent_playbook, so the model can pull Summer guidance in-chat. |
+| After setup | Quit and reopen Claude Desktop; the summer-engine tools appear under the tools menu in a new chat. |
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```json ~/Library/Application Support/Claude/claude_desktop_config.json
+{
+  "mcpServers": {
+    "summer-engine": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "summer-engine@latest",
+        "mcp"
+      ]
+    }
+  }
+}
+```
+
+## Codex
+
+Full guide: [Codex](/mcp/codex). The essentials:
+
+```bash
+npx -y summer-engine@latest setup codex --yes
+```
+
+Id: `codex`. Also accepted: `codex-cli`, `openai-codex`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/.codex/config.toml` · Windows `%USERPROFILE%\.codex\config.toml` |
+| MCP config (project) | `.codex/config.toml` |
+| Note | Codex only loads project .codex/config.toml from trusted projects. |
+| Skills (user) | `~/.agents/skills` — the shared agentskills.io folder |
+| Skills (project) | `.agents/skills` |
+| After setup | Restart Codex or run /mcp in a new session. |
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```toml ~/.codex/config.toml
+[mcp_servers.summer-engine]
+command = "npx"
+args = ["-y", "summer-engine@latest", "mcp"]
+```
+
+## Cursor
+
+Full guide: [Cursor](/mcp/cursor). The essentials:
+
+```bash
+npx -y summer-engine@latest setup cursor --yes
+```
+
+Id: `cursor`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/.cursor/mcp.json` · Windows `%USERPROFILE%\.cursor\mcp.json` |
+| MCP config (project) | `.cursor/mcp.json` |
+| Skills (user) | `~/.agents/skills` — the shared agentskills.io folder |
+| Skills (project) | `.agents/skills` |
+| After setup | Restart Cursor and enable the summer-engine MCP server if prompted. |
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```json ~/.cursor/mcp.json
+{
+  "mcpServers": {
+    "summer-engine": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "summer-engine@latest",
+        "mcp"
+      ]
+    }
+  }
+}
+```
+
+## Devin Desktop (formerly Windsurf)
+
+Full guide: [Devin Desktop (formerly Windsurf)](/mcp/devin-desktop). The essentials:
+
+```bash
+npx -y summer-engine@latest setup windsurf --yes
+```
+
+Id: `windsurf`. Also accepted: `devin`, `devin-desktop`, `devindesktop`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/.codeium/windsurf/mcp_config.json` · Windows `%USERPROFILE%\.codeium\windsurf\mcp_config.json` |
+| MCP config (project) | none; a `--scope project` request writes the user file with a warning |
+| Skills (user) | `~/.agents/skills` — the shared agentskills.io folder |
+| Skills (project) | `.agents/skills` |
+| After setup | Restart Devin Desktop (formerly Windsurf) and refresh MCP servers from the agent settings. Devin's docs say mcp_config.json configures the Cascade agent; for the Devin agent add the server in the app's MCP settings with the same command. |
+
+<Note>
+Devin's docs say `mcp_config.json` configures the Cascade agent. For the Devin agent, add the same command in the app's MCP settings.
+</Note>
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```json ~/.codeium/windsurf/mcp_config.json
+{
+  "mcpServers": {
+    "summer-engine": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "summer-engine@latest",
+        "mcp"
+      ]
+    }
+  }
+}
+```
+
+## Antigravity
+
+Full guide: [Antigravity](/mcp/antigravity). The essentials:
+
+```bash
+npx -y summer-engine@latest setup antigravity --yes
+```
+
+Id: `antigravity`. Also accepted: `agy`, `google-antigravity`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/.gemini/config/mcp_config.json` · Windows `%USERPROFILE%\.gemini\config\mcp_config.json` |
+| MCP config (project) | `.agents/mcp_config.json` |
+| Skills (user) | `~/.gemini/config/skills` |
+| Skills (project) | `.agents/skills` |
+| After setup | In Antigravity open the agent panel's MCP servers view and refresh; summer-engine appears in the list (IDE and CLI share this file). |
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```json ~/.gemini/config/mcp_config.json
+{
+  "mcpServers": {
+    "summer-engine": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "summer-engine@latest",
+        "mcp"
+      ]
+    }
+  }
+}
+```
+
+## Cline (VS Code)
+
+```bash
+npx -y summer-engine@latest setup cline --yes
+```
+
+Id: `cline`. Also accepted: `cline-vscode`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json` · Linux `~/.config/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json` · Windows `%APPDATA%\Code\User\globalStorage\saoudrizwan.claude-dev\settings\cline_mcp_settings.json` |
+| MCP config (project) | none; a `--scope project` request writes the user file with a warning |
+| Skills (user) | `~/.cline/skills` |
+| Skills (project) | `.cline/skills` |
+| After setup | Restart VS Code so Cline reloads its MCP config. |
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```json ~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json
+{
+  "mcpServers": {
+    "summer-engine": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "summer-engine@latest",
+        "mcp"
+      ]
+    }
+  }
+}
+```
+
+## Cline CLI
+
+```bash
+npx -y summer-engine@latest setup cline-cli --yes
+```
+
+Id: `cline-cli`. Also accepted: `clinecli`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/.cline/data/settings/cline_mcp_settings.json` · Windows `%USERPROFILE%\.cline\data\settings\cline_mcp_settings.json` |
+| MCP config (project) | none; a `--scope project` request writes the user file with a warning |
+| Skills (user) | `~/.cline/skills` |
+| Skills (project) | `.cline/skills` |
+| After setup | Restart the Cline CLI so it reloads its MCP settings. |
+
+<Note>
+Cline's own docs name two files for the CLI (`~/.cline/mcp.json` and `~/.cline/data/settings/cline_mcp_settings.json`). Summer writes the one from the CLI configuration page.
+</Note>
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```json ~/.cline/data/settings/cline_mcp_settings.json
+{
+  "mcpServers": {
+    "summer-engine": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "summer-engine@latest",
+        "mcp"
+      ]
+    }
+  }
+}
+```
+
+## Kilo Code
+
+```bash
+npx -y summer-engine@latest setup kilo-code --yes
+```
+
+Id: `kilo-code`. Also accepted: `kilo`, `kilocode`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/.config/kilo/kilo.json` · Windows `%APPDATA%\kilo\kilo.json` |
+| MCP config (project) | `kilo.json` |
+| Skills (user) | `~/.kilo/skills` |
+| Skills (project) | `.kilo/skills` |
+| After setup | Restart Kilo (CLI or the VS Code extension) so it reloads kilo.json. |
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```json ~/.config/kilo/kilo.json
+{
+  "mcp": {
+    "summer-engine": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "summer-engine@latest",
+        "mcp"
+      ],
+      "enabled": true
+    }
+  }
+}
+```
+
+## GitHub Copilot CLI
+
+Full guide: [GitHub Copilot CLI](/mcp/github-copilot). The essentials:
+
+```bash
+npx -y summer-engine@latest setup github-copilot --yes
+```
+
+Id: `github-copilot`. Also accepted: `copilot`, `copilot-cli`, `github-copilot-cli`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/.copilot/mcp-config.json` · Windows `%USERPROFILE%\.copilot\mcp-config.json` |
+| MCP config (project) | `.mcp.json` |
+| Skills (user) | `~/.copilot/skills` |
+| Skills (project) | `.github/skills` |
+| After setup | Restart Copilot CLI, or run /mcp reload and /skills reload in the active session. |
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```json ~/.copilot/mcp-config.json
+{
+  "mcpServers": {
+    "summer-engine": {
+      "type": "local",
+      "command": "npx",
+      "args": [
+        "-y",
+        "summer-engine@latest",
+        "mcp"
+      ],
+      "tools": [
+        "*"
+      ]
+    }
+  }
+}
+```
+
+## GitHub Copilot in VS Code
+
+Full guide: [GitHub Copilot in VS Code](/mcp/vscode). The essentials:
+
+```bash
+npx -y summer-engine@latest setup vscode-copilot --yes
+```
+
+Id: `vscode-copilot`. Also accepted: `vscode`, `vs-code`, `vs-code-copilot`, `github-copilot-vscode`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/Library/Application Support/Code/User/mcp.json` · Linux `~/.config/Code/User/mcp.json` · Windows `%APPDATA%\Code\User\mcp.json` |
+| MCP config (project) | `.vscode/mcp.json` |
+| Skills (user) | `~/.agents/skills` — the shared agentskills.io folder |
+| Skills (project) | `.agents/skills` |
+| After setup | Restart VS Code or run MCP: List Servers, then start summer-engine in Copilot Agent mode. |
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```json ~/Library/Application Support/Code/User/mcp.json
+{
+  "servers": {
+    "summer-engine": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "summer-engine@latest",
+        "mcp"
+      ]
+    }
+  }
+}
+```
+
+## GitHub Copilot in Visual Studio
+
+```bash
+npx -y summer-engine@latest setup visual-studio --yes
+```
+
+Id: `visual-studio`. Also accepted: `vs`, `vs2026`, `visual-studio-2026`, `visualstudio`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/.mcp.json` · Windows `%USERPROFILE%\.mcp.json` |
+| MCP config (project) | `.mcp.json` |
+| Skills | none. Visual Studio's Copilot has no skills folder yet; the MCP server ships summer_get_agent_playbook for in-chat guidance. |
+| After setup | Restart Visual Studio, open Copilot Chat in Agent mode, and enable summer-engine in the tools picker. |
+
+<Note>
+Visual Studio also reads `.vs/mcp.json`, `.vscode/mcp.json` and `.cursor/mcp.json` in the solution folder.
+</Note>
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```json ~/.mcp.json
+{
+  "servers": {
+    "summer-engine": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "summer-engine@latest",
+        "mcp"
+      ]
+    }
+  }
+}
+```
+
+## GitHub Copilot in JetBrains IDEs
+
+```bash
+npx -y summer-engine@latest setup copilot-jetbrains --yes
+```
+
+Id: `copilot-jetbrains`. Also accepted: `jetbrains-copilot`, `intellij-copilot`, `copilot-intellij`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/.config/github-copilot/intellij/mcp.json` · Windows `%APPDATA%\github-copilot\intellij\mcp.json` |
+| MCP config (project) | none; a `--scope project` request writes the user file with a warning |
+| Skills | none. Copilot in JetBrains documents no skills folder; the MCP server ships summer_get_agent_playbook for in-chat guidance. |
+| After setup | Restart the JetBrains IDE and open Copilot Chat in Agent mode; summer-engine shows in the tools list. |
+
+<Note>
+The user config path comes from Microsoft's Copilot for JetBrains feedback repository, not from docs.github.com, which only says the file opens from Settings.
+</Note>
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```json ~/.config/github-copilot/intellij/mcp.json
+{
+  "servers": {
+    "summer-engine": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "summer-engine@latest",
+        "mcp"
+      ]
+    }
+  }
+}
+```
+
+## OpenCode
+
+Full guide: [OpenCode](/mcp/opencode). The essentials:
+
+```bash
+npx -y summer-engine@latest setup opencode --yes
+```
+
+Id: `opencode`. Also accepted: `open-code`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/.config/opencode/opencode.json` · Windows `%APPDATA%\opencode\opencode.json` |
+| MCP config (project) | `opencode.json` |
+| Skills (user) | `~/.agents/skills` — the shared agentskills.io folder |
+| Skills (project) | `.agents/skills` |
+| After setup | Restart OpenCode so it reloads opencode.json. |
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```json ~/.config/opencode/opencode.json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "summer-engine": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "summer-engine@latest",
+        "mcp"
+      ],
+      "enabled": true
+    }
+  }
+}
+```
+
+## Zed
+
+Full guide: [Zed](/mcp/zed). The essentials:
+
+```bash
+npx -y summer-engine@latest setup zed --yes
+```
+
+Id: `zed`. Also accepted: `zed-editor`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/.config/zed/settings.json` · Windows `%APPDATA%\zed\settings.json` |
+| MCP config (project) | none; a `--scope project` request writes the user file with a warning |
+| Skills (user) | `~/.agents/skills` — the shared agentskills.io folder |
+| Skills (project) | `.agents/skills` |
+| After setup | Zed reloads settings.json live; open the Agent panel and check summer-engine under MCP servers. |
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```json ~/.config/zed/settings.json
+{
+  "context_servers": {
+    "summer-engine": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "summer-engine@latest",
+        "mcp"
+      ],
+      "env": {}
+    }
+  }
+}
+```
+
+## Kiro
+
+```bash
+npx -y summer-engine@latest setup kiro --yes
+```
+
+Id: `kiro`. Also accepted: `kiro-ide`, `aws-kiro`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/.kiro/settings/mcp.json` · Windows `%USERPROFILE%\.kiro\settings\mcp.json` |
+| MCP config (project) | `.kiro/settings/mcp.json` |
+| Skills (user) | `~/.kiro/skills` |
+| Skills (project) | `.kiro/skills` |
+| After setup | Kiro reloads MCP config on save; open the MCP Servers view to confirm summer-engine is connected. |
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```json ~/.kiro/settings/mcp.json
+{
+  "mcpServers": {
+    "summer-engine": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "summer-engine@latest",
+        "mcp"
+      ]
+    }
+  }
+}
+```
+
+## Goose
+
+Full guide: [Goose](/mcp/local-models). The essentials:
+
+```bash
+npx -y summer-engine@latest setup goose --yes
+```
+
+Id: `goose`. Also accepted: `block-goose`, `codename-goose`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/.config/goose/config.yaml` · Windows `%APPDATA%\Block\goose\config\config.yaml` |
+| MCP config (project) | none; a `--scope project` request writes the user file with a warning |
+| Skills (user) | `~/.config/agents/skills` |
+| Skills (project) | `.agents/skills` |
+| After setup | Restart Goose (CLI or Desktop); summer-engine is listed under Extensions. |
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```yaml ~/.config/goose/config.yaml
+extensions:
+  summer-engine:
+    type: stdio
+    name: summer-engine
+    description: "Summer Engine: scenes, scripts, play mode and diagnostics over MCP"
+    cmd: npx
+    args:
+      - -y
+      - summer-engine@latest
+      - mcp
+    enabled: true
+    timeout: 300
+    env_keys: []
+    envs: {}
+```
+
+## Hermes Agent
+
+```bash
+npx -y summer-engine@latest setup hermes --yes
+```
+
+Id: `hermes`. Also accepted: `hermes-agent`, `nous-hermes`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/.hermes/config.yaml` · Windows `%USERPROFILE%\.hermes\config.yaml` |
+| MCP config (project) | none; a `--scope project` request writes the user file with a warning |
+| Skills (user) | `~/.hermes/skills` |
+| Skills (project) | `.agents/skills` |
+| After setup | Run /reload-mcp in Hermes Agent (or restart it). |
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```yaml ~/.hermes/config.yaml
+mcp_servers:
+  summer-engine:
+    command: npx
+    args:
+      - -y
+      - summer-engine@latest
+      - mcp
+```
+
+## Trae
+
+```bash
+npx -y summer-engine@latest setup trae --yes
+```
+
+Id: `trae`. Also accepted: `trae-ide`, `bytedance-trae`.
+
+| | |
+|---|---|
+| MCP config (user) | none: Trae manages user-level MCP servers in its UI; writing the project file .trae/mcp.json instead. |
+| MCP config (project) | `.trae/mcp.json` |
+| Skills | none. Trae documents no skills folder; the MCP server ships summer_get_agent_playbook for in-chat guidance. |
+| After setup | Restart Trae and open the MCP settings; summer-engine should show as connected. |
+
+<Note>
+Trae keeps user-level MCP servers in its UI, so Summer only writes the project file.
+</Note>
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```json .trae/mcp.json
+{
+  "mcpServers": {
+    "summer-engine": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "summer-engine@latest",
+        "mcp"
+      ]
+    }
+  }
+}
+```
+
+## Qwen Code
+
+```bash
+npx -y summer-engine@latest setup qwen-code --yes
+```
+
+Id: `qwen-code`. Also accepted: `qwen`, `qwencode`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/.qwen/settings.json` · Windows `%USERPROFILE%\.qwen\settings.json` |
+| MCP config (project) | `.qwen/settings.json` |
+| Skills (user) | `~/.qwen/skills` |
+| Skills (project) | `.qwen/skills` |
+| After setup | Restart Qwen Code or run /mcp in a new session. |
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```json ~/.qwen/settings.json
+{
+  "mcpServers": {
+    "summer-engine": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "summer-engine@latest",
+        "mcp"
+      ]
+    }
+  }
+}
+```
+
+## Kimi Code CLI
+
+```bash
+npx -y summer-engine@latest setup kimi-code --yes
+```
+
+Id: `kimi-code`. Also accepted: `kimi`, `kimi-cli`, `kimicode`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/.kimi-code/mcp.json` · Windows `%USERPROFILE%\.kimi-code\mcp.json` |
+| MCP config (project) | `.kimi-code/mcp.json` |
+| Skills (user) | `~/.agents/skills` — the shared agentskills.io folder |
+| Skills (project) | `.agents/skills` |
+| After setup | Restart Kimi Code CLI so it reconnects its MCP servers. |
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```json ~/.kimi-code/mcp.json
+{
+  "mcpServers": {
+    "summer-engine": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "summer-engine@latest",
+        "mcp"
+      ]
+    }
+  }
+}
+```
+
+## Crush
+
+```bash
+npx -y summer-engine@latest setup crush --yes
+```
+
+Id: `crush`. Also accepted: `charm-crush`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/.config/crush/crushrc` · Windows `%USERPROFILE%\.config\crush\crushrc` |
+| MCP config (project) | `.crushrc` |
+| Skills (user) | `~/.agents/skills` — the shared agentskills.io folder |
+| Skills (project) | `.agents/skills` |
+| After setup | Restart Crush so it reloads crushrc. |
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```json ~/.config/crush/crushrc
+{
+  "mcp": {
+    "summer-engine": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "summer-engine@latest",
+        "mcp"
+      ]
+    }
+  }
+}
+```
+
+## Amp
+
+```bash
+npx -y summer-engine@latest setup amp --yes
+```
+
+Id: `amp`. Also accepted: `sourcegraph-amp`, `ampcode`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/.config/amp/settings.json` · Windows `%APPDATA%\amp\settings.json` |
+| MCP config (project) | none; a `--scope project` request writes the user file with a warning |
+| Skills (user) | `~/.agents/skills` — the shared agentskills.io folder |
+| Skills (project) | `.agents/skills` |
+| After setup | Restart Amp so it reloads settings.json. |
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```json ~/.config/amp/settings.json
+{
+  "amp.mcpServers": {
+    "summer-engine": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "summer-engine@latest",
+        "mcp"
+      ]
+    }
+  }
+}
+```
+
+## Factory Droid
+
+```bash
+npx -y summer-engine@latest setup factory --yes
+```
+
+Id: `factory`. Also accepted: `droid`, `factory-droid`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/.factory/mcp.json` · Windows `%USERPROFILE%\.factory\mcp.json` |
+| MCP config (project) | `.factory/mcp.json` |
+| Skills (user) | `~/.agents/skills` — the shared agentskills.io folder |
+| Skills (project) | `.agents/skills` |
+| After setup | Restart droid or run /mcp in the active session. |
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```json ~/.factory/mcp.json
+{
+  "mcpServers": {
+    "summer-engine": {
+      "type": "stdio",
+      "command": "npx",
+      "args": [
+        "-y",
+        "summer-engine@latest",
+        "mcp"
+      ]
+    }
+  }
+}
+```
+
+## Junie
+
+```bash
+npx -y summer-engine@latest setup junie --yes
+```
+
+Id: `junie`. Also accepted: `jetbrains-junie`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/.junie/mcp/mcp.json` · Windows `%USERPROFILE%\.junie\mcp\mcp.json` |
+| MCP config (project) | `.junie/mcp/mcp.json` |
+| Skills | none. Junie has no skills folder; put project guidance in .junie/guidelines.md. The MCP server ships summer_get_agent_playbook for in-chat guidance. |
+| After setup | Restart the JetBrains IDE so Junie reloads its MCP config. |
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```json ~/.junie/mcp/mcp.json
+{
+  "mcpServers": {
+    "summer-engine": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "summer-engine@latest",
+        "mcp"
+      ]
+    }
+  }
+}
+```
+
+## Warp
+
+```bash
+npx -y summer-engine@latest setup warp --yes
+```
+
+Id: `warp`. Also accepted: `warp-terminal`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/.warp/.mcp.json` · Windows `%USERPROFILE%\.warp\.mcp.json` |
+| MCP config (project) | `.warp/.mcp.json` |
+| Skills (user) | `~/.agents/skills` — the shared agentskills.io folder |
+| Skills (project) | `.agents/skills` |
+| After setup | Warp detects the file and spawns the server; check Settings > AI > MCP servers. |
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```json ~/.warp/.mcp.json
+{
+  "mcpServers": {
+    "summer-engine": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "summer-engine@latest",
+        "mcp"
+      ]
+    }
+  }
+}
+```
+
+## Rovo Dev CLI
+
+```bash
+npx -y summer-engine@latest setup rovo-dev --yes
+```
+
+Id: `rovo-dev`. Also accepted: `rovodev`, `rovo`, `atlassian-rovo-dev`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/.rovodev/mcp.json` · Windows `%USERPROFILE%\.rovodev\mcp.json` |
+| MCP config (project) | none; a `--scope project` request writes the user file with a warning |
+| Skills (user) | `~/.agents/skills` — the shared agentskills.io folder |
+| Skills (project) | `.agents/skills` |
+| After setup | Restart Rovo Dev CLI so it reconnects its MCP servers. |
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```json ~/.rovodev/mcp.json
+{
+  "mcpServers": {
+    "summer-engine": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "summer-engine@latest",
+        "mcp"
+      ],
+      "transport": "stdio"
+    }
+  }
+}
+```
+
+## Qoder CLI
+
+```bash
+npx -y summer-engine@latest setup qoder --yes
+```
+
+Id: `qoder`. Also accepted: `qoder-cli`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/.qoder/settings.json` · Windows `%USERPROFILE%\.qoder\settings.json` |
+| MCP config (project) | `.mcp.json` |
+| Skills (user) | `~/.qoder/skills` |
+| Skills (project) | `.qoder/skills` |
+| After setup | Restart Qoder CLI so it reloads its MCP settings (the Qoder IDE manages servers in its UI). |
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```json ~/.qoder/settings.json
+{
+  "mcpServers": {
+    "summer-engine": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "summer-engine@latest",
+        "mcp"
+      ]
+    }
+  }
+}
+```
+
+## Grok Build
+
+```bash
+npx -y summer-engine@latest setup grok-build --yes
+```
+
+Id: `grok-build`. Also accepted: `grok`, `xai-grok`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/.grok/config.toml` · Windows `%USERPROFILE%\.grok\config.toml` |
+| MCP config (project) | `.grok/config.toml` |
+| Skills (user) | `~/.agents/skills` — the shared agentskills.io folder |
+| Skills (project) | `.agents/skills` |
+| After setup | Restart Grok Build so it reloads config.toml (it also reads `~/.claude.json` and `.cursor/mcp.json`). |
+
+<Note>
+Grok Build also reads `~/.claude.json`, `.cursor/mcp.json` and `.mcp.json`, so a Claude Code or Cursor setup already covers it.
+</Note>
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```toml ~/.grok/config.toml
+[mcp_servers.summer-engine]
+command = "npx"
+args = ["-y", "summer-engine@latest", "mcp"]
+```
+
+## Mistral Vibe
+
+```bash
+npx -y summer-engine@latest setup mistral-vibe --yes
+```
+
+Id: `mistral-vibe`. Also accepted: `vibe`, `mistral`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/.vibe/config.toml` · Windows `%USERPROFILE%\.vibe\config.toml` |
+| MCP config (project) | `.vibe/config.toml` |
+| Skills (user) | `~/.vibe/skills` |
+| Skills (project) | `.agents/skills` |
+| After setup | Restart Vibe so it reloads config.toml. |
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```toml ~/.vibe/config.toml
+[[mcp_servers]]
+name = "summer-engine"
+transport = "stdio"
+command = "npx"
+args = ["-y", "summer-engine@latest", "mcp"]
+```
+
+## LM Studio
+
+Full guide: [LM Studio](/mcp/local-models). The essentials:
+
+```bash
+npx -y summer-engine@latest setup lm-studio --yes
+```
+
+Id: `lm-studio`. Also accepted: `lmstudio`, `lm_studio`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/.lmstudio/mcp.json` · Windows `%USERPROFILE%\.lmstudio\mcp.json` |
+| MCP config (project) | none; a `--scope project` request writes the user file with a warning |
+| Skills | none. LM Studio has no rules or skills folder. The MCP server ships summer_get_agent_playbook, so the model can pull Summer guidance in-chat. |
+| After setup | Open LM Studio, toggle on the summer-engine MCP server in the Program tab, and raise the loaded model's context length to 32k or higher. |
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```json ~/.lmstudio/mcp.json
+{
+  "mcpServers": {
+    "summer-engine": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "summer-engine@latest",
+        "mcp"
+      ]
+    }
+  }
+}
+```
+
+## Legacy agents
+
+These still configure and still warn: the product was retired or shut down.
+
+## Gemini CLI
+
+<Warning>
+**Legacy.** Gemini CLI was retired for individual accounts on 2026-06-18 and replaced by Antigravity. Use `summer setup antigravity` unless you are on a Workspace/enterprise Gemini CLI.
+</Warning>
+
+Full guide: [Gemini CLI](/mcp/gemini). The essentials:
+
+```bash
+npx -y summer-engine@latest setup gemini --yes
+```
+
+Id: `gemini`. Also accepted: `gemini-cli`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/.gemini/extensions/summer-engine/gemini-extension.json` · Windows `%USERPROFILE%\.gemini\extensions\summer-engine\gemini-extension.json` |
+| MCP config (project) | none; a `--scope project` request writes the user file with a warning |
+| Skills (user) | `~/.gemini/extensions/summer-engine/skills` |
+| Skills (project) | user folder only |
+| After setup | Run `summer skills install --all --agent gemini` if skills were not installed, then restart Gemini CLI (or `gemini extensions enable summer-engine` if it is disabled). |
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```json ~/.gemini/extensions/summer-engine/gemini-extension.json
+{
+  "name": "summer-engine",
+  "version": "3.1.0",
+  "description": "Agent tooling for Summer Engine: MCP bridge, context primer, and game-dev skills. Use with the npm CLI for skill files on disk.",
+  "contextFileName": "GEMINI.md",
+  "mcpServers": {
+    "summer-engine": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "summer-engine@latest",
+        "mcp"
+      ]
+    }
+  },
+  "settings": [
+    {
+      "name": "enable_pre_commit_doctor",
+      "description": "Block git commits when summer doctor needs attention (off by default)",
+      "envVar": "SUMMER_PRE_COMMIT_DOCTOR",
+      "sensitive": false
+    }
+  ]
+}
+```
+
+## Roo Code
+
+<Warning>
+**Legacy.** Roo Code shut down on 2026-05-15. The extension may still run, but it is no longer maintained; consider Cline or Kilo Code.
+</Warning>
+
+```bash
+npx -y summer-engine@latest setup roo-code --yes
+```
+
+Id: `roo-code`. Also accepted: `roo`, `roocode`.
+
+| | |
+|---|---|
+| MCP config (user) | `~/Library/Application Support/Code/User/globalStorage/rooveterinaryinc.roo-cline/settings/cline_mcp_settings.json` · Linux `~/.config/Code/User/globalStorage/rooveterinaryinc.roo-cline/settings/cline_mcp_settings.json` · Windows `%APPDATA%\Code\User\globalStorage\rooveterinaryinc.roo-cline\settings\cline_mcp_settings.json` |
+| MCP config (project) | none; a `--scope project` request writes the user file with a warning |
+| Skills (user) | `~/Documents/Roo/Rules` |
+| Skills (project) | `.clinerules` |
+| After setup | Restart VS Code so Roo Code reloads its MCP config. |
+
+What `summer setup` writes (paste this if you configure by hand):
+
+```json ~/Library/Application Support/Code/User/globalStorage/rooveterinaryinc.roo-cline/settings/cline_mcp_settings.json
+{
+  "mcpServers": {
+    "summer-engine": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "summer-engine@latest",
+        "mcp"
+      ]
+    }
+  }
+}
+```
+
+## Not supported on purpose
+
+Checked on 2026-09-11 and left out:
+
+- **OpenHands CLI**: its `[mcp] stdio_servers` inline-table array has an upstream write bug; add the server through its own `openhands` config commands.
+- **Xcode's agent folders**: Apple documents the `ClaudeAgentConfig/` folder but not the file names inside it.
+- **Pi**: no MCP by design. **Aider, ChatGPT desktop, Replit, Perplexity**: no user-editable stdio MCP config.
+- **JetBrains AI Assistant, Android Studio, Qoder IDE, Trae user-level**: MCP servers are managed in the UI only. Paste the `mcpServers` snippet from the closest section above into the UI form.
+- **Continue.dev** (shut down) and **Void** (archived).
+
+If your agent reads any of the files above under a different name, run `summer setup <closest-agent> --print` and paste the output.
+
+---
+
+Need help or have questions? Reach out to our founders at [founders@summerengine.com](mailto:founders@summerengine.com) or join our community on [Discord](https://discord.gg/yUpgtxnZky) for fast responses.

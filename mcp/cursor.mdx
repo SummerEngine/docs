@@ -12,6 +12,10 @@ Cursor is the most popular IDE for AI-assisted development. With Summer Engine's
 
 This guide walks you through two setup options: a one-click install link (when supported) and manual configuration, which always works.
 
+<Tip>
+**Fastest path.** `npx -y summer-engine@latest setup cursor --yes` writes the config below into `~/.cursor/mcp.json`, installs the skill library to `~/.agents/skills (Cursor reads the agentskills.io folder)`, and runs `summer doctor`. The steps that follow are the manual version of the same thing.
+</Tip>
+
 ## Option 1: One-Click Install
 
 Cursor supports MCP install deeplinks. Click the link below to add Summer Engine to your MCP servers:
@@ -19,7 +23,7 @@ Cursor supports MCP install deeplinks. Click the link below to add Summer Engine
 <Card
   title="Add Summer Engine to Cursor"
   icon="plug"
-  href="cursor://anysphere.cursor-deeplink/mcp/install?name=summer-engine&config=eyJjb21tYW5kIjoibnB4IiwiYXJncyI6WyJzdW1tZXItZW5naW5lIiwibWNwIl19"
+  href="cursor://anysphere.cursor-deeplink/mcp/install?name=summer-engine&config=eyJ0eXBlIjoic3RkaW8iLCJjb21tYW5kIjoibnB4IiwiYXJncyI6WyIteSIsInN1bW1lci1lbmdpbmVAbGF0ZXN0IiwibWNwIl19"
 >
   Click to install Summer Engine MCP (opens Cursor)
 </Card>
@@ -50,7 +54,7 @@ Create the file if it doesn't exist. If it does, add the `summer-engine` entry t
   "mcpServers": {
     "summer-engine": {
       "command": "npx",
-      "args": ["summer-engine", "mcp"]
+      "args": ["-y", "summer-engine@latest", "mcp"]
     }
   }
 }
@@ -62,7 +66,7 @@ Create the file if it doesn't exist. If it does, add the `summer-engine` entry t
     "other-server": { ... },
     "summer-engine": {
       "command": "npx",
-      "args": ["summer-engine", "mcp"]
+      "args": ["-y", "summer-engine@latest", "mcp"]
     }
   }
 }

@@ -45,6 +45,7 @@
     "desktop/troubleshooting",
     "mcp/overview",
     "mcp/setup",
+    "mcp/agents",
     "mcp/cursor",
     "mcp/claude-code",
     "mcp/devin-desktop",

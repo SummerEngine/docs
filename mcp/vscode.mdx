@@ -12,6 +12,10 @@ VS Code and GitHub Copilot's coding agent support MCP (Model Context Protocol). 
 
 This guide covers both **VS Code** (with Copilot or other AI extensions) and **GitHub Copilot's agent mode**—they use the same MCP configuration.
 
+<Tip>
+**Fastest path.** `npx -y summer-engine@latest setup vscode-copilot --yes` writes the config below into `VS Code's user mcp.json`, installs the skill library to `~/.agents/skills`, and runs `summer doctor`. The steps that follow are the manual version of the same thing.
+</Tip>
+
 ## Prerequisites
 
 - **VS Code**: With GitHub Copilot (agent mode) or another MCP-aware AI extension
@@ -39,7 +43,7 @@ Create `.vscode/mcp.json` in your project root, or open the user config via **MC
     "summer-engine": {
       "type": "stdio",
       "command": "npx",
-      "args": ["summer-engine", "mcp"]
+      "args": ["-y", "summer-engine@latest", "mcp"]
     }
   }
 }
@@ -52,7 +56,7 @@ Create `.vscode/mcp.json` in your project root, or open the user config via **MC
     "summer-engine": {
       "type": "stdio",
       "command": "npx",
-      "args": ["summer-engine", "mcp"]
+      "args": ["-y", "summer-engine@latest", "mcp"]
     }
   }
 }
