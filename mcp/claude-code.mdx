@@ -20,27 +20,36 @@ This guide covers the configuration steps. The setup takes about a minute.
 
 ## Configuration
 
-### Step 1: Locate the Config File
+### Option 1: One-command setup (recommended)
 
-Claude Code reads MCP servers from:
+```bash
+npx -y summer-engine@latest setup claude-code --yes
+```
 
-`~/.claude/claude_code_config.json`
+This writes the `summer-engine` server into `~/.claude.json` (Claude Code's user-level MCP config), installs the skill library to `~/.claude/skills/`, and runs `summer doctor`. Add `--scope project` to write `.mcp.json` in the project root and `.claude/skills/` instead, so the setup travels with the game.
 
-On macOS: `~/` means your home directory (e.g., `/Users/yourname/`).  
-On Windows: `~/.claude/` typically maps to `%USERPROFILE%\.claude\`.
+### Option 2: Manual configuration
 
-Create the file if it doesn't exist. If you already have other MCP servers configured, you'll add Summer Engine to the existing `mcpServers` object.
+#### Step 1: Locate the Config File
 
-### Step 2: Add Summer Engine
+Claude Code reads MCP servers from two places:
+
+- **User-level:** `~/.claude.json` (all projects). On Windows: `%USERPROFILE%\.claude.json`.
+- **Project-level:** `.mcp.json` in the project root (shared with the team through version control; Claude Code asks once before loading it).
+
+Create the file if it doesn't exist. If you already have other MCP servers configured, add Summer Engine to the existing `mcpServers` object. Claude Code lists `"type": "stdio"` as required for command-based servers.
+
+#### Step 2: Add Summer Engine
 
 <CodeGroup>
 
-```json New file (~/.claude/claude_code_config.json)
+```json New file (.mcp.json or ~/.claude.json)
 {
   "mcpServers": {
     "summer-engine": {
+      "type": "stdio",
       "command": "npx",
-      "args": ["summer-engine", "mcp"]
+      "args": ["-y", "summer-engine@latest", "mcp"]
     }
   }
 }
@@ -51,8 +60,9 @@ Create the file if it doesn't exist. If you already have other MCP servers confi
   "mcpServers": {
     "other-server": { ... },
     "summer-engine": {
+      "type": "stdio",
       "command": "npx",
-      "args": ["summer-engine", "mcp"]
+      "args": ["-y", "summer-engine@latest", "mcp"]
     }
   }
 }
@@ -60,9 +70,11 @@ Create the file if it doesn't exist. If you already have other MCP servers confi
 
 </CodeGroup>
 
+You can also let Claude Code write it: `claude mcp add summer-engine -- npx -y summer-engine@latest mcp`.
+
 ### Step 3: Restart Claude Code
 
-Close and reopen Claude Code so it loads the new MCP config. The server starts when Claude Code starts; it connects to the engine on the first tool call.
+Start a new Claude Code session, or run `/mcp` to reload servers. The server starts when Claude Code starts; it connects to the engine on the first tool call.
 
 ### Step 4: Verify
 
@@ -71,7 +83,7 @@ When you start a conversation, Claude should have access to Summer Engine's tool
 - "Use Summer Engine to add a Camera3D to the scene"
 - "Get the scene tree from Summer Engine"
 
-If Claude says it doesn't have access to Summer Engine tools, check that the config file path is correct and the JSON is valid.
+If Claude says it doesn't have access to Summer Engine tools, run `/mcp` to see the server list, then check the config file path and that the JSON is valid. `summer doctor` checks the same things from the terminal.
 
 ## Using Summer Engine with Claude
 
@@ -97,7 +109,7 @@ The MCP server couldn't connect to the engine. Start Summer Engine, open your pr
 
 ### Config not loading
 
-- **Path:** Ensure the file is exactly `~/.claude/claude_code_config.json` (not a subfolder, not a different name)
+- **Path:** Ensure the file is `~/.claude.json` (user) or `.mcp.json` in the project root (project). `~/.claude/claude_code_config.json` from older guides is not read.
 - **JSON:** Validate the syntax. No trailing commas, all strings in double quotes
 - **Restart:** Fully quit Claude Code and reopen
 

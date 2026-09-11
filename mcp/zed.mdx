@@ -12,6 +12,10 @@ Zed is a fast, AI-powered code editor that supports MCP (Model Context Protocol)
 
 This guide covers the configuration. Setup takes about a minute.
 
+<Tip>
+**Fastest path.** `npx -y summer-engine@latest setup zed --yes` writes the config below into `~/.config/zed/settings.json`, installs the skill library to `~/.agents/skills`, and runs `summer doctor`. The steps that follow are the manual version of the same thing.
+</Tip>
+
 ## Prerequisites
 
 - **Zed**: The high-performance editor with built-in AI
@@ -41,7 +45,7 @@ Add the `context_servers` entry. If it already exists, add `summer-engine` to th
   "context_servers": {
     "summer-engine": {
       "command": "npx",
-      "args": ["summer-engine", "mcp"],
+      "args": ["-y", "summer-engine@latest", "mcp"],
       "env": {}
     }
   }
@@ -54,7 +58,7 @@ Add the `context_servers` entry. If it already exists, add `summer-engine` to th
     "other-server": { ... },
     "summer-engine": {
       "command": "npx",
-      "args": ["summer-engine", "mcp"],
+      "args": ["-y", "summer-engine@latest", "mcp"],
       "env": {}
     }
   }

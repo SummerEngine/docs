@@ -28,20 +28,23 @@ Swap `claude-code` for any supported agent: `claude-code`, `cursor`, `codex`, `w
 
 ### summer setup
 
-Configure Summer Engine for an AI agent and run diagnostics in one step. This is the recommended onboarding command. It writes the MCP server config for the agent, installs the recommended skills, and prints a doctor report.
+Configure Summer Engine for an AI agent and run diagnostics in one step. This is the recommended onboarding command. It writes the MCP server config for the agent, installs the whole skill library where that agent reads skills, and prints a doctor report. Every agent and the files it writes: [Every Supported Agent](/mcp/agents).
 
 ```bash
-summer setup <agent> [--yes] [--scope user|project] [--force]
+summer setup <agent> [--yes] [--scope user|project] [--force] [--recommended] [--stable-only] [--channel <tag>]
 ```
 
 | Argument / Option | Description |
 |-------------------|-------------|
-| `<agent>` | Agent to configure: `claude-code`, `cursor`, `codex`, `windsurf`, `cline`, `roo-code`, `kilo-code`, `gemini`, `github-copilot`, `vscode-copilot`, `opencode`, `lm-studio` |
+| `<agent>` | Agent to configure: `claude-code`, `claude-desktop`, `codex`, `cursor`, `windsurf`, `antigravity`, `cline`, `cline-cli`, `kilo-code`, `github-copilot`, `vscode-copilot`, `visual-studio`, `copilot-jetbrains`, `opencode`, `zed`, `kiro`, `goose`, `hermes`, `trae`, `qwen-code`, `kimi-code`, `crush`, `amp`, `factory`, `junie`, `warp`, `rovo-dev`, `qoder`, `grok-build`, `mistral-vibe`, `lm-studio`. Legacy, still accepted: `gemini`, `roo-code`. Aliases such as `claude`, `devin`, `agy`, `copilot`, `droid` resolve too |
 | `--yes` | Apply the practical setup steps (including skill install) without prompting |
 | `--scope <scope>` | Config scope: `user` (default) or `project` |
 | `--dry-run` | Show planned changes without writing files |
 | `--print` | Print the MCP config snippet instead of writing files |
-| `--force` | Overwrite existing skill content |
+| `--force` | Rewrite every installed skill and remove copies older Summer versions wrote elsewhere |
+| `--recommended` | Install only the recommended skill subset instead of the whole library |
+| `--stable-only` | Skip skills marked preview |
+| `--channel <tag>` | npm dist-tag the MCP entry runs (`latest` by default; `next` while a release soaks) |
 | `--json` | Print the setup result as JSON |
 
 **Examples:**
@@ -49,7 +52,8 @@ summer setup <agent> [--yes] [--scope user|project] [--force]
 ```bash
 npx -y summer-engine@latest setup claude-code --yes
 npx -y summer-engine@latest setup cursor --yes --scope project
-npx -y summer-engine@latest setup gemini --print          # See the config without writing
+npx -y summer-engine@latest setup zed --print             # See the config without writing
+npx -y summer-engine@latest setup goose --yes             # YAML config, written in place
 ```
 
 ---
@@ -312,6 +316,7 @@ Install and manage best-practice guides for AI agents building games. Skills are
 
 ```bash
 summer skills list                          # List available skills
+summer skills list --by-domain              # Grouped by primary domain
 summer skills install <name> --agent <a>    # Install one skill for an agent
 summer skills install --recommended --agent <a>   # Install the recommended set
 summer skills install --all --agent <a>     # Install every skill
@@ -320,12 +325,14 @@ summer skills info <name>                   # Show description and preview
 
 | Option | Description |
 |--------|-------------|
-| `--agent <agent>` | Target agent (e.g. `claude-code`, `cursor`, `codex`) so the skill installs where that agent auto-discovers it |
+| `--agent <agent>` | Target agent (any id from `summer setup`, or `summer` for `~/.summer/skills`) so the skill installs where that agent auto-discovers it |
+| `--scope <scope>` | `user` (default) or `project` |
+| `--stable-only` | With `--all` / `--recommended`, skip skills marked preview |
 | `--recommended` | Install the recommended skill set |
 | `--all` | Install every available skill |
 | `--force` | Overwrite existing skill content on re-install |
 
-Most users never call this directly: `summer setup <agent> --yes` installs the recommended skills for you. See [Skills](/mcp/skills) for the full catalog and the 20+ categories.
+Most users never call this directly: `summer setup <agent> --yes` installs the whole library for you. See [Skills](/mcp/skills) for the catalog and where each agent reads skills.
 
 ---
 
@@ -351,6 +358,8 @@ to `6550` when that file is absent.
 | `~/.summer/api-port` | Port override if the default 6550 is occupied |
 | `~/.summer/cloud-token` | Summer Cloud token (from `summer login`) |
 | `.summer/` | Per-project durable memory (game brief, bibles, locked facts) |
+| `~/.agents/skills/` | Shared agentskills.io skills folder, read by Codex, Cursor, Zed, OpenCode, Copilot in VS Code, Devin Desktop and others (`.agents/skills/` in a project) |
+| `<skills dir>/.summer-version` | Marker `summer doctor` uses to detect stale skills |
 | `summer-cloud.json` | Per-project Summer Cloud binding (from `summer cloud init`) |
 
 ---

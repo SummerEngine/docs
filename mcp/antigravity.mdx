@@ -14,47 +14,57 @@ This guide covers the configuration. Setup takes about a minute.
 
 ## Prerequisites
 
-- **Antigravity**: Google's AI-powered IDE
+- **Antigravity**: Google's AI-powered IDE or the `agy` CLI
 - **Node.js**: For running the MCP server (Node 18+)
 - **Summer Engine**: Installed and running with your project open
 
 ## Configuration
 
-Antigravity uses the VS Code MCP config format. The config file is:
+### Option 1: One-command setup (recommended)
 
-- **Project-level:** `.vscode/mcp.json` in your project root
-- **Global:** Use the Antigravity CLI (`antigravity --add-mcp`) if available
+```bash
+npx -y summer-engine@latest setup antigravity --yes
+```
+
+This writes the `summer-engine` server into `~/.gemini/config/mcp_config.json`, the file the Antigravity IDE, the Antigravity CLI (`agy`) and Antigravity 2.0 share, installs the skill library to `~/.gemini/config/skills/`, and runs `summer doctor`. Add `--scope project` to write `.agents/mcp_config.json` and `.agents/skills/` in the project instead.
 
 <Note>
-**Config format.** Antigravity uses `servers` (not `mcpServers`). The structure matches VS Code's MCP configuration.
+Coming from Gemini CLI? Gemini CLI was retired for individual accounts on 2026-06-18 and Antigravity replaced it. The Summer Gemini extension still works for Workspace and enterprise Gemini CLI users (`summer setup gemini`), but new setups should use Antigravity.
 </Note>
 
-### Step 1: Create or Edit the Config File
+### Option 2: Manual configuration
 
-Create `.vscode/mcp.json` in your project root. If the file already exists (e.g., for other MCP servers), add Summer Engine to the existing `servers` object.
+Antigravity uses the `mcpServers` shape. The files are:
 
-### Step 2: Add Summer Engine
+- **User-level:** `~/.gemini/config/mcp_config.json`
+- **Project-level:** `.agents/mcp_config.json` in the project root
+
+#### Step 1: Create or Edit the Config File
+
+Create the file if it doesn't exist. If it already has other MCP servers, add Summer Engine to the existing `mcpServers` object.
+
+#### Step 2: Add Summer Engine
 
 <CodeGroup>
 
-```json New file (.vscode/mcp.json)
+```json New file (~/.gemini/config/mcp_config.json)
 {
-  "servers": {
+  "mcpServers": {
     "summer-engine": {
       "command": "npx",
-      "args": ["summer-engine", "mcp"]
+      "args": ["-y", "summer-engine@latest", "mcp"]
     }
   }
 }
 ```
 
-```json Adding to existing servers
+```json Adding to existing mcpServers
 {
-  "servers": {
+  "mcpServers": {
     "other-server": { ... },
     "summer-engine": {
       "command": "npx",
-      "args": ["summer-engine", "mcp"]
+      "args": ["-y", "summer-engine@latest", "mcp"]
     }
   }
 }
@@ -62,9 +72,9 @@ Create `.vscode/mcp.json` in your project root. If the file already exists (e.g.
 
 </CodeGroup>
 
-### Step 3: Restart Antigravity
+### Step 3: Reload MCP servers
 
-Close and reopen Antigravity so it loads the new MCP config. The Summer Engine MCP server starts when Antigravity starts; it connects to the engine on the first tool call.
+In the agent panel open the MCP servers view and refresh, or restart Antigravity. The Summer Engine MCP server starts when Antigravity starts; it connects to the engine on the first tool call.
 
 ### Step 4: Verify
 
@@ -96,7 +106,7 @@ Start Summer Engine and open your project. The MCP server connects to the engine
 
 ### MCP server not appearing
 
-- **Config path:** Verify `.vscode/mcp.json` is in your project root (the folder you opened in Antigravity)
+- **Config path:** Verify `~/.gemini/config/mcp_config.json` (user) or `.agents/mcp_config.json` in the project root. `.vscode/mcp.json` from older guides is VS Code's file, not Antigravity's.
 - **JSON validity:** Ensure no trailing commas, proper quotes, and valid JSON structure
 - **Restart:** Fully quit and reopen Antigravity
 

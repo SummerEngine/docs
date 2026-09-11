@@ -1,169 +1,173 @@
 ---
 title: "MCP Setup"
-description: "Connect Cursor, Claude Code, Devin Desktop, Antigravity, Codex, VS Code, or Zed to Summer Engine. Build games from your favorite AI-powered IDE."
+description: "Connect any AI coding agent to Summer Engine with one command: Cursor, Claude Code, Codex, Devin Desktop, Antigravity, Zed, Copilot, OpenCode, Kiro, Goose and 20 more. What summer setup writes and where."
 icon: "settings"
 ---
 
-{/* Do not reintroduce a hardcoded MCP tool count here. The tool list grows every release and a baked-in number has already gone stale twice. */}
+{/* Do not reintroduce a hardcoded MCP tool count here. The tool list grows every release and a baked-in number has already gone stale twice. The agent table below is rendered from the toolkit's agent table (2026-09-11); regenerate it rather than hand-editing rows. */}
 
-## Build Games from Your IDE
+## One Command, Any Agent
 
-Summer Engine's MCP (Model Context Protocol) integration lets you control the engine directly from Cursor, Claude Code, Devin Desktop, Antigravity, Codex, VS Code, Zed, or any MCP-compatible AI tool. Instead of switching between your IDE and the Summer Engine editor, you stay in one place: describe what you want, and the AI modifies your game scenes, adds nodes, sets up physics, and runs your project, all through natural language.
+```bash
+npx -y summer-engine@latest setup <agent> --yes
+```
 
-**What this means in practice:** Open a Summer Engine project, add the MCP config to your IDE, and ask "Add a Camera3D and DirectionalLight3D to the scene." The nodes appear in the engine. Ask "Import a low-poly tree from this URL and add it to the World node." The asset downloads, imports, and lands in your scene tree. The AI has focused tools for scene manipulation, debugging, project settings, and asset import. No copy-paste, no context switching.
+Replace `<agent>` with the id from the table below (`cursor`, `claude-code`, `codex`, ...). The command does three things:
 
-## Why Use MCP?
+1. **Writes the MCP server entry** into the agent's own config file, in that agent's file shape. Existing servers in the file are kept.
+2. **Installs the Summer skill library** where that agent reads skills (see [Skills](/mcp/skills)). Most agents share one folder, `~/.agents/skills`, so one setup covers several agents.
+3. **Runs `summer doctor`** so you see immediately whether Node, the engine and the login are in place.
 
-### One Environment, Full Control
+Add `--scope project` to write project-level files that travel with the game, `--print` to see the config without writing, `--dry-run` to see the plan. Re-run with `--force` after upgrading Summer to refresh the skills.
 
-You already use Cursor or Claude Code for coding. MCP extends that workflow to game development. The AI understands your Summer Engine project: it can read the scene tree, inspect properties, run the game, capture screenshots, and fix errors, all without leaving your editor.
+## What You Get
 
-### Same Operations as the Built-in Chat
+Summer Engine's MCP (Model Context Protocol) server lets the agent control the engine directly: read the scene tree, add nodes, set properties, import assets, run the game, capture screenshots, read errors. Instead of switching between your editor and Summer Engine, you stay in one place and describe what you want.
 
-The MCP tools use the same engine operations as Summer Engine's integrated chat. AddNode, SetProp, SaveScene, ImportFromUrl. They're identical. The difference is where you type: in your IDE instead of the engine's chat panel. Undo works the same. Changes are just as safe.
+The MCP tools use the same engine operations as Summer Engine's built-in chat (AddNode, SetProp, SaveScene, ImportFromUrl). The difference is where you type. Undo works the same. Changes are just as safe.
 
-### Lazy Connection
-
-The MCP server starts immediately. It doesn't require the engine to be running upfront. When you first call a tool, it connects to the engine. If the engine isn't running, you get a clear error: "Summer Engine is not running. Open it first, or run: npx summer-engine run." Start the engine, try again, and it works. No crashes, no hanging.
+**Lazy connection.** The MCP server starts immediately and connects to the engine on the first tool call. If the engine is not running you get a clear error: "Summer Engine is not running. Open it first, or run: npx summer-engine run." Start the engine, try again.
 
 ## Prerequisites
 
-Before setting up MCP, you need:
+1. **Summer Engine**: the desktop app from [summerengine.com](https://www.summerengine.com) or `npx summer-engine install`
+2. **Node.js 18+**: the MCP server runs with `npx`
+3. **A Summer Engine project open in the engine**, so the local API server is active
 
-1. **Summer Engine**: Either the desktop app (from [summerengine.com](https://www.summerengine.com)) or installed via `npx summer-engine install`
-2. **Node.js**: For running the MCP server via `npx summer-engine mcp` (Node 18+)
-3. **A Summer Engine project**: Open it in the engine so the local API server is active
+The engine runs a local HTTP server on `localhost:6550` while it is open and writes a token to `~/.summer/api-token`. No API keys to manage.
 
-The engine runs a local HTTP server on `localhost:6550` when it's open. The MCP server connects to it using a token stored in `~/.summer/api-token` (created automatically when the engine starts). No API keys to manage. It just works.
+## Supported Agents
 
-## Quick Setup by IDE
+Every id `summer setup` accepts, with the file it writes and where the skills land. Agents with their own guide are linked; the rest are on [Every Supported Agent](/mcp/agents) with the exact snippet.
 
-<CardGroup cols={3}>
-  <Card
-    title="Cursor"
-    icon="cursor"
-    href="/mcp/cursor"
-  >
-    One-click or manual config. Most popular choice for AI-assisted development.
-  </Card>
-  <Card
-    title="Claude Code"
-    icon="message-square"
-    href="/mcp/claude-code"
-  >
-    Add Summer Engine to Claude Code's MCP configuration.
-  </Card>
-  <Card
-    title="Devin Desktop"
-    icon="wind"
-    href="/mcp/devin-desktop"
-  >
-    Configure Devin Desktop to use Summer Engine's MCP tools.
-  </Card>
-  <Card
-    title="Antigravity"
-    icon="rocket"
-    href="/mcp/antigravity"
-  >
-    Add Summer Engine to Google's AI-powered IDE.
-  </Card>
-  <Card
-    title="Codex"
-    icon="code"
-    href="/mcp/codex"
-  >
-    Add Summer Engine to OpenAI's AI coding assistant.
-  </Card>
-  <Card
-    title="VS Code & Copilot"
-    icon="square-code"
-    href="/mcp/vscode"
-  >
-    Add Summer Engine to VS Code or GitHub Copilot.
-  </Card>
-  <Card
-    title="Zed"
-    icon="zap"
-    href="/mcp/zed"
-  >
-    Add Summer Engine to Zed's Agent Panel.
-  </Card>
-  <Card
-    title="Local Models (Free)"
-    icon="microchip"
-    href="/mcp/local-models"
-  >
-    Ollama, LM Studio, or Goose — no AI subscription.
-  </Card>
-</CardGroup>
+| Agent | `summer setup` id | MCP config it writes | Skills folder |
+|---|---|---|---|
+| [Claude Code](/mcp/claude-code) | `claude-code` | `~/.claude.json` / `.mcp.json` (project) | `~/.claude/skills` / `.claude/skills` |
+| [Claude Desktop](/mcp/agents#claude-desktop) | `claude-desktop` | `~/Library/Application Support/Claude/claude_desktop_config.json` | none (MCP only) |
+| [Codex](/mcp/codex) | `codex` | `~/.codex/config.toml` / `.codex/config.toml` (project) | `~/.agents/skills` (shared) / `.agents/skills` |
+| [Cursor](/mcp/cursor) | `cursor` | `~/.cursor/mcp.json` / `.cursor/mcp.json` (project) | `~/.agents/skills` (shared) / `.agents/skills` |
+| [Devin Desktop (formerly Windsurf)](/mcp/devin-desktop) | `windsurf` | `~/.codeium/windsurf/mcp_config.json` | `~/.agents/skills` (shared) / `.agents/skills` |
+| [Antigravity](/mcp/antigravity) | `antigravity` | `~/.gemini/config/mcp_config.json` / `.agents/mcp_config.json` (project) | `~/.gemini/config/skills` / `.agents/skills` |
+| [Cline (VS Code)](/mcp/agents#cline) | `cline` | `~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json` | `~/.cline/skills` / `.cline/skills` |
+| [Cline CLI](/mcp/agents#cline-cli) | `cline-cli` | `~/.cline/data/settings/cline_mcp_settings.json` | `~/.cline/skills` / `.cline/skills` |
+| [Kilo Code](/mcp/agents#kilo-code) | `kilo-code` | `~/.config/kilo/kilo.json` / `kilo.json` (project) | `~/.kilo/skills` / `.kilo/skills` |
+| [GitHub Copilot CLI](/mcp/github-copilot) | `github-copilot` | `~/.copilot/mcp-config.json` / `.mcp.json` (project) | `~/.copilot/skills` / `.github/skills` |
+| [GitHub Copilot in VS Code](/mcp/vscode) | `vscode-copilot` | `~/Library/Application Support/Code/User/mcp.json` / `.vscode/mcp.json` (project) | `~/.agents/skills` (shared) / `.agents/skills` |
+| [GitHub Copilot in Visual Studio](/mcp/agents#visual-studio) | `visual-studio` | `~/.mcp.json` / `.mcp.json` (project) | none (MCP only) |
+| [GitHub Copilot in JetBrains IDEs](/mcp/agents#copilot-jetbrains) | `copilot-jetbrains` | `~/.config/github-copilot/intellij/mcp.json` | none (MCP only) |
+| [OpenCode](/mcp/opencode) | `opencode` | `~/.config/opencode/opencode.json` / `opencode.json` (project) | `~/.agents/skills` (shared) / `.agents/skills` |
+| [Zed](/mcp/zed) | `zed` | `~/.config/zed/settings.json` | `~/.agents/skills` (shared) / `.agents/skills` |
+| [Kiro](/mcp/agents#kiro) | `kiro` | `~/.kiro/settings/mcp.json` / `.kiro/settings/mcp.json` (project) | `~/.kiro/skills` / `.kiro/skills` |
+| [Goose](/mcp/local-models) | `goose` | `~/.config/goose/config.yaml` | `~/.config/agents/skills` / `.agents/skills` |
+| [Hermes Agent](/mcp/agents#hermes) | `hermes` | `~/.hermes/config.yaml` | `~/.hermes/skills` / `.agents/skills` |
+| [Trae](/mcp/agents#trae) | `trae` | `.trae/mcp.json` (project) | none (MCP only) |
+| [Qwen Code](/mcp/agents#qwen-code) | `qwen-code` | `~/.qwen/settings.json` / `.qwen/settings.json` (project) | `~/.qwen/skills` / `.qwen/skills` |
+| [Kimi Code CLI](/mcp/agents#kimi-code) | `kimi-code` | `~/.kimi-code/mcp.json` / `.kimi-code/mcp.json` (project) | `~/.agents/skills` (shared) / `.agents/skills` |
+| [Crush](/mcp/agents#crush) | `crush` | `~/.config/crush/crushrc` / `.crushrc` (project) | `~/.agents/skills` (shared) / `.agents/skills` |
+| [Amp](/mcp/agents#amp) | `amp` | `~/.config/amp/settings.json` | `~/.agents/skills` (shared) / `.agents/skills` |
+| [Factory Droid](/mcp/agents#factory) | `factory` | `~/.factory/mcp.json` / `.factory/mcp.json` (project) | `~/.agents/skills` (shared) / `.agents/skills` |
+| [Junie](/mcp/agents#junie) | `junie` | `~/.junie/mcp/mcp.json` / `.junie/mcp/mcp.json` (project) | none (MCP only) |
+| [Warp](/mcp/agents#warp) | `warp` | `~/.warp/.mcp.json` / `.warp/.mcp.json` (project) | `~/.agents/skills` (shared) / `.agents/skills` |
+| [Rovo Dev CLI](/mcp/agents#rovo-dev) | `rovo-dev` | `~/.rovodev/mcp.json` | `~/.agents/skills` (shared) / `.agents/skills` |
+| [Qoder CLI](/mcp/agents#qoder) | `qoder` | `~/.qoder/settings.json` / `.mcp.json` (project) | `~/.qoder/skills` / `.qoder/skills` |
+| [Grok Build](/mcp/agents#grok-build) | `grok-build` | `~/.grok/config.toml` / `.grok/config.toml` (project) | `~/.agents/skills` (shared) / `.agents/skills` |
+| [Mistral Vibe](/mcp/agents#mistral-vibe) | `mistral-vibe` | `~/.vibe/config.toml` / `.vibe/config.toml` (project) | `~/.vibe/skills` / `.agents/skills` |
+| [LM Studio](/mcp/local-models) | `lm-studio` | `~/.lmstudio/mcp.json` | none (MCP only) |
+
+Legacy ids still work but warn: `gemini` (Gemini CLI, retired for individual accounts on 2026-06-18; use `antigravity`) and `roo-code` (shut down 2026-05-15).
+
+Aliases: `claude` → `claude-code`, `devin` → `windsurf`, `agy` → `antigravity`, `copilot` → `github-copilot`, `vscode` → `vscode-copilot`, `droid` → `factory`, `kilo` → `kilo-code`, `qwen` → `qwen-code`, `kimi` → `kimi-code`.
 
 ## Manual Configuration
 
-If your IDE supports MCP but isn't listed above, add this to your MCP config file:
+If you would rather edit files yourself, or your agent is not listed, these are the shapes in use. `summer setup <agent> --print` prints the exact one for any agent.
 
 <CodeGroup>
 
-```json Cursor (.cursor/mcp.json)
+```json mcpServers (Cursor, Claude Code, Claude Desktop, Kiro, Qwen, Kimi, Warp, ...)
 {
   "mcpServers": {
     "summer-engine": {
+      "type": "stdio",
       "command": "npx",
-      "args": ["summer-engine", "mcp"]
+      "args": ["-y", "summer-engine@latest", "mcp"]
     }
   }
 }
 ```
 
-```json Claude Code (~/.claude/claude_code_config.json)
-{
-  "mcpServers": {
-    "summer-engine": {
-      "command": "npx",
-      "args": ["summer-engine", "mcp"]
-    }
-  }
-}
-```
-
-```json VS Code / Antigravity (.vscode/mcp.json)
+```json servers (VS Code, Visual Studio, Copilot in JetBrains)
 {
   "servers": {
     "summer-engine": {
       "type": "stdio",
       "command": "npx",
-      "args": ["summer-engine", "mcp"]
+      "args": ["-y", "summer-engine@latest", "mcp"]
     }
   }
 }
 ```
 
-```json Zed (context_servers in settings.json)
+```json mcp (OpenCode, Kilo Code)
+{
+  "mcp": {
+    "summer-engine": {
+      "type": "local",
+      "command": ["npx", "-y", "summer-engine@latest", "mcp"],
+      "enabled": true
+    }
+  }
+}
+```
+
+```json context_servers (Zed settings.json)
 {
   "context_servers": {
     "summer-engine": {
       "command": "npx",
-      "args": ["summer-engine", "mcp"],
+      "args": ["-y", "summer-engine@latest", "mcp"],
       "env": {}
     }
   }
 }
 ```
 
+```toml TOML (Codex ~/.codex/config.toml, Grok Build)
+[mcp_servers.summer-engine]
+command = "npx"
+args = ["-y", "summer-engine@latest", "mcp"]
+```
+
+```yaml YAML (Goose ~/.config/goose/config.yaml)
+extensions:
+  summer-engine:
+    type: stdio
+    name: summer-engine
+    cmd: npx
+    args: ["-y", "summer-engine@latest", "mcp"]
+    enabled: true
+    timeout: 300
+```
+
 </CodeGroup>
 
 <Tip>
-**No global install required.** Using `npx summer-engine mcp` runs the server on demand. For faster startup, you can install globally: `npm install -g summer-engine`, then use `"args": ["summer", "mcp"]` instead.
+**Windows.** `npx` is a shell shim, and hosts that spawn it directly fail with ENOENT. `summer setup` writes `"command": "cmd.exe", "args": ["/c", "npx", "-y", "summer-engine@latest", "mcp"]` on Windows; do the same by hand.
+</Tip>
+
+<Tip>
+**No global install required.** `npx -y summer-engine@latest mcp` runs the current release on demand. For faster startup install globally (`npm install -g summer-engine`) and use `"command": "summer", "args": ["mcp"]`.
 </Tip>
 
 ## Verify It Works
 
-1. **Start Summer Engine**: Open your project in the engine (or run `npx summer-engine run` from the project directory).
-2. **Restart your IDE**: So it picks up the new MCP config.
-3. **Check the MCP panel**: In Cursor: Settings > MCP. You should see "summer-engine" connected, with its tools listed.
+1. **Start Summer Engine**: open your project in the engine (or run `npx summer-engine run` from the project directory).
+2. **Restart the agent** so it reloads its MCP config. `summer setup` prints the exact step for your agent.
+3. **Check the MCP list**: in Cursor, Settings > MCP; in Claude Code, `/mcp`. You should see `summer-engine` connected with its tools.
 4. **Ask the AI**: "Use Summer Engine to add a MeshInstance3D with a BoxMesh to the scene root. Name it TestCube."
-5. **Confirm in the engine**: The node should appear in the scene tree.
+5. **Confirm in the engine**: the node appears in the scene tree.
 
-If you get "Summer Engine is not running," the engine isn't open or the project isn't loaded. Start the engine and try again.
+`summer doctor` checks all of this from the terminal, including whether the agent's recorded config still points at a current Summer release.
 
 ## What the AI Can Do
 
@@ -176,28 +180,36 @@ The MCP server exposes tools in these categories:
 | **Visual Verification** | Screenshot the viewport or the running game |
 | **Project** | Project context, settings, input mappings, scene tree, import assets from URLs |
 | **Project Files** | Read, write, and patch script and resource files inside the bound project |
-| **Asset Library** | Search the 25k+ public library and your assets, then import |
+| **Asset Library** | Search the public library and your assets, then import |
 | **Generation** | Generate images, 3D models, audio, video, and motion clips, slice sprite sheets, and poll job status |
+| **Navigation** | Open the right page on summerengine.com or the right surface in the editor for the user (`summer_open`) |
 | **Summer Cloud** | Sync the project across machines: push, pull, status, restore, checkpoints, conflicts |
 
 For a full reference with parameters and examples, see the [Tools Reference](/mcp/tools-reference). For a step-by-step guide on how an AI agent builds a complete game using these tools, see [Building a Game with MCP](/mcp/building-a-game).
 
 ## Next Steps
 
-<CardGroup cols={2}>
+<CardGroup cols=2>
   <Card
-    title="Cursor Setup"
-    icon="cursor"
-    href="/mcp/cursor"
+    title="Every Supported Agent"
+    icon="list"
+    href="/mcp/agents"
   >
-    Detailed Cursor configuration with one-click install
+    Config file, file shape and skills folder for all agents
+  </Card>
+  <Card
+    title="Skills"
+    icon="book-open"
+    href="/mcp/skills"
+  >
+    The skill library and where each agent reads it
   </Card>
   <Card
     title="CLI Reference"
     icon="terminal"
     href="/mcp/cli-reference"
   >
-    All CLI commands: install, login, run, create, and more
+    All CLI commands: setup, doctor, install, run, create, and more
   </Card>
   <Card
     title="Tools Reference"
@@ -205,13 +217,6 @@ For a full reference with parameters and examples, see the [Tools Reference](/mc
     href="/mcp/tools-reference"
   >
     Every MCP tool with parameters and usage examples
-  </Card>
-  <Card
-    title="Building a Game"
-    icon="gamepad-2"
-    href="/mcp/building-a-game"
-  >
-    How an AI agent builds a full game using MCP
   </Card>
 </CardGroup>
 
