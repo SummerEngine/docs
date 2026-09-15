@@ -66,6 +66,49 @@ See [Summer SDK](/api-reference/summer-sdk) for contracts and
 [Submit Your Summer Game for Review](/api-reference/summer-sdk/submission-guide) for the
 currently deployed submission flow.
 
+## Native multiplayer development
+
+The production table above describes the public Summercraft submission and playback
+path. It is not a statement that multiplayer engine development or restricted staging
+testing cannot exist. A staging test does not establish general creator access or
+production availability.
+
+Before implementing an online game, identify the environment your installed tools
+actually support. The public SDK examples on this site describe the scaffolded
+`SummerGame` / `SummerPlayer` contract and game-only `.pck` submission. They are not an
+installation or integration guide for a separate native multiplayer development build.
+Do not copy those stubs into a native runtime and assume the APIs are interchangeable.
+
+### If you have a native development environment
+
+Use the documentation shipped with that exact build. Record its version and the target
+environment before writing integration code. A usable environment must supply:
+
+1. A compatible editor/client and an accessible native API reference or starter project.
+2. Creator authentication and a documented publication command for that environment.
+3. A matching hosted build policy, resulting build/release identity, and game configuration.
+4. An authenticated player launcher for each supported device and a documented join flow.
+
+These are setup requirements for an online test, not tasks to solve inside gameplay
+scripts. This public documentation does not currently provide a self-service native
+staging installer, credentials, or player launcher. Do not invent their URLs, substitute
+public PCK submission for a different publication protocol, or require access to an
+internal expert assistant. Missing setup must be reported as a specific missing input.
+
+### Work that can proceed
+
+An agent can inspect installed tools, verify their versions, read the matching API
+reference, and build the requested gameplay when that integration contract is available.
+A missing hosted launch prerequisite does not require abandoning all game development.
+Keep any unfinished online requirement explicit; a local prototype does not complete a
+request to play with friends on separate devices. Do not silently replace that request
+with browser gameplay or a shared keyboard.
+
+For online acceptance, launch the same recorded release on two authenticated devices,
+join the same session, and verify shared gameplay and reconnection. Record any lobby
+capacity limit from the actual configuration; do not promise an unlimited lobby.
+Until this succeeds, report what was built and the exact remaining launch gate.
+
 ## Is the engine app open source?
 
 No. The desktop app is free proprietary software right now. If Summer publishes engine source later under a no-competing-engine license, the honest term would be source-available, not open source.
