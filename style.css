@@ -14,3 +14,21 @@
 .sidebar-content a {
   font-size: 0.8125rem !important;
 }
+
+/* Summer blue for text links only; everything else stays ink.
+   Values from summer.games tokens: --summer-blue-bright / --summer-blue-hover. */
+.prose a:not(.card):not([class*="card"]) {
+  color: #1a5fd0;
+  border-bottom-color: rgb(26 95 208 / 30%);
+}
+.prose a:not(.card):not([class*="card"]):hover {
+  color: #04378c;
+  border-bottom-color: currentColor;
+}
+html.dark .prose a:not(.card):not([class*="card"]) {
+  color: #7ab0ff;
+  border-bottom-color: rgb(122 176 255 / 30%);
+}
+html.dark .prose a:not(.card):not([class*="card"]):hover {
+  color: #a3c8ff;
+}

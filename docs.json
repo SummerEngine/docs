@@ -7,16 +7,20 @@
     "light": "/images/BLACKFullLogoNoBg.png"
   },
   "colors": {
-    "primary": "#f0b566",
-    "light": "#f0b566",
-    "dark": "#f0b566"
+    "primary": "#1d1d1f",
+    "light": "#f5f5f7",
+    "dark": "#1d1d1f"
+  },
+  "fonts": {
+    "family": "Geist"
   },
   "appearance": {
-    "mode": "system",
-    "background": {
-      "color": {
-        "dark": "#14120b"
-      }
+    "default": "system"
+  },
+  "background": {
+    "color": {
+      "light": "#ffffff",
+      "dark": "#0a0a0a"
     }
   },
   "favicon": "/images/icon/favicon.ico",
