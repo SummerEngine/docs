@@ -1,0 +1,135 @@
+---
+title: "Play with Friends from Claude or ChatGPT"
+description: "Connect the Summer Games MCP to Claude or ChatGPT. Ask who of your friends is online, text them, and invite them to your party, from the chat or your phone."
+icon: "users"
+---
+
+Connect your Summer account to Claude or ChatGPT. Then ask, in your own words:
+
+- "Who of my friends is online?"
+- "Text my friends and ask who wants to play."
+- "Invite Ana and Ben to my party."
+- "Did Ana accept my invite yet?"
+
+The AI app does it as you. It uses the Summer Games MCP at this address:
+
+```text
+https://mcp.summer.games/mcp
+```
+
+## Connect Claude
+
+You add Summer once, on the web or in Claude Desktop. It then works in every Claude app with the same Claude account, the phone too.
+
+<Steps>
+  <Step title="Add the connector">
+    On [claude.ai](https://claude.ai) or in Claude Desktop, open **Settings → Connectors** and choose **Add custom connector**.
+  </Step>
+  <Step title="Paste the address">
+    Name it **Summer** and paste `https://mcp.summer.games/mcp`. Choose **Add**.
+  </Step>
+  <Step title="Sign in on summer.games">
+    Claude opens summer.games. Sign in to your Summer account, check the app name and the site it sends you back to, and choose **Allow**.
+  </Step>
+  <Step title="Use it in a chat">
+    In a new chat, ask "Who of my friends is online?". If Claude does not use Summer, turn the connector on with **+ → Connectors**.
+  </Step>
+</Steps>
+
+**On your phone:** open the Claude app on iPhone or Android, signed in to the same Claude account. Summer is already there. You cannot add a custom connector in the phone app itself, so add it on the web or desktop first.
+
+Your Claude plan must allow custom connectors. On a Team or Enterprise plan, an owner adds the connector for the organization first, then each member connects.
+
+## Connect ChatGPT
+
+<Steps>
+  <Step title="Turn on developer mode">
+    On [chatgpt.com](https://chatgpt.com), ChatGPT asks you to turn on developer mode before you add a custom MCP server. Where this setting lives, and which plans have it, changes. Check OpenAI's help if you do not see it.
+  </Step>
+  <Step title="Add Summer">
+    Add a custom MCP server (connector) with the address `https://mcp.summer.games/mcp` and OAuth sign-in.
+  </Step>
+  <Step title="Sign in on summer.games">
+    ChatGPT opens summer.games. Sign in, check the app name and the site, and choose **Allow**.
+  </Step>
+</Steps>
+
+**On your phone:** we have not tested the ChatGPT phone app with Summer yet. Use chatgpt.com.
+
+## Connect Claude Code or another app
+
+Claude Code:
+
+```bash
+claude mcp add --transport http summer https://mcp.summer.games/mcp
+```
+
+Then run `/mcp` in Claude Code and choose **summer** to sign in.
+
+Any other AI app: add a remote MCP server with the address above. The app must support OAuth sign-in. It registers itself with Summer when you connect.
+
+## What you choose when you connect
+
+The summer.games page shows what the app asks for:
+
+| Permission | The app may |
+|---|---|
+| **Read** | See your profile, your friends and whether they are online or playing, your friend requests, your messages and your party |
+| **Act** | Send friend requests, messages and party invites, answer them, and change your display name, as you |
+
+Act always includes read. Your AI app asks you before it sends or changes anything. Read what it is about to send before you say yes.
+
+## Things to ask
+
+| Ask | What happens |
+|---|---|
+| "Who of my friends is online?" | It lists your friends who are online or playing, and what they play. |
+| "Text my friends and ask who wants to play." | It sends a message to each friend you pick. Messages go only to friends. |
+| "What did Ben say?" | It reads your messages with Ben, newest first. |
+| "Invite Ana and Ben to my party." | It starts a party if you are not in one, then invites them. They see the invite in their Summer inbox. |
+| "Did Ana accept my invite yet?" | It reads your party and tells you who joined. |
+| "Tell my party I'm ready." | It posts in your party chat. |
+| "Accept Ben's party invite." | It joins Ben's party for you. |
+| "Send @leo a friend request." | It finds the player by their exact `@handle` or friend code. It cannot search by name. |
+| "Change my display name to Mia." | It changes your display name. Your `@handle` cannot change. |
+| "Find co-op survival games." | It searches Summer DB, a public catalog of games, with ratings, reviews and player counts. |
+
+See every tool on [Summer Games MCP tools](/mcp/summer-games-tools).
+
+## Privacy and control
+
+- **It acts as you.** Messages, friend requests and invites it sends look exactly like the ones you send yourself. Nobody is told an AI app sent them. The [Community Standards](https://summer.games/community-standards) apply to them as they do to you.
+- **The same rules apply.** Messages go only to friends. Blocks apply. An app can use at most half of your account's limits, so your Summer apps keep working.
+- **The AI app sees what it reads.** When it reads your friends, messages or party, that information goes to the AI app and the company that runs it.
+- **Players under 13** have no friends, messages or parties on Summer, so a connected app cannot use them on those accounts.
+- **Only allow apps you trust.** Anyone can give an app any name. The sign-in page shows the site the app sends you back to. Check it.
+
+### Disconnect
+
+Open [Settings → Connected apps](https://summer.games/settings#connected-apps) on summer.games. It lists every app you connected, when you connected it and when it was last used. Choose **Disconnect**, and the app stops at its next request.
+
+If an app says Summer signed it out, or you have not used it for 30 days, connect it again.
+
+## What it cannot do
+
+These stay in the Summer apps, where you do them yourself:
+
+- Buy anything, or buy or spend Sparks.
+- Close or delete your account.
+- Block, unblock or report players.
+- Change family or parent settings.
+- See or change your other connected apps.
+- Play a game for you, join a queue, or do anything inside a running game.
+
+## Coming soon
+
+These are built and in review. They are not live yet, and names can change before they are.
+
+- **Play a chosen Game together.** "I want to play Star Weavers with Ana and Ben." The AI app sets your party's Game, then sends the invites with a link to it.
+- **Cards in the chat.** Claude and ChatGPT show cards for your friends, your party, your messages, a Game and a rival. The party card updates while it is on screen. When a friend joins, it tells the chat the game is ready, with a Play button.
+- **Told when a friend accepts.** ChatGPT can watch for news and tell you when a friend accepts your invite or sends you a request. Other apps check on the next question.
+- **Phone alerts.** A push on your phone for new messages, party invites and when a friend joins your party.
+- **Your inbox and settings.** "What did I miss on Summer?" reads your notifications. "Turn off friend request pushes" changes the settings you name.
+- **Rivals.** "Send Leo a rival request." A rival request works like a friend request, for competing. You both opt in, then compare playtime and ranking places per Game. Player against player only.
+- **Move the desktop app.** "Take me to the store page for Star Weavers." The AI app opens that page in your Summer Games desktop app. It only shows the page; it never presses a button or buys anything.
+- **Links in every answer.** Each Game, player, party and invite comes with a summer.games link you can open.

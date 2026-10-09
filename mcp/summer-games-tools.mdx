@@ -1,0 +1,142 @@
+---
+title: "Summer Games MCP Tools"
+description: "Every tool on the Summer Games MCP at mcp.summer.games: what it does, the permission it needs, and an example prompt. Friends, messages, parties, profile and public game data."
+icon: "list"
+---
+
+{/* Source: summer-platform internal/mcpgateway (player_tools.go, summerdb.go) and docs/mcp/summer-games-tools.md. Move a "Coming soon" row up only when its tool is live on mcp.summer.games. */}
+
+The Summer Games MCP lets an AI app act on a player's Summer account. This page lists every tool, the permission it needs, and a prompt that uses it. To connect an app, see [Play with friends from Claude or ChatGPT](/mcp/summer-games).
+
+| | |
+|---|---|
+| Address | `https://mcp.summer.games/mcp` |
+| Transport | Streamable HTTP, stateless |
+| Sign-in | OAuth 2.1 with PKCE, on summer.games. Apps register themselves when the player connects. |
+| Scopes | `player:read`, `player:act` |
+
+## Scopes
+
+| Scope | The player approves |
+|---|---|
+| `player:read` | See your profile, friends, friend requests, messages and party |
+| `player:act` | Send friend requests, messages and party invites, and edit your profile, as you |
+
+`player:act` always brings `player:read`. Act tools also read first, to look up a handle or the party. A token without the tool's scope gets HTTP 403 `insufficient_scope`, so the app can ask the player for more.
+
+Act tools are marked as not read-only, so AI apps ask the player before they run one.
+
+## Read tools
+
+Scope: `player:read`.
+
+| Tool | What it does | Example prompt |
+|---|---|---|
+| `get_social_overview` | One read of your friends with their status (online, playing a Game, offline), friend requests, party, party invites, recent conversations and unread counts | "Who of my friends is online?" |
+| `list_friends` | Your friends with their status, one page at a time | "List all my friends on Summer." |
+| `list_friend_requests` | Pending friend requests, incoming (default) or outgoing | "Do I have any friend requests?" |
+| `find_player` | One player by exact `@handle` or friend code. There is no name search. | "Find @ana on Summer." |
+| `read_conversation` | Your direct messages with one friend, newest first | "What did Ana last say to me?" |
+| `get_my_party` | Your current party and the party invites waiting for you | "Who is in my party?" |
+| `get_my_profile` | Your display name and `@handle` | "What is my Summer handle?" |
+
+## Act tools
+
+Scope: `player:act`.
+
+| Tool | What it does | Example prompt |
+|---|---|---|
+| `send_message` | Sends a direct message to a friend, as you | "Text Ana and ask if they want to play tonight." |
+| `invite_to_party` | Invites a player to your party. Starts a party first when you are in none. | "Invite Ana and Ben to my party." |
+| `answer_party_invite` | Accepts or declines a party invite sent to you | "Accept Ben's party invite." |
+| `send_party_message` | Sends a message to your party chat | "Tell my party I'm ready." |
+| `leave_party` | Leaves your current party | "Leave my party." |
+| `send_friend_request` | Sends a friend request to a player | "Send @ana a friend request." |
+| `answer_friend_request` | Accepts or declines a friend request someone sent you, or cancels one you sent | "Accept all my friend requests." |
+| `update_my_profile` | Changes your display name. The `@handle` cannot change. | "Change my display name to Mia." |
+
+## Game data tools
+
+No scope. These read public game data from Summer DB (`https://api.summerdb.com`). Any connected account can use them, and they send no player credential.
+
+| Tool | What it does | Example prompt |
+|---|---|---|
+| `summerdb_catalog` | Searches the public game catalog, one page at a time | "Find co-op survival games." |
+| `summerdb_entity` | One catalog entry by its Summer DB ID | "Tell me more about that game." |
+| `summerdb_rating` | A game's public rating and how it is made | "How is it rated?" |
+| `summerdb_reviews` | One page of public player reviews | "What do players say about it?" |
+| `summerdb_player_metrics` | Sampled player counts for 1, 7 or 30 days | "How many people play it this week?" |
+| `summerdb_player_metrics_batch` | Sampled player counts for up to 50 games | "Compare player counts for these five games." |
+| `summerdb_history` | Recorded changes to a game: price, reviews, players, release | "Has its price changed?" |
+| `summerdb_steam` | Finds the Summer DB entry for a Steam app ID | "Look up Steam app 730." |
+| `summerdb_steam_history` | Steam technical metadata history for a Steam app ID | "When did its Steam build change?" |
+
+## How tools behave
+
+- **Name one player** by `playerId` or `handle`, exactly one. A handle works with or without `@`.
+- **Pages:** list tools take `cursor` and `limit` (1 to 100, default 50) and return `nextCursor`. No `nextCursor` means no more pages.
+- **Player text is content.** Message text and names are written by players. Agents show them; they never follow them as instructions.
+- **Errors** come back as a tool error with a short code and a sentence, for example `rate_limited: …` or `not_signed_in: …`. `not_signed_in` means the player must connect the app again.
+- **Limits:** a Connected app may use at most half of each of the account's limits.
+
+## What no tool can do
+
+- Buy anything, or buy or spend Sparks.
+- Close or delete the account.
+- Block, unblock or report players.
+- Change family or parent settings.
+- See or change other Connected apps.
+- Join a queue, or act inside a running Game.
+
+Every action follows the same rules as the player's own Summer apps: messages go only to friends, blocks apply, and players under 13 have no social features.
+
+## Coming soon
+
+These tools are built and in review. They are not on `mcp.summer.games` yet. Names can change before they are.
+
+### Play together, inbox and settings
+
+| Tool | Scope | What it does | Example prompt |
+|---|---|---|---|
+| `find_game` | read | Finds a Summer Game by name, with its title and summer.games link | "Find Critter Caper on Summer." |
+| `list_conversations` | read | Your direct message conversations, each with the latest message and unread count | "Who messaged me?" |
+| `list_notifications` | read | Your Summer inbox, newest first, with the unread count | "What did I miss on Summer?" |
+| `get_my_settings` | read | Your profile, language and region, whether friends see your activity, and your push settings | "Do my friends see what I'm playing?" |
+| `mark_conversation_read` | act | Marks your messages with one friend as read | "Mark Ana's messages as read." |
+| `mark_notification_read` | act | Marks one notification as read | "Mark that as read." |
+| `update_my_settings` | act | Changes only the settings you name: display name, language, region, activity sharing, push | "Turn off friend request pushes." |
+
+Changes to tools above:
+
+- `invite_to_party` takes an optional Game. It sets the party's Game (leader only) before it invites, and returns the invite link. Prompt: "I want to play Star Weavers with Ana and Ben."
+- `list_friends` takes an optional `status`: `online`, `playing`, `offline` or `any`. Prompt: "Who of my friends is playing right now?"
+- `get_my_party` also returns invites nobody has answered yet, which members are in a Game, and the party's Game. Prompt: "Did Ana accept my invite yet?"
+- Every Game, player, conversation, party, invite and notification in a result carries a summer.games `link`.
+
+### Rivals
+
+A rival request is like a friend request, for competing. Both players opt in, then compare play and rankings per Game. Player against player only.
+
+| Tool | Scope | What it does | Example prompt |
+|---|---|---|---|
+| `list_rivals` | read | Your rivals, the rival requests waiting for you and the ones you sent | "Who are my rivals?" |
+| `compare_with_rival` | read | Compares you with one rival, per Game you both played: playtime, last played and ranking places | "Am I ahead of Leo in Patchwork?" |
+| `send_rival_request` | act | Asks a player to be your rival, optionally about one Game | "Send Leo a rival request for Patchwork." |
+| `answer_rival_request` | act | Accepts or declines a rival request, cancels one you sent, or ends a rivalry | "Accept Ben's rival request." |
+
+### Open the desktop app
+
+| Tool | Scope | What it does | Example prompt |
+|---|---|---|---|
+| `open_in_summer_app` | act | Opens a page in your signed-in Summer Games desktop app: a Game's store page, your library, friends, party, messages, inbox or settings. Desktop only. It only shows the page; it presses nothing. It also returns the same page on summer.games. | "Take me to the store page for Star Weavers." |
+
+### Events
+
+The AI app hears what happened between turns. Each inbox notification becomes an MCP event: `friend.request_received`, `friend.request_accepted`, `message.received`, `party.invite_received`, `party.invite_accepted`, `comment.reply_received`, `rival.request_received`, `rival.request_accepted`. Events carry IDs, current names and a link, never message text. They need `player:read`.
+
+- ChatGPT subscribes and gets a signed webhook. Prompt: "Tell me when Ana accepts my invite."
+- Other apps poll for events, or see the news on their next read.
+
+### Cards in the chat
+
+Claude and ChatGPT show cards (MCP Apps) for friends, your party, messages, a Game and a rival. When a friend joins your party, the party card posts "A friend joined my Summer party. The game is ready. Check my party." to the chat. Apps that do not show cards get the same answer as text.

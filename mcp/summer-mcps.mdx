@@ -1,0 +1,82 @@
+---
+title: "Summer MCPs"
+description: "Summer has two public MCP servers. Summer Engine lets an AI agent build games. Summer Games lets a player use their Summer account from Claude or ChatGPT: friends, messages and party invites."
+icon: "layers"
+---
+
+Summer has two public MCP servers. One is for making games. One is for playing them with friends.
+
+| | **Summer Engine MCP** | **Summer Games MCP** |
+|---|---|---|
+| For | Creators who build games | Players on [summer.games](https://summer.games) |
+| What the AI does | Edits scenes, writes GDScript, imports and generates assets, runs and debugs the game | Reads your friends and who is online, sends messages, invites friends to your party |
+| Where it runs | On your computer, next to the Summer Engine editor (`npx summer-engine mcp`) | On Summer's servers: `https://mcp.summer.games/mcp` |
+| Works in | Coding agents: Claude Code and [many more](/mcp/agents) | Claude (web, desktop and phone), ChatGPT, Claude Code and any MCP app with OAuth sign-in |
+| Sign in | `npx summer-engine login` | Your Summer account, on summer.games |
+| Start here | [MCP setup](/mcp/setup) | [Play with friends from Claude or ChatGPT](/mcp/summer-games) |
+| Every tool | [Tools reference](/mcp/tools-reference) | [Summer Games MCP tools](/mcp/summer-games-tools) |
+
+You can connect both. Build a game with the Summer Engine MCP, then ask your AI app who of your friends is online and invite them to play. Today you sign in to each one on its own.
+
+## Summer Engine MCP: build games
+
+The Summer Engine MCP gives a coding agent control of the Summer Engine editor. The agent uses the same operations as the chat inside Summer Engine. One command sets it up for your agent:
+
+```bash
+npx -y summer-engine@latest setup <agent> --yes
+```
+
+<CardGroup cols={2}>
+  <Card title="MCP setup" icon="settings" href="/mcp/setup">
+    One command for any agent, and what it writes
+  </Card>
+  <Card title="Tools reference" icon="wrench" href="/mcp/tools-reference">
+    Every Summer Engine tool with parameters
+  </Card>
+</CardGroup>
+
+## Summer Games MCP: play with friends
+
+The Summer Games MCP lets an AI app act on your Summer account, as you. Ask it "who of my friends is online?" or "text my friends and ask who wants to play", and it does it. You sign in on summer.games and choose what it may do. You can disconnect it at any time.
+
+<CardGroup cols={2}>
+  <Card title="Play with friends from Claude or ChatGPT" icon="users" href="/mcp/summer-games">
+    Connect it step by step, with example prompts
+  </Card>
+  <Card title="Summer Games MCP tools" icon="list" href="/mcp/summer-games-tools">
+    Every tool, what it may do, and a prompt for each
+  </Card>
+  <Card title="For game developers" icon="gamepad-2" href="/mcp/summer-games-developers">
+    What players' AI apps mean for your game
+  </Card>
+</CardGroup>
+
+## How they differ
+
+| | Summer Engine MCP | Summer Games MCP |
+|---|---|---|
+| Account | Your Summer Engine account | Your Summer account on summer.games |
+| Permissions | Everything the editor can do in the open project | Two: **read** (see your friends, messages, party) and **act** (send, invite, edit your profile). You choose on summer.games. |
+| Before it changes something | The edit shows in the editor, and undo works | Your AI app asks you before each act tool |
+| Costs | Engine control and asset search are free. Cloud generation uses credits. | No tool buys anything or spends Sparks |
+| Stop it | Remove the server from your agent's MCP config | Settings → Connected apps on summer.games |
+
+In both, the AI app never sees your password. You sign in on a Summer page.
+
+## Words we use
+
+These words mean the same thing on both servers and in the Summer apps.
+
+| Word | Meaning |
+|---|---|
+| **Game** | A game players find and play on Summer Games. |
+| **Project** | A creator's project in Summer Engine. A Project can become a Game. |
+| **Player** | A person on Summer, seen through their Summer account. A player has a display name and a unique `@handle`. |
+| **Friend** | A player who accepted your friend request, or whose request you accepted. Messages go only to friends. |
+| **Party** | A group of players that stays together across Games. It has a leader and a party chat. |
+| **Invite** | An invitation to join your party. The other player accepts or declines it. |
+| **Message** | A direct message to one friend, or a message in your party chat. |
+| **Notification** | An entry in your Summer inbox, such as a friend request or a party invite. |
+| **Rival** | A player you both agreed to compete with. Player against player only. Coming soon. |
+| **Connected app** | An AI app you allowed to act for your Summer account. |
+| **Sparks** | Summer's currency. No MCP tool buys or spends Sparks. |

@@ -1,0 +1,46 @@
+---
+title: "Summer Games MCP for Game Developers"
+description: "Players can now gather friends from Claude or ChatGPT. What that means for your Summer game: the party, friends and rankings your game already reads, and how to make your game easy for an AI app to find."
+icon: "gamepad-2"
+---
+
+Players can use the [Summer Games MCP](/mcp/summer-games) to gather friends from Claude or ChatGPT. They ask "who of my friends is online?", text them, and invite them to their party. Your game does not talk to the MCP. It sees the result through the same Summer account features the Summer apps use.
+
+## The party is the same party
+
+An invite sent from an AI app is a normal Summer party invite. The friend sees it in their Summer inbox and accepts it in a Summer app or from their own AI app. The party then exists on both players' Summer accounts, as if they had made it in the Summer app.
+
+So a game that reads the player's party sees the friends who joined from a chat. The Summer SDK has two interfaces for this:
+
+| Interface | What your game gets |
+|---|---|
+| **Party** (`Summer.client.party`) | The player's account party: members in join order, the leader, whether each member has your game open (`in_game`), party data for your game, and signals such as `member_joined` and `member_in_game_changed`. `show_invite_dialog()` asks the Summer app to show its own friend invite sheet over your game. |
+| **Friends** (`Summer.client.friends`) | The player's friends, after the player allows it, each with a status: `offline`, `online`, `in_this_game` or `in_other_game`. `show_profile()` and `show_chat()` ask the Summer app to open a profile or a chat over your game. |
+
+Both report `is_available() == false` when the Summer app running your game does not offer them, when the player is under 13, or (for friends) when the player has not allowed it. Check it before you show party or friends UI. These are part of the Summer SDK contract; [Product Source & Platform Status](/knowledge-base/source-status) says which parts of the hosted path are live.
+
+<Tip>
+Do not build your own friends list, chat or invite system. Use the Summer ones. Then invites and messages that players send from an AI app reach your players too.
+</Tip>
+
+## Coming soon
+
+These are built and in review. They are not live yet.
+
+- **Play your game together.** A player says "I want to play your game with Ana and Ben". The AI app finds your game by name, sets it as the party's Game, and sends the invites with a link to it. When a friend joins, the chat says the game is ready.
+- **Rivals compare your rankings.** Two players who agreed to be rivals can ask "am I ahead of Leo in your game?". The answer uses each player's playtime in your game and their place in your game's rankings.
+- **"Take me to the store page."** On desktop, a player can ask the AI app to open your game's store page in the Summer Games desktop app.
+- **Phone alerts** for party invites and joins, with a link back to the party.
+
+## Make your game easy for an AI app
+
+An AI app knows your game only from what Summer shows about it. Help it:
+
+- **Use a clear title.** Players will say it out loud to an AI app. Avoid symbols and look-alike spellings.
+- **Write a plain store description.** Say in the first sentence what the player does and how many people play together. The AI app repeats it when a player asks "what is this game?".
+- **Name your rankings plainly.** When rivals compare, the ranking name is what players see. "Best lap" reads better than `rank_v2`.
+- **Use the Summer party for play together.** Read the party, show who has your game open, and let the leader start. Players who gathered in a chat then arrive in your game together.
+
+## Build with an AI agent too
+
+The [Summer Engine MCP](/mcp/setup) lets a coding agent build your game in the Summer Engine editor. See [Summer MCPs](/mcp/summer-mcps) for how the two servers fit together.
