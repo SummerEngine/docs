@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 280" width="880" height="280" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="279" rx="16" fill="#1b1810" stroke="#3a3428"/>
+<rect x="30" y="30" width="240" height="220" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<circle cx="56" cy="62" r="11" fill="#f0b566"/>
+<text x="56" y="66.5" font-size="12" font-weight="700" fill="#1b1810" text-anchor="middle" opacity="1">1</text>
+<text x="76" y="67" font-size="15" font-weight="600" fill="#ede6d6" text-anchor="start" opacity="1">Pick from what you own</text>
+<rect x="320" y="30" width="240" height="220" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<circle cx="346" cy="62" r="11" fill="#f0b566"/>
+<text x="346" y="66.5" font-size="12" font-weight="700" fill="#1b1810" text-anchor="middle" opacity="1">2</text>
+<text x="366" y="67" font-size="15" font-weight="600" fill="#ede6d6" text-anchor="start" opacity="1">Server checks</text>
+<rect x="610" y="30" width="240" height="220" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<circle cx="636" cy="62" r="11" fill="#f0b566"/>
+<text x="636" y="66.5" font-size="12" font-weight="700" fill="#1b1810" text-anchor="middle" opacity="1">3</text>
+<text x="656" y="67" font-size="15" font-weight="600" fill="#ede6d6" text-anchor="start" opacity="1">Everyone sees it</text>
+<line x1="280" y1="150" x2="304" y2="150" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 301 144 L 310 150 L 301 156" fill="none" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<line x1="570" y1="150" x2="594" y2="150" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 591 144 L 600 150 L 591 156" fill="none" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="150" y="102" font-size="12" font-weight="600" fill="#9b927f" text-anchor="middle" opacity="1">head slot</text>
+<rect x="70" y="120" width="44" height="44" rx="10" fill="#1b1810" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<line x1="82" y1="142" x2="102" y2="142" stroke="#9b927f" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="130" y="120" width="44" height="44" rx="10" fill="#1b1810" stroke="#f0b566" stroke-width="2.5" opacity="1"/>
+<path d="M 140 154 L 140 136 L 146 143 L 152 132 L 158 143 L 164 136 L 164 154 Z" fill="#f0b566"/>
+<rect x="190" y="120" width="44" height="44" rx="10" fill="#1b1810" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<path d="M 200 154 L 200 136 L 206 143 L 212 132 L 218 143 L 224 136 L 224 154 Z" fill="#7fb3d5"/>
+<text x="150" y="196" font-size="12" font-weight="500" fill="#9b927f" text-anchor="middle" opacity="1">the player's own items</text>
+<rect x="374" y="104" width="50" height="78" rx="8" fill="#242017" stroke="#9b927f" stroke-width="2" opacity="1"/>
+<rect x="381" y="115.0" width="36" height="14.666666666666668" rx="4" fill="#3d3121" opacity="1"/>
+<circle cx="409" cy="122.33333333333333" r="3" fill="#f0b566"/>
+<line x1="387" y1="122.33333333333333" x2="399" y2="122.33333333333333" stroke="#9b927f" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="381" y="135.66666666666666" width="36" height="14.666666666666668" rx="4" fill="#3d3121" opacity="1"/>
+<circle cx="409" cy="143.0" r="3" fill="#f0b566"/>
+<line x1="387" y1="143.0" x2="399" y2="143.0" stroke="#9b927f" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="381" y="156.33333333333334" width="36" height="14.666666666666668" rx="4" fill="#3d3121" opacity="1"/>
+<circle cx="409" cy="163.66666666666669" r="3" fill="#f0b566"/>
+<line x1="387" y1="163.66666666666669" x2="399" y2="163.66666666666669" stroke="#9b927f" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<line x1="432" y1="143" x2="456" y2="143" stroke="#f0b566" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<path d="M 453 137 L 462 143 L 453 149" fill="none" stroke="#f0b566" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="470" y="112" width="60" height="62" rx="10" fill="#3d3121" opacity="1"/>
+<circle cx="500" cy="143" r="11" fill="#8bc48a"/><path d="M 496.5 143 l 2.5 2.6 l 4.5 -5" fill="none" stroke="#1b1810" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="440" y="212" font-size="12" font-weight="500" fill="#9b927f" text-anchor="middle" opacity="1">owned? then equip</text>
+<g opacity="1" fill="#ede6d6"><circle cx="730" cy="146.0" r="9.6"/><path d="M 714.4 176 v -7.199999999999999 a 15.6 13.2 0 0 1 31.2 0 v 7.199999999999999 z"/></g>
+<path d="M 719.2 138.8 L 719.2 129.20000000000002 L 724.6 134.0 L 730 126.80000000000001 L 735.4 134.0 L 740.8 129.20000000000002 L 740.8 138.8 Z" fill="#f0b566"/>
+<g opacity="0.8" fill="#9b927f"><circle cx="660" cy="166.0" r="6.4"/><path d="M 649.6 186 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<g opacity="0.8" fill="#9b927f"><circle cx="800" cy="166.0" r="6.4"/><path d="M 789.6 186 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<text x="730" y="222" font-size="12" font-weight="500" fill="#9b927f" text-anchor="middle" opacity="1">the same look for all</text>
+</svg>

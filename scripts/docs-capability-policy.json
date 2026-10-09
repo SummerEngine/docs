@@ -8,24 +8,13 @@
     "| Browser submission and static scanner | **Live** |",
     "| Summer SDK gameplay and subsystem interfaces | **Scaffold** |",
     "| Browser or desktop-shell play for uploaded games | **Planned** |",
-    "| Hosted dedicated game servers | **Planned** |",
-    "| Automatic matchmaking and relay | **Planned** |",
+    "| Hosted dedicated game servers | **Live** |",
+    "| Automatic matchmaking | **Live** |",
     "| Automated production runtime sandbox | **Planned** |",
-    "| Production gameplay runtime | **Planned** |",
-    "| Hosted persistence and economy | **Scaffold** |"
+    "| Production gameplay runtime | **Live** |",
+    "| Hosted persistence and economy | **Live** |"
   ],
-  "requiredCapabilityStatuses": [
-    {
-      "id": "production-runtime",
-      "label": "Production gameplay runtime",
-      "state": "Planned"
-    },
-    {
-      "id": "hosted-persistence-economy",
-      "label": "Hosted persistence and economy",
-      "state": "Scaffold"
-    }
-  ],
+  "requiredCapabilityStatuses": [],
   "claimCapabilities": [
     {
       "id": "uploaded-game-playback",
@@ -47,54 +36,6 @@
         "\\bplayable\\b",
         "\\boperational\\b",
         "\\bproduction[- ]live\\b"
-      ],
-      "statusTerms": ["\\bPlanned\\b", "\\bnot\\s+(?:production[- ]?)?live\\b"],
-      "disclaimerPatterns": [
-        "\\b(?:does|do)\\s+not\\s+(?:claim|mean|prove|imply)\\b",
-        "\\bmust\\s+not\\s+promise\\b"
-      ]
-    },
-    {
-      "id": "managed-matchmaking",
-      "label": "Managed matchmaking and relay",
-      "state": "Planned",
-      "subjectAliases": [
-        "\\bmatchmaking\\b",
-        "\\brelay(?: service| server)?s?\\b",
-        "\\bplayers?\\b.{0,50}\\blobb(?:y|ies)\\b"
-      ],
-      "assertionVerbs": ["pair", "provide", "offer", "handle", "manage"],
-      "assertionTerms": [
-        "\\blive\\b",
-        "\\bavailable\\b",
-        "\\bdeployed\\b",
-        "\\boperational\\b"
-      ],
-      "statusTerms": ["\\bPlanned\\b", "\\bnot\\s+(?:production[- ]?)?live\\b"],
-      "disclaimerPatterns": [
-        "\\b(?:does|do)\\s+not\\s+(?:claim|mean|prove|imply)\\b",
-        "\\bmust\\s+not\\s+promise\\b"
-      ]
-    },
-    {
-      "id": "hosted-game-servers",
-      "label": "Hosted dedicated game servers",
-      "state": "Planned",
-      "subjectAliases": [
-        "\\b(?:hosted|managed|dedicated)\\b.{0,50}\\b(?:game\\s+)?servers?\\b",
-        "\\bserver hosting\\b",
-        "\\bcloud game instances?\\b"
-      ],
-      "assertionVerbs": [],
-      "assertionPatterns": [
-        "\\b(?:we|Summer|Summercraft|the platform|platform)\\s+(?:runs?|provisions?|provides?|offers?|manages?|hosts?)\\b",
-        "\\b(?:servers?|instances?)\\s+(?:are|is)\\s+(?:run|running|provisioned|provided|available|live|operational|deployed)\\b"
-      ],
-      "assertionTerms": [
-        "\\blive\\b",
-        "\\bavailable\\b",
-        "\\bdeployed\\b",
-        "\\boperational\\b"
       ],
       "statusTerms": ["\\bPlanned\\b", "\\bnot\\s+(?:production[- ]?)?live\\b"],
       "disclaimerPatterns": [
@@ -139,101 +80,6 @@
         "\\bavailable\\b",
         "\\bdeployed\\b",
         "\\bworking\\b",
-        "\\boperational\\b"
-      ],
-      "statusTerms": ["\\bScaffold(?:ed)?\\b", "\\bnot\\s+(?:production[- ]?)?live\\b"],
-      "disclaimerPatterns": [
-        "\\b(?:does|do)\\s+not\\s+(?:claim|mean|prove|imply)\\b",
-        "\\bcontract(?:-level)?\\s+(?:example|only|requirement|interface|behavior)\\b"
-      ]
-    },
-    {
-      "id": "production-runtime",
-      "label": "Production gameplay runtime",
-      "state": "Planned",
-      "subjectAliases": [
-        "\\b(?:production(?: gameplay)?|platform|Summercraft)\\s+runtime\\b",
-        "\\bapproved packs?\\b",
-        "\\breview process\\b"
-      ],
-      "assertionAfterSubject": true,
-      "assertionBeforeSubjectPatterns": [
-        "\\b(?:runs?|ran|running|loads?|loaded|loading|executes?|executed|executing)\\b.{0,80}\\bapproved packs?\\b"
-      ],
-      "assertionVerbs": ["execute", "load", "run", "enforce", "refuse", "assign", "connect"],
-      "assertionTerms": [
-        "\\blive\\b",
-        "\\bavailable\\b",
-        "\\bdeployed\\b",
-        "\\boperational\\b"
-      ],
-      "statusTerms": ["\\bPlanned\\b", "\\bnot\\s+(?:production[- ]?)?live\\b"],
-      "disclaimerPatterns": [
-        "\\b(?:does|do)\\s+not\\s+(?:claim|mean|prove|imply)\\b",
-        "\\bcontract(?:-level)?\\s+(?:example|only|requirement|interface|behavior)\\b",
-        "\\bmust\\s+not\\s+promise\\b"
-      ]
-    },
-    {
-      "id": "hosted-persistence-economy",
-      "label": "Hosted persistence and economy",
-      "state": "Scaffold",
-      "subjectAliases": [
-        "\\bSummer\\.(?:data|economy)\\b",
-        "\\bSummer storage\\b",
-        "\\bhosted persistence and economy\\b",
-        "\\bpersistence backend\\b",
-        "\\beconomy rail\\b",
-        "\\bbackend flush\\b"
-      ],
-      "assertionVerbs": ["persist", "store", "write", "keep"],
-      "objectRequiredAssertionVerbs": ["persist", "store", "write", "keep"],
-      "objectRequiredAssertionPatterns": [
-        "\\bauto-?saves?\\b"
-      ],
-      "assertionObjectHeads": [
-        "save",
-        "saves",
-        "data",
-        "progress",
-        "state",
-        "inventory",
-        "balance",
-        "economy"
-      ],
-      "assertionPrepositionalObjectPatterns": [
-        "\\bto\\s+durable storage\\b"
-      ],
-      "coreferenceObjectHeads": [
-        "save",
-        "saves",
-        "data",
-        "progress",
-        "state",
-        "inventory",
-        "balance"
-      ],
-      "coreferenceAntecedentBarrierPatterns": [
-        "\\bexamples?\\b",
-        "\\bdocs?\\b",
-        "\\bdocumentation\\b",
-        "\\breferences?\\b"
-      ],
-      "objectPronounPatterns": [
-        "\\bthem\\b"
-      ],
-      "objectPronounAssertionContextPatterns": [
-        "\\bdurabl(?:e|y)\\b",
-        "\\bproduction\\b",
-        "\\bbetween\\s+(?:production\\s+)?sessions\\b",
-        "\\bpersist(?:s|ed|ing|ence|ent)?\\b"
-      ],
-      "assertionTerms": [
-        "\\bhandled\\b",
-        "\\bdurable\\b",
-        "\\blive\\b",
-        "\\bavailable\\b",
-        "\\bdeployed\\b",
         "\\boperational\\b"
       ],
       "statusTerms": ["\\bScaffold(?:ed)?\\b", "\\bnot\\s+(?:production[- ]?)?live\\b"],

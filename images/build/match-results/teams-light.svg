@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 254" width="880" height="254" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="253" rx="16" fill="#fbf7ef" stroke="#e6dcc8"/>
+<rect x="40" y="40" width="800" height="84" rx="14" fill="#f6e3c4" stroke="#d9922e" stroke-width="2" opacity="1"/>
+<text x="68" y="88" font-size="15" font-weight="700" fill="#d9922e" text-anchor="start" opacity="1">Team 0</text>
+<g opacity="1" fill="#2a251b"><circle cx="250" cy="82.75" r="6.8"/><path d="M 238.95 104 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<rect x="298.56" y="72" width="34.879999999999995" height="24" rx="12" fill="#ffffff" stroke="#4f9a55" stroke-width="1.5" opacity="1"/>
+<text x="316" y="88.5" font-size="12" font-weight="700" fill="#4f9a55" text-anchor="middle" opacity="1">Win</text>
+<g opacity="1" fill="#2a251b"><circle cx="450" cy="82.75" r="6.8"/><path d="M 438.95 104 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<rect x="498.56" y="72" width="34.879999999999995" height="24" rx="12" fill="#ffffff" stroke="#4f9a55" stroke-width="1.5" opacity="1"/>
+<text x="516" y="88.5" font-size="12" font-weight="700" fill="#4f9a55" text-anchor="middle" opacity="1">Win</text>
+<g opacity="1" fill="#2a251b"><circle cx="650" cy="82.75" r="6.8"/><path d="M 638.95 104 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<rect x="698.56" y="72" width="34.879999999999995" height="24" rx="12" fill="#ffffff" stroke="#4f9a55" stroke-width="1.5" opacity="1"/>
+<text x="716" y="88.5" font-size="12" font-weight="700" fill="#4f9a55" text-anchor="middle" opacity="1">Win</text>
+<rect x="40" y="140" width="800" height="84" rx="14" fill="#d7e6f2" stroke="#3f7fb0" stroke-width="2" opacity="1"/>
+<text x="68" y="188" font-size="15" font-weight="700" fill="#3f7fb0" text-anchor="start" opacity="1">Team 1</text>
+<g opacity="1" fill="#2a251b"><circle cx="250" cy="182.75" r="6.8"/><path d="M 238.95 204 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<rect x="295.08" y="172" width="41.839999999999996" height="24" rx="12" fill="#ffffff" stroke="#c8553d" stroke-width="1.5" opacity="1"/>
+<text x="316" y="188.5" font-size="12" font-weight="700" fill="#c8553d" text-anchor="middle" opacity="1">Loss</text>
+<g opacity="1" fill="#2a251b"><circle cx="450" cy="182.75" r="6.8"/><path d="M 438.95 204 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<rect x="495.08" y="172" width="41.839999999999996" height="24" rx="12" fill="#ffffff" stroke="#c8553d" stroke-width="1.5" opacity="1"/>
+<text x="516" y="188.5" font-size="12" font-weight="700" fill="#c8553d" text-anchor="middle" opacity="1">Loss</text>
+<g opacity="0.45" fill="#2a251b"><circle cx="650" cy="182.75" r="6.8"/><path d="M 638.95 204 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<rect x="684.64" y="172" width="62.72" height="24" rx="12" fill="#ffffff" stroke="#8a806b" stroke-width="1.5" opacity="1"/>
+<text x="716" y="188.5" font-size="12" font-weight="700" fill="#8a806b" text-anchor="middle" opacity="1">Abandon</text>
+<text x="716" y="212" font-size="11" font-weight="600" fill="#8a806b" text-anchor="middle" opacity="1">left early</text>
+</svg>

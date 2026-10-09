@@ -1,0 +1,113 @@
+---
+title: "Make a game like Deep Rock Galactic"
+sidebarTitle: "Co-op games"
+description: "The Summer pieces behind a squad co-op game like Deep Rock Galactic or Left 4 Dead: parties, quick play to fill the squad, a server-run mission and progress that carries over."
+icon: "shield"
+tag: "0.7+"
+---
+
+A co-op game is a squad against the game. A few friends team up, quick play
+fills the empty seats, the mission runs on a server so everyone sees the same
+enemies, and the loot and unlocks carry over to the next run. Summer gives you
+each of those pieces. This page shows how they fit together.
+
+## The pieces you need
+
+<CardGroup cols={2}>
+  <Card title="Make your game multiplayer" icon="network" href="/build/multiplayer">
+    Your server runs the mission; every player runs the same game.
+  </Card>
+  <Card title="Parties" icon="users" href="/build/parties">
+    Your squad presses Play together and lands in the same mission.
+  </Card>
+  <Card title="Matchmaking" icon="swords" href="/build/matchmaking">
+    Quick play fills a squad of four, first come, first served.
+  </Card>
+  <Card title="Instant movement" icon="move" href="/build/movement">
+    Each player's own character moves the moment they press a key.
+  </Card>
+  <Card title="Shared game world" icon="layers" href="/build/shared-state">
+    Enemies, objectives and shared resources, kept by the server.
+  </Card>
+  <Card title="Save player progress" icon="save" href="/build/player-progress">
+    Levels, loot and unlocks carry over to every run.
+  </Card>
+  <Card title="Ratings and leaderboards" icon="trophy" href="/build/leaderboards">
+    Rate players by the missions they clear, with your own rules.
+  </Card>
+  <Card title="Friends and messages" icon="user-plus" href="/build/friends">
+    See which friends are online and ready to play.
+  </Card>
+  <Card title="Text chat" icon="message-square" href="/build/chat">
+    Coordinate with the squad.
+  </Card>
+  <Card title="Cosmetics" icon="sparkles" href="/build/cosmetics">
+    Outfits and gear looks players own and show off.
+  </Card>
+</CardGroup>
+
+## How it fits together
+
+<img className="block dark:hidden" src="/images/build/games-like/co-op-light.svg" alt="The co-op loop: a squad parties up, quick play fills the last seat, the run plays out on one server, and each player's progress and unlocks are saved before they play again." />
+<img className="hidden dark:block" src="/images/build/games-like/co-op-dark.svg" alt="The co-op loop: a squad parties up, quick play fills the last seat, the run plays out on one server, and each player's progress and unlocks are saved before they play again." />
+
+Three friends form a party and press Play. Quick play adds one more player to
+make a squad of four. Summer starts a server for the mission, where your rules
+run the enemies and objectives. When the run ends, the server saves each
+player's rewards, so they're waiting in the next mission.
+
+## Plan my game
+
+<Prompt description="**Plan my co-op game.** Your agent reads your project and lays out the Summer pieces in the order to build them.">
+I'm making a squad co-op game like Deep Rock Galactic in Summer. Read my
+project and plan how to build it with these Summer skills, in this order; if
+you don't have them installed, find them in the Summer library:
+
+1. `multiplayer` and `multiplayer-project`: the server and client scenes and
+   a first Local Play run.
+2. `multiplayer-movement`: each player moves their own character instantly.
+3. `multiplayer-state`: enemies, objectives and shared resources, owned by
+   the server.
+4. `summer-matchmaking` and `summer-parties`: a squad of four, with friends
+   kept together.
+5. `summer-player-data`: levels, loot and unlocks carry over.
+6. `summer-match-results`: end the mission and record how it went.
+
+For each step, tell me what changes in my project and what I'll see when I
+test it. Don't change any files yet.
+</Prompt>
+
+## Build the signature features
+
+### Rewards that carry over
+
+<Prompt description="**Save mission rewards.** Loot and unlocks follow each player to the next run.">
+In my Summer project, save each player's rewards at the end of a mission so
+they carry over to every future run. Use the Summer `summer-player-data`
+skill; if you don't have it installed, find it in the Summer library.
+
+- The server decides what each player earned, never the player's game.
+- Load the player's progress when they join a mission.
+- Save once the mission ends, and make sure nothing is lost if a player
+  leaves early.
+
+Read my project first and tell me what my game needs to save. Then test it
+with Local Play and tell me what you saw.
+</Prompt>
+
+### Rate squads by the missions they clear
+
+<Prompt description="**Rate players with my own rules.** Harder missions cleared are worth more.">
+In my Summer project, give my co-op mode a rating that rises when a squad
+clears a mission and falls a little when it fails, with harder missions worth
+more. Use the Summer `summer-leaderboards` and `summer-match-results` skills;
+if you don't have them installed, find them in the Summer library.
+
+Read my project first and explain the rating rule you'd use before you change
+anything. Then test the end of a mission with Local Play and tell me what you
+saw.
+</Prompt>
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

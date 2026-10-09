@@ -144,6 +144,82 @@
         ]
       },
       {
+        "tab": "Build your game",
+        "groups": [
+          {
+            "group": "Start here",
+            "pages": [
+              "build/multiplayer"
+            ]
+          },
+          {
+            "group": "Games like yours",
+            "pages": [
+              "build/games-like/tactical-shooter",
+              "build/games-like/moba",
+              "build/games-like/survival-sandbox",
+              "build/games-like/co-op",
+              "build/games-like/party-games",
+              "build/games-like/card-games",
+              "build/games-like/single-player"
+            ]
+          },
+          {
+            "group": "Play together",
+            "pages": [
+              "build/matchmaking",
+              "build/parties",
+              "build/persistent-worlds"
+            ]
+          },
+          {
+            "group": "Real-time feel",
+            "pages": [
+              "build/movement",
+              "build/hit-detection",
+              "build/shared-state"
+            ]
+          },
+          {
+            "group": "Progress",
+            "pages": [
+              "build/player-progress"
+            ]
+          },
+          {
+            "group": "Compete",
+            "pages": [
+              "build/leaderboards",
+              "build/match-results"
+            ]
+          },
+          {
+            "group": "Social",
+            "pages": [
+              "build/friends",
+              "build/chat"
+            ]
+          },
+          {
+            "group": "Make money",
+            "pages": [
+              "build/store",
+              "build/cosmetics",
+              "build/paid-games"
+            ]
+          },
+          {
+            "group": "Run your game",
+            "pages": [
+              "build/server-size",
+              "build/console-commands",
+              "build/analytics",
+              "build/publish"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "MCP",
         "icon": "plug",
         "groups": [

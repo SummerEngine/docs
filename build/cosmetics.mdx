@@ -1,0 +1,128 @@
+---
+title: "Let players wear cosmetics"
+sidebarTitle: "Cosmetics"
+description: "Let players equip skins, hats and other looks they own, checked by your server and shown to every player in the match."
+icon: "shirt"
+tag: "0.7+"
+---
+
+Cosmetics change how a player looks without changing how the game plays. You
+decide where a look can go, such as a head slot or a body slot, and which items
+fit there. The player picks one of the items they own. Your game's server checks
+that they own it, and then every player in the match sees it, including players
+who join later.
+
+## Games like this
+
+<CardGroup cols={2}>
+  <Card title="Fortnite" icon="shirt">
+    Skins, back blings and pickaxes, chosen in the locker before a match.
+  </Card>
+  <Card title="League of Legends" icon="swords">
+    Champion skins that every player in the match sees.
+  </Card>
+  <Card title="Among Us" icon="user">
+    Hats, outfits and pets, worn in every game.
+  </Card>
+  <Card title="Fall Guys" icon="sparkles">
+    Costumes with separate top and bottom pieces.
+  </Card>
+</CardGroup>
+
+## What your players get
+
+<img className="block dark:hidden" src="/images/build/cosmetics/equip-light.svg" alt="Three steps: the player picks a crown they own for the head slot, the game's server checks the player owns it, and every player in the match sees the crown." />
+<img className="hidden dark:block" src="/images/build/cosmetics/equip-dark.svg" alt="Three steps: the player picks a crown they own for the head slot, the game's server checks the player owns it, and every player in the match sees the crown." />
+
+<Steps>
+  <Step title="Pick">
+    The player chooses from the items they own for each slot your game has,
+    such as a head, a body or a weapon.
+  </Step>
+  <Step title="Checked">
+    Your game's server reads the player's inventory and accepts the choice
+    only if they own the item and it fits that slot.
+  </Step>
+  <Step title="Seen">
+    Everyone in the match sees the same look, and so does anyone who joins
+    later.
+  </Step>
+</Steps>
+
+Cosmetic items are ordinary items in your game's catalog in Studio. Players
+get them by buying them in your [store](/build/store).
+
+## Pick your setup
+
+### Slots and looks
+
+Each slot lists the items that fit it. Each item maps to a look you made in
+your game: a **skin** is a material on the character, and a **hat** or another
+attachment is a scene you attach, for example to the character's head.
+
+<img className="block dark:hidden" src="/images/build/cosmetics/appearance-light.svg" alt="Two items mapped to looks: the Gold crown item is a scene attached to the head, and the Night skin item is a material on the body." />
+<img className="hidden dark:block" src="/images/build/cosmetics/appearance-dark.svg" alt="Two items mapped to looks: the Gold crown item is a scene attached to the head, and the Night skin item is a material on the body." />
+
+<Prompt description="**Add cosmetic slots.** Players equip owned items; the server checks; everyone sees them.">
+In my Summer project, let players equip cosmetics they own. Use the Summer
+`summer-store` skill for owned items, and Summer's item selection and
+appearance nodes (`SummerItemSelection`, `SummerAppearance3D`) for the slots
+and the looks; if you don't have the skill installed, find it in the Summer
+library, and read the nodes' class reference.
+
+- Slots: [for example "a head slot for hats and a body slot for skins"].
+- The server accepts an item only if the player owns it and it fits the slot.
+- Every player sees the equipped looks, including players who join later.
+
+Read my project first and tell me which characters and scenes need slots
+before you change anything. Then test it with Local Play and tell me what you
+saw.
+</Prompt>
+
+### Keep the loadout between matches
+
+Players expect their chosen looks to still be on next time they play. Save
+each player's choices with their progress and put them back on when the player
+joins a match.
+
+<Prompt description="**Remember each player's loadout.** Their cosmetics are back on in the next match.">
+In my Summer project, remember which cosmetics each player has equipped and
+put them back on in their next match. Use the Summer `summer-player-data` and
+`summer-store` skills; if you don't have them installed, find them in the
+Summer library.
+
+- Save the loadout when the player changes it.
+- When the player joins, equip their saved items again, but only those they
+  still own.
+
+Read my project first and explain where the loadout is saved and loaded before
+you change anything. Then test it with Local Play and tell me what you saw.
+</Prompt>
+
+See [Save player progress](/build/player-progress) for how saving works.
+
+## Not sure which fits?
+
+<Prompt description="**Plan cosmetics for my game.** Your agent reads your project and proposes slots and looks. No code.">
+Read my Summer project and help me plan its cosmetics. Use the Summer
+`summer-store` skill; if you don't have it installed, find it in the Summer
+library. Don't change any files yet.
+
+Tell me:
+1. which slots fit my characters, and what kinds of looks each slot could hold;
+2. where players pick their looks, from the main menu to a match;
+3. anything my design needs that cosmetics don't cover yet, and how we can
+   build around it.
+</Prompt>
+
+## Testing it on your machine
+
+Under Local Play, give your test players cosmetic items in your Local Play test
+users file. Each test player then owns those items, and your slots, your
+server's check and the looks all work on one computer. The items get local
+stand-in names there, so test with the items the player's game actually lists
+rather than with your real catalog names.
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

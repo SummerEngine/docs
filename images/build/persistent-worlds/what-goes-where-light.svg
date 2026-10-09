@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 284" width="880" height="284" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="283" rx="16" fill="#fbf7ef" stroke="#e6dcc8"/>
+<text x="40" y="40" font-size="15" font-weight="600" fill="#2a251b" text-anchor="start" opacity="1">Save the place with the World, the player with the player</text>
+<rect x="40" y="62" width="380" height="196" rx="14" fill="#ffffff" stroke="#d9922e" stroke-width="2" opacity="1"/>
+<text x="64" y="92" font-size="14" font-weight="700" fill="#d9922e" text-anchor="start" opacity="1">World save</text>
+<text x="64" y="112" font-size="12" font-weight="500" fill="#8a806b" text-anchor="start" opacity="1">belongs to the place</text>
+<rect x="64" y="128" width="150" height="104" rx="14" fill="#f6e3c4" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<rect x="82.0" y="190.88" width="15.0" height="29.120000000000005" rx="3" fill="#d9922e" opacity="0.8"/>
+<rect x="100.0" y="176.32" width="15.0" height="43.68" rx="3" fill="#d9922e" opacity="0.8"/>
+<rect x="118.0" y="199.2" width="15.0" height="20.8" rx="3" fill="#d9922e" opacity="0.8"/>
+<text x="232" y="160" font-size="13" font-weight="500" fill="#2a251b" text-anchor="start" opacity="1">• Walls you built</text>
+<text x="232" y="188" font-size="13" font-weight="500" fill="#2a251b" text-anchor="start" opacity="1">• Chests and what's in them</text>
+<text x="232" y="216" font-size="13" font-weight="500" fill="#2a251b" text-anchor="start" opacity="1">• Crops in the field</text>
+<rect x="460" y="62" width="380" height="196" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="484" y="92" font-size="14" font-weight="700" fill="#2a251b" text-anchor="start" opacity="1">Player progress</text>
+<text x="484" y="112" font-size="12" font-weight="500" fill="#8a806b" text-anchor="start" opacity="1">follows the player to every World</text>
+<g opacity="1" fill="#d9922e"><circle cx="540" cy="179.0" r="11.2"/><path d="M 521.8 214 v -8.399999999999999 a 18.2 15.399999999999999 0 0 1 36.4 0 v 8.399999999999999 z"/></g>
+<text x="612" y="160" font-size="13" font-weight="500" fill="#2a251b" text-anchor="start" opacity="1">• Level and unlocks</text>
+<text x="612" y="188" font-size="13" font-weight="500" fill="#2a251b" text-anchor="start" opacity="1">• Coins in their pocket</text>
+<text x="612" y="216" font-size="13" font-weight="500" fill="#2a251b" text-anchor="start" opacity="1">• Settings</text>
+</svg>

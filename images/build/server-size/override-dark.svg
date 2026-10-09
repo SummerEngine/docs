@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 250" width="880" height="250" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="249" rx="16" fill="#1b1810" stroke="#3a3428"/>
+<rect x="40" y="30" width="240" height="190" rx="14" fill="#242017" stroke="#f0b566" stroke-width="2" opacity="1"/>
+<text x="160" y="62" font-size="14" font-weight="600" fill="#ede6d6" text-anchor="middle" opacity="1">Your game's size</text>
+<rect x="133" y="84" width="54" height="84" rx="8" fill="#242017" stroke="#9b927f" stroke-width="2" opacity="1"/>
+<rect x="140" y="95.0" width="40" height="16.666666666666668" rx="4" fill="#3d3121" opacity="1"/>
+<circle cx="172" cy="103.33333333333333" r="3" fill="#f0b566"/>
+<line x1="146" y1="103.33333333333333" x2="162" y2="103.33333333333333" stroke="#9b927f" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="140" y="117.66666666666667" width="40" height="16.666666666666668" rx="4" fill="#3d3121" opacity="1"/>
+<circle cx="172" cy="126.0" r="3" fill="#f0b566"/>
+<line x1="146" y1="126.0" x2="162" y2="126.0" stroke="#9b927f" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="140" y="140.33333333333334" width="40" height="16.666666666666668" rx="4" fill="#3d3121" opacity="1"/>
+<circle cx="172" cy="148.66666666666669" r="3" fill="#f0b566"/>
+<line x1="146" y1="148.66666666666669" x2="162" y2="148.66666666666669" stroke="#9b927f" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="134.15" y="178" width="51.699999999999996" height="24" rx="12" fill="#242017" stroke="#f0b566" stroke-width="1.5" opacity="1"/>
+<text x="160" y="194.5" font-size="13" font-weight="700" fill="#f0b566" text-anchor="middle" opacity="1">Small</text>
+<rect x="360" y="30" width="220" height="190" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<text x="470" y="62" font-size="14" font-weight="600" fill="#ede6d6" text-anchor="middle" opacity="1">Duel</text>
+<rect x="450" y="100" width="40" height="62" rx="8" fill="#242017" stroke="#9b927f" stroke-width="2" opacity="1"/>
+<rect x="457" y="111.0" width="26" height="9.333333333333334" rx="4" fill="#3d3121" opacity="1"/>
+<circle cx="475" cy="115.66666666666667" r="3" fill="#f0b566"/>
+<line x1="463" y1="115.66666666666667" x2="465" y2="115.66666666666667" stroke="#9b927f" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="457" y="126.33333333333333" width="26" height="9.333333333333334" rx="4" fill="#3d3121" opacity="1"/>
+<circle cx="475" cy="131.0" r="3" fill="#f0b566"/>
+<line x1="463" y1="131.0" x2="465" y2="131.0" stroke="#9b927f" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="457" y="141.66666666666666" width="26" height="9.333333333333334" rx="4" fill="#3d3121" opacity="1"/>
+<circle cx="475" cy="146.33333333333331" r="3" fill="#f0b566"/>
+<line x1="463" y1="146.33333333333331" x2="465" y2="146.33333333333331" stroke="#9b927f" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="428.2" y="178" width="83.6" height="24" rx="12" fill="#242017" stroke="#9b927f" stroke-width="1.5" opacity="1"/>
+<text x="470" y="194.5" font-size="12" font-weight="700" fill="#9b927f" text-anchor="middle" opacity="1">uses Small</text>
+<line x1="292" y1="125" x2="348" y2="125" stroke="#9b927f" stroke-width="2" stroke-linecap="round" stroke-dasharray="4 5" opacity="1"/>
+<rect x="620" y="30" width="220" height="190" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<text x="730" y="62" font-size="14" font-weight="600" fill="#ede6d6" text-anchor="middle" opacity="1">Shared world</text>
+<rect x="696" y="78" width="68" height="100" rx="8" fill="#242017" stroke="#9b927f" stroke-width="2" opacity="1"/>
+<rect x="703" y="89.0" width="54" height="22.0" rx="4" fill="#3d3121" opacity="1"/>
+<circle cx="749" cy="100.0" r="3" fill="#f0b566"/>
+<line x1="709" y1="100.0" x2="739" y2="100.0" stroke="#9b927f" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="703" y="117.0" width="54" height="22.0" rx="4" fill="#3d3121" opacity="1"/>
+<circle cx="749" cy="128.0" r="3" fill="#f0b566"/>
+<line x1="709" y1="128.0" x2="739" y2="128.0" stroke="#9b927f" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="703" y="145.0" width="54" height="22.0" rx="4" fill="#3d3121" opacity="1"/>
+<circle cx="749" cy="156.0" r="3" fill="#f0b566"/>
+<line x1="709" y1="156.0" x2="739" y2="156.0" stroke="#9b927f" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="681.24" y="184" width="97.52" height="24" rx="12" fill="#242017" stroke="#f0b566" stroke-width="1.5" opacity="1"/>
+<text x="730" y="200.5" font-size="12" font-weight="700" fill="#f0b566" text-anchor="middle" opacity="1">own size: XL</text>
+</svg>

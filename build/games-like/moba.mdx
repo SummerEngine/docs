@@ -1,0 +1,113 @@
+---
+title: "Make a game like League of Legends"
+sidebarTitle: "MOBAs"
+description: "The Summer pieces behind a team battle arena like League of Legends or Dota 2: ranked 5v5 with an accept prompt, parties, a server-run map and ratings."
+icon: "swords"
+tag: "0.7+"
+---
+
+A MOBA is a long, committed match. Ten players accept a game, split into two
+balanced teams and fight over one map full of minions, towers and objectives.
+Afterwards the win or loss moves everyone's rank. Summer gives you each of
+those pieces. This page shows how they fit together.
+
+## The pieces you need
+
+<CardGroup cols={2}>
+  <Card title="Make your game multiplayer" icon="network" href="/build/multiplayer">
+    Your server runs the map; every player runs the same game.
+  </Card>
+  <Card title="Matchmaking" icon="swords" href="/build/matchmaking">
+    A ranked 5v5 queue with balanced teams and an accept prompt.
+  </Card>
+  <Card title="Parties" icon="users" href="/build/parties">
+    Duos and full premades queue together on one team.
+  </Card>
+  <Card title="Instant movement" icon="move" href="/build/movement">
+    Your champion responds the moment you click.
+  </Card>
+  <Card title="Shared game world" icon="layers" href="/build/shared-state">
+    Minions, towers, gold and objectives, kept by the server.
+  </Card>
+  <Card title="Fair hits" icon="target" href="/build/hit-detection">
+    Skillshots land where the player saw them land.
+  </Card>
+  <Card title="Match results" icon="flag" href="/build/match-results">
+    The nexus falls; the server reports the winners.
+  </Card>
+  <Card title="Ratings and leaderboards" icon="trophy" href="/build/leaderboards">
+    A rank that moves after every game, and a top 50.
+  </Card>
+  <Card title="Text chat" icon="message-square" href="/build/chat">
+    Call plays to everyone in the match.
+  </Card>
+  <Card title="Sell items for Sparks" icon="store" href="/build/store">
+    Skins and characters players buy with Sparks.
+  </Card>
+</CardGroup>
+
+## How it fits together
+
+<img className="block dark:hidden" src="/images/build/games-like/moba-light.svg" alt="The MOBA loop: players party up, matchmaking forms two balanced teams of five, everyone accepts, the match runs on one server, and the result updates ratings and the leaderboard." />
+<img className="hidden dark:block" src="/images/build/games-like/moba-dark.svg" alt="The MOBA loop: players party up, matchmaking forms two balanced teams of five, everyone accepts, the match runs on one server, and the result updates ratings and the leaderboard." />
+
+A duo presses Play together. Matchmaking forms two teams of five with the most
+even ratings it can find, keeps the duo together, and asks all ten players to
+accept. Summer starts a server for the match. Your server runs the map and
+decides when a team wins, and every player's rating moves.
+
+## Plan my game
+
+<Prompt description="**Plan my MOBA.** Your agent reads your project and lays out the Summer pieces in the order to build them.">
+I'm making a team battle arena like League of Legends in Summer. Read my
+project and plan how to build it with these Summer skills, in this order;
+if you don't have them installed, find them in the Summer library:
+
+1. `multiplayer` and `multiplayer-project`: the server and client scenes and
+   a first Local Play run.
+2. `multiplayer-movement`: each player moves their own champion instantly.
+3. `multiplayer-state`: minions, towers, gold and abilities, owned by the
+   server.
+4. `summer-matchmaking`: a ranked 5v5 queue with an accept prompt.
+5. `summer-match-results` and `summer-leaderboards`: winners, losers and ranks.
+6. `summer-parties` and `summer-world-chat`: queue with friends and talk in
+   the match.
+
+For each step, tell me what changes in my project and what I'll see when I
+test it. Don't change any files yet.
+</Prompt>
+
+## Build the signature features
+
+### Minions, towers and gold
+
+<Prompt description="**Add a server-run lane.** Minion waves, towers and gold that every player sees the same way.">
+In my Summer project, add a lane like League of Legends: minion waves that
+spawn on a timer, towers that shoot them, and gold for the player who lands
+the last hit. Use the Summer `multiplayer-state` skill; if you don't have it
+installed, find it in the Summer library.
+
+- The server spawns the minions, runs the towers and awards the gold.
+- Every player sees the same minions, health bars and tower state.
+- Each player sees only their own gold.
+
+Read my project first and tell me what you'll change. Then test it with Local
+Play and tell me what you saw.
+</Prompt>
+
+### An accept prompt for ten players
+
+<Prompt description="**Add the match-found prompt.** Ten players accept before the server starts.">
+In my Summer project, make my ranked queue a 5v5 with balanced teams, and ask
+every player to accept a found match within 20 seconds. Use the Summer
+`summer-matchmaking` skill; if you don't have it installed, find it in the
+Summer library.
+
+Show a match-found screen with Accept and Decline and a countdown. If the
+match doesn't start, send the player back to the menu. Tell me what I can
+only check once the game is hosted.
+</Prompt>
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

@@ -1,0 +1,108 @@
+---
+title: "Make a game like Hearthstone"
+sidebarTitle: "Card and turn-based games"
+description: "The Summer pieces behind a card or turn-based game like Hearthstone or chess.com: rated 1v1 matchmaking, hidden hands, server-kept turns and ratings."
+icon: "layers"
+tag: "0.7+"
+---
+
+A card or turn-based game is a duel of decisions. Two players of similar skill
+meet, take turns against a clock, keep their hands secret, and a win moves
+their rating. Because the server holds the rules and the cards, nobody can
+peek at the other hand or play a card they don't have. Summer gives you each
+of those pieces. This page shows how they fit together.
+
+## The pieces you need
+
+<CardGroup cols={2}>
+  <Card title="Make your game multiplayer" icon="network" href="/build/multiplayer">
+    Your server holds the rules and the deck; both players run the same game.
+  </Card>
+  <Card title="Matchmaking" icon="swords" href="/build/matchmaking">
+    A rated 1v1 queue that matches players of similar skill.
+  </Card>
+  <Card title="Shared game world" icon="layers" href="/build/shared-state">
+    The board for everyone, each hand only for its owner, turns checked by
+    the server.
+  </Card>
+  <Card title="Match results" icon="flag" href="/build/match-results">
+    The server decides the winner, or a draw.
+  </Card>
+  <Card title="Ratings and leaderboards" icon="trophy" href="/build/leaderboards">
+    An Elo rating after every game, and a ladder of the best players.
+  </Card>
+  <Card title="Friends and messages" icon="user-plus" href="/build/friends">
+    See which friends are online and message them.
+  </Card>
+  <Card title="Cosmetics" icon="sparkles" href="/build/cosmetics">
+    Card backs and boards players own and show off.
+  </Card>
+  <Card title="Sell items for Sparks" icon="store" href="/build/store">
+    Cosmetics players buy with Sparks.
+  </Card>
+</CardGroup>
+
+## How it fits together
+
+<img className="block dark:hidden" src="/images/build/games-like/card-games-light.svg" alt="The card game loop: two players of similar rating are matched, take turns on a clock kept by the server, see only their own hand, and both ratings move before they play again." />
+<img className="hidden dark:block" src="/images/build/games-like/card-games-dark.svg" alt="The card game loop: two players of similar rating are matched, take turns on a clock kept by the server, see only their own hand, and both ratings move before they play again." />
+
+A player presses Play, and matchmaking finds an opponent with a similar
+rating. Summer starts a server for the duel, which deals the cards, runs the
+turn clock and checks every move. Each player's game only ever learns its own
+hand. When the game ends, the server reports the result and both ratings move.
+
+## Plan my game
+
+<Prompt description="**Plan my card game.** Your agent reads your project and lays out the Summer pieces in the order to build them.">
+I'm making a card or turn-based game like Hearthstone in Summer. Read my
+project and plan how to build it with these Summer skills, in this order; if
+you don't have them installed, find them in the Summer library:
+
+1. `multiplayer` and `multiplayer-project`: the server and client scenes and
+   a first Local Play run.
+2. `multiplayer-state`: the deck, each player's hidden hand, the board and
+   turns, all owned by the server.
+3. `summer-matchmaking`: a rated 1v1 queue.
+4. `summer-match-results` and `summer-leaderboards`: wins, losses, draws and
+   ratings.
+
+For each step, tell me what changes in my project and what I'll see when I
+test it. Don't change any files yet.
+</Prompt>
+
+## Build the signature features
+
+### Hidden hands and server-checked turns
+
+<Prompt description="**Add hidden hands and turns.** Each player sees only their own cards; the server checks every play.">
+In my Summer project, make my card game fair: the server shuffles and deals,
+each player's game sees only its own hand, and the server checks every play
+before it happens. Use the Summer `multiplayer-state` skill; if you don't have
+it installed, find it in the Summer library.
+
+- Both players see the board, the turn and the clock the same way.
+- A play out of turn, or of a card the player doesn't hold, is refused.
+- If the turn clock runs out, the server ends the turn.
+
+Read my project first and tell me what you'll change. Then test it with Local
+Play and tell me what each player saw.
+</Prompt>
+
+### A rated ladder
+
+<Prompt description="**Add a rated ladder.** An Elo rating after every game and a top 50.">
+In my Summer project, add a rated 1v1 queue and a ladder: players are matched
+by rating, the rating moves after every game, and a leaderboard shows the top
+50 and the player's place. Use the Summer `summer-matchmaking`,
+`summer-match-results` and `summer-leaderboards` skills; if you don't have
+them installed, find them in the Summer library.
+
+Read my project first and fit this into my existing menus. Then test the end
+of a game with Local Play, and tell me what I can only check once the game is
+hosted.
+</Prompt>
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 230" width="880" height="230" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="229" rx="16" fill="#fbf7ef" stroke="#e6dcc8"/>
+<text x="40" y="40" font-size="15" font-weight="600" fill="#2a251b" text-anchor="start" opacity="1">Players keep the live version until the new one is promoted</text>
+<rect x="40" y="62" width="300" height="140" rx="14" fill="#f6e3c4" stroke="#d9922e" stroke-width="2" opacity="1"/>
+<text x="64" y="92" font-size="18" font-weight="700" fill="#2a251b" text-anchor="start" opacity="1">v1.0.0</text>
+<rect x="269.08" y="74" width="41.839999999999996" height="24" rx="12" fill="#ffffff" stroke="#d9922e" stroke-width="1.5" opacity="1"/>
+<text x="290" y="90.5" font-size="12" font-weight="700" fill="#d9922e" text-anchor="middle" opacity="1">Live</text>
+<g opacity="1" fill="#2a251b"><circle cx="88" cy="156.0" r="6.4"/><path d="M 77.6 176 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<g opacity="1" fill="#2a251b"><circle cx="138" cy="156.0" r="6.4"/><path d="M 127.6 176 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<g opacity="1" fill="#2a251b"><circle cx="188" cy="156.0" r="6.4"/><path d="M 177.6 176 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<g opacity="1" fill="#2a251b"><circle cx="238" cy="156.0" r="6.4"/><path d="M 227.6 176 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<line x1="352" y1="132" x2="390" y2="132" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 387 126 L 396 132 L 387 138" fill="none" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="408" y="62" width="260" height="140" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="432" y="92" font-size="18" font-weight="700" fill="#2a251b" text-anchor="start" opacity="1">v1.1.0</text>
+<circle cx="440" cy="132" r="8" fill="#4f9a55"/><path d="M 436.5 132 l 2.5 2.6 l 4.5 -5" fill="none" stroke="#fbf7ef" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="456" y="137" font-size="13" font-weight="600" fill="#4f9a55" text-anchor="start" opacity="1">Checks passed</text>
+<text x="432" y="176" font-size="12" font-weight="500" fill="#8a806b" text-anchor="start" opacity="1">uploaded, not live yet</text>
+<line x1="680" y1="132" x2="718" y2="132" stroke="#d9922e" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 715 126 L 724 132 L 715 138" fill="none" stroke="#d9922e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="734" y="92" width="106" height="80" rx="14" fill="#d9922e" opacity="1"/>
+<text x="787" y="128" font-size="13" font-weight="700" fill="#fbf7ef" text-anchor="middle" opacity="1">Promote to</text>
+<text x="787" y="146" font-size="13" font-weight="700" fill="#fbf7ef" text-anchor="middle" opacity="1">production</text>
+</svg>

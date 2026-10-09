@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 220" width="880" height="220" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="219" rx="16" fill="#fbf7ef" stroke="#e6dcc8"/>
+<text x="40" y="40" font-size="15" font-weight="600" fill="#2a251b" text-anchor="start" opacity="1">Before a planned stop, players get a warning and the World saves</text>
+<line x1="70" y1="120" x2="820" y2="120" stroke="#e6dcc8" stroke-width="3" stroke-linecap="round" opacity="1"/>
+<circle cx="110" cy="120" r="9" fill="#d9922e"/>
+<text x="110" y="94" font-size="14" font-weight="700" fill="#d9922e" text-anchor="middle" opacity="1">Notice</text>
+<text x="110" y="154" font-size="12" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">Server restarts soon</text>
+<circle cx="330" cy="120" r="9" fill="#d9922e"/>
+<text x="330" y="94" font-size="14" font-weight="700" fill="#d9922e" text-anchor="middle" opacity="1">Warn players</text>
+<text x="330" y="154" font-size="12" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">“Restarting in 5 minutes”</text>
+<circle cx="550" cy="120" r="9" fill="#4f9a55"/>
+<text x="550" y="94" font-size="14" font-weight="700" fill="#4f9a55" text-anchor="middle" opacity="1">Final save</text>
+<text x="550" y="154" font-size="12" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">Everything since the last checkpoint</text>
+<circle cx="770" cy="120" r="9" fill="#2a251b"/>
+<text x="770" y="94" font-size="14" font-weight="700" fill="#2a251b" text-anchor="middle" opacity="1">Back later</text>
+<text x="770" y="154" font-size="12" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">Same World, restored</text>
+<rect x="468" y="166" width="164" height="30" rx="8" fill="#f6e3c4" opacity="1"/>
+<text x="550" y="186" font-size="12" font-weight="600" fill="#d9922e" text-anchor="middle" opacity="1">gameplay pauses here</text>
+</svg>

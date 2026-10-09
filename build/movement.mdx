@@ -1,0 +1,120 @@
+---
+title: "Make movement feel instant"
+sidebarTitle: "Movement"
+description: "Each player moves their own character with no delay, the server checks every move, and everyone else sees smooth motion."
+icon: "move"
+tag: "0.7+"
+---
+
+In a Summer game, each player's own device moves their character. Pressing a
+key moves the character that same frame, and the camera follows at once, on
+any connection. The server doesn't run anyone's movement. It checks each
+position a player sends and sends the ones it accepts to everyone else, who
+see that player glide smoothly.
+
+## Games like this
+
+<CardGroup cols={2}>
+  <Card title="Counter-Strike, Valorant" icon="crosshair">
+    Crisp first-person movement that never waits on the server.
+  </Card>
+  <Card title="Minecraft servers" icon="pickaxe">
+    Walking, jumping and falling through a shared world.
+  </Card>
+  <Card title="Among Us" icon="users">
+    Simple top-down movement that has to feel responsive.
+  </Card>
+  <Card title="Stardew Valley co-op" icon="sprout">
+    A few friends walking around one farm together.
+  </Card>
+</CardGroup>
+
+## What your players get
+
+<img className="block dark:hidden" src="/images/build/movement/loop-light.svg" alt="The owner's device moves the character at once and sends its position about 20 times a second. The server checks each position and sends accepted ones to the other players, who glide between them." />
+<img className="hidden dark:block" src="/images/build/movement/loop-dark.svg" alt="The owner's device moves the character at once and sends its position about 20 times a second. The server checks each position and sends accepted ones to the other players, who glide between them." />
+
+- **No input delay.** Their own character responds the moment they press a
+  key, whatever their ping.
+- **Smooth other players.** Everyone else is drawn a fraction of a second in
+  the past, gliding between positions, so they move smoothly even when
+  packets arrive late or get lost.
+- **No speed hacks.** The server checks every position. A move that's too
+  fast or out of bounds is refused, and that player snaps back to where they
+  last were allowed to be.
+
+## Pick your setup
+
+### Walk, run and jump
+
+Your existing character controller keeps working: input, walking, gravity,
+jumping and collision all run on the player's own device. About 20 times a
+second it sends the character's position and facing to the server. Your
+server decides what's allowed, such as a top speed and the edges of the
+level, and gives a little leeway for jumps and falls so normal play never
+snaps back.
+
+<Prompt description="**Make my character move in multiplayer.** Instant for the player, checked by the server, smooth for everyone else.">
+In my Summer multiplayer project, make each player's character move the
+Summer way. Use the Summer `multiplayer-movement` skill; if you don't have it
+installed, find it in the Summer library.
+
+- Keep my existing character controller running on the player's own device.
+- The server checks every position: no faster than [TOP SPEED], and inside
+  my level.
+- Everyone else sees each player glide smoothly.
+
+Read my project first and tell me which parts of my controller stay as they
+are before you change anything. Then test it with Local Play on a bad
+connection and tell me what you saw in every window.
+</Prompt>
+
+### The server moves a player on purpose
+
+Sometimes the server needs to put a player somewhere: a respawn point, a
+portal, the start of a new round. The server sets the new position, and that
+player's character jumps straight there. Everyone else sees them appear at
+the new spot rather than slide across the map.
+
+<img className="block dark:hidden" src="/images/build/movement/checks-light.svg" alt="Two cases. A normal move is accepted. A move that is too fast is refused, and the player snaps back to the last accepted position. The server can also teleport a player to a respawn point." />
+<img className="hidden dark:block" src="/images/build/movement/checks-dark.svg" alt="Two cases. A normal move is accepted. A move that is too fast is refused, and the player snaps back to the last accepted position. The server can also teleport a player to a respawn point." />
+
+<Prompt description="**Add respawns and teleports.** The server puts a player somewhere and everyone sees them there.">
+In my Summer multiplayer project, let the server move players on purpose for
+[RESPAWNS / PORTALS / NEW ROUNDS]. Use the Summer `multiplayer-movement`
+skill; if you don't have it installed, find it in the Summer library.
+
+- The player jumps straight to the new position.
+- Everyone else sees them appear there instead of sliding across the map.
+
+Read my project first and tell me where these moves happen in my game. Then
+test it with Local Play and tell me what you saw in every window.
+</Prompt>
+
+## Not sure which fits?
+
+<Prompt description="**Plan movement for my multiplayer game.** Your agent reads your controller and proposes the rules. No code.">
+Read my Summer project and help me plan how movement works in multiplayer.
+Use the Summer `multiplayer-movement` skill; if you don't have it installed,
+find it in the Summer library. Don't change any files yet.
+
+Tell me:
+1. what each player's device sends and how often;
+2. the rules my server should check, such as top speed and level bounds, and
+   the moments it should move a player itself;
+3. anything my movement needs that this doesn't cover yet, and how we can
+   build around it.
+</Prompt>
+
+## Testing it on your machine
+
+Local Play runs your server and several game windows on one computer, so you
+can walk every character around at once. Your own machine has no lag, so
+also run it with added delay, jitter and packet loss. A good run looks like
+this: your own character never stutters or snaps back while moving normally,
+and the others glide smoothly in every window. See
+[Make your game multiplayer](/build/multiplayer#testing-it-on-your-machine).
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

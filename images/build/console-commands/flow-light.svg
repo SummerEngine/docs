@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 260" width="880" height="260" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="259" rx="16" fill="#fbf7ef" stroke="#e6dcc8"/>
+<rect x="40" y="30" width="300" height="200" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="64" y="62" font-size="14" font-weight="600" fill="#2a251b" text-anchor="start" opacity="1">Your creator dashboard</text>
+<rect x="60" y="86" width="260" height="34" rx="8" fill="#fbf7ef" stroke="#d9922e" stroke-width="1.5" opacity="1"/>
+<text x="72" y="108" font-family="'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="12" font-weight="600" fill="#d9922e">&gt; announce "Restart in 10 min"</text>
+<rect x="60" y="160" width="260" height="50" rx="8" fill="#fbf7ef" opacity="1"/>
+<circle cx="80" cy="185" r="8" fill="#4f9a55"/><path d="M 76.5 185 l 2.5 2.6 l 4.5 -5" fill="none" stroke="#fbf7ef" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="96" y="190" font-family="'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="12" font-weight="500" fill="#2a251b">Announcement sent</text>
+<line x1="352" y1="103" x2="406" y2="103" stroke="#d9922e" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 403 97 L 412 103 L 403 109" fill="none" stroke="#d9922e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="382" y="90" font-size="11" font-weight="700" fill="#d9922e" text-anchor="middle" opacity="1">command</text>
+<line x1="412" y1="185" x2="358" y2="185" stroke="#4f9a55" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 361 179 L 352 185 L 361 191" fill="none" stroke="#4f9a55" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="382" y="206" font-size="11" font-weight="700" fill="#4f9a55" text-anchor="middle" opacity="1">reply</text>
+<rect x="424" y="30" width="180" height="200" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="514" y="62" font-size="14" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">The World's server</text>
+<rect x="487" y="82" width="54" height="84" rx="8" fill="#ffffff" stroke="#8a806b" stroke-width="2" opacity="1"/>
+<rect x="494" y="93.0" width="40" height="16.666666666666668" rx="4" fill="#f6e3c4" opacity="1"/>
+<circle cx="526" cy="101.33333333333333" r="3" fill="#d9922e"/>
+<line x1="500" y1="101.33333333333333" x2="516" y2="101.33333333333333" stroke="#8a806b" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="494" y="115.66666666666667" width="40" height="16.666666666666668" rx="4" fill="#f6e3c4" opacity="1"/>
+<circle cx="526" cy="124.0" r="3" fill="#d9922e"/>
+<line x1="500" y1="124.0" x2="516" y2="124.0" stroke="#8a806b" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="494" y="138.33333333333334" width="40" height="16.666666666666668" rx="4" fill="#f6e3c4" opacity="1"/>
+<circle cx="526" cy="146.66666666666669" r="3" fill="#d9922e"/>
+<line x1="500" y1="146.66666666666669" x2="516" y2="146.66666666666669" stroke="#8a806b" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="455.96" y="184" width="116.08" height="24" rx="12" fill="#ffffff" stroke="#d9922e" stroke-width="1.5" opacity="1"/>
+<text x="514" y="200.5" font-size="11" font-weight="700" fill="#d9922e" text-anchor="middle" opacity="1">your game's code</text>
+<line x1="616" y1="125" x2="654" y2="125" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 651 119 L 660 125 L 651 131" fill="none" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="672" y="30" width="168" height="200" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="756" y="62" font-size="14" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">Players</text>
+<rect x="690" y="82" width="132" height="30" rx="8" fill="#d9922e" opacity="1"/>
+<text x="756" y="102" font-size="11" font-weight="700" fill="#fbf7ef" text-anchor="middle" opacity="1">Restart in 10 min</text>
+<g opacity="1" fill="#2a251b"><circle cx="712" cy="176.0" r="6.4"/><path d="M 701.6 196 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<g opacity="1" fill="#2a251b"><circle cx="756" cy="176.0" r="6.4"/><path d="M 745.6 196 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<g opacity="1" fill="#2a251b"><circle cx="800" cy="176.0" r="6.4"/><path d="M 789.6 196 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+</svg>

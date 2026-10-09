@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 290" width="880" height="290" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="289" rx="16" fill="#1b1810" stroke="#3a3428"/>
+<rect x="40" y="30" width="800" height="230" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<text x="64" y="62" font-size="15" font-weight="600" fill="#ede6d6" text-anchor="start" opacity="1">World console</text>
+<text x="816" y="62" font-size="13" font-weight="500" fill="#9b927f" text-anchor="end" opacity="1">History</text>
+<rect x="60" y="80" width="760" height="48" rx="9" fill="#1b1810" opacity="1"/>
+<text x="76" y="100" font-family="'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="13" font-weight="600" fill="#f0b566">&gt; help</text>
+<text x="76" y="118" font-family="'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="12" font-weight="500" fill="#9b927f">announce, status, start_event</text>
+<circle cx="796" cy="104" r="8" fill="#8bc48a"/><path d="M 792.5 104 l 2.5 2.6 l 4.5 -5" fill="none" stroke="#1b1810" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="60" y="136" width="760" height="48" rx="9" fill="#1b1810" opacity="1"/>
+<text x="76" y="156" font-family="'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="13" font-weight="600" fill="#f0b566">&gt; announce "Welcome back"</text>
+<text x="76" y="174" font-family="'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="12" font-weight="500" fill="#9b927f">Announcement sent</text>
+<circle cx="796" cy="160" r="8" fill="#8bc48a"/><path d="M 792.5 160 l 2.5 2.6 l 4.5 -5" fill="none" stroke="#1b1810" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="60" y="192" width="760" height="48" rx="9" fill="#1b1810" opacity="1"/>
+<text x="76" y="212" font-family="'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="13" font-weight="600" fill="#f0b566">&gt; start_event</text>
+<text x="76" y="230" font-family="'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="12" font-weight="500" fill="#9b927f">Usage: start_event NAME</text>
+</svg>

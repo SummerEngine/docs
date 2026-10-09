@@ -1,0 +1,136 @@
+---
+title: "Make hits fair"
+sidebarTitle: "Hit detection"
+description: "Shots, swings and abilities are checked against exactly what the attacking player saw on their screen, so a hit that looked like a hit counts."
+icon: "crosshair"
+tag: "0.7+"
+---
+
+On every connection, what a player sees is a fraction of a second old. If the
+server only checked where everyone is *now*, a perfectly aimed shot could
+miss because the target has moved on since. Summer keeps a short history of
+where every character was. When a player fires, the server checks the shot
+against the moment the player saw, so if it was on target on their screen,
+it counts. This works for 3D games.
+
+## Games like this
+
+<CardGroup cols={2}>
+  <Card title="Counter-Strike, Valorant" icon="crosshair">
+    Instant shots that hit exactly where you aimed.
+  </Card>
+  <Card title="Overwatch" icon="zap">
+    Projectiles, beams and area abilities, all checked fairly.
+  </Card>
+  <Card title="For Honor" icon="sword">
+    Melee swings that connect when they look like they connect.
+  </Card>
+  <Card title="Deep Rock Galactic" icon="pickaxe">
+    Co-op shooting, where every hit lands where you aimed.
+  </Card>
+</CardGroup>
+
+## What your players get
+
+<img className="block dark:hidden" src="/images/build/hit-detection/rewind-light.svg" alt="On the shooter's screen the target is in the crosshair. By the time the shot reaches the server, the target has moved on. The server checks the shot against where the target was on the shooter's screen, and counts the hit." />
+<img className="hidden dark:block" src="/images/build/hit-detection/rewind-dark.svg" alt="On the shooter's screen the target is in the crosshair. By the time the shot reaches the server, the target has moved on. The server checks the shot against where the target was on the shooter's screen, and counts the hit." />
+
+- **Hits match the screen.** A shot that was on target when the player fired
+  counts, even though the target kept moving while the shot travelled to the
+  server.
+- **Walls still block.** The server checks the walls too, so nobody gets shot
+  through solid cover.
+- **No faked hits.** The attacking player's game sends only what they did,
+  such as the aim and the weapon. The server works out who was hit, so a
+  modified client can't claim hits it didn't make.
+
+## Pick your setup
+
+### Instant shots
+
+The shot travels in a straight line the moment the player fires, like a
+rifle or a laser. Summer checks the line against every other character's hit
+shape and the walls, at the moment the shooter saw. Your server decides what
+a hit does: damage, a kill, a hit marker for the shooter.
+
+<img className="block dark:hidden" src="/images/build/hit-detection/walls-light.svg" alt="Two shots. One has a clear line to the target and hits. The other is stopped by a wall in front of the target." />
+<img className="hidden dark:block" src="/images/build/hit-detection/walls-dark.svg" alt="Two shots. One has a clear line to the target and hits. The other is stopped by a wall in front of the target." />
+
+<Prompt description="**Add fair instant shots.** Shots are checked against what the shooter saw; walls block them.">
+In my Summer multiplayer project, make shooting fair with Summer's
+lag-compensated hit checks. Use the Summer `multiplayer-state` skill for how
+the server answers a player's action, and look up Summer's historical hit
+checks (`SummerNetworkHitHistory3D` and ray Commands) in the Summer API docs.
+If you don't have the skill installed, find it in the Summer library.
+
+- When a player fires, the server checks the shot against what that player
+  saw.
+- Walls in my level block shots.
+- The server decides damage: [DAMAGE RULES].
+
+Read my project first and tell me which characters and walls need hit shapes
+before you change anything. Then test it with Local Play on a slow connection
+and tell me whether shots hit what I aimed at.
+</Prompt>
+
+### Abilities, swings and projectiles
+
+Not every attack is a straight line. A shotgun spreads in a cone, a sword
+sweeps an arc, a fireball travels along a path, and a ground slam hits an
+area. Your game decides the shape, its range and who it can hurt. Summer
+gives your server the exact moment the player saw, with every character
+where it was on their screen, so you test your shape against that.
+
+<img className="block dark:hidden" src="/images/build/hit-detection/shapes-light.svg" alt="Four attack shapes checked the same way: a straight shot, a cone, a melee arc and a projectile path." />
+<img className="hidden dark:block" src="/images/build/hit-detection/shapes-dark.svg" alt="Four attack shapes checked the same way: a straight shot, a cone, a melee arc and a projectile path." />
+
+<Prompt description="**Add fair abilities and melee.** Cones, swings and projectiles checked against what the player saw.">
+In my Summer multiplayer project, check my [ABILITY / MELEE / PROJECTILE]
+attacks against what the attacking player saw. Use the Summer
+`multiplayer-state` skill, and look up Summer's custom hit checks on
+historical views (`SummerNetworkHistoricalView3D`) in the Summer API docs. If
+you don't have the skill installed, find it in the Summer library.
+
+- The attack's shape: [for example "a 60° cone, 8 metres long"].
+- Who it can hurt: [for example "only the other team"].
+- What it does on a hit: [DAMAGE AND EFFECTS].
+
+Read my project first and explain how each attack becomes a shape before you
+change anything. Then test it with Local Play on a slow connection and tell
+me what you saw.
+</Prompt>
+
+## How far back the server looks
+
+Your game chooses how old a player's view may be and still count. Summer
+recommends a quarter of a second, which covers players with round trips up
+to about 170 ms. A player whose view is older than that has their shot
+refused instead of counted.
+
+## Not sure which fits?
+
+<Prompt description="**Plan hit detection for my game.** Your agent reads your weapons and abilities and proposes how each is checked. No code.">
+Read my Summer project and help me plan fair hit detection. Use the Summer
+`multiplayer-state` skill, and look up Summer's historical hit checks in the
+Summer API docs; if you don't have the skill installed, find it in the Summer
+library. Don't change any files yet.
+
+Tell me:
+1. each weapon and ability in my game, and whether it's an instant shot or a
+   shape;
+2. which characters and walls need hit shapes;
+3. anything my combat needs that this doesn't cover yet, and how we can build
+   around it.
+</Prompt>
+
+## Testing it on your machine
+
+Local Play runs your server and several game windows on one computer, and it
+can add delay, jitter and packet loss to every window. Shoot at a moving
+player with a delay of around 100 ms: the hit should count when your
+crosshair was on them. See
+[Make your game multiplayer](/build/multiplayer#testing-it-on-your-machine).
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

@@ -1,2 +1,5 @@
 # SpecStory auto-generated transcripts
 .specstory/
+
+# Python bytecode from scripts/illustrations
+__pycache__/

@@ -1,0 +1,120 @@
+---
+title: "Charge for your game and accept tips"
+sidebarTitle: "Paid games and tips"
+description: "Publish free with tips, set a one-time price, or sell items for Sparks. Plus featured items on your game's page."
+icon: "badge-dollar-sign"
+tag: "0.7+"
+---
+
+It's free to publish on Summer. Then you choose how you earn: players can tip
+you, you can set a price for your game, or you can sell items for Sparks in
+your own item shop. You set all of this up for your game in Studio and on
+summer.games, not in your game's code.
+
+<img className="block dark:hidden" src="/images/build/paid-games/ways-light.svg" alt="Three ways to earn: publish free and players can tip you; set a price and Summer takes 30% of each sale; sell items for Sparks and earn 70% of the Sparks players spend in your game." />
+<img className="hidden dark:block" src="/images/build/paid-games/ways-dark.svg" alt="Three ways to earn: publish free and players can tip you; set a price and Summer takes 30% of each sale; sell items for Sparks and earn 70% of the Sparks players spend in your game." />
+
+## Games like this
+
+<CardGroup cols={2}>
+  <Card title="Stardew Valley, Celeste" icon="tag">
+    One price. Buy it once and it's yours.
+  </Card>
+  <Card title="Steam sales" icon="percent">
+    A discount on the price for a limited time.
+  </Card>
+  <Card title="itch.io games" icon="heart">
+    Free to play, with a way to tip the creator.
+  </Card>
+  <Card title="Fortnite" icon="shopping-bag">
+    Free to play, earning from an item shop instead.
+  </Card>
+</CardGroup>
+
+## What your players get
+
+- **A paid game:** your game's page shows the price, with any discount. A
+  player buys it once and it's in their library. Players who got your game
+  while it was free keep it.
+- **Tips:** a **Tip** button on your game's page. The player picks an amount
+  in Sparks and keeps a supporter badge in their inventory. The page tells
+  them "Tips are paid in Sparks. The creator earns 70% of the Sparks you
+  spend."
+- **Featured items:** up to six of your published items shown on your game's
+  page, next to the full item shop.
+
+## Pick your setup
+
+### Set a price
+
+In Studio, open your game's store page. Under **Payouts**, choose **Get paid**
+to set up the Stripe account your sales are paid out to. Then under **Price**,
+switch from **Free** to **Paid** and enter a price in US dollars, from $0.50
+to $1,000. Summer takes 30% of each sale. Until your payouts are set up, your
+game stays free, so players never see a price they can't pay.
+
+You can also add a **Discount**: a percentage off, from 1% to 90%, for up to 90
+days. Only players who bought a paid game can download it and join its
+matches.
+
+### Accept tips
+
+A tip is an item you create to say thank you: a supporter badge that players
+buy with Sparks and keep. Create it in your game's catalog in Studio, tag it
+`support-item`, and make it an item that can't be traded, gifted or used up.
+Give it a Sparks price; 200, 500, 1,000 and 2,000 Sparks match about $2, $5,
+$10 and $20. Once it's published, a **Tip** button appears on your game's page
+on summer.games, showing up to four of your tips, cheapest first.
+
+When you talk about tips in your game or on your page, call them tips, never
+gifts or donations.
+
+Your game can thank the players who tipped, because the supporter badge is in
+their inventory like any other item:
+
+<img className="block dark:hidden" src="/images/build/paid-games/tip-light.svg" alt="On the game's page, the player presses Tip, picks a tip in Sparks such as 500, and keeps a supporter badge; the creator earns 70% of the Sparks spent." />
+<img className="hidden dark:block" src="/images/build/paid-games/tip-dark.svg" alt="On the game's page, the player presses Tip, picks a tip in Sparks such as 500, and keeps a supporter badge; the creator earns 70% of the Sparks spent." />
+
+<Prompt description="**Thank my supporters in the game.** Players who tipped get a visible thank-you.">
+In my Summer project, thank the players who tipped me. My supporter badge is
+the item [ITEM NAME]. Use the Summer `summer-store` skill; if you don't have it
+installed, find it in the Summer library.
+
+- When a player owns the badge, show [for example "a supporter star next to
+  their name" or "a thank-you on the main menu"].
+- It updates when they tip for the first time.
+
+Read my project first and suggest where the thank-you fits before you change
+anything. Then test it with Local Play and tell me what you saw.
+</Prompt>
+
+### Feature your items
+
+Choose up to six of your published items to feature on your game's page. They
+appear in the order you pick, and the full item shop stays one tap away. Items
+you withdraw drop off the page automatically. See
+[Sell items for Sparks](/build/store) for creating and selling items.
+
+## Not sure which fits?
+
+<Prompt description="**Plan how my game earns.** Your agent reads your project and suggests a mix. No code.">
+Read my Summer project and help me decide how it should earn. Use the Summer
+`summer-store` skill for items; if you don't have it installed, find it in the
+Summer library. Don't change any files yet.
+
+Tell me:
+1. whether my game suits a price, tips, items for Sparks, or a mix, and why;
+2. what I would set up in Studio, and what would change in my game;
+3. which items or supporter rewards fit my game, if any.
+</Prompt>
+
+## Testing it on your machine
+
+Prices and tips live on your game's page, so there's nothing to run locally
+for them. To test a supporter thank-you, give a test player the badge item in
+your Local Play test users file; your game then sees it like any other owned
+item. When you're ready to go live, see [Publish your game](/build/publish).
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

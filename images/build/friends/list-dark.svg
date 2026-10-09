@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 740 370" width="740" height="370" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="739" height="369" rx="16" fill="#1b1810" stroke="#3a3428"/>
+<rect x="40" y="30" width="360" height="310" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<text x="64" y="62" font-size="15" font-weight="600" fill="#ede6d6" text-anchor="start" opacity="1">Friends</text>
+<text x="64" y="96" font-size="12" font-weight="700" fill="#f0b566" text-anchor="start" opacity="1">In this game</text>
+<g opacity="1" fill="#ede6d6"><circle cx="84" cy="114.25" r="4.4"/><path d="M 76.85 128 v -3.3000000000000003 a 7.15 6.050000000000001 0 0 1 14.3 0 v 3.3000000000000003 z"/></g>
+<circle cx="96" cy="126" r="4.5" fill="#f0b566" stroke="#242017" stroke-width="2"/>
+<text x="110" y="122" font-size="14" font-weight="500" fill="#ede6d6" text-anchor="start" opacity="1">Mira</text>
+<g opacity="1" fill="#ede6d6"><circle cx="84" cy="142.25" r="4.4"/><path d="M 76.85 156 v -3.3000000000000003 a 7.15 6.050000000000001 0 0 1 14.3 0 v 3.3000000000000003 z"/></g>
+<circle cx="96" cy="154" r="4.5" fill="#f0b566" stroke="#242017" stroke-width="2"/>
+<text x="110" y="150" font-size="14" font-weight="500" fill="#ede6d6" text-anchor="start" opacity="1">Kofi</text>
+<text x="64" y="176" font-size="12" font-weight="700" fill="#8bc48a" text-anchor="start" opacity="1">Online</text>
+<g opacity="1" fill="#ede6d6"><circle cx="84" cy="194.25" r="4.4"/><path d="M 76.85 208 v -3.3000000000000003 a 7.15 6.050000000000001 0 0 1 14.3 0 v 3.3000000000000003 z"/></g>
+<circle cx="96" cy="206" r="4.5" fill="#8bc48a" stroke="#242017" stroke-width="2"/>
+<text x="110" y="202" font-size="14" font-weight="500" fill="#ede6d6" text-anchor="start" opacity="1">Sol</text>
+<text x="64" y="228" font-size="12" font-weight="700" fill="#7fb3d5" text-anchor="start" opacity="1">In another game</text>
+<g opacity="1" fill="#ede6d6"><circle cx="84" cy="246.25" r="4.4"/><path d="M 76.85 260 v -3.3000000000000003 a 7.15 6.050000000000001 0 0 1 14.3 0 v 3.3000000000000003 z"/></g>
+<circle cx="96" cy="258" r="4.5" fill="#7fb3d5" stroke="#242017" stroke-width="2"/>
+<text x="110" y="254" font-size="14" font-weight="500" fill="#ede6d6" text-anchor="start" opacity="1">Juno</text>
+<text x="64" y="280" font-size="12" font-weight="700" fill="#9b927f" text-anchor="start" opacity="1">Offline</text>
+<g opacity="0.5" fill="#ede6d6"><circle cx="84" cy="298.25" r="4.4"/><path d="M 76.85 312 v -3.3000000000000003 a 7.15 6.050000000000001 0 0 1 14.3 0 v 3.3000000000000003 z"/></g>
+<circle cx="96" cy="310" r="4.5" fill="#9b927f" stroke="#242017" stroke-width="2"/>
+<text x="110" y="306" font-size="14" font-weight="500" fill="#ede6d6" text-anchor="start" opacity="0.5">Ada</text>
+<text x="580" y="52" font-size="13" font-weight="600" fill="#9b927f" text-anchor="middle" opacity="1">Summer's profile screen</text>
+<rect x="460" y="66" width="240" height="274" rx="16" fill="#242017" stroke="#f0b566" stroke-width="2" opacity="1"/>
+<g opacity="1" fill="#f0b566"><circle cx="580" cy="110.0" r="9.6"/><path d="M 564.4 140 v -7.199999999999999 a 15.6 13.2 0 0 1 31.2 0 v 7.199999999999999 z"/></g>
+<text x="580" y="168" font-size="15" font-weight="700" fill="#ede6d6" text-anchor="middle" opacity="1">Mira</text>
+<rect x="488" y="190" width="184" height="26" rx="8" fill="#3d3121" opacity="1"/>
+<text x="580" y="207" font-size="12" font-weight="600" fill="#ede6d6" text-anchor="middle" opacity="1">Add friend</text>
+<rect x="488" y="224" width="184" height="26" rx="8" fill="#3d3121" opacity="1"/>
+<text x="580" y="241" font-size="12" font-weight="600" fill="#ede6d6" text-anchor="middle" opacity="1">Message</text>
+<rect x="488" y="258" width="184" height="26" rx="8" fill="#3d3121" opacity="1"/>
+<text x="580" y="275" font-size="12" font-weight="600" fill="#ede6d6" text-anchor="middle" opacity="1">Invite to party</text>
+<rect x="488" y="292" width="184" height="26" rx="8" fill="#1b1810" opacity="1"/>
+<text x="580" y="309" font-size="12" font-weight="600" fill="#e07a5f" text-anchor="middle" opacity="1">Report</text>
+</svg>

@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 280" width="880" height="280" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="279" rx="16" fill="#fbf7ef" stroke="#e6dcc8"/>
+<rect x="40" y="30" width="220" height="220" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="150" y="62" font-size="15" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">Your device</text>
+<rect x="330" y="30" width="220" height="220" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="440" y="62" font-size="15" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">Server</text>
+<rect x="620" y="30" width="220" height="220" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="730" y="62" font-size="15" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">Everyone else</text>
+<rect x="115" y="80" width="70" height="116" rx="12" fill="#ffffff" stroke="#8a806b" stroke-width="2" opacity="1"/>
+<rect x="122" y="92" width="56" height="88" rx="6" fill="#f6e3c4" opacity="1"/>
+<line x1="142.0" y1="188" x2="158.0" y2="188" stroke="#8a806b" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<circle cx="132" cy="168" r="3.2" fill="#d9922e" opacity="0.57"/>
+<circle cx="139" cy="165" r="3.2" fill="#d9922e" opacity="0.78"/>
+<circle cx="146" cy="162" r="3.2" fill="#d9922e" opacity="1.00"/>
+<g opacity="1" fill="#d9922e"><circle cx="163" cy="148.0" r="6.4"/><path d="M 152.6 168 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<text x="150" y="226" font-size="13" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">moves at once</text>
+<line x1="268" y1="140" x2="316" y2="140" stroke="#d9922e" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 313 134 L 322 140 L 313 146" fill="none" stroke="#d9922e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="295" y="112" font-size="12" font-weight="700" fill="#d9922e" text-anchor="middle" opacity="1">position</text>
+<text x="295" y="126" font-size="11" font-weight="600" fill="#d9922e" text-anchor="middle" opacity="1">~20× a second</text>
+<rect x="413" y="92" width="54" height="84" rx="8" fill="#ffffff" stroke="#8a806b" stroke-width="2" opacity="1"/>
+<rect x="420" y="103.0" width="40" height="16.666666666666668" rx="4" fill="#f6e3c4" opacity="1"/>
+<circle cx="452" cy="111.33333333333333" r="3" fill="#d9922e"/>
+<line x1="426" y1="111.33333333333333" x2="442" y2="111.33333333333333" stroke="#8a806b" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="420" y="125.66666666666667" width="40" height="16.666666666666668" rx="4" fill="#f6e3c4" opacity="1"/>
+<circle cx="452" cy="134.0" r="3" fill="#d9922e"/>
+<line x1="426" y1="134.0" x2="442" y2="134.0" stroke="#8a806b" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="420" y="148.33333333333334" width="40" height="16.666666666666668" rx="4" fill="#f6e3c4" opacity="1"/>
+<circle cx="452" cy="156.66666666666669" r="3" fill="#d9922e"/>
+<line x1="426" y1="156.66666666666669" x2="442" y2="156.66666666666669" stroke="#8a806b" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<circle cx="462" cy="96" r="10" fill="#4f9a55"/><path d="M 458.5 96 l 2.5 2.6 l 4.5 -5" fill="none" stroke="#fbf7ef" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="440" y="226" font-size="13" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">checks each one</text>
+<line x1="558" y1="140" x2="606" y2="140" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 603 134 L 612 140 L 603 146" fill="none" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="585" y="126" font-size="12" font-weight="700" fill="#8a806b" text-anchor="middle" opacity="1">accepted</text>
+<path d="M 636 156 Q 658 132 676 146" fill="none" stroke="#8a806b" stroke-width="2" stroke-dasharray="3 5" opacity="0.8"/>
+<g opacity="1" fill="#2a251b"><circle cx="690" cy="130.0" r="6.4"/><path d="M 679.6 150 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<path d="M 726 196 Q 748 172 766 186" fill="none" stroke="#8a806b" stroke-width="2" stroke-dasharray="3 5" opacity="0.8"/>
+<g opacity="1" fill="#2a251b"><circle cx="780" cy="170.0" r="6.4"/><path d="M 769.6 190 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<text x="730" y="226" font-size="13" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">glide smoothly</text>
+</svg>
