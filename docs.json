@@ -23,6 +23,13 @@
       "dark": "#0a0a0a"
     }
   },
+  "thumbnails": {
+    "appearance": "light",
+    "background": "/images/thumbnail-bg.png",
+    "fonts": {
+      "family": "Geist"
+    }
+  },
   "favicon": "/images/icon/favicon.ico",
   "icons": {
     "library": "lucide"
