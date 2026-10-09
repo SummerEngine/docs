@@ -1,0 +1,4725 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Summer Creator Management API",
+    "version": "summer.management.creator/v1",
+    "description": "Create and manage your Summer Games store games: store page drafts, revisions, preview links, media, builds and releases, and the owner approval that publishes them."
+  },
+  "servers": [
+    {
+      "url": "https://api.summer.games"
+    }
+  ],
+  "security": [
+    {
+      "developerBearer": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Games"
+    },
+    {
+      "name": "Items"
+    },
+    {
+      "name": "Media"
+    }
+  ],
+  "paths": {
+    "/v1/management/games/{gameId}/builds/{buildId}/client-packages": {
+      "post": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "beginClientPackageUpload",
+        "summary": "Begin a Build's client pack",
+        "description": "Requires builds.write for the Game and a ready Build. A Build has one client pack for every platform it declares: export one PCK whose textures every declared platform can read. Every declared platform must have a client template in the Build's selected set, and the scene and composition must pair with the Build's server (a Build without a host names no composition) before any bytes are sent. Identical declarations return the same upload. Packs up to 40 GiB upload straight to storage in the returned fixed-size parts; request part grants from :signParts. Part URLs are private credentials; upload bytes without account authorization, cookies or redirects.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClientPackageUploadRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Retained upload identity and, while bytes are awaited, its part plan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "package"
+                  ],
+                  "properties": {
+                    "package": {
+                      "$ref": "#/components/schemas/ClientPackageUpload"
+                    },
+                    "upload": {
+                      "$ref": "#/components/schemas/ClientPackageUploadPlan"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Game or Build unavailable to this creator"
+          },
+          "409": {
+            "description": "Build not ready, scene and composition do not pair with its server, its template set lacks a declared platform, or the client version names other bytes"
+          },
+          "422": {
+            "description": "Invalid declaration"
+          },
+          "503": {
+            "description": "Package storage unavailable"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/GameID"
+        },
+        {
+          "name": "buildId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/v1/management/games/{gameId}/builds/{buildId}/client-packages/{uploadId}": {
+      "get": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "getClientPackageUpload",
+        "summary": "Read a Build pack and its checks",
+        "description": "Requires builds.read. Once Platform has inspected the pack, verifications lists the latest check for each platform the Build declares; each ready check names a qualification selectable in a version draft.",
+        "responses": {
+          "200": {
+            "description": "Current retained upload",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientPackageUpload"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Upload not found or unavailable to this creator"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/GameID"
+        },
+        {
+          "name": "buildId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        },
+        {
+          "name": "uploadId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/v1/management/games/{gameId}/build-publications": {
+      "get": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "listBuildPublications",
+        "summary": "Recover a Game's publications and exported client pack checks",
+        "description": "Requires builds.read for the Game. Returns durable publications before and after their Build exists, ordered by createdAt then id descending. An exported publication includes clientPackage once its exact inspected pack is attached to the Build. A later client-only upload does not replace that identity. Package verifications report each platform's current check; uploaded does not mean qualified or released. Cursors are bound to the requesting principal and Game. No upload URLs or storage credentials are returned.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/InventoryLimit"
+          },
+          {
+            "$ref": "#/components/parameters/InventoryCursor"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Current publication page",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "items",
+                    "nextCursor"
+                  ],
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "maxItems": 100,
+                      "items": {
+                        "$ref": "#/components/schemas/BuildPublication"
+                      }
+                    },
+                    "nextCursor": {
+                      "type": "string",
+                      "description": "Opaque continuation cursor; empty at the end."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "422": {
+            "description": "Invalid query or cursor"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "createBuildPublication",
+        "summary": "Begin a Build from an exported game or from project source",
+        "description": "Requires builds.write for the Game. Creates a publication in state uploading, preallocates its Build identity and binds the declared digest and size; the bytes follow through :source-upload. With source.uploadId, an existing private upload supplies those bytes instead; source-upload returns uploadRequired false and source-complete queues the same durable intake. A game without a host becomes a Build directly; a hosted bundle enters the durable publisher workflow, which assembles its exact server pack with the selected trusted template executable. Completion attaches the client pack and queues per-platform verifications. Platform exports nothing from project source for these uploads. Execution mode, target platforms and player permissions are fixed here; intake later checks the bytes against them. The route gameId is the publication destination. An omitted build.gameId is bound to it; an explicit different gameId is rejected, never rewritten. Replaying the same Idempotency-Key and body returns the original acceptance.",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "$ref": "#/components/schemas/ExportedGamePublicationRequest"
+                  },
+                  {
+                    "$ref": "#/components/schemas/SourceBuildPublicationRequest"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Publication accepted and awaiting its upload",
+            "headers": {
+              "Location": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "The publication's operation"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BuildPublicationAccepted"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "description": "upload_not_ready: seal the private upload first; upload_format_unsupported: the retained bytes have no importer for the declared publication format; artifact_exists: these exact bytes are already a Build of the Game or the upload of another open publication; client_version_conflict: a single pack's client version already names other bytes; template_execution_unsupported: a game without a host targets a platform other than iOS; runtime_execution_unsupported: the declared execution cannot use the selected template path; deployment_not_actionable: Summer declined the Game; conflict: the Build version is already taken.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "game_identity_mismatch: the exported declaration names a different Game; upload a portable export or use its original Game. invalid_request: the declaration is malformed or names fields its source kind does not use.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/GameID"
+        }
+      ]
+    },
+    "/v1/management/games/{gameId}/build-publications/{publicationId}": {
+      "get": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "getBuildPublication",
+        "summary": "Read a publication, its progress and its exported client pack checks",
+        "description": "Requires builds.read. An exported game stays uploading, with progress.phase inspecting once sealed, until intake either creates its Build or queues the hosted publisher workflow, or refuses it (failed, with errorCode). clientPackage is absent before attachment; once present it names this export's exact pack and per-platform checks.",
+        "responses": {
+          "200": {
+            "description": "Current publication",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BuildPublication"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/GameID"
+        },
+        {
+          "name": "publicationId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/v1/management/games/{gameId}/build-publications/{publicationId}:source-upload": {
+      "post": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "beginBuildPublicationUpload",
+        "summary": "Open the publication's upload",
+        "description": "With source.uploadId, returns sourceId and uploadRequired false; call source-complete to queue durable copy and inspection. Requires builds.write while the publication is uploading. A platform-upload source receives one conditional PUT grant for its whole ZIP. An exported game receives its fixed part plan and an open storage session: request part grants from :signParts and send every part straight to storage. Repeating the call returns the same plan and session; after an upload_expired completion it opens a new session.",
+        "responses": {
+          "200": {
+            "description": "The source's upload grant or the exported game's part plan",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "sourceId"
+                  ],
+                  "oneOf": [
+                    {
+                      "required": [
+                        "upload"
+                      ]
+                    },
+                    {
+                      "required": [
+                        "uploadRequired"
+                      ]
+                    }
+                  ],
+                  "properties": {
+                    "sourceId": {
+                      "type": "string"
+                    },
+                    "uploadRequired": {
+                      "type": "boolean",
+                      "const": false
+                    },
+                    "upload": {
+                      "oneOf": [
+                        {
+                          "$ref": "#/components/schemas/ClientPackageUploadPlan"
+                        },
+                        {
+                          "$ref": "#/components/schemas/SourceUploadGrant"
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "description": "upload_not_open: the exported game is already sealed or its publication closed"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/GameID"
+        },
+        {
+          "name": "publicationId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/v1/management/games/{gameId}/build-publications/{publicationId}:signParts": {
+      "post": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "signBuildPublicationParts",
+        "summary": "Grant writes for an exported game's upload parts",
+        "description": "Requires builds.write while the exported game's upload is open. Each grant is a private PUT credential bound to the part's planned length and the supplied SHA-256 of its bytes; storage rejects any other bytes. Send the returned headers, no account authorization or cookies, and reject redirects. At most 100 parts per request, with their own rate allowance; grants expire after one hour and can be requested again.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClientPackagePartRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "One write grant per requested part",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClientPackagePartGrants"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Publication not found, not an exported game, or unavailable to this creator"
+          },
+          "409": {
+            "description": "upload_not_open: open the upload with :source-upload first, or it is already sealed"
+          },
+          "422": {
+            "description": "Part number outside the plan or invalid digest"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/GameID"
+        },
+        {
+          "name": "publicationId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/v1/management/games/{gameId}/build-publications/{publicationId}:source-complete": {
+      "post": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "completeBuildPublicationSource",
+        "summary": "Seal the upload and accept it",
+        "description": "For a platform-upload source, validates the archived build configuration, referenced World definitions and known tier IDs before queuing. For an exported game, seals the stored object once every planned part is present and returns while Platform inspects it in the background: the publication stays uploading with progress.phase inspecting, then becomes preview_ready with its Build, client pack and queued verifications, or failed with errorCode bundle_invalid, declaration_mismatch, template_set_unavailable, client_version_conflict, artifact_exists, approval_denied or capacity_limit_reached. No creator claims about the bytes are accepted. Replays preserve the accepted identities.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/GameID"
+          },
+          {
+            "name": "publicationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Upload accepted, or its original acceptance replayed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BuildPublicationAccepted"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Build configuration or World definition validation failed"
+          },
+          "409": {
+            "description": "upload_incomplete: a planned part is missing or has the wrong size; upload_expired: the storage session expired, request :source-upload again and resend every part; source_upload_incomplete: the source ZIP is missing or does not match; or another lifecycle conflict.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "upload_not_verified: the stored exported game does not match its declared size"
+          },
+          "503": {
+            "description": "Source validation or storage dependency unavailable; retry the same completion"
+          }
+        }
+      }
+    },
+    "/v1/management/games/{gameId}/build-publications/{publicationId}:publish": {
+      "post": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "publishBuildPublication",
+        "summary": "Approve the preview Build",
+        "description": "Requires builds.write and an approved Game. Promotes exactly the recorded preview Build; nothing is rebuilt. A Build from an exported game becomes ready in the same request.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/GameID"
+          },
+          {
+            "name": "publicationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Approval recorded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BuildPublicationAccepted"
+                }
+              }
+            }
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          }
+        }
+      }
+    },
+    "/v1/management/game-tags": {
+      "get": {
+        "operationId": "listCreatorGameTags",
+        "tags": [
+          "Games"
+        ],
+        "description": "Curated Game tag IDs, aliases and retained legacy identities. New Game tags must resolve through this catalog; existing literal tags remain editable without reinterpretation. Item tags use the Item domain.",
+        "responses": {
+          "200": {
+            "description": "Available Game tags, bounded to 1000 entries.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "items"
+                  ],
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "maxItems": 1000,
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "id",
+                          "label",
+                          "category",
+                          "aliases"
+                        ],
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "label": {
+                            "type": "string"
+                          },
+                          "category": {
+                            "type": "string"
+                          },
+                          "aliases": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Developer authentication required."
+          }
+        }
+      }
+    },
+    "/v1/management/games/{gameId}/environments/{envId}/release-drafts": {
+      "get": {
+        "operationId": "listReleaseDrafts",
+        "tags": [
+          "Games"
+        ],
+        "description": "Authorized environment history. Drafts survive browser/device changes.",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "envId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque continuation bound to the authenticated player and original filters. Keep the filters unchanged."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ReleaseDraft"
+                      }
+                    },
+                    "nextCursor": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "items"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "422": {
+            "description": "Invalid input."
+          },
+          "428": {
+            "description": "Current draft/policy revision is required."
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      },
+      "post": {
+        "operationId": "createReleaseDraft",
+        "tags": [
+          "Games"
+        ],
+        "description": "Snapshot the published platform assignments and environment revision. Partial selections retain other published Builds. sourceReleaseId copies exact authorized source assignments/configuration for promotion or rollback; it never picks latest unpublished Builds.",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "envId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReleaseDraft"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "422": {
+            "description": "Invalid input."
+          },
+          "428": {
+            "description": "Current draft/policy revision is required."
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReleaseDraftInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/management/games/{gameId}/environments/{envId}/release-drafts/{draftId}": {
+      "get": {
+        "operationId": "getReleaseDraft",
+        "tags": [
+          "Games"
+        ],
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "envId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "draftId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReleaseDraft"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "422": {
+            "description": "Invalid input."
+          },
+          "428": {
+            "description": "Current draft/policy revision is required."
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/v1/management/games/{gameId}/environments/{envId}/release-drafts/{draftId}:publish": {
+      "post": {
+        "operationId": "publishCoordinatedRelease",
+        "tags": [
+          "Games"
+        ],
+        "description": "Deploy the named ready draft targets; omit targets to select every configured target. Incomplete unselected targets stay in the editable draft. By default, unselected live targets are retained. Set replaceTargets to freeze the complete selected configuration, removing omitted live targets. Activation waits for all runtime cohorts and the existing Game scope review. Initial approval resumes this original request. Routine updates inherit Game approval. Stale environment bases and revoked qualifications fail closed.",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "envId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "draftId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^\"[1-9][0-9]*\"$"
+            }
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted immutable intent.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CoordinatedPublication"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "422": {
+            "description": "Invalid input."
+          },
+          "428": {
+            "description": "Current draft/policy revision is required."
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "replaceTargets": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Freeze only the selected targets as the complete release configuration. Omitted platforms are removed from the next release. Hosted clients require selecting Server. Existing target updates preserve unselected platforms when false."
+                  },
+                  "targets": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 7,
+                    "uniqueItems": true,
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "server",
+                        "android",
+                        "ios",
+                        "linux",
+                        "macos",
+                        "web",
+                        "windows"
+                      ]
+                    }
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/management/games/{gameId}/builds": {
+      "get": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "listGameBuilds",
+        "description": "Lists immutable Builds, including preview Builds, with optional platform filtering before pagination. Requires builds.read; this is not a player delivery endpoint.",
+        "parameters": [
+          {
+            "name": "platform",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "android",
+                "ios",
+                "linux",
+                "macos",
+                "web",
+                "windows"
+              ]
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "description": "Opaque continuation bound to the creator, Game and platform filter.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Builds newest first by immutable identity.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "items",
+                    "nextCursor"
+                  ],
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Build"
+                      }
+                    },
+                    "nextCursor": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid platform or continuation."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/GameID"
+        }
+      ]
+    },
+    "/v1/management/games/{gameId}/builds/{buildId}": {
+      "get": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "getGameBuild",
+        "description": "Reads one exact Build. Requires builds.read.",
+        "responses": {
+          "200": {
+            "description": "Immutable Build and its recorded targets.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Build"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Build absent or inaccessible."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/GameID"
+        },
+        {
+          "name": "buildId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string"
+          }
+        }
+      ]
+    },
+    "/v1/management/games": {
+      "get": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "listCreatorGames",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Page"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "createCreatorGame",
+        "description": "Atomically creates a Game, its owner membership, draft listing and configured hosting environment attachments. Registration reserves any configured Game quota; it does not launch runtime or require a Project. Repeating the same idempotency key returns the original Game.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateGameRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/GameCreated"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      }
+    },
+    "/v1/management/games/{gameId}": {
+      "get": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "getCreatorGame",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Resource"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/GameID"
+        }
+      ]
+    },
+    "/v1/management/games/{gameId}/revisions": {
+      "get": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "listGameRevisions",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Page"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "forkGameRevision",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Resource"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/GameID"
+        }
+      ]
+    },
+    "/v1/management/games/{gameId}/approval": {
+      "get": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "getGameApproval",
+        "description": "Returns reusable Game listing approval independently of the current revision. A resolved human approval covers subsequent name, description, tag and media changes after automatic checks pass. Runtime and build capabilities are outside this scope.",
+        "responses": {
+          "200": {
+            "description": "Current Game listing approval",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameApproval"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/GameID"
+        }
+      ]
+    },
+    "/v1/management/games/{gameId}/revisions/{revisionId}": {
+      "get": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "getGameRevision",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Resource"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "patchGameRevision",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/IfMatch"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PatchGameRevisionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Resource"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationFailed"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/GameID"
+        },
+        {
+          "$ref": "#/components/parameters/RevisionID"
+        }
+      ]
+    },
+    "/v1/management/games/{gameId}/revisions/{revisionId}/preview": {
+      "get": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "previewGameRevision",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Resource"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/GameID"
+        },
+        {
+          "$ref": "#/components/parameters/RevisionID"
+        }
+      ]
+    },
+    "/v1/management/games/{gameId}/revisions/{revisionId}/preview-links": {
+      "get": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "listGameRevisionPreviewLinks",
+        "description": "The revision's 50 newest share links, without their tokens.",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Resource"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "createGameRevisionPreviewLink",
+        "description": "Mint a private share link for this revision's store page. The token is returned once; only its SHA-256 is stored. Needs catalog.write, because the link shows the draft outside the team. At most 20 live links per revision.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePreviewLinkRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Resource"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationFailed"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/GameID"
+        },
+        {
+          "$ref": "#/components/parameters/RevisionID"
+        }
+      ]
+    },
+    "/v1/management/games/{gameId}/revisions/{revisionId}/verification": {
+      "get": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "getGameRevisionVerification",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Resource"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/GameID"
+        },
+        {
+          "$ref": "#/components/parameters/RevisionID"
+        }
+      ]
+    },
+    "/v1/management/games/{gameId}/revisions/{revisionId}:submit": {
+      "post": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "submitGameRevision",
+        "description": "A person's own submit sends the revision to review; it is the owner's approval. An agent credential (hosted Summer MCP) never reaches review: its submit records an owner approval for exactly this revision at this ETag and answers 202 with {ownerApproval}; the revision stays a draft until the owner approves it (owner-approvals :approve).",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "$ref": "#/components/parameters/IfMatch"
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OwnerApprovalRequestBody"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Review operation accepted (a person), or an owner approval recorded (an agent credential)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "oneOf": [
+                    {
+                      "$ref": "#/components/schemas/Operation"
+                    },
+                    {
+                      "$ref": "#/components/schemas/OwnerApprovalRequested"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationFailed"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/GameID"
+        },
+        {
+          "$ref": "#/components/parameters/RevisionID"
+        }
+      ]
+    },
+    "/v1/management/games/{gameId}/owner-approvals": {
+      "get": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "listOwnerApprovals",
+        "description": "The Game's 20 newest agent publish requests, newest first. Needs catalog.read.",
+        "responses": {
+          "200": {
+            "description": "Owner approvals",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "items"
+                  ],
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/OwnerApproval"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/GameID"
+        }
+      ]
+    },
+    "/v1/management/games/{gameId}/owner-approvals/{approvalId}": {
+      "get": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "getOwnerApproval",
+        "description": "One agent publish request. Needs catalog.read.",
+        "responses": {
+          "200": {
+            "description": "Owner approval",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OwnerApproval"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/GameID"
+        },
+        {
+          "$ref": "#/components/parameters/OwnerApprovalID"
+        }
+      ]
+    },
+    "/v1/management/games/{gameId}/owner-approvals/{approvalId}:cancel": {
+      "post": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "cancelOwnerApproval",
+        "description": "Withdraw a waiting request (the owner or the agent). Needs catalog.write. Cancelling twice returns the cancelled request.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cancelled",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OwnerApproval"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/GameID"
+        },
+        {
+          "$ref": "#/components/parameters/OwnerApprovalID"
+        }
+      ]
+    },
+    "/v1/management/games/{gameId}/revisions/{revisionId}:publish": {
+      "post": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "publishGameRevision",
+        "description": "With If-Match, saves publication intent for the exact listing revision. A draft is frozen and verified atomically with the request; an existing submitted or verifying revision is attached to its verification. Initial review resumes this request automatically, and ordinary updates inherit listing approval after checks. Requires catalog.publish. Replays return the original accepted response; read the publication for current state. Without If-Match, retains the legacy approved-only publication command.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          },
+          {
+            "name": "If-Match",
+            "in": "header",
+            "required": false,
+            "description": "Exact Game revision ETag; enables durable single-command publication.",
+            "schema": {
+              "type": "string",
+              "minLength": 3,
+              "maxLength": 160
+            }
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/Publish"
+        },
+        "responses": {
+          "202": {
+            "description": "Saved publication request",
+            "headers": {
+              "Location": {
+                "description": "URL of the original durable operation",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GamePublication"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          },
+          "412": {
+            "$ref": "#/components/responses/PreconditionFailed"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationFailed"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/GameID"
+        },
+        {
+          "$ref": "#/components/parameters/RevisionID"
+        }
+      ]
+    },
+    "/v1/management/games/{gameId}/storefront/live": {
+      "get": {
+        "tags": [
+          "Items"
+        ],
+        "operationId": "getStorefrontLive",
+        "description": "The creator's mirror of the player storefront: the live game revision and every live item with its frozen per-zone Sparks amounts, read from the same active-publication views players are served. Drafts, superseded, and unpublished revisions never appear. `game` is null when the game itself is not published (no item can then be live). Fails closed (503) when the read dependency or its grant is absent.",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/InventoryCursor"
+          },
+          {
+            "$ref": "#/components/parameters/InventoryLimit"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Live storefront page",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StorefrontLivePage"
+                }
+              }
+            }
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/GameID"
+        }
+      ]
+    },
+    "/v1/management/games/{gameId}/store/interest": {
+      "get": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "getGameStoreInterest",
+        "description": "How many players wishlist and follow the Game on the store in this environment. Aggregate counts only; no player is identified. Works before the Game is playable. Requires `catalog.read`.",
+        "responses": {
+          "200": {
+            "description": "Store interest",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameStoreInterest"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/GameID"
+        }
+      ]
+    },
+    "/v1/management/games/{gameId}/price": {
+      "get": {
+        "tags": [
+          "Games"
+        ],
+        "operationId": "getGamePrice",
+        "description": "The Game's price and the offer players see now. A Game without a price is free (price and offer are null). Requires `billing.read`.",
+        "responses": {
+          "200": {
+            "description": "Pricing",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GamePricing"
+                }
+              }
+            }
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "503": {
+            "$ref": "#/components/responses/Unavailable"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/GameID"
+        }
+      ]
+    },
+    "/v1/management/media-assets:begin-upload": {
+      "post": {
+        "tags": [
+          "Media"
+        ],
+        "operationId": "beginMediaUpload",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BeginUploadRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "$ref": "#/components/responses/Resource"
+          },
+          "422": {
+            "$ref": "#/components/responses/ValidationFailed"
+          }
+        }
+      }
+    },
+    "/v1/management/media-assets/{assetId}": {
+      "get": {
+        "tags": [
+          "Media"
+        ],
+        "operationId": "getMediaAsset",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Resource"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AssetID"
+        }
+      ]
+    },
+    "/v1/management/media-assets/{assetId}:complete": {
+      "post": {
+        "tags": [
+          "Media"
+        ],
+        "operationId": "completeMediaUpload",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/IdempotencyKey"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompleteUploadRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "$ref": "#/components/responses/OperationAccepted"
+          },
+          "409": {
+            "$ref": "#/components/responses/Conflict"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AssetID"
+        }
+      ]
+    },
+    "/v1/management/media-assets/{assetId}/preview": {
+      "get": {
+        "tags": [
+          "Media"
+        ],
+        "operationId": "previewMediaAsset",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/Resource"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        }
+      },
+      "parameters": [
+        {
+          "$ref": "#/components/parameters/AssetID"
+        }
+      ]
+    }
+  },
+  "components": {
+    "schemas": {
+      "AIDisclosure": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "uses"
+        ],
+        "description": "How AI was used to make the Game; an empty uses array means no AI. generatedGameplay (content generated while players play) needs a description of what is generated and its guardrails.",
+        "properties": {
+          "uses": {
+            "type": "array",
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "enum": [
+                "assets",
+                "code",
+                "generatedGameplay"
+              ]
+            }
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 2000
+          }
+        }
+      },
+      "BeginUploadRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "gameId",
+          "kind",
+          "contentType",
+          "byteLength",
+          "sha256",
+          "originalFilename"
+        ],
+        "properties": {
+          "gameId": {
+            "type": "string"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "IMAGE",
+              "MODEL_3D",
+              "VIDEO"
+            ]
+          },
+          "contentType": {
+            "type": "string",
+            "enum": [
+              "image/png",
+              "image/jpeg",
+              "image/webp",
+              "model/gltf-binary",
+              "model/gltf+json",
+              "video/mp4",
+              "video/webm"
+            ]
+          },
+          "byteLength": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1,
+            "maximum": 536870912
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "originalFilename": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 255
+          }
+        }
+      },
+      "Build": {
+        "type": "object",
+        "required": [
+          "id",
+          "gameId",
+          "version",
+          "targetPlatforms",
+          "executionMode",
+          "artifactSha256",
+          "serverImage",
+          "sourceRevision",
+          "manifest",
+          "status",
+          "createdAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "gameId": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "targetPlatforms": {
+            "$ref": "#/components/schemas/RecordedBuildTargets"
+          },
+          "executionMode": {
+            "type": "string",
+            "enum": [
+              "hosted",
+              "standalone"
+            ]
+          },
+          "client": {
+            "type": "object",
+            "description": "Immutable standalone export preset, entry point and runtime target."
+          },
+          "artifactSha256": {
+            "type": "string"
+          },
+          "serverImage": {
+            "type": "string"
+          },
+          "sourceRevision": {
+            "type": "string"
+          },
+          "permissions": {
+            "$ref": "#/components/schemas/BuildPermissions"
+          },
+          "manifest": {
+            "type": "object",
+            "description": "Runtime manifest. Build targets are top-level metadata."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "preview_ready",
+              "ready",
+              "failed",
+              "revoked"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "BuildPermissions": {
+        "type": "array",
+        "uniqueItems": true,
+        "maxItems": 5,
+        "description": "Optional player-data and delegated-action requests declared by this immutable Build. Omission means none. A declaration is not player consent; refusal never prevents Game admission.",
+        "items": {
+          "type": "string",
+          "enum": [
+            "social.friends.read",
+            "social.messages.read",
+            "social.messages.send",
+            "social.messages.read_state.write",
+            "game.chat.send"
+          ]
+        }
+      },
+      "BuildPublication": {
+        "type": "object",
+        "required": [
+          "id",
+          "operationId",
+          "gameId",
+          "version",
+          "source",
+          "state",
+          "progress",
+          "executionMode",
+          "targetPlatforms"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "operationId": {
+            "type": "string"
+          },
+          "gameId": {
+            "type": "string"
+          },
+          "buildId": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "source": {
+            "type": "object",
+            "required": [
+              "kind",
+              "archiveSha256",
+              "sizeBytes"
+            ],
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "platform-upload",
+                  "exported-game",
+                  "summer-cloud"
+                ]
+              },
+              "format": {
+                "type": "string",
+                "enum": [
+                  "summer-bundle",
+                  "pck"
+                ]
+              },
+              "uploadId": {
+                "type": "string",
+                "description": "Private Game upload reused by this publication, when present."
+              },
+              "id": {
+                "type": "string"
+              },
+              "archiveSha256": {
+                "type": "string"
+              },
+              "sizeBytes": {
+                "type": "integer"
+              }
+            }
+          },
+          "clientVersion": {
+            "type": "string",
+            "description": "An exported game's client version."
+          },
+          "clientPackage": {
+            "allOf": [
+              {
+                "$ref": "#/components/schemas/ClientPackageUpload"
+              }
+            ],
+            "description": "The exact inspected pack attached from this exported game; absent before Build completion. Later client-only uploads do not change it. Read verifications for platform readiness."
+          },
+          "executionMode": {
+            "type": "string",
+            "enum": [
+              "hosted",
+              "standalone"
+            ]
+          },
+          "client": {
+            "type": "object",
+            "properties": {
+              "exportPreset": {
+                "type": "string"
+              },
+              "entryPoint": {
+                "type": "string"
+              }
+            }
+          },
+          "targetPlatforms": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "schema": {
+            "type": "string",
+            "description": "The summer.build.json schema; empty for an exported game without a host."
+          },
+          "summerVersion": {
+            "type": "string",
+            "description": "The project's or pack's Summer version that selected the template set."
+          },
+          "templateSetVersion": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "uploading",
+              "draft",
+              "orchestrating",
+              "pending",
+              "queued",
+              "materializing",
+              "building",
+              "packaging",
+              "publishing",
+              "verifying",
+              "preview_ready",
+              "published",
+              "succeeded",
+              "failed",
+              "cancelled"
+            ]
+          },
+          "progress": {
+            "type": "object",
+            "description": "checkpoint and phase; an exported game is inspecting between sealing and its outcome."
+          },
+          "errorCode": {
+            "type": "string",
+            "description": "Why the publication failed. Exported-game intake uses bundle_invalid (the bytes are not an admissible bundle or stamped pack), declaration_mismatch, template_set_unavailable, client_version_conflict, artifact_exists, approval_denied and capacity_limit_reached."
+          },
+          "errorMessage": {
+            "type": "string"
+          },
+          "revision": {
+            "type": "integer"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "BuildPublicationAccepted": {
+        "type": "object",
+        "required": [
+          "operationId",
+          "publicationId",
+          "buildId",
+          "sourceId",
+          "state"
+        ],
+        "properties": {
+          "operationId": {
+            "type": "string"
+          },
+          "publicationId": {
+            "type": "string"
+          },
+          "buildId": {
+            "type": "string",
+            "description": "Preallocated; readable once the publication is preview_ready."
+          },
+          "sourceId": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          }
+        }
+      },
+      "ClientPackagePartGrants": {
+        "type": "object",
+        "required": [
+          "parts"
+        ],
+        "properties": {
+          "parts": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "partNumber",
+                "method",
+                "url",
+                "headers",
+                "expiresAt"
+              ],
+              "properties": {
+                "partNumber": {
+                  "type": "integer"
+                },
+                "method": {
+                  "type": "string",
+                  "const": "PUT"
+                },
+                "url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "headers": {
+                  "type": "object",
+                  "additionalProperties": {
+                    "type": "string"
+                  }
+                },
+                "expiresAt": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ClientPackagePartRequest": {
+        "type": "object",
+        "required": [
+          "parts"
+        ],
+        "properties": {
+          "parts": {
+            "type": "array",
+            "minItems": 1,
+            "maxItems": 100,
+            "items": {
+              "type": "object",
+              "required": [
+                "partNumber",
+                "sha256"
+              ],
+              "properties": {
+                "partNumber": {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                "sha256": {
+                  "type": "string",
+                  "pattern": "^sha256:[0-9a-f]{64}$"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ClientPackageUpload": {
+        "type": "object",
+        "required": [
+          "id",
+          "gameId",
+          "buildId",
+          "clientSha256",
+          "clientSize",
+          "mainScene",
+          "version",
+          "declarationSha256",
+          "state",
+          "createdAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "gameId": {
+            "type": "string"
+          },
+          "buildId": {
+            "type": "string"
+          },
+          "clientSha256": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "clientSize": {
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 42949672960
+          },
+          "mainScene": {
+            "type": "string"
+          },
+          "compositionPath": {
+            "type": "string"
+          },
+          "version": {
+            "type": "string"
+          },
+          "declarationSha256": {
+            "type": "string",
+            "description": "Digest of the pack's bytes, scene, composition and version. A qualification binds to it."
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "awaiting_upload",
+              "verifying",
+              "uploaded",
+              "rejected"
+            ],
+            "description": "verifying means storage sealed the bytes and Platform has not finished reading them; uploaded means Platform inspected them and queued its checks."
+          },
+          "verificationError": {
+            "type": "string",
+            "enum": [
+              "package_not_verified"
+            ],
+            "description": "Present when background verification permanently rejected the stored bytes."
+          },
+          "verifications": {
+            "type": "array",
+            "description": "The latest check of this pack for each platform its Build declares.",
+            "items": {
+              "$ref": "#/components/schemas/ClientVerificationJob"
+            }
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "ClientPackageUploadPlan": {
+        "type": "object",
+        "required": [
+          "partSizeBytes",
+          "partCount"
+        ],
+        "description": "Every part except the last is exactly partSizeBytes long; the last holds the remainder.",
+        "properties": {
+          "partSizeBytes": {
+            "type": "integer",
+            "const": 67108864
+          },
+          "partCount": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 640
+          }
+        }
+      },
+      "ClientPackageUploadRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "clientSha256",
+          "clientSize",
+          "mainScene",
+          "version"
+        ],
+        "description": "A Build's one client pack. Its declaration is immutable; a client version names exactly one pack for the Game.",
+        "properties": {
+          "clientSha256": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$"
+          },
+          "clientSize": {
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 42949672960
+          },
+          "mainScene": {
+            "type": "string",
+            "description": "Exact res:// .tscn scene: in a Build WorldDefinition for a game with a host, or the Build client entry point for one without."
+          },
+          "compositionPath": {
+            "type": "string",
+            "description": "Exact res:// .tres composition in the same WorldDefinition. Required for a game with a host; omitted for one without."
+          },
+          "version": {
+            "type": "string",
+            "description": "Client version: canonical vMAJOR.MINOR.PATCH with optional positive -rREVISION. Independent of the server version."
+          }
+        }
+      },
+      "ClientVerificationJob": {
+        "type": "object",
+        "required": [
+          "id",
+          "gameId",
+          "buildId",
+          "uploadId",
+          "platform",
+          "state",
+          "createdAt",
+          "updatedAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "gameId": {
+            "type": "string"
+          },
+          "buildId": {
+            "type": "string"
+          },
+          "platform": {
+            "type": "string",
+            "enum": [
+              "android",
+              "ios",
+              "macos",
+              "windows"
+            ]
+          },
+          "uploadId": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "checking",
+              "ready",
+              "failed"
+            ]
+          },
+          "qualificationId": {
+            "type": "string"
+          },
+          "errorCode": {
+            "type": "string"
+          },
+          "errorMessage": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "completedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "CompleteUploadRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "uploadSessionId"
+        ],
+        "properties": {
+          "uploadSessionId": {
+            "type": "string"
+          },
+          "parts": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 32,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "partNumber",
+                "etag",
+                "checksumSha256"
+              ],
+              "properties": {
+                "partNumber": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 32
+                },
+                "etag": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 256
+                },
+                "checksumSha256": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 128
+                }
+              }
+            }
+          }
+        }
+      },
+      "ContentSurvey": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "violence",
+          "bloodGore",
+          "sexualContent",
+          "nudity",
+          "language",
+          "substances",
+          "gambling",
+          "userGeneratedContent",
+          "onlineInteraction",
+          "inGamePurchases"
+        ],
+        "description": "Mature-content answers that extend the content rating. \"none\" is an answer; every level is required.",
+        "properties": {
+          "violence": {
+            "type": "string",
+            "enum": [
+              "none",
+              "fantasy",
+              "realistic"
+            ]
+          },
+          "bloodGore": {
+            "type": "string",
+            "enum": [
+              "none",
+              "mild",
+              "intense"
+            ]
+          },
+          "sexualContent": {
+            "type": "string",
+            "enum": [
+              "none",
+              "suggestive",
+              "explicit"
+            ]
+          },
+          "nudity": {
+            "type": "string",
+            "enum": [
+              "none",
+              "partial",
+              "full"
+            ]
+          },
+          "language": {
+            "type": "string",
+            "enum": [
+              "none",
+              "mild",
+              "strong"
+            ]
+          },
+          "substances": {
+            "type": "string",
+            "enum": [
+              "none",
+              "referenced",
+              "used"
+            ]
+          },
+          "gambling": {
+            "type": "string",
+            "enum": [
+              "none",
+              "simulated",
+              "realMoney"
+            ]
+          },
+          "userGeneratedContent": {
+            "type": "boolean"
+          },
+          "onlineInteraction": {
+            "type": "boolean"
+          },
+          "inGamePurchases": {
+            "type": "boolean"
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        }
+      },
+      "CoordinatedPublication": {
+        "type": "object",
+        "properties": {
+          "releaseId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "operationId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "state": {
+            "type": "string",
+            "const": "pending"
+          },
+          "targets": {
+            "description": "Independent target selections. The server key takes buildId only; other keys name client platforms.",
+            "type": "object",
+            "properties": {},
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ReleaseBuildSelection"
+            }
+          }
+        },
+        "required": [
+          "releaseId",
+          "operationId",
+          "state"
+        ]
+      },
+      "CreateGameDeployment": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "environmentId",
+          "source",
+          "build"
+        ],
+        "properties": {
+          "draftOnly": {
+            "type": "boolean",
+            "default": false,
+            "description": "Prepare an immutable Build for a coordinated draft without changing the environment deployment pointers."
+          },
+          "environmentId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "configRevisionId": {
+            "type": "string",
+            "description": "Existing immutable configuration for this Game and environment."
+          },
+          "source": {
+            "$ref": "#/components/schemas/DeploymentSource"
+          },
+          "build": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "schema",
+              "version",
+              "targetPlatforms",
+              "project"
+            ],
+            "oneOf": [
+              {
+                "required": [
+                  "executionMode",
+                  "client"
+                ],
+                "properties": {
+                  "executionMode": {
+                    "const": "standalone"
+                  }
+                }
+              },
+              {
+                "required": [
+                  "server",
+                  "runtime"
+                ],
+                "properties": {
+                  "executionMode": {
+                    "enum": [
+                      "hosted"
+                    ]
+                  }
+                },
+                "not": {
+                  "required": [
+                    "client"
+                  ]
+                }
+              }
+            ],
+            "properties": {
+              "executionMode": {
+                "type": "string",
+                "enum": [
+                  "hosted",
+                  "standalone"
+                ],
+                "default": "hosted",
+                "description": "Immutable exported product. Standalone rejects hosted runtime and authority declarations."
+              },
+              "client": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "exportPreset",
+                  "entryPoint"
+                ],
+                "properties": {
+                  "exportPreset": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "entryPoint": {
+                    "type": "string",
+                    "pattern": "^res://.+\\.tscn$"
+                  }
+                }
+              },
+              "permissions": {
+                "$ref": "#/components/schemas/BuildPermissions"
+              },
+              "schema": {
+                "type": "string",
+                "enum": [
+                  "summer.build.v1",
+                  "summer.build.v2"
+                ]
+              },
+              "gameId": {
+                "type": "string",
+                "description": "Optional assertion; must match the path."
+              },
+              "version": {
+                "type": "string",
+                "minLength": 1
+              },
+              "targetPlatforms": {
+                "type": "array",
+                "minItems": 1,
+                "maxItems": 6,
+                "uniqueItems": true,
+                "description": "Immutable targets for this Build, independent of the Game listing. Declaration is not client launch qualification.",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "android",
+                    "ios",
+                    "linux",
+                    "macos",
+                    "web",
+                    "windows"
+                  ]
+                }
+              },
+              "engineVersion": {
+                "type": "string",
+                "description": "Optional compatibility assertion."
+              },
+              "sdkVersion": {
+                "type": "string",
+                "description": "Optional compatibility assertion."
+              },
+              "project": {
+                "type": "object",
+                "required": [
+                  "directory"
+                ],
+                "properties": {
+                  "directory": {
+                    "type": "string"
+                  }
+                }
+              },
+              "server": {
+                "type": "object",
+                "required": [
+                  "exportPreset"
+                ],
+                "properties": {
+                  "exportPreset": {
+                    "type": "string"
+                  }
+                }
+              },
+              "runtime": {
+                "type": "object",
+                "description": "Existing summer runtime Manifest; validated by the trusted build contract. Creator-supplied worldDefinitionSnapshots are forbidden."
+              }
+            }
+          }
+        }
+      },
+      "CreateGameRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "description",
+          "tags",
+          "supportedPlatforms"
+        ],
+        "properties": {
+          "minimumAge": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "enum": [
+              3,
+              7,
+              12,
+              16,
+              18,
+              null
+            ],
+            "description": "Optional declared minimum age; null or omission on creation defaults to All ages. This is not an official rating or access rule. Published metadata changes only after revision publication."
+          },
+          "languages": {
+            "$ref": "#/components/schemas/GameLanguages"
+          },
+          "subtitle": {
+            "type": "string",
+            "maxLength": 160,
+            "description": "Optional single-line subtitle; empty clears it."
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 5000
+          },
+          "tags": {
+            "type": "array",
+            "maxItems": 20,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^[a-z0-9][a-z0-9._-]{0,47}$"
+            }
+          },
+          "supportedPlatforms": {
+            "$ref": "#/components/schemas/SupportedPlatforms"
+          }
+        }
+      },
+      "CreatePreviewLinkRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "expiresInSeconds": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 604800,
+            "description": "Link lifetime; 0 or omitted means 7 days. At least 3600."
+          }
+        }
+      },
+      "DeploymentSource": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "archiveSha256",
+          "sizeBytes"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "const": "platform-upload"
+          },
+          "archiveSha256": {
+            "type": "string",
+            "pattern": "^sha256:[a-f0-9]{64}$"
+          },
+          "sizeBytes": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483648
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "required": [
+              "code",
+              "message",
+              "requestId",
+              "retryable"
+            ],
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              },
+              "requestId": {
+                "type": "string"
+              },
+              "retryable": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      },
+      "ExportedGamePublicationRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "source",
+          "clientVersion",
+          "build"
+        ],
+        "description": "A game without a host targets iOS and names its client in build.client. A hosted game uploads a summer-bundle, declares its full server-only summer.build.v2 intent, and names the client scene in exportedClient. Intake verifies both packs, configuration and declarations. The export stamp selects the template set; Platform packages the exported server without rebuilding it.",
+        "oneOf": [
+          {
+            "properties": {
+              "build": {
+                "properties": {
+                  "executionMode": {
+                    "const": "standalone"
+                  }
+                }
+              }
+            },
+            "not": {
+              "required": [
+                "exportedClient"
+              ]
+            }
+          },
+          {
+            "required": [
+              "exportedClient"
+            ],
+            "properties": {
+              "source": {
+                "properties": {
+                  "format": {
+                    "const": "summer-bundle"
+                  }
+                }
+              },
+              "build": {
+                "properties": {
+                  "executionMode": {
+                    "const": "hosted"
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "properties": {
+          "source": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "format",
+              "archiveSha256",
+              "sizeBytes"
+            ],
+            "properties": {
+              "uploadId": {
+                "type": "string",
+                "description": "Optional sealed private upload of this Game with the same digest and size. No second transfer is needed; call source-complete to queue intake."
+              },
+              "kind": {
+                "type": "string",
+                "const": "exported-game"
+              },
+              "format": {
+                "type": "string",
+                "enum": [
+                  "summer-bundle",
+                  "pck"
+                ],
+                "description": "summer-bundle: a summer.games zip with an optional hosted server.pck; pck: one Summer-stamped pack for a game without a host (stock Godot packs are not accepted yet)."
+              },
+              "archiveSha256": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              },
+              "sizeBytes": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 42949672960,
+                "description": "Exact upload size; a pack is at least 100 bytes."
+              }
+            }
+          },
+          "clientVersion": {
+            "type": "string",
+            "description": "The client pack's version: canonical vMAJOR.MINOR.PATCH with optional positive -rREVISION. A client version names exactly one pack for the Game."
+          },
+          "exportedClient": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "entryPoint"
+            ],
+            "description": "Client scene for a hosted bundle; the hosted Build remains server-only.",
+            "properties": {
+              "entryPoint": {
+                "type": "string",
+                "pattern": "^res://.+\\.tscn$"
+              }
+            }
+          },
+          "build": {
+            "oneOf": [
+              {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "version",
+                  "executionMode",
+                  "targetPlatforms",
+                  "client"
+                ],
+                "properties": {
+                  "gameId": {
+                    "type": "string",
+                    "description": "Optional; must be the route's Game."
+                  },
+                  "version": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "executionMode": {
+                    "type": "string",
+                    "const": "standalone"
+                  },
+                  "targetPlatforms": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "android",
+                        "ios"
+                      ]
+                    },
+                    "minItems": 1,
+                    "maxItems": 2,
+                    "uniqueItems": true,
+                    "description": "The phone apps that run the pack: iOS, Android or both. One ETC2/ASTC pack serves both. Fixed for the Build; to add a platform later, publish a new Build."
+                  },
+                  "client": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "entryPoint"
+                    ],
+                    "properties": {
+                      "entryPoint": {
+                        "type": "string",
+                        "pattern": "^res://.+\\.tscn$",
+                        "description": "The scene the pack opens: the bundle's client.mainScene."
+                      }
+                    }
+                  },
+                  "permissions": {
+                    "$ref": "#/components/schemas/BuildPermissions"
+                  }
+                }
+              },
+              {
+                "allOf": [
+                  {
+                    "$ref": "#/components/schemas/CreateGameDeployment/properties/build"
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "executionMode",
+                      "schema",
+                      "server",
+                      "runtime"
+                    ],
+                    "not": {
+                      "required": [
+                        "client"
+                      ]
+                    },
+                    "properties": {
+                      "executionMode": {
+                        "const": "hosted"
+                      },
+                      "schema": {
+                        "const": "summer.build.v2"
+                      },
+                      "version": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 128
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      },
+      "GameApproval": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "gameId",
+          "state",
+          "scope"
+        ],
+        "properties": {
+          "gameId": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "UNREVIEWED",
+              "PENDING",
+              "APPROVED",
+              "REJECTED",
+              "REVOKED",
+              "INACTIVE"
+            ],
+            "description": "One human approval covers later Game uploads and releases. Automated checks still apply. REVOKED blocks publication; INACTIVE means the Game is suspended or deleted."
+          },
+          "scope": {
+            "type": "string",
+            "const": "game-publication-v1"
+          },
+          "decisionId": {
+            "type": "string"
+          },
+          "approvedRevisionId": {
+            "type": "string"
+          }
+        }
+      },
+      "GameCredits": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "developer"
+        ],
+        "description": "Who made and published the Game and its series. Each is a trimmed single line of 1 to 120 characters; omit publisher or franchise when there is none.",
+        "properties": {
+          "developer": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "publisher": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "franchise": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        }
+      },
+      "GameExternalLink": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "kind",
+          "url"
+        ],
+        "description": "An https URL without credentials or port, at most 2048 bytes. website may be any public domain name (no IP address, localhost, .local or .internal). Other kinds must use their service's hosts: x (x.com, twitter.com), youtube (youtube.com, m.youtube.com, youtu.be), instagram (instagram.com), tiktok (tiktok.com), bluesky (bsky.app), discord (discord.gg, discord.com); www. variants are accepted where the service uses them.",
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "website",
+              "x",
+              "youtube",
+              "instagram",
+              "tiktok",
+              "bluesky",
+              "discord"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "maxLength": 2048,
+            "pattern": "^https://"
+          }
+        }
+      },
+      "GameExternalLinks": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 10,
+        "description": "Creator links shown on the store page, in the creator's order, with distinct URLs.",
+        "items": {
+          "$ref": "#/components/schemas/GameExternalLink"
+        }
+      },
+      "GameFeatures": {
+        "type": "array",
+        "minItems": 1,
+        "uniqueItems": true,
+        "description": "Closed set of store page features, in the creator's order.",
+        "items": {
+          "type": "string",
+          "enum": [
+            "single_player",
+            "online_multiplayer",
+            "local_multiplayer",
+            "online_coop",
+            "local_coop",
+            "cross_platform",
+            "controller_full",
+            "controller_partial",
+            "cloud_saves",
+            "plays_in_browser",
+            "level_editor",
+            "achievements",
+            "in_game_purchases"
+          ]
+        }
+      },
+      "GameGenres": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 5,
+        "uniqueItems": true,
+        "description": "Game tag IDs whose category is genre (GET /v1/management/game-tags); aliases and legacy tags are not genres. Order is the creator's.",
+        "items": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9._-]{0,47}$"
+        }
+      },
+      "GameLanguages": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "pattern": "^[a-z]{2,3}(-[a-z0-9]{2,8}){0,2}$"
+        },
+        "maxItems": 30,
+        "uniqueItems": true
+      },
+      "GameLanguageSupport": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 30,
+        "description": "One entry per language, stored in code order (codes are lowercased). Each entry declares at least one kind of support.",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "code",
+            "interface",
+            "fullAudio",
+            "subtitles"
+          ],
+          "properties": {
+            "code": {
+              "type": "string",
+              "pattern": "^[A-Za-z]{2,3}(-[A-Za-z0-9]{2,8}){0,2}$",
+              "description": "BCP 47 language code, for example en, pt-br or zh-hans."
+            },
+            "interface": {
+              "type": "boolean"
+            },
+            "fullAudio": {
+              "type": "boolean"
+            },
+            "subtitles": {
+              "type": "boolean"
+            }
+          }
+        }
+      },
+      "GameMobileListing": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "Each text is trimmed and single-line; a missing, null (or, on edit, empty) means the desktop text is used. The 120 character description minimum is a Studio checklist recommendation, not an API rule.",
+        "properties": {
+          "subtitle": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 160
+          },
+          "description": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 170
+          }
+        }
+      },
+      "GamePricing": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "price",
+          "offer"
+        ],
+        "properties": {
+          "price": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "additionalProperties": false,
+            "required": [
+              "currency",
+              "amountMinor",
+              "updatedAt"
+            ],
+            "properties": {
+              "currency": {
+                "type": "string",
+                "enum": [
+                  "USD"
+                ]
+              },
+              "amountMinor": {
+                "type": "integer",
+                "minimum": 50,
+                "maximum": 100000
+              },
+              "discount": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "percent",
+                  "startsAt",
+                  "endsAt"
+                ],
+                "properties": {
+                  "percent": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 90
+                  },
+                  "startsAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "endsAt": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              },
+              "updatedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "offer": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "What players see and pay now; purchasable is false only if Stripe has since restricted the creator's account.",
+            "additionalProperties": false,
+            "required": [
+              "currency",
+              "baseMinor",
+              "finalMinor",
+              "discountPercent",
+              "purchasable"
+            ],
+            "properties": {
+              "currency": {
+                "type": "string",
+                "enum": [
+                  "USD"
+                ]
+              },
+              "baseMinor": {
+                "type": "integer"
+              },
+              "finalMinor": {
+                "type": "integer"
+              },
+              "discountPercent": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 90
+              },
+              "dealEndsAt": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "purchasable": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      },
+      "GamePublication": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "publicationId",
+          "operationId",
+          "status",
+          "gameId",
+          "resourceType",
+          "resourceId",
+          "revisionId",
+          "resourceVersion",
+          "digestSha256",
+          "state"
+        ],
+        "properties": {
+          "publicationId": {
+            "type": "string"
+          },
+          "operationId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "running",
+              "succeeded",
+              "failed"
+            ]
+          },
+          "gameId": {
+            "type": "string"
+          },
+          "resourceType": {
+            "type": "string",
+            "const": "GAME_REVISION"
+          },
+          "resourceId": {
+            "type": "string"
+          },
+          "revisionId": {
+            "type": "string"
+          },
+          "resourceVersion": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "digestSha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "publishAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "WAITING_VERIFICATION",
+              "REQUESTED",
+              "SCHEDULED",
+              "CANCELLED",
+              "REJECTED",
+              "BLOCKED",
+              "ACTIVATING",
+              "ACTIVATED",
+              "UNPUBLISHING",
+              "UNPUBLISHED",
+              "SUPERSEDED"
+            ]
+          },
+          "verificationRunId": {
+            "type": "string",
+            "description": "Present for durable publication intent; absent on legacy publications."
+          },
+          "errorCode": {
+            "type": "string",
+            "description": "Reason for REJECTED or BLOCKED, including verification_changes_requested, verification_rejected or publication_authorization_revoked."
+          }
+        }
+      },
+      "GameRelease": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "comingSoon"
+        ],
+        "properties": {
+          "comingSoon": {
+            "type": "boolean"
+          },
+          "date": {
+            "type": "string",
+            "pattern": "^[12][0-9]{3}(-(0[1-9]|1[0-2])(-(0[1-9]|[12][0-9]|3[01]))?|-Q[1-4])?$",
+            "description": "A day (2026-11-14), month (2026-11), quarter (2026-Q4) or year (2026). Omit it while a Coming Soon date is to be announced. A released Game (comingSoon false) needs an exact day."
+          }
+        }
+      },
+      "GameStoreInterest": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "gameId",
+          "wishlists",
+          "follows"
+        ],
+        "properties": {
+          "gameId": {
+            "type": "string"
+          },
+          "wishlists": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "follows": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "MediaImageSlot": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "assetId",
+          "focalPoint"
+        ],
+        "properties": {
+          "assetId": {
+            "type": "string",
+            "pattern": "^asset_[0-9A-Za-z]{26}$"
+          },
+          "focalPoint": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "x",
+              "y"
+            ],
+            "description": "The point every crop keeps in frame, as fractions of width and height from the top left.",
+            "properties": {
+              "x": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "y": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            }
+          }
+        }
+      },
+      "MediaScreenshotSlots": {
+        "type": "array",
+        "maxItems": 12,
+        "uniqueItems": true,
+        "items": {
+          "type": "string",
+          "pattern": "^asset_[0-9A-Za-z]{26}$"
+        }
+      },
+      "MediaSlots": {
+        "type": "object",
+        "additionalProperties": false,
+        "minProperties": 1,
+        "description": "Named store page media per storefront flow. `desktop` is the summer.games website and the desktop app; `mobile` is the iPhone and Android apps. The flat keyArt, screenshots and trailers are the desktop slots named before the flows; a `desktop` slot wins over its flat counterpart. Images (key art, capsules, icons, screenshots, trailer posters) are IMAGE assets; trailers are VIDEO assets. One asset may fill a slot in each flow (for example the same icon); screenshots and trailers are distinct within a flow. Once verification has measured an image, the flow slots must fit their shape within 2%: desktop.capsuleTall 3:4 of at least 600x800; desktop.capsuleWide 460:215 of at least 920x430; desktop.icon and mobile.icon square of at least 512 (1024 recommended); mobile.tallCover portrait from 9:19.5 to 9:16 of at least 1080x1920; mobile.keyArt 16:9 of at least 1920x1080; mobile.screenshots 16:9 to 19.5:9 in either orientation with a short side of at least 1080. A misfit is 422 on edit and blocks submit. The flat slots, desktop.keyArt and desktop.screenshots accept any verified image.",
+        "properties": {
+          "keyArt": {
+            "$ref": "#/components/schemas/MediaImageSlot"
+          },
+          "screenshots": {
+            "$ref": "#/components/schemas/MediaScreenshotSlots"
+          },
+          "trailers": {
+            "$ref": "#/components/schemas/MediaTrailerSlots"
+          },
+          "desktop": {
+            "type": "object",
+            "additionalProperties": false,
+            "minProperties": 1,
+            "description": "Website and desktop app art. Both draw the title over the key art, so it carries no text; the capsules may carry the logo. A missing capsule is cropped from the key art at its focal point.",
+            "properties": {
+              "keyArt": {
+                "$ref": "#/components/schemas/MediaImageSlot"
+              },
+              "capsuleTall": {
+                "$ref": "#/components/schemas/MediaImageSlot"
+              },
+              "capsuleWide": {
+                "$ref": "#/components/schemas/MediaImageSlot"
+              },
+              "icon": {
+                "$ref": "#/components/schemas/MediaImageSlot"
+              },
+              "screenshots": {
+                "$ref": "#/components/schemas/MediaScreenshotSlots"
+              },
+              "trailers": {
+                "$ref": "#/components/schemas/MediaTrailerSlots"
+              }
+            }
+          },
+          "mobile": {
+            "type": "object",
+            "additionalProperties": false,
+            "minProperties": 1,
+            "description": "iPhone and Android art. The apps draw the title over the tall cover and key art, so neither carries text. A missing tall cover is cropped from the mobile key art, then the desktop key art.",
+            "properties": {
+              "icon": {
+                "$ref": "#/components/schemas/MediaImageSlot"
+              },
+              "tallCover": {
+                "$ref": "#/components/schemas/MediaImageSlot"
+              },
+              "keyArt": {
+                "$ref": "#/components/schemas/MediaImageSlot"
+              },
+              "screenshots": {
+                "$ref": "#/components/schemas/MediaScreenshotSlots"
+              }
+            }
+          }
+        }
+      },
+      "MediaTrailerSlots": {
+        "type": "array",
+        "maxItems": 4,
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "assetId",
+            "posterAssetId"
+          ],
+          "properties": {
+            "assetId": {
+              "type": "string",
+              "pattern": "^asset_[0-9A-Za-z]{26}$"
+            },
+            "posterAssetId": {
+              "type": "string",
+              "pattern": "^asset_[0-9A-Za-z]{26}$",
+              "description": "The image shown before the trailer plays; Summer does not extract frames."
+            }
+          }
+        }
+      },
+      "Operation": {
+        "type": "object",
+        "required": [
+          "operationId",
+          "status"
+        ],
+        "properties": {
+          "operationId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "running",
+              "succeeded",
+              "failed"
+            ]
+          }
+        }
+      },
+      "OwnerApproval": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "approvalId",
+          "gameId",
+          "revisionId",
+          "revisionEtag",
+          "priceChange",
+          "state",
+          "requestedBy",
+          "agentClientId",
+          "createdAt"
+        ],
+        "properties": {
+          "approvalId": {
+            "type": "string",
+            "pattern": "^goa_[0-9A-Za-z]{26}$"
+          },
+          "gameId": {
+            "type": "string"
+          },
+          "revisionId": {
+            "type": "string"
+          },
+          "revisionEtag": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "The revision's ETag number when the agent asked; approval submits exactly that version."
+          },
+          "buildPublicationId": {
+            "type": "string"
+          },
+          "priceChange": {
+            "type": "string",
+            "enum": [
+              "keep",
+              "set",
+              "free"
+            ]
+          },
+          "price": {
+            "$ref": "#/components/schemas/ProposedPrice"
+          },
+          "note": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "AWAITING_OWNER_APPROVAL",
+              "APPROVED",
+              "CANCELLED",
+              "STALE"
+            ]
+          },
+          "requestedBy": {
+            "type": "string"
+          },
+          "agentClientId": {
+            "type": "string",
+            "description": "OAuth client of the agent credential that asked."
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "decidedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "decidedBy": {
+            "type": "string"
+          },
+          "submissionOperationId": {
+            "type": "string"
+          }
+        }
+      },
+      "OwnerApprovalRequestBody": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "What an agent credential proposes with its submit. Ignored for a person's own submit.",
+        "properties": {
+          "buildPublicationId": {
+            "type": "string",
+            "description": "A build publication of this Game the owner approves with the page."
+          },
+          "price": {
+            "description": "Omitted keeps the price; null proposes the Game free; an object proposes that USD price.",
+            "oneOf": [
+              {
+                "type": "null"
+              },
+              {
+                "$ref": "#/components/schemas/ProposedPrice"
+              }
+            ]
+          },
+          "note": {
+            "type": "string",
+            "maxLength": 500
+          }
+        }
+      },
+      "OwnerApprovalRequested": {
+        "type": "object",
+        "required": [
+          "ownerApproval"
+        ],
+        "properties": {
+          "ownerApproval": {
+            "$ref": "#/components/schemas/OwnerApproval"
+          }
+        }
+      },
+      "Page": {
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Resource"
+            }
+          },
+          "nextCursor": {
+            "type": "string"
+          }
+        }
+      },
+      "PatchGameRevisionRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "minProperties": 1,
+        "properties": {
+          "minimumAge": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "enum": [
+              3,
+              7,
+              12,
+              16,
+              18,
+              null
+            ],
+            "description": "Optional declared minimum age; not an official rating or access rule. Omission preserves the value on PATCH; null resets it to All ages. Published metadata changes only after revision publication."
+          },
+          "featuredItemIds": {
+            "type": "array",
+            "maxItems": 6,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "pattern": "^item_[A-Za-z0-9_-]+$"
+            },
+            "description": "Ordered currently published Items of this Game. Empty clears selection; prices remain live."
+          },
+          "languages": {
+            "$ref": "#/components/schemas/GameLanguages"
+          },
+          "subtitle": {
+            "type": "string",
+            "maxLength": 160,
+            "description": "Optional single-line subtitle; empty clears it."
+          },
+          "supportedPlatforms": {
+            "$ref": "#/components/schemas/SupportedPlatforms"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "description": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 5000
+          },
+          "tags": {
+            "type": "array",
+            "maxItems": 20,
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "mediaAssetIds": {
+            "type": "array",
+            "maxItems": 20,
+            "uniqueItems": true,
+            "items": {
+              "type": "string"
+            }
+          },
+          "iconAssetId": {
+            "type": "string",
+            "pattern": "^(|asset_[0-9A-Za-z]{26})$",
+            "description": "Verified image in mediaAssetIds used as the Game icon. Empty string clears it; omission preserves the selection."
+          },
+          "release": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/GameRelease"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Declared release. Omission preserves it; null clears it, so the Game is out once published. A published Coming Soon Game is listed but cannot be bought, played or downloaded until a revision that releases it is published."
+          },
+          "systemRequirements": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SystemRequirements"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Omission preserves; null clears. Published with the reviewed revision."
+          },
+          "aiDisclosure": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/AIDisclosure"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Omission preserves; null clears. Published with the reviewed revision."
+          },
+          "contentSurvey": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/ContentSurvey"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Omission preserves; null clears. Published with the reviewed revision."
+          },
+          "mediaSlots": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/MediaSlots"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Omission preserves; null clears; a value replaces every slot. Each referenced asset must be in this revision's mediaAssetIds (send both together when they change). Published with the reviewed revision."
+          },
+          "longDescription": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "maxLength": 12000,
+            "description": "The store page's About this game, plain text; blank lines separate paragraphs (trimmed, up to 12000 characters). The short description is `description`. Omission preserves; null or an empty string clears. Published with the reviewed revision."
+          },
+          "genres": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/GameGenres"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Omission preserves; null clears. Published with the reviewed revision."
+          },
+          "features": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/GameFeatures"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Omission preserves; null clears. Published with the reviewed revision."
+          },
+          "credits": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/GameCredits"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Omission preserves; null clears; a value replaces the credits. Published with the reviewed revision."
+          },
+          "languageSupport": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/GameLanguageSupport"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Omission preserves; null clears the support matrix and keeps languages. A value sets languages to its codes when languages is omitted; when both are sent, or languages is sent alone while support is declared, the codes must equal languages or the edit is 422. Published with the reviewed revision."
+          },
+          "externalLinks": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/GameExternalLinks"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Omission preserves; null clears; a value replaces every link. Published with the reviewed revision."
+          },
+          "mobile": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/GameMobileListing"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "The iPhone and Android tagline and description. Omission preserves; null clears it, and so does a value whose texts are all null or empty, so the phone apps use the desktop subtitle and description. A value replaces both texts. Revision reads always carry `mobile`, null when cleared. Published with the reviewed revision."
+          }
+        }
+      },
+      "PlatformRequirements": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "minimum"
+        ],
+        "properties": {
+          "minimum": {
+            "$ref": "#/components/schemas/StorePageRequirements"
+          },
+          "recommended": {
+            "$ref": "#/components/schemas/StorePageRequirements"
+          }
+        }
+      },
+      "ProposedPrice": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "currency",
+          "amountMinor"
+        ],
+        "properties": {
+          "currency": {
+            "type": "string",
+            "const": "USD"
+          },
+          "amountMinor": {
+            "type": "integer",
+            "minimum": 50,
+            "maximum": 100000
+          }
+        }
+      },
+      "PublishRequest": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "publishAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "RecordedBuildTargets": {
+        "type": "array",
+        "maxItems": 6,
+        "uniqueItems": true,
+        "description": "Immutable Build declaration. Empty only for legacy Builds with unspecified targets; never inherited from mutable Game intent.",
+        "items": {
+          "type": "string",
+          "enum": [
+            "android",
+            "ios",
+            "linux",
+            "macos",
+            "web",
+            "windows"
+          ]
+        }
+      },
+      "ReleaseBuildSelection": {
+        "type": "object",
+        "description": "The server target selects only a server buildId. Client targets may retain an upload before a server exists; deploying a client requires its exact trusted qualification. Upload inspection alone is insufficient.",
+        "properties": {
+          "buildId": {
+            "type": "string",
+            "maxLength": 128
+          },
+          "uploadId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "qualificationId": {
+            "type": "string",
+            "maxLength": 128
+          }
+        },
+        "anyOf": [
+          {
+            "required": [
+              "buildId"
+            ],
+            "properties": {
+              "buildId": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          {
+            "required": [
+              "uploadId"
+            ]
+          }
+        ],
+        "additionalProperties": false
+      },
+      "ReleaseDraft": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "gameId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "environmentId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "baseReleaseId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "baseEnvironmentRevision": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "title": {
+            "type": "string"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Optional Markdown, at most 32768 UTF-8 bytes."
+          },
+          "targets": {
+            "description": "Independent target selections. The server key takes buildId only; other keys name client platforms.",
+            "type": "object",
+            "properties": {},
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ReleaseBuildSelection"
+            }
+          },
+          "configRevisionId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "secretVersions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReleaseSecretVersion"
+            }
+          },
+          "publishedReleaseId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "gameId",
+          "environmentId",
+          "baseEnvironmentRevision",
+          "revision",
+          "title",
+          "notes",
+          "targets",
+          "secretVersions"
+        ]
+      },
+      "ReleaseDraftInput": {
+        "type": "object",
+        "properties": {
+          "sourceReleaseId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "title": {
+            "type": "string",
+            "description": "At most 120 UTF-8 bytes."
+          },
+          "notes": {
+            "type": "string",
+            "description": "Optional Markdown, at most 32768 UTF-8 bytes (not Unicode code points). Images reference verified Game-owned uploads as summer-media:asset_ID; at most 16 unique images, no external image URLs. Initial notes are copied when the draft is published; public visibility requires actual non-Preview activation and current Game publication."
+          },
+          "targets": {
+            "description": "Independent target selections. The server key takes buildId only; other keys name client platforms.",
+            "type": "object",
+            "properties": {},
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ReleaseBuildSelection"
+            },
+            "maxProperties": 7
+          },
+          "configRevisionId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "secretVersions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ReleaseSecretVersion"
+            },
+            "maxItems": 0,
+            "description": "Reserved for a qualified Game secret-reference capability. This runtime accepts only an empty list; nonempty references return unsupported_feature."
+          }
+        },
+        "additionalProperties": false
+      },
+      "ReleaseSecretVersion": {
+        "type": "object",
+        "properties": {
+          "reference": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "reference",
+          "version"
+        ],
+        "additionalProperties": false
+      },
+      "Resource": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "SourceBuildPublicationRequest": {
+        "type": "object",
+        "required": [
+          "source",
+          "build"
+        ],
+        "properties": {
+          "source": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "archiveSha256",
+              "sizeBytes"
+            ],
+            "properties": {
+              "kind": {
+                "type": "string",
+                "const": "platform-upload"
+              },
+              "archiveSha256": {
+                "type": "string",
+                "pattern": "^sha256:[0-9a-f]{64}$"
+              },
+              "sizeBytes": {
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 2147483648
+              }
+            }
+          },
+          "build": {
+            "type": "object",
+            "description": "The build intent (summer.build.json fields)."
+          }
+        }
+      },
+      "SourceUploadGrant": {
+        "type": "object",
+        "required": [
+          "method",
+          "url",
+          "headers",
+          "expiresAt"
+        ],
+        "description": "One conditional PUT of a whole source ZIP.",
+        "properties": {
+          "method": {
+            "type": "string",
+            "const": "PUT"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "headers": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string"
+            }
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "StorefrontLivePage": {
+        "type": "object",
+        "required": [
+          "game",
+          "items"
+        ],
+        "properties": {
+          "game": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "required": [
+              "publicationId",
+              "revisionId",
+              "activatedAt"
+            ],
+            "properties": {
+              "publicationId": {
+                "type": "string"
+              },
+              "revisionId": {
+                "type": "string"
+              },
+              "activatedAt": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "itemId",
+                "publicationId",
+                "revisionId",
+                "name",
+                "activatedAt",
+                "offers"
+              ],
+              "properties": {
+                "itemId": {
+                  "type": "string"
+                },
+                "publicationId": {
+                  "type": "string"
+                },
+                "revisionId": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "activatedAt": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "offers": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "required": [
+                      "zoneId",
+                      "sparksAmount",
+                      "priceBookRevisionId"
+                    ],
+                    "properties": {
+                      "zoneId": {
+                        "type": "string"
+                      },
+                      "sparksAmount": {
+                        "type": "integer",
+                        "format": "int64",
+                        "minimum": 1
+                      },
+                      "priceBookRevisionId": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "nextCursor": {
+            "type": "string"
+          }
+        }
+      },
+      "StorePageRequirements": {
+        "type": "object",
+        "additionalProperties": false,
+        "minProperties": 1,
+        "description": "Free text, each trimmed single line up to 256 characters; notes may be multiline up to 1000.",
+        "properties": {
+          "os": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "processor": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "memory": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "graphics": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "storage": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "network": {
+            "type": "string",
+            "maxLength": 256
+          },
+          "notes": {
+            "type": "string",
+            "maxLength": 1000
+          }
+        }
+      },
+      "SupportedPlatforms": {
+        "type": "array",
+        "minItems": 1,
+        "maxItems": 6,
+        "uniqueItems": true,
+        "description": "Creator-declared player platforms; this does not certify a playable build. New Games and newly submitted drafts require explicit targets. Historical revisions may have an empty declaration.",
+        "items": {
+          "type": "string",
+          "enum": [
+            "android",
+            "ios",
+            "linux",
+            "macos",
+            "web",
+            "windows"
+          ]
+        }
+      },
+      "SystemRequirements": {
+        "type": "object",
+        "additionalProperties": false,
+        "minProperties": 1,
+        "description": "Minimum and optional recommended hardware per desktop platform.",
+        "properties": {
+          "windows": {
+            "$ref": "#/components/schemas/PlatformRequirements"
+          },
+          "macos": {
+            "$ref": "#/components/schemas/PlatformRequirements"
+          },
+          "linux": {
+            "$ref": "#/components/schemas/PlatformRequirements"
+          }
+        }
+      }
+    },
+    "parameters": {
+      "AssetID": {
+        "name": "assetId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "^asset_[A-Za-z0-9_-]{8,122}$"
+        }
+      },
+      "GameID": {
+        "name": "gameId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "^game_[A-Za-z0-9_-]{8,123}$"
+        }
+      },
+      "IdempotencyKey": {
+        "name": "Idempotency-Key",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128
+        }
+      },
+      "IfMatch": {
+        "name": "If-Match",
+        "in": "header",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 160
+        }
+      },
+      "InventoryCursor": {
+        "name": "cursor",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2048
+        }
+      },
+      "InventoryLimit": {
+        "name": "limit",
+        "in": "query",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 50
+        }
+      },
+      "OwnerApprovalID": {
+        "name": "approvalId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "^goa_[0-9A-Za-z]{26}$"
+        }
+      },
+      "RevisionID": {
+        "name": "revisionId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string",
+          "pattern": "^(grev|irev)_[A-Za-z0-9_-]{8,123}$"
+        }
+      }
+    },
+    "responses": {
+      "Conflict": {
+        "description": "Lifecycle or idempotency conflict",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "GameCreated": {
+        "description": "Game and initial draft created",
+        "headers": {
+          "ETag": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Resource"
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Missing or inaccessible resource",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "OperationAccepted": {
+        "description": "Durable operation accepted",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Operation"
+            }
+          }
+        }
+      },
+      "Page": {
+        "description": "Bounded page",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Page"
+            }
+          }
+        }
+      },
+      "PreconditionFailed": {
+        "description": "Stale ETag",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "Resource": {
+        "description": "Resource view",
+        "headers": {
+          "ETag": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Resource"
+            }
+          }
+        }
+      },
+      "Unavailable": {
+        "description": "Required dependency unavailable; the error is retryable",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      },
+      "ValidationFailed": {
+        "description": "Bounded validation findings",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      }
+    },
+    "requestBodies": {
+      "Publish": {
+        "required": false,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/PublishRequest"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "developerBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "description": "Your Summer account token. An agent gets it by signing in with OAuth: `summer login --store` in the Summer CLI, or the Summer connector in an AI app. Agent tokens can call only the operations on these pages. Publishing needs an approval from the game's owner first."
+      }
+    }
+  }
+}

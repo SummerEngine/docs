@@ -1,0 +1,3313 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Summer Player Game Platform API",
+    "version": "summer.player.games/v1",
+    "description": "Public Summer Games store reads, the connected-app OAuth endpoints, and the signed-in player's profile and preferences."
+  },
+  "servers": [
+    {
+      "url": "https://api.summer.games"
+    }
+  ],
+  "security": [
+    {
+      "playerBearer": []
+    }
+  ],
+  "paths": {
+    "/.well-known/oauth-authorization-server": {
+      "get": {
+        "operationId": "getOAuthAuthorizationServerMetadata",
+        "summary": "Player MCP authorization server metadata (RFC 8414)",
+        "description": "Public clients only, authorization code with S256 PKCE, rotating refresh tokens. 404 where Connected apps are not configured.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Authorization server metadata",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "issuer",
+                    "authorization_endpoint",
+                    "token_endpoint",
+                    "registration_endpoint",
+                    "scopes_supported"
+                  ],
+                  "properties": {
+                    "issuer": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "authorization_endpoint": {
+                      "type": "string",
+                      "format": "uri",
+                      "description": "The Summer Games web consent page"
+                    },
+                    "token_endpoint": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "registration_endpoint": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "scopes_supported": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "enum": [
+                          "player:read",
+                          "player:act"
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Connected apps are not configured here"
+          }
+        }
+      }
+    },
+    "/v1/oauth/register": {
+      "post": {
+        "operationId": "registerOAuthClient",
+        "summary": "Register a player MCP client (RFC 7591)",
+        "description": "Unauthenticated dynamic client registration for public clients. Unknown metadata is ignored. redirect_uris are https, loopback http (any port at use) or a private-use scheme containing a dot, without fragments. Errors use the RFC 7591 body {error, error_description}.",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "client_name",
+                  "redirect_uris"
+                ],
+                "properties": {
+                  "client_name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 100
+                  },
+                  "redirect_uris": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 5,
+                    "items": {
+                      "type": "string",
+                      "maxLength": 2000
+                    }
+                  },
+                  "token_endpoint_auth_method": {
+                    "const": "none"
+                  },
+                  "grant_types": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "authorization_code",
+                        "refresh_token"
+                      ]
+                    }
+                  },
+                  "response_types": {
+                    "type": "array",
+                    "items": {
+                      "const": "code"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Registered client",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "client_id",
+                    "client_id_issued_at",
+                    "client_name",
+                    "redirect_uris"
+                  ],
+                  "properties": {
+                    "client_id": {
+                      "type": "string",
+                      "pattern": "^oac_[a-f0-9]{32}$"
+                    },
+                    "client_id_issued_at": {
+                      "type": "integer"
+                    },
+                    "client_name": {
+                      "type": "string"
+                    },
+                    "redirect_uris": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "invalid_redirect_uri or invalid_client_metadata"
+          },
+          "429": {
+            "description": "Registration budget spent; honour Retry-After"
+          },
+          "503": {
+            "description": "Connected apps unavailable"
+          }
+        }
+      }
+    },
+    "/v1/oauth/token": {
+      "post": {
+        "operationId": "exchangeOAuthToken",
+        "summary": "Exchange a code or refresh token for a player MCP access token",
+        "description": "application/x-www-form-urlencoded, no client authentication. grant_type authorization_code needs code, redirect_uri, client_id and code_verifier; refresh_token needs refresh_token and client_id and may narrow scope. resource, when sent, must be the MCP resource. The access token is an account token for client summer-mcp (five minutes) naming its grant and scopes. Refresh tokens rotate; reusing one revokes the grant. Errors use the RFC 6749 body {error, error_description}.",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Tokens. Never cache them.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "access_token",
+                    "token_type",
+                    "expires_in",
+                    "refresh_token",
+                    "scope"
+                  ],
+                  "properties": {
+                    "access_token": {
+                      "type": "string"
+                    },
+                    "token_type": {
+                      "const": "Bearer"
+                    },
+                    "expires_in": {
+                      "type": "integer"
+                    },
+                    "refresh_token": {
+                      "type": "string"
+                    },
+                    "scope": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "invalid_request, invalid_grant, invalid_scope, invalid_target or unsupported_grant_type"
+          },
+          "401": {
+            "description": "invalid_client (a client secret was sent)"
+          },
+          "429": {
+            "description": "Token budget spent; honour Retry-After"
+          },
+          "503": {
+            "description": "temporarily_unavailable"
+          }
+        }
+      }
+    },
+    "/v1/store/games/{gameId}/play-total": {
+      "get": {
+        "tags": [
+          "Telemetry"
+        ],
+        "operationId": "readPublicPlayTotal",
+        "summary": "Read the collected lifetime Play total for a public Game",
+        "description": "Missing or unavailable projection is explicit; total is null, never a fabricated zero. Existing data starts at collectionStart.",
+        "security": [],
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/OpaqueID"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Available projection or explicit unavailable state.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PublicPlayTotal"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Ineligible Game, invalid input, or rate limit.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ControlAnalyticsError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/identity/me/profile": {
+      "get": {
+        "operationId": "getPlayerProfile",
+        "description": "Own active player profile. A null handle means setup is needed. Display names never fall back to authentication IDs. No query parameters; no-store responses.",
+        "responses": {
+          "200": {
+            "description": "Current canonical profile",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayerProfile"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication missing or account inactive"
+          },
+          "403": {
+            "description": "Player identity.read permission required"
+          },
+          "503": {
+            "description": "Profile unavailable"
+          }
+        }
+      },
+      "patch": {
+        "operationId": "updatePlayerProfile",
+        "description": "Edit only the display name using the current version. Handle changes and caller-selected user IDs are rejected. On uncertain delivery reload the profile before reconciling. Responses are no-store.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "displayName",
+                  "expectedVersion"
+                ],
+                "properties": {
+                  "displayName": {
+                    "$ref": "#/components/schemas/PlayerDisplayNameInput"
+                  },
+                  "expectedVersion": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740990
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Saved profile with incremented version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayerProfile"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "invalid_request; invalid fields or values"
+          },
+          "401": {
+            "description": "Authentication missing or account inactive"
+          },
+          "403": {
+            "description": "Player identity.read permission required"
+          },
+          "409": {
+            "description": "version_conflict; reload before editing"
+          },
+          "503": {
+            "description": "Profile unavailable; reconcile uncertain writes with GET"
+          }
+        }
+      }
+    },
+    "/v1/identity/me/preferences": {
+      "get": {
+        "operationId": "getPlayerPreferences",
+        "description": "Own player account presentation preferences. No saved row means empty strings and version zero. Responses are no-store; no query parameters are accepted.",
+        "responses": {
+          "200": {
+            "description": "Account preferences",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayerPreferences"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Authentication missing or account inactive"
+          },
+          "403": {
+            "description": "Player identity.read permission required"
+          },
+          "503": {
+            "description": "Preferences unavailable"
+          }
+        }
+      },
+      "put": {
+        "operationId": "replacePlayerPreferences",
+        "description": "Replace both preferences using the version returned by GET. On conflict or uncertain delivery reload before reconciling. Values never authorize pricing, age eligibility or service routing. Responses are no-store.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "language",
+                  "contentRegion",
+                  "expectedVersion"
+                ],
+                "properties": {
+                  "language": {
+                    "$ref": "#/components/schemas/PreferredLanguageInput"
+                  },
+                  "contentRegion": {
+                    "type": "string",
+                    "description": "Case-insensitive africa, americas, asia, europe or oceania; empty resets to the product default.",
+                    "maxLength": 8
+                  },
+                  "expectedVersion": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 9007199254740990
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Saved preferences with incremented version",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlayerPreferences"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid fields or unsupported values"
+          },
+          "401": {
+            "description": "Authentication missing or account inactive"
+          },
+          "403": {
+            "description": "Player identity.read permission required"
+          },
+          "409": {
+            "description": "version_conflict; GET authoritative state before reconciling"
+          },
+          "503": {
+            "description": "Preferences unavailable; reconcile uncertain writes with GET"
+          }
+        }
+      }
+    },
+    "/v1/store/games": {
+      "get": {
+        "security": [],
+        "operationId": "browseGames",
+        "description": "Public published Games only. Bearer credentials are ignored. Platform, text, tag and language filters apply before pagination. Listing intent is distinct from qualified playability. Legacy omitted platform remains supported.",
+        "parameters": [
+          {
+            "name": "platform",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/GamePlatform"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque continuation for the public catalog and original filters. Keep the filters unchanged."
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 120
+            }
+          },
+          {
+            "name": "tag",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 48
+            }
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "maxLength": 35
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "name",
+                "new"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success. Cache behavior is unchanged by public access; honor response Cache-Control.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GamePage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid filters or request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Published resource not found."
+          },
+          "409": {
+            "description": "Request changed, expired, or no longer compatible."
+          },
+          "503": {
+            "description": "Dependency unavailable; retry if retryable is true."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "includeImageVariants",
+          "in": "query",
+          "schema": {
+            "type": "boolean",
+            "default": false
+          },
+          "description": "Opt in to optional image size metadata. Omitted by default for compatibility with strict older clients; the default image URL still serves the web version when available."
+        }
+      ]
+    },
+    "/v1/store/games/{gameId}": {
+      "get": {
+        "security": [],
+        "operationId": "getPublishedGame",
+        "description": "Public published Game resolved by durable ID or current registry slug, with current available featured Items in the configured display zone. Bearer credentials are ignored. Game detail uses Cache-Control private, no-store and never returns 304.",
+        "parameters": [
+          {
+            "name": "includeBackgroundColor",
+            "in": "query",
+            "required": false,
+            "description": "Opt in to creator-selected item preview backgrounds; omitted or false preserves the original item response.",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "platform",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/GamePlatform"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success. Cache behavior is unchanged by public access; honor response Cache-Control.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameDetail"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid filters or request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Published resource not found."
+          },
+          "409": {
+            "description": "Request changed, expired, or no longer compatible."
+          },
+          "503": {
+            "description": "Dependency unavailable; retry if retryable is true."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "includeImageVariants",
+          "in": "query",
+          "schema": {
+            "type": "boolean",
+            "default": false
+          },
+          "description": "Opt in to optional image size metadata. Omitted by default for compatibility with strict older clients; the default image URL still serves the web version when available."
+        }
+      ]
+    },
+    "/v1/store/games/{gameId}/publications/{publicationId}/images/{assetId}": {
+      "get": {
+        "security": [],
+        "operationId": "getPublishedGameImage",
+        "description": "Public image bytes for the currently active Game publication. Bearer credentials do not grant additional access. Current public visibility and exact Game/Item, publication and IMAGE asset membership are checked before either 200 or 304. Draft, prepared, withdrawn, superseded, mismatched, private and model references are unavailable. Only PNG, JPEG or WebP up to 32 MiB is served. The stable URL has no signature or expiry query parameters; no redirects are returned and query parameters are rejected. HEAD returns the same status and headers without a body. Successful responses allow shared caching for at most 600 seconds and require revalidation afterward; errors use no-store. After withdrawal, origin requests fail immediately and conforming caches stop reuse within ten minutes.",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/PublicImage"
+          },
+          "304": {
+            "$ref": "#/components/responses/PublicImageNotModified"
+          },
+          "400": {
+            "description": "Invalid identifiers or unexpected query parameters. Cache-Control is no-store.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No currently public image exists in the requested publication and owner scope. Cache-Control is no-store.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The current publication is inconsistent. Cache-Control is no-store.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Catalog or image storage is unavailable. Cache-Control is no-store.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "gameId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        {
+          "name": "publicationId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        {
+          "name": "assetId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        {
+          "name": "If-None-Match",
+          "in": "header",
+          "schema": {
+            "type": "string"
+          },
+          "description": "Compare the immutable image SHA-256 ETag only after current publication visibility and image scope have been checked."
+        }
+      ]
+    },
+    "/v1/store/games/{gameId}/publications/{publicationId}/images/{assetId}/variants/{size}": {
+      "get": {
+        "security": [],
+        "operationId": "getPublishedGameImageVariant",
+        "description": "A generated aspect-preserving image variant for the currently active Game publication. Bearer credentials do not grant additional access. Current public visibility and exact Game/Item, publication and IMAGE asset membership are checked before either 200 or 304. Draft, prepared, withdrawn, superseded, mismatched, private and model references are unavailable. Only PNG or JPEG up to 32 MiB is served. Sizes 128, 256 and 512 target the shorter edge with a four-times-size longer-edge cap; size 1920 remains a maximum-edge rendition. The requested size must exist; otherwise returns 404. The stable URL has no signature or expiry query parameters; no redirects are returned and query parameters are rejected. HEAD returns the same status and headers without a body. Successful responses allow shared caching for at most 600 seconds and require revalidation afterward; errors use no-store. After withdrawal, origin requests fail immediately and conforming caches stop reuse within ten minutes.",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/PublicImage"
+          },
+          "304": {
+            "$ref": "#/components/responses/PublicImageNotModified"
+          },
+          "400": {
+            "description": "Invalid identifiers or unexpected query parameters. Cache-Control is no-store.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No currently public image exists in the requested publication and owner scope. Cache-Control is no-store.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The current publication is inconsistent. Cache-Control is no-store.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Catalog or image storage is unavailable. Cache-Control is no-store.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "size",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "enum": [
+              128,
+              256,
+              512,
+              1920
+            ]
+          }
+        },
+        {
+          "name": "gameId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        {
+          "name": "publicationId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        {
+          "name": "assetId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        {
+          "name": "If-None-Match",
+          "in": "header",
+          "schema": {
+            "type": "string"
+          },
+          "description": "Compare the immutable image SHA-256 ETag only after current publication visibility and image scope have been checked."
+        }
+      ]
+    },
+    "/v1/games/{gameId}/store/items/{itemId}/publications/{publicationId}/images/{assetId}": {
+      "get": {
+        "security": [],
+        "operationId": "getPublishedItemImage",
+        "description": "Public image bytes for the currently active Item publication. Bearer credentials do not grant additional access. Current public visibility and exact Game/Item, publication and IMAGE asset membership are checked before either 200 or 304. Draft, prepared, withdrawn, superseded, mismatched, private and model references are unavailable. Only PNG, JPEG or WebP up to 32 MiB is served. The stable URL has no signature or expiry query parameters; no redirects are returned and query parameters are rejected. HEAD returns the same status and headers without a body. Successful responses allow shared caching for at most 600 seconds and require revalidation afterward; errors use no-store. After withdrawal, origin requests fail immediately and conforming caches stop reuse within ten minutes.",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/PublicImage"
+          },
+          "304": {
+            "$ref": "#/components/responses/PublicImageNotModified"
+          },
+          "400": {
+            "description": "Invalid identifiers or unexpected query parameters. Cache-Control is no-store.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No currently public image exists in the requested publication and owner scope. Cache-Control is no-store.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The current publication is inconsistent. Cache-Control is no-store.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Catalog or image storage is unavailable. Cache-Control is no-store.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "gameId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        {
+          "name": "itemId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        {
+          "name": "publicationId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        {
+          "name": "assetId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        {
+          "name": "If-None-Match",
+          "in": "header",
+          "schema": {
+            "type": "string"
+          },
+          "description": "Compare the immutable image SHA-256 ETag only after current publication visibility and image scope have been checked."
+        }
+      ]
+    },
+    "/v1/games/{gameId}/store/items/{itemId}/publications/{publicationId}/images/{assetId}/variants/{size}": {
+      "get": {
+        "security": [],
+        "operationId": "getPublishedItemImageVariant",
+        "description": "A generated aspect-preserving image variant for the currently active Item publication. Bearer credentials do not grant additional access. Current public visibility and exact Game/Item, publication and IMAGE asset membership are checked before either 200 or 304. Draft, prepared, withdrawn, superseded, mismatched, private and model references are unavailable. Only PNG or JPEG up to 32 MiB is served. Sizes 128, 256 and 512 target the shorter edge with a four-times-size longer-edge cap; size 1920 remains a maximum-edge rendition. The requested size must exist; otherwise returns 404. The stable URL has no signature or expiry query parameters; no redirects are returned and query parameters are rejected. HEAD returns the same status and headers without a body. Successful responses allow shared caching for at most 600 seconds and require revalidation afterward; errors use no-store. After withdrawal, origin requests fail immediately and conforming caches stop reuse within ten minutes.",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/PublicImage"
+          },
+          "304": {
+            "$ref": "#/components/responses/PublicImageNotModified"
+          },
+          "400": {
+            "description": "Invalid identifiers or unexpected query parameters. Cache-Control is no-store.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No currently public image exists in the requested publication and owner scope. Cache-Control is no-store.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The current publication is inconsistent. Cache-Control is no-store.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Catalog or image storage is unavailable. Cache-Control is no-store.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "size",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "enum": [
+              128,
+              256,
+              512,
+              1920
+            ]
+          }
+        },
+        {
+          "name": "gameId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        {
+          "name": "itemId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        {
+          "name": "publicationId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        {
+          "name": "assetId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        {
+          "name": "If-None-Match",
+          "in": "header",
+          "schema": {
+            "type": "string"
+          },
+          "description": "Compare the immutable image SHA-256 ETag only after current publication visibility and image scope have been checked."
+        }
+      ]
+    },
+    "/v1/store/games/{gameId}/publications/{publicationId}/models/{assetId}": {
+      "get": {
+        "security": [],
+        "operationId": "getPublishedGameModel",
+        "description": "Public model bytes for the currently active Game publication. Bearer credentials do not grant additional access. Current public visibility and exact Game/Item, publication and MODEL_3D asset membership are checked before either 200 or 304. Draft, prepared, withdrawn, superseded, mismatched, private and image references are unavailable. Only verified self-contained binary glTF (GLB) up to 512 MiB is served. The stable URL has no signature or expiry query parameters; no redirects are returned and query parameters are rejected. HEAD returns the same status and headers without a body. Successful responses allow shared caching for at most 600 seconds and require revalidation afterward; errors use no-store. Anonymous cross-origin GET and HEAD are allowed with Access-Control-Allow-Origin: *; ETag is exposed and credentialed CORS is not enabled. After withdrawal, origin requests fail immediately and conforming caches stop reuse within ten minutes.",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/PublicModel"
+          },
+          "304": {
+            "$ref": "#/components/responses/PublicModelNotModified"
+          },
+          "400": {
+            "description": "Invalid identifiers or unexpected query parameters. Cache-Control is no-store.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No currently public model exists in the requested publication and owner scope. Cache-Control is no-store.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The current publication is inconsistent. Cache-Control is no-store.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Catalog or model storage is unavailable. Cache-Control is no-store.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "gameId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        {
+          "name": "publicationId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        {
+          "name": "assetId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        {
+          "name": "If-None-Match",
+          "in": "header",
+          "schema": {
+            "type": "string"
+          },
+          "description": "Compare the immutable model SHA-256 ETag only after current publication visibility and model scope have been checked."
+        }
+      ]
+    },
+    "/v1/games/{gameId}/store/items/{itemId}/publications/{publicationId}/models/{assetId}": {
+      "get": {
+        "security": [],
+        "operationId": "getPublishedItemModel",
+        "description": "Public model bytes for the currently active Item publication. Bearer credentials do not grant additional access. Current public visibility and exact Game/Item, publication and MODEL_3D asset membership are checked before either 200 or 304. Draft, prepared, withdrawn, superseded, mismatched, private and image references are unavailable. Only verified self-contained binary glTF (GLB) up to 512 MiB is served. The stable URL has no signature or expiry query parameters; no redirects are returned and query parameters are rejected. HEAD returns the same status and headers without a body. Successful responses allow shared caching for at most 600 seconds and require revalidation afterward; errors use no-store. Anonymous cross-origin GET and HEAD are allowed with Access-Control-Allow-Origin: *; ETag is exposed and credentialed CORS is not enabled. After withdrawal, origin requests fail immediately and conforming caches stop reuse within ten minutes.",
+        "responses": {
+          "200": {
+            "$ref": "#/components/responses/PublicModel"
+          },
+          "304": {
+            "$ref": "#/components/responses/PublicModelNotModified"
+          },
+          "400": {
+            "description": "Invalid identifiers or unexpected query parameters. Cache-Control is no-store.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No currently public model exists in the requested publication and owner scope. Cache-Control is no-store.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "The current publication is inconsistent. Cache-Control is no-store.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Catalog or model storage is unavailable. Cache-Control is no-store.",
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "gameId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        {
+          "name": "itemId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        {
+          "name": "publicationId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        {
+          "name": "assetId",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        {
+          "name": "If-None-Match",
+          "in": "header",
+          "schema": {
+            "type": "string"
+          },
+          "description": "Compare the immutable model SHA-256 ETag only after current publication visibility and model scope have been checked."
+        }
+      ]
+    },
+    "/v1/store/games/{gameId}/updates": {
+      "get": {
+        "security": [],
+        "operationId": "listGameUpdates",
+        "description": "Anonymous activation history for a currently published Game, newest first and shared across platforms. Preview activations and pending releases are excluded. Entries keep stable activation IDs across editorial corrections. Returns compact note summaries; full Markdown and freshly signed images are available on the entry route. All responses use Cache-Control no-store; no conditional 304.",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque cursor scoped to this Game and environment."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Activation page; items is empty when no recorded public activations exist.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "items"
+                  ],
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/GameUpdateSummary"
+                      }
+                    },
+                    "nextCursor": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid or unknown query parameter or cursor."
+          },
+          "404": {
+            "description": "Game is missing or not currently published."
+          },
+          "503": {
+            "description": "Dependency unavailable."
+          }
+        }
+      }
+    },
+    "/v1/store/games/{gameId}/updates/{activationId}": {
+      "get": {
+        "security": [],
+        "operationId": "getGameUpdate",
+        "description": "Full public update addressed by stable activation ID, not release ID. Current published Game visibility and non-Preview activation are required. Editorial corrections do not change activation identity or time. All responses use Cache-Control no-store; no conditional 304.",
+        "parameters": [
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "activationId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Full activation entry with optional release notes.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GameUpdateDetail"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Unknown query parameter."
+          },
+          "404": {
+            "description": "Game is not published or public activation does not exist."
+          },
+          "503": {
+            "description": "History or media delivery unavailable."
+          }
+        }
+      }
+    },
+    "/v1/store/items": {
+      "get": {
+        "security": [],
+        "operationId": "listPublishedStoreItems",
+        "description": "Public bounded catalog of currently published Items across Games. Each entry includes its current published parent Game name. Canonical discovery also requires an active Game and environment attachment. Empty filtered pages may carry a continuation. Bearer credentials are ignored. Realm and display zone are configured by the server; displayed offers do not authorize purchase.",
+        "parameters": [
+          {
+            "name": "includeBackgroundColor",
+            "in": "query",
+            "required": false,
+            "description": "Opt in to creator-selected item preview backgrounds; omitted or false preserves the original item projection.",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "description": "Opaque continuation bound to global Store, realm and configured display zone. Public visibility is rechecked on each page.",
+            "schema": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            }
+          },
+          {
+            "name": "If-None-Match",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Published cross-Game Item projection. Cache-Control: private, max-age=60; ETag supports conditional reads.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StoreItemPage"
+                }
+              }
+            }
+          },
+          "304": {
+            "description": "The supplied ETag matches the current public projection."
+          },
+          "400": {
+            "description": "Invalid request or cursor from another display context."
+          },
+          "503": {
+            "description": "Storefront unavailable."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "includeImageVariants",
+          "in": "query",
+          "schema": {
+            "type": "boolean",
+            "default": false
+          },
+          "description": "Opt in to optional image size metadata. Omitted by default for compatibility with strict older clients; the default image URL still serves the web version when available."
+        }
+      ]
+    },
+    "/v1/games/{gameId}/store/items": {
+      "get": {
+        "security": [],
+        "operationId": "listPublishedGameItems",
+        "description": "Public currently published Items with an active parent Game and an offer in the configured display zone. Bearer credentials are ignored. Displayed prices do not authorize purchase.",
+        "parameters": [
+          {
+            "name": "includeBackgroundColor",
+            "in": "query",
+            "required": false,
+            "description": "Opt in to creator-selected item preview backgrounds; omitted or false preserves the original item response.",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z][A-Za-z0-9_-]{7,127}$"
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "description": "Continuation returned by the preceding page; preserve the Game and display context.",
+            "schema": {
+              "type": "string",
+              "maxLength": 128
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 50
+            }
+          },
+          {
+            "name": "If-None-Match",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Published Item projection. Cache-Control: private, max-age=60; ETag supports conditional reads.",
+            "content": {
+              "application/protobuf": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "304": {
+            "description": "The supplied ETag matches the current projection."
+          },
+          "400": {
+            "description": "Invalid identifier or pagination request."
+          },
+          "404": {
+            "description": "Published resource or display-zone offer not found."
+          },
+          "409": {
+            "description": "Store publication is inconsistent."
+          },
+          "503": {
+            "description": "Catalog or media dependency unavailable."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "includeImageVariants",
+          "in": "query",
+          "schema": {
+            "type": "boolean",
+            "default": false
+          },
+          "description": "Opt in to optional image size metadata. Omitted by default for compatibility with strict older clients; the default image URL still serves the web version when available."
+        }
+      ]
+    },
+    "/v1/games/{gameId}/store/items/{itemId}": {
+      "get": {
+        "security": [],
+        "operationId": "getPublishedItem",
+        "description": "Public currently published Items with an active parent Game and an offer in the configured display zone. Bearer credentials are ignored. Displayed prices do not authorize purchase.",
+        "parameters": [
+          {
+            "name": "includeBackgroundColor",
+            "in": "query",
+            "required": false,
+            "description": "Opt in to creator-selected item preview backgrounds; omitted or false preserves the original item response.",
+            "schema": {
+              "type": "boolean",
+              "default": false
+            }
+          },
+          {
+            "name": "gameId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z][A-Za-z0-9_-]{7,127}$"
+            }
+          },
+          {
+            "name": "itemId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 8,
+              "maxLength": 128,
+              "pattern": "^[A-Za-z][A-Za-z0-9_-]{7,127}$"
+            }
+          },
+          {
+            "name": "If-None-Match",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Published Item projection. Cache-Control: private, max-age=60; ETag supports conditional reads.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Item"
+                }
+              }
+            }
+          },
+          "304": {
+            "description": "The supplied ETag matches the current projection."
+          },
+          "400": {
+            "description": "Invalid identifier or pagination request."
+          },
+          "404": {
+            "description": "Published resource or display-zone offer not found."
+          },
+          "409": {
+            "description": "Store publication is inconsistent."
+          },
+          "503": {
+            "description": "Catalog or media dependency unavailable."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "includeImageVariants",
+          "in": "query",
+          "schema": {
+            "type": "boolean",
+            "default": false
+          },
+          "description": "Opt in to optional image size metadata. Omitted by default for compatibility with strict older clients; the default image URL still serves the web version when available."
+        }
+      ]
+    },
+    "/v1/store/tags": {
+      "get": {
+        "security": [],
+        "operationId": "listGameTags",
+        "description": "Public published catalog metadata. Bearer credentials are ignored.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Success. Cache behavior is unchanged by public access; honor response Cache-Control.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "items": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Tag"
+                      }
+                    },
+                    "nextCursor": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "items"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid filters or request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Published resource not found."
+          },
+          "409": {
+            "description": "Request changed, expired, or no longer compatible."
+          },
+          "503": {
+            "description": "Dependency unavailable; retry if retryable is true."
+          }
+        }
+      }
+    },
+    "/v1/store/featured": {
+      "get": {
+        "security": [],
+        "operationId": "listFeaturedGames",
+        "description": "Public published catalog metadata. Bearer credentials are ignored.",
+        "parameters": [
+          {
+            "name": "platform",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "$ref": "#/components/schemas/GamePlatform"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Opaque continuation for the public catalog and original filters. Keep the filters unchanged."
+          },
+          {
+            "name": "surface",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "home",
+                "featured"
+              ],
+              "default": "featured"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success. Cache behavior is unchanged by public access; honor response Cache-Control.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GamePage"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid filters or request.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Published resource not found."
+          },
+          "409": {
+            "description": "Request changed, expired, or no longer compatible."
+          },
+          "503": {
+            "description": "Dependency unavailable; retry if retryable is true."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "includeImageVariants",
+          "in": "query",
+          "schema": {
+            "type": "boolean",
+            "default": false
+          },
+          "description": "Opt in to optional image size metadata. Omitted by default for compatibility with strict older clients; the default image URL still serves the web version when available."
+        }
+      ]
+    }
+  },
+  "components": {
+    "schemas": {
+      "Availability": {
+        "type": "object",
+        "properties": {
+          "playable": {
+            "type": "boolean"
+          },
+          "reason": {
+            "type": "string",
+            "description": "Why the Game is not playable, e.g. coming_soon (listed, not out yet), platform_required, unsupported_platform or release_unavailable."
+          },
+          "releaseId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "buildId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "required": [
+          "playable"
+        ]
+      },
+      "CommunityRating": {
+        "type": "object",
+        "required": [
+          "source",
+          "status",
+          "entityId",
+          "methodology",
+          "revision",
+          "count",
+          "average",
+          "observedAt",
+          "checkedAt"
+        ],
+        "description": "Summer DB owns community scores. Missing authority or identity never implies zero votes. This is independent of content-age classification, discovery rank and playability.",
+        "properties": {
+          "source": {
+            "type": "string",
+            "const": "summer_db"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "available",
+              "not_indexed",
+              "unavailable"
+            ]
+          },
+          "entityId": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "uuid"
+          },
+          "methodology": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "revision": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "count": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "average": {
+            "type": [
+              "number",
+              "null"
+            ],
+            "minimum": 1,
+            "maximum": 10,
+            "description": "Null for a known game with no votes; never a synthetic zero."
+          },
+          "observedAt": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time",
+            "description": "Rating aggregate update time, not fetch time."
+          },
+          "checkedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Time of this authority read or failed attempt."
+          }
+        }
+      },
+      "ControlAnalyticsError": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "required": [
+              "code",
+              "message",
+              "retryable",
+              "requestId"
+            ],
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              },
+              "retryable": {
+                "type": "boolean"
+              },
+              "requestId": {
+                "type": "string"
+              },
+              "eventIndex": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 99
+              }
+            }
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string"
+              },
+              "message": {
+                "type": "string"
+              },
+              "retryable": {
+                "type": "boolean"
+              },
+              "requestId": {
+                "type": "string"
+              },
+              "correlationId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "code",
+              "message",
+              "retryable",
+              "requestId"
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ]
+      },
+      "Game": {
+        "type": "object",
+        "properties": {
+          "minimumAge": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "enum": [
+              3,
+              7,
+              12,
+              16,
+              18,
+              null
+            ],
+            "description": "Declared minimum age from the published listing. Null or absent means All ages, the default. This is not a certified rating or an access restriction."
+          },
+          "communityRating": {
+            "$ref": "#/components/schemas/CommunityRating"
+          },
+          "slug": {
+            "type": "string",
+            "description": "Current globally unique registry slug for public URLs. Listing title edits do not change it; gameId remains the durable identity."
+          },
+          "subtitle": {
+            "type": "string",
+            "maxLength": 160
+          },
+          "releaseUpdatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Latest recorded non-Preview release activation for the Game, shared across device platforms. Rollback or recovery to a different release updates this date; notes and listing corrections do not. Omitted when activation history is unknown."
+          },
+          "listingUpdatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Latest approved listing activation, not a playable release update. Absent in draft previews and older retained cards."
+          },
+          "gameId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "supportedPlatforms": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GamePlatform"
+            }
+          },
+          "languages": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "media": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Media"
+            }
+          },
+          "icon": {
+            "$ref": "#/components/schemas/Media",
+            "description": "The revision's selected Game icon, when one is published. It is also present in media."
+          },
+          "release": {
+            "type": "object",
+            "required": [
+              "comingSoon",
+              "precision"
+            ],
+            "description": "The creator's declared release, absent when none was declared (the Game is out). A Coming Soon Game is listed but cannot be bought, played or downloaded; its availability reason is coming_soon.",
+            "properties": {
+              "comingSoon": {
+                "type": "boolean"
+              },
+              "date": {
+                "type": "string",
+                "description": "A day (2026-11-14), month (2026-11), quarter (2026-Q4) or year (2026); absent while to be announced. Released Games carry an exact day."
+              },
+              "precision": {
+                "type": "string",
+                "enum": [
+                  "day",
+                  "month",
+                  "quarter",
+                  "year",
+                  "tba"
+                ]
+              }
+            }
+          },
+          "systemRequirements": {
+            "type": "object",
+            "description": "Minimum and optional recommended requirements per desktop platform (windows, macos, linux), each {minimum, recommended?} of free-text os, processor, memory, graphics, storage, network and notes. Absent when not declared."
+          },
+          "aiDisclosure": {
+            "type": "object",
+            "description": "{uses: [assets|code|generatedGameplay], description?}; an empty uses array means the creator declared no AI use. Absent when not declared."
+          },
+          "contentSurvey": {
+            "type": "object",
+            "description": "Mature-content answers (violence, bloodGore, sexualContent, nudity, language, substances, gambling levels; userGeneratedContent, onlineInteraction, inGamePurchases flags; notes). Absent when not declared."
+          },
+          "mediaSlots": {
+            "type": "object",
+            "description": "Named media among media[] as the creator named it: flat {keyArt?: {assetId, focalPoint: {x, y} as 0..1 fractions from the top left}, screenshots?: [assetId], trailers?: [{assetId, posterAssetId}]} (the desktop slots named before flows), plus desktop?: {keyArt?, capsuleTall?, capsuleWide?, icon?, screenshots?, trailers?} and mobile?: {icon?, tallCover?, keyArt?, screenshots?}, each image as {assetId, focalPoint}. Absent when the creator named none. Render from storeArt, which applies the fallbacks."
+          },
+          "storeArt": {
+            "$ref": "#/components/schemas/StoreArt"
+          },
+          "longDescription": {
+            "type": "string",
+            "description": "About this game, plain text; blank lines separate paragraphs. Render as text, never as HTML. `description` stays the short description. Absent when not declared."
+          },
+          "genres": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "1 to 5 Game tag IDs of category genre (see GET /v1/store/tags for labels), in the creator's order. Absent when not declared."
+          },
+          "features": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "single_player",
+                "online_multiplayer",
+                "local_multiplayer",
+                "online_coop",
+                "local_coop",
+                "cross_platform",
+                "controller_full",
+                "controller_partial",
+                "cloud_saves",
+                "plays_in_browser",
+                "level_editor",
+                "achievements",
+                "in_game_purchases"
+              ]
+            },
+            "description": "Store page features in the creator's order. Clients should ignore values they do not know. Absent when not declared."
+          },
+          "credits": {
+            "type": "object",
+            "required": [
+              "developer"
+            ],
+            "description": "Absent when not declared.",
+            "properties": {
+              "developer": {
+                "type": "string"
+              },
+              "publisher": {
+                "type": "string",
+                "description": "Absent when there is none."
+              },
+              "franchise": {
+                "type": "string",
+                "description": "Absent when there is none."
+              }
+            }
+          },
+          "languageSupport": {
+            "type": "array",
+            "description": "Per-language support in code order; its codes equal languages. Absent when not declared (then only languages is known).",
+            "items": {
+              "type": "object",
+              "required": [
+                "code",
+                "interface",
+                "fullAudio",
+                "subtitles"
+              ],
+              "properties": {
+                "code": {
+                  "type": "string",
+                  "description": "Lowercase BCP 47 code, for example en or pt-br."
+                },
+                "interface": {
+                  "type": "boolean"
+                },
+                "fullAudio": {
+                  "type": "boolean"
+                },
+                "subtitles": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "externalLinks": {
+            "type": "array",
+            "description": "Creator links in the creator's order; https only, social kinds restricted to their service's hosts. Clients should ignore kinds they do not know. Absent when not declared.",
+            "items": {
+              "type": "object",
+              "required": [
+                "kind",
+                "url"
+              ],
+              "properties": {
+                "kind": {
+                  "type": "string",
+                  "enum": [
+                    "website",
+                    "x",
+                    "youtube",
+                    "instagram",
+                    "tiktok",
+                    "bluesky",
+                    "discord"
+                  ]
+                },
+                "url": {
+                  "type": "string",
+                  "format": "uri"
+                }
+              }
+            }
+          },
+          "mobile": {
+            "type": "object",
+            "required": [
+              "subtitle",
+              "description"
+            ],
+            "description": "The iPhone and Android apps' own text. A null field means use subtitle or description. Absent when the phone apps use the desktop text for both.",
+            "properties": {
+              "subtitle": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "maxLength": 160
+              },
+              "description": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "maxLength": 170
+              }
+            }
+          },
+          "publishedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "accessModel": {
+            "type": "string",
+            "enum": [
+              "free",
+              "paid"
+            ],
+            "description": "A paid Game is played by players holding its license; free Games need none."
+          },
+          "price": {
+            "$ref": "#/components/schemas/GamePrice"
+          },
+          "availability": {
+            "$ref": "#/components/schemas/Availability"
+          }
+        },
+        "required": [
+          "gameId",
+          "name",
+          "description",
+          "tags",
+          "supportedPlatforms",
+          "languages",
+          "media",
+          "publishedAt",
+          "accessModel",
+          "availability"
+        ]
+      },
+      "GameDetail": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Game"
+          },
+          {
+            "type": "object",
+            "required": [
+              "featuredItems",
+              "supportItems"
+            ],
+            "properties": {
+              "featuredItems": {
+                "type": "array",
+                "maxItems": 6,
+                "items": {
+                  "$ref": "#/components/schemas/Item"
+                },
+                "description": "Creator order with unavailable Items omitted, using current offers and media. Detail is private no-store; acquisition still requires a fresh trusted quote."
+              },
+              "supportItems": {
+                "type": "array",
+                "maxItems": 4,
+                "items": {
+                  "$ref": "#/components/schemas/Item"
+                },
+                "description": "The Game's published Support Items (tagged support-item), cheapest first, with current offers and media. They are the tip choices for the Game's creator. Buying one is an ordinary Game Shop purchase through purchase-requests at the ordinary split; it is never a transfer to the creator. Empty when the Game has none."
+              }
+            }
+          }
+        ]
+      },
+      "GamePage": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Game"
+            }
+          },
+          "nextCursor": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "items"
+        ]
+      },
+      "GamePlatform": {
+        "type": "string",
+        "enum": [
+          "android",
+          "ios",
+          "linux",
+          "macos",
+          "web",
+          "windows"
+        ]
+      },
+      "GamePrice": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "What a player pays now for a paid Game, in minor units. Present only when accessModel is paid.",
+        "properties": {
+          "currency": {
+            "type": "string",
+            "enum": [
+              "USD"
+            ]
+          },
+          "baseMinor": {
+            "type": "integer",
+            "minimum": 50,
+            "description": "The creator's price before any discount."
+          },
+          "finalMinor": {
+            "type": "integer",
+            "minimum": 50,
+            "description": "The price charged now."
+          },
+          "discountPercent": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 90,
+            "description": "Zero when no discount is live."
+          },
+          "dealEndsAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the live discount ends."
+          },
+          "purchasable": {
+            "type": "boolean",
+            "description": "False only if Stripe has since restricted the creator's account; show the price without Buy."
+          }
+        },
+        "required": [
+          "currency",
+          "baseMinor",
+          "finalMinor",
+          "discountPercent",
+          "purchasable"
+        ]
+      },
+      "GameUpdateActivation": {
+        "type": "object",
+        "required": [
+          "activationId",
+          "releaseId",
+          "reason",
+          "activatedAt",
+          "platforms"
+        ],
+        "properties": {
+          "activationId": {
+            "type": "string"
+          },
+          "releaseId": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string",
+            "enum": [
+              "deploy",
+              "rollback",
+              "recovery"
+            ]
+          },
+          "activatedAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "platforms": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GamePlatform"
+            }
+          }
+        }
+      },
+      "GameUpdateDetail": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/GameUpdateActivation"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "releaseNote": {
+                "$ref": "#/components/schemas/ReleaseNoteDetail"
+              }
+            }
+          }
+        ]
+      },
+      "GameUpdateSummary": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/GameUpdateActivation"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "releaseNote": {
+                "$ref": "#/components/schemas/ReleaseNoteSummary"
+              }
+            }
+          }
+        ]
+      },
+      "Item": {
+        "type": "object",
+        "required": [
+          "itemId",
+          "gameId",
+          "name",
+          "description",
+          "tags",
+          "media",
+          "price"
+        ],
+        "properties": {
+          "backgroundColor": {
+            "type": "string",
+            "pattern": "^#[0-9A-Fa-f]{6}$",
+            "description": "Creator-selected preview color; omitted uses the application default."
+          },
+          "itemId": {
+            "type": "string"
+          },
+          "gameId": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "media": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Media"
+            }
+          },
+          "price": {
+            "type": "object",
+            "required": [
+              "sparksAmount",
+              "zoneId"
+            ],
+            "properties": {
+              "sparksAmount": {
+                "type": "integer",
+                "format": "int64"
+              },
+              "zoneId": {
+                "type": "string"
+              },
+              "offerId": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "Media": {
+        "type": "object",
+        "properties": {
+          "assetId": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "IMAGE",
+              "VIDEO",
+              "MODEL_3D"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Stable Platform URL for public IMAGE and MODEL_3D delivery; no redirect or signature. Images use the 1920px maximum-edge web version when prepared, otherwise the original. Other delivery references may remain signed."
+          },
+          "variants": {
+            "type": "array",
+            "maxItems": 4,
+            "description": "Optional publication-scoped image representations. All share this media reference's expiry and visibility rules; dimensions preserve aspect ratio without upscaling. Sizes 128, 256 and 512 target the shorter edge with a four-times-size longer-edge cap (2048 pixels for size 512); size 1920 remains a maximum-edge rendition. Smaller originals retain their dimensions. Publications may omit variants until prepared.",
+            "items": {
+              "type": "object",
+              "required": [
+                "size",
+                "width",
+                "height",
+                "url",
+                "contentType"
+              ],
+              "properties": {
+                "size": {
+                  "type": "integer",
+                  "enum": [
+                    128,
+                    256,
+                    512,
+                    1920
+                  ]
+                },
+                "width": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 2048
+                },
+                "height": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 2048
+                },
+                "url": {
+                  "type": "string",
+                  "format": "uri"
+                },
+                "contentType": {
+                  "type": "string",
+                  "enum": [
+                    "image/jpeg",
+                    "image/png"
+                  ]
+                }
+              }
+            }
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Refresh or revalidate the delivery reference by this deadline. For stable public IMAGE and MODEL_3D URLs this is a revalidation deadline, not URL invalidation. Other signed or private references retain their URL expiry semantics. Required for backward compatibility."
+          }
+        },
+        "required": [
+          "assetId",
+          "kind",
+          "url",
+          "expiresAt"
+        ]
+      },
+      "OpaqueID": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256,
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,255}$"
+      },
+      "PlayerDisplayNameInput": {
+        "type": "string",
+        "description": "Trimmed nonempty Unicode text, at most 64 code points and 256 UTF-8 bytes after trimming; Unicode category C characters are rejected. Names need not be unique."
+      },
+      "PlayerPreferences": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "language",
+          "contentRegion",
+          "version"
+        ],
+        "properties": {
+          "language": {
+            "type": "string",
+            "maxLength": 21,
+            "pattern": "^([a-z]{2,3}(-[a-z0-9]{2,8}){0,2})?$"
+          },
+          "contentRegion": {
+            "type": "string",
+            "enum": [
+              "",
+              "africa",
+              "americas",
+              "asia",
+              "europe",
+              "oceania"
+            ]
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        }
+      },
+      "PlayerProfile": {
+        "type": "object",
+        "required": [
+          "handle",
+          "displayName",
+          "version",
+          "needsProfileSetup"
+        ],
+        "properties": {
+          "handle": {
+            "type": "string",
+            "nullable": true,
+            "pattern": "^[a-z][a-z0-9_]{2,23}$"
+          },
+          "displayName": {
+            "type": "string"
+          },
+          "version": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "needsProfileSetup": {
+            "type": "boolean",
+            "description": "True exactly when handle is null."
+          }
+        }
+      },
+      "PreferredLanguageInput": {
+        "type": "string",
+        "maxLength": 21,
+        "description": "Empty means device fallback. Accepted bounded language tags are lowercased; whitespace is rejected.",
+        "pattern": "^([a-zA-Z]{2,3}(-[a-zA-Z0-9]{2,8}){0,2})?$"
+      },
+      "PublicPlayTotal": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "status",
+          "total",
+          "collectionStart",
+          "asOf"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "available",
+              "unavailable"
+            ]
+          },
+          "total": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "minimum": 0
+          },
+          "collectionStart": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          },
+          "asOf": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "ReleaseNoteDetail": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/ReleaseNoteSummary"
+          },
+          {
+            "type": "object",
+            "required": [
+              "markdown",
+              "media"
+            ],
+            "properties": {
+              "markdown": {
+                "type": "string",
+                "description": "At most 32768 UTF-8 bytes. Render Markdown with raw HTML disabled. Uploaded images use summer-media:asset_ID references resolved from media; no signed URLs are persisted. Only supported canonical YouTube/Vimeo links may be embedded; external images are unsupported."
+              },
+              "media": {
+                "type": "array",
+                "maxItems": 16,
+                "items": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/Media"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "kind": {
+                          "type": "string",
+                          "const": "IMAGE"
+                        }
+                      }
+                    }
+                  ]
+                },
+                "description": "Fresh signed delivery URLs for verified Game-owned images. URLs expire; reload the entry to refresh. Previously issued URLs remain usable until expiry after withdrawal. Storage keys and buckets are never exposed."
+              }
+            }
+          }
+        ]
+      },
+      "ReleaseNoteSummary": {
+        "type": "object",
+        "required": [
+          "title",
+          "revision",
+          "createdAt",
+          "updatedAt"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "At most 120 UTF-8 bytes."
+          },
+          "revision": {
+            "type": "integer",
+            "format": "int64",
+            "minimum": 1
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Editorial correction time; independent of activation time."
+          }
+        }
+      },
+      "StoreArt": {
+        "type": "object",
+        "required": [
+          "desktop",
+          "mobile"
+        ],
+        "description": "The art each storefront flow renders, with fallbacks applied, so every client picks the same image for a slot. desktop is the summer.games website and the desktop app; mobile is the iPhone and Android apps. Each image names an asset in media[]; render it from that entry (icons from the 256 or 512 variant). Crop every image to its frame at its focal point. Titles, taglines and buttons are drawn by the client, never baked into this art.",
+        "properties": {
+          "desktop": {
+            "type": "object",
+            "required": [
+              "screenshots",
+              "trailers"
+            ],
+            "properties": {
+              "keyArt": {
+                "$ref": "#/components/schemas/StoreArtImage"
+              },
+              "capsuleTall": {
+                "$ref": "#/components/schemas/StoreArtImage"
+              },
+              "capsuleWide": {
+                "$ref": "#/components/schemas/StoreArtImage"
+              },
+              "icon": {
+                "$ref": "#/components/schemas/StoreArtImage"
+              },
+              "screenshots": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "IMAGE asset ids in display order."
+              },
+              "trailers": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "assetId",
+                    "posterAssetId"
+                  ],
+                  "properties": {
+                    "assetId": {
+                      "type": "string"
+                    },
+                    "posterAssetId": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "mobile": {
+            "type": "object",
+            "required": [
+              "screenshots"
+            ],
+            "properties": {
+              "icon": {
+                "$ref": "#/components/schemas/StoreArtImage"
+              },
+              "tallCover": {
+                "$ref": "#/components/schemas/StoreArtImage"
+              },
+              "keyArt": {
+                "$ref": "#/components/schemas/StoreArtImage"
+              },
+              "screenshots": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "IMAGE asset ids in display order, in the game's play orientation; fit portrait images rather than cropping them."
+              }
+            }
+          }
+        }
+      },
+      "StoreArtImage": {
+        "type": "object",
+        "required": [
+          "assetId",
+          "focalPoint"
+        ],
+        "description": "Absent when the Game has no image for the slot (show the client placeholder). Fallback order: a missing capsule uses the desktop key art; the mobile tall cover uses the mobile key art; each flow borrows the other flow's key art, icon and screenshots; then the first published image that is not the icon stands in. The icon is never used as a cover.",
+        "properties": {
+          "assetId": {
+            "type": "string"
+          },
+          "focalPoint": {
+            "type": "object",
+            "required": [
+              "x",
+              "y"
+            ],
+            "properties": {
+              "x": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "y": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            }
+          },
+          "fallbackFrom": {
+            "type": "string",
+            "description": "Absent when the creator filled this slot. Otherwise the slot whose image stands in (desktop.keyArt, mobile.keyArt, desktop.icon, mobile.icon), or media for the first published image of a Game that named none."
+          }
+        }
+      },
+      "StoreItemPage": {
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "maxItems": 100,
+            "items": {
+              "type": "object",
+              "required": [
+                "item",
+                "gameTitle"
+              ],
+              "properties": {
+                "item": {
+                  "$ref": "#/components/schemas/Item"
+                },
+                "gameTitle": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          },
+          "nextCursor": {
+            "type": "string",
+            "maxLength": 2048
+          }
+        }
+      },
+      "Tag": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "label": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "aliases": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "category",
+          "aliases"
+        ]
+      }
+    },
+    "responses": {
+      "PublicImage": {
+        "description": "Current public PNG, JPEG or WebP image, no larger than 32 MiB.",
+        "headers": {
+          "Cache-Control": {
+            "$ref": "#/components/headers/PublicImageCacheControl"
+          },
+          "ETag": {
+            "$ref": "#/components/headers/PublicImageETag"
+          },
+          "Content-Length": {
+            "$ref": "#/components/headers/PublicImageLength"
+          },
+          "X-Content-Type-Options": {
+            "schema": {
+              "type": "string",
+              "const": "nosniff"
+            }
+          }
+        },
+        "content": {
+          "image/png": {
+            "schema": {
+              "type": "string",
+              "format": "binary"
+            }
+          },
+          "image/jpeg": {
+            "schema": {
+              "type": "string",
+              "format": "binary"
+            }
+          },
+          "image/webp": {
+            "schema": {
+              "type": "string",
+              "format": "binary"
+            }
+          }
+        }
+      },
+      "PublicImageNotModified": {
+        "description": "ETag matches after checking current public visibility and exact image scope; no body. A withdrawn or superseded publication never returns 304.",
+        "headers": {
+          "Cache-Control": {
+            "$ref": "#/components/headers/PublicImageCacheControl"
+          },
+          "ETag": {
+            "$ref": "#/components/headers/PublicImageETag"
+          }
+        }
+      },
+      "PublicModel": {
+        "description": "Current public verified self-contained GLB model, no larger than 512 MiB.",
+        "headers": {
+          "Access-Control-Allow-Origin": {
+            "schema": {
+              "type": "string",
+              "const": "*"
+            }
+          },
+          "Access-Control-Expose-Headers": {
+            "schema": {
+              "type": "string",
+              "const": "ETag"
+            }
+          },
+          "Cache-Control": {
+            "$ref": "#/components/headers/PublicModelCacheControl"
+          },
+          "ETag": {
+            "$ref": "#/components/headers/PublicModelETag"
+          },
+          "Content-Length": {
+            "$ref": "#/components/headers/PublicModelLength"
+          },
+          "X-Content-Type-Options": {
+            "schema": {
+              "type": "string",
+              "const": "nosniff"
+            }
+          }
+        },
+        "content": {
+          "model/gltf-binary": {
+            "schema": {
+              "type": "string",
+              "format": "binary"
+            }
+          }
+        }
+      },
+      "PublicModelNotModified": {
+        "description": "ETag matches after checking current public visibility and exact model scope; no body. A withdrawn or superseded publication never returns 304.",
+        "headers": {
+          "Access-Control-Allow-Origin": {
+            "schema": {
+              "type": "string",
+              "const": "*"
+            }
+          },
+          "Access-Control-Expose-Headers": {
+            "schema": {
+              "type": "string",
+              "const": "ETag"
+            }
+          },
+          "Cache-Control": {
+            "$ref": "#/components/headers/PublicModelCacheControl"
+          },
+          "ETag": {
+            "$ref": "#/components/headers/PublicModelETag"
+          }
+        }
+      }
+    },
+    "headers": {
+      "PublicImageCacheControl": {
+        "description": "Revalidate after at most ten minutes; stale reuse is forbidden after expiry.",
+        "schema": {
+          "type": "string",
+          "const": "public, max-age=600, must-revalidate"
+        }
+      },
+      "PublicImageETag": {
+        "description": "Strong quoted hexadecimal SHA-256 of the immutable publication image bytes.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "PublicImageLength": {
+        "description": "Image representation size in bytes, including on HEAD responses.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 33554432
+        }
+      },
+      "PublicModelCacheControl": {
+        "description": "Revalidate after at most ten minutes; stale reuse is forbidden after expiry.",
+        "schema": {
+          "type": "string",
+          "const": "public, max-age=600, must-revalidate"
+        }
+      },
+      "PublicModelETag": {
+        "description": "Strong quoted hexadecimal SHA-256 of the immutable publication model bytes.",
+        "schema": {
+          "type": "string"
+        }
+      },
+      "PublicModelLength": {
+        "description": "Model representation size in bytes, including on HEAD responses.",
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 536870912
+        }
+      }
+    },
+    "securitySchemes": {
+      "playerBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "A player access token. Store reads need no token. Other apps get a token through connected-app OAuth: register the client, let the player approve it on summer.games, then exchange the code at the token endpoint."
+      }
+    }
+  }
+}

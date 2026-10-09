@@ -1,0 +1,53 @@
+name: reference-drift
+
+# The generated reference renders pinned inputs (scripts/reference/sources).
+# docs-check fails a PR whose pages do not match those inputs. This job checks
+# the other side: that the pinned inputs still match their sources. It fails
+# when a source moved, so someone runs `npm run sync:reference` and opens a PR.
+#
+# Without the optional SUMMER_REFERENCE_TOKEN secret (read access to
+# SummerEngine/summer-platform and SummerEngine/SummerEngine) only the npm
+# MCP tools are checked; the hosted tool list always needs a store sign-in and
+# is refreshed by hand (sync.mjs --mcp --pse <checkout>).
+
+on:
+  schedule:
+    - cron: "17 6 * * *"
+  workflow_dispatch:
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: npm MCP tools (summer-engine@latest)
+        run: node scripts/reference/sync.mjs --mcp --no-hosted --work "$RUNNER_TEMP/reference"
+
+      - name: Platform and engine sources
+        env:
+          TOKEN: ${{ secrets.SUMMER_REFERENCE_TOKEN }}
+        run: |
+          if [ -z "$TOKEN" ]; then
+            echo "::notice::SUMMER_REFERENCE_TOKEN is not set; HTTP and GDScript sources were not checked."
+            exit 0
+          fi
+          for repo in summer-platform SummerEngine; do
+            git init -q "$RUNNER_TEMP/$repo"
+            git -C "$RUNNER_TEMP/$repo" remote add origin "https://x-access-token:$TOKEN@github.com/SummerEngine/$repo.git"
+            git -C "$RUNNER_TEMP/$repo" fetch -q --filter=blob:none --depth=1 origin main:refs/remotes/origin/main
+          done
+          node scripts/reference/sync.mjs --http --gdscript --work "$RUNNER_TEMP/reference" \
+            --platform "$RUNNER_TEMP/summer-platform" --engine "$RUNNER_TEMP/SummerEngine"
+
+      - name: Fail when the pinned reference is behind its sources
+        run: |
+          if ! git diff --quiet; then
+            git status --short
+            echo "::error::The generated reference is behind its sources. Run npm run sync:reference (see scripts/reference/sync.mjs) and open a PR."
+            exit 1
+          fi

@@ -1,0 +1,33 @@
+{
+  "schemaVersion": 1,
+  "generatedBy": "scripts/reference/sync.mjs --http",
+  "repository": "SummerEngine/summer-platform",
+  "commit": "ff4f2409962ac846c29d75439909da132a85741d",
+  "server": "https://api.summer.games",
+  "apis": [
+    {
+      "id": "management",
+      "title": "Creator management",
+      "description": "Create and manage your Summer Games store games: store page drafts, revisions, preview links, media, builds and releases, and the owner approval that publishes them.",
+      "auth": "Your Summer account token. An agent gets it by signing in with OAuth: `summer login --store` in the Summer CLI, or the Summer connector in an AI app. Agent tokens can call only the operations on these pages. Publishing needs an approval from the game's owner first.",
+      "spec": "api/management/openapi.yaml",
+      "operations": 40
+    },
+    {
+      "id": "analytics",
+      "title": "Analytics",
+      "description": "Read your game's analytics: the activity overview and the catalog of events your game sends.",
+      "auth": "Your Summer account token, the same one the creator management API uses (`summer login --store`). You can read only games you own or manage.",
+      "spec": "api/analytics/openapi.yaml",
+      "operations": 2
+    },
+    {
+      "id": "player",
+      "title": "Store and account",
+      "description": "Public Summer Games store reads, the connected-app OAuth endpoints, and the signed-in player's profile and preferences.",
+      "auth": "A player access token. Store reads need no token. Other apps get a token through connected-app OAuth: register the client, let the player approve it on summer.games, then exchange the code at the token endpoint.",
+      "spec": "api/player/openapi.yaml",
+      "operations": 23
+    }
+  ]
+}
