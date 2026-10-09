@@ -17,7 +17,21 @@
       "endpoint": "https://mcp.summerengine.com/mcp",
       "repository": "SummerEngine/publicsummerengine",
       "path": "src/lib/mcp/hosted",
-      "commit": "8c4351ee30b2861c347e0e4bf2776aac83177dda"
+      "commit": "8c4351ee30b2861c347e0e4bf2776aac83177dda",
+      "excludedConditionalFiles": [
+        "src/lib/mcp/hosted/chatgpt-engine-tools.ts",
+        "src/lib/mcp/hosted/chatgpt-game-widget.ts",
+        "src/lib/mcp/hosted/chatgpt-games.ts"
+      ],
+      "excludedConditionalTools": [
+        "summer_make_game",
+        "summer_game",
+        "summer_list_games",
+        "summer_game_message",
+        "summer_game_edit_card",
+        "summer_game_choose_look",
+        "summer_build_game"
+      ]
     }
   },
   "local": [
@@ -13767,224 +13781,6 @@
       },
       "oauth": true,
       "source": "src/lib/mcp/hosted/grow-tools.ts"
-    },
-    {
-      "name": "summer_make_game",
-      "title": "Make a game",
-      "description": "Start a new Summer game from the user's idea. Summer creates the project and immediately starts drawing its planning board (characters, the world, key moments) in the panel, while you keep interviewing the user. One sentence is enough; include what they already said about feel, player and goal. Returns the projectId used by every other game tool.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "idea": {
-            "description": "The game idea in the user's words, plus anything already decided.",
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 8000
-          }
-        },
-        "required": [
-          "idea"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema"
-      },
-      "outputSchema": null,
-      "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": false,
-        "idempotentHint": false,
-        "openWorldHint": false
-      },
-      "oauth": true,
-      "source": "src/lib/mcp/hosted/chatgpt-games.ts"
-    },
-    {
-      "name": "summer_game",
-      "title": "Show a game",
-      "description": "Show a Summer game in the panel and report its progress: the board while planning, then the build and whether it is playable. Read-only.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "projectId": {
-            "description": "The game, as returned by summer_make_game or summer_list_games.",
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          }
-        },
-        "required": [
-          "projectId"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema"
-      },
-      "outputSchema": null,
-      "annotations": {
-        "readOnlyHint": true,
-        "destructiveHint": false,
-        "idempotentHint": true,
-        "openWorldHint": false
-      },
-      "oauth": true,
-      "source": "src/lib/mcp/hosted/chatgpt-game-widget.ts"
-    },
-    {
-      "name": "summer_list_games",
-      "title": "List games",
-      "description": "List the user's recent Summer games (newest first) with their projectId, title and stage. Read-only.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {},
-        "$schema": "https://json-schema.org/draft/2020-12/schema"
-      },
-      "outputSchema": null,
-      "annotations": {
-        "readOnlyHint": true,
-        "destructiveHint": false,
-        "idempotentHint": true,
-        "openWorldHint": false
-      },
-      "oauth": true,
-      "source": "src/lib/mcp/hosted/chatgpt-games.ts"
-    },
-    {
-      "name": "summer_game_message",
-      "title": "Tell Summer",
-      "description": "Pass the user's direction to Summer for this game. While planning, it reshapes the board (new or changed pictures; free). Once the game is being built, the cloud builder changes the game (each message uses one of the user's build messages; free accounts have a daily number). Write it as a clear instruction in the user's terms.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "projectId": {
-            "description": "The game, as returned by summer_make_game or summer_list_games.",
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "text": {
-            "description": "The direction, e.g. \"Make the frog bigger and the pads sink faster\".",
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 8000
-          }
-        },
-        "required": [
-          "projectId",
-          "text"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema"
-      },
-      "outputSchema": null,
-      "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": false,
-        "idempotentHint": false,
-        "openWorldHint": false
-      },
-      "oauth": true,
-      "source": "src/lib/mcp/hosted/chatgpt-games.ts"
-    },
-    {
-      "name": "summer_game_edit_card",
-      "title": "Change a picture",
-      "description": "Change one picture on the planning board (e.g. \"make the hero a girl with a red scarf\"). Takes a few seconds; the panel shows the new picture. Use the itemId from summer_game.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "projectId": {
-            "description": "The game, as returned by summer_make_game or summer_list_games.",
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "itemId": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 200
-          },
-          "change": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 400
-          }
-        },
-        "required": [
-          "projectId",
-          "itemId",
-          "change"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema"
-      },
-      "outputSchema": null,
-      "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": false,
-        "idempotentHint": false,
-        "openWorldHint": false
-      },
-      "oauth": true,
-      "source": "src/lib/mcp/hosted/chatgpt-games.ts"
-    },
-    {
-      "name": "summer_game_choose_look",
-      "title": "Choose the look",
-      "description": "Lock a board picture as the game's art style. Summer redraws the other cards in that look and the builder uses it. Only while planning. Use the itemId from summer_game.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "projectId": {
-            "description": "The game, as returned by summer_make_game or summer_list_games.",
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          },
-          "itemId": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 64
-          }
-        },
-        "required": [
-          "projectId",
-          "itemId"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema"
-      },
-      "outputSchema": null,
-      "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": false,
-        "idempotentHint": true,
-        "openWorldHint": false
-      },
-      "oauth": true,
-      "source": "src/lib/mcp/hosted/chatgpt-games.ts"
-    },
-    {
-      "name": "summer_build_game",
-      "title": "Build the game",
-      "description": "Hand the board to Summer's cloud builder to make the playable game. Building takes a few minutes; the panel plays each version as it becomes playable, and you can keep steering with summer_game_message. Free accounts can build a limited number of games per day.",
-      "inputSchema": {
-        "type": "object",
-        "properties": {
-          "projectId": {
-            "description": "The game, as returned by summer_make_game or summer_list_games.",
-            "type": "string",
-            "format": "uuid",
-            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
-          }
-        },
-        "required": [
-          "projectId"
-        ],
-        "$schema": "https://json-schema.org/draft/2020-12/schema"
-      },
-      "outputSchema": null,
-      "annotations": {
-        "readOnlyHint": false,
-        "destructiveHint": false,
-        "idempotentHint": true,
-        "openWorldHint": false
-      },
-      "oauth": true,
-      "source": "src/lib/mcp/hosted/chatgpt-games.ts"
     }
   ],
   "hostedPrompts": [
