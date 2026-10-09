@@ -1,0 +1,78 @@
+---
+title: "Approve publishing: the one step only you do"
+sidebarTitle: "Approve publishing"
+description: "When your agent submits your game, it waits for you. Open the approval link in Studio, check the page, art, build and price, and click Approve publishing. Summer reviews it, and it goes live when the review passes."
+icon: "badge-check"
+---
+
+Your agent can do every publishing step except one: it cannot send your game to review by itself. When it submits, Summer Games records exactly that version and waits for you.
+
+<img className="block dark:hidden" src="/images/guide-art/publishing/approval-light.svg" alt="The agent submits. The version waits for you exactly as submitted. You click Approve publishing, Summer reviews it, then it goes live. Not now cancels it and publishes nothing. If the page changes after the agent asked, the request is stale and the agent submits again." />
+<img className="hidden dark:block" src="/images/guide-art/publishing/approval-dark.svg" alt="The agent submits. The version waits for you exactly as submitted. You click Approve publishing, Summer reviews it, then it goes live. Not now cancels it and publishes nothing. If the page changes after the agent asked, the request is stale and the agent submits again." />
+
+## Approve it
+
+<Steps>
+  <Step title="Open the link">
+    Your agent gives you a link like `https://www.summerengine.com/studio/store/<gameId>/approve/<approvalId>`. Open it signed in to your Summer account.
+  </Step>
+  <Step title="Check what will publish">
+    The page shows **What will publish**: the stores, the title, the desktop and mobile text, the build, the price and your agent's note. Below it is the **store page preview**: how players will see this version.
+  </Step>
+  <Step title="Approve, or not now">
+    Click **Approve publishing** to send it to Summer for review. Click **Not now** to turn it down; nothing is published, and your agent can submit again later.
+  </Step>
+</Steps>
+
+When you approve:
+
+1. The proposed price is set as you. A price needs payouts set up; without them nothing is submitted, and the page tells you.
+2. The page goes to Summer for review.
+3. When the review passes, the game goes live. There is no second click.
+
+## When you publish yourself
+
+If you click **Submit for review** in Studio yourself, that is your approval. There is no extra step. See [Publish your game](/build/publish).
+
+## What the states mean
+
+| State | Meaning | What to do |
+|---|---|---|
+| **Awaiting owner approval** | Your agent submitted. Nothing is published. | Open the link. |
+| **Approved** | You approved it. It went to Summer for review. | Wait for the review. |
+| **Cancelled** | You clicked **Not now**, or your agent withdrew it. | Ask your agent to submit again when ready. |
+| **Stale** | The store page changed after your agent asked. | Ask your agent to submit again, so you approve exactly what will publish. |
+
+## What your agent can and cannot do
+
+| Your agent can | Only you can |
+|---|---|
+| Read your games, store pages and builds | Approve publishing |
+| Create a store game and edit the draft | Set up payouts |
+| Upload art and builds | Finish a web build or download on a game that is already live |
+| Make a preview link | |
+| Submit, and withdraw its own submit | |
+| Release the build you approved, after the review | |
+
+The Summer Games store enforces this, not your agent. Any other publishing call from an agent is refused with `owner_approval_required`.
+
+## For agents
+
+- After `summer_store_submit`, give the owner the `approvalUrl`. Do not say the game is published, in review or live.
+- `summer_store_get_listing` lists the owner approvals and their states. Read it to see whether the owner approved.
+- If the state is **Stale**, read the listing again and submit again.
+- After the review passes, the page goes live. If the approved store bundle is not yet what players get, `summer_build_release` releases exactly that build. It works for no other build.
+
+## Ask your agent
+
+<Prompt description="**Where is my game?** Your agent reads the approval and review state. No changes.">
+Tell me where my game is on Summer Games. Use the Summer Engine MCP and read
+my store page with summer_store_get_listing. Don't change anything.
+
+Tell me: whether an approval is waiting for me (and give me its link), what
+I approved, whether Summer's review has passed, and whether the game is live.
+</Prompt>
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

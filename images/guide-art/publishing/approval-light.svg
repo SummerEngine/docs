@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 250" width="880" height="250" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="249" rx="16" fill="#fbf7ef" stroke="#e6dcc8"/>
+<rect x="30" y="50" width="160" height="90" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="110" y="84" font-size="14" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">Agent submits</text>
+<text x="110" y="106" font-size="11" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">summer_store_submit</text>
+<line x1="194" y1="95" x2="228" y2="95" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 225 89 L 234 95 L 225 101" fill="none" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="240" y="50" width="180" height="90" rx="14" fill="#ffffff" stroke="#d9922e" stroke-width="2" opacity="1"/>
+<text x="330" y="82" font-size="14" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">Awaiting you</text>
+<text x="330" y="104" font-size="11" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">page, art, build, price</text>
+<text x="330" y="122" font-size="11" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">exactly as submitted</text>
+<line x1="424" y1="95" x2="458" y2="95" stroke="#d9922e" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 455 89 L 464 95 L 455 101" fill="none" stroke="#d9922e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="470" y="50" width="170" height="90" rx="14" fill="#d9922e" opacity="1"/>
+<text x="555" y="90" font-size="15" font-weight="700" fill="#fbf7ef" text-anchor="middle" opacity="1">Approve</text>
+<text x="555" y="110" font-size="15" font-weight="700" fill="#fbf7ef" text-anchor="middle" opacity="1">publishing</text>
+<line x1="644" y1="95" x2="678" y2="95" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 675 89 L 684 95 L 675 101" fill="none" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="690" y="50" width="160" height="90" rx="14" fill="#f6e3c4" stroke="#d9922e" stroke-width="2" opacity="1"/>
+<text x="770" y="84" font-size="14" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">Summer reviews</text>
+<text x="770" y="106" font-size="11" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">then it goes live</text>
+<line x1="330" y1="142" x2="330" y2="176" stroke="#8a806b" stroke-width="2" stroke-linecap="round" stroke-dasharray="4 4" opacity="1"/>
+<rect x="240" y="180" width="180" height="50" rx="12" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="330" y="202" font-size="13" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">Not now</text>
+<text x="330" y="220" font-size="11" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">Cancelled: nothing published</text>
+<rect x="470" y="180" width="170" height="50" rx="12" fill="#ffffff" stroke="#c8553d" stroke-width="1.5" stroke-dasharray="5 5" opacity="1"/>
+<text x="555" y="202" font-size="13" font-weight="600" fill="#c8553d" text-anchor="middle" opacity="1">Page changed</text>
+<text x="555" y="220" font-size="11" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">Stale: submit again</text>
+<line x1="410" y1="142" x2="520" y2="178" stroke="#c8553d" stroke-width="2" stroke-linecap="round" stroke-dasharray="4 4" opacity="1"/>
+</svg>

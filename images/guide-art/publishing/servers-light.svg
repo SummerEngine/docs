@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 280" width="880" height="280" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="279" rx="16" fill="#fbf7ef" stroke="#e6dcc8"/>
+<rect x="30" y="40" width="190" height="54" rx="12" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="46" y="64" font-size="14" font-weight="600" fill="#2a251b" text-anchor="start" opacity="1">Claude Code</text>
+<text x="46" y="82" font-size="11" font-weight="500" fill="#8a806b" text-anchor="start" opacity="1">on your computer</text>
+<rect x="30" y="110" width="190" height="54" rx="12" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="46" y="134" font-size="14" font-weight="600" fill="#2a251b" text-anchor="start" opacity="1">Codex</text>
+<text x="46" y="152" font-size="11" font-weight="500" fill="#8a806b" text-anchor="start" opacity="1">on your computer</text>
+<rect x="30" y="180" width="190" height="54" rx="12" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="46" y="204" font-size="14" font-weight="600" fill="#2a251b" text-anchor="start" opacity="1">Claude, ChatGPT</text>
+<text x="46" y="222" font-size="11" font-weight="500" fill="#8a806b" text-anchor="start" opacity="1">in the browser</text>
+<rect x="300" y="40" width="250" height="124" rx="14" fill="#ffffff" stroke="#d9922e" stroke-width="2" opacity="1"/>
+<text x="425" y="66" font-size="14" font-weight="700" fill="#2a251b" text-anchor="middle" opacity="1">summer-engine (npm)</text>
+<text x="425" y="86" font-size="11" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">the MCP on your computer</text>
+<rect x="343.86" y="108" width="52.279999999999994" height="24" rx="12" fill="#ffffff" stroke="#d9922e" stroke-width="1.5" opacity="1"/>
+<text x="370" y="124.5" font-size="11" font-weight="700" fill="#d9922e" text-anchor="middle" opacity="1">export</text>
+<rect x="428.86" y="108" width="52.279999999999994" height="24" rx="12" fill="#ffffff" stroke="#d9922e" stroke-width="1.5" opacity="1"/>
+<text x="455" y="124.5" font-size="11" font-weight="700" fill="#d9922e" text-anchor="middle" opacity="1">upload</text>
+<text x="425" y="152" font-size="12" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">+ every hosted tool</text>
+<line x1="222" y1="67" x2="290" y2="80" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 287 74 L 296 80 L 287 86" fill="none" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<line x1="222" y1="137" x2="290" y2="120" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 287 114 L 296 120 L 287 126" fill="none" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="300" y="186" width="250" height="70" rx="14" fill="#ffffff" stroke="#3f7fb0" stroke-width="2" opacity="1"/>
+<text x="425" y="214" font-size="14" font-weight="700" fill="#2a251b" text-anchor="middle" opacity="1">mcp.summerengine.com</text>
+<text x="425" y="236" font-size="11" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">the same MCP, hosted</text>
+<line x1="222" y1="207" x2="290" y2="214" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 287 208 L 296 214 L 287 220" fill="none" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<line x1="425" y1="166" x2="425" y2="184" stroke="#3f7fb0" stroke-width="2" stroke-linecap="round" stroke-dasharray="4 4" opacity="1"/>
+<rect x="630" y="40" width="220" height="124" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="740" y="66" font-size="14" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">Summer Engine</text>
+<text x="740" y="84" font-size="11" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">on your disk</text>
+<rect x="700" y="98" width="80" height="50" rx="6" fill="#fbf7ef" stroke="#8a806b" stroke-width="2" opacity="1"/>
+<rect x="735" y="104" width="10" height="6" rx="1" fill="#d9922e" opacity="1"/>
+<rect x="735" y="117" width="10" height="6" rx="1" fill="#d9922e" opacity="1"/>
+<rect x="735" y="130" width="10" height="6" rx="1" fill="#d9922e" opacity="1"/>
+<line x1="552" y1="100" x2="620" y2="100" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 617 94 L 626 100 L 617 106" fill="none" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="630" y="186" width="220" height="70" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="740" y="214" font-size="14" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">Summer Games store</text>
+<text x="740" y="236" font-size="11" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">page, art, builds, submit</text>
+<line x1="552" y1="221" x2="620" y2="221" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 617 215 L 626 221 L 617 227" fill="none" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
