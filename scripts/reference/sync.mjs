@@ -91,6 +91,9 @@ async function syncMcp(opts) {
       repository: "SummerEngine/publicsummerengine",
       path: "src/lib/mcp/hosted",
       commit: trace.commit,
+      // Registered only behind a runtime condition in server.ts, so not on every account's server.
+      excludedConditionalFiles: trace.conditionalFiles,
+      excludedConditionalTools: trace.conditional,
     };
   } else {
     if (!previous) throw new Error("--no-hosted needs an existing snapshot to keep");

@@ -325,7 +325,7 @@ export function renderMcpIndexPage(entries, src) {
     "",
     banner(src),
     "",
-    `The Summer Engine MCP gives an agent ${entries.length} tools: ${count((e) => e.local && !e.hosted)} run only in the \`summer-engine\` npm MCP on your computer, ${count((e) => e.hosted && !e.local)} only on the hosted MCP at ${code(src.sources.hosted.endpoint)}, and ${count((e) => e.local && e.hosted)} on both. The npm MCP mounts the hosted tools after \`summer login --store\`, so a local agent sees one server. Set it up in [MCP setup](/mcp/setup); for publishing step by step, see [Create and publish your game](/publishing/summer-games).`,
+    `The Summer Engine MCP gives an agent ${entries.length} tools: ${count((e) => e.local && !e.hosted)} run only in the \`summer-engine\` npm MCP on your computer, ${count((e) => e.hosted && !e.local)} only on the hosted MCP at ${code(src.sources.hosted.endpoint)}, and ${count((e) => e.local && e.hosted)} on both. The npm MCP mounts the hosted tools after \`summer login --store\`, so a local agent sees one server. The hosted tools listed are the ones every signed-in Summer account gets; tools the hosted server adds only behind a deployment setting are left out. Set it up in [MCP setup](/mcp/setup); for publishing step by step, see [Create and publish your game](/publishing/summer-games).`,
     "",
     sourceNote(src),
     "",

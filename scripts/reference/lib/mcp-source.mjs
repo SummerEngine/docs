@@ -187,6 +187,26 @@ export function traceHostedSources(repo, ref, names) {
       }
     }
   }
+  // Tools that server.ts registers only under a runtime condition
+  // (`if (flag) registerX(...)`) are not on every account's server; trace the
+  // files behind each such call so the reference can leave those tools out.
+  const server = text.get(`${HOSTED_DIR}/server.ts`) ?? "";
+  const conditionalFiles = new Set();
+  const importOf = (fromFile, symbol) => {
+    const m = text.get(fromFile)?.match(new RegExp(`import\\s*\\{[^}]*\\b${symbol}\\b[^}]*\\}\\s*from\\s*'\\./([^']+)'`));
+    return m ? `${HOSTED_DIR}/${m[1]}.ts` : null;
+  };
+  const pending = [];
+  for (const m of server.matchAll(/^\s*if\s*\([^)]*\)\s*(\w+)\(/gm)) {
+    const file = importOf(`${HOSTED_DIR}/server.ts`, m[1]);
+    if (file) pending.push(file);
+  }
+  while (pending.length) {
+    const file = pending.pop();
+    if (conditionalFiles.has(file) || !text.has(file)) continue;
+    conditionalFiles.add(file);
+    for (const m of text.get(file).matchAll(/from\s+'\.\/([^']+)'/g)) pending.push(`${HOSTED_DIR}/${m[1]}.ts`);
+  }
   const source = {};
   for (const name of names) {
     const hit = files.find((f) => new RegExp(`['"\`]${name}['"\`]`).test(text.get(f)));
@@ -194,9 +214,12 @@ export function traceHostedSources(repo, ref, names) {
     else if (name.startsWith("summer_tool_")) source[name] = MANIFEST_SOURCE;
     else throw new Error(`hosted tool ${name} is not registered anywhere in ${HOSTED_DIR} at ${commit}`);
   }
-  return { commit, source };
+  const conditional = names.filter((n) => conditionalFiles.has(source[n]));
+  return { commit, source, conditional, conditionalFiles: [...conditionalFiles].sort() };
 }
 
+/** Hosted tools every signed-in account gets: conditionally registered ones are left out. */
 export function hostedWithSources(hosted, trace) {
-  return redactDeep(hosted.tools.map((t) => ({ ...t, source: trace.source[t.name] })));
+  const skip = new Set(trace.conditional);
+  return redactDeep(hosted.tools.filter((t) => !skip.has(t.name)).map((t) => ({ ...t, source: trace.source[t.name] })));
 }
