@@ -61,7 +61,7 @@ Scope: `player:act`.
 | `update_my_settings` | Changes only the settings you name: display name, language, region, activity sharing, push | "Turn off friend request pushes." |
 | `mark_conversation_read` | Marks your messages with one friend as read | "Mark Ana's messages as read." |
 | `mark_notification_read` | Marks one notification as read | "Mark that as read." |
-| `open_in_summer_app` | Opens a page in your signed-in Summer Games desktop app and brings it to the front: a Game's store page, Games, Library, Downloads, Friends, a profile, Party, Messages or one conversation, Inbox, a party invite, Account, Passport, Sparks (view only) or Settings. Desktop only. It presses nothing. When no desktop app is running, it returns the summer.games link instead. | "Take me to the store page for Star Weavers." |
+| `open_in_summer_app` | Opens a page in the latest Summer Games desktop app, signed in, and brings it to the front: a Game's store page, Games, Library, Downloads, Friends, a profile, Party, Messages or one conversation, Inbox, a party invite, Account, Passport, Sparks (view only) or Settings. Desktop only. It presses nothing. When no desktop app is signed in and running, it returns the summer.games link instead. | "Take me to the store page for Star Weavers." |
 
 ## Rival tools
 
@@ -144,4 +144,4 @@ Events need `player:read`. They carry IDs, current names and a link, never messa
 - **ChatGPT** subscribes (`events/subscribe`) and gets a signed webhook. Prompt: "Tell me when Ana accepts my invite."
 - **Other apps** use `events/list` and `events/poll`, or see the news on their next read.
 - **Claude** sees party joins through the party card.
-- **The phone** gets a normal Summer push for messages, party invites and party joins.
+- **The phone:** coming soon, a normal Summer push for messages, party invites and party joins.
