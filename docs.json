@@ -1,7 +1,7 @@
 {
   "$schema": "https://mintlify.com/docs.json",
   "theme": "maple",
-  "name": "Summer",
+  "name": "Summer Engine",
   "logo": {
     "dark": "/images/FullLogoNoBg.png",
     "light": "/images/BLACKFullLogoNoBg.png"
@@ -36,7 +36,7 @@
   },
   "seo": {
     "metatags": {
-      "description": "Summer Engine documentation. The AI game engine. Build games by describing them in natural language."
+      "description": "Summer Engine docs. The game engine built for AI: connect any AI agent, build a full multiplayer game and publish it on Summer Games."
     }
   },
   "topbarLinks": [
