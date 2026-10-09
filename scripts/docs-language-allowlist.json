@@ -32,7 +32,7 @@
   "requiredTerms": [
     {
       "file": "index.mdx",
-      "terms": ["Summer Engine", "Summer game", "GDScript", "Summer SDK"]
+      "terms": ["Summer Engine", "Summer game", "Summer SDK"]
     },
     {
       "file": "essentials/installation.mdx",
@@ -40,7 +40,7 @@
     },
     {
       "file": "quickstarts/fresh-project.mdx",
-      "terms": ["Summer Engine", "Summer game", "GDScript", "Summer SDK"]
+      "terms": ["Summer Engine", "Summer game", "Summer SDK"]
     }
   ]
 }
