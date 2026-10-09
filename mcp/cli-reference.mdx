@@ -1,6 +1,6 @@
 ---
 title: "CLI Reference"
-description: "Complete reference for the Summer Engine CLI: setup, doctor, install, login, run, create, plan, memory, cloud sync, skills, and the MCP server."
+description: "Complete reference for the Summer Engine CLI: setup, doctor, install, login, run, create, plan, memory, skills, and the MCP server."
 icon: "terminal"
 "og:image": "https://docs.summerengine.com/images/og/mcp-cli-reference.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/mcp-cli-reference.jpg"
@@ -280,24 +280,6 @@ summer memory show .summer/memory/casting/voices.md
 
 ---
 
-### summer cloud
-
-Sync your project with Summer Cloud: the whole project tree, including big binary assets, follows you across machines without Git.
-
-```bash
-summer cloud init        # Enable Summer Cloud for this project
-summer cloud status      # Show what a sync would push, pull, or delete
-summer cloud push        # Push local changes (uploads only missing bytes)
-summer cloud pull        # Pull cloud changes (verified, checkpointed)
-summer cloud restore     # Restore a cloud version or a local checkpoint
-summer cloud checkpoints # List local pre-sync checkpoints
-summer cloud conflicts   # List or recover preserved conflict files
-```
-
-All subcommands take `--project <path>` and `--json`. Requires `summer login`; the engine does not need to be running. See the [Cloud CLI Reference](/mcp/cloud-cli) for every flag and the [Summer Cloud guide](/guides/summer-cloud) for how sync, conflicts, and storage plans work.
-
----
-
 ### summer mcp
 
 Start the MCP server for AI tool integration.
@@ -358,11 +340,9 @@ to `6550` when that file is absent.
 | `~/.summer/user.json` | Cached user info (id, email, name) |
 | `~/.summer/api-token` | Local engine API token (created by the engine on startup) |
 | `~/.summer/api-port` | Port override if the default 6550 is occupied |
-| `~/.summer/cloud-token` | Summer Cloud token (from `summer login`) |
 | `.summer/` | Per-project durable memory (game brief, bibles, locked facts) |
 | `~/.agents/skills/` | Shared agentskills.io skills folder, read by Codex, Cursor, Zed, OpenCode, Copilot in VS Code, Devin Desktop and others (`.agents/skills/` in a project) |
 | `<skills dir>/.summer-version` | Marker `summer doctor` uses to detect stale skills |
-| `summer-cloud.json` | Per-project Summer Cloud binding (from `summer cloud init`) |
 
 ---
 
