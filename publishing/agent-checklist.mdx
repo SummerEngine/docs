@@ -12,7 +12,7 @@ For AI agents. Follow it from top to bottom. Each step names the tool and what m
 ## 0. Connected
 
 - [ ] The hosted MCP answers: `summer_store_list_games` returns a list (it may be empty).
-- [ ] For export and upload from disk: the local MCP answers, and the owner ran `summer login --store` once.
+- [ ] On the owner's computer: the npm `summer-engine` MCP lists the `summer_store_*` tools. If it shows only `summer_store_tools`, the owner runs `summer login --store` once.
 - [ ] If either fails, give the owner the steps on [Connect your agent](/publishing/connect-your-agent) and stop.
 
 ## 1. The game
@@ -49,7 +49,8 @@ For each empty required slot of each store the game is on:
 - [ ] Look in My assets first: `summer_list_my_assets`, `summer_search_assets`.
 - [ ] If nothing fits, read the board's look (`summer_board_game_soul`) and make it: `summer_generate_image`, `summer_check_job`.
 - [ ] Crop to the slot's exact shape, subject at the focal point. See [Make store art](/publishing/generate-store-art).
-- [ ] `summer_store_set_art` with the slot, the source and a `focalPoint`.
+- [ ] Upload the crop: `summer_upload_image_begin`, POST the file, `summer_upload_image_complete` → `assetId`.
+- [ ] `summer_store_set_art` with the slot, the `assetId` and a `focalPoint`.
 - [ ] Screenshots are real gameplay: capture with the engine or ask the owner. Desktop 4-6, mobile 3-5.
 - [ ] No text in key art, the tall cover, icons or screenshots. At most 20 pictures in total.
 - [ ] Slot table: [Store art](/publishing/store-art).
@@ -68,8 +69,8 @@ For each empty required slot of each store the game is on:
 
 ## 7. Upload
 
-- [ ] Store bundle: `summer_publish_build` with `gameId` and a new `clientVersion`. Show the owner the preview; call again with `confirm: true` after they agree.
-- [ ] Web build or download: `summer_store_version_begin_upload`, `summer_store_version_sign_parts`, PUT each part, `summer_store_version_complete`.
+- [ ] Each export: `summer_publish_build` with `gameId` and a new `clientVersion` (web builds and downloads take their `platform` from the export). Show the owner the preview; call again with `confirm: true` after they agree.
+- [ ] On a game that is already live, a web build or download is finished by the owner in Studio.
 - [ ] `summer_build_status` (or `summer_store_version_status`) says `ready`. On `failed`, fix and upload a new version.
 
 ## 8. Check
@@ -86,6 +87,11 @@ For each empty required slot of each store the game is on:
 ## After the owner approves
 
 - [ ] `summer_store_get_listing` shows the approval as approved.
-- [ ] Summer staff review the page. When it is approved, the owner clicks **Go live** in Studio.
+- [ ] Summer staff review the page. When the review passes, the game goes live. No second click.
+- [ ] If the approved store bundle is not yet what players get, `summer_build_release` releases exactly that build.
 - [ ] If the approval is **Stale**, read the listing again and submit again.
-- [ ] Later: `summer_grow_analytics` and `summer_grow_overview` for the numbers.
+- [ ] Later: `summer_grow_overview` for the numbers.
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

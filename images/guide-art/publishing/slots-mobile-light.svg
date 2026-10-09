@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 350" width="880" height="350" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="349" rx="16" fill="#fbf7ef" stroke="#e6dcc8"/>
+<text x="30" y="34" font-size="15" font-weight="700" fill="#2a251b" text-anchor="start" opacity="1">Mobile store: the iPhone and Android apps. No text in any picture.</text>
+<rect x="30" y="56" width="135" height="240" rx="6" fill="#f6e3c4" stroke="#8a806b" stroke-width="1.5" opacity="1"/>
+<path d="M 34 292 L 77.25 188.0 L 104.25 228.79999999999998 L 131.25 176.0 L 161 292 z" fill="#d9922e" opacity="0.45"/>
+<circle cx="97.5" cy="164.0" r="5" fill="none" stroke="#2a251b" stroke-width="2"/>
+<circle cx="97.5" cy="164.0" r="1.8" fill="#2a251b"/>
+<rect x="30" y="216.0" width="135" height="80.0" rx="0" fill="#000000" opacity="0.22"/>
+<text x="97.5" y="270" font-size="11" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">the app draws</text>
+<text x="97.5" y="285" font-size="11" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">the title here</text>
+<rect x="35.4" y="98.375" width="124.2" height="155.25" rx="4" fill="none" stroke="#4f9a55" stroke-width="1.5" stroke-dasharray="4 4" opacity="1"/>
+<rect x="38" y="64" width="62" height="20" rx="10" fill="#ffffff" stroke="#c8553d" stroke-width="1.5" opacity="1"/>
+<text x="69" y="78" font-size="11" font-weight="700" fill="#c8553d" text-anchor="middle" opacity="1">No text</text>
+<text x="97.5" y="318" font-size="13" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">Tall cover 9:16</text>
+<text x="97.5" y="336" font-size="11" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">1080×1920; subject in the 4:5</text>
+<rect x="200" y="56" width="256" height="144" rx="6" fill="#f6e3c4" stroke="#8a806b" stroke-width="1.5" opacity="1"/>
+<path d="M 204 196 L 289.6 135.2 L 340.8 159.68 L 392.0 128.0 L 452 196 z" fill="#d9922e" opacity="0.45"/>
+<circle cx="328.0" cy="120.8" r="5" fill="none" stroke="#2a251b" stroke-width="2"/>
+<circle cx="328.0" cy="120.8" r="1.8" fill="#2a251b"/>
+<rect x="200" y="150" width="256" height="50" rx="0" fill="#000000" opacity="0.22"/>
+<rect x="208" y="64" width="62" height="20" rx="10" fill="#ffffff" stroke="#c8553d" stroke-width="1.5" opacity="1"/>
+<text x="239" y="78" font-size="11" font-weight="700" fill="#c8553d" text-anchor="middle" opacity="1">No text</text>
+<text x="328" y="222" font-size="13" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">Key art 16:9</text>
+<text x="328" y="240" font-size="11" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">1920×1080, under a shade and the title</text>
+<rect x="490" y="56" width="72" height="72" rx="16" fill="#f6e3c4" stroke="#8a806b" stroke-width="1.5" opacity="1"/>
+<circle cx="526" cy="92" r="18" fill="#d9922e"/>
+<text x="526" y="150" font-size="13" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">Icon 1:1</text>
+<text x="526" y="168" font-size="11" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">1024×1024, 40-112 pt</text>
+<rect x="600" y="56" width="66" height="116" rx="12" fill="#ffffff" stroke="#8a806b" stroke-width="2" opacity="1"/>
+<rect x="607" y="68" width="52" height="88" rx="6" fill="#f6e3c4" opacity="1"/>
+<line x1="625.0" y1="164" x2="641.0" y2="164" stroke="#8a806b" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="682" y="56" width="66" height="116" rx="12" fill="#ffffff" stroke="#8a806b" stroke-width="2" opacity="1"/>
+<rect x="689" y="68" width="52" height="88" rx="6" fill="#f6e3c4" opacity="1"/>
+<line x1="707.0" y1="164" x2="723.0" y2="164" stroke="#8a806b" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="764" y="56" width="66" height="116" rx="12" fill="#ffffff" stroke="#8a806b" stroke-width="2" opacity="1"/>
+<rect x="771" y="68" width="52" height="88" rx="6" fill="#f6e3c4" opacity="1"/>
+<line x1="789.0" y1="164" x2="805.0" y2="164" stroke="#8a806b" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<text x="723" y="196" font-size="13" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">Screenshots</text>
+<text x="723" y="214" font-size="11" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">3-8, in the way the game is played</text>
+<text x="200" y="318" font-size="12" font-weight="500" fill="#8a806b" text-anchor="start" opacity="1">One page holds at most 20 pictures and videos across both stores.</text>
+</svg>

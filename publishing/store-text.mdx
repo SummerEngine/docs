@@ -7,6 +7,9 @@ icon: "type"
 
 Your store page has one title and one set of tags. The tagline and description come in two versions: one for the **desktop store** and a shorter one for the **mobile store**, because the mobile text sits on a phone card.
 
+<img className="block dark:hidden" src="/images/guide-art/publishing/text-light.svg" alt="The desktop store has a tagline of 80 characters and a description of 120 to 300. The mobile store has its own tagline and a description of 120 to 170. Same as desktop copies the desktop text once. Title and tags are shared." />
+<img className="hidden dark:block" src="/images/guide-art/publishing/text-dark.svg" alt="The desktop store has a tagline of 80 characters and a description of 120 to 300. The mobile store has its own tagline and a description of 120 to 170. Same as desktop copies the desktop text once. Title and tags are shared." />
+
 ## The fields
 
 | Field | Store | Limit | Write |
@@ -71,3 +74,21 @@ Horror, City & settlement, Casual, Anime, Fighting, Story rich, Open world, Visu
 ```
 
 See [summer_store_update_listing](/publishing/mcp-tools#summer_store_update_listing).
+
+<Prompt description="**Write my store page text.** Your agent writes the text for each store and saves it to the draft.">
+Write the store page text for my game on Summer Games and save it. Use the
+Summer Engine MCP and the `store-listing` skill, and follow
+https://docs.summerengine.com/publishing/store-text.md.
+
+- Read my project and its board first. Describe only what the game has.
+- Desktop: a tagline (at most 80 characters), a description (120-300) and
+  3-8 store tags.
+- Mobile: use "same as desktop" if the description fits 120-170 characters;
+  otherwise write a shorter one.
+- Pick the age rating and what applies.
+- Show me the text, then save it with summer_store_update_listing.
+</Prompt>
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

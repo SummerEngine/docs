@@ -5,11 +5,9 @@ description: "Every Summer MCP tool used to publish a game: projects, assets, st
 icon: "wrench"
 ---
 
-Two servers. **Hosted** = `https://mcp.summerengine.com/mcp`. **Local** = the `summer-engine` npm MCP on your computer. Setup: [Connect your agent](/publishing/connect-your-agent).
+All tools are in the **Summer Engine MCP**. **Hosted** tools run on `https://mcp.summerengine.com/mcp`; the `summer-engine` npm MCP on your computer loads the same tools after `summer login --store` and adds the **local** ones that touch your disk. Setup: [Connect your agent](/publishing/connect-your-agent).
 
 The full list of local engine tools is on [MCP tools reference](/mcp/tools-reference). This page covers only publishing.
-
-{/* TODO(coordinator): hosted tools come from PublicSummerEngine #772 (store, build, submit), #770 (Grow, skills, docs) and #771 (board). Re-check every input below against the merged code before this PR merges. */}
 
 ## Projects
 
@@ -152,12 +150,11 @@ Hosted. Start an upload. Returns `publicationId` and a plan of 64 MiB parts. Cal
 | `sha256` | string | SHA-256 of the whole file. |
 | `sizeBytes` | integer | |
 | `clientVersion` | string | `vMAJOR.MINOR.PATCH`. |
-| `targetPlatforms` | list | `ios`, `macos`, `windows`. |
+| `targetPlatforms` | list | `ios`, `android`, `macos`, `windows`. A game without a server: only `ios` and `android`. |
 | `entryPoint` | string | `res://` path of the main scene. |
 | `hostedBuild` | object | Multiplayer games: the exported `summer.build.json`. |
 | `idempotencyKey` | string | Optional. |
 
-{/* TODO(coordinator): targetPlatforms here lists ios, macos, windows; summer_publish_build (summer#65) also sends android. Confirm the hosted enum includes android before merge. */}
 
 ### summer_build_sign_parts
 
@@ -241,11 +238,25 @@ Hosted. Ask the owner to publish. It never publishes: it returns `awaiting_owner
 
 Hosted. Withdraw a waiting approval so its link stops working. Inputs: `gameId`, `approvalId`.
 
+### summer_build_release
+
+Hosted. After the owner approved and Summer's review passed: release the approved store bundle to players on every platform it passed its checks for. Works only for the exact build the owner approved; anything else is the owner's click in Studio. Web builds and downloads need no release: they play once the page is live.
+
+| Input | Type | Meaning |
+|---|---|---|
+| `gameId` | string | |
+
+```json
+{ "tool": "summer_build_release", "gameId": "<gameId>" }
+```
+
+It answers `current` (already live), `waiting` (with the reason) or the release state.
+
 ## Grow
 
 ### summer_grow_overview
 
-Hosted, read-only. Your games, players, retention and earnings in Sparks.
+Hosted, read-only. Players, new players, sessions, play time, day-7 retention, peak players and Sparks earned, for all your games or one. `sample: true` in the answer means sample data.
 
 | Input | Type | Meaning |
 |---|---|---|
@@ -253,18 +264,33 @@ Hosted, read-only. Your games, players, retention and earnings in Sparks.
 | `gameId` | string | Optional: one game. |
 | `range` | 7, 28, 90 | Days. Default 7 (earnings 28). |
 
-### summer_grow_analytics
+## Art and assets
 
-Hosted, read-only. Store page views, launches, play sessions, play time and your custom events for one game.
+### summer_upload_image_begin
+
+Hosted. Start uploading a PNG, JPEG or WebP from your disk (at most 32 MB) into your Summer assets, for example store art you cropped. No inputs. Returns `uploadUrl`, the `fields` to send and a `curl` example: POST the file as `multipart/form-data` with every field plus `file=@<path>`.
+
+```json
+{ "tool": "summer_upload_image_begin" }
+```
+
+### summer_upload_image_complete
+
+Hosted. Finish the upload. Returns the `assetId` for `summer_store_set_art`.
 
 | Input | Type | Meaning |
 |---|---|---|
-| `gameId` | string | From `summer_store_list_games`. |
-| `days` | 7, 28, 90 | Default 7. |
+| `publicId` | string | `public_id` from the upload answer. |
+| `version` | integer | `version` from the upload answer. |
+| `signature` | string | `signature` from the upload answer. |
+| `format` | enum | `png`, `jpg`, `jpeg`, `webp`. |
+| `title` | string | Optional name in My assets. |
 
-{/* TODO(coordinator): summer_grow_analytics is specified in PLAN.md (lane E to lane B) but not in a PR yet. Confirm its name and inputs. */}
+```json
+{ "tool": "summer_upload_image_complete", "publicId": "<public_id>", "version": 1760040000, "signature": "<signature>", "format": "png", "title": "Key art" }
+```
 
-## Art and assets
+### Other art tools
 
 These tools already exist. They are listed here because publishing uses them.
 
@@ -316,15 +342,16 @@ Local. List and install export templates from Summer's CDN, SHA-256 checked.
 
 ### summer_publish_build
 
-Local. Upload a store bundle from disk. The first call previews; `confirm: true` uploads.
+Local. Upload a store bundle, web build or download from disk, resumable. The first call previews; `confirm: true` uploads.
 
 | Input | Type | Meaning |
 |---|---|---|
 | `gameId` | string | Omit to list your games. |
 | `file` | string | Default: the last export. |
 | `clientVersion` | string | Required. `vMAJOR.MINOR.PATCH`. |
+| `platform` | enum | Web builds and downloads: `web`, `macos-universal`, `windows-x64`, `linux-x64`. Default: the last export's platform. Omit for a store bundle. |
 | `confirm` | boolean | `true` only after the owner approves the exact upload. |
-| `publish` | boolean | Leave `false` when you submit with `summer_store_submit`. |
+| `publish` | boolean | Leave `false`. Submit with `summer_store_submit`. |
 | `waitSeconds` | 0-1800 | Default 600. |
 
 ```json
@@ -342,6 +369,14 @@ The hosted MCP also serves skills as prompts and resources:
 | `summer://skills/store-art` | Every art slot and why. |
 | `summer://docs` | This documentation. Fetch any page as `.md`; the index is `/llms.txt`. |
 
+## Before sign-in
+
+Without `summer login --store`, the npm MCP shows one tool, `summer_store_tools`, that says how to sign in. After sign-in the hosted tools load on their own.
+
 ## Deprecated
 
 `summer_creator_publish`, `summer_creator_releases` and `summer publish` sent a `.pck` to an older creator API. Use `summer_export_game`, then `summer_publish_build`.
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

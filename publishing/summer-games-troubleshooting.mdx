@@ -15,9 +15,8 @@ Find the message you see, then do what the right column says.
 
 - Reconnect the Summer Engine connector in your agent, or run `npx -y summer-engine@latest login --store` again.
 - Still failing: run `summer login --store --force` to register this computer again.
-- `403 agent_access_not_enabled`: agent access to the store is not open for your account yet.
+- `403 agent_access_not_enabled`: agent publishing is available to invited creators during the rollout, and your account is not on the list yet. Publish in Studio for now: [Publish your game](/build/publish).
 
-{/* TODO(coordinator): say how a creator gets agent access once the HOSTED_MCP_ALLOWED_USER_IDS allowlist opens (lane A). */}
 
 ### Sign-in never finishes
 
@@ -28,9 +27,9 @@ The local MCP waits for the browser on port 47615, 47616 or 47617. Close the pro
 | Message | Fix |
 |---|---|
 | Template missing | Web builds and downloads need export templates. Run `summer_export_templates` with `action: "install"` and the platform. See [Export templates](/publishing/export#export-templates). |
-| `templates_not_published` | Summer has not published templates for your engine version yet. Update Summer Engine, or export in an editor that comes with the template. |
+| `templates_not_published` | Templates are on the CDN from Summer Engine 0.7.1. Update Summer Engine, or use the templates that came with it. |
 | Compatibility renderer refused | The web build needs Forward+. Switch the renderer in **Project Settings → Rendering → Renderer**. |
-| Android not supported | Android in the store bundle needs the Summer Engine release after 0.7.0. Update Summer Engine. |
+| Android not supported | Android in the store bundle needs Summer Engine 0.7.1 or later. Update Summer Engine. |
 | Platform not allowed | A game without a server can use the store bundle only for iPhone and Android. Use a download for Mac and Windows. |
 | The export times out | The first export imports every asset. Raise `timeoutSeconds` (up to 7200). |
 | Textures look wrong on one platform | Turn on that platform's texture format in **Project Settings → Rendering → Textures**: ETC2/ASTC for iPhone, Android and Mac, S3TC/BPTC for Windows. |
@@ -55,7 +54,9 @@ The local MCP waits for the browser on port 47615, 47616 or 47617. Close the pro
 | A page in review cannot change | Wait for review to finish. A published or sent-back page starts a new draft when you edit it. |
 | Shape or size wrong | The picture must match the slot's shape within 2% and meet the minimum size. See [Store art](/publishing/store-art). |
 | `asset_not_found` | The asset is not one of yours. Find yours with `summer_list_my_assets`. |
-| `image_unreadable` | Use a public `https` image URL, or generate the picture again. |
+| `image_unreadable` | Upload a PNG, JPEG or WebP with `summer_upload_image_begin`, or use a public `https` image URL. |
+| `invalid_upload` | The image upload expired or was not signed for you. Start again with `summer_upload_image_begin`. |
+| No publishing tools in the npm MCP | Run `summer login --store`. Until then the MCP shows one tool, `summer_store_tools`, that says so. |
 | Mobile description too long | The mobile description is 120-170 characters. Shorten it after **Same as desktop**. |
 | Too many pictures | A page holds at most 20 pictures and videos across both stores. Remove some screenshots. |
 
@@ -67,6 +68,7 @@ The local MCP waits for the browser on port 47615, 47616 or 47617. Close the pro
 | `owner_approval_required` | Only the owner can do this, in Studio. Use `summer_store_submit` and give the owner the link. |
 | The approval link says **This version changed** | The page changed after the agent asked. Ask your agent to submit again. |
 | Set up payouts before this game can have a price | Open **Get paid** in Studio and connect your payout account, or approve it as free. |
+| `no_approved_build` | `summer_build_release` only releases a build the owner approved. Submit with `summer_store_submit` first. |
 | Only the game owner can approve publishing | Sign in with the account that owns the game. |
 
 ## Analytics
@@ -77,6 +79,17 @@ The local MCP waits for the browser on port 47615, 47616 or 47617. Close the pro
 | No events in Grow | Events appear after a short delay, and only from a published build that includes them. |
 | `capacity_exceeded` | More than 32 events are waiting. Send fewer; put counts in one event. |
 | `analytics_storage_limit_exceeded` | Your game's storage is full. Send fewer event types. |
+
+## Let your agent fix it
+
+<Prompt description="**Fix my publishing error.** Your agent finds the error on this page and fixes what it can.">
+Publishing my game on Summer Games failed. Read
+https://docs.summerengine.com/publishing/summer-games-troubleshooting.md,
+find the error I got, and fix what you can. Use the Summer Engine MCP.
+
+Tell me the tool, the error code and what you changed. If only I can fix it
+(sign-in, payouts, approval), tell me exactly what to click.
+</Prompt>
 
 ## Still stuck
 

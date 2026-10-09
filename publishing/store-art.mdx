@@ -18,6 +18,9 @@ A game on Mac and iPhone needs both sets.
 
 ## Desktop store
 
+<img className="block dark:hidden" src="/images/guide-art/publishing/slots-desktop-light.svg" alt="Desktop store slots: key art 16:9, 1920 by 1080, no text and no logo; tall capsule 3:4, logo OK; wide capsule 460:215, logo OK; icon 1:1, 1024 by 1024, no words; screenshots 16:9, 4 to 8, real play. A ring marks the focal point every crop keeps." />
+<img className="hidden dark:block" src="/images/guide-art/publishing/slots-desktop-dark.svg" alt="Desktop store slots: key art 16:9, 1920 by 1080, no text and no logo; tall capsule 3:4, logo OK; wide capsule 460:215, logo OK; icon 1:1, 1024 by 1024, no words; screenshots 16:9, 4 to 8, real play. A ring marks the focal point every crop keeps." />
+
 | Slot | Slot id | Size | Shape | Text in the art | Needed |
 |---|---|---|---|---|---|
 | **Key art** | `desktop.keyArt` | at least 1920×1080 | 16:9 | **None**, no logo | Yes |
@@ -37,6 +40,9 @@ A game on Mac and iPhone needs both sets.
 - **Trailer.** The first seconds play muted on hover and in the hero. A muted 15-30 second MP4 that opens on gameplay works best.
 
 ## Mobile store
+
+<img className="block dark:hidden" src="/images/guide-art/publishing/slots-mobile-light.svg" alt="Mobile store slots, all without text: tall cover 9:16, 1080 by 1920, with the subject inside the middle 4:5 and the bottom third left calm because the app draws the title there; key art 16:9 under a shade and the title; icon 1:1, 1024 by 1024; screenshots in the way the game is played, 3 to 8." />
+<img className="hidden dark:block" src="/images/guide-art/publishing/slots-mobile-dark.svg" alt="Mobile store slots, all without text: tall cover 9:16, 1080 by 1920, with the subject inside the middle 4:5 and the bottom third left calm because the app draws the title there; key art 16:9 under a shade and the title; icon 1:1, 1024 by 1024; screenshots in the way the game is played, 3 to 8." />
 
 **No text in any mobile picture.** The apps draw the title, tagline and buttons over the art.
 
@@ -78,3 +84,21 @@ A game on Mac and iPhone needs both sets.
 
 - **Studio:** open your game's store page, then **Desktop store** or **Mobile store**. The live preview shows every crop.
 - **Your agent:** `summer_store_set_art` with the slot id. See [Make store art with your agent](/publishing/generate-store-art) and the [tools reference](/publishing/mcp-tools#summer_store_set_art).
+
+<Prompt description="**Fill my store art.** Your agent fills every empty slot for the stores your game is on.">
+Fill the store art for my game on Summer Games. Use the Summer Engine MCP and
+the `store-art` skill, and follow
+https://docs.summerengine.com/publishing/store-art.md.
+
+- Read my store page with summer_store_get_listing and list the empty slots
+  for each store my game is on.
+- Use my art in My assets first. Make only what is missing, in each slot's
+  own shape, and set the focal point on the subject.
+- No text in key art, the tall cover, icons or screenshots. Screenshots are
+  real gameplay. Stay within 20 pictures.
+- Show me each picture before you put it in its slot.
+</Prompt>
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

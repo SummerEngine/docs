@@ -12,17 +12,22 @@ The Summer Games store takes two kinds of build. Which one you need depends on w
 | **Store bundle** | inside the Summer Games apps | iPhone, Android, Mac, Windows | `summer_export_game` (default) |
 | **Web build or download** | in the browser on summer.games, or as a file they download | web, Mac, Windows | `summer_export_game` with `format: "download"` |
 
+<img className="block dark:hidden" src="/images/guide-art/publishing/builds-light.svg" alt="Three kinds of build. A store bundle zip runs in the Summer Games apps on iPhone, Android, and for multiplayer games Mac and Windows. A web build zip with index.html plays on summer.games in the browser. A download is a Mac or Windows app that players download." />
+<img className="hidden dark:block" src="/images/guide-art/publishing/builds-dark.svg" alt="Three kinds of build. A store bundle zip runs in the Summer Games apps on iPhone, Android, and for multiplayer games Mac and Windows. A web build zip with index.html plays on summer.games in the browser. A download is a Mac or Windows app that players download." />
+
 ## Which one do I need?
 
-| Target | Build | Upload with | Rule |
+| Target | Build | Store platform | Rule |
 |---|---|---|---|
-| iPhone | store bundle | `summer_publish_build` | any game |
-| Android | store bundle | `summer_publish_build` | any game; needs the engine release after 0.7.0 |
-| Mac app | store bundle | `summer_publish_build` | multiplayer games (with a server) only |
-| Windows app | store bundle | `summer_publish_build` | multiplayer games (with a server) only |
-| Web (play in the browser) | web build | store version `web` | Forward+ projects; not the Compatibility renderer |
-| Mac download | download | store version `macos-universal` | any game |
-| Windows download | download | store version `windows-x64` | any game |
+| iPhone | store bundle | `ios` | any game |
+| Android | store bundle | `android` | any game; needs Summer Engine 0.7.1 or later |
+| Mac app | store bundle | `macos` | multiplayer games (with a server) only |
+| Windows app | store bundle | `windows` | multiplayer games (with a server) only |
+| Web (play in the browser) | web build | `web` | Forward+ projects; not the Compatibility renderer |
+| Mac download | download | `macos-universal` | any game |
+| Windows download | download | `windows-x64` | any game |
+
+`summer_publish_build` uploads every kind. See [Upload and submit](/publishing/upload-and-submit).
 
 A game **without a server** can use the store bundle only for iPhone and Android. For Mac and Windows it uses a download.
 
@@ -130,7 +135,7 @@ The MCP checks each file's SHA-256 before it installs it. Do not use the editor'
 
 The CDN address is `https://downloads.summer.games/engine-templates/<summerVersion>/manifest.json`.
 
-{/* TODO(coordinator): the CDN fills with the first coordinated templates run (Summer Engine 0.7.1). 0.7.0 is not on the CDN. Until then summer_export_templates answers templates_not_published. Remove this note when the first version is published. */}
+Templates are on the CDN from Summer Engine 0.7.1. For 0.7.0, `summer_export_templates` answers `templates_not_published`: update Summer Engine, or use the templates that came with it.
 
 ## File names and versions
 
@@ -153,6 +158,26 @@ You do not need to sign anything for the Summer Games store.
 
 Selling your game in other stores needs their own signing. That is outside this guide.
 
+## Ask your agent
+
+<Prompt description="**Export my game for Summer Games.** Your agent picks the right build for each platform and exports it.">
+Export my Summer game for Summer Games. Use the Summer Engine MCP and follow
+https://docs.summerengine.com/publishing/export.md.
+
+- My platforms: [PLATFORMS, for example "iPhone, Android and the web"].
+  If I didn't say, read them from my project.
+- Pick the right build for each: the store bundle for the Summer Games apps,
+  a web build for the browser, a download for Mac or Windows if my game has
+  no server.
+- Install any export template that is missing with summer_export_templates.
+- Export with summer_export_game and tell me each file, its platforms and
+  its size. Don't upload anything yet.
+</Prompt>
+
 ## Next
 
 [Upload and submit](/publishing/upload-and-submit).
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

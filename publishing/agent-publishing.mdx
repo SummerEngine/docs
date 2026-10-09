@@ -1,11 +1,14 @@
 ---
 title: "Can my AI agent publish my game for me?"
 sidebarTitle: "Can my agent do it?"
-description: "Yes. Claude, Codex or ChatGPT can export your game, make its store page and art, upload the build and submit it through the Summer MCP. You click Approve publishing once."
+description: "Yes. Claude, Codex or ChatGPT can make your store page and art, export and upload the build, and submit it through the Summer Engine MCP. You click Approve publishing once."
 icon: "bot"
 ---
 
-**Yes.** Your AI agent can do every step, from the finished game to a submitted store page. Only one step is yours: you click **Approve publishing** on the link your agent gives you.
+**Yes.** Your AI agent can do every step, from the finished game to a submitted store page. Only one step is yours: you click **Approve publishing** on the link your agent gives you. After that, Summer reviews the game, and it goes live when the review passes.
+
+<img className="block dark:hidden" src="/images/guide-art/publishing/journey-light.svg" alt="Your agent does five steps: store page, art, export, upload and submit. You click Approve publishing. Summer reviews it, then it is live on summer.games." />
+<img className="hidden dark:block" src="/images/guide-art/publishing/journey-dark.svg" alt="Your agent does five steps: store page, art, export, upload and submit. You click Approve publishing. Summer reviews it, then it is live on summer.games." />
 
 ## What your agent does
 
@@ -17,7 +20,7 @@ icon: "bot"
     A tagline, descriptions for the desktop and mobile stores, tags and the age rating, from what your game really does.
   </Step>
   <Step title="Fills the art">
-    It uses the art you already have in My assets, or makes new art with Summer and crops it to each slot. See [Make store art with your agent](/publishing/generate-store-art).
+    It uses the art you already have in My assets, or makes new art with Summer, crops it to each slot and uploads it. See [Make store art with your agent](/publishing/generate-store-art).
   </Step>
   <Step title="Exports and uploads the build">
     It exports your game with Summer Engine on your computer and uploads it. Summer checks it on every platform.
@@ -34,24 +37,19 @@ icon: "bot"
 | **Sign in** to your Summer account the first time | Your agent acts as you, so you say yes once in your browser. |
 | **Click Approve publishing** | You see exactly what will publish: the page, the art, the build and the price. Your agent cannot approve for you. |
 | **Set up payouts** for a paid game | Your payout account is yours. |
-| **Click Go live** after Summer's review | You choose when players see it. See [Publish your game](/build/publish). |
 
-After you approve, Summer staff review the page. When it is approved, you go live.
+There is no second click: once you approve and Summer's review passes, the game goes live.
 
 ## Ask your agent
 
-Connect your agent first: [Connect your agent](/publishing/connect-your-agent). Then paste this:
+Connect your agent first: [Connect your agent](/publishing/connect-your-agent). Then paste the master prompt from [How do I publish my game on Summer?](/publishing/summer-games#let-your-agent-publish-it), or this shorter one:
 
 <Prompt description="**Publish my game on Summer Games.** Your agent does every step and stops at the approval link.">
-Publish my Summer game on Summer Games. Use the Summer MCP tools and the
+Publish my Summer game on Summer Games. Use the Summer Engine MCP and the
 `publish-your-game` skill, and follow
 https://docs.summerengine.com/publishing/agent-checklist.md from top to bottom.
-
-- Ask me which platforms and which price only if my project does not say.
-- Use my art in My assets first. Make new art only for slots that are empty.
-- Never put text in key art or in any mobile picture.
-- Do not invent features, modes or player counts.
-- Stop when you have the approval link, and give it to me.
+Ask me only what my project does not say. Stop when you have the approval
+link, and give it to me.
 </Prompt>
 
 ## Is it safe?
@@ -63,3 +61,7 @@ https://docs.summerengine.com/publishing/agent-checklist.md from top to bottom.
 - **Art uses your credits.** Making new art uses your Summer credits, so your agent checks My assets first.
 
 Details: [Approve publishing](/publishing/owner-approval).
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 230" width="880" height="230" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="229" rx="16" fill="#fbf7ef" stroke="#e6dcc8"/>
+<rect x="30" y="30" width="260" height="170" rx="14" fill="#ffffff" stroke="#d9922e" stroke-width="2" opacity="1"/>
+<text x="54" y="80" font-size="30" font-weight="700" fill="#d9922e" text-anchor="start" opacity="1">Free</text>
+<text x="54" y="116" font-size="14" font-weight="600" fill="#2a251b" text-anchor="start" opacity="1">Publish free.</text>
+<text x="54" y="138" font-size="12" font-weight="500" fill="#8a806b" text-anchor="start" opacity="1">Players can tip you.</text>
+<rect x="54.00000000000001" y="160" width="77.8" height="24" rx="12" fill="#ffffff" stroke="#8a806b" stroke-width="1.5" opacity="1"/>
+<text x="92.9" y="176.5" font-size="11" font-weight="700" fill="#8a806b" text-anchor="middle" opacity="1">Any engine</text>
+<rect x="310" y="30" width="260" height="170" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="334" y="80" font-size="30" font-weight="700" fill="#d9922e" text-anchor="start" opacity="1">30%</text>
+<text x="334" y="116" font-size="14" font-weight="600" fill="#2a251b" text-anchor="start" opacity="1">Set a price.</text>
+<text x="334" y="138" font-size="12" font-weight="500" fill="#8a806b" text-anchor="start" opacity="1">Summer takes 30% of each sale.</text>
+<rect x="334.0" y="160" width="77.8" height="24" rx="12" fill="#ffffff" stroke="#8a806b" stroke-width="1.5" opacity="1"/>
+<text x="372.9" y="176.5" font-size="11" font-weight="700" fill="#8a806b" text-anchor="middle" opacity="1">Any engine</text>
+<rect x="590" y="30" width="260" height="170" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="614" y="80" font-size="30" font-weight="700" fill="#d9922e" text-anchor="start" opacity="1">Sparks</text>
+<text x="614" y="116" font-size="14" font-weight="600" fill="#2a251b" text-anchor="start" opacity="1">Join the Summer economy.</text>
+<text x="614" y="138" font-size="12" font-weight="500" fill="#8a806b" text-anchor="start" opacity="1">Sell in-game items for Sparks.</text>
+<rect x="614.0" y="160" width="141.6" height="24" rx="12" fill="#ffffff" stroke="#3f7fb0" stroke-width="1.5" opacity="1"/>
+<text x="684.8" y="176.5" font-size="11" font-weight="700" fill="#3f7fb0" text-anchor="middle" opacity="1">Built in Summer only</text>
+</svg>
