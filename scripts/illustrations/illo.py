@@ -155,8 +155,8 @@ class Canvas:
 
 
 def write(page, name, draw, width, height):
-    """Render draw(canvas) for both themes into images/build/<page>/."""
-    out = ROOT / "images" / "build" / page
+    """Render draw(canvas) for both themes into images/guide-art/<page>/."""
+    out = ROOT / "images" / "guide-art" / page
     out.mkdir(parents=True, exist_ok=True)
     for theme in THEMES:
         canvas = Canvas(width, height, theme)

@@ -32,8 +32,8 @@ it counts. This works for 3D games.
 
 ## What your players get
 
-<img className="block dark:hidden" src="/images/build/hit-detection/rewind-light.svg" alt="On the shooter's screen the target is in the crosshair. By the time the shot reaches the server, the target has moved on. The server checks the shot against where the target was on the shooter's screen, and counts the hit." />
-<img className="hidden dark:block" src="/images/build/hit-detection/rewind-dark.svg" alt="On the shooter's screen the target is in the crosshair. By the time the shot reaches the server, the target has moved on. The server checks the shot against where the target was on the shooter's screen, and counts the hit." />
+<img className="block dark:hidden" src="/images/guide-art/hit-detection/rewind-light.svg" alt="On the shooter's screen the target is in the crosshair. By the time the shot reaches the server, the target has moved on. The server checks the shot against where the target was on the shooter's screen, and counts the hit." />
+<img className="hidden dark:block" src="/images/guide-art/hit-detection/rewind-dark.svg" alt="On the shooter's screen the target is in the crosshair. By the time the shot reaches the server, the target has moved on. The server checks the shot against where the target was on the shooter's screen, and counts the hit." />
 
 - **Hits match the screen.** A shot that was on target when the player fired
   counts, even though the target kept moving while the shot travelled to the
@@ -53,8 +53,8 @@ rifle or a laser. Summer checks the line against every other character's hit
 shape and the walls, at the moment the shooter saw. Your server decides what
 a hit does: damage, a kill, a hit marker for the shooter.
 
-<img className="block dark:hidden" src="/images/build/hit-detection/walls-light.svg" alt="Two shots. One has a clear line to the target and hits. The other is stopped by a wall in front of the target." />
-<img className="hidden dark:block" src="/images/build/hit-detection/walls-dark.svg" alt="Two shots. One has a clear line to the target and hits. The other is stopped by a wall in front of the target." />
+<img className="block dark:hidden" src="/images/guide-art/hit-detection/walls-light.svg" alt="Two shots. One has a clear line to the target and hits. The other is stopped by a wall in front of the target." />
+<img className="hidden dark:block" src="/images/guide-art/hit-detection/walls-dark.svg" alt="Two shots. One has a clear line to the target and hits. The other is stopped by a wall in front of the target." />
 
 <Prompt description="**Add fair instant shots.** Shots are checked against what the shooter saw; walls block them.">
 In my Summer multiplayer project, make shooting fair with Summer's
@@ -81,8 +81,8 @@ area. Your game decides the shape, its range and who it can hurt. Summer
 gives your server the exact moment the player saw, with every character
 where it was on their screen, so you test your shape against that.
 
-<img className="block dark:hidden" src="/images/build/hit-detection/shapes-light.svg" alt="Four attack shapes checked the same way: a straight shot, a cone, a melee arc and a projectile path." />
-<img className="hidden dark:block" src="/images/build/hit-detection/shapes-dark.svg" alt="Four attack shapes checked the same way: a straight shot, a cone, a melee arc and a projectile path." />
+<img className="block dark:hidden" src="/images/guide-art/hit-detection/shapes-light.svg" alt="Four attack shapes checked the same way: a straight shot, a cone, a melee arc and a projectile path." />
+<img className="hidden dark:block" src="/images/guide-art/hit-detection/shapes-dark.svg" alt="Four attack shapes checked the same way: a straight shot, a cone, a melee arc and a projectile path." />
 
 <Prompt description="**Add fair abilities and melee.** Cones, swings and projectiles checked against what the player saw.">
 In my Summer multiplayer project, check my [ABILITY / MELEE / PROJECTILE]
