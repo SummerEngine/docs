@@ -20,9 +20,9 @@ W, H = 1200, 630
 MAX_W = W * 0.86
 MAX_H = H * 0.62
 MAX_SIZE = 200
-ZOOM = 1.6
+ZOOM = 1.4
 CROP_TOP = 0.26
-CROP_LEFT = 1.0
+CROP_LEFT = 0.5
 
 
 def nav_pages(node):
@@ -83,7 +83,6 @@ def render(title, out):
     # Zoom into the meadow so the sky is only the top fifth and the text sits on grass.
     scale = max(W / bg.width, H / bg.height) * ZOOM
     bg = bg.resize((round(bg.width * scale), round(bg.height * scale)), Image.LANCZOS)
-    # Pan right so the laptop slides off the left edge and the text sits on plain grass.
     left, top = round((bg.width - W) * CROP_LEFT), min(round(bg.height * CROP_TOP), bg.height - H)
     img = bg.crop((left, top, left + W, top + H))
     draw = ImageDraw.Draw(img)
