@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 280" width="880" height="280" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="279" rx="16" fill="#fbf7ef" stroke="#e6dcc8"/>
+<text x="40" y="40" font-size="15" font-weight="600" fill="#2a251b" text-anchor="start" opacity="1">Eight sizes, each with more memory and CPU</text>
+<rect x="56" y="210.0" width="72" height="26.0" rx="10" fill="#d9922e" opacity="0.35"/>
+<text x="92" y="200.0" font-size="12" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">256 MB</text>
+<text x="92" y="258" font-size="13" font-weight="600" fill="#8a806b" text-anchor="middle" opacity="1">Small</text>
+<rect x="156" y="190.0" width="72" height="46.0" rx="10" fill="#d9922e" opacity="0.44285714285714284"/>
+<text x="192" y="180.0" font-size="12" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">512 MB</text>
+<text x="192" y="258" font-size="13" font-weight="600" fill="#8a806b" text-anchor="middle" opacity="1">Medium</text>
+<rect x="256" y="170.0" width="72" height="66.0" rx="10" fill="#d9922e" opacity="0.5357142857142857"/>
+<text x="292" y="160.0" font-size="12" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">1 GB</text>
+<text x="292" y="258" font-size="13" font-weight="600" fill="#8a806b" text-anchor="middle" opacity="1">Standard</text>
+<rect x="356" y="130.0" width="72" height="106.0" rx="10" fill="#d9922e" opacity="0.6285714285714286"/>
+<text x="392" y="120.0" font-size="12" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">4 GB</text>
+<text x="392" y="258" font-size="13" font-weight="600" fill="#8a806b" text-anchor="middle" opacity="1">Large</text>
+<rect x="456" y="110.0" width="72" height="126.0" rx="10" fill="#d9922e" opacity="0.7214285714285714"/>
+<text x="492" y="100.0" font-size="12" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">8 GB</text>
+<text x="492" y="258" font-size="13" font-weight="600" fill="#8a806b" text-anchor="middle" opacity="1">XL</text>
+<rect x="556" y="90.0" width="72" height="146.0" rx="10" fill="#d9922e" opacity="0.8142857142857143"/>
+<text x="592" y="80.0" font-size="12" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">16 GB</text>
+<text x="592" y="258" font-size="13" font-weight="600" fill="#8a806b" text-anchor="middle" opacity="1">2XL</text>
+<rect x="656" y="70.0" width="72" height="166.0" rx="10" fill="#d9922e" opacity="0.9071428571428571"/>
+<text x="692" y="60.0" font-size="12" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">32 GB</text>
+<text x="692" y="258" font-size="13" font-weight="600" fill="#8a806b" text-anchor="middle" opacity="1">4XL</text>
+<rect x="756" y="50.0" width="72" height="186.0" rx="10" fill="#d9922e" opacity="1.0"/>
+<text x="792" y="40.0" font-size="12" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">64 GB</text>
+<text x="792" y="258" font-size="13" font-weight="600" fill="#8a806b" text-anchor="middle" opacity="1">8XL</text>
+</svg>

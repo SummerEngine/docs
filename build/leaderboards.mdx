@@ -1,0 +1,148 @@
+---
+title: "Rank players and show leaderboards"
+sidebarTitle: "Ratings and leaderboards"
+description: "Give players a skill rating that moves with every match, or a score board for anything your game counts, each with a public top 50."
+icon: "trophy"
+"og:image": "https://docs.summerengine.com/images/og/build-leaderboards.jpg"
+"twitter:image": "https://docs.summerengine.com/images/og/build-leaderboards.jpg"
+---
+
+Summer keeps two kinds of board for your game. A **rating** is a skill number
+that moves after every ranked match. A **score board** holds any number your
+game counts, such as wins, coins or levels cleared. Players see their own number,
+their place, and the top 50 players. Every number comes from your game's
+server, never from a player's device, so nobody can fake their way to the top.
+
+## Games like this
+
+<CardGroup cols={2}>
+  <Card title="League of Legends, Valorant" icon="swords">
+    Ranked play. Your rating moves after every match.
+  </Card>
+  <Card title="Chess.com" icon="crown">
+    A 1v1 rating, with a ladder of the best players.
+  </Card>
+  <Card title="Fall Guys" icon="trophy">
+    Crowns: a running count of wins on a public board.
+  </Card>
+  <Card title="Minecraft servers" icon="pickaxe">
+    Stat boards: most blocks mined, most mobs defeated.
+  </Card>
+</CardGroup>
+
+## What your players get
+
+<img className="block dark:hidden" src="/images/guide-art/leaderboards/board-light.svg" alt="A leaderboard listing the top players by rating, with the player's own row highlighted, next to the player's rating, its last change and their place." />
+<img className="hidden dark:block" src="/images/guide-art/leaderboards/board-dark.svg" alt="A leaderboard listing the top players by rating, with the player's own row highlighted, next to the player's rating, its last change and their place." />
+
+- **Their own number:** their rating or score, and how much it moved in the
+  last match.
+- **Their place:** for example "#412 of 9,830". Further down a rating board,
+  below the top 1,000, the place is a percentage instead, such as "Top 12%".
+- **The top 50:** best first, by display name, with the player's own row
+  marked when they're in it.
+
+Players can open a board at any time, including from the main menu outside a
+match.
+
+## Pick your board
+
+### Skill rating: ranked matches
+
+Every ranked queue keeps a rating for each player. When a match ends, your
+server reports who won, lost or drew, and Summer moves everyone's rating with
+Elo. Beating a stronger player is worth more than beating a weaker one. It
+works for 1v1 and for two teams. New players start at 1200, or at a starting
+value you choose. Summer also uses the rating to
+[match players of similar skill](/build/matchmaking#ranked-match-players-of-similar-skill).
+
+<img className="block dark:hidden" src="/images/guide-art/leaderboards/rating-light.svg" alt="Two players with ratings 1400 and 1380 play a match; the winner goes up and the loser goes down." />
+<img className="hidden dark:block" src="/images/guide-art/leaderboards/rating-dark.svg" alt="Two players with ratings 1400 and 1380 play a match; the winner goes up and the loser goes down." />
+
+<Prompt description="**Add ranked ratings and a leaderboard.** Ratings move after every match; players see their rating, place and the top 50.">
+In my Summer project, give my ranked mode a skill rating and a leaderboard.
+Use the Summer `summer-match-results` and `summer-leaderboards` skills; if you
+don't have them installed, find them in the Summer library.
+
+- When a match ends, the server reports each player's win, loss or draw.
+- After the match, show the player their rating and how much it changed.
+- Add a leaderboard screen with the top 50, the player's own row marked, and
+  their place.
+
+Read my project first and fit this into my existing menus. Test the end of a
+match with Local Play, and tell me what I can only check once the game is
+hosted.
+</Prompt>
+
+### Your own rating rules
+
+Elo rates two sides against each other. When that doesn't fit, your server
+decides how much each player's rating moves after a match, up to 1,000 points
+either way. Use it for co-op modes where a group plays against the game, such
+as a dungeon run rated by its difficulty, or for any formula of your own.
+
+<Prompt description="**Rate players with my own rules.** My server decides each player's rating change.">
+In my Summer project, rate my [MODE] with my own rules instead of Elo. Use
+the Summer `summer-leaderboards` and `summer-match-results` skills; if you
+don't have them installed, find them in the Summer library.
+
+The rule: [describe it, for example "clearing a harder dungeon is worth more,
+failing costs a little"].
+
+Read my project first and explain how the rule turns into a rating change for
+each player before you change anything. Then test the end of a match with
+Local Play and tell me what you saw.
+</Prompt>
+
+### Score boards: anything your game counts
+
+A score board ranks any number your game keeps track of: total wins, coins
+collected, levels cleared, mobs defeated. Your server records the new score
+whenever it changes, for example at the end of a match. Higher scores rank
+first, and on a tie the player who got there first ranks higher. A score board
+doesn't need matchmaking, and a game can have up to 32 of them.
+
+<img className="block dark:hidden" src="/images/guide-art/leaderboards/scores-light.svg" alt="The game server records a player's new score on the board. Players' games can only read the board." />
+<img className="hidden dark:block" src="/images/guide-art/leaderboards/scores-dark.svg" alt="The game server records a player's new score on the board. Players' games can only read the board." />
+
+<Prompt description="**Add a score board.** My server records a score; players see the top 50 and their place.">
+In my Summer project, add a score board for [WHAT TO COUNT, for example
+"total coins collected"]. Use the Summer `summer-leaderboards` skill; if you
+don't have it installed, find it in the Summer library.
+
+- The server adds to each player's score [WHEN, for example "at the end of
+  every match"].
+- Add a screen with the top 50, the player's own row marked, and their place.
+- If the board can't be loaded, the game keeps working and the screen says so.
+
+Read my project first and tell me where the score changes before you change
+anything. Then test it with Local Play and tell me what I can only check once
+the game is hosted.
+</Prompt>
+
+## Not sure which fits?
+
+<Prompt description="**Plan ratings and leaderboards for my game.** Your agent reads your project and proposes boards. No code.">
+Read my Summer project and help me plan its ratings and leaderboards. Use the
+Summer `summer-leaderboards` skill; if you don't have it installed, find it
+in the Summer library. Don't change any files yet.
+
+Tell me:
+1. which boards my game should have: a skill rating, my own rating rules, or
+   score boards, and what each one counts;
+2. where players see them, from the main menu to the end of a match;
+3. anything my design needs that these boards don't cover yet, and how we can
+   build around it.
+</Prompt>
+
+## Testing it on your machine
+
+With Local Play, your server can end a match and get test rating changes
+back, so you can build and test the whole end-of-match flow on one computer.
+The leaderboards themselves, players' places and score boards only show real
+data in a hosted game. Under Local Play they report that they aren't
+available, so make sure your screens handle that.
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

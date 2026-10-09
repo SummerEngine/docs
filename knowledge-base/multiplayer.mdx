@@ -1,38 +1,38 @@
 ---
 title: "Does Summer support multiplayer games?"
-description: "Yes, with limitations. Basic multiplayer networking works with AI assistance."
+description: "Yes. Summer runs a server for every match, finds players through matchmaking, and lets you test everything on your own machine."
 icon: "question"
+"og:image": "https://docs.summerengine.com/images/og/knowledge-base-multiplayer.jpg"
+"twitter:image": "https://docs.summerengine.com/images/og/knowledge-base-multiplayer.jpg"
 ---
 
-**Yes, with limitations.** Summer Engine includes multiplayer APIs and transports for games
-you run and deploy yourself. Hosted Summercraft multiplayer is a separate platform
-capability and is not production-live yet.
+**Yes.** A Summer multiplayer game is one project with a client that every player runs
+and a server that owns the rules. When you publish, Summer runs a server for every match
+and brings players together through matchmaking. With Local Play you can test the whole
+game, server and several players, on your own computer first.
 
-## What Works Today
+## What you get
 
-- **High-level multiplayer API**: `MultiplayerPeer`, `MultiplayerSpawner`, and
-  `MultiplayerSynchronizer` all work in Summer Engine. The AI can help you set them up
-  through natural language.
-- **ENet and WebSocket transports**: Local LAN multiplayer and WebSocket-based online multiplayer are both supported out of the box.
-- **RPC and state synchronization**: Remote procedure calls (`@rpc`) and automatic property synchronization work as expected. Ask the AI to set up synchronized variables and it will generate the correct annotations.
-- **Dedicated server exports**: You can export headless server builds for Linux deployment.
+- **Servers for every match**, run by Summer. You choose the size, and you don't need to
+  rent or manage any machines yourself.
+- **Matchmaking**, from quick play to ranked and fixed teams, plus parties so friends play
+  together.
+- **Movement that feels instant** for each player, and hit checks that are fair to
+  everyone.
+- **Saves**: player progress, and worlds that keep running between sessions.
+- **Leaderboards, chat, friends and a store** that your game can use directly.
 
-## What the AI Can Help With
+Start with [Make your game multiplayer](/build/multiplayer), then pick the pieces your
+game needs from the [Build your game](/build/multiplayer#where-to-go-next) guides.
 
-The AI assistant can generate multiplayer boilerplate, set up lobby systems, configure spawners and synchronizers, and debug common networking issues like authority conflicts and desync problems. For example, you can say "make this character controller work in multiplayer" and the AI will add the necessary RPC calls and authority checks.
+## Your agent can build it
 
-## Current Limitations
+Each Build guide has prompts you can copy into your coding agent. The agent reads your
+project and uses Summer's published skills to add the feature, then tests it with Local
+Play.
 
-- **No built-in matchmaking or relay servers**: Summer does not yet provide production
-  hosted multiplayer infrastructure. Bring your own server for a game you operate today.
-- **Complex netcode patterns**: Advanced techniques like client-side prediction, rollback, and lag compensation require manual implementation. The AI can assist but these are inherently complex.
-- **Testing**: Multiplayer testing requires running multiple instances manually.
+## Bringing your own server
 
-## Summer SDK platform contract
-
-The [Summer SDK](/api-reference/summer-sdk) documents the creator-facing contract for
-host-authoritative gameplay, synced state, persistence, economy, and submission. The
-submission and review APIs are live. Player-facing playback, hosted dedicated game servers,
-automatic matchmaking, and the production runtime sandbox are not live yet. Track the
-canonical [platform capability status](/knowledge-base/source-status#platform-capability-status)
-before making launch promises.
+Summer Engine also includes the standard multiplayer API (`MultiplayerPeer`,
+`MultiplayerSpawner`, `MultiplayerSynchronizer`, `@rpc`) with ENet and WebSocket
+transports, for games you host on your own infrastructure.

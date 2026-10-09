@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 250" width="880" height="250" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="249" rx="16" fill="#fbf7ef" stroke="#e6dcc8"/>
+<rect x="40" y="30" width="380" height="190" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="64" y="62" font-size="15" font-weight="600" fill="#2a251b" text-anchor="start" opacity="1">Clear line</text>
+<rect x="460" y="30" width="380" height="190" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="484" y="62" font-size="15" font-weight="600" fill="#2a251b" text-anchor="start" opacity="1">Behind cover</text>
+<g opacity="1" fill="#d9922e"><circle cx="100" cy="145.0" r="8.0"/><path d="M 87.0 170 v -6.0 a 13.0 11.0 0 0 1 26.0 0 v 6.0 z"/></g>
+<line x1="122" y1="148" x2="318" y2="148" stroke="#d9922e" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<g opacity="1" fill="#2a251b"><circle cx="340" cy="145.0" r="8.0"/><path d="M 327.0 170 v -6.0 a 13.0 11.0 0 0 1 26.0 0 v 6.0 z"/></g>
+<circle cx="358" cy="120" r="10" fill="#4f9a55"/><path d="M 354.5 120 l 2.5 2.6 l 4.5 -5" fill="none" stroke="#fbf7ef" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="230" y="204" font-size="13" font-weight="600" fill="#4f9a55" text-anchor="middle" opacity="1">hit</text>
+<g opacity="1" fill="#d9922e"><circle cx="520" cy="145.0" r="8.0"/><path d="M 507.0 170 v -6.0 a 13.0 11.0 0 0 1 26.0 0 v 6.0 z"/></g>
+<line x1="542" y1="148" x2="640" y2="148" stroke="#d9922e" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<rect x="642" y="96" width="26" height="96" rx="4" fill="#d8cfbd" opacity="1"/>
+<line x1="644" y1="114" x2="666" y2="114" stroke="#e6dcc8" stroke-width="1.5" stroke-linecap="round" opacity="1"/>
+<line x1="644" y1="132" x2="666" y2="132" stroke="#e6dcc8" stroke-width="1.5" stroke-linecap="round" opacity="1"/>
+<line x1="644" y1="150" x2="666" y2="150" stroke="#e6dcc8" stroke-width="1.5" stroke-linecap="round" opacity="1"/>
+<line x1="644" y1="168" x2="666" y2="168" stroke="#e6dcc8" stroke-width="1.5" stroke-linecap="round" opacity="1"/>
+<g opacity="1" fill="#2a251b"><circle cx="760" cy="145.0" r="8.0"/><path d="M 747.0 170 v -6.0 a 13.0 11.0 0 0 1 26.0 0 v 6.0 z"/></g>
+<circle cx="650" cy="84" r="10" fill="#c8553d"/><path d="M 647 81 l 6 6 M 653 81 l -6 6" fill="none" stroke="#fbf7ef" stroke-width="2" stroke-linecap="round"/>
+<text x="650" y="204" font-size="13" font-weight="600" fill="#c8553d" text-anchor="middle" opacity="1">the wall stops the shot</text>
+</svg>

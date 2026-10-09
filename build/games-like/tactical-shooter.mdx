@@ -1,0 +1,112 @@
+---
+title: "Make a game like Counter-Strike"
+sidebarTitle: "Tactical shooters"
+description: "The Summer pieces behind a competitive team shooter like Counter-Strike or Valorant: 5v5 matchmaking, instant movement, fair hits and ranked play."
+icon: "crosshair"
+"og:image": "https://docs.summerengine.com/images/og/build-games-like-tactical-shooter.jpg"
+"twitter:image": "https://docs.summerengine.com/images/og/build-games-like-tactical-shooter.jpg"
+---
+
+A tactical shooter lives or dies on fairness. Two teams of five start level,
+every player's movement feels instant, a shot that looked like a hit counts as
+a hit, and a win moves your rank. Summer gives you each of those pieces. This
+page shows how they fit together.
+
+## The pieces you need
+
+<CardGroup cols={2}>
+  <Card title="Make your game multiplayer" icon="network" href="/build/multiplayer">
+    Your server runs the rules; every player runs the same game.
+  </Card>
+  <Card title="Matchmaking" icon="swords" href="/build/matchmaking">
+    A ranked 5v5 queue, matched by skill, with an accept prompt.
+  </Card>
+  <Card title="Parties" icon="users" href="/build/parties">
+    Friends queue together and land on the same team.
+  </Card>
+  <Card title="Instant movement" icon="move" href="/build/movement">
+    Each player's own character moves the moment they press a key.
+  </Card>
+  <Card title="Fair hits" icon="target" href="/build/hit-detection">
+    Shots are checked against where targets were when the player fired.
+  </Card>
+  <Card title="Shared game world" icon="layers" href="/build/shared-state">
+    Rounds, the bomb, the score and each player's money, kept by the server.
+  </Card>
+  <Card title="Match results" icon="flag" href="/build/match-results">
+    The server decides who won and closes the match.
+  </Card>
+  <Card title="Ratings and leaderboards" icon="trophy" href="/build/leaderboards">
+    A rank that moves after every match, and a top 50.
+  </Card>
+  <Card title="Text chat" icon="message-square" href="/build/chat">
+    Talk to everyone in the match.
+  </Card>
+  <Card title="Cosmetics" icon="sparkles" href="/build/cosmetics">
+    Weapon skins and characters players own and show off.
+  </Card>
+</CardGroup>
+
+## How it fits together
+
+<img className="block dark:hidden" src="/images/guide-art/games-like/tactical-shooter-light.svg" alt="The tactical shooter loop: friends party up, matchmaking finds a 5v5 by skill, everyone accepts, the match plays out on one server, and every player's rating moves before they play again." />
+<img className="hidden dark:block" src="/images/guide-art/games-like/tactical-shooter-dark.svg" alt="The tactical shooter loop: friends party up, matchmaking finds a 5v5 by skill, everyone accepts, the match plays out on one server, and every player's rating moves before they play again." />
+
+Friends form a party and press Play together. Matchmaking builds two even
+teams of five and asks everyone to accept. Summer starts a server for the
+match, where your rules run the rounds. When the last round ends, the server
+reports the result, and every player's rating moves.
+
+## Plan my game
+
+<Prompt description="**Plan my tactical shooter.** Your agent reads your project and lays out the Summer pieces in the order to build them.">
+I'm making a tactical team shooter like Counter-Strike in Summer. Read my
+project and plan how to build it with these Summer skills, in this order;
+if you don't have them installed, find them in the Summer library:
+
+1. `multiplayer` and `multiplayer-project`: the server and client scenes and
+   a first Local Play run.
+2. `multiplayer-movement`: each player moves their own character instantly.
+3. `multiplayer-state`: rounds, the bomb, the score and each player's money.
+4. `summer-matchmaking`: a ranked 5v5 queue with an accept prompt.
+5. `summer-match-results` and `summer-leaderboards`: winners, losers and ranks.
+6. `summer-parties`: friends queue together.
+
+For each step, tell me what changes in my project and what I'll see when I
+test it. Don't change any files yet.
+</Prompt>
+
+## Build the signature features
+
+### Rounds and a buy phase
+
+<Prompt description="**Add rounds with a buy phase.** The server runs the round clock, money and the win condition.">
+In my Summer project, add round-based play like Counter-Strike: a short buy
+phase, a round timer, and a match won by the first team to [N] rounds. Use
+the Summer `multiplayer-state` skill; if you don't have it installed, find it
+in the Summer library.
+
+- The server owns the clock, each player's money and the round winner.
+- Players ask the server to buy; the server checks they can afford it.
+- Everyone sees the same round number, timer and score.
+
+Read my project first and tell me what you'll change. Then test it with Local
+Play and tell me what you saw.
+</Prompt>
+
+### Shots that feel fair
+
+<Prompt description="**Make shots fair.** Hits count against where targets were when the player fired.">
+In my Summer project, make shooting feel fair at real-world ping: when a
+player fires, the server checks the shot against where the other players were
+on that player's screen. Use Summer's lag-compensated hit checks
+(`SummerNetworkHitHistory3D`) together with the Summer `multiplayer-state`
+skill; if you don't have it installed, find it in the Summer library.
+
+Read my project first and explain how my weapons fire today. Then test it
+with Local Play at 100 ms of emulated ping and tell me what you saw.
+</Prompt>
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 240" width="880" height="240" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="239" rx="16" fill="#fbf7ef" stroke="#e6dcc8"/>
+<rect x="40" y="30" width="470" height="180" rx="14" fill="#ffffff" stroke="#d9922e" stroke-width="2" opacity="1"/>
+<text x="64" y="62" font-size="14" font-weight="600" fill="#8a806b" text-anchor="start" opacity="1">One event</text>
+<text x="64" y="100" font-family="'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="22" font-weight="700" fill="#d9922e" text-anchor="start">level_completed</text>
+<rect x="64" y="120" width="260" height="70" rx="10" fill="#fbf7ef" opacity="1"/>
+<text x="82" y="148" font-family="'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="14" font-weight="500" fill="#2a251b" text-anchor="start">level:   3</text>
+<text x="82" y="174" font-family="'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="14" font-weight="500" fill="#2a251b" text-anchor="start">seconds: 41</text>
+<text x="488" y="100" font-size="12" font-weight="600" fill="#8a806b" text-anchor="end" opacity="1">fixed name</text>
+<text x="488" y="160" font-size="12" font-weight="600" fill="#8a806b" text-anchor="end" opacity="1">details go here</text>
+<rect x="560" y="30" width="280" height="180" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="584" y="62" font-size="14" font-weight="700" fill="#c8553d" text-anchor="start" opacity="1">Not this</text>
+<text x="584" y="98" font-family="'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="14" font-weight="500" fill="#8a806b" text-anchor="start">level_3_completed</text>
+<line x1="582" y1="93" x2="730" y2="93" stroke="#c8553d" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+<text x="584" y="130" font-family="'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="14" font-weight="500" fill="#8a806b" text-anchor="start">level_4_completed</text>
+<line x1="582" y1="125" x2="730" y2="125" stroke="#c8553d" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+<text x="584" y="162" font-family="'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="14" font-weight="500" fill="#8a806b" text-anchor="start">level_5_completed</text>
+<line x1="582" y1="157" x2="730" y2="157" stroke="#c8553d" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+<circle cx="808" cy="62" r="8" fill="#c8553d"/><path d="M 805 59 l 6 6 M 811 59 l -6 6" fill="none" stroke="#fbf7ef" stroke-width="2" stroke-linecap="round"/>
+</svg>

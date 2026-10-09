@@ -1,0 +1,67 @@
+---
+title: "Can my AI agent publish my game for me?"
+sidebarTitle: "Can my agent do it?"
+description: "Yes. Claude, Codex or ChatGPT can make your store page and art, export and upload the build, and submit it through the Summer Engine MCP. You click Approve publishing once."
+icon: "bot"
+---
+
+**Yes.** Your AI agent can do every step, from the finished game to a submitted store page. Only one step is yours: you click **Approve publishing** on the link your agent gives you. After that, Summer reviews the game, and it goes live when the review passes.
+
+<img className="block dark:hidden" src="/images/guide-art/publishing/journey-light.svg" alt="Your agent does five steps: store page, art, export, upload and submit. You click Approve publishing. Summer reviews it, then it is live on summer.games." />
+<img className="hidden dark:block" src="/images/guide-art/publishing/journey-dark.svg" alt="Your agent does five steps: store page, art, export, upload and submit. You click Approve publishing. Summer reviews it, then it is live on summer.games." />
+
+## What your agent does
+
+<Steps>
+  <Step title="Finds your game">
+    It lists your Summer projects and your store games, or makes a new store game with your title and platforms.
+  </Step>
+  <Step title="Writes the store page">
+    A tagline, descriptions for the desktop and mobile stores, tags and the age rating, from what your game really does.
+  </Step>
+  <Step title="Fills the art">
+    It uses the art you already have in My assets, or makes new art with Summer, crops it to each slot and uploads it. See [Make store art with your agent](/publishing/generate-store-art).
+  </Step>
+  <Step title="Exports and uploads the build">
+    It exports your game with Summer Engine on your computer and uploads it. Summer checks it on every platform.
+  </Step>
+  <Step title="Submits and gives you a link">
+    It submits the page, the build and the price you asked for. Nothing is published. You get a link to approve it.
+  </Step>
+</Steps>
+
+## What only you do
+
+| Step | Why |
+|---|---|
+| **Sign in** to your Summer account the first time | Your agent acts as you, so you say yes once in your browser. |
+| **Click Approve publishing** | You see exactly what will publish: the page, the art, the build and the price. Your agent cannot approve for you. |
+| **Set up payouts** for a paid game | Your payout account is yours. |
+
+There is no second click: once you approve and Summer's review passes, the game goes live.
+
+## Ask your agent
+
+Connect your agent first: [Connect your agent](/publishing/connect-your-agent). Then paste the master prompt from [How do I publish my game on Summer?](/publishing/summer-games#let-your-agent-publish-it), or this shorter one:
+
+<Prompt description="**Publish my game on Summer Games.** Your agent does every step and stops at the approval link.">
+Publish my Summer game on Summer Games. Use the Summer Engine MCP and the
+`publish-your-game` skill, and follow
+https://docs.summerengine.com/publishing/agent-checklist.md from top to bottom.
+Ask me only what my project does not say. Stop when you have the approval
+link, and give it to me.
+</Prompt>
+
+## Is it safe?
+
+- **It never publishes.** A submit from an agent waits for you. The Summer Games store refuses any other publishing step from an agent.
+- **You see what you approve.** If the page changes after your agent submits, the link stops working and your agent must submit again.
+- **You can say no.** Click **Not now** on the approval page, or ask your agent to withdraw it.
+- **The price is yours.** Your agent only proposes a price. It is set when you approve, and only if your payouts are set up.
+- **Art uses your credits.** Making new art uses your Summer credits, so your agent checks My assets first.
+
+Details: [Approve publishing](/publishing/owner-approval).
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

@@ -1,0 +1,203 @@
+---
+title: "Match players into games"
+sidebarTitle: "Matchmaking"
+description: "Put players in a queue and start a match when there are enough of them. Covers quick play, ranked, fixed teams and an accept-the-match prompt."
+icon: "swords"
+"og:image": "https://docs.summerengine.com/images/og/build-matchmaking.jpg"
+"twitter:image": "https://docs.summerengine.com/images/og/build-matchmaking.jpg"
+---
+
+Matchmaking is how a player presses **Play** and ends up in a match with other
+people, without anyone sharing an address or invite code. You describe your
+game modes as **queues**. Summer groups the players who are searching and
+starts a server for each match. Then it sends every player in that match to
+it.
+
+## Games like this
+
+<CardGroup cols={2}>
+  <Card title="League of Legends, Dota 2" icon="swords">
+    Ranked 5v5. Everyone must accept the match before it starts.
+  </Card>
+  <Card title="Counter-Strike, Valorant" icon="crosshair">
+    Competitive 5v5, matched by skill.
+  </Card>
+  <Card title="Rocket League" icon="car">
+    1v1, 2v2 and 3v3 queues side by side. Friends queue together.
+  </Card>
+  <Card title="Chess.com, Hearthstone" icon="crown">
+    1v1, matched by rating.
+  </Card>
+</CardGroup>
+
+If your game has a **Play** or **Find match** button, this is the page for
+you. If your players join one shared world that keeps running, such as a
+Minecraft server, matchmaking can still place them, but that world needs to be a
+persistent World rather than a match.
+
+## What your players get
+
+<img className="block dark:hidden" src="/images/guide-art/matchmaking/flow-light.svg" alt="Three steps: a player searches, Summer groups four players into a match, and all four join the same World on one server." />
+<img className="hidden dark:block" src="/images/guide-art/matchmaking/flow-dark.svg" alt="Three steps: a player searches, Summer groups four players into a match, and all four join the same World on one server." />
+
+<Steps>
+  <Step title="Search">
+    The player picks a mode and presses Play. Your game shows the search
+    progress, and the player can cancel at any time.
+  </Step>
+  <Step title="Match found">
+    Summer has grouped enough players. If the queue requires accepting, the match
+    starts once every player has accepted. Your game can show an
+    **Accept / Decline** prompt, or accept automatically the moment a match is
+    found.
+  </Step>
+  <Step title="Into the match">
+    Summer starts a server for the match, and every player joins that same
+    World. On a team queue, your server already knows who is on which team.
+  </Step>
+</Steps>
+
+Your game decides what each step looks like: the search screen, the prompt and
+any countdown. Summer handles grouping players, reserving the server and
+getting everyone into it.
+
+## Pick your setup
+
+Each setup below is one queue. A game can declare several, for example a
+casual queue and a ranked queue. Copy a prompt into your coding agent; it
+reads your project and makes the change for you.
+
+### Quick play: first come, first served
+
+Players are matched in the order they started searching, with no skill
+check. Good for casual modes, party games, and any game that's starting out
+with few players.
+
+<img className="block dark:hidden" src="/images/guide-art/matchmaking/quick-play-light.svg" alt="The first four players to start searching are grouped into a match; later players keep searching." />
+<img className="hidden dark:block" src="/images/guide-art/matchmaking/quick-play-dark.svg" alt="The first four players to start searching are grouped into a match; later players keep searching." />
+
+<Prompt description="**Add quick play.** A Play button, a searching screen with Cancel, and joining the match.">
+In my Summer project, add a quick-play matchmaking queue. Use the Summer
+`summer-matchmaking` skill; if you don't have it installed, find it in the
+Summer library.
+
+- Matches hold between [MIN] and [MAX] players, first come, first served.
+- Give the player a Play button, a status line while searching, and a Cancel
+  button.
+- When the join fails, show the player why and let them search again.
+
+Read my project first and fit this into my existing menus and scenes rather
+than adding new ones. Then test it with Local Play and tell me what you saw.
+</Prompt>
+
+### Ranked: match players of similar skill
+
+Summer keeps a rating for every player in the queue and matches players
+with similar ratings first. If a player waits a while, the range of ratings
+they can be matched with widens. You can use Summer's Elo rating for two-sided
+matches, or let your server decide how much each player's rating moves. See
+[Ratings and leaderboards](/build/leaderboards).
+
+<img className="block dark:hidden" src="/images/guide-art/matchmaking/ranked-light.svg" alt="On a rating line, a player at 1400 is first matched with players close to 1400; after waiting, the range widens to include players further away." />
+<img className="hidden dark:block" src="/images/guide-art/matchmaking/ranked-dark.svg" alt="On a rating line, a player at 1400 is first matched with players close to 1400; after waiting, the range widens to include players further away." />
+
+<Prompt description="**Add a ranked queue.** Skill-based matching with a rating that moves after every match.">
+In my Summer project, add a ranked matchmaking queue next to any queue I
+already have. Use the Summer `summer-matchmaking` skill, and the
+`summer-match-results` skill for ending a match; if you don't have them
+installed, find them in the Summer library.
+
+- Match players by rating. [1v1 / two teams of N]
+- When a match ends, the server reports who won so ratings update.
+- Show the player their rating before and after a match.
+
+Read my project first and explain where the rating appears in my UI before you
+change anything. Then test it with Local Play and tell me what you saw, and what
+only works once the game is hosted.
+</Prompt>
+
+### Fixed teams: 2v2, 3v3, 5v5
+
+Every match holds exactly the number of players needed to fill every team.
+Summer splits them into teams, and friends who queued together as a party
+always land on the same team. In a ranked queue, Summer picks the most even
+split of ratings it can find. Your server reads each player's team when they
+join.
+
+<img className="block dark:hidden" src="/images/guide-art/matchmaking/teams-light.svg" alt="A party of two and four solo players are split into two teams of three; the party lands on the same team." />
+<img className="hidden dark:block" src="/images/guide-art/matchmaking/teams-dark.svg" alt="A party of two and four solo players are split into two teams of three; the party lands on the same team." />
+
+<Prompt description="**Add a team queue.** Fixed teams, parties kept together, teams known to the server.">
+In my Summer project, add a matchmaking queue with [COUNT] teams of [SIZE]
+players. Use the Summer `summer-matchmaking` skill; if you don't have it
+installed, find it in the Summer library.
+
+- The server reads each player's team when they join and uses it for spawn
+  points and scoring.
+- Each player sees which team they're on, and who their teammates are.
+- [Match by rating / first come, first served].
+
+Read my project first and tell me what in my game needs to know about teams
+before you change anything. Then test it with Local Play and tell me what you
+saw.
+</Prompt>
+
+### Accept prompt: confirm before the match starts
+
+Before Summer starts the server, every player has to accept. Use this when a
+match is a commitment, such as a 30-minute ranked game, and you don't want one
+AFK player to ruin it for nine others. Add it to any of the queues above.
+
+A player who declines leaves the queue, and everyone else goes back to
+searching without losing their place in line. If the timer runs out, the match
+doesn't start. Your game can also skip the prompt and accept for the player as
+soon as a match is found.
+
+<img className="block dark:hidden" src="/images/guide-art/matchmaking/accept-light.svg" alt="If all four players accept, the match starts. If one declines, that player leaves the queue and the other three go back to searching in the same place in line." />
+<img className="hidden dark:block" src="/images/guide-art/matchmaking/accept-dark.svg" alt="If all four players accept, the match starts. If one declines, that player leaves the queue and the other three go back to searching in the same place in line." />
+
+<Prompt description="**Add an Accept / Decline prompt** when a match is found, with a timer.">
+In my Summer project, make my matchmaking queue [QUEUE] ask every player to
+accept a found match within [SECONDS] seconds. Use the Summer
+`summer-matchmaking` skill; if you don't have it installed, find it in the
+Summer library.
+
+- Show Accept and Decline buttons and a countdown when a match is found.
+- If the player declines, or anyone doesn't accept in time, go back to the
+  menu and let them search again.
+
+Local Play never shows this prompt, so make sure the rest of the flow still
+works there, and tell me what I can only check once the game is hosted.
+</Prompt>
+
+## Not sure which fits?
+
+<Prompt description="**Plan matchmaking for my game.** Your agent reads your project and proposes queues. No code.">
+Read my Summer project and help me plan its matchmaking. Use the Summer
+`summer-matchmaking` skill; if you don't have it installed, find it in the
+Summer library. Don't change any files yet.
+
+Tell me:
+1. which queues my game should have (quick play, ranked, teams, accept
+   prompt) and how many players each holds;
+2. what the player sees from the main menu to the first second of a match;
+3. anything my design needs that matchmaking doesn't cover yet, and how we
+   can build around it.
+</Prompt>
+
+## Testing it on your machine
+
+Local Play runs your server and several game windows on one computer, so you
+can test a queue without hosting anything. Local Play differs from hosted
+matchmaking in three ways:
+
+- Players are placed straight away, with no real search.
+- The Accept / Decline prompt never appears.
+- Players aren't grouped by rating. Teams are handed out in turn: first player,
+  team 0; second player, team 1; and so on.
+
+Searching, matching by skill, and the accept prompt all need a hosted game.
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

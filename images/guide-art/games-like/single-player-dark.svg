@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 260" width="880" height="260" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="259" rx="16" fill="#1b1810" stroke="#3a3428"/>
+<rect x="30.0" y="44" width="182.5" height="150" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<text x="121.25" y="70" font-size="13" font-weight="600" fill="#ede6d6" text-anchor="middle" opacity="1">Play</text>
+<rect x="99.25" y="90" width="44" height="72" rx="12" fill="#242017" stroke="#9b927f" stroke-width="2" opacity="1"/>
+<rect x="106.25" y="102" width="30" height="44" rx="6" fill="#3d3121" opacity="1"/>
+<line x1="113.25" y1="154" x2="129.25" y2="154" stroke="#9b927f" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<g opacity="1" fill="#f0b566"><circle cx="121.25" cy="125.5" r="4.0"/><path d="M 114.75 138 v -3.0 a 6.5 5.5 0 0 1 13.0 0 v 3.0 z"/></g>
+<text x="121.25" y="182" font-size="11" font-weight="500" fill="#9b927f" text-anchor="middle" opacity="1">on the device</text>
+<rect x="242.5" y="44" width="182.5" height="150" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<text x="333.75" y="70" font-size="13" font-weight="600" fill="#ede6d6" text-anchor="middle" opacity="1">Unlock items</text>
+<g opacity="1" fill="#f0b566"><circle cx="319.75" cy="128.5" r="5.6"/><path d="M 310.65 146 v -4.199999999999999 a 9.1 7.699999999999999 0 0 1 18.2 0 v 4.199999999999999 z"/></g>
+<rect x="339.75" y="100" width="34" height="34" rx="8" fill="#242017" stroke="#8bc48a" stroke-width="1.8" opacity="1"/>
+<circle cx="356.75" cy="117" r="8" fill="#8bc48a"/><path d="M 353.25 117 l 2.5 2.6 l 4.5 -5" fill="none" stroke="#1b1810" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="333.75" y="182" font-size="11" font-weight="500" fill="#9b927f" text-anchor="middle" opacity="1">owned by the account</text>
+<line x1="217.5" y1="119.0" x2="231.5" y2="119.0" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 228.5 113.0 L 237.5 119.0 L 228.5 125.0" fill="none" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="455.0" y="44" width="182.5" height="150" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<text x="546.25" y="70" font-size="13" font-weight="600" fill="#ede6d6" text-anchor="middle" opacity="1">Shop</text>
+<rect x="518.25" y="88" width="56" height="46" rx="10" fill="#3d3121" stroke="#f0b566" stroke-width="1.6" opacity="1"/>
+<path d="M 535.25 111 l 11 -11 l 11 11 l -11 11 z" fill="#f0b566"/>
+<rect x="510.25" y="140" width="72.0" height="24" rx="12" fill="#242017" stroke="#f0b566" stroke-width="1.5" opacity="1"/>
+<text x="546.25" y="156.5" font-size="10" font-weight="700" fill="#f0b566" text-anchor="middle" opacity="1">120 Sparks</text>
+<text x="546.25" y="182" font-size="11" font-weight="500" fill="#9b927f" text-anchor="middle" opacity="1">Summer checkout</text>
+<line x1="430.0" y1="119.0" x2="444.0" y2="119.0" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 441.0 113.0 L 450.0 119.0 L 441.0 125.0" fill="none" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="667.5" y="44" width="182.5" height="150" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<text x="758.75" y="70" font-size="13" font-weight="600" fill="#ede6d6" text-anchor="middle" opacity="1">Learn</text>
+<rect x="724.75" y="132" width="12" height="18" rx="3" fill="#3d3121" opacity="1"/>
+<rect x="742.75" y="120" width="12" height="30" rx="3" fill="#3d3121" opacity="1"/>
+<rect x="760.75" y="126" width="12" height="24" rx="3" fill="#3d3121" opacity="1"/>
+<rect x="778.75" y="106" width="12" height="44" rx="3" fill="#f0b566" opacity="1"/>
+<line x1="718.75" y1="152" x2="798.75" y2="152" stroke="#9b927f" stroke-width="1.5" stroke-linecap="round" opacity="1"/>
+<text x="758.75" y="182" font-size="11" font-weight="500" fill="#9b927f" text-anchor="middle" opacity="1">your analytics</text>
+<line x1="642.5" y1="119.0" x2="656.5" y2="119.0" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 653.5 113.0 L 662.5 119.0 L 653.5 125.0" fill="none" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 758.75 198 V 220 H 121.25 V 204" fill="none" stroke="#f0b566" stroke-width="2" stroke-dasharray="5 6" stroke-linecap="round"/>
+<path d="M 115.25 210 L 121.25 201 L 127.25 210" fill="none" stroke="#f0b566" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="388.0" y="209" width="104" height="22" rx="8" fill="#1b1810" opacity="1"/>
+<text x="440.0" y="224" font-size="12" font-weight="600" fill="#f0b566" text-anchor="middle" opacity="1">Keep playing</text>
+</svg>

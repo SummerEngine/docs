@@ -1,0 +1,115 @@
+---
+title: "Make a game like Minecraft"
+sidebarTitle: "Survival and sandbox"
+description: "The Summer pieces behind a shared survival or sandbox world like a Minecraft server, Valheim or Rust: a persistent World that saves, sleeps and wakes, plus player saves and chat."
+icon: "pickaxe"
+"og:image": "https://docs.summerengine.com/images/og/build-games-like-survival-sandbox.jpg"
+"twitter:image": "https://docs.summerengine.com/images/og/build-games-like-survival-sandbox.jpg"
+---
+
+A survival or sandbox game is a place, not a match. Players build something
+together, log off, and come back days later to find it exactly as they left
+it. Summer keeps that World on a server, saves it, lets it sleep while nobody
+is online, and wakes it when the next player joins. This page shows how the
+pieces fit together.
+
+## The pieces you need
+
+<CardGroup cols={2}>
+  <Card title="Make your game multiplayer" icon="network" href="/build/multiplayer">
+    Your server runs the World; every player runs the same game.
+  </Card>
+  <Card title="Persistent worlds" icon="globe" href="/build/persistent-worlds">
+    A World that saves, sleeps when empty and wakes when someone joins.
+  </Card>
+  <Card title="Save player progress" icon="save" href="/build/player-progress">
+    Each player's inventory and skills follow them between sessions.
+  </Card>
+  <Card title="Shared game world" icon="layers" href="/build/shared-state">
+    Every placed block, chest and door, the same for everyone.
+  </Card>
+  <Card title="Instant movement" icon="move" href="/build/movement">
+    Running, jumping and building respond the moment you press a key.
+  </Card>
+  <Card title="Friends and messages" icon="user-plus" href="/build/friends">
+    See which friends are online and in your game.
+  </Card>
+  <Card title="Text chat" icon="message-square" href="/build/chat">
+    Talk to everyone in the World.
+  </Card>
+  <Card title="Server size" icon="server" href="/build/server-size">
+    Pick how much server a World gets and how many players it holds.
+  </Card>
+  <Card title="Console commands" icon="terminal" href="/build/console-commands">
+    Run admin commands in a live World.
+  </Card>
+  <Card title="Cosmetics" icon="sparkles" href="/build/cosmetics">
+    Skins and outfits players own and wear in every World.
+  </Card>
+</CardGroup>
+
+## How it fits together
+
+<img className="block dark:hidden" src="/images/guide-art/games-like/survival-sandbox-light.svg" alt="The survival loop: a player joins their World, builds with others, the server saves the World, the World sleeps when nobody is online, and it wakes right where it was when the next player joins." />
+<img className="hidden dark:block" src="/images/guide-art/games-like/survival-sandbox-dark.svg" alt="The survival loop: a player joins their World, builds with others, the server saves the World, the World sleeps when nobody is online, and it wakes right where it was when the next player joins." />
+
+A player opens one of their Worlds and joins it. While people play, your
+server saves the World at regular checkpoints and before it stops. When the
+last player leaves, the World goes to sleep. The next player to join wakes it,
+and the server restores the last save before anyone walks in.
+
+## Plan my game
+
+<Prompt description="**Plan my survival game.** Your agent reads your project and lays out the Summer pieces in the order to build them.">
+I'm making a shared survival or sandbox game like a Minecraft server in
+Summer. Read my project and plan how to build it with these Summer skills, in
+this order; if you don't have them installed, find them in the Summer
+library:
+
+1. `multiplayer` and `multiplayer-project`: the server and client scenes and
+   a first Local Play run.
+2. `multiplayer-movement`: each player moves their own character instantly.
+3. `multiplayer-state`: placed blocks, chests and doors, owned by the server.
+4. `summer-world-saves`: the World saves, sleeps and restores.
+5. `summer-player-data`: each player's inventory follows them.
+6. `summer-world-chat` and `summer-friends`: talk in the World and see
+   friends.
+
+For each step, tell me what changes in my project and what I'll see when I
+test it. Don't change any files yet.
+</Prompt>
+
+## Build the signature features
+
+### A World that remembers everything
+
+<Prompt description="**Make my World persistent.** Builds survive restarts, and the World restores before anyone joins.">
+In my Summer project, make my World persistent: everything players build is
+saved on the server and is still there after the World sleeps and wakes. Use
+the Summer `summer-world-saves` skill; if you don't have it installed, find it
+in the Summer library.
+
+- Save at regular checkpoints, and once more before the World stops.
+- Restore the last save before the first player is let in.
+- Keep the save format the same across game updates, so existing Worlds keep
+  loading.
+
+Read my project first and tell me what my World needs to save. Then test it
+with Local Play and tell me what you saw, and what only a hosted World proves.
+</Prompt>
+
+### Inventories that follow the player
+
+<Prompt description="**Save each player's inventory.** It follows them to every World.">
+In my Summer project, save each player's inventory and stats so they follow
+the player between sessions. Use the Summer `summer-player-data` skill; if you
+don't have it installed, find it in the Summer library.
+
+Load the player's save when they join, save when it changes and when they
+leave, and make sure a crash never loses more than a few seconds. Read my
+project first, then test it with Local Play and tell me what you saw.
+</Prompt>
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

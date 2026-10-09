@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 260" width="880" height="260" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="259" rx="16" fill="#1b1810" stroke="#3a3428"/>
+<rect x="30.0" y="44" width="182.5" height="150" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<text x="121.25" y="70" font-size="13" font-weight="600" fill="#ede6d6" text-anchor="middle" opacity="1">Party up</text>
+<rect x="73.25" y="92" width="96" height="52" rx="12" fill="none" stroke="#f0b566" stroke-width="1.6" stroke-dasharray="4 4" opacity="1"/>
+<g opacity="1" fill="#f0b566"><circle cx="95.25" cy="120.5" r="4.96"/><path d="M 87.19 136 v -3.7199999999999998 a 8.06 6.82 0 0 1 16.12 0 v 3.7199999999999998 z"/></g>
+<g opacity="1" fill="#f0b566"><circle cx="121.25" cy="120.5" r="4.96"/><path d="M 113.19 136 v -3.7199999999999998 a 8.06 6.82 0 0 1 16.12 0 v 3.7199999999999998 z"/></g>
+<g opacity="1" fill="#f0b566"><circle cx="147.25" cy="120.5" r="4.96"/><path d="M 139.19 136 v -3.7199999999999998 a 8.06 6.82 0 0 1 16.12 0 v 3.7199999999999998 z"/></g>
+<text x="121.25" y="182" font-size="11" font-weight="500" fill="#9b927f" text-anchor="middle" opacity="1">your squad</text>
+<rect x="242.5" y="44" width="182.5" height="150" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<text x="333.75" y="70" font-size="13" font-weight="600" fill="#ede6d6" text-anchor="middle" opacity="1">Quick play</text>
+<rect x="281.75" y="100" width="74" height="50" rx="12" fill="none" stroke="#f0b566" stroke-width="1.6" stroke-dasharray="4 4" opacity="1"/>
+<g opacity="1" fill="#f0b566"><circle cx="295.75" cy="126.25" r="4.4"/><path d="M 288.6 140 v -3.3000000000000003 a 7.15 6.050000000000001 0 0 1 14.3 0 v 3.3000000000000003 z"/></g>
+<g opacity="1" fill="#f0b566"><circle cx="318.75" cy="126.25" r="4.4"/><path d="M 311.6 140 v -3.3000000000000003 a 7.15 6.050000000000001 0 0 1 14.3 0 v 3.3000000000000003 z"/></g>
+<g opacity="1" fill="#f0b566"><circle cx="341.75" cy="126.25" r="4.4"/><path d="M 334.6 140 v -3.3000000000000003 a 7.15 6.050000000000001 0 0 1 14.3 0 v 3.3000000000000003 z"/></g>
+<g opacity="1" fill="#ede6d6"><circle cx="373.75" cy="126.25" r="4.4"/><path d="M 366.6 140 v -3.3000000000000003 a 7.15 6.050000000000001 0 0 1 14.3 0 v 3.3000000000000003 z"/></g>
+<text x="373.75" y="106" font-size="12" font-weight="700" fill="#8bc48a" text-anchor="middle" opacity="1">+1</text>
+<text x="333.75" y="182" font-size="11" font-weight="500" fill="#9b927f" text-anchor="middle" opacity="1">fill the team</text>
+<line x1="217.5" y1="119.0" x2="231.5" y2="119.0" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 228.5 113.0 L 237.5 119.0 L 228.5 125.0" fill="none" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="455.0" y="44" width="182.5" height="150" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<text x="546.25" y="70" font-size="13" font-weight="600" fill="#ede6d6" text-anchor="middle" opacity="1">Play the run</text>
+<rect x="500.25" y="94" width="34" height="56" rx="8" fill="#242017" stroke="#9b927f" stroke-width="2" opacity="1"/>
+<rect x="507.25" y="105.0" width="20" height="7.333333333333334" rx="4" fill="#3d3121" opacity="1"/>
+<circle cx="519.25" cy="108.66666666666667" r="3" fill="#f0b566"/>
+<line x1="513.25" y1="108.66666666666667" x2="509.25" y2="108.66666666666667" stroke="#9b927f" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="507.25" y="118.33333333333333" width="20" height="7.333333333333334" rx="4" fill="#3d3121" opacity="1"/>
+<circle cx="519.25" cy="122.0" r="3" fill="#f0b566"/>
+<line x1="513.25" y1="122.0" x2="509.25" y2="122.0" stroke="#9b927f" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="507.25" y="131.66666666666666" width="20" height="7.333333333333334" rx="4" fill="#3d3121" opacity="1"/>
+<circle cx="519.25" cy="135.33333333333331" r="3" fill="#f0b566"/>
+<line x1="513.25" y1="135.33333333333331" x2="509.25" y2="135.33333333333331" stroke="#9b927f" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<g opacity="1" fill="#f0b566"><circle cx="554.25" cy="109.5" r="4.0"/><path d="M 547.75 122 v -3.0 a 6.5 5.5 0 0 1 13.0 0 v 3.0 z"/></g>
+<g opacity="1" fill="#f0b566"><circle cx="580.25" cy="109.5" r="4.0"/><path d="M 573.75 122 v -3.0 a 6.5 5.5 0 0 1 13.0 0 v 3.0 z"/></g>
+<g opacity="1" fill="#f0b566"><circle cx="554.25" cy="141.5" r="4.0"/><path d="M 547.75 154 v -3.0 a 6.5 5.5 0 0 1 13.0 0 v 3.0 z"/></g>
+<g opacity="1" fill="#f0b566"><circle cx="580.25" cy="141.5" r="4.0"/><path d="M 573.75 154 v -3.0 a 6.5 5.5 0 0 1 13.0 0 v 3.0 z"/></g>
+<text x="546.25" y="182" font-size="11" font-weight="500" fill="#9b927f" text-anchor="middle" opacity="1">one server</text>
+<line x1="430.0" y1="119.0" x2="444.0" y2="119.0" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 441.0 113.0 L 450.0 119.0 L 441.0 125.0" fill="none" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="667.5" y="44" width="182.5" height="150" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<text x="758.75" y="70" font-size="13" font-weight="600" fill="#ede6d6" text-anchor="middle" opacity="1">Progress saved</text>
+<g opacity="1" fill="#f0b566"><circle cx="744.75" cy="128.5" r="5.6"/><path d="M 735.65 146 v -4.199999999999999 a 9.1 7.699999999999999 0 0 1 18.2 0 v 4.199999999999999 z"/></g>
+<rect x="764.75" y="100" width="34" height="34" rx="8" fill="#242017" stroke="#8bc48a" stroke-width="1.8" opacity="1"/>
+<circle cx="781.75" cy="117" r="8" fill="#8bc48a"/><path d="M 778.25 117 l 2.5 2.6 l 4.5 -5" fill="none" stroke="#1b1810" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="758.75" y="182" font-size="11" font-weight="500" fill="#9b927f" text-anchor="middle" opacity="1">unlocks kept</text>
+<line x1="642.5" y1="119.0" x2="656.5" y2="119.0" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 653.5 113.0 L 662.5 119.0 L 653.5 125.0" fill="none" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 758.75 198 V 220 H 121.25 V 204" fill="none" stroke="#f0b566" stroke-width="2" stroke-dasharray="5 6" stroke-linecap="round"/>
+<path d="M 115.25 210 L 121.25 201 L 127.25 210" fill="none" stroke="#f0b566" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="395.0" y="209" width="90" height="22" rx="8" fill="#1b1810" opacity="1"/>
+<text x="440.0" y="224" font-size="12" font-weight="600" fill="#f0b566" text-anchor="middle" opacity="1">Play again</text>
+</svg>

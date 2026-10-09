@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 255" width="880" height="255" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="254" rx="16" fill="#1b1810" stroke="#3a3428"/>
+<rect x="30" y="30" width="330" height="180" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<text x="50" y="60" font-size="15" font-weight="700" fill="#ede6d6" text-anchor="start" opacity="1">Desktop store</text>
+<text x="50" y="90" font-size="12" font-weight="500" fill="#9b927f" text-anchor="start" opacity="1">Tagline (80)</text>
+<line x1="50" y1="104" x2="320" y2="104" stroke="#4a4334" stroke-width="6" stroke-linecap="round" opacity="1"/>
+<text x="50" y="134" font-size="12" font-weight="500" fill="#9b927f" text-anchor="start" opacity="1">Description 120-300</text>
+<line x1="50" y1="148" x2="330" y2="148" stroke="#4a4334" stroke-width="6" stroke-linecap="round" opacity="1"/>
+<line x1="50" y1="162" x2="330" y2="162" stroke="#4a4334" stroke-width="6" stroke-linecap="round" opacity="1"/>
+<line x1="50" y1="176" x2="280" y2="176" stroke="#4a4334" stroke-width="6" stroke-linecap="round" opacity="1"/>
+<rect x="520" y="30" width="330" height="180" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<text x="540" y="60" font-size="15" font-weight="700" fill="#ede6d6" text-anchor="start" opacity="1">Mobile store</text>
+<text x="540" y="90" font-size="12" font-weight="500" fill="#9b927f" text-anchor="start" opacity="1">Tagline (80)</text>
+<line x1="540" y1="104" x2="810" y2="104" stroke="#4a4334" stroke-width="6" stroke-linecap="round" opacity="1"/>
+<text x="540" y="134" font-size="12" font-weight="500" fill="#9b927f" text-anchor="start" opacity="1">Description 120-170</text>
+<line x1="540" y1="148" x2="820" y2="148" stroke="#4a4334" stroke-width="6" stroke-linecap="round" opacity="1"/>
+<line x1="540" y1="162" x2="740" y2="162" stroke="#4a4334" stroke-width="6" stroke-linecap="round" opacity="1"/>
+<line x1="540" y1="176" x2="640" y2="176" stroke="#4a4334" stroke-width="6" stroke-linecap="round" opacity="1"/>
+<line x1="366" y1="120" x2="508" y2="120" stroke="#f0b566" stroke-width="3" stroke-linecap="round" opacity="1"/>
+<path d="M 505 114 L 514 120 L 505 126" fill="none" stroke="#f0b566" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="380" y="132" width="120" height="28" rx="14" fill="#f0b566" opacity="1"/>
+<text x="440" y="151" font-size="12" font-weight="700" fill="#1b1810" text-anchor="middle" opacity="1">Same as desktop</text>
+<text x="440" y="182" font-size="11" font-weight="500" fill="#9b927f" text-anchor="middle" opacity="1">copies once</text>
+<text x="30" y="238" font-size="12" font-weight="500" fill="#9b927f" text-anchor="start" opacity="1">Title and 3-8 tags are shared. Art never copies between stores.</text>
+</svg>

@@ -1,0 +1,192 @@
+---
+title: "Make your game multiplayer"
+sidebarTitle: "Make it multiplayer"
+description: "How a Summer multiplayer game fits together: one project, a server that owns the rules, and Local Play to test it all on your own machine."
+icon: "users"
+"og:image": "https://docs.summerengine.com/images/og/build-multiplayer.jpg"
+"twitter:image": "https://docs.summerengine.com/images/og/build-multiplayer.jpg"
+---
+
+A Summer multiplayer game is **one project with two starting scenes**. The
+**client** scene is what every player runs: input, camera, visuals and menus.
+The **server** scene runs without a screen and owns the rules: the score, the
+doors, who won. Summer runs the server for every match, so no player has to
+host, and nobody needs to share an address.
+
+The same code runs on your machine and once the game is published. There's no
+separate "server version" to keep in sync, and no local-only shortcuts to
+remove later.
+
+## How it fits together
+
+<img className="block dark:hidden" src="/images/guide-art/multiplayer/overview-light.svg" alt="Each player's device runs the client scene and moves its own character. One Summer server runs the server scene for the match, checks what players do and sends everyone the results." />
+<img className="hidden dark:block" src="/images/guide-art/multiplayer/overview-dark.svg" alt="Each player's device runs the client scene and moves its own character. One Summer server runs the server scene for the match, checks what players do and sends everyone the results." />
+
+A few words come up on every page in this section:
+
+- **World:** one running match or shared place, run by one server. A
+  10-minute round is a World, and so is a server that stays up for weeks.
+- **Session:** one player's seat in a World. Summer checks who the player is
+  before they get one, so your server always knows exactly who did what.
+- **Queue:** how players find a World, such as "casual" or "ranked 2v2". See
+  [Match players into games](/build/matchmaking).
+
+<img className="block dark:hidden" src="/images/guide-art/multiplayer/words-light.svg" alt="Players in a queue are placed into a World. Inside the World, each player has a Session: their verified seat." />
+<img className="hidden dark:block" src="/images/guide-art/multiplayer/words-dark.svg" alt="Players in a queue are placed into a World. Inside the World, each player has a Session: their verified seat." />
+
+## What your players get
+
+- **Instant controls.** Each player's own character responds the moment they
+  press a key, on any connection. See [Make movement feel instant](/build/movement).
+- **A fair game.** The server checks every move and request, so a modified
+  client can't give itself points, speed or items.
+- **Nobody ends the match by leaving.** No player is the host. If someone
+  quits or drops out, everyone else keeps playing, and a player who reconnects
+  in time gets their seat back.
+- **The same account everywhere.** Players sign in once with their Summer
+  account, and your game sees their name in every match.
+
+## Start here
+
+<Prompt description="**Make my game multiplayer.** Your agent sets up both scenes, joining, and a first Local Play run.">
+Make my Summer project multiplayer. Use the Summer `multiplayer` skill to plan
+it and the `multiplayer-project` skill to set it up; if you don't have them
+installed, find them in the Summer library.
+
+- Split the game into a client scene every player runs and a server scene that
+  owns the rules.
+- Players join a match from my existing menu.
+- Every player sees one character per player who joined.
+
+Read my project first and tell me what moves to the server and what stays on
+the client before you change anything. Then run it with Local Play with two
+players and tell me what you saw.
+</Prompt>
+
+<Prompt description="**Explain how multiplayer would fit my game.** No code, just a plan.">
+Read my Summer project and explain how it would work as a Summer multiplayer
+game. Use the Summer `multiplayer` skill; if you don't have it installed, find
+it in the Summer library. Don't change any files yet.
+
+Tell me:
+1. what the server should own in my game, and what each player's client does;
+2. how players would find a match, and how many fit in one;
+3. which of my existing scripts change, and which stay as they are;
+4. anything my design needs that Summer doesn't cover yet, and how we can
+   build around it.
+</Prompt>
+
+## Testing it on your machine
+
+**Local Play** runs your whole multiplayer game on one computer. Press Play
+and Summer starts the server scene in the background plus one game window per
+player, side by side, each signed in as a test player. Choose the number of
+players in **Debug > Local Multiplayer**. No account, server or extra tools
+are needed, and your agent can start it for you.
+
+<img className="block dark:hidden" src="/images/guide-art/multiplayer/local-play-light.svg" alt="Pressing Play in Summer starts the server scene in the background and three game windows side by side, each signed in as a different test player." />
+<img className="hidden dark:block" src="/images/guide-art/multiplayer/local-play-dark.svg" alt="Pressing Play in Summer starts the server scene in the background and three game windows side by side, each signed in as a different test player." />
+
+Your own machine has no lag, which hides timing problems. Local Play can add
+delay, jitter and packet loss to every window, so you see what players on a
+real connection will see. Run it that way before you call a feature done.
+
+<Prompt description="**Test my multiplayer game on a bad connection.** Several players, real lag, and what a passing run shows.">
+Test my Summer multiplayer game with Local Play. Use the Summer
+`multiplayer-testing` skill; if you don't have it installed, find it in the
+Summer library.
+
+- Run [N] players, first on a normal connection and then with added delay,
+  jitter and packet loss.
+- Walk through [THE FEATURE] in every window.
+- Tell me exactly what you saw in each window, and anything that looked wrong.
+</Prompt>
+
+## Where to go next
+
+<CardGroup cols={2}>
+  <Card title="Match players into games" icon="swords" href="/build/matchmaking">
+    Quick play, ranked, teams and the accept prompt.
+  </Card>
+  <Card title="Let friends play together" icon="user-plus" href="/build/parties">
+    Friends queue as a party and land in the same match.
+  </Card>
+  <Card title="Keep a world running" icon="globe" href="/build/persistent-worlds">
+    Worlds that save and come back between sessions.
+  </Card>
+  <Card title="Make movement feel instant" icon="move" href="/build/movement">
+    Your character responds at once; others glide smoothly.
+  </Card>
+  <Card title="Make hits fair" icon="crosshair" href="/build/hit-detection">
+    Shots are checked against what the shooter saw.
+  </Card>
+  <Card title="Share the game world" icon="share-2" href="/build/shared-state">
+    Scores, doors, pickups and private hands of cards.
+  </Card>
+  <Card title="Save player progress" icon="save" href="/build/player-progress">
+    Progress that follows the player into every match.
+  </Card>
+  <Card title="Ratings and leaderboards" icon="trophy" href="/build/leaderboards">
+    Skill ratings, score boards and the top 50.
+  </Card>
+  <Card title="End a match and show results" icon="flag" href="/build/match-results">
+    Wins, losses and rating changes.
+  </Card>
+  <Card title="Friends and messages" icon="heart" href="/build/friends">
+    See who's online and message them.
+  </Card>
+  <Card title="Text chat" icon="message-circle" href="/build/chat">
+    Chat inside a World.
+  </Card>
+  <Card title="Sell items for Sparks" icon="shopping-bag" href="/build/store">
+    A store in your game, checked out by Summer.
+  </Card>
+  <Card title="Cosmetics" icon="shirt" href="/build/cosmetics">
+    Skins and outfits players own and wear.
+  </Card>
+  <Card title="Paid games and tips" icon="coins" href="/build/paid-games">
+    Charge for your game or let players support you.
+  </Card>
+  <Card title="Server size and player count" icon="server" href="/build/server-size">
+    Pick how big each World's server is.
+  </Card>
+  <Card title="Console commands" icon="terminal" href="/build/console-commands">
+    Type commands into a live World.
+  </Card>
+  <Card title="Analytics" icon="chart-line" href="/build/analytics">
+    See what players do in your game.
+  </Card>
+  <Card title="Publish your game" icon="rocket" href="/build/publish">
+    Ship it to players on summer.games.
+  </Card>
+</CardGroup>
+
+### Games like yours
+
+<CardGroup cols={2}>
+  <Card title="Tactical shooters" icon="crosshair" href="/build/games-like/tactical-shooter">
+    Round-based team shooters.
+  </Card>
+  <Card title="MOBAs" icon="swords" href="/build/games-like/moba">
+    Ranked team battles with an accept prompt.
+  </Card>
+  <Card title="Survival and sandbox" icon="pickaxe" href="/build/games-like/survival-sandbox">
+    Worlds players build in and come back to.
+  </Card>
+  <Card title="Co-op games" icon="users" href="/build/games-like/co-op">
+    A small group against the game.
+  </Card>
+  <Card title="Party games" icon="party-popper" href="/build/games-like/party-games">
+    Quick, casual rounds with friends.
+  </Card>
+  <Card title="Card and turn-based games" icon="layers" href="/build/games-like/card-games">
+    Private hands, shared boards, rated duels.
+  </Card>
+  <Card title="Single-player and mobile games" icon="smartphone" href="/build/games-like/single-player">
+    Accounts, saves and a store.
+  </Card>
+</CardGroup>
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

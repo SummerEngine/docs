@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 330" width="880" height="330" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="329" rx="16" fill="#fbf7ef" stroke="#e6dcc8"/>
+<circle cx="440" cy="160" r="128" fill="#d9922e" opacity="0.1"/>
+<circle cx="440" cy="160" r="98" fill="#d9922e" opacity="0.18"/>
+<circle cx="440" cy="160" r="72" fill="#d9922e" opacity="0.3"/>
+<line x1="262" y1="70" x2="395.5" y2="137.5" stroke="#d9922e" stroke-width="2" stroke-linecap="round" stroke-dasharray="3 6" opacity="0.8"/>
+<circle cx="262" cy="70" r="25" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5"/>
+<g opacity="1" fill="#2a251b"><circle cx="262" cy="64.0" r="6.4"/><path d="M 251.6 84 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<line x1="206" y1="126" x2="381.5" y2="151.5" stroke="#d9922e" stroke-width="2" stroke-linecap="round" stroke-dasharray="3 6" opacity="0.8"/>
+<circle cx="206" cy="126" r="25" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5"/>
+<g opacity="1" fill="#d9922e"><circle cx="206" cy="120.0" r="6.4"/><path d="M 195.6 140 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<line x1="206" y1="194" x2="381.5" y2="168.5" stroke="#d9922e" stroke-width="2" stroke-linecap="round" stroke-dasharray="3 6" opacity="0.8"/>
+<circle cx="206" cy="194" r="25" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5"/>
+<g opacity="1" fill="#2a251b"><circle cx="206" cy="188.0" r="6.4"/><path d="M 195.6 208 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<line x1="262" y1="250" x2="395.5" y2="182.5" stroke="#d9922e" stroke-width="2" stroke-linecap="round" stroke-dasharray="3 6" opacity="0.8"/>
+<circle cx="262" cy="250" r="25" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5"/>
+<g opacity="1" fill="#2a251b"><circle cx="262" cy="244.0" r="6.4"/><path d="M 251.6 264 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<line x1="618" y1="70" x2="484.5" y2="137.5" stroke="#d9922e" stroke-width="2" stroke-linecap="round" stroke-dasharray="3 6" opacity="0.8"/>
+<circle cx="618" cy="70" r="25" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5"/>
+<g opacity="1" fill="#2a251b"><circle cx="618" cy="64.0" r="6.4"/><path d="M 607.6 84 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<line x1="674" y1="126" x2="498.5" y2="151.5" stroke="#d9922e" stroke-width="2" stroke-linecap="round" stroke-dasharray="3 6" opacity="0.8"/>
+<circle cx="674" cy="126" r="25" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5"/>
+<g opacity="1" fill="#2a251b"><circle cx="674" cy="120.0" r="6.4"/><path d="M 663.6 140 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<line x1="674" y1="194" x2="498.5" y2="168.5" stroke="#d9922e" stroke-width="2" stroke-linecap="round" stroke-dasharray="3 6" opacity="0.8"/>
+<circle cx="674" cy="194" r="25" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5"/>
+<g opacity="1" fill="#d9922e"><circle cx="674" cy="188.0" r="6.4"/><path d="M 663.6 208 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<line x1="618" y1="250" x2="484.5" y2="182.5" stroke="#d9922e" stroke-width="2" stroke-linecap="round" stroke-dasharray="3 6" opacity="0.8"/>
+<circle cx="618" cy="250" r="25" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5"/>
+<g opacity="1" fill="#2a251b"><circle cx="618" cy="244.0" r="6.4"/><path d="M 607.6 264 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<circle cx="440" cy="160" r="54" fill="#ffffff" stroke="#d9922e" stroke-width="3"/>
+<rect x="420" y="128" width="40" height="62" rx="8" fill="#ffffff" stroke="#8a806b" stroke-width="2" opacity="1"/>
+<rect x="427" y="139.0" width="26" height="9.333333333333334" rx="4" fill="#f6e3c4" opacity="1"/>
+<circle cx="445" cy="143.66666666666666" r="3" fill="#d9922e"/>
+<line x1="433" y1="143.66666666666666" x2="435" y2="143.66666666666666" stroke="#8a806b" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="427" y="154.33333333333334" width="26" height="9.333333333333334" rx="4" fill="#f6e3c4" opacity="1"/>
+<circle cx="445" cy="159.0" r="3" fill="#d9922e"/>
+<line x1="433" y1="159.0" x2="435" y2="159.0" stroke="#8a806b" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="427" y="169.66666666666666" width="26" height="9.333333333333334" rx="4" fill="#f6e3c4" opacity="1"/>
+<circle cx="445" cy="174.33333333333331" r="3" fill="#d9922e"/>
+<line x1="433" y1="174.33333333333331" x2="435" y2="174.33333333333331" stroke="#8a806b" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<text x="440" y="312" font-size="14" font-weight="700" fill="#d9922e" text-anchor="middle" opacity="1">One World, run by Summer</text>
+<rect x="52.61" y="98" width="66.78" height="24" rx="12" fill="#ffffff" stroke="#d9922e" stroke-width="1.5" opacity="1"/>
+<text x="86" y="114.5" font-size="13" font-weight="700" fill="#d9922e" text-anchor="middle" opacity="1">Servers</text>
+<rect x="37.53" y="148" width="96.94" height="24" rx="12" fill="#ffffff" stroke="#8a806b" stroke-width="1.5" opacity="1"/>
+<text x="86" y="164.5" font-size="13" font-weight="700" fill="#8a806b" text-anchor="middle" opacity="1">Matchmaking</text>
+<rect x="52.61" y="198" width="66.78" height="24" rx="12" fill="#ffffff" stroke="#8a806b" stroke-width="1.5" opacity="1"/>
+<text x="86" y="214.5" font-size="13" font-weight="700" fill="#8a806b" text-anchor="middle" opacity="1">Parties</text>
+<rect x="768.15" y="98" width="51.699999999999996" height="24" rx="12" fill="#ffffff" stroke="#8a806b" stroke-width="1.5" opacity="1"/>
+<text x="794" y="114.5" font-size="13" font-weight="700" fill="#8a806b" text-anchor="middle" opacity="1">Saves</text>
+<rect x="741.76" y="148" width="104.47999999999999" height="24" rx="12" fill="#ffffff" stroke="#8a806b" stroke-width="1.5" opacity="1"/>
+<text x="794" y="164.5" font-size="13" font-weight="700" fill="#8a806b" text-anchor="middle" opacity="1">Leaderboards</text>
+<rect x="768.15" y="198" width="51.699999999999996" height="24" rx="12" fill="#ffffff" stroke="#8a806b" stroke-width="1.5" opacity="1"/>
+<text x="794" y="214.5" font-size="13" font-weight="700" fill="#8a806b" text-anchor="middle" opacity="1">Store</text>
+</svg>

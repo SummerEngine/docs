@@ -1,0 +1,164 @@
+---
+title: "Make store art with your agent"
+sidebarTitle: "Make store art"
+description: "Your agent checks My assets, makes missing art with Summer's image generation through the Summer Engine MCP, crops it to each store slot itself, uploads it, and puts it in the slot."
+icon: "wand-sparkles"
+---
+
+Your agent can fill every art slot on your store page. It uses your own art first and makes new art only for the slots that are empty.
+
+<img className="block dark:hidden" src="/images/guide-art/publishing/crop-light.svg" alt="Four steps: generate a picture with summer_generate_image, crop it to the slot's shape around the focal point, upload it with summer_upload_image, and put it in the slot with summer_store_set_art." />
+<img className="hidden dark:block" src="/images/guide-art/publishing/crop-dark.svg" alt="Four steps: generate a picture with summer_generate_image, crop it to the slot's shape around the focal point, upload it with summer_upload_image, and put it in the slot with summer_store_set_art." />
+
+## The order
+
+<Steps>
+  <Step title="Read what is missing">
+    `summer_store_get_listing` lists every slot and what is in it. Add `previews: true` to see the current art.
+  </Step>
+  <Step title="Check My assets">
+    `summer_list_my_assets` and `summer_search_assets` find art you already have: key art, your hero, logos, screenshots. `summer_get_asset` shows one.
+  </Step>
+  <Step title="Read the board">
+    If your game has a board, `summer_board_read` and `summer_board_game_soul` hold its look, characters and world. New art should match them.
+  </Step>
+  <Step title="Make what is missing">
+    `summer_generate_image` makes the picture, then `summer_check_job` waits for it. The new picture is saved in My assets.
+  </Step>
+  <Step title="Crop it to the slot">
+    The agent crops the picture to the slot's exact shape and size itself, keeping the subject at the focal point.
+  </Step>
+  <Step title="Upload the crop">
+    `summer_upload_image_begin`, then `summer_upload_image_complete`. The crop becomes one of your assets.
+  </Step>
+  <Step title="Put it in the slot">
+    `summer_store_set_art` with the slot id, the asset id and the focal point. The tool checks the shape before it uploads.
+  </Step>
+</Steps>
+
+## Make one picture per shape
+
+Ask the generator for the slot's own shape. Do not make one landscape picture and stretch it into every slot.
+
+| Slot | Ask for | Prompt must say |
+|---|---|---|
+| `desktop.keyArt`, `mobile.keyArt` | 16:9, at least 1920×1080 | No text, no logo. Subject near the middle. |
+| `mobile.tallCover` | 9:16, at least 1080×1920 | No text. Subject in the middle 4:5. Calm, dark bottom third. |
+| `desktop.capsuleTall` | 3:4, at least 1200×1600 | Logo allowed, inside the middle 80%. |
+| `desktop.capsuleWide` | 460:215, at least 920×430 | Logo allowed. |
+| `desktop.icon`, `mobile.icon` | 1:1, 1024×1024 | No words. One clear silhouette on a plain background. |
+
+**Screenshots are never generated.** They are real gameplay. Your agent can take them with the engine (`summer_screenshot`) or ask you to capture them.
+
+## Crop it yourself
+
+Generators return their own sizes. Your agent crops each picture to the slot itself:
+
+1. Compute the slot's shape. For example, from a 2048×1152 picture to a 9:16 tall cover: height 1152, width 1152 × 9 ÷ 16 = 648.
+2. Center the crop on the subject, then move it so it stays inside the picture.
+3. Scale it up to the slot's minimum size if needed (1080×1920 for the tall cover). Better: generate at the right shape and size.
+4. Save it as PNG, JPEG or WebP.
+
+```python title="crop_to_slot.py (Pillow)"
+from PIL import Image
+
+def crop_to_slot(path, out, ratio_w, ratio_h, min_w, min_h, focus_x=0.5, focus_y=0.5):
+    img = Image.open(path).convert("RGB")
+    w, h = img.size
+    target = ratio_w / ratio_h
+    if w / h > target:            # too wide: cut the sides
+        cw, ch = round(h * target), h
+    else:                         # too tall: cut top and bottom
+        cw, ch = w, round(w / target)
+    left = min(max(round(focus_x * w - cw / 2), 0), w - cw)
+    top = min(max(round(focus_y * h - ch / 2), 0), h - ch)
+    img = img.crop((left, top, left + cw, top + ch))
+    if cw < min_w or ch < min_h:
+        img = img.resize((max(min_w, cw), max(min_h, ch)), Image.LANCZOS)
+    img.save(out, quality=92)
+
+crop_to_slot("key-art.png", "tall-cover.jpg", 9, 16, 1080, 1920, focus_x=0.45)
+```
+
+Each slot's shape must match within 2%.
+
+## Upload the crop
+
+`summer_upload_image_begin` takes no inputs. It returns a signed upload: an `uploadUrl`, the `fields` to send, and a ready `curl` example. Send the file with every field:
+
+```bash
+curl -sS "<uploadUrl>" -F api_key=… -F timestamp=… -F signature=… \
+  -F public_id=… -F folder=… -F allowed_formats=… -F overwrite=false \
+  -F file=@./tall-cover.jpg
+```
+
+Then pass four values from that answer to `summer_upload_image_complete`:
+
+```json
+{
+  "tool": "summer_upload_image_complete",
+  "publicId": "<public_id>",
+  "version": 1760040000,
+  "signature": "<signature>",
+  "format": "jpg",
+  "title": "Tall cover"
+}
+```
+
+It returns the `assetId`. Uploads are free, at most 32 MB per picture. A picture that is already at a public `https` address can skip this: pass it as a `url` source.
+
+## Put it in the slot
+
+```json title="One picture, with a focal point"
+{
+  "tool": "summer_store_set_art",
+  "gameId": "<gameId>",
+  "slot": "mobile.tallCover",
+  "sources": [{ "assetId": "<assetId>" }],
+  "focalPoint": { "x": 0.45, "y": 0.4 }
+}
+```
+
+```json title="Add screenshots"
+{
+  "tool": "summer_store_set_art",
+  "gameId": "<gameId>",
+  "slot": "desktop.screenshots",
+  "sources": [{ "assetId": "<shot1>" }, { "assetId": "<shot2>" }],
+  "mode": "append"
+}
+```
+
+- `focalPoint` is from 0 to 1, from the left and from the top. Key art, capsules and the tall cover only.
+- `mode`: `replace` (default) or `append`. Screenshots take a list of up to 8; other slots take one picture.
+- An empty `sources` list clears the slot.
+
+## Ask your agent
+
+<Prompt description="**Make my missing store art.** Your agent makes, crops and uploads art for every empty slot.">
+Make the missing store art for my game on Summer Games. Use the Summer Engine
+MCP and the `store-art` skill, and follow
+https://docs.summerengine.com/publishing/generate-store-art.md.
+
+- Read my store page and list the empty slots. Look in My assets first.
+- For each slot still empty, read my board's look and make one picture in
+  the slot's own shape with summer_generate_image. No text, and no other
+  game's characters.
+- Crop it yourself to the slot's exact size around the subject, upload it
+  with summer_upload_image_begin and summer_upload_image_complete, and put
+  it in the slot with a focal point.
+- Show me each picture before it goes in. Never generate screenshots.
+</Prompt>
+
+## Rules
+
+- Make art from **your** game: your hero, your world, your look. Never another game's characters. Never fake gameplay.
+- Check My assets before you make anything. Making art uses your Summer credits.
+- No text in key art, the tall cover, icons or screenshots.
+- Stay inside the 20-picture budget across both stores.
+
+Sizes and reasons for every slot: [Store art](/publishing/store-art).
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

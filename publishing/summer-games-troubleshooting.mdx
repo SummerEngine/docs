@@ -1,0 +1,96 @@
+---
+title: "Publishing troubleshooting"
+sidebarTitle: "Troubleshooting"
+description: "Fixes for the errors you meet when publishing on Summer Games through Studio or MCP: sign-in, export, templates, upload, art shape, checklist, approval and analytics."
+icon: "life-buoy"
+---
+
+Find the message you see, then do what the right column says.
+
+## Sign-in
+
+### The store did not accept the sign-in
+
+`Summer Games did not accept this connector sign-in` or HTTP `401`.
+
+- Reconnect the Summer Engine connector in your agent, or run `npx -y summer-engine@latest login --store` again.
+- Still failing: run `summer login --store --force` to register this computer again.
+- `403 agent_access_not_enabled`: agent publishing is available to invited creators during the rollout, and your account is not on the list yet. Publish in Studio for now: [Publish your game](/build/publish).
+
+
+### Sign-in never finishes
+
+The local MCP waits for the browser on port 47615, 47616 or 47617. Close the program that holds those ports, then try again.
+
+## Export
+
+| Message | Fix |
+|---|---|
+| Template missing | Web builds and downloads need export templates. Run `summer_export_templates` with `action: "install"` and the platform. See [Export templates](/publishing/export#export-templates). |
+| `templates_not_published` | Templates are on the CDN from Summer Engine 0.7.1. Update Summer Engine, or use the templates that came with it. |
+| Compatibility renderer refused | The web build needs Forward+. Switch the renderer in **Project Settings → Rendering → Renderer**. |
+| Android not supported | Android in the store bundle needs Summer Engine 0.7.1 or later. Update Summer Engine. |
+| Platform not allowed | A game without a server can use the store bundle only for iPhone and Android. Use a download for Mac and Windows. |
+| The export times out | The first export imports every asset. Raise `timeoutSeconds` (up to 7200). |
+| Textures look wrong on one platform | Turn on that platform's texture format in **Project Settings → Rendering → Textures**: ETC2/ASTC for iPhone, Android and Mac, S3TC/BPTC for Windows. |
+
+## Upload
+
+| Message | Fix |
+|---|---|
+| `declaration_mismatch` | The platforms in the bundle differ from the ones you uploaded it for. Export again with the same `targets`. |
+| Version already used | Every upload needs a new `clientVersion`, such as `v1.0.1`. |
+| Upload stopped halfway | Call `summer_publish_build` again with the same file and version. It continues. |
+| A part URL expired | Call `summer_build_sign_parts` again for that part. Sending a part again is safe. |
+| Web build rejected | The `.zip` needs `index.html` at its root, at most 500 MiB, 2,000 files and 200 MiB per file. |
+| Only the owner can finish this | On a live game, a web build or download goes live at once, so only the owner finishes it in Studio. |
+| Build `failed` | Read the reason in `summer_build_status`, fix it, export with a new version and upload again. |
+
+## Store page
+
+| Message | Fix |
+|---|---|
+| The store page changed since it was read (`412`) | Read it again with `summer_store_get_listing`, then retry. |
+| A page in review cannot change | Wait for review to finish. A published or sent-back page starts a new draft when you edit it. |
+| Shape or size wrong | The picture must match the slot's shape within 2% and meet the minimum size. See [Store art](/publishing/store-art). |
+| `asset_not_found` | The asset is not one of yours. Find yours with `summer_list_my_assets`. |
+| `image_unreadable` | Upload a PNG, JPEG or WebP with `summer_upload_image_begin`, or use a public `https` image URL. |
+| `invalid_upload` | The image upload expired or was not signed for you. Start again with `summer_upload_image_begin`. |
+| No publishing tools in the npm MCP | Run `summer login --store`. Until then the MCP shows one tool, `summer_store_tools`, that says so. |
+| Mobile description too long | The mobile description is 120-170 characters. Shorten it after **Same as desktop**. |
+| Too many pictures | A page holds at most 20 pictures and videos across both stores. Remove some screenshots. |
+
+## Submit and approval
+
+| Message | Fix |
+|---|---|
+| Submit lists missing items | Fill what `summer_store_get_listing` lists in its checklist, then submit again. |
+| `owner_approval_required` | Only the owner can do this, in Studio. Use `summer_store_submit` and give the owner the link. |
+| The approval link says **This version changed** | The page changed after the agent asked. Ask your agent to submit again. |
+| Set up payouts before this game can have a price | Open **Get paid** in Studio and connect your payout account, or approve it as free. |
+| `no_approved_build` | `summer_build_release` only releases a build the owner approved. Submit with `summer_store_submit` first. |
+| Only the game owner can approve publishing | Sign in with the account that owns the game. |
+
+## Analytics
+
+| Problem | Fix |
+|---|---|
+| Events report `unavailable` | Normal under Local Play, in the editor and in the browser. Do not send them again. |
+| No events in Grow | Events appear after a short delay, and only from a published build that includes them. |
+| `capacity_exceeded` | More than 32 events are waiting. Send fewer; put counts in one event. |
+| `analytics_storage_limit_exceeded` | Your game's storage is full. Send fewer event types. |
+
+## Let your agent fix it
+
+<Prompt description="**Fix my publishing error.** Your agent finds the error on this page and fixes what it can.">
+Publishing my game on Summer Games failed. Read
+https://docs.summerengine.com/publishing/summer-games-troubleshooting.md,
+find the error I got, and fix what you can. Use the Summer Engine MCP.
+
+Tell me the tool, the error code and what you changed. If only I can fix it
+(sign-in, payouts, approval), tell me exactly what to click.
+</Prompt>
+
+## Still stuck
+
+Ask on [Discord](https://discord.gg/summerengine). Include the tool name, the error code and the request id if there is one.

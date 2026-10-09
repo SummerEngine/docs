@@ -1,0 +1,163 @@
+---
+title: "Keep a world running between sessions"
+sidebarTitle: "Persistent worlds"
+description: "Give players a place they come back to: a base, a farm or a realm that is saved, sleeps while nobody plays, and wakes up just as they left it."
+icon: "globe"
+"og:image": "https://docs.summerengine.com/images/og/build-persistent-worlds.jpg"
+"twitter:image": "https://docs.summerengine.com/images/og/build-persistent-worlds.jpg"
+---
+
+Most matches end and are gone. A **persistent World** is a place players come
+back to, such as a shared base, a farm or a realm. Your game's server saves it
+while people play. When nobody is playing, Summer can let the World sleep, and
+the next time someone joins, it wakes up and restores from its last save.
+
+## Games like this
+
+<CardGroup cols={3}>
+  <Card title="Minecraft Realms" icon="pickaxe">
+    A world your friends keep building in for months.
+  </Card>
+  <Card title="Valheim" icon="mountain">
+    A small group's world that's still there next weekend.
+  </Card>
+  <Card title="Stardew Valley co-op" icon="sprout">
+    A shared farm that keeps its crops and buildings.
+  </Card>
+</CardGroup>
+
+If players should find the world the way they left it, this is the page for
+you. If each match starts fresh, use
+[matchmaking](/build/matchmaking) on its own.
+
+## What your players get
+
+<img className="block dark:hidden" src="/images/guide-art/persistent-worlds/lifecycle-light.svg" alt="Four steps for one World: players play and build, the World is saved at checkpoints, it sleeps with no server running while nobody plays, and it wakes up restored from its save when a player returns." />
+<img className="hidden dark:block" src="/images/guide-art/persistent-worlds/lifecycle-dark.svg" alt="Four steps for one World: players play and build, the World is saved at checkpoints, it sleeps with no server running while nobody plays, and it wakes up restored from its save when a player returns." />
+
+- **The world as they left it.** Walls they built, chests they filled and crops
+  they planted are all still there.
+- **Their own Worlds, one tap away.** Players find the Worlds they've played
+  under **My Worlds** in Summer Games, and your game can offer a "Return to my
+  World" button.
+- **A warning before planned restarts.** When a World is about to restart or
+  sleep for maintenance, your game can tell players in advance, and the World
+  saves before it stops.
+- **Worlds that survive updates.** Publishing a new version of your game
+  doesn't touch existing private Worlds: they keep their saves and the version
+  they started on. New Worlds use your newest version.
+
+## What to save where
+
+A World save holds what belongs to the **place**. What belongs to a **player**,
+such as their level or the coins in their pocket, goes in
+[player progress](/build/player-progress), so it follows them to every World.
+
+<img className="block dark:hidden" src="/images/guide-art/persistent-worlds/what-goes-where-light.svg" alt="The World save belongs to the place: walls, chests and crops. Player progress follows the player to every World: level, unlocks, coins and settings." />
+<img className="hidden dark:block" src="/images/guide-art/persistent-worlds/what-goes-where-dark.svg" alt="The World save belongs to the place: walls, chests and crops. Player progress follows the player to every World: level, unlocks, coins and settings." />
+
+Your game decides what goes in a save, and the save is always one consistent
+moment. If a player moves an item from a chest into their inventory, the chest
+and the inventory are saved together.
+
+## Pick your setup
+
+### A private World for a group
+
+Each group gets its own World that only its players return to, like a Realm
+or a co-op farm. Players come back to it from **My Worlds** or from your
+game's menu, and a sleeping World wakes up and restores before they're let in.
+
+<Prompt description="**Make my World persistent.** It saves while people play, sleeps when empty, and players come back to it.">
+In my Summer project, turn my World into a persistent World that players come
+back to. Use the Summer `summer-world-saves` skill; if you don't have it
+installed, find it in the Summer library.
+
+- Save [WHAT BELONGS TO THE PLACE, for example "everything players build and
+  the contents of chests"] regularly while people play.
+- When the World starts, restore it from its last save before anyone joins.
+- Remember each player's World so the menu can offer "Return to my World".
+- Keep each player's own progress out of the World save; use the
+  `summer-player-data` skill for that.
+
+Read my project first and list what you'd save before you change anything.
+Then test it with Local Play and tell me what I can only check once the game
+is hosted.
+</Prompt>
+
+### Shared Worlds anyone can join
+
+Players who search for a game join an existing World that has a free seat,
+waking it up if it's asleep. Summer starts a new World only when none has
+room. Good for public servers that grow a community over time.
+
+<img className="block dark:hidden" src="/images/guide-art/persistent-worlds/shared-worlds-light.svg" alt="A searching player skips a full World and joins a sleeping World with a free seat, which wakes up. A new World starts only when no existing World has room." />
+<img className="hidden dark:block" src="/images/guide-art/persistent-worlds/shared-worlds-dark.svg" alt="A searching player skips a full World and joins a sleeping World with a free seat, which wakes up. A new World starts only when no existing World has room." />
+
+<Prompt description="**Add shared Worlds.** Players join an existing World with room before a new one starts.">
+In my Summer project, let players join shared persistent Worlds: a player
+who presses Play joins an existing World with a free seat, and a new World
+starts only when none has room. Use the Summer `summer-world-saves` and
+`summer-matchmaking` skills; if you don't have them installed, find them in
+the Summer library. The queue should place players in existing Worlds first
+(`open_world_first`).
+
+- Each World holds up to [NUMBER] players.
+- Save [WHAT BELONGS TO THE PLACE] regularly, and restore it before anyone
+  joins.
+
+Read my project first and explain how a player gets from my menu into a
+shared World before you change anything.
+</Prompt>
+
+### Warn players before a planned restart
+
+Before Summer restarts a World or puts it to sleep for maintenance, your game
+gets notice in advance. Use it to warn players and wrap up anything in
+progress. Gameplay then pauses for a final save, and the World comes back
+exactly as it was.
+
+<img className="block dark:hidden" src="/images/guide-art/persistent-worlds/shutdown-light.svg" alt="A timeline: the World gets a notice, the game warns players that the server restarts in 5 minutes, gameplay pauses for a final save, and later the same World comes back restored." />
+<img className="hidden dark:block" src="/images/guide-art/persistent-worlds/shutdown-dark.svg" alt="A timeline: the World gets a notice, the game warns players that the server restarts in 5 minutes, gameplay pauses for a final save, and later the same World comes back restored." />
+
+<Prompt description="**Warn players before a restart** and make the final save.">
+In my Summer project, warn players before my persistent World restarts or
+sleeps, and save it before it stops. Use the Summer `summer-world-saves`
+skill; if you don't have it installed, find it in the Summer library.
+
+- When a planned stop is announced, show players a countdown, such as
+  "Server restarts in 5 minutes", and hide it again if the stop is cancelled.
+- Don't start long activities, like a boss fight, close to the stop.
+- Make the final save when Summer asks for it.
+
+Keep the regular saves too: an unexpected crash doesn't send a warning.
+</Prompt>
+
+## Not sure which fits?
+
+<Prompt description="**Plan persistent Worlds for my game.** Your agent reads your project and proposes what to save and how players return. No code.">
+Read my Summer project and help me plan persistent Worlds for it. Use the
+Summer `summer-world-saves` and `summer-player-data` skills; if you don't
+have them installed, find them in the Summer library. Don't change any files
+yet.
+
+Tell me:
+1. whether my game wants private Worlds for a group or shared Worlds anyone
+   can join;
+2. what belongs in the World save and what belongs in each player's progress;
+3. how players find their way back to a World;
+4. anything my design needs that persistent Worlds don't cover yet, and how
+   we can build around it.
+</Prompt>
+
+## Testing it on your machine
+
+Local Play runs your persistent World with saves kept in memory. Every run
+starts with an empty World, saving works and returns a confirmation, and
+nothing is kept after the run ends. That's enough to check that your World
+saves while people play and restores before anyone joins. Coming back to the
+same World after a real restart happens in the hosted game.
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 290" width="880" height="290" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="289" rx="16" fill="#1b1810" stroke="#3a3428"/>
+<text x="40" y="54" font-size="15" font-weight="600" fill="#ede6d6" text-anchor="start" opacity="1">Accepted</text>
+<text x="40" y="184" font-size="15" font-weight="600" fill="#ede6d6" text-anchor="start" opacity="1">Refused</text>
+<g opacity="1" fill="#f0b566"><circle cx="80" cy="110.75" r="6.8"/><path d="M 68.95 132 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<rect x="114.28" y="94" width="111.44" height="24" rx="12" fill="#242017" stroke="#f0b566" stroke-width="1.5" opacity="1"/>
+<text x="170" y="110.5" font-size="12" font-weight="700" fill="#f0b566" text-anchor="middle" opacity="1">Open the door?</text>
+<line x1="234" y1="106" x2="278" y2="106" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 275 100 L 284 106 L 275 112" fill="none" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="296" y="70" width="40" height="64" rx="8" fill="#242017" stroke="#9b927f" stroke-width="2" opacity="1"/>
+<rect x="303" y="81.0" width="26" height="10.0" rx="4" fill="#3d3121" opacity="1"/>
+<circle cx="321" cy="86.0" r="3" fill="#f0b566"/>
+<line x1="309" y1="86.0" x2="311" y2="86.0" stroke="#9b927f" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="303" y="97.0" width="26" height="10.0" rx="4" fill="#3d3121" opacity="1"/>
+<circle cx="321" cy="102.0" r="3" fill="#f0b566"/>
+<line x1="309" y1="102.0" x2="311" y2="102.0" stroke="#9b927f" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="303" y="113.0" width="26" height="10.0" rx="4" fill="#3d3121" opacity="1"/>
+<circle cx="321" cy="118.0" r="3" fill="#f0b566"/>
+<line x1="309" y1="118.0" x2="311" y2="118.0" stroke="#9b927f" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<circle cx="344" cy="74" r="10" fill="#8bc48a"/><path d="M 340.5 74 l 2.5 2.6 l 4.5 -5" fill="none" stroke="#1b1810" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<line x1="356" y1="106" x2="400" y2="106" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 397 100 L 406 106 L 397 112" fill="none" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="418" y="52" width="422" height="92" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<rect x="440" y="66" width="40" height="64" rx="4" fill="none" stroke="#8bc48a" stroke-width="2.2" opacity="1"/>
+<path d="M 440 66 L 462 74 L 462 138 L 440 130 Z" fill="#8bc48a" opacity="0.35"/>
+<text x="500" y="104" font-size="13" font-weight="600" fill="#ede6d6" text-anchor="start" opacity="1">the door opens for everyone</text>
+<g opacity="1" fill="#ede6d6"><circle cx="736" cy="111.75" r="5.2"/><path d="M 727.55 128 v -3.9000000000000004 a 8.450000000000001 7.15 0 0 1 16.900000000000002 0 v 3.9000000000000004 z"/></g>
+<g opacity="1" fill="#ede6d6"><circle cx="770" cy="111.75" r="5.2"/><path d="M 761.55 128 v -3.9000000000000004 a 8.450000000000001 7.15 0 0 1 16.900000000000002 0 v 3.9000000000000004 z"/></g>
+<g opacity="1" fill="#ede6d6"><circle cx="804" cy="111.75" r="5.2"/><path d="M 795.55 128 v -3.9000000000000004 a 8.450000000000001 7.15 0 0 1 16.900000000000002 0 v 3.9000000000000004 z"/></g>
+<g opacity="1" fill="#f0b566"><circle cx="80" cy="240.75" r="6.8"/><path d="M 68.95 262 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<rect x="114.28" y="224" width="111.44" height="24" rx="12" fill="#242017" stroke="#f0b566" stroke-width="1.5" opacity="1"/>
+<text x="170" y="240.5" font-size="12" font-weight="700" fill="#f0b566" text-anchor="middle" opacity="1">Open the door?</text>
+<line x1="234" y1="236" x2="278" y2="236" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 275 230 L 284 236 L 275 242" fill="none" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="296" y="200" width="40" height="64" rx="8" fill="#242017" stroke="#9b927f" stroke-width="2" opacity="1"/>
+<rect x="303" y="211.0" width="26" height="10.0" rx="4" fill="#3d3121" opacity="1"/>
+<circle cx="321" cy="216.0" r="3" fill="#f0b566"/>
+<line x1="309" y1="216.0" x2="311" y2="216.0" stroke="#9b927f" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="303" y="227.0" width="26" height="10.0" rx="4" fill="#3d3121" opacity="1"/>
+<circle cx="321" cy="232.0" r="3" fill="#f0b566"/>
+<line x1="309" y1="232.0" x2="311" y2="232.0" stroke="#9b927f" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="303" y="243.0" width="26" height="10.0" rx="4" fill="#3d3121" opacity="1"/>
+<circle cx="321" cy="248.0" r="3" fill="#f0b566"/>
+<line x1="309" y1="248.0" x2="311" y2="248.0" stroke="#9b927f" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<circle cx="344" cy="204" r="10" fill="#e07a5f"/><path d="M 341 201 l 6 6 M 347 201 l -6 6" fill="none" stroke="#1b1810" stroke-width="2" stroke-linecap="round"/>
+<line x1="356" y1="236" x2="400" y2="236" stroke="#e07a5f" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 397 230 L 406 236 L 397 242" fill="none" stroke="#e07a5f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="418" y="182" width="422" height="92" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<rect x="469.48" y="216" width="181.04" height="24" rx="12" fill="#242017" stroke="#e07a5f" stroke-width="1.5" opacity="1"/>
+<text x="560" y="232.5" font-size="12" font-weight="700" fill="#e07a5f" text-anchor="middle" opacity="1">Locked: you need the key</text>
+<g opacity="1" fill="#f0b566"><circle cx="736" cy="241.75" r="5.2"/><path d="M 727.55 258 v -3.9000000000000004 a 8.450000000000001 7.15 0 0 1 16.900000000000002 0 v 3.9000000000000004 z"/></g>
+<text x="788" y="232" font-size="12" font-weight="600" fill="#9b927f" text-anchor="middle" opacity="1">only the asker</text>
+</svg>

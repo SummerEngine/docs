@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 270" width="880" height="270" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="269" rx="16" fill="#fbf7ef" stroke="#e6dcc8"/>
+<rect x="40" y="40" width="170" height="190" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="125" y="70" font-size="14" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">Your game</text>
+<rect x="90" y="86" width="70" height="112" rx="12" fill="#ffffff" stroke="#8a806b" stroke-width="2" opacity="1"/>
+<rect x="97" y="98" width="56" height="84" rx="6" fill="#f6e3c4" opacity="1"/>
+<line x1="117.0" y1="190" x2="133.0" y2="190" stroke="#8a806b" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="97" y="130" width="56" height="24" rx="8" fill="#d9922e" opacity="1"/>
+<text x="125" y="146" font-size="11" font-weight="700" fill="#fbf7ef" text-anchor="middle" opacity="1">Friends</text>
+<line x1="222" y1="135" x2="260" y2="135" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 257 129 L 266 135 L 257 141" fill="none" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="278" y="40" width="284" height="190" rx="14" fill="#ffffff" stroke="#d9922e" stroke-width="2" opacity="1"/>
+<text x="420" y="70" font-size="14" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">Summer asks the player</text>
+<text x="420" y="108" font-size="13" font-weight="500" fill="#2a251b" text-anchor="middle" opacity="1">Let this game see</text>
+<text x="420" y="126" font-size="13" font-weight="500" fill="#2a251b" text-anchor="middle" opacity="1">your friends?</text>
+<rect x="300" y="156" width="112" height="30" rx="9" fill="#d9922e" opacity="1"/>
+<text x="356" y="176" font-size="13" font-weight="700" fill="#fbf7ef" text-anchor="middle" opacity="1">Allow</text>
+<rect x="428" y="156" width="112" height="30" rx="9" fill="#fbf7ef" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="484" y="176" font-size="13" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">Not now</text>
+<line x1="574" y1="110" x2="634.6011153568228" y2="80.61764103911622" stroke="#4f9a55" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 633.6 87.8 L 640 78 L 628.4 77.0" fill="none" stroke="#4f9a55" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<line x1="574" y1="160" x2="634.6011153568228" y2="189.38235896088378" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 628.4 193.0 L 640 192 L 633.6 182.2" fill="none" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="652" y="40" width="188" height="76" rx="14" fill="#ffffff" stroke="#4f9a55" stroke-width="1.5" opacity="1"/>
+<text x="746" y="72" font-size="13" font-weight="700" fill="#4f9a55" text-anchor="middle" opacity="1">Friends list appears</text>
+<g opacity="1" fill="#2a251b"><circle cx="712" cy="90.25" r="4.4"/><path d="M 704.85 104 v -3.3000000000000003 a 7.15 6.050000000000001 0 0 1 14.3 0 v 3.3000000000000003 z"/></g>
+<g opacity="1" fill="#2a251b"><circle cx="746" cy="90.25" r="4.4"/><path d="M 738.85 104 v -3.3000000000000003 a 7.15 6.050000000000001 0 0 1 14.3 0 v 3.3000000000000003 z"/></g>
+<g opacity="1" fill="#2a251b"><circle cx="780" cy="90.25" r="4.4"/><path d="M 772.85 104 v -3.3000000000000003 a 7.15 6.050000000000001 0 0 1 14.3 0 v 3.3000000000000003 z"/></g>
+<rect x="652" y="154" width="188" height="76" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="746" y="186" font-size="13" font-weight="700" fill="#2a251b" text-anchor="middle" opacity="1">Game carries on</text>
+<text x="746" y="210" font-size="12" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">list stays private</text>
+</svg>

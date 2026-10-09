@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 240" width="880" height="240" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="239" rx="16" fill="#fbf7ef" stroke="#e6dcc8"/>
+<text x="40" y="40" font-size="15" font-weight="600" fill="#2a251b" text-anchor="start" opacity="1">Two places to keep progress</text>
+<rect x="40" y="62" width="380" height="150" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<path d="M 59 92 Q 70 83 81 92 Q 70 101 59 92 Z" fill="none" stroke="#d9922e" stroke-width="2"/><circle cx="70" cy="92" r="3" fill="#d9922e"/>
+<text x="92" y="97" font-size="14" font-weight="700" fill="#d9922e" text-anchor="start" opacity="1">The player can see it</text>
+<text x="64" y="132" font-size="13" font-weight="500" fill="#2a251b" text-anchor="start" opacity="1">• Coins and level for the menu</text>
+<text x="64" y="158" font-size="13" font-weight="500" fill="#2a251b" text-anchor="start" opacity="1">• Unlocks and settings</text>
+<text x="64" y="192" font-size="12" font-weight="500" fill="#8a806b" text-anchor="start" opacity="1">Your server writes it; the player's game can read it</text>
+<rect x="460" y="62" width="380" height="150" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<path d="M 485 91 v -4 a 5 5 0 0 1 10 0 v 4" fill="none" stroke="#3f7fb0" stroke-width="2"/><rect x="482" y="91" width="16" height="12" rx="3" fill="#3f7fb0"/>
+<text x="512" y="97" font-size="14" font-weight="700" fill="#3f7fb0" text-anchor="start" opacity="1">Only your server sees it</text>
+<text x="484" y="132" font-size="13" font-weight="500" fill="#2a251b" text-anchor="start" opacity="1">• Anti-cheat counters</text>
+<text x="484" y="158" font-size="13" font-weight="500" fill="#2a251b" text-anchor="start" opacity="1">• Hidden skill or progress values</text>
+<text x="484" y="192" font-size="12" font-weight="500" fill="#8a806b" text-anchor="start" opacity="1">Never sent to any player's game</text>
+</svg>

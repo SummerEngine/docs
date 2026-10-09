@@ -1,0 +1,164 @@
+---
+title: "End a match and show results"
+sidebarTitle: "Match results"
+description: "Your server decides who won, Summer records the result once, every player sees their own outcome and rating change, and the match closes."
+icon: "flag"
+"og:image": "https://docs.summerengine.com/images/og/build-match-results.jpg"
+"twitter:image": "https://docs.summerengine.com/images/og/build-match-results.jpg"
+---
+
+A match ends when your game's server says so. The server decides how it went
+for every player: a win, a loss, a draw, or leaving early. Summer records that
+result once and moves ratings on a ranked queue. Each player sees their own
+outcome, and the server closes the match so everyone goes back to your menu.
+
+## Games like this
+
+<CardGroup cols={2}>
+  <Card title="Counter-Strike, Valorant" icon="crosshair">
+    A whole team wins or loses together.
+  </Card>
+  <Card title="Chess.com" icon="crown">
+    Win, loss or draw, with your rating change right after.
+  </Card>
+  <Card title="Among Us" icon="users">
+    One side wins, and everyone sees how it ended.
+  </Card>
+  <Card title="Rocket League" icon="car">
+    Leaving a match early is recorded, not forgotten.
+  </Card>
+</CardGroup>
+
+Every match needs an ending, including "everyone else left". If your game has a
+results screen, a winner, or a rating that moves, this is the page for you.
+
+## What your players get
+
+<img className="block dark:hidden" src="/images/guide-art/match-results/flow-light.svg" alt="Four steps: the server decides every player's outcome, Summer records it once, each player sees their own result and rating change, and the match closes." />
+<img className="hidden dark:block" src="/images/guide-art/match-results/flow-dark.svg" alt="Four steps: the server decides every player's outcome, Summer records it once, each player sees their own result and rating change, and the match closes." />
+
+<Steps>
+  <Step title="The match ends">
+    Your server decides the outcome for every player in the match, including
+    players who already left. They count as having abandoned it.
+  </Step>
+  <Step title="Summer records it once">
+    Summer stores the result and, on a ranked queue, moves every player's
+    rating. If your server sends the same result again, for example after a
+    network hiccup, Summer keeps the first one and never counts it twice.
+  </Step>
+  <Step title="Each player sees their result">
+    Every player gets their own outcome straight away, and their new rating as
+    soon as Summer has saved it. Players only ever receive their own numbers.
+  </Step>
+  <Step title="The match closes">
+    After your results screen, the server closes the match and players go back
+    to your menu, ready to play again.
+  </Step>
+</Steps>
+
+Your game decides what the results screen looks like and how long it stays up.
+Summer handles recording the result, updating ratings and delivering each
+player's numbers to them.
+
+## Pick your setup
+
+### Winner takes all
+
+One player wins, such as the first to collect ten coins or the last one
+standing, and everyone else loses. Good for free-for-all modes and duels.
+
+<Prompt description="**End my match with a winner.** The server picks the winner, everyone sees the result, and the match closes.">
+In my Summer project, end each match when [WIN CONDITION, for example "a
+player collects 10 coins"]. Use the Summer `summer-match-results` skill; if
+you don't have it installed, find it in the Summer library.
+
+- The server decides the outcome for every player: the winner wins, everyone
+  else loses, and players who left count as abandoned.
+- Show each player a results screen with their own outcome, and their rating
+  change on a ranked queue.
+- After a few seconds, close the match and send players back to the menu with
+  a Play again button.
+
+Read my project first and find where the win condition belongs before you
+change anything. Then test it with Local Play and tell me what you saw.
+</Prompt>
+
+### Team wins
+
+On a team queue, every member of a team gets the same outcome. Summer scores
+the teams it formed, so a ranked team match moves everyone's rating together.
+
+<img className="block dark:hidden" src="/images/guide-art/match-results/teams-light.svg" alt="Every player on Team 0 wins and every player on Team 1 loses; a Team 1 player who left early is recorded as abandoned." />
+<img className="hidden dark:block" src="/images/guide-art/match-results/teams-dark.svg" alt="Every player on Team 0 wins and every player on Team 1 loses; a Team 1 player who left early is recorded as abandoned." />
+
+<Prompt description="**End my team match.** The winning team wins together, the other team loses together.">
+In my Summer project, end each team match when [WIN CONDITION, for example
+"a team reaches 13 rounds"]. Use the Summer `summer-match-results` and
+`summer-matchmaking` skills; if you don't have them installed, find them in
+the Summer library.
+
+- Every member of the winning team wins and every member of the other team
+  loses. Players who left count as abandoned.
+- Show each player their team's result and their own rating change.
+
+Read my project first and tell me how my game knows each player's team before
+you change anything. Then test it with Local Play and tell me what you saw.
+</Prompt>
+
+### Draws and players who leave
+
+A match can end in a draw for everyone, such as a timer running out with the
+score tied. A player whose connection drops keeps their seat for a short time
+so they can come back. A player who leaves for good still gets an outcome,
+recorded as abandoned, so the result always covers everyone who played.
+
+<Prompt description="**Handle draws and early leavers.** Tied matches end in a draw; players who quit count as abandoned.">
+In my Summer project, make my match ending handle every case. Use the Summer
+`summer-match-results` skill; if you don't have it installed, find it in the
+Summer library.
+
+- If [DRAW CONDITION, for example "the timer runs out with the score tied"],
+  everyone draws.
+- A player whose connection drops keeps their seat until they come back or
+  leave for good. Don't end the match just because someone disconnected.
+- If everyone else has left, the last player still gets a proper ending.
+
+Read my project first and list the ways my match can end before you change
+anything. Then test them with Local Play and tell me what you saw.
+</Prompt>
+
+### Matches inside a world that keeps running
+
+In a [world that keeps running between sessions](/build/persistent-worlds),
+a match can end without closing the world. Players who joined just for that
+match leave, everyone else stays, and the world keeps going.
+
+## Not sure which fits?
+
+<Prompt description="**Plan how my matches end.** Your agent reads your project and proposes the endings. No code.">
+Read my Summer project and help me plan how its matches end. Use the Summer
+`summer-match-results` skill; if you don't have it installed, find it in the
+Summer library. Don't change any files yet.
+
+Tell me:
+1. every way a match in my game can end, and the outcome each player gets;
+2. what each player sees from the last moment of play until they're back in
+   the menu;
+3. anything my design needs that match results don't cover yet, and how we
+   can build around it.
+</Prompt>
+
+## Testing it on your machine
+
+Local Play runs the whole ending on one computer. Your server ends the match
+and gets test rating changes back, and every game window shows its own
+result. Real rating changes appear in a hosted game. Under Local Play, players
+also stay connected after the match closes until they leave, so drive your
+results screen from the result itself, not from the disconnect.
+
+The results feed [Ratings and leaderboards](/build/leaderboards).
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

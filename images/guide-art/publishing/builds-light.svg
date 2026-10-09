@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 280" width="880" height="280" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="279" rx="16" fill="#fbf7ef" stroke="#e6dcc8"/>
+<rect x="30" y="30" width="260" height="210" rx="14" fill="#ffffff" stroke="#d9922e" stroke-width="2" opacity="1"/>
+<rect x="50" y="50" width="40" height="50" rx="6" fill="#fbf7ef" stroke="#8a806b" stroke-width="2" opacity="1"/>
+<rect x="66" y="55" width="8" height="5" rx="1" fill="#d9922e" opacity="1"/>
+<rect x="66" y="65" width="8" height="5" rx="1" fill="#d9922e" opacity="1"/>
+<rect x="66" y="75" width="8" height="5" rx="1" fill="#d9922e" opacity="1"/>
+<rect x="66" y="85" width="8" height="5" rx="1" fill="#d9922e" opacity="1"/>
+<text x="106" y="70" font-size="15" font-weight="700" fill="#2a251b" text-anchor="start" opacity="1">Store bundle</text>
+<text x="106" y="90" font-size="11" font-weight="500" fill="#8a806b" text-anchor="start" opacity="1">summer.bundle.v1 .zip</text>
+<circle cx="60" cy="130" r="7" fill="#4f9a55"/><path d="M 56.5 130 l 2.5 2.6 l 4.5 -5" fill="none" stroke="#fbf7ef" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="74" y="134" font-size="12" font-weight="500" fill="#2a251b" text-anchor="start" opacity="1">iPhone</text>
+<circle cx="60" cy="152" r="7" fill="#4f9a55"/><path d="M 56.5 152 l 2.5 2.6 l 4.5 -5" fill="none" stroke="#fbf7ef" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="74" y="156" font-size="12" font-weight="500" fill="#2a251b" text-anchor="start" opacity="1">Android</text>
+<circle cx="60" cy="174" r="7" fill="#4f9a55"/><path d="M 56.5 174 l 2.5 2.6 l 4.5 -5" fill="none" stroke="#fbf7ef" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="74" y="178" font-size="12" font-weight="500" fill="#2a251b" text-anchor="start" opacity="1">Mac app *</text>
+<circle cx="60" cy="196" r="7" fill="#4f9a55"/><path d="M 56.5 196 l 2.5 2.6 l 4.5 -5" fill="none" stroke="#fbf7ef" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="74" y="200" font-size="12" font-weight="500" fill="#2a251b" text-anchor="start" opacity="1">Windows app *</text>
+<text x="160" y="228" font-size="12" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">Summer Games apps</text>
+<rect x="310" y="30" width="260" height="210" rx="14" fill="#ffffff" stroke="#3f7fb0" stroke-width="2" opacity="1"/>
+<rect x="330" y="50" width="40" height="50" rx="6" fill="#fbf7ef" stroke="#8a806b" stroke-width="2" opacity="1"/>
+<rect x="346" y="55" width="8" height="5" rx="1" fill="#3f7fb0" opacity="1"/>
+<rect x="346" y="65" width="8" height="5" rx="1" fill="#3f7fb0" opacity="1"/>
+<rect x="346" y="75" width="8" height="5" rx="1" fill="#3f7fb0" opacity="1"/>
+<rect x="346" y="85" width="8" height="5" rx="1" fill="#3f7fb0" opacity="1"/>
+<text x="386" y="70" font-size="15" font-weight="700" fill="#2a251b" text-anchor="start" opacity="1">Web build</text>
+<text x="386" y="90" font-size="11" font-weight="500" fill="#8a806b" text-anchor="start" opacity="1">.zip with index.html</text>
+<circle cx="340" cy="130" r="7" fill="#4f9a55"/><path d="M 336.5 130 l 2.5 2.6 l 4.5 -5" fill="none" stroke="#fbf7ef" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="354" y="134" font-size="12" font-weight="500" fill="#2a251b" text-anchor="start" opacity="1">summer.games</text>
+<text x="440" y="228" font-size="12" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">in the browser</text>
+<rect x="590" y="30" width="260" height="210" rx="14" fill="#ffffff" stroke="#8a806b" stroke-width="2" opacity="1"/>
+<rect x="610" y="50" width="40" height="50" rx="6" fill="#fbf7ef" stroke="#8a806b" stroke-width="2" opacity="1"/>
+<rect x="626" y="55" width="8" height="5" rx="1" fill="#8a806b" opacity="1"/>
+<rect x="626" y="65" width="8" height="5" rx="1" fill="#8a806b" opacity="1"/>
+<rect x="626" y="75" width="8" height="5" rx="1" fill="#8a806b" opacity="1"/>
+<rect x="626" y="85" width="8" height="5" rx="1" fill="#8a806b" opacity="1"/>
+<text x="666" y="70" font-size="15" font-weight="700" fill="#2a251b" text-anchor="start" opacity="1">Download</text>
+<text x="666" y="90" font-size="11" font-weight="500" fill="#8a806b" text-anchor="start" opacity="1">.app or .exe, zipped</text>
+<circle cx="620" cy="130" r="7" fill="#4f9a55"/><path d="M 616.5 130 l 2.5 2.6 l 4.5 -5" fill="none" stroke="#fbf7ef" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="634" y="134" font-size="12" font-weight="500" fill="#2a251b" text-anchor="start" opacity="1">Mac</text>
+<circle cx="620" cy="152" r="7" fill="#4f9a55"/><path d="M 616.5 152 l 2.5 2.6 l 4.5 -5" fill="none" stroke="#fbf7ef" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="634" y="156" font-size="12" font-weight="500" fill="#2a251b" text-anchor="start" opacity="1">Windows</text>
+<text x="720" y="228" font-size="12" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">players download it</text>
+<text x="30" y="262" font-size="11" font-weight="500" fill="#8a806b" text-anchor="start" opacity="1">* Mac and Windows apps: multiplayer games only. Single-player games use a download there.</text>
+</svg>

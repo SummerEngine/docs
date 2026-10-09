@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 250" width="880" height="250" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="249" rx="16" fill="#1b1810" stroke="#3a3428"/>
+<rect x="40" y="30" width="300" height="190" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<text x="64" y="62" font-size="15" font-weight="600" fill="#ede6d6" text-anchor="start" opacity="1">Before the match</text>
+<g opacity="1" fill="#f0b566"><circle cx="120" cy="135.0" r="8.0"/><path d="M 107.0 160 v -6.0 a 13.0 11.0 0 0 1 26.0 0 v 6.0 z"/></g>
+<rect x="97.92" y="176" width="44.16" height="24" rx="12" fill="#242017" stroke="#f0b566" stroke-width="1.5" opacity="1"/>
+<text x="120" y="192.5" font-size="13" font-weight="700" fill="#f0b566" text-anchor="middle" opacity="1">1400</text>
+<text x="190" y="140" font-size="16" font-weight="700" fill="#9b927f" text-anchor="middle" opacity="1">vs</text>
+<g opacity="1" fill="#ede6d6"><circle cx="260" cy="135.0" r="8.0"/><path d="M 247.0 160 v -6.0 a 13.0 11.0 0 0 1 26.0 0 v 6.0 z"/></g>
+<rect x="237.92000000000002" y="176" width="44.16" height="24" rx="12" fill="#242017" stroke="#ede6d6" stroke-width="1.5" opacity="1"/>
+<text x="260" y="192.5" font-size="13" font-weight="700" fill="#ede6d6" text-anchor="middle" opacity="1">1380</text>
+<line x1="356" y1="125" x2="396" y2="125" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 393 119 L 402 125 L 393 131" fill="none" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="379" y="108" font-size="12" font-weight="600" fill="#9b927f" text-anchor="middle" opacity="1">Elo</text>
+<rect x="418" y="30" width="422" height="190" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<text x="442" y="62" font-size="15" font-weight="600" fill="#ede6d6" text-anchor="start" opacity="1">After the match</text>
+<g opacity="1" fill="#f0b566"><circle cx="510" cy="115.0" r="8.0"/><path d="M 497.0 140 v -6.0 a 13.0 11.0 0 0 1 26.0 0 v 6.0 z"/></g>
+<text x="510" y="94" font-size="13" font-weight="700" fill="#8bc48a" text-anchor="middle" opacity="1">Win</text>
+<text x="476" y="192" font-size="14" font-weight="500" fill="#9b927f" text-anchor="middle" opacity="1">1400</text>
+<text x="504" y="192" font-size="14" font-weight="500" fill="#9b927f" text-anchor="middle" opacity="1">→</text>
+<text x="538" y="192" font-size="15" font-weight="700" fill="#f0b566" text-anchor="middle" opacity="1">1415</text>
+<rect x="571.08" y="174" width="41.839999999999996" height="24" rx="12" fill="#242017" stroke="#8bc48a" stroke-width="1.5" opacity="1"/>
+<text x="592" y="190.5" font-size="12" font-weight="700" fill="#8bc48a" text-anchor="middle" opacity="1">▲ 15</text>
+<g opacity="1" fill="#ede6d6"><circle cx="720" cy="115.0" r="8.0"/><path d="M 707.0 140 v -6.0 a 13.0 11.0 0 0 1 26.0 0 v 6.0 z"/></g>
+<text x="720" y="94" font-size="13" font-weight="700" fill="#e07a5f" text-anchor="middle" opacity="1">Loss</text>
+<text x="686" y="192" font-size="14" font-weight="500" fill="#9b927f" text-anchor="middle" opacity="1">1380</text>
+<text x="714" y="192" font-size="14" font-weight="500" fill="#9b927f" text-anchor="middle" opacity="1">→</text>
+<text x="748" y="192" font-size="15" font-weight="700" fill="#ede6d6" text-anchor="middle" opacity="1">1365</text>
+<rect x="781.08" y="174" width="41.839999999999996" height="24" rx="12" fill="#242017" stroke="#e07a5f" stroke-width="1.5" opacity="1"/>
+<text x="802" y="190.5" font-size="12" font-weight="700" fill="#e07a5f" text-anchor="middle" opacity="1">▼ 15</text>
+</svg>

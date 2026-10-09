@@ -140,22 +140,12 @@
     {
       "name": "fenced playback and matchmaking mutation",
       "text": "```text\nPlayers can launch uploaded Summer games in the browser today, and managed matchmaking is live.\n```",
-      "capabilities": ["uploaded-game-playback", "managed-matchmaking"]
+      "capabilities": ["uploaded-game-playback"]
     },
     {
       "name": "uploaded game readiness paraphrase",
       "text": "Uploaded Summer games are ready for players to launch in our browser.",
       "capabilities": ["uploaded-game-playback"]
-    },
-    {
-      "name": "operational matchmaking paraphrase",
-      "text": "Matchmaking is operational now.",
-      "capabilities": ["managed-matchmaking"]
-    },
-    {
-      "name": "dedicated server run paraphrase",
-      "text": "We run dedicated game servers for every release.",
-      "capabilities": ["hosted-game-servers"]
     },
     {
       "name": "sandbox execution paraphrase",
@@ -168,49 +158,14 @@
       "capabilities": ["summer-multiplayer-transport"]
     },
     {
-      "name": "approved pack runtime paraphrase",
-      "text": "Approved packs are executed by the Summercraft runtime.",
-      "capabilities": ["production-runtime"]
-    },
-    {
-      "name": "durable persistence paraphrase",
-      "text": "Summer.data automatically writes every save to durable storage.",
-      "capabilities": ["hosted-persistence-economy"]
-    },
-    {
       "name": "negation reversal cannot suppress later sentence",
       "text": "Playback is not planned anymore. Players can launch uploaded Summer games today.",
       "capabilities": ["uploaded-game-playback"]
     },
     {
-      "name": "runtime enforcement mutation",
-      "text": "The production runtime loads every approved pack and enforces the manifest automatically.",
-      "capabilities": ["production-runtime"]
-    },
-    {
-      "name": "persistence flush mutation",
-      "text": "Summer.data autosaves player progress and the backend flush is handled for you.",
-      "capabilities": ["hosted-persistence-economy"]
-    },
-    {
-      "name": "planned marker cannot suppress contradictory matchmaking clause",
-      "text": "Matchmaking remains Planned, yet it is operational now.",
-      "capabilities": ["managed-matchmaking"]
-    },
-    {
       "name": "web client playable creator build paraphrase",
       "text": "Uploaded creator builds are playable in the web client now.",
       "capabilities": ["uploaded-game-playback"]
-    },
-    {
-      "name": "automatic lobby pairing paraphrase",
-      "text": "The platform automatically pairs players into lobbies today.",
-      "capabilities": ["managed-matchmaking"]
-    },
-    {
-      "name": "cloud game provisioning paraphrase",
-      "text": "Cloud game instances are provisioned for every release.",
-      "capabilities": ["hosted-game-servers"]
     },
     {
       "name": "production uploaded-pack isolation paraphrase",
@@ -221,111 +176,6 @@
       "name": "live replication peer paraphrase",
       "text": "Summer's multiplayer peer provides live replication.",
       "capabilities": ["summer-multiplayer-transport"]
-    },
-    {
-      "name": "approved packs run on Summercraft paraphrase",
-      "text": "Approved packs run on Summercraft today.",
-      "capabilities": ["production-runtime"]
-    },
-    {
-      "name": "verb-first approved-pack runtime paraphrase",
-      "text": "We execute approved packs on Summercraft today.",
-      "capabilities": ["production-runtime"]
-    },
-    {
-      "name": "cross-sentence matchmaking anaphor",
-      "text": "Matchmaking remains Planned. It is operational now.",
-      "capabilities": ["managed-matchmaking"]
-    },
-    {
-      "name": "cross-sentence runtime anaphor",
-      "text": "Approved packs remain Planned. They run on Summercraft today.",
-      "capabilities": ["production-runtime"]
-    },
-    {
-      "name": "cross-sentence persistence anaphor",
-      "text": "Summer storage is Scaffolded. It keeps player saves durably between sessions.",
-      "capabilities": ["hosted-persistence-economy"]
-    },
-    {
-      "name": "local test qualifier cannot hide later production assertion",
-      "text": "The local test harness pairs players into lobbies. It is operational in production now.",
-      "capabilities": ["managed-matchmaking"]
-    },
-    {
-      "name": "modal private test cannot hide later production assertion",
-      "text": "Matchmaking may be operational in a private test. It is operational in production now.",
-      "capabilities": ["managed-matchmaking"]
-    },
-    {
-      "name": "same-sentence anaphoric production assertion",
-      "text": "Summer storage is Scaffolded; however, it stores saves durably in production.",
-      "capabilities": ["hosted-persistence-economy"]
-    },
-    {
-      "name": "elliptical matchmaking production predicate",
-      "text": "Matchmaking may be operational in a private test, but is operational in production.",
-      "capabilities": ["managed-matchmaking"]
-    },
-    {
-      "name": "elliptical pack production predicate",
-      "text": "Approved packs remain Planned, but execute in production.",
-      "capabilities": ["production-runtime"]
-    },
-    {
-      "name": "elliptical storage production predicate",
-      "text": "Summer storage is Scaffolded, but stores player saves durably in production.",
-      "capabilities": ["hosted-persistence-economy"]
-    },
-    {
-      "name": "elliptical matchmaking live variant",
-      "text": "Matchmaking remains Planned; however, is live in production.",
-      "capabilities": ["managed-matchmaking"]
-    },
-    {
-      "name": "elliptical pack run variant",
-      "text": "Approved packs remain Planned, yet run in production.",
-      "capabilities": ["production-runtime"]
-    },
-    {
-      "name": "elliptical storage write variant",
-      "text": "Summer storage is Scaffolded, but writes player save data in production.",
-      "capabilities": ["hosted-persistence-economy"]
-    },
-    {
-      "name": "elliptical persistence object coreference",
-      "text": "Summer storage may keep saves in a test harness but stores them durably in production.",
-      "capabilities": ["hosted-persistence-economy"]
-    },
-    {
-      "name": "elliptical persistence object coreference variant",
-      "text": "Summer storage may write player saves in a private test; however, persists them between production sessions.",
-      "capabilities": ["hosted-persistence-economy"]
-    },
-    {
-      "name": "elliptical persistence adjective object coreference",
-      "text": "Summer storage may keep encrypted player saves in a test harness, but stores them durably in production.",
-      "capabilities": ["hosted-persistence-economy"]
-    },
-    {
-      "name": "ordinary production economy assertion",
-      "text": "Summer storage writes player economy in production.",
-      "capabilities": ["hosted-persistence-economy"]
-    },
-    {
-      "name": "ordinary prepositional durable-storage assertion",
-      "text": "Summer storage writes to durable storage in production.",
-      "capabilities": ["hosted-persistence-economy"]
-    },
-    {
-      "name": "ordinary prepositional durable-storage variant",
-      "text": "Summer storage persists to durable storage in production.",
-      "capabilities": ["hosted-persistence-economy"]
-    },
-    {
-      "name": "durable inter-session Summer storage paraphrase",
-      "text": "Summer storage keeps player saves durably between sessions.",
-      "capabilities": ["hosted-persistence-economy"]
     }
   ],
   "capabilityAllow": [

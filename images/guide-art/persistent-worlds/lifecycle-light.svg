@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 270" width="880" height="270" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="269" rx="16" fill="#fbf7ef" stroke="#e6dcc8"/>
+<rect x="30" y="30" width="180" height="210" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<circle cx="54" cy="60" r="11" fill="#d9922e"/>
+<text x="54" y="64.5" font-size="12" font-weight="700" fill="#fbf7ef" text-anchor="middle" opacity="1">1</text>
+<text x="74" y="65" font-size="15" font-weight="600" fill="#2a251b" text-anchor="start" opacity="1">Play</text>
+<rect x="48" y="92" width="144" height="104" rx="14" fill="#f6e3c4" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<rect x="65.28" y="154.88" width="14.4" height="29.120000000000005" rx="3" fill="#d9922e" opacity="0.8"/>
+<rect x="82.56" y="140.32" width="14.4" height="43.68" rx="3" fill="#d9922e" opacity="0.8"/>
+<rect x="99.84" y="163.2" width="14.4" height="20.8" rx="3" fill="#d9922e" opacity="0.8"/>
+<g opacity="1" fill="#2a251b"><circle cx="137.28" cy="167.75" r="5.2"/><path d="M 128.83 184 v -3.9000000000000004 a 8.450000000000001 7.15 0 0 1 16.900000000000002 0 v 3.9000000000000004 z"/></g>
+<g opacity="1" fill="#2a251b"><circle cx="163.28" cy="167.75" r="5.2"/><path d="M 154.83 184 v -3.9000000000000004 a 8.450000000000001 7.15 0 0 1 16.900000000000002 0 v 3.9000000000000004 z"/></g>
+<line x1="216" y1="144" x2="230" y2="144" stroke="#8a806b" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<path d="M 227 138 L 236 144 L 227 150" fill="none" stroke="#8a806b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="240" y="30" width="180" height="210" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<circle cx="264" cy="60" r="11" fill="#d9922e"/>
+<text x="264" y="64.5" font-size="12" font-weight="700" fill="#fbf7ef" text-anchor="middle" opacity="1">2</text>
+<text x="284" y="65" font-size="15" font-weight="600" fill="#2a251b" text-anchor="start" opacity="1">Saved</text>
+<rect x="258" y="92" width="144" height="104" rx="14" fill="#f6e3c4" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<rect x="275.28" y="154.88" width="14.4" height="29.120000000000005" rx="3" fill="#d9922e" opacity="0.8"/>
+<rect x="292.56" y="140.32" width="14.4" height="43.68" rx="3" fill="#d9922e" opacity="0.8"/>
+<rect x="309.84" y="163.2" width="14.4" height="20.8" rx="3" fill="#d9922e" opacity="0.8"/>
+<g opacity="1" fill="#2a251b"><circle cx="347.28" cy="167.75" r="5.2"/><path d="M 338.83 184 v -3.9000000000000004 a 8.450000000000001 7.15 0 0 1 16.900000000000002 0 v 3.9000000000000004 z"/></g>
+<g opacity="1" fill="#2a251b"><circle cx="373.28" cy="167.75" r="5.2"/><path d="M 364.83 184 v -3.9000000000000004 a 8.450000000000001 7.15 0 0 1 16.900000000000002 0 v 3.9000000000000004 z"/></g>
+<line x1="426" y1="144" x2="440" y2="144" stroke="#8a806b" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<path d="M 437 138 L 446 144 L 437 150" fill="none" stroke="#8a806b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="450" y="30" width="180" height="210" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<circle cx="474" cy="60" r="11" fill="#d9922e"/>
+<text x="474" y="64.5" font-size="12" font-weight="700" fill="#fbf7ef" text-anchor="middle" opacity="1">3</text>
+<text x="494" y="65" font-size="15" font-weight="600" fill="#2a251b" text-anchor="start" opacity="1">Asleep</text>
+<rect x="468" y="92" width="144" height="104" rx="14" fill="#fbf7ef" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<rect x="485.28" y="154.88" width="14.4" height="29.120000000000005" rx="3" fill="#d8cfbd" opacity="0.8"/>
+<rect x="502.56" y="140.32" width="14.4" height="43.68" rx="3" fill="#d8cfbd" opacity="0.8"/>
+<rect x="519.84" y="163.2" width="14.4" height="20.8" rx="3" fill="#d8cfbd" opacity="0.8"/>
+<path d="M 589.5 106 A 10 10 0 1 0 596 119.5 A 8.0 8.0 0 0 1 589.5 106 Z" fill="#8a806b"/>
+<line x1="636" y1="144" x2="650" y2="144" stroke="#8a806b" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<path d="M 647 138 L 656 144 L 647 150" fill="none" stroke="#8a806b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="660" y="30" width="180" height="210" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<circle cx="684" cy="60" r="11" fill="#d9922e"/>
+<text x="684" y="64.5" font-size="12" font-weight="700" fill="#fbf7ef" text-anchor="middle" opacity="1">4</text>
+<text x="704" y="65" font-size="15" font-weight="600" fill="#2a251b" text-anchor="start" opacity="1">Wakes up</text>
+<rect x="678" y="92" width="144" height="104" rx="14" fill="#f6e3c4" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<rect x="695.28" y="154.88" width="14.4" height="29.120000000000005" rx="3" fill="#d9922e" opacity="0.8"/>
+<rect x="712.56" y="140.32" width="14.4" height="43.68" rx="3" fill="#d9922e" opacity="0.8"/>
+<rect x="729.84" y="163.2" width="14.4" height="20.8" rx="3" fill="#d9922e" opacity="0.8"/>
+<g opacity="1" fill="#2a251b"><circle cx="767.28" cy="167.75" r="5.2"/><path d="M 758.8299999999999 184 v -3.9000000000000004 a 8.450000000000001 7.15 0 0 1 16.900000000000002 0 v 3.9000000000000004 z"/></g>
+<rect x="291.1" y="208" width="77.8" height="24" rx="12" fill="#ffffff" stroke="#d9922e" stroke-width="1.5" opacity="1"/>
+<text x="330" y="224.5" font-size="11" font-weight="700" fill="#d9922e" text-anchor="middle" opacity="1">checkpoint</text>
+<rect x="478.77" y="208" width="122.46" height="24" rx="12" fill="#ffffff" stroke="#8a806b" stroke-width="1.5" opacity="1"/>
+<text x="540" y="224.5" font-size="11" font-weight="700" fill="#8a806b" text-anchor="middle" opacity="1">no server running</text>
+<rect x="685.58" y="208" width="128.83999999999997" height="24" rx="12" fill="#ffffff" stroke="#4f9a55" stroke-width="1.5" opacity="1"/>
+<text x="750" y="224.5" font-size="11" font-weight="700" fill="#4f9a55" text-anchor="middle" opacity="1">restored from save</text>
+<rect x="71.53" y="208" width="96.94" height="24" rx="12" fill="#ffffff" stroke="#8a806b" stroke-width="1.5" opacity="1"/>
+<text x="120" y="224.5" font-size="11" font-weight="700" fill="#8a806b" text-anchor="middle" opacity="1">same World id</text>
+</svg>

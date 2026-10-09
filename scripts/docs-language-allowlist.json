@@ -33,34 +33,6 @@
     {
       "file": "quickstarts/fresh-project.mdx",
       "terms": ["Summer Engine", "Summer game", "GDScript", "Summer SDK"]
-    },
-    {
-      "file": "api-reference/summer-sdk/build-your-first-summer-game.mdx",
-      "terms": ["Summer game", "GDScript", "Summer SDK"]
-    },
-    {
-      "file": "api-reference/summer-sdk.mdx",
-      "terms": ["Summer Engine", "Summer game", "GDScript", "Summer SDK"]
-    },
-    {
-      "file": "api-reference/summer-sdk/testing-your-game-locally.mdx",
-      "terms": ["Summer Engine", "Summer game", "Summer SDK"]
-    },
-    {
-      "file": "api-reference/summer-sdk/exporting-and-uploading-your-game.mdx",
-      "terms": ["Summer Engine", "Summer game", "GDScript"]
-    },
-    {
-      "file": "api-reference/summer-sdk/submission-guide.mdx",
-      "terms": ["Summer game", "GDScript"]
-    },
-    {
-      "file": "api-reference/summer-sdk/updating-your-game.mdx",
-      "terms": ["Summer Engine", "Summer game", "GDScript", "Summer SDK"]
-    },
-    {
-      "file": "agent-setup/prompt.mdx",
-      "terms": ["Summer Engine", "Summer game", "GDScript", "Summer SDK"]
     }
   ]
 }

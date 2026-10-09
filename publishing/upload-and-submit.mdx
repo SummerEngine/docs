@@ -1,0 +1,112 @@
+---
+title: "Upload your build and submit"
+sidebarTitle: "Upload and submit"
+description: "Upload a store bundle, web build or download with summer_publish_build, wait for Summer's checks, make a preview link, and submit with summer_store_submit for the owner's approval."
+icon: "upload"
+---
+
+After the store page is filled and the game is exported, your agent uploads the build and submits. In Studio you do the same under **Check and submit**; see [Publish your game](/build/publish).
+
+<img className="block dark:hidden" src="/images/guide-art/publishing/upload-light.svg" alt="Your export is uploaded in resumable 64 MiB parts. Summer checks it on iPhone, Android, Mac and Windows. Submit sends the page, the build and a proposed price, and publishes nothing. The owner gets an approval link." />
+<img className="hidden dark:block" src="/images/guide-art/publishing/upload-dark.svg" alt="Your export is uploaded in resumable 64 MiB parts. Summer checks it on iPhone, Android, Mac and Windows. Submit sends the page, the build and a proposed price, and publishes nothing. The owner gets an approval link." />
+
+## 1. Upload the build
+
+`summer_publish_build` uploads the file from your disk: a store bundle, a web build or a download. The first call shows what it will upload; the second, with `confirm: true`, uploads it.
+
+```json title="1. Preview"
+{ "tool": "summer_publish_build", "gameId": "<gameId>", "clientVersion": "v1.0.0" }
+```
+
+It returns the exact game, file, SHA-256, size and version. Your agent shows you this and asks.
+
+```json title="2. Upload"
+{ "tool": "summer_publish_build", "gameId": "<gameId>", "clientVersion": "v1.0.0", "confirm": true }
+```
+
+| Input | Meaning |
+|---|---|
+| `gameId` | The store game. Omit it to get the list of your games. |
+| `file` | The `.zip`. Defaults to the last `summer_export_game` result. |
+| `clientVersion` | `vMAJOR.MINOR.PATCH`. A new upload needs a new version. |
+| `platform` | Web builds and downloads: `web`, `macos-universal`, `windows-x64` or `linux-x64`. Defaults to the last export's platform. Omit it for a store bundle. |
+| `confirm` | `true` only after you approve the exact upload. |
+| `publish` | Leave `false`. You submit with `summer_store_submit`. |
+| `waitSeconds` | How long to wait for Summer's checks (default 600). On timeout, call again to keep waiting. |
+
+Store bundles upload in 64 MiB parts, web builds in 16 MiB parts. If the connection drops, call it again with the same file and version: it continues the same upload and skips the parts already stored.
+
+Web builds and downloads are **store versions**, one per platform. A web `.zip` is checked before upload: `index.html` at its root, at most 2,000 files and 500 MiB.
+
+<Warning>
+  On a game that is already live, a finished web build or download goes live at once. So on a live game only the owner can finish one, in Studio.
+</Warning>
+
+**Without the npm MCP** (a hosted agent that has the file elsewhere), use the hosted steps. Store bundle: `summer_build_begin_upload`, `summer_build_sign_parts`, PUT each part with every returned header, `summer_build_complete_upload` until `ready` or `failed`. Web build or download: `summer_store_version_begin_upload`, `summer_store_version_sign_parts`, PUT each part, `summer_store_version_complete`. See the [tools reference](/publishing/mcp-tools#build-upload).
+
+## 2. Wait for the checks
+
+`summer_build_status` shows each store bundle's state: `uploading`, `processing`, `checking`, `ready` or `failed`. `summer_store_version_status` does the same for web builds and downloads: `awaiting_upload`, `processing`, `ready` or `rejected`. Summer checks a bundle on every platform it lists. A failed build says what to fix; see [Troubleshooting](/publishing/summer-games-troubleshooting).
+
+## 3. Look at it first (optional)
+
+```json
+{ "tool": "summer_store_preview_link", "gameId": "<gameId>", "expires": "1d" }
+```
+
+A private link to the saved page on summer.games. It is hidden from search, and Buy and Play do nothing. It expires after `1h`, `1d` or `7d`.
+
+## 4. Check what is missing
+
+`summer_store_get_listing` returns the publish checklist for each store. Fix everything it lists before you submit. Read it again after each change.
+
+## 5. Submit
+
+```json
+{
+  "tool": "summer_store_submit",
+  "gameId": "<gameId>",
+  "priceUsdCents": 0,
+  "note": "First release: desktop and mobile store pages, build v1.0.0."
+}
+```
+
+| Input | Meaning |
+|---|---|
+| `buildPublicationId` | The store bundle to publish. Defaults to the newest ready build. |
+| `priceUsdCents` | Proposed price in US cents. `0` is free. Omit it to keep the current price. |
+| `note` | A short note for the owner: what changed and why. |
+
+It checks the publish checklist first. Then it returns `awaiting_owner_approval` and an `approvalUrl`. **Nothing is published.** Give the owner the link.
+
+To withdraw it: `summer_store_cancel_submission` with the `approvalId`.
+
+## What happens next
+
+1. The owner opens the link and clicks **Approve publishing**. See [Approve publishing](/publishing/owner-approval).
+2. Summer staff review the page.
+3. When the review passes, the game goes live. No second click.
+
+## Updates
+
+Export again with a new version, upload it the same way, and submit again. Players keep the current version until the new one is live.
+
+## Ask your agent
+
+<Prompt description="**Upload my build and submit it.** Your agent uploads, waits for the checks, submits, and gives you the approval link.">
+Upload my exported game to Summer Games and submit it for my approval. Use
+the Summer Engine MCP and follow
+https://docs.summerengine.com/publishing/upload-and-submit.md.
+
+- Upload each export with summer_publish_build and version
+  [VERSION, for example "v1.0.0"]. Show me the preview and wait for my yes
+  before you confirm.
+- Wait until every build is ready. If one fails, tell me why.
+- Check the store page's checklist and fix what is missing.
+- Submit with my price: [free, or a price in US dollars].
+- Give me the approval link. Do not say the game is published.
+</Prompt>
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

@@ -1,0 +1,115 @@
+---
+title: "Add text chat"
+sidebarTitle: "Text chat"
+description: "Give everyone in a match or world a shared chat. Summer filters messages, applies blocks and rate limits; your game only draws the chat box."
+icon: "message-square"
+"og:image": "https://docs.summerengine.com/images/og/build-chat.jpg"
+"twitter:image": "https://docs.summerengine.com/images/og/build-chat.jpg"
+---
+
+Give everyone in a match a shared text chat. Summer handles the hard parts:
+it filters messages, hides messages from players someone has blocked, slows
+down spammers and keeps messages for 24 hours. Your game only draws the chat
+box. Chat never goes through your game's server, so you don't have to
+moderate anything yourself.
+
+## Games like this
+
+<CardGroup cols={2}>
+  <Card title="League of Legends" icon="swords">
+    Chat with everyone in the match.
+  </Card>
+  <Card title="Among Us" icon="users">
+    Everyone talks it over during a meeting.
+  </Card>
+  <Card title="Minecraft servers" icon="pickaxe">
+    One chat for everyone on the server.
+  </Card>
+  <Card title="World of Warcraft" icon="store">
+    Separate channels for general talk and trading.
+  </Card>
+</CardGroup>
+
+## What your players get
+
+<img className="block dark:hidden" src="/images/guide-art/chat/flow-light.svg" alt="A player sends a message; Summer filters it and applies blocks, then everyone in the World sees it. The game's server is not involved." />
+<img className="hidden dark:block" src="/images/guide-art/chat/flow-dark.svg" alt="A player sends a message; Summer filters it and applies blocks, then everyone in the World sees it. The game's server is not involved." />
+
+- **One chat for the match:** everyone in the World sees each message with
+  the author's name.
+- **Recent messages when they open it:** players who open the chat see the
+  latest messages, and can scroll back a little further.
+- **A safe chat:** a message the filter stops is never shown to anyone, and
+  the sender is told it wasn't sent. When a player blocks someone, that
+  person's messages disappear for them.
+
+## Pick your setup
+
+### One chat for the whole match
+
+Every player in the match opens the same channel and talks to everyone. Good
+for most games: team shooters, party games, survival servers.
+
+<img className="block dark:hidden" src="/images/guide-art/chat/filtered-light.svg" alt="A message that passes the filter appears for everyone; a message the filter stops is not shown, and only the sender sees that it wasn't sent." />
+<img className="hidden dark:block" src="/images/guide-art/chat/filtered-dark.svg" alt="A message that passes the filter appears for everyone; a message the filter stops is not shown, and only the sender sees that it wasn't sent." />
+
+<Prompt description="**Add match chat.** A chat box everyone in the match shares, with names and a filter.">
+In my Summer project, add a text chat that everyone in the match shares. Use
+the Summer `summer-world-chat` skill; if you don't have it installed, find it
+in the Summer library.
+
+- Show each message with the author's name, as plain text.
+- Open chat once the player has joined the match.
+- If a message isn't sent, tell the player why; if chat isn't available, hide
+  the chat box and keep the game working.
+
+Read my project first and fit the chat box into my existing HUD. Then test it
+with Local Play and tell me what I can only check once the game is hosted.
+</Prompt>
+
+### Several channels in one world
+
+A world can have up to 64 channels, each with its own name, such as
+`general` and `trade`. Every player in the world can open any of them, so
+channels work like topics on a busy server, not private rooms.
+
+<Prompt description="**Add chat channels.** Topic channels such as general and trade in my world.">
+In my Summer project, give my world the chat channels [CHANNELS, for example
+"general and trade"]. Use the Summer `summer-world-chat` skill; if you don't
+have it installed, find it in the Summer library.
+
+- Players switch between channels with tabs.
+- Show unread messages on the tabs.
+- If chat isn't available, hide it and keep the game working.
+
+Read my project first and fit this into my existing HUD. Then test it with
+Local Play and tell me what I can only check once the game is hosted.
+</Prompt>
+
+Messages between friends outside a match are
+[direct messages](/build/friends), and party chat lives in the Summer app.
+
+## Not sure which fits?
+
+<Prompt description="**Plan chat for my game.** Your agent reads your project and proposes how chat should work. No code.">
+Read my Summer project and help me plan its text chat. Use the Summer
+`summer-world-chat` and `summer-friends` skills; if you don't have them
+installed, find them in the Summer library. Don't change any files yet.
+
+Tell me:
+1. which chats my game should have: one match chat, several channels, or
+   direct messages between friends;
+2. where the chat appears on screen during play, and when it's hidden;
+3. anything my design needs that chat doesn't cover yet, and how we can build
+   around it.
+</Prompt>
+
+## Testing it on your machine
+
+Under Local Play, chat reports that it isn't available, so build the "chat
+hidden" version first and check your game keeps working without it. Real chat
+works in a hosted game: test it with two accounts in the same match.
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

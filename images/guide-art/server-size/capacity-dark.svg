@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 210" width="880" height="210" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="209" rx="16" fill="#1b1810" stroke="#3a3428"/>
+<rect x="40" y="30" width="800" height="150" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<text x="64" y="62" font-size="15" font-weight="600" fill="#ede6d6" text-anchor="start" opacity="1">One World</text>
+<rect x="700.8" y="44" width="118.39999999999999" height="24" rx="12" fill="#242017" stroke="#f0b566" stroke-width="1.5" opacity="1"/>
+<text x="760" y="60.5" font-size="12" font-weight="700" fill="#f0b566" text-anchor="middle" opacity="1">holds 8 players</text>
+<g opacity="1" fill="#ede6d6"><circle cx="120" cy="127.0" r="8.0"/><path d="M 107.0 152 v -6.0 a 13.0 11.0 0 0 1 26.0 0 v 6.0 z"/></g>
+<g opacity="1" fill="#ede6d6"><circle cx="206" cy="127.0" r="8.0"/><path d="M 193.0 152 v -6.0 a 13.0 11.0 0 0 1 26.0 0 v 6.0 z"/></g>
+<g opacity="1" fill="#ede6d6"><circle cx="292" cy="127.0" r="8.0"/><path d="M 279.0 152 v -6.0 a 13.0 11.0 0 0 1 26.0 0 v 6.0 z"/></g>
+<g opacity="1" fill="#ede6d6"><circle cx="378" cy="127.0" r="8.0"/><path d="M 365.0 152 v -6.0 a 13.0 11.0 0 0 1 26.0 0 v 6.0 z"/></g>
+<g opacity="1" fill="#ede6d6"><circle cx="464" cy="127.0" r="8.0"/><path d="M 451.0 152 v -6.0 a 13.0 11.0 0 0 1 26.0 0 v 6.0 z"/></g>
+<g opacity="1" fill="#ede6d6"><circle cx="550" cy="127.0" r="8.0"/><path d="M 537.0 152 v -6.0 a 13.0 11.0 0 0 1 26.0 0 v 6.0 z"/></g>
+<rect x="616" y="104" width="40" height="52" rx="12" fill="none" stroke="#9b927f" stroke-width="1.5" stroke-dasharray="4 4" opacity="1"/>
+<text x="636" y="135" font-size="11" font-weight="600" fill="#9b927f" text-anchor="middle" opacity="1">free</text>
+<rect x="702" y="104" width="40" height="52" rx="12" fill="none" stroke="#9b927f" stroke-width="1.5" stroke-dasharray="4 4" opacity="1"/>
+<text x="722" y="135" font-size="11" font-weight="600" fill="#9b927f" text-anchor="middle" opacity="1">free</text>
+</svg>

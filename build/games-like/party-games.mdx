@@ -1,0 +1,112 @@
+---
+title: "Make a party game like Among Us"
+sidebarTitle: "Party games"
+description: "The Summer pieces behind a party game like Among Us or a Fall Guys-style round game: quick play for up to 16 players, parties, secret roles, rounds and a wins board."
+icon: "party-popper"
+"og:image": "https://docs.summerengine.com/images/og/build-games-like-party-games.jpg"
+"twitter:image": "https://docs.summerengine.com/images/og/build-games-like-party-games.jpg"
+---
+
+A party game is quick to join and loud to play. Friends jump in together,
+strangers fill the rest of the match, short rounds keep everyone laughing, and
+a running count of wins gives players a reason to come back. Summer matches
+hold up to 16 players, a good size for an Among Us crew or a round of
+Fall Guys-style chaos. This page shows how the pieces fit together.
+
+## The pieces you need
+
+<CardGroup cols={2}>
+  <Card title="Make your game multiplayer" icon="network" href="/build/multiplayer">
+    Your server runs the rounds; every player runs the same game.
+  </Card>
+  <Card title="Matchmaking" icon="swords" href="/build/matchmaking">
+    Quick play fills a match of up to 16, first come, first served.
+  </Card>
+  <Card title="Parties" icon="users" href="/build/parties">
+    Friends press Play together and land in the same match.
+  </Card>
+  <Card title="Shared game world" icon="layers" href="/build/shared-state">
+    Rounds, scores, and secret roles each player sees only for themselves.
+  </Card>
+  <Card title="Instant movement" icon="move" href="/build/movement">
+    Running and jumping respond the moment you press a key.
+  </Card>
+  <Card title="Text chat" icon="message-square" href="/build/chat">
+    Accuse, argue and celebrate with everyone in the match.
+  </Card>
+  <Card title="Ratings and leaderboards" icon="trophy" href="/build/leaderboards">
+    A running count of wins on a public board.
+  </Card>
+  <Card title="Friends and messages" icon="user-plus" href="/build/friends">
+    See which friends are online and in your game.
+  </Card>
+  <Card title="Cosmetics" icon="sparkles" href="/build/cosmetics">
+    Hats, colours and outfits players own and show off.
+  </Card>
+  <Card title="Sell items for Sparks" icon="store" href="/build/store">
+    Cosmetics players buy with Sparks.
+  </Card>
+</CardGroup>
+
+## How it fits together
+
+<img className="block dark:hidden" src="/images/guide-art/games-like/party-games-light.svg" alt="The party game loop: a player presses quick play, up to 16 players are placed in one match, they play short rounds, and the results add wins to the board before they play again." />
+<img className="hidden dark:block" src="/images/guide-art/games-like/party-games-dark.svg" alt="The party game loop: a player presses quick play, up to 16 players are placed in one match, they play short rounds, and the results add wins to the board before they play again." />
+
+Players press Play, alone or with their party, and quick play fills a match.
+Summer starts a server for it, where your rules run the rounds, hand out
+secret roles and keep the score. When the match ends, the server adds each
+winner's win to the board, and everyone can jump straight into the next one.
+
+## Plan my game
+
+<Prompt description="**Plan my party game.** Your agent reads your project and lays out the Summer pieces in the order to build them.">
+I'm making a party game like Among Us in Summer. Read my project and plan how
+to build it with these Summer skills, in this order; if you don't have them
+installed, find them in the Summer library:
+
+1. `multiplayer` and `multiplayer-project`: the server and client scenes and
+   a first Local Play run.
+2. `multiplayer-movement`: each player moves their own character instantly.
+3. `multiplayer-state`: rounds, scores and secret roles, owned by the server.
+4. `summer-matchmaking` and `summer-parties`: quick play for up to 16 players,
+   with friends kept together.
+5. `summer-world-chat`: talk in the match.
+6. `summer-leaderboards`: a board of total wins.
+
+For each step, tell me what changes in my project and what I'll see when I
+test it. Don't change any files yet.
+</Prompt>
+
+## Build the signature features
+
+### Secret roles
+
+<Prompt description="**Add secret roles.** The server deals roles; each player sees only their own.">
+In my Summer project, give every player a secret role at the start of each
+round, like the impostor in Among Us. Use the Summer `multiplayer-state`
+skill; if you don't have it installed, find it in the Summer library.
+
+- The server picks the roles, and each player's game learns only its own.
+- The server checks every action against the player's real role.
+- When the round ends, the server reveals everyone's role.
+
+Read my project first and tell me what you'll change. Then test it with Local
+Play with [N] players and tell me what each player saw.
+</Prompt>
+
+### A board of total wins
+
+<Prompt description="**Add a wins board.** The server counts each player's wins; everyone sees the top 50.">
+In my Summer project, add a score board that counts each player's total wins.
+Use the Summer `summer-leaderboards` skill; if you don't have it installed,
+find it in the Summer library.
+
+The server adds a win for each winner when a match ends. Add a screen with the
+top 50 and the player's own place, and keep the game working if the board
+can't be loaded. Tell me what I can only check once the game is hosted.
+</Prompt>
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)
