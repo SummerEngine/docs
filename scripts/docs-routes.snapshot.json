@@ -4,6 +4,7 @@
     "index",
     "essentials/installation",
     "quickstarts/fresh-project",
+    "quickstarts/multiplayer-game",
     "quickstarts/ai-game-dev",
     "quickstarts/web-game",
     "quickstarts/pc-game",

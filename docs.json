@@ -53,7 +53,8 @@
             "pages": [
               "index",
               "essentials/installation",
-              "quickstarts/fresh-project"
+              "quickstarts/fresh-project",
+              "quickstarts/multiplayer-game"
             ]
           },
           {
