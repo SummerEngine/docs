@@ -117,8 +117,10 @@ def main():
         title = labels.get(page) or frontmatter_value(fm, "sidebarTitle") or frontmatter_value(fm, "title")
         if not title:
             continue
-        render(title, ROOT / "images/og" / f"{page}.jpg")
-        url = f"{BASE_URL}/{page}.jpg"
+        # Flat names: Mintlify does not serve files from folders named "build".
+        name = page.replace("/", "-")
+        render(title, ROOT / "images/og" / f"{name}.jpg")
+        url = f"{BASE_URL}/{name}.jpg"
         fm = re.sub(r'^"(og|twitter):image":.*\n?', "", fm, flags=re.M).rstrip("\n")
         fm += f'\n"og:image": "{url}"\n"twitter:image": "{url}"'
         path.write_text(f"---\n{fm}\n---\n" + text[m.end():])
