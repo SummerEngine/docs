@@ -254,8 +254,18 @@
             "group": "Overview",
             "icon": "layout",
             "pages": [
+              "mcp/summer-mcps",
               "mcp/overview",
               "mcp/setup"
+            ]
+          },
+          {
+            "group": "Summer Games MCP",
+            "icon": "users",
+            "pages": [
+              "mcp/summer-games",
+              "mcp/summer-games-tools",
+              "mcp/summer-games-developers"
             ]
           },
           {
