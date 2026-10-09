@@ -166,8 +166,8 @@ contribution, attribution, and legal contexts. Default creator onboarding instal
 Summer Engine.
 
 <CardGroup cols={2}>
-  <Card title="Previous: Make your game multiplayer" icon="arrow-left" href="/build/multiplayer">
-    One project, a client and a server, tested with Local Play.
+  <Card title="Previous: Naming" icon="arrow-left" href="/api-reference/summer-sdk/naming">
+    Review creator-facing names and stable wire identifiers.
   </Card>
   <Card title="Next: Existing-project migration" icon="arrow-right" href="/migration/godot">
     Bring an existing Godot project into Summer Engine.
