@@ -288,7 +288,7 @@ export function renderMcpGroupPage(group, entries, src) {
     "---",
     `title: ${fm(`MCP tools: ${group.title.toLowerCase()}`)}`,
     `sidebarTitle: ${fm(group.title)}`,
-    `description: ${fm(`Every Summer Engine MCP tool to ${group.blurb.charAt(0).toLowerCase()}${group.blurb.slice(1)} Name, description, inputs, output, what it needs and an example.`)}`,
+    `description: ${fm(`${group.title} tools of the Summer Engine MCP. ${group.blurb} For each tool: what it does, what it needs, inputs, output and an example.`)}`,
     `icon: ${fm(group.icon)}`,
     "generated: true",
     "generator: scripts/reference",
