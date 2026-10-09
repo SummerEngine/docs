@@ -105,16 +105,5 @@
       "reason": "Historical release notes name SDK symbols but do not serve as current capability reference."
     }
   ],
-  "requiredRouteTerms": [
-    {
-      "file": "api-reference/summer-sdk/production-launch-runbook.mdx",
-      "terms": [
-        "Recommended release API",
-        "1 KiB–512 MiB",
-        "Browser submission",
-        "up to 2 GB",
-        "does not raise the release API's"
-      ]
-    }
-  ]
+  "requiredRouteTerms": []
 }
