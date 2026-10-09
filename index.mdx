@@ -1,61 +1,63 @@
 ---
-title: "Summer Engine: Build a Summer game with AI"
-description: "Install Summer Engine, create a Summer game in GDScript, add Summer SDK capabilities, test locally, and publish."
+title: "The game engine built for AI"
+description: "Connect Claude Code, Codex, Cursor, Grok or any AI agent to Summer Engine. It builds your full game, makes it multiplayer and publishes it on Summer Games."
 icon: "sparkles"
 "og:image": "https://docs.summerengine.com/images/og/index.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/index.jpg"
 ---
 
-Summer Engine is the AI game engine for building a **Summer game**. Start in the editor,
-write gameplay in **GDScript**, add the **Summer SDK** capabilities your game needs, then
-test and publish from one documented path.
+Summer Engine is the game engine built for AI. Connect Claude Code, Codex, Cursor, Grok or any
+other AI agent with one command, describe the game you want, and your agent builds it: scenes,
+code and assets, right inside the engine.
 
-Describe what you want to build or change in natural language. Summer Engine can work across
-your scenes, scripts, and assets while you review the changes in the same project.
+Every **Summer game** comes with multiplayer built in. Summer runs the servers, matchmaking,
+parties, saves, leaderboards and store, so your agent can make a full online game, not a demo.
+When it is ready, your agent publishes it on [Summer Games](https://summer.games) and you approve
+it with one click.
 
-**What makes Summer Engine different:**
-- **One creator path**: Install, create, integrate the Summer SDK, test, publish, and update.
-- **GDScript by default**: Start with the creator language used throughout these guides.
-- **Portable source**: Your project stays yours. Familiar formats improve portability, but
-  editor-version, import, plugin, native-extension, and export compatibility still need
-  verification.
-- **Project Intelligence**: AI understands your scenes, scripts, assets, and game logic
-- **Reviewable Operations**: Changes go through editor APIs; review the diff and test the project after each operation
-- **Privacy controls**: Pro accounts can enable Privacy Mode to opt out of training-data use
+Prefer to stay in the app? **Summer Agent**, the AI built into Summer Engine, does the same work
+from a chat next to your game.
+
+**Why Summer Engine:**
+- **Built for agents**: one command connects your agent, and it drives the engine directly: it builds scenes, runs the game, reads errors and fixes them.
+- **Multiplayer built in**: servers, matchmaking, parties, saves, leaderboards, chat and a store through the **Summer SDK**.
+- **Publish in one step**: free to publish on Summer Games; your agent makes the store page and uploads the build.
+- **Your project is yours**: plain project files and **GDScript** you can read, edit and keep in Git.
+- **Privacy controls**: Pro accounts can turn on Privacy Mode to keep their work out of training data.
 
 ## Start here
 
 Follow this path in order:
 
 <CardGroup cols={2}>
-  <Card title="1. Install Summer Engine" icon="download" href="/essentials/installation">
-    Install the editor on macOS or Windows and verify it opens.
+  <Card title="1. Connect your AI agent" icon="bot" href="/mcp/setup">
+    One command connects Claude Code, Codex, Cursor, Grok and many more.
   </Card>
-  <Card title="2. Create a Summer game" icon="rocket" href="/quickstarts/fresh-project">
-    Create a project and make GDScript your default gameplay language.
+  <Card title="2. Install Summer Engine" icon="download" href="/essentials/installation">
+    Download it for Mac or Windows, or let your agent install it.
   </Card>
-  <Card title="3. Make it multiplayer" icon="users" href="/quickstarts/multiplayer-game">
-    Turn your GDScript game into a Summer game with a server and the Summer SDK.
+  <Card title="3. Make your first game" icon="rocket" href="/quickstarts/fresh-project">
+    Describe the game. Your agent builds it and you play it.
   </Card>
-  <Card title="4. Add what your game needs" icon="boxes" href="/build/matchmaking">
+  <Card title="4. Make it multiplayer" icon="users" href="/quickstarts/multiplayer-game">
+    Summer runs the servers. Your agent adds the online part.
+  </Card>
+  <Card title="5. Add what your game needs" icon="boxes" href="/build/matchmaking">
     Matchmaking, parties, saves, leaderboards, chat and a store.
   </Card>
-  <Card title="5. Test locally" icon="flask-conical" href="/build/multiplayer#testing-it-on-your-machine">
-    Run your server and several players on one computer with Local Play.
-  </Card>
   <Card title="6. Publish" icon="upload" href="/build/publish">
-    Export one file, make your store page and go live on summer.games.
+    Go live on summer.games. Your agent does the steps, you approve.
   </Card>
 </CardGroup>
 
 ## Other ways to start
 
 <CardGroup cols={2}>
-  <Card title="Give the task to an AI coding agent" icon="bot" href="/mcp/setup">
-    Use the canonical prompt to build a Summer game with Summer Engine and the Summer SDK.
+  <Card title="Test with several players on one computer" icon="flask-conical" href="/build/multiplayer#testing-it-on-your-machine">
+    Run your server and several players at once with Local Play.
   </Card>
   <Card title="How do I make a game with Summer Agent?" icon="sparkles" href="/quickstarts/ai-game-dev">
-    Use Summer Agent to draft scenes and GDScript, then review and test the generated work.
+    Describe your game in the Summer app. Summer Agent builds it while you watch.
   </Card>
   <Card title="How do I use the Summer Engine CLI and MCP?" icon="terminal" href="/mcp/cli">
     CLI lets Claude Code, Cursor, Devin Desktop install and run Summer Engine. You chat in your IDE; the AI uses MCP tools.
