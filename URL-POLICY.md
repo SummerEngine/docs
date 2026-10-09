@@ -94,6 +94,7 @@ These top-level paths are canonical. They do not move.
 | `/security/*` | Data protection and privacy |
 | `/automation/*` | Driving the engine from a script or a shell, headless |
 | `/extending/*` | Extending the engine: plugins, GDExtension, modules |
+| `/build/*` | Behaviour guides: how to get each feature into a game, and the "Make a game like…" genre pages |
 
 Some namespace names do not match their sidebar label — `/auto-mode/*` is labelled
 "Models", `/art-system/*` is labelled "Summer Studio", `/ai-tools/*` is labelled
