@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 350" width="880" height="350" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
 <rect x="0.5" y="0.5" width="879" height="349" rx="16" fill="#fbf7ef" stroke="#e6dcc8"/>
-<text x="30" y="34" font-size="15" font-weight="700" fill="#2a251b" text-anchor="start" opacity="1">Mobile store: the iPhone and Android apps. No text in any picture.</text>
+<text x="30" y="34" font-size="15" font-weight="700" fill="#2a251b" text-anchor="start" opacity="1">Mobile store: the iPhone and Android apps. No text in the art.</text>
 <rect x="30" y="56" width="135" height="240" rx="6" fill="#f6e3c4" stroke="#8a806b" stroke-width="1.5" opacity="1"/>
 <path d="M 34 292 L 77.25 188.0 L 104.25 228.79999999999998 L 131.25 176.0 L 161 292 z" fill="#d9922e" opacity="0.45"/>
 <circle cx="97.5" cy="164.0" r="5" fill="none" stroke="#2a251b" stroke-width="2"/>
@@ -37,5 +37,6 @@
 <line x1="789.0" y1="164" x2="805.0" y2="164" stroke="#8a806b" stroke-width="2" stroke-linecap="round" opacity="1"/>
 <text x="723" y="196" font-size="13" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">Screenshots</text>
 <text x="723" y="214" font-size="11" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">3-8, in the way the game is played</text>
+<text x="723" y="230" font-size="11" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">own HUD is fine</text>
 <text x="200" y="318" font-size="12" font-weight="500" fill="#8a806b" text-anchor="start" opacity="1">One page holds at most 20 pictures and videos across both stores.</text>
 </svg>

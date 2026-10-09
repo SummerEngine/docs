@@ -48,7 +48,21 @@ Ask the generator for the slot's own shape. Do not make one landscape picture an
 | `desktop.capsuleWide` | 460:215, at least 920×430 | Logo allowed. |
 | `desktop.icon`, `mobile.icon` | 1:1, 1024×1024 | No words. One clear silhouette on a plain background. |
 
-**Screenshots are never generated.** They are real gameplay. Your agent can take them with the engine (`summer_screenshot`) or ask you to capture them.
+### Reach the store sizes
+
+Key art needs at least 1920×1080 and the tall cover at least 1080×1920. Many models return 1024×1024 by default, which is too small.
+
+- Ask for the slot's shape: pass `aspectRatio` (`"16:9"`, `"9:16"`, `"1:1"`) to `summer_generate_image`, and `width` and `height` where the model takes them.
+- Check what came back: the result gives the real width and height and the model that made the picture. If the size is below the slot's minimum, do not stretch it.
+- Or generate a large square and crop it. A 2048×2048 picture (for example from `seedream-5-pro`) crops to 2048×1152 for key art and 1152×2048 for the tall cover, both above the minimum.
+
+**Screenshots are never generated.** They are real gameplay:
+
+- `summer_capture_gameplay` runs your game in an offscreen engine window, with no editor open, and saves real frames at the size you ask, for example 1920×1080.
+- With the editor open, `summer_screenshot` with `target: "game"` captures the running game.
+- Or ask the owner to capture them.
+
+Screenshots show the game as players see it. Its own HUD and interface are fine. Do not add captions, logos or overlays.
 
 ## Crop it yourself
 
@@ -56,7 +70,7 @@ Generators return their own sizes. Your agent crops each picture to the slot its
 
 1. Compute the slot's shape. For example, from a 2048×1152 picture to a 9:16 tall cover: height 1152, width 1152 × 9 ÷ 16 = 648.
 2. Center the crop on the subject, then move it so it stays inside the picture.
-3. Scale it up to the slot's minimum size if needed (1080×1920 for the tall cover). Better: generate at the right shape and size.
+3. If the crop is below the slot's minimum (1080×1920 for the tall cover), generate a larger picture instead of stretching it.
 4. Save it as PNG, JPEG or WebP.
 
 ```python title="crop_to_slot.py (Pillow)"
@@ -92,7 +106,7 @@ curl -sS "<uploadUrl>" -F api_key=… -F timestamp=… -F signature=… \
   -F file=@./tall-cover.jpg
 ```
 
-Then pass four values from that answer to `summer_upload_image_complete`:
+Then pass four values from Cloudinary's answer to `summer_upload_image_complete`. The `signature` here is the one in that answer, not the one you sent in `fields`:
 
 ```json
 {
@@ -142,19 +156,20 @@ https://docs.summerengine.com/publishing/generate-store-art.md.
 
 - Read my store page and list the empty slots. Look in My assets first.
 - For each slot still empty, read my board's look and make one picture in
-  the slot's own shape with summer_generate_image. No text, and no other
-  game's characters.
+  the slot's own shape with summer_generate_image, at least the slot's
+  minimum size. No text, and no other game's characters.
 - Crop it yourself to the slot's exact size around the subject, upload it
   with summer_upload_image_begin and summer_upload_image_complete, and put
   it in the slot with a focal point.
-- Show me each picture before it goes in. Never generate screenshots.
+- Show me each picture before it goes in. Never generate screenshots:
+  capture real gameplay with summer_capture_gameplay.
 </Prompt>
 
 ## Rules
 
 - Make art from **your** game: your hero, your world, your look. Never another game's characters. Never fake gameplay.
 - Check My assets before you make anything. Making art uses your Summer credits.
-- No text in key art, the tall cover, icons or screenshots.
+- No text, logo or caption in key art, the tall cover or icons. Screenshots may show the game's own HUD, never added captions, logos or overlays.
 - Stay inside the 20-picture budget across both stores.
 
 Sizes and reasons for every slot: [Store art](/publishing/store-art).
