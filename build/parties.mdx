@@ -1,0 +1,158 @@
+---
+title: "Let friends play together"
+sidebarTitle: "Parties"
+description: "Friends form a party in Summer, pick a mode together, and the leader brings everyone into the same match."
+icon: "users"
+---
+
+A party is a group of friends who want to play together. Players make parties
+in the Summer app: they invite friends, chat, and pick a leader. Your game sees
+who is in the party, lets them choose things together, and brings the whole
+party into the same match when the leader presses **Play**.
+
+## Games like this
+
+<CardGroup cols={2}>
+  <Card title="Valorant, Overwatch" icon="crosshair">
+    A group of friends queues together and lands on one team.
+  </Card>
+  <Card title="Rocket League" icon="car">
+    Party up, and the leader searches for the whole party.
+  </Card>
+  <Card title="Deep Rock Galactic" icon="pickaxe">
+    A squad of four heads into a mission together.
+  </Card>
+  <Card title="Brawl Stars" icon="users">
+    Team up with friends for a 3v3 match.
+  </Card>
+</CardGroup>
+
+If your game has matchmaking and players will want to bring their friends,
+this is the page for you.
+
+## What your players get
+
+<img className="block dark:hidden" src="/images/guide-art/parties/flow-light.svg" alt="Three steps: friends form a party in Summer, the party leader presses Play and the other members follow the search, and the whole party lands on the same team in one match." />
+<img className="hidden dark:block" src="/images/guide-art/parties/flow-dark.svg" alt="Three steps: friends form a party in Summer, the party leader presses Play and the other members follow the search, and the whole party lands on the same team in one match." />
+
+<Steps>
+  <Step title="Party up">
+    Players invite friends to a party. Your game can open Summer's invite
+    screen from its own menu, so nobody has to leave the game.
+  </Step>
+  <Step title="Choose together">
+    The leader picks things for the whole party, such as the mode or the map.
+    Each member picks their own, such as a character or "ready". Everyone in
+    the party sees the same choices.
+  </Step>
+  <Step title="Play together">
+    The leader presses Play. Everyone in the party who has your game open
+    follows into the same search and the same match. On a
+    [team queue](/build/matchmaking#fixed-teams-2v2-3v3-5v5), the party always
+    lands on the same team.
+  </Step>
+</Steps>
+
+Summer runs the party itself, and your game builds the experience around it.
+
+<img className="block dark:hidden" src="/images/guide-art/parties/ownership-light.svg" alt="The Summer app handles invites, party chat, the leader, kicks and leaving. Your game sees who is in the party, who leads, who has the game open, and brings everyone into one match." />
+<img className="hidden dark:block" src="/images/guide-art/parties/ownership-dark.svg" alt="The Summer app handles invites, party chat, the leader, kicks and leaving. Your game sees who is in the party, who leads, who has the game open, and brings everyone into one match." />
+
+## Pick your setup
+
+### Play together from the menu
+
+The leader's **Play** button starts one search for the whole party, and every
+member follows it automatically. Members see who leads and that they're
+waiting for them. A player who isn't in a party plays solo with the same Play
+button.
+
+<Prompt description="**Let parties play together.** The leader presses Play and every member follows into the same match.">
+In my Summer project, let players who are in a Summer party play together. Use
+the Summer `summer-parties` skill, and the `summer-matchmaking` skill for my
+queue; if you don't have them installed, find them in the Summer library.
+
+- The party leader's Play button searches for the whole party, and every
+  member follows into the same match.
+- Members see who leads the party and that they're waiting for them.
+- A player who isn't in a party still plays solo with the same Play button.
+
+Read my project first and fit this into my existing menus. Then test the solo
+path with Local Play, and tell me what I can only check once the game is
+hosted.
+</Prompt>
+
+### Choose things together before the match
+
+Give the party a small shared screen before they play. The leader's choices,
+such as the mode or the map, show up for everyone. Each member's own choices,
+such as their character or a Ready check, show up next to their name.
+
+<img className="block dark:hidden" src="/images/guide-art/parties/choices-light.svg" alt="The leader picks the mode and map for the party, and each member picks a role and marks ready. Every member of the party sees the same picks." />
+<img className="hidden dark:block" src="/images/guide-art/parties/choices-dark.svg" alt="The leader picks the mode and map for the party, and each member picks a role and marks ready. Every member of the party sees the same picks." />
+
+<Prompt description="**Add a party screen.** Leader picks the mode, members pick a character and mark ready.">
+In my Summer project, add a party screen to my menu. Use the Summer
+`summer-parties` skill; if you don't have it installed, find it in the Summer
+library.
+
+- Show everyone in the party, who leads, and who has the game open.
+- The leader picks [WHAT THE LEADER PICKS, for example "the mode and the
+  map"], and every member sees it.
+- Each member picks [WHAT EACH MEMBER PICKS, for example "a character"] and
+  can mark themselves ready.
+- When the match starts, the server checks the choices that matter for the
+  match.
+
+Read my project first and show me where this screen fits before you change
+anything.
+</Prompt>
+
+### Invite friends from your game
+
+Add an **Invite friends** button that opens Summer's own invite screen, and a
+**Party** button for leaving, changing the leader or removing a member. Summer
+handles the invites and the party chat, so your game doesn't have to.
+
+<Prompt description="**Add Invite and Party buttons** that open Summer's party screens.">
+In my Summer project, add an Invite friends button and a Party button to my
+menu. Use the Summer `summer-parties` skill; if you don't have it installed,
+find it in the Summer library.
+
+- Invite friends opens Summer's invite screen.
+- Party opens Summer's party screen for leaving, changing the leader and
+  removing members.
+- Show the buttons only where parties are offered, and keep the menu tidy
+  when they aren't.
+
+Read my project first and match the style of my existing buttons.
+</Prompt>
+
+## Not sure which fits?
+
+<Prompt description="**Plan parties for my game.** Your agent reads your project and proposes how friends play together. No code.">
+Read my Summer project and help me plan how friends play together in it. Use
+the Summer `summer-parties` skill; if you don't have it installed, find it in
+the Summer library. Don't change any files yet.
+
+Tell me:
+1. how a party gets from my main menu into a match, step by step;
+2. what the leader picks, what each member picks, and what the server must
+   check when the match starts;
+3. anything my design needs that parties don't cover yet, and how we can build
+   around it.
+</Prompt>
+
+## Testing it on your machine
+
+Parties belong to players' Summer accounts, so Local Play has no parties:
+every test window plays solo through the normal Play button. Build and test
+that solo path first. The party flow, with the leader searching and members
+following, shows up once the game is hosted and you play with real friends.
+
+Guest players, and younger players who aren't offered social features, also
+play solo, so the solo path matters for them too.
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

@@ -1,0 +1,162 @@
+---
+title: "Share the game world"
+sidebarTitle: "Shared game state"
+description: "Scores, doors, pickups, private hands of cards and one-off effects: the server owns every fact, players ask it for changes, and everyone sees the same game."
+icon: "share-2"
+---
+
+Apart from each player's own movement, **your server owns every fact in the
+game**: the score, the round timer, which doors are open, what's in each
+player's inventory, who won. Players never change those facts directly. They
+ask the server, the server checks the request against who they are and the
+current game, and then everyone sees the result. That's what keeps every
+player's game the same, and what stops a modified client from cheating.
+
+## Games like this
+
+<CardGroup cols={2}>
+  <Card title="Among Us" icon="users">
+    Shared tasks, doors and votes, plus secret roles.
+  </Card>
+  <Card title="Hearthstone" icon="layers">
+    A shared board, with a private hand for each player.
+  </Card>
+  <Card title="Overcooked" icon="chef-hat">
+    One kitchen everyone works in at the same time.
+  </Card>
+  <Card title="Minecraft servers" icon="pickaxe">
+    Blocks, chests and items everyone shares.
+  </Card>
+</CardGroup>
+
+## What your players get
+
+<img className="block dark:hidden" src="/images/guide-art/shared-state/facts-light.svg" alt="The server owns the facts. Shared facts like the score and a door go to every player. A private fact like one player's hand of cards goes only to that player." />
+<img className="hidden dark:block" src="/images/guide-art/shared-state/facts-dark.svg" alt="The server owns the facts. Shared facts like the score and a door go to every player. A private fact like one player's hand of cards goes only to that player." />
+
+- **One game for everyone.** Every player sees the same score, the same open
+  door and the same coin gone once it's picked up.
+- **Joining late just works.** A player who joins mid-match gets the current
+  score, doors and everything else straight away.
+- **Secrets stay secret.** A player's hand of cards, wallet or secret role
+  only ever reaches that player's device.
+- **Fair requests.** Picking up, buying, opening and voting all go through
+  the server, which checks them first.
+
+## Pick your setup
+
+Most games use all four of these together.
+
+### Shared facts everyone sees
+
+The score, the round timer, a door, who's holding the flag. Your server keeps
+the value and every player gets it, including anyone who joins later. When
+the server changes it, every player sees the change.
+
+<Prompt description="**Share the score, doors and timer.** The server owns them; every player sees the same values.">
+In my Summer multiplayer project, make [THE FACTS, for example "the score,
+the round timer and the doors"] shared and owned by the server. Use the
+Summer `multiplayer-state` skill; if you don't have it installed, find it in
+the Summer library.
+
+- The server keeps each value and changes it.
+- Every player sees the same values, including players who join late.
+
+Read my project first and list every fact in my game and who should see it
+before you change anything. Then test it with Local Play and tell me what
+every window showed.
+</Prompt>
+
+### Private facts only one player sees
+
+A hand of cards, a wallet, an inventory, a secret role. The server keeps it
+like any other fact but sends it only to the player it belongs to. If that
+player drops out and comes back, they get it back.
+
+<Prompt description="**Give each player private state.** Hands, wallets or roles that only their owner sees.">
+In my Summer multiplayer project, give each player a private [HAND / WALLET /
+INVENTORY / ROLE] that only they can see. Use the Summer `multiplayer-state`
+skill; if you don't have it installed, find it in the Summer library.
+
+- The server owns it and changes it.
+- Only that player's game ever receives it.
+
+Read my project first and tell me what goes in it before you change
+anything. Then test it with Local Play and check that no other window ever
+shows it.
+</Prompt>
+
+### Requests: collect, buy, open, ready
+
+When a player wants to do something that changes the game, their game asks
+the server. The server knows exactly who is asking and checks the request
+against the current game: is the coin still there, is the player close
+enough, can they afford it? Then it accepts and changes the game, or refuses
+with a reason your game can show.
+
+<img className="block dark:hidden" src="/images/guide-art/shared-state/request-light.svg" alt="A player asks to open a door. The server checks the request. If it accepts, the door opens for everyone. If it refuses, only the player who asked hears why." />
+<img className="hidden dark:block" src="/images/guide-art/shared-state/request-dark.svg" alt="A player asks to open a door. The server checks the request. If it accepts, the door opens for everyone. If it refuses, only the player who asked hears why." />
+
+<Prompt description="**Let players ask the server.** Collect, buy, open or ready up, checked by the server.">
+In my Summer multiplayer project, let players [COLLECT / BUY / OPEN / READY
+UP]. Use the Summer `multiplayer-state` skill; if you don't have it installed,
+find it in the Summer library.
+
+- The player's game asks the server; it never changes the game itself.
+- The server checks [THE RULES, for example "the player is within 2 metres
+  and the coin is still there"].
+- If the server refuses, the player sees why.
+
+Read my project first and tell me which actions in my game become requests
+before you change anything. Then test it with Local Play and tell me what
+happened when two players tried at the same time.
+</Prompt>
+
+### One-off effects
+
+A sparkle when a coin is collected, a sound, a hit flash. The server sends
+these to everyone once, as they happen. Unlike shared facts they aren't
+kept, so a player who joins later doesn't replay old sparkles. Use them for
+things that only matter in the moment.
+
+<img className="block dark:hidden" src="/images/guide-art/shared-state/late-join-light.svg" alt="A player who joins mid-match gets the current score and door straight away, but not the sparkles that already happened." />
+<img className="hidden dark:block" src="/images/guide-art/shared-state/late-join-dark.svg" alt="A player who joins mid-match gets the current score and door straight away, but not the sparkles that already happened." />
+
+<Prompt description="**Add one-off effects.** Sparkles, sounds and flashes every player sees as they happen.">
+In my Summer multiplayer project, play [THE EFFECT] for every player when
+[IT HAPPENS]. Use the Summer `multiplayer-state` skill; if you don't have it
+installed, find it in the Summer library.
+
+The server triggers it; it's only for the moment and isn't replayed for
+players who join later. Read my project first, then test it with Local Play
+and tell me what every window showed.
+</Prompt>
+
+## Not sure which fits?
+
+<Prompt description="**Plan the game state for my multiplayer game.** Your agent lists every fact and who sees it. No code.">
+Read my Summer project and help me plan its multiplayer game state. Use the
+Summer `multiplayer-state` skill; if you don't have it installed, find it in
+the Summer library. Don't change any files yet.
+
+Tell me:
+1. every fact in my game, and whether everyone sees it or only one player;
+2. every action a player can take that should become a request to the
+   server, and what the server checks;
+3. the one-off effects worth sending;
+4. anything my design needs that this doesn't cover yet, and how we can build
+   around it.
+</Prompt>
+
+## Testing it on your machine
+
+Local Play runs your server and several game windows on one computer. Check
+that every window shows the same shared facts, that private facts only show
+in their owner's window, and that two players trying the same thing at once
+get one clear answer each. Then run it again with added delay and packet
+loss. See
+[Make your game multiplayer](/build/multiplayer#testing-it-on-your-machine).
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

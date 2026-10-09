@@ -1,0 +1,142 @@
+---
+title: "Choose server size and player count"
+sidebarTitle: "Server size"
+description: "Pick how much computing power each World's server gets and how many players a World can hold, from a small turn-based game to a big shared world."
+icon: "server"
+---
+
+Every World runs on its own Summer server. You choose two things: how much
+computing power and memory that server gets, and how many players one World
+can hold. Start small, play your game hosted with the number of players you
+expect, and move up a size only when it needs more.
+
+## Games like this
+
+<CardGroup cols={3}>
+  <Card title="Chess.com, Hearthstone" icon="crown">
+    Turn-based games need very little. Start with **Small**.
+  </Card>
+  <Card title="Counter-Strike, Rocket League" icon="crosshair">
+    Real-time matches with physics. Start with **Standard**.
+  </Card>
+  <Card title="Minecraft servers, Valheim" icon="pickaxe">
+    Big worlds that keep running. Start with **Large** or bigger.
+  </Card>
+</CardGroup>
+
+These are starting points, not promises. How much your game needs depends on
+what it does every frame, so measure your own game.
+
+## What you get
+
+<img className="block dark:hidden" src="/images/guide-art/server-size/sizes-light.svg" alt="Eight server sizes from Small with 256 MB of memory up to 8XL with 64 GB, each one larger than the last." />
+<img className="hidden dark:block" src="/images/guide-art/server-size/sizes-dark.svg" alt="Eight server sizes from Small with 256 MB of memory up to 8XL with 64 GB, each one larger than the last." />
+
+Each size gives the server a guaranteed share of the computer's processor, and
+lets it burst higher when spare power is available. Memory is a fixed
+budget.
+
+| Size | Memory | Guaranteed CPU | Can burst to |
+|---|---|---|---|
+| Small | 256 MB | 0.1 CPU | 1 CPU |
+| Medium | 512 MB | 0.25 CPU | 1 CPU |
+| Standard | 1 GB | 0.5 CPU | 1 CPU |
+| Large | 4 GB | 1 CPU | 2 CPUs |
+| XL | 8 GB | 2 CPUs | 4 CPUs |
+| 2XL | 16 GB | 4 CPUs | 8 CPUs |
+| 4XL | 32 GB | 8 CPUs | 16 CPUs |
+| 8XL | 64 GB | 16 CPUs | 32 CPUs |
+
+- **Memory is a hard budget.** A server that uses more memory than its size
+  allows is stopped, so leave some headroom.
+- **Every size can run one full CPU** for your game's main loop. Only extra
+  work in parallel, such as loading on other threads, can hit the limit on the
+  smaller sizes.
+- **Your choice is saved with each version of your game.** Publishing a new
+  version with a new size changes the servers for new Worlds; running Worlds
+  keep the size they started with.
+
+## Pick your setup
+
+### One size for the whole game
+
+Set one size for every World your game starts. You choose it in your
+project, or in the dashboard when you publish a version of your game.
+
+<Prompt description="**Choose a server size for my game.** My agent picks a starting size and sets it.">
+In my Summer project, choose a server size for my game's Worlds. Use the
+Summer `multiplayer-project` and `multiplayer-publish` skills, and search the
+Summer library and the Summer API docs for server tiers; if you don't have the
+skills installed, find them in the Summer library.
+
+Read my project first: look at what the server does every frame, how many
+players a World holds, and how much it loads. Suggest a starting size, explain
+why, and set it. Tell me how to check it once the game is hosted.
+</Prompt>
+
+### Different sizes for different worlds
+
+A game can run more than one kind of World, and each kind can have its own
+size. A small 1v1 duel can run on Small while your big shared world runs on
+XL. A World type without its own size uses the game's size.
+
+<img className="block dark:hidden" src="/images/guide-art/server-size/override-light.svg" alt="The game's size is Small. The duel World uses it, while the shared world sets its own size, XL." />
+<img className="hidden dark:block" src="/images/guide-art/server-size/override-dark.svg" alt="The game's size is Small. The duel World uses it, while the shared world sets its own size, XL." />
+
+<Prompt description="**Give my world types their own sizes.** Small servers for small modes, big servers for big worlds.">
+In my Summer project, give each kind of World the server size it needs. Use
+the Summer `multiplayer-project` and `multiplayer-publish` skills, and search
+the Summer library and the Summer API docs for server tiers; if you don't
+have the skills installed, find them in the Summer library.
+
+Read my project first, list every kind of World my game starts, and suggest a
+size for each with a reason before you change anything.
+</Prompt>
+
+### How many players a World holds
+
+Each kind of World can set the most players it admits, from 1 up to 1,024.
+This is separate from the server size: one sets how many people can be in the
+World, the other how much power the server has to run it. A matchmaking
+queue for that World uses the same maximum, and its minimum is how many
+players it needs to start. See [Matchmaking](/build/matchmaking).
+
+<img className="block dark:hidden" src="/images/guide-art/server-size/capacity-light.svg" alt="A World set to hold 8 players with 6 seats taken and 2 free." />
+<img className="hidden dark:block" src="/images/guide-art/server-size/capacity-dark.svg" alt="A World set to hold 8 players with 6 seats taken and 2 free." />
+
+<Prompt description="**Set how many players my World holds.** Match the World's maximum to my game design and queues.">
+In my Summer project, set the most players each kind of World holds to
+[NUMBER]. Use the Summer `multiplayer-project` and `summer-matchmaking`
+skills; if you don't have them installed, find them in the Summer library.
+
+Read my project first and check that my queues, spawn points and HUD all agree
+with that number before you change anything.
+</Prompt>
+
+## Not sure which fits?
+
+<Prompt description="**Plan server sizes for my game.** Your agent reads your project and proposes sizes and player counts. No code.">
+Read my Summer project and help me plan its server sizes and player counts.
+Use the Summer `multiplayer-project` and `multiplayer-publish` skills, and
+search the Summer library and the Summer API docs for server tiers; if you
+don't have the skills installed, find them in the Summer library. Don't change
+any files yet.
+
+Tell me:
+1. every kind of World my game starts, how many players each holds, and a
+   starting server size for each with a reason;
+2. what I should watch when I play it hosted to know whether a size fits;
+3. anything my design needs that these settings don't cover yet, and how we
+   can build around it.
+</Prompt>
+
+## Testing it on your machine
+
+Local Play runs your server on your own computer, so it doesn't tell you which
+size you need. To pick one, publish your game and play it with as many players
+as you expect. Keep an eye on how smooth it feels and on the server's output in
+your creator dashboard, then move up or down a size in your next version.
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

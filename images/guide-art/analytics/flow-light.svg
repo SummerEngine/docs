@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 310" width="880" height="310" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="309" rx="16" fill="#fbf7ef" stroke="#e6dcc8"/>
+<rect x="40" y="40" width="330" height="70" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<rect x="58" y="50" width="30" height="50" rx="12" fill="#ffffff" stroke="#8a806b" stroke-width="2" opacity="1"/>
+<rect x="65" y="62" width="16" height="22" rx="6" fill="#f6e3c4" opacity="1"/>
+<line x1="65.0" y1="92" x2="81.0" y2="92" stroke="#8a806b" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<text x="106" y="70" font-size="14" font-weight="600" fill="#2a251b" text-anchor="start" opacity="1">Players' games</text>
+<text x="106" y="92" font-family="'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="12" font-weight="600" fill="#d9922e" text-anchor="start">tutorial_step_shown</text>
+<line x1="382" y1="75" x2="450.57608142552067" y2="107.43463310666519" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 444.4 111.1 L 456 110 L 449.5 100.3" fill="none" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="40" y="124" width="330" height="70" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<rect x="58" y="134" width="30" height="50" rx="8" fill="#ffffff" stroke="#8a806b" stroke-width="2" opacity="1"/>
+<rect x="65" y="145.0" width="16" height="5.333333333333334" rx="4" fill="#f6e3c4" opacity="1"/>
+<circle cx="73" cy="147.66666666666666" r="3" fill="#d9922e"/>
+<line x1="71" y1="147.66666666666666" x2="63" y2="147.66666666666666" stroke="#8a806b" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="65" y="156.33333333333334" width="16" height="5.333333333333334" rx="4" fill="#f6e3c4" opacity="1"/>
+<circle cx="73" cy="159.0" r="3" fill="#d9922e"/>
+<line x1="71" y1="159.0" x2="63" y2="159.0" stroke="#8a806b" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="65" y="167.66666666666666" width="16" height="5.333333333333334" rx="4" fill="#f6e3c4" opacity="1"/>
+<circle cx="73" cy="170.33333333333331" r="3" fill="#d9922e"/>
+<line x1="71" y1="170.33333333333331" x2="63" y2="170.33333333333331" stroke="#8a806b" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<text x="106" y="154" font-size="14" font-weight="600" fill="#2a251b" text-anchor="start" opacity="1">Your server</text>
+<text x="106" y="176" font-family="'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="12" font-weight="600" fill="#d9922e" text-anchor="start">coin_collected</text>
+<line x1="382" y1="159" x2="450.1885015881159" y2="141.4921414841324" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 447.8 148.3 L 456 140 L 444.8 136.7" fill="none" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="40" y="208" width="330" height="70" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<circle cx="73" cy="243" r="7.700000000000001" fill="#d9922e"/>
+<line x1="73" y1="232.5" x2="73" y2="229" stroke="#d9922e" stroke-width="2.5" stroke-linecap="round" transform="rotate(0 73 243)"/>
+<line x1="73" y1="232.5" x2="73" y2="229" stroke="#d9922e" stroke-width="2.5" stroke-linecap="round" transform="rotate(45 73 243)"/>
+<line x1="73" y1="232.5" x2="73" y2="229" stroke="#d9922e" stroke-width="2.5" stroke-linecap="round" transform="rotate(90 73 243)"/>
+<line x1="73" y1="232.5" x2="73" y2="229" stroke="#d9922e" stroke-width="2.5" stroke-linecap="round" transform="rotate(135 73 243)"/>
+<line x1="73" y1="232.5" x2="73" y2="229" stroke="#d9922e" stroke-width="2.5" stroke-linecap="round" transform="rotate(180 73 243)"/>
+<line x1="73" y1="232.5" x2="73" y2="229" stroke="#d9922e" stroke-width="2.5" stroke-linecap="round" transform="rotate(225 73 243)"/>
+<line x1="73" y1="232.5" x2="73" y2="229" stroke="#d9922e" stroke-width="2.5" stroke-linecap="round" transform="rotate(270 73 243)"/>
+<line x1="73" y1="232.5" x2="73" y2="229" stroke="#d9922e" stroke-width="2.5" stroke-linecap="round" transform="rotate(315 73 243)"/>
+<text x="106" y="238" font-size="14" font-weight="600" fill="#2a251b" text-anchor="start" opacity="1">Summer itself</text>
+<text x="106" y="260" font-family="'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace" font-size="12" font-weight="600" fill="#d9922e" text-anchor="start">matched, joined…</text>
+<line x1="382" y1="243" x2="451.7285966443613" y2="174.21368168867065" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 453.1 181.3 L 456 170 L 444.7 172.8" fill="none" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="468" y="40" width="372" height="238" rx="14" fill="#ffffff" stroke="#d9922e" stroke-width="2" opacity="1"/>
+<text x="492" y="72" font-size="15" font-weight="600" fill="#2a251b" text-anchor="start" opacity="1">Analytics</text>
+<text x="816" y="72" font-size="12" font-weight="500" fill="#8a806b" text-anchor="end" opacity="1">last 7 days</text>
+<rect x="500" y="198" width="28" height="52" rx="6" fill="#d9922e" opacity="0.45"/>
+<rect x="544" y="174" width="28" height="76" rx="6" fill="#d9922e" opacity="0.53"/>
+<rect x="588" y="186" width="28" height="64" rx="6" fill="#d9922e" opacity="0.61"/>
+<rect x="632" y="152" width="28" height="98" rx="6" fill="#d9922e" opacity="0.69"/>
+<rect x="676" y="130" width="28" height="120" rx="6" fill="#d9922e" opacity="0.77"/>
+<rect x="720" y="158" width="28" height="92" rx="6" fill="#d9922e" opacity="0.8500000000000001"/>
+<rect x="764" y="112" width="28" height="138" rx="6" fill="#d9922e" opacity="0.9299999999999999"/>
+<line x1="492" y1="252" x2="816" y2="252" stroke="#e6dcc8" stroke-width="2" stroke-linecap="round" opacity="1"/>
+</svg>

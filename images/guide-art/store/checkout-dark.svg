@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 280" width="880" height="280" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="279" rx="16" fill="#1b1810" stroke="#3a3428"/>
+<rect x="30" y="30" width="184" height="220" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<circle cx="54" cy="60" r="11" fill="#f0b566"/>
+<text x="54" y="64.5" font-size="12" font-weight="700" fill="#1b1810" text-anchor="middle" opacity="1">1</text>
+<text x="74" y="65" font-size="15" font-weight="600" fill="#ede6d6" text-anchor="start" opacity="1">Your shop</text>
+<text x="122" y="236" font-size="12" font-weight="500" fill="#9b927f" text-anchor="middle" opacity="1">lists items and prices</text>
+<line x1="220" y1="140" x2="230" y2="140" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 227 134 L 236 140 L 227 146" fill="none" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="242" y="30" width="184" height="220" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<circle cx="266" cy="60" r="11" fill="#f0b566"/>
+<text x="266" y="64.5" font-size="12" font-weight="700" fill="#1b1810" text-anchor="middle" opacity="1">2</text>
+<text x="286" y="65" font-size="15" font-weight="600" fill="#ede6d6" text-anchor="start" opacity="1">Summer asks</text>
+<text x="334" y="236" font-size="12" font-weight="500" fill="#9b927f" text-anchor="middle" opacity="1">the player approves</text>
+<line x1="432" y1="140" x2="442" y2="140" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 439 134 L 448 140 L 439 146" fill="none" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="454" y="30" width="184" height="220" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<circle cx="478" cy="60" r="11" fill="#f0b566"/>
+<text x="478" y="64.5" font-size="12" font-weight="700" fill="#1b1810" text-anchor="middle" opacity="1">3</text>
+<text x="498" y="65" font-size="15" font-weight="600" fill="#ede6d6" text-anchor="start" opacity="1">Inventory</text>
+<text x="546" y="236" font-size="12" font-weight="500" fill="#9b927f" text-anchor="middle" opacity="1">Summer adds the item</text>
+<line x1="644" y1="140" x2="654" y2="140" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 651 134 L 660 140 L 651 146" fill="none" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="666" y="30" width="184" height="220" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<circle cx="690" cy="60" r="11" fill="#f0b566"/>
+<text x="690" y="64.5" font-size="12" font-weight="700" fill="#1b1810" text-anchor="middle" opacity="1">4</text>
+<text x="710" y="65" font-size="15" font-weight="600" fill="#ede6d6" text-anchor="start" opacity="1">Your game</text>
+<text x="758" y="236" font-size="12" font-weight="500" fill="#9b927f" text-anchor="middle" opacity="1">unlocks what they own</text>
+<rect x="42" y="82" width="160" height="34" rx="8" fill="#3d3121" opacity="1"/>
+<rect x="50" y="89" width="20" height="20" rx="5" fill="#f0b566" opacity="1"/>
+<text x="78" y="104" font-size="12" font-weight="600" fill="#ede6d6" text-anchor="start" opacity="1">Gold crown</text>
+<path d="M 158 94 L 159.6 97.4 L 163 99 L 159.6 100.6 L 158 104 L 156.4 100.6 L 153 99 L 156.4 97.4 Z" fill="#f0b566"/>
+<text x="192" y="103.5" font-size="12" font-weight="700" fill="#ede6d6" text-anchor="end" opacity="1">120</text>
+<rect x="42" y="122" width="160" height="34" rx="8" fill="#1b1810" opacity="1"/>
+<rect x="50" y="129" width="20" height="20" rx="5" fill="#7fb3d5" opacity="1"/>
+<text x="78" y="144" font-size="12" font-weight="600" fill="#ede6d6" text-anchor="start" opacity="1">Blue cape</text>
+<path d="M 158 134 L 159.6 137.4 L 163 139 L 159.6 140.6 L 158 144 L 156.4 140.6 L 153 139 L 156.4 137.4 Z" fill="#f0b566"/>
+<text x="192" y="143.5" font-size="12" font-weight="700" fill="#ede6d6" text-anchor="end" opacity="1">80</text>
+<rect x="84" y="170" width="76" height="30" rx="15" fill="#f0b566" opacity="1"/>
+<text x="122" y="190" font-size="13" font-weight="700" fill="#1b1810" text-anchor="middle" opacity="1">Buy</text>
+<rect x="299" y="78" width="70" height="136" rx="12" fill="#242017" stroke="#9b927f" stroke-width="2" opacity="1"/>
+<rect x="306" y="90" width="56" height="108" rx="6" fill="#3d3121" opacity="1"/>
+<line x1="326.0" y1="206" x2="342.0" y2="206" stroke="#9b927f" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="308" y="128" width="52" height="64" rx="6" fill="#242017" opacity="1"/>
+<path d="M 324 137 L 325.6 140.4 L 329 142 L 325.6 143.6 L 324 147 L 322.4 143.6 L 319 142 L 322.4 140.4 Z" fill="#f0b566"/>
+<text x="342" y="146" font-size="11" font-weight="700" fill="#ede6d6" text-anchor="middle" opacity="1">120</text>
+<rect x="313" y="156" width="42" height="14" rx="7" fill="#8bc48a" opacity="1"/>
+<rect x="313" y="175" width="42" height="12" rx="6" fill="none" stroke="#9b927f" stroke-width="1" opacity="1"/>
+<rect x="494" y="92" width="44" height="44" rx="10" fill="#7fb3d5" opacity="1"/>
+<rect x="554" y="92" width="44" height="44" rx="10" fill="#4a4334" opacity="0.6"/>
+<rect x="494" y="154" width="44" height="44" rx="10" fill="#4a4334" opacity="0.6"/>
+<rect x="554" y="154" width="44" height="44" rx="10" fill="#f0b566" opacity="1"/>
+<rect x="550" y="150" width="52" height="52" rx="12" fill="none" stroke="#8bc48a" stroke-width="2.5" opacity="1"/>
+<circle cx="600" cy="152" r="8" fill="#8bc48a"/><path d="M 596.5 152 l 2.5 2.6 l 4.5 -5" fill="none" stroke="#1b1810" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<g opacity="1" fill="#ede6d6"><circle cx="758" cy="157.5" r="10.4"/><path d="M 741.1 190 v -7.800000000000001 a 16.900000000000002 14.3 0 0 1 33.800000000000004 0 v 7.800000000000001 z"/></g>
+<path d="M 746.3 149.7 L 746.3 139.29999999999998 L 752.15 144.5 L 758 136.7 L 763.85 144.5 L 769.7 139.29999999999998 L 769.7 149.7 Z" fill="#f0b566"/>
+</svg>

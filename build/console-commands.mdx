@@ -1,0 +1,132 @@
+---
+title: "Run commands in a live World"
+sidebarTitle: "Console commands"
+description: "Type a command into a running World from your creator dashboard, such as an announcement or a live event, and see the game's reply."
+icon: "terminal"
+---
+
+Talk to a running World without shipping an update. Your game registers the
+commands it understands, such as `announce`. You type them into the World's
+console in your creator dashboard, the game runs the command, and its reply
+appears next to it.
+
+## Games like this
+
+<CardGroup cols={3}>
+  <Card title="Minecraft servers" icon="pickaxe">
+    Admins type commands to broadcast a message or change the time of day.
+  </Card>
+  <Card title="Rust" icon="flame">
+    Server admins run announcements and events from a console.
+  </Card>
+  <Card title="Counter-Strike community servers" icon="crosshair">
+    Remote commands to change the map or restart a round.
+  </Card>
+</CardGroup>
+
+## What you get
+
+<img className="block dark:hidden" src="/images/guide-art/console-commands/flow-light.svg" alt="You type a command into the dashboard console; the running World's server runs your game's handler and the reply appears in the command history." />
+<img className="hidden dark:block" src="/images/guide-art/console-commands/flow-dark.svg" alt="You type a command into the dashboard console; the running World's server runs your game's handler and the reply appears in the command history." />
+
+Open your creator dashboard, then **Runtime**, then a World, then one of its
+running servers. There you get:
+
+- **The game's output,** refreshed every few seconds while you watch.
+- **A command line** for one command at a time. `help` lists the commands your
+  game has registered.
+- **Command history** with each command, whether it worked, and your game's
+  reply.
+
+Only the game's owners, admins and operators can send commands, and each
+command goes to exactly the server you picked. Your game decides what every
+command does; Summer never runs anything your game didn't register.
+
+<img className="block dark:hidden" src="/images/guide-art/console-commands/console-light.svg" alt="A console with three commands in its history: help listing the commands, an announcement that succeeded, and a command with a wrong argument showing its usage." />
+<img className="hidden dark:block" src="/images/guide-art/console-commands/console-dark.svg" alt="A console with three commands in its history: help listing the commands, an announcement that succeeded, and a command with a wrong argument showing its usage." />
+
+## Pick your setup
+
+### Announcements
+
+Send a message to everyone in the World, such as "Server restarts in 10
+minutes" or "Welcome to the weekend event".
+
+<Prompt description="**Add an announce command.** I type a message in the dashboard; every player sees it.">
+In my Summer project, add a World console command `announce` that shows a
+message to every player in the World. There is no Summer skill for console
+commands yet, so search the Summer library and the Summer API docs for World
+console commands.
+
+- `announce "message"` shows the message to every player, [HOW, for example
+  "as a banner at the top of the screen for 5 seconds"].
+- With the wrong arguments, reply with how to use it.
+- Reply "Announcement sent" when it worked.
+
+Read my project first and tell me how a message from the server reaches every
+player's screen before you change anything.
+</Prompt>
+
+### Live events and tuning
+
+Start an event, change the weather, or turn on double rewards in a running
+World, so you can react to your players without publishing a new version.
+
+<Prompt description="**Add commands for live events.** Start events and change settings in a running World.">
+In my Summer project, add World console commands for [COMMANDS, for example
+"start_event NAME, set_weather rain|clear, double_rewards on|off"]. There is
+no Summer skill for console commands yet, so search the Summer library and the
+Summer API docs for World console commands.
+
+- Each command checks its arguments and replies with what changed.
+- `help` should describe each command clearly.
+- If a change should survive a restart, save it the way my game already saves
+  World state.
+
+Read my project first and tell me which game systems each command touches
+before you change anything.
+</Prompt>
+
+### Look inside a World
+
+Ask a World how it's doing: how many players are in it, which round it's on,
+or what state an event is in.
+
+<Prompt description="**Add status commands.** Ask a running World for its players, round and events.">
+In my Summer project, add a World console command `status` that replies with
+[WHAT, for example "the number of players, the current round and any active
+event"]. There is no Summer skill for console commands yet, so search the
+Summer library and the Summer API docs for World console commands.
+
+Keep the reply short and readable, and make sure the command only reads game
+state and changes nothing.
+</Prompt>
+
+Keep commands quick: each one runs inside the World while players are
+playing. If a command's result ever shows as unknown, check the World before
+sending it again. Summer never sends a command twice by itself.
+
+## Not sure which fits?
+
+<Prompt description="**Plan console commands for my game.** Your agent reads your project and proposes useful commands. No code.">
+Read my Summer project and help me plan its World console commands. Search the
+Summer library and the Summer API docs for World console commands. Don't
+change any files yet.
+
+Tell me:
+1. which commands would help me run my game live, and what each one replies;
+2. which game systems each command touches, and which changes should survive
+   a restart;
+3. anything I'd want to do to a live World that commands don't cover yet, and
+   how we can build around it.
+</Prompt>
+
+## Testing it on your machine
+
+The console talks to hosted Worlds from your creator dashboard. On your own
+machine, test the code behind each command by running it from your game while
+it plays in Local Play, then try the real commands on a hosted World.
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

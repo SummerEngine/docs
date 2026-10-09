@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 260" width="880" height="260" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="259" rx="16" fill="#fbf7ef" stroke="#e6dcc8"/>
+<rect x="30.0" y="44" width="182.5" height="150" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="121.25" y="70" font-size="13" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">Find a duel</text>
+<g opacity="1" fill="#d9922e"><circle cx="93.25" cy="125.25" r="6.0"/><path d="M 83.5 144 v -4.5 a 9.75 8.25 0 0 1 19.5 0 v 4.5 z"/></g>
+<text x="121.25" y="134" font-size="14" font-weight="700" fill="#8a806b" text-anchor="middle" opacity="1">vs</text>
+<g opacity="1" fill="#3f7fb0"><circle cx="149.25" cy="125.25" r="6.0"/><path d="M 139.5 144 v -4.5 a 9.75 8.25 0 0 1 19.5 0 v 4.5 z"/></g>
+<text x="121.25" y="182" font-size="11" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">matched by rating</text>
+<rect x="242.5" y="44" width="182.5" height="150" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="333.75" y="70" font-size="13" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">Take turns</text>
+<circle cx="333.75" cy="128" r="28" fill="#ffffff" stroke="#d9922e" stroke-width="2"/>
+<line x1="333.75" y1="128" x2="333.75" y2="110" stroke="#d9922e" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<line x1="333.75" y1="128" x2="346.75" y2="134" stroke="#d9922e" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<text x="333.75" y="182" font-size="11" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">server keeps time</text>
+<line x1="217.5" y1="119.0" x2="231.5" y2="119.0" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 228.5 113.0 L 237.5 119.0 L 228.5 125.0" fill="none" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="455.0" y="44" width="182.5" height="150" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="546.25" y="70" font-size="13" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">Hidden hands</text>
+<rect x="512.25" y="92" width="22" height="32" rx="4" fill="#d7e6f2" stroke="#3f7fb0" stroke-width="1.4" opacity="1"/>
+<rect x="530.25" y="92" width="22" height="32" rx="4" fill="#d7e6f2" stroke="#3f7fb0" stroke-width="1.4" opacity="1"/>
+<rect x="548.25" y="92" width="22" height="32" rx="4" fill="#d7e6f2" stroke="#3f7fb0" stroke-width="1.4" opacity="1"/>
+<rect x="540.25" y="130" width="22" height="32" rx="4" fill="#ffffff" stroke="#d9922e" stroke-width="1.6" opacity="1"/>
+<circle cx="551.25" cy="146" r="4" fill="#d9922e"/>
+<rect x="558.25" y="130" width="22" height="32" rx="4" fill="#ffffff" stroke="#d9922e" stroke-width="1.6" opacity="1"/>
+<circle cx="569.25" cy="146" r="4" fill="#d9922e"/>
+<rect x="576.25" y="130" width="22" height="32" rx="4" fill="#ffffff" stroke="#d9922e" stroke-width="1.6" opacity="1"/>
+<circle cx="587.25" cy="146" r="4" fill="#d9922e"/>
+<text x="546.25" y="182" font-size="11" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">only yours face up</text>
+<line x1="430.0" y1="119.0" x2="444.0" y2="119.0" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 441.0 113.0 L 450.0 119.0 L 441.0 125.0" fill="none" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="667.5" y="44" width="182.5" height="150" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="758.75" y="70" font-size="13" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">Rating moves</text>
+<text x="758.75" y="124" font-size="24" font-weight="700" fill="#2a251b" text-anchor="middle" opacity="1">1415</text>
+<rect x="737.83" y="140" width="41.839999999999996" height="24" rx="12" fill="#ffffff" stroke="#4f9a55" stroke-width="1.5" opacity="1"/>
+<text x="758.75" y="156.5" font-size="12" font-weight="700" fill="#4f9a55" text-anchor="middle" opacity="1">▲ 15</text>
+<text x="758.75" y="182" font-size="11" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">after every game</text>
+<line x1="642.5" y1="119.0" x2="656.5" y2="119.0" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 653.5 113.0 L 662.5 119.0 L 653.5 125.0" fill="none" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 758.75 198 V 220 H 121.25 V 204" fill="none" stroke="#d9922e" stroke-width="2" stroke-dasharray="5 6" stroke-linecap="round"/>
+<path d="M 115.25 210 L 121.25 201 L 127.25 210" fill="none" stroke="#d9922e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="395.0" y="209" width="90" height="22" rx="8" fill="#fbf7ef" opacity="1"/>
+<text x="440.0" y="224" font-size="12" font-weight="600" fill="#d9922e" text-anchor="middle" opacity="1">Play again</text>
+</svg>

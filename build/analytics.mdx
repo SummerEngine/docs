@@ -1,0 +1,118 @@
+---
+title: "See what players do"
+sidebarTitle: "Analytics"
+description: "Record the moments that matter in your game, from your players' games and your server, and see them in your game's Analytics tab."
+icon: "chart-line"
+---
+
+Record the moments that matter in your game, such as a tutorial step shown, a
+level completed or a coin collected, and see them in your game's **Analytics**
+tab. Summer adds who, which game and which version to every event, so your
+game only says what happened. Summer also records the multiplayer journey for
+you: searching, matched, joined and match completed.
+
+## Questions it answers
+
+<CardGroup cols={3}>
+  <Card title="Where do players stop?" icon="door-open">
+    See which tutorial step most players never get past.
+  </Card>
+  <Card title="Which level is too hard?" icon="mountain">
+    Compare how many players start and finish each level.
+  </Card>
+  <Card title="Which mode do players pick?" icon="list-checks">
+    Count matches and players per mode.
+  </Card>
+</CardGroup>
+
+## What you get
+
+<img className="block dark:hidden" src="/images/guide-art/analytics/flow-light.svg" alt="Events from players' games and from the game server, plus events Summer records itself, all arrive in the game's Analytics tab." />
+<img className="hidden dark:block" src="/images/guide-art/analytics/flow-dark.svg" alt="Events from players' games and from the game server, plus events Summer records itself, all arrive in the game's Analytics tab." />
+
+- **Events from your game:** both your players' games and your server can
+  record events.
+- **Events Summer records for you:** a player starts searching, is matched,
+  joins a World, and finishes a match.
+- **An Analytics tab** in your game's dashboard with event counts, the list of
+  events your game sends, recent events and how much storage you're using.
+- **Room to start:** every game can keep 10,000 events for free, each for
+  seven days. Raise your storage limit to keep more, for 30 days.
+
+Recording an event never slows your game down. It happens in the background,
+and your game never waits for it.
+
+## Pick your setup
+
+### Moments on the player's screen
+
+Record what happens in your game's menus and interface: a tutorial step shown,
+the settings opened, a mode picked. These come from each player's own game.
+
+<img className="block dark:hidden" src="/images/guide-art/analytics/event-light.svg" alt="An event called level_completed with two properties, level 3 and seconds 41. The name stays the same; the values go in the properties." />
+<img className="hidden dark:block" src="/images/guide-art/analytics/event-dark.svg" alt="An event called level_completed with two properties, level 3 and seconds 41. The name stays the same; the values go in the properties." />
+
+Give each event a fixed name for what happened, in the past tense, such as
+`level_completed`. Put the details in its properties, such as the level number,
+so one event covers every level.
+
+<Prompt description="**Track my tutorial and menus.** Events for each tutorial step and the main menu choices.">
+In my Summer project, record analytics events for [WHAT, for example "each
+tutorial step and every mode the player picks in the main menu"]. Use the
+Summer `summer-analytics` skill; if you don't have it installed, find it in
+the Summer library.
+
+- Use fixed event names in the past tense, with the details in properties.
+- Never send names, emails or anything the player typed.
+- The game never waits for an event to be recorded.
+
+Read my project first and list the events you'd add, with their properties,
+before you change anything.
+</Prompt>
+
+### Facts your server decides
+
+Record what your server decides: a match won, a coin collected, an item
+bought. These are the numbers to trust, because they come from the server and
+not from a player's device.
+
+<Prompt description="**Track gameplay on my server.** Events for wins, pickups and other server decisions.">
+In my Summer project, record analytics events on my game's server for [WHAT,
+for example "every coin collected and every round won"]. Use the Summer
+`summer-analytics` skill; if you don't have it installed, find it in the
+Summer library.
+
+- Record each event where the server decides it happened.
+- Use fixed event names with the details in properties.
+- Gameplay never waits for an event to be recorded.
+
+Read my project first and show me where each event would be recorded before
+you change anything.
+</Prompt>
+
+## Not sure which fits?
+
+<Prompt description="**Plan analytics for my game.** Your agent reads your project and proposes a small set of events. No code.">
+Read my Summer project and help me plan its analytics. Use the Summer
+`summer-analytics` skill; if you don't have it installed, find it in the
+Summer library. Don't change any files yet.
+
+Tell me:
+1. the questions about my players I should be able to answer;
+2. a small set of events that answer them, which come from players' games and
+   which from my server, and their properties;
+3. what Summer already records for me, and anything I'd want to know that
+   these events don't cover yet.
+</Prompt>
+
+## Testing it on your machine
+
+Under Local Play, events aren't stored and report that analytics isn't
+available, while your game plays normally. Have your game also print each
+event to its log while you test, so you can check names and properties
+locally. In a hosted game, events show up in your Analytics tab after a short
+delay.
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

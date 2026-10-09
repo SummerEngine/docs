@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 280" width="880" height="280" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="279" rx="16" fill="#1b1810" stroke="#3a3428"/>
+<rect x="40" y="30" width="250" height="220" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<text x="64" y="60" font-size="14" font-weight="600" fill="#ede6d6" text-anchor="start" opacity="1">Your game's page</text>
+<rect x="64" y="76" width="202" height="90" rx="10" fill="#3d3121" opacity="1"/>
+<rect x="64" y="182" width="96" height="32" rx="16" fill="#f0b566" opacity="1"/>
+<text x="112" y="203" font-size="13" font-weight="700" fill="#1b1810" text-anchor="middle" opacity="1">Play</text>
+<rect x="170" y="182" width="96" height="32" rx="16" fill="#242017" stroke="#f0b566" stroke-width="2" opacity="1"/>
+<text x="218" y="203" font-size="13" font-weight="700" fill="#f0b566" text-anchor="middle" opacity="1">Tip</text>
+<line x1="302" y1="140" x2="340" y2="140" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 337 134 L 346 140 L 337 146" fill="none" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="358" y="30" width="250" height="220" rx="14" fill="#242017" stroke="#f0b566" stroke-width="2" opacity="1"/>
+<text x="382" y="60" font-size="14" font-weight="600" fill="#ede6d6" text-anchor="start" opacity="1">Tip the creator</text>
+<rect x="382" y="78" width="96" height="44" rx="10" fill="#1b1810" stroke="#3a3428" stroke-width="1.2" opacity="1"/>
+<path d="M 404 94 L 405.92 98.08 L 410 100 L 405.92 101.92 L 404 106 L 402.08 101.92 L 398 100 L 402.08 98.08 Z" fill="#f0b566"/>
+<text x="418" y="105" font-size="14" font-weight="700" fill="#ede6d6" text-anchor="start" opacity="1">200</text>
+<rect x="486" y="78" width="96" height="44" rx="10" fill="#3d3121" stroke="#f0b566" stroke-width="2" opacity="1"/>
+<path d="M 508 94 L 509.92 98.08 L 514 100 L 509.92 101.92 L 508 106 L 506.08 101.92 L 502 100 L 506.08 98.08 Z" fill="#f0b566"/>
+<text x="522" y="105" font-size="14" font-weight="700" fill="#ede6d6" text-anchor="start" opacity="1">500</text>
+<rect x="382" y="134" width="96" height="44" rx="10" fill="#1b1810" stroke="#3a3428" stroke-width="1.2" opacity="1"/>
+<path d="M 404 150 L 405.92 154.08 L 410 156 L 405.92 157.92 L 404 162 L 402.08 157.92 L 398 156 L 402.08 154.08 Z" fill="#f0b566"/>
+<text x="418" y="161" font-size="14" font-weight="700" fill="#ede6d6" text-anchor="start" opacity="1">1,000</text>
+<rect x="486" y="134" width="96" height="44" rx="10" fill="#1b1810" stroke="#3a3428" stroke-width="1.2" opacity="1"/>
+<path d="M 508 150 L 509.92 154.08 L 514 156 L 509.92 157.92 L 508 162 L 506.08 157.92 L 502 156 L 506.08 154.08 Z" fill="#f0b566"/>
+<text x="522" y="161" font-size="14" font-weight="700" fill="#ede6d6" text-anchor="start" opacity="1">2,000</text>
+<text x="483" y="214" font-size="12" font-weight="500" fill="#9b927f" text-anchor="middle" opacity="1">paid in Sparks</text>
+<line x1="620" y1="140" x2="658" y2="140" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 655 134 L 664 140 L 655 146" fill="none" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="676" y="30" width="164" height="220" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<g opacity="1" fill="#ede6d6"><circle cx="758" cy="92.5" r="8.8"/><path d="M 743.7 120 v -6.6000000000000005 a 14.3 12.100000000000001 0 0 1 28.6 0 v 6.6000000000000005 z"/></g>
+<circle cx="774" cy="104" r="11" fill="#f0b566"/>
+<path d="M 774 98 L 775.92 102.08 L 780 104 L 775.92 105.92 L 774 110 L 772.08 105.92 L 768 104 L 772.08 102.08 Z" fill="#1b1810"/>
+<text x="758" y="150" font-size="12" font-weight="600" fill="#9b927f" text-anchor="middle" opacity="1">supporter badge</text>
+<line x1="696" y1="168" x2="820" y2="168" stroke="#3a3428" stroke-width="1.5" stroke-linecap="round" opacity="1"/>
+<text x="758" y="196" font-size="13" font-weight="700" fill="#8bc48a" text-anchor="middle" opacity="1">You earn 70%</text>
+<text x="758" y="214" font-size="12" font-weight="500" fill="#9b927f" text-anchor="middle" opacity="1">of the Sparks spent</text>
+</svg>

@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 270" width="880" height="270" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="269" rx="16" fill="#1b1810" stroke="#3a3428"/>
+<rect x="40" y="30" width="250" height="200" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<text x="64" y="62" font-size="15" font-weight="600" fill="#ede6d6" text-anchor="start" opacity="1">Queue</text>
+<text x="266" y="62" font-size="13" font-weight="500" fill="#9b927f" text-anchor="end" opacity="1">“casual”</text>
+<rect x="60" y="92" width="210" height="100" rx="12" fill="#3d3121" opacity="1"/>
+<g opacity="1" fill="#ede6d6"><circle cx="100" cy="138.75" r="6.8"/><path d="M 88.95 160 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<g opacity="1" fill="#ede6d6"><circle cx="165" cy="138.75" r="6.8"/><path d="M 153.95 160 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<g opacity="1" fill="#ede6d6"><circle cx="230" cy="138.75" r="6.8"/><path d="M 218.95 160 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<text x="165" y="214" font-size="12" font-weight="500" fill="#9b927f" text-anchor="middle" opacity="1">players searching</text>
+<line x1="302" y1="130" x2="350.0" y2="130.0" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 347.7 135.6 L 356 130 L 347.7 124.4" fill="none" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="329" y="116" font-size="12" font-weight="600" fill="#9b927f" text-anchor="middle" opacity="1">placed</text>
+<rect x="368" y="30" width="472" height="200" rx="14" fill="#242017" stroke="#f0b566" stroke-width="2" opacity="1"/>
+<text x="392" y="62" font-size="15" font-weight="700" fill="#f0b566" text-anchor="start" opacity="1">World</text>
+<text x="816" y="62" font-size="13" font-weight="500" fill="#9b927f" text-anchor="end" opacity="1">one running match, one server</text>
+<rect x="392" y="86" width="94" height="116" rx="12" fill="#3d3121" stroke="#f0b566" stroke-width="1.6" opacity="1"/>
+<g opacity="1" fill="#ede6d6"><circle cx="439" cy="136.75" r="6.8"/><path d="M 427.95 158 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<circle cx="454" cy="112" r="8" fill="#8bc48a"/><path d="M 450.5 112 l 2.5 2.6 l 4.5 -5" fill="none" stroke="#1b1810" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="439" y="188" font-size="12" font-weight="700" fill="#f0b566" text-anchor="middle" opacity="1">Session</text>
+<rect x="502" y="86" width="94" height="116" rx="12" fill="#3d3121" stroke="#f0b566" stroke-width="1.6" opacity="1"/>
+<g opacity="1" fill="#ede6d6"><circle cx="549" cy="136.75" r="6.8"/><path d="M 537.95 158 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<circle cx="564" cy="112" r="8" fill="#8bc48a"/><path d="M 560.5 112 l 2.5 2.6 l 4.5 -5" fill="none" stroke="#1b1810" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="549" y="188" font-size="12" font-weight="700" fill="#f0b566" text-anchor="middle" opacity="1">Session</text>
+<rect x="612" y="86" width="94" height="116" rx="12" fill="#3d3121" stroke="#f0b566" stroke-width="1.6" opacity="1"/>
+<g opacity="1" fill="#ede6d6"><circle cx="659" cy="136.75" r="6.8"/><path d="M 647.95 158 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<circle cx="674" cy="112" r="8" fill="#8bc48a"/><path d="M 670.5 112 l 2.5 2.6 l 4.5 -5" fill="none" stroke="#1b1810" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="659" y="188" font-size="12" font-weight="700" fill="#f0b566" text-anchor="middle" opacity="1">Session</text>
+<rect x="722" y="86" width="94" height="116" rx="12" fill="none" stroke="#4a4334" stroke-width="1.6" stroke-dasharray="4 5" opacity="1"/>
+<text x="769" y="150" font-size="12" font-weight="500" fill="#9b927f" text-anchor="middle" opacity="1">free seat</text>
+<text x="616" y="246" font-size="12" font-weight="500" fill="#9b927f" text-anchor="middle" opacity="1">a Session is one player's verified seat</text>
+</svg>

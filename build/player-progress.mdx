@@ -1,0 +1,133 @@
+---
+title: "Save player progress"
+sidebarTitle: "Player progress"
+description: "Remember each player's coins, unlocks, level and settings, and bring them back in every match, on any server and any device."
+icon: "save"
+---
+
+Summer remembers each player's progress in your game, such as coins, unlocks,
+level and settings, and brings it back in their next match, on any server and
+any device. Your game's server saves it, so it isn't lost when a player
+reinstalls, and nobody can edit a save file to cheat.
+
+## Games like this
+
+<CardGroup cols={3}>
+  <Card title="Rocket League" icon="car">
+    Your level and unlocks are waiting in every match.
+  </Card>
+  <Card title="Deep Rock Galactic" icon="pickaxe">
+    Class levels and perks carry over between missions.
+  </Card>
+  <Card title="Brawl Stars" icon="star">
+    Brawlers you unlocked and upgraded stay yours.
+  </Card>
+</CardGroup>
+
+If anything a player earns should still be there tomorrow, this is the page
+for you.
+
+## What your players get
+
+<img className="block dark:hidden" src="/images/guide-art/player-progress/carry-over-light.svg" alt="On Monday a match's server saves a player's new coins and level. Summer keeps the progress for that player in your game. On Friday a match on another server, played on another device, loads the same progress." />
+<img className="hidden dark:block" src="/images/guide-art/player-progress/carry-over-dark.svg" alt="On Monday a match's server saves a player's new coins and level. Summer keeps the progress for that player in your game. On Friday a match on another server, played on another device, loads the same progress." />
+
+- **Progress in every match.** Whatever a player earned last time is there
+  when they join their next match, whichever server it runs on.
+- **On every device.** Progress belongs to the player's Summer account, so it
+  follows them from phone to computer.
+- **Saved as they play.** Your server saves a few seconds after progress
+  changes, when the player leaves, and once more if the server is about to
+  stop.
+- **Never overwritten by an old match.** Only the player's newest match can
+  save their progress, so a match they already left can't undo what they
+  earned since.
+
+Each player's progress is private to them and your game. Other players can't
+read it.
+
+## Pick your setup
+
+### Progress that carries between matches
+
+Your server loads a player's progress when they join and saves it as it
+changes. Their game can read it too, for example to show coins and level in
+the main menu before they play. If a player's progress can't be loaded, your
+game tells them, instead of starting them from zero and overwriting it.
+
+<Prompt description="**Save player progress.** Coins, unlocks and level come back in every match.">
+In my Summer project, save each player's progress so it comes back in every
+match. Use the Summer `summer-player-data` skill; if you don't have it
+installed, find it in the Summer library.
+
+- Save [WHAT TO KEEP, for example "coins, unlocked skins and level"].
+- When a player joins, start them from their saved progress.
+- Save a few seconds after progress changes, and when the player leaves.
+- Show their coins and level in the main menu.
+- If their progress can't be loaded, tell them instead of starting them from
+  zero.
+
+Read my project first and list what you'd save before you change anything.
+Then test it with Local Play and tell me what you saw.
+</Prompt>
+
+### Values only your server sees
+
+Each player has two places to keep progress. One the player's own game can
+read, for things they should see. The other only your server can read, for
+things they shouldn't, such as anti-cheat counters or hidden values your
+game uses to tune difficulty.
+
+<img className="block dark:hidden" src="/images/guide-art/player-progress/two-slots-light.svg" alt="Two places to keep progress. One the player can see, such as coins, level, unlocks and settings, which the server writes and the player's game can read. One only the server sees, such as anti-cheat counters and hidden values, which is never sent to any player's game." />
+<img className="hidden dark:block" src="/images/guide-art/player-progress/two-slots-dark.svg" alt="Two places to keep progress. One the player can see, such as coins, level, unlocks and settings, which the server writes and the player's game can read. One only the server sees, such as anti-cheat counters and hidden values, which is never sent to any player's game." />
+
+<Prompt description="**Keep hidden values** that only my server can read.">
+In my Summer project, keep [WHAT TO HIDE, for example "a count of suspicious
+actions"] for each player where only my server can read it. Use the Summer
+`summer-player-data` skill; if you don't have it installed, find it in the
+Summer library.
+
+Keep everything the player should see where their game can read it, and keep
+values that must change together in the same place. Read my project first and
+tell me which values go where before you change anything.
+</Prompt>
+
+## What to save
+
+Save what should outlive the match: coins, unlocks, level, best score,
+settings. A player's position, health or this round's score belong to the
+match itself; see [sharing the game world](/build/shared-state). What belongs
+to a place, like the walls in a shared base, goes in a
+[World save](/build/persistent-worlds).
+
+Progress is saved by your game's server, so it's part of every game that runs
+on Summer servers. A [single-player game](/build/games-like/single-player)
+without a server keeps its saves on the player's device.
+
+## Not sure which fits?
+
+<Prompt description="**Plan player progress for my game.** Your agent reads your project and proposes what to save. No code.">
+Read my Summer project and help me plan what it saves for each player. Use
+the Summer `summer-player-data` skill; if you don't have it installed, find
+it in the Summer library. Don't change any files yet.
+
+Tell me:
+1. what each player should keep between matches, and what is only match state;
+2. which values the player should see and which only my server should see;
+3. when my server should save, and what the player sees if their progress
+   can't be loaded;
+4. anything my design needs that player progress doesn't cover yet, and how
+   we can build around it.
+</Prompt>
+
+## Testing it on your machine
+
+Local Play keeps each test player's progress in files on your computer, with
+the same rules as the hosted game. Progress carries over between your test
+runs, so you can quit, play again and check that everything came back. Delete
+a test player's folder to start them fresh. Durable cloud saves across
+servers and devices come with the hosted game.
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

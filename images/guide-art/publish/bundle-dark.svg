@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 250" width="880" height="250" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="249" rx="16" fill="#1b1810" stroke="#3a3428"/>
+<rect x="40" y="30" width="250" height="190" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<text x="165" y="62" font-size="14" font-weight="600" fill="#ede6d6" text-anchor="middle" opacity="1">summer.games export</text>
+<rect x="135" y="86" width="60" height="76" rx="8" fill="#1b1810" stroke="#9b927f" stroke-width="2" opacity="1"/>
+<rect x="160" y="92" width="10" height="6" rx="1" fill="#f0b566" opacity="1"/>
+<rect x="160" y="104" width="10" height="6" rx="1" fill="#f0b566" opacity="1"/>
+<rect x="160" y="116" width="10" height="6" rx="1" fill="#f0b566" opacity="1"/>
+<rect x="160" y="128" width="10" height="6" rx="1" fill="#f0b566" opacity="1"/>
+<rect x="160" y="140" width="10" height="6" rx="1" fill="#f0b566" opacity="1"/>
+<text x="165" y="196" font-size="13" font-weight="500" fill="#9b927f" text-anchor="middle" opacity="1">one .zip</text>
+<line x1="300" y1="125" x2="338" y2="125" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 335 119 L 344 125 L 335 131" fill="none" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="358" y="30" width="482" height="56" rx="12" fill="#242017" stroke="#f0b566" stroke-width="1.8" opacity="1"/>
+<rect x="374" y="44" width="28" height="28" rx="6" fill="#f0b566" opacity="0.85"/>
+<text x="418" y="55" font-size="14" font-weight="600" fill="#ede6d6" text-anchor="start" opacity="1">Your game</text>
+<text x="418" y="73" font-size="12" font-weight="500" fill="#9b927f" text-anchor="start" opacity="1">what players download</text>
+<rect x="358" y="96" width="482" height="56" rx="12" fill="#242017" stroke="#7fb3d5" stroke-width="1.8" stroke-dasharray="5 5" opacity="1"/>
+<rect x="374" y="110" width="28" height="28" rx="6" fill="#7fb3d5" opacity="0.85"/>
+<text x="418" y="121" font-size="14" font-weight="600" fill="#ede6d6" text-anchor="start" opacity="1">Your server</text>
+<text x="418" y="139" font-size="12" font-weight="500" fill="#9b927f" text-anchor="start" opacity="1">multiplayer games only</text>
+<rect x="358" y="162" width="482" height="56" rx="12" fill="#242017" stroke="#9b927f" stroke-width="1.8" opacity="1"/>
+<rect x="374" y="176" width="28" height="28" rx="6" fill="#9b927f" opacity="0.85"/>
+<text x="418" y="187" font-size="14" font-weight="600" fill="#ede6d6" text-anchor="start" opacity="1">Summer settings</text>
+<text x="418" y="205" font-size="12" font-weight="500" fill="#9b927f" text-anchor="start" opacity="1">queues, Worlds, platforms</text>
+</svg>

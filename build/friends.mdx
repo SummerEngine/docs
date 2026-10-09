@@ -1,0 +1,146 @@
+---
+title: "Show friends and messages"
+sidebarTitle: "Friends and messages"
+description: "Show which friends are online or playing your game, open Summer's friends, profile and chat screens over your game, and send direct messages."
+icon: "users"
+---
+
+Players bring their Summer friends into every game. Your game can show which
+friends are online and who's playing it right now, and open Summer's own
+friends list, profiles and chat on top of the game. If messaging is part of
+your game, it can also read and send direct messages. Players stay in
+control: your game asks before it reads their friends or messages, and it
+keeps working if they say no.
+
+## Games like this
+
+<CardGroup cols={3}>
+  <Card title="Steam games" icon="layers">
+    Open the overlay to see friends and message them without leaving the game.
+  </Card>
+  <Card title="Fortnite" icon="users">
+    See which friends are online and already in the game.
+  </Card>
+  <Card title="Words With Friends" icon="message-circle">
+    Messages between friends are part of the game.
+  </Card>
+</CardGroup>
+
+## What your players get
+
+<img className="block dark:hidden" src="/images/guide-art/friends/list-light.svg" alt="A friends list grouped by status: friends in this game first, then online, in another game, and offline." />
+<img className="hidden dark:block" src="/images/guide-art/friends/list-dark.svg" alt="A friends list grouped by status: friends in this game first, then online, in another game, and offline." />
+
+- **Friends and what they're doing:** each friend shows as in this game,
+  online, in another game, or offline. Another game is never named.
+- **Summer's screens over your game:** the friends list, any player's profile
+  with add friend, message, invite to party and report, and a chat with a
+  friend. Your game opens them with no permission needed.
+- **Direct messages inside your game,** when the player allows it.
+
+Friend requests, blocking and reporting all live in the Summer app, so your
+game never has to build them.
+
+## Pick your setup
+
+### Summer's screens over your game
+
+The simplest setup needs no permission at all. A Friends button opens
+Summer's friends list over your game. Tapping a player on your scoreboard
+opens their profile, where the player can add them as a friend, message them,
+invite them to a party or report them. This covers what most games need.
+
+<Prompt description="**Add Summer's friends and profile screens.** A Friends button, and profiles from the in-match player list.">
+In my Summer project, add Summer's friends screens. Use the Summer
+`summer-friends` skill; if you don't have it installed, find it in the Summer
+library.
+
+- A Friends button in [WHERE, for example "the main menu and the pause menu"]
+  opens Summer's friends list over the game.
+- Tapping a player in [WHERE, for example "the scoreboard"] opens their Summer
+  profile.
+- Where these screens aren't available, the buttons are hidden and the game
+  keeps working.
+
+Read my project first and fit this into my existing menus. Then test it with
+Local Play and tell me what I can only check once the game is hosted.
+</Prompt>
+
+### A friends list with who's playing
+
+Your game can show the player's friends in its own style, with friends who
+are in this game at the top. Reading the list needs the player's permission:
+your game declares that it wants it, and asks when the player opens the list.
+Summer shows its own consent screen. If the player says no, the list stays
+private and the game plays on as normal.
+
+<img className="block dark:hidden" src="/images/guide-art/friends/consent-light.svg" alt="The game asks to see friends, Summer shows a consent screen, and the player either allows it so the list appears, or declines and the game carries on." />
+<img className="hidden dark:block" src="/images/guide-art/friends/consent-dark.svg" alt="The game asks to see friends, Summer shows a consent screen, and the player either allows it so the list appears, or declines and the game carries on." />
+
+<Prompt description="**Show my friends in the game.** With the player's permission, friends in this game first.">
+In my Summer project, show the player's Summer friends in [WHERE, for example
+"a side panel in the main menu"]. Use the Summer `summer-friends` skill; if
+you don't have it installed, find it in the Summer library.
+
+- Ask for permission only when the player opens the panel, never at startup.
+- List friends in this game first, then online, in another game, and offline.
+- If the player says no, keep the game fully playable and let them ask again
+  later.
+
+Read my project first and fit this into my existing UI. Then test it with
+Local Play and tell me what I can only check once the game is hosted.
+</Prompt>
+
+### Direct messages in your game
+
+When messaging is central to your game, such as a turn-based game where
+friends chat between moves, your game can read and send the player's direct
+messages. Reading, sending and marking messages as read are each a separate
+permission the player grants. Summer filters every message, and players can
+only message their friends. For chat with everyone in a match, use
+[text chat](/build/chat) instead.
+
+<Prompt description="**Add direct messages.** Friends message each other inside my game, with permission.">
+In my Summer project, let friends send each other direct messages inside the
+game. Use the Summer `summer-friends` skill; if you don't have it installed,
+find it in the Summer library.
+
+- [WHERE, for example "a chat panel next to each game in progress"].
+- Ask for permission to read and send messages when the player first opens it.
+- If a message is filtered or the friend can't be messaged, tell the player
+  it wasn't sent.
+
+Read my project first and tell me whether opening Summer's own chat screen
+would do the job before you build anything. Then test it with Local Play and
+tell me what I can only check once the game is hosted.
+</Prompt>
+
+Want friends to play together? [Parties](/build/parties) let them queue as a
+group.
+
+## Not sure which fits?
+
+<Prompt description="**Plan friends features for my game.** Your agent reads your project and proposes what to add. No code.">
+Read my Summer project and help me plan its friends features. Use the Summer
+`summer-friends` and `summer-parties` skills; if you don't have them
+installed, find them in the Summer library. Don't change any files yet.
+
+Tell me:
+1. which friends features fit my game: Summer's screens, my own friends list,
+   or direct messages, and which permissions each needs;
+2. where players would see them, from the main menu to the end of a match;
+3. anything my design needs that these features don't cover yet, and how we
+   can build around it.
+</Prompt>
+
+## Testing it on your machine
+
+Local Play has no Summer accounts, so friends features report that they
+aren't available. Use it to check that your game hides them cleanly and keeps
+working. Summer also keeps players under 13 out of social features, so the
+same hidden version covers them. Friends lists, profiles and messages show
+real data in a hosted game: test with two accounts that are friends.
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

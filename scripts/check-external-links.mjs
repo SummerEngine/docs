@@ -28,15 +28,9 @@ const files = ALL
       "index.mdx",
       "essentials/installation.mdx",
       "quickstarts/fresh-project.mdx",
-      "agent-setup.mdx",
-      "agent-setup/prompt.mdx",
       "reference/compatibility.mdx",
-      "api-reference/summer-sdk.mdx",
-      "api-reference/summer-sdk/build-your-first-summer-game.mdx",
-      "api-reference/summer-sdk/testing-your-game-locally.mdx",
-      "api-reference/summer-sdk/exporting-and-uploading-your-game.mdx",
-      "api-reference/summer-sdk/submission-guide.mdx",
-      "api-reference/summer-sdk/updating-your-game.mdx",
+      "build/multiplayer.mdx",
+      "build/publish.mdx",
     ].map((file) => join(ROOT, file));
 
 const sources = new Map();

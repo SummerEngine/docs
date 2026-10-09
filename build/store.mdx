@@ -1,0 +1,158 @@
+---
+title: "Sell items for Sparks"
+sidebarTitle: "Store"
+description: "Sell skins, items and upgrades for Sparks, Summer's currency. Summer handles the payment; your game shows the shop and unlocks what players own."
+icon: "shopping-bag"
+---
+
+Sparks are Summer's currency. Players buy Sparks once and spend them in
+any Summer game. Your game shows a shop of the items you've published, and the
+player presses **Buy**. Summer then asks the player to confirm, takes the
+Sparks and adds the item to the player's inventory. Your game never handles
+money, prices at checkout or balances, so there's nothing in your code for
+anyone to tamper with. You earn 70% of the Sparks players spend in your game,
+about 56% of what they pay.
+
+## Games like this
+
+<CardGroup cols={2}>
+  <Card title="Fortnite" icon="shopping-bag">
+    An item shop of skins and emotes, bought with the game's currency.
+  </Card>
+  <Card title="Valorant" icon="crosshair">
+    A store of weapon skins that players keep and show off in every match.
+  </Card>
+  <Card title="Roblox games" icon="blocks">
+    Each game sells its own items for one currency players use across games.
+  </Card>
+  <Card title="Rocket League" icon="car">
+    Car bodies, decals and wheels, bought once and used in every mode.
+  </Card>
+</CardGroup>
+
+If your game sells something a player keeps, such as a skin, a character,
+a level pack or an upgrade, this is the page for you.
+
+## What your players get
+
+<img className="block dark:hidden" src="/images/guide-art/store/checkout-light.svg" alt="Four steps: the game's shop lists items with Sparks prices, Summer asks the player to approve the purchase, Summer adds the item to the player's inventory, and the game unlocks it so the player wears it." />
+<img className="hidden dark:block" src="/images/guide-art/store/checkout-dark.svg" alt="Four steps: the game's shop lists items with Sparks prices, Summer asks the player to approve the purchase, Summer adds the item to the player's inventory, and the game unlocks it so the player wears it." />
+
+<Steps>
+  <Step title="Browse">
+    Your shop lists the items you've published, with their Sparks prices. It
+    works from the main menu; players don't need to be in a match.
+  </Step>
+  <Step title="Confirm">
+    The player presses Buy, and Summer shows its own purchase screen. The player
+    approves or declines there, and Summer takes care of the Sparks, receipts
+    and refunds. A player can buy several items together as one purchase.
+  </Step>
+  <Step title="Own it">
+    The item appears in the player's inventory, and your game unlocks it. The
+    player keeps it after reinstalling, and on every device they play on.
+  </Step>
+</Steps>
+
+You create the items and set their Sparks prices in your game's catalog in
+Studio, then publish them. On summer.games, selling items for Sparks is the
+**Join the Summer economy** option for games built in Summer. See
+[Charge for your game and accept tips](/build/paid-games) for the other ways to
+earn.
+
+## Pick your setup
+
+### A shop in your game
+
+Show your published items in your own shop screen, styled like the rest of
+your game. Your game asks Summer to check out and shows how the purchase went.
+Some purchases take a moment to confirm, so the shop waits for Summer's answer
+rather than guessing.
+
+<Prompt description="**Add a shop.** List my items with their Sparks prices and let players buy them.">
+In my Summer project, add an in-game shop where players buy my published
+items with Sparks. Use the Summer `summer-store` skill; if you don't have it
+installed, find it in the Summer library.
+
+- List the items with their names and Sparks prices.
+- A Buy button that asks Summer to check out, disabled while a purchase is in
+  progress.
+- Show the result: bought, cancelled, not enough Sparks, or still confirming.
+- Hide the shop wherever it isn't available, and keep the game playable.
+
+Read my project first and fit the shop into my existing menus. Then test it
+with Local Play and tell me what I can only check once the game is hosted.
+</Prompt>
+
+### Unlock what players own
+
+Players can see everything they own in your game's menus. Their inventory
+follows them to every device, so the menus unlock from the inventory, not from
+a single purchase. That way an item bought on a phone is also there on the
+desktop.
+
+<Prompt description="**Unlock owned items in my menus.** Owned items show as unlocked everywhere.">
+In my Summer project, unlock items in my menus from what the player owns. Use
+the Summer `summer-store` skill; if you don't have it installed, find it in the
+Summer library.
+
+- Show which of my items the player owns, and update when that changes.
+- While the inventory is still loading, show it as loading, not as empty.
+- Items the player doesn't own link to the shop.
+
+Read my project first and tell me which menus need to change before you
+change anything. Then test it with Local Play and tell me what you saw.
+</Prompt>
+
+### Items that change the match
+
+When an item changes what happens in a match, such as a skin other players
+see or a character a player picks, your game's server checks the player's
+inventory itself before it accepts. The player's game asking for the item
+doesn't count as proof, so nobody can wear something they haven't bought.
+
+<img className="block dark:hidden" src="/images/guide-art/store/check-light.svg" alt="A player's game asks to wear the gold crown. The game's server reads that player's inventory itself: if the crown is owned, everyone sees it; if not, the request is refused." />
+<img className="hidden dark:block" src="/images/guide-art/store/check-dark.svg" alt="A player's game asks to wear the gold crown. The game's server reads that player's inventory itself: if the crown is owned, everyone sees it; if not, the request is refused." />
+
+<Prompt description="**Check ownership on my server.** Players can only use items they own, and everyone sees them.">
+In my Summer project, let players use [ITEM, for example "skins"] in a match,
+checked by my server. Use the Summer `summer-store` skill; if you don't have it
+installed, find it in the Summer library.
+
+- The player picks an item they own; the server reads that player's inventory
+  and accepts or refuses.
+- Every player in the match sees the accepted item, including players who
+  join later.
+
+Read my project first and explain where the check fits in my server before you
+change anything. Then test it with Local Play and tell me what you saw.
+</Prompt>
+
+For skins, hats and other looks, [Let players wear cosmetics](/build/cosmetics)
+goes further.
+
+## Not sure which fits?
+
+<Prompt description="**Plan my game's store.** Your agent reads your project and proposes what to sell. No code.">
+Read my Summer project and help me plan what it could sell for Sparks. Use the
+Summer `summer-store` skill; if you don't have it installed, find it in the
+Summer library. Don't change any files yet.
+
+Tell me:
+1. which items fit my game, and which of them change a match and need my
+   server to check ownership;
+2. where the shop and the owned items appear, from the main menu to a match;
+3. anything my design needs that the store doesn't cover yet, and how we can
+   build around it.
+</Prompt>
+
+## Testing it on your machine
+
+Under Local Play the shop and checkout report that they aren't available, so
+you test the path where your game hides the shop. Owned items work: give your
+test players items in your Local Play test users file, and your menus and your
+server's ownership check see them. Real purchases need a hosted game.
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

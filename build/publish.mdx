@@ -1,0 +1,155 @@
+---
+title: "Publish your game"
+sidebarTitle: "Publish"
+description: "Export one file from the editor, make your store page in Summer Studio, upload, and go live on summer.games once Summer has reviewed it."
+icon: "rocket"
+---
+
+Publishing takes your project to a page on summer.games that players can find,
+download and play. You export your game as one file in the editor, make its
+store page in Summer Studio, upload the file, and submit the page for review.
+Once Summer approves it, you choose when it goes live.
+
+## Where players get your game
+
+<CardGroup cols={2}>
+  <Card title="summer.games" icon="globe">
+    Your game's own page, with art, screenshots and a trailer.
+  </Card>
+  <Card title="iPhone, Mac and Windows" icon="monitor-smartphone">
+    Players download and play your game in the Summer apps.
+  </Card>
+</CardGroup>
+
+A multiplayer game can go to iPhone, Mac and Windows, and Summer runs its
+server for you. A single-player game goes to iPhone.
+
+## How it works
+
+<img className="block dark:hidden" src="/images/guide-art/publish/flow-light.svg" alt="Five steps: export one file in the editor, make your store page in Studio, upload the file and let Summer check it, submit for review, then go live on summer.games." />
+<img className="hidden dark:block" src="/images/guide-art/publish/flow-dark.svg" alt="Five steps: export one file in the editor, make your store page in Studio, upload the file and let Summer check it, submit for review, then go live on summer.games." />
+
+Saving a draft or uploading a file never releases your game. Nothing reaches
+players until Summer has approved your page and you choose to go live.
+
+<Steps>
+  <Step title="Export your game">
+    In the editor, open **Project > Export**, pick the **summer.games** preset
+    and click **Export Project**. You get one `.zip` file with everything
+    Summer needs: your game and, for a multiplayer game, its server.
+  </Step>
+  <Step title="Make your store page">
+    Go to [summerengine.com/publish](https://summerengine.com/publish), enter
+    your game's title and click **Create store page**. Studio then walks you
+    through it: the platforms you're releasing on, a tagline and description,
+    tags, key art, screenshots and an icon, and your game's age rating. A live
+    preview of your summer.games page sits next to the form.
+  </Step>
+  <Step title="Choose how you earn">
+    Make your game free and earn from Sparks spent in it, or set a price
+    players pay once. See [Charge for your game and accept tips](/build/paid-games).
+  </Step>
+  <Step title="Upload and check">
+    In **Check and submit**, upload your export under **Your exported game**
+    and give it a version, such as `v1.0.0`. Summer checks it for every
+    platform you picked and shows **Checks passed** or what needs a fix.
+  </Step>
+  <Step title="Submit for review">
+    Click **Submit for review**. Summer staff look at your store page, and
+    Studio shows where your game is in the review.
+  </Step>
+  <Step title="Go live">
+    Once your game is approved, click **Go live**. Your page is at
+    `summer.games/games/<your-game>`, ready to share.
+  </Step>
+</Steps>
+
+<Tip>
+  Want feedback before you go live? **Share a preview** in Studio makes a
+  private link to your store page that expires on its own.
+</Tip>
+
+## Get your game ready
+
+Before the first upload, your agent can check that the project exports
+cleanly: the right platforms are ticked in the summer.games preset, textures
+are set up for every platform, and a multiplayer game has its server preset.
+
+<img className="block dark:hidden" src="/images/guide-art/publish/bundle-light.svg" alt="The summer.games export is one zip file holding the game for players, the server for a multiplayer game, and the game's Summer settings." />
+<img className="hidden dark:block" src="/images/guide-art/publish/bundle-dark.svg" alt="The summer.games export is one zip file holding the game for players, the server for a multiplayer game, and the game's Summer settings." />
+
+<Prompt description="**Get my multiplayer game ready to publish.** Server preset, platform checks and one summer.games export.">
+Get my Summer multiplayer game ready to publish on summer.games. Use the
+Summer `multiplayer-publish` skill; if you don't have it installed, find it in
+the Summer library.
+
+- Set up everything the summer.games export needs, including the server
+  preset.
+- Run the checks the skill lists before exporting, and fix what fails.
+- Export the summer.games `.zip` and tell me where it is and which platforms it
+  covers.
+
+Read my project first and tell me what you'll change before you change it.
+</Prompt>
+
+<Prompt description="**Get my single-player game ready to publish.** One summer.games export for iPhone.">
+Get my Summer single-player game ready to publish on summer.games. Use the
+Summer `export-and-ship` skill; if you don't have it installed, find it in
+the Summer library.
+
+- Set up the summer.games export preset for iPhone.
+- Check that the game starts from its main scene and runs without errors.
+- Export the summer.games `.zip` and tell me where it is.
+
+Read my project first and tell me what you'll change before you change it.
+</Prompt>
+
+<Prompt description="**Write my store page.** A tagline, description and tags that fit Studio's limits.">
+Read my Summer project and write the text for its summer.games store page:
+
+- a tagline of at most 80 characters;
+- a desktop description of 120–300 characters and a mobile one of 120–170;
+- 3–8 tags.
+
+Base it on what the game actually does. Then list five screenshot ideas
+that show it best, as 16:9 shots without any text on them.
+</Prompt>
+
+## Update your game
+
+<img className="block dark:hidden" src="/images/guide-art/publish/update-light.svg" alt="Version 1.0.0 is live while version 1.1.0 is uploaded and checked; promoting 1.1.0 makes it the live version." />
+<img className="hidden dark:block" src="/images/guide-art/publish/update-dark.svg" alt="Version 1.0.0 is live while version 1.1.0 is uploaded and checked; promoting 1.1.0 makes it the live version." />
+
+Export again with a new version number, such as `v1.1.0`, and click **Upload a
+new export** in Studio. When it shows **Checks passed**, open **Versions**, pick
+the new version and click **Promote to production**. Players keep the current
+version until the new one is live. Changes to a live store page go through
+review again before they appear.
+
+<Prompt description="**Publish an update.** Bump the version and export again.">
+I want to publish an update to my Summer game. Use the Summer
+`multiplayer-publish` skill for a multiplayer game or `export-and-ship` for a
+single-player game; if you don't have them installed, find them in the Summer
+library.
+
+Bump the version, run the checks, export a new summer.games `.zip`, and write
+me a short list of what changed since the last version for the update notes.
+</Prompt>
+
+## Not sure you're ready?
+
+<Prompt description="**Check my game before I publish.** Your agent reviews the project and lists what to fix. No changes.">
+Read my Summer project and tell me whether it's ready to publish on
+summer.games. Use the Summer `multiplayer-publish` or `export-and-ship`
+skill, whichever fits my game; if you don't have them installed, find them in
+the Summer library. Don't change any files yet.
+
+Tell me:
+1. which platforms my game can go to and what the export needs for each;
+2. anything that would fail Summer's checks, and how to fix it;
+3. what I still need for the store page: text, art and the age rating.
+</Prompt>
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

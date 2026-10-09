@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 256" width="880" height="256" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="255" rx="16" fill="#fbf7ef" stroke="#e6dcc8"/>
+<rect x="40" y="30" width="185" height="180" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="132" y="60" font-size="14" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">Straight shot</text>
+<g opacity="1" fill="#d9922e"><circle cx="76" cy="146.0" r="6.4"/><path d="M 65.6 166 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<g opacity="1" fill="#2a251b"><circle cx="190" cy="146.0" r="6.4"/><path d="M 179.6 166 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<circle cx="202" cy="126" r="8" fill="#4f9a55"/><path d="M 198.5 126 l 2.5 2.6 l 4.5 -5" fill="none" stroke="#fbf7ef" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="245" y="30" width="185" height="180" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="337" y="60" font-size="14" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">Cone</text>
+<g opacity="1" fill="#d9922e"><circle cx="281" cy="146.0" r="6.4"/><path d="M 270.6 166 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<g opacity="1" fill="#2a251b"><circle cx="395" cy="146.0" r="6.4"/><path d="M 384.6 166 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<circle cx="407" cy="126" r="8" fill="#4f9a55"/><path d="M 403.5 126 l 2.5 2.6 l 4.5 -5" fill="none" stroke="#fbf7ef" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="450" y="30" width="185" height="180" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="542" y="60" font-size="14" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">Melee arc</text>
+<g opacity="1" fill="#d9922e"><circle cx="486" cy="146.0" r="6.4"/><path d="M 475.6 166 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<g opacity="1" fill="#2a251b"><circle cx="600" cy="146.0" r="6.4"/><path d="M 589.6 166 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<circle cx="612" cy="126" r="8" fill="#4f9a55"/><path d="M 608.5 126 l 2.5 2.6 l 4.5 -5" fill="none" stroke="#fbf7ef" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="655" y="30" width="185" height="180" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="747" y="60" font-size="14" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">Projectile</text>
+<g opacity="1" fill="#d9922e"><circle cx="691" cy="146.0" r="6.4"/><path d="M 680.6 166 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<g opacity="1" fill="#2a251b"><circle cx="805" cy="146.0" r="6.4"/><path d="M 794.6 166 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<circle cx="817" cy="126" r="8" fill="#4f9a55"/><path d="M 813.5 126 l 2.5 2.6 l 4.5 -5" fill="none" stroke="#fbf7ef" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<line x1="94" y1="148" x2="172" y2="148" stroke="#d9922e" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 297 148 L 395 112 L 395 184 Z" fill="#f6e3c4" stroke="#d9922e" stroke-width="2" stroke-linejoin="round"/>
+<g opacity="1" fill="#2a251b"><circle cx="395" cy="146.0" r="6.4"/><path d="M 384.6 166 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<path d="M 588.9 92.1 A 100 100 0 0 1 588.9 203.9 L 544.1 173.7 A 46 46 0 0 0 544.1 122.3 Z" fill="#f6e3c4" stroke="#d9922e" stroke-width="2" stroke-linejoin="round"/>
+<g opacity="1" fill="#2a251b"><circle cx="600" cy="146.0" r="6.4"/><path d="M 589.6 166 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<g opacity="1" fill="#d9922e"><circle cx="486" cy="146.0" r="6.4"/><path d="M 475.6 166 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<circle cx="612" cy="126" r="8" fill="#4f9a55"/><path d="M 608.5 126 l 2.5 2.6 l 4.5 -5" fill="none" stroke="#fbf7ef" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M 709 146 Q 751 86 793 140" fill="none" stroke="#d9922e" stroke-width="2.2" stroke-dasharray="3 6" stroke-linecap="round"/>
+<circle cx="759" cy="104" r="7" fill="#d9922e"/>
+<g opacity="1" fill="#2a251b"><circle cx="805" cy="146.0" r="6.4"/><path d="M 794.6 166 v -4.800000000000001 a 10.4 8.8 0 0 1 20.8 0 v 4.800000000000001 z"/></g>
+<text x="440" y="236" font-size="12" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">your game picks the shape; Summer supplies the moment the player saw</text>
+</svg>

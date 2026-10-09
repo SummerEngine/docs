@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 270" width="880" height="270" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="269" rx="16" fill="#fbf7ef" stroke="#e6dcc8"/>
+<text x="40" y="44" font-size="15" font-weight="600" fill="#2a251b" text-anchor="start" opacity="1">Joining mid-match</text>
+<line x1="60" y1="150" x2="830" y2="150" stroke="#e6dcc8" stroke-width="3" stroke-linecap="round" opacity="1"/>
+<path d="M 120 96 L 123.92 106.08 L 134 110 L 123.92 113.92 L 120 124 L 116.08 113.92 L 106 110 L 116.08 106.08 Z" fill="#d9922e" opacity="0.55"/>
+<line x1="120" y1="130" x2="120" y2="150" stroke="#d8cfbd" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<text x="120" y="176" font-size="11" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">coin collected</text>
+<path d="M 330 96 L 333.92 106.08 L 344 110 L 333.92 113.92 L 330 124 L 326.08 113.92 L 316 110 L 326.08 106.08 Z" fill="#d9922e" opacity="0.55"/>
+<line x1="330" y1="130" x2="330" y2="150" stroke="#d8cfbd" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<text x="330" y="176" font-size="11" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">coin collected</text>
+<rect x="90.67" y="60" width="58.66" height="24" rx="12" fill="#ffffff" stroke="#8a806b" stroke-width="1.5" opacity="1"/>
+<text x="120" y="76.5" font-size="11" font-weight="700" fill="#8a806b" text-anchor="middle" opacity="1">Score 1</text>
+<rect x="300.67" y="60" width="58.66" height="24" rx="12" fill="#ffffff" stroke="#8a806b" stroke-width="1.5" opacity="1"/>
+<text x="330" y="76.5" font-size="11" font-weight="700" fill="#8a806b" text-anchor="middle" opacity="1">Score 2</text>
+<line x1="560" y1="70" x2="560" y2="232" stroke="#d9922e" stroke-width="2" stroke-linecap="round" stroke-dasharray="4 5" opacity="1"/>
+<text x="560" y="248" font-size="12" font-weight="700" fill="#d9922e" text-anchor="middle" opacity="1">a player joins</text>
+<g opacity="1" fill="#d9922e"><circle cx="630" cy="192.75" r="6.8"/><path d="M 618.95 214 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<rect x="636.88" y="108" width="146.23999999999998" height="24" rx="12" fill="#ffffff" stroke="#4f9a55" stroke-width="1.5" opacity="1"/>
+<text x="710" y="124.5" font-size="12" font-weight="700" fill="#4f9a55" text-anchor="middle" opacity="1">Score 2 · Door open</text>
+<circle cx="798" cy="120" r="8" fill="#4f9a55"/><path d="M 794.5 120 l 2.5 2.6 l 4.5 -5" fill="none" stroke="#fbf7ef" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="710" y="92" font-size="12" font-weight="600" fill="#4f9a55" text-anchor="middle" opacity="1">gets the current facts</text>
+<text x="225" y="214" font-size="12" font-weight="600" fill="#8a806b" text-anchor="middle" opacity="1">earlier sparkles aren't replayed</text>
+</svg>

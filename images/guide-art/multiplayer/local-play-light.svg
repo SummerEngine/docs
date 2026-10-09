@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 285" width="880" height="285" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="284" rx="16" fill="#fbf7ef" stroke="#e6dcc8"/>
+<rect x="40" y="40" width="200" height="150" rx="10" fill="#ffffff" stroke="#8a806b" stroke-width="1.8" opacity="1"/>
+<line x1="40" y1="62" x2="240" y2="62" stroke="#e6dcc8" stroke-width="1.5" stroke-linecap="round" opacity="1"/>
+<circle cx="54" cy="51" r="3.5" fill="#d8cfbd"/>
+<circle cx="66" cy="51" r="3.5" fill="#d8cfbd"/>
+<circle cx="78" cy="51" r="3.5" fill="#d8cfbd"/>
+<text x="230" y="55" font-size="10" font-weight="600" fill="#8a806b" text-anchor="end" opacity="1">Summer</text>
+<rect x="60" y="80" width="160" height="90" rx="6" fill="#fbf7ef" opacity="1"/>
+<rect x="96" y="108" width="88" height="34" rx="17" fill="#d9922e" opacity="1"/>
+<path d="M 120 117 L 120 133 L 133 125 Z" fill="#fbf7ef"/>
+<text x="158" y="130" font-size="13" font-weight="700" fill="#fbf7ef" text-anchor="middle" opacity="1">Play</text>
+<text x="140" y="218" font-size="12" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">Debug &gt; Local Multiplayer</text>
+<line x1="252" y1="115" x2="296.0" y2="115.0" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 293.7 120.6 L 302 115 L 293.7 109.4" fill="none" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="314" y="40" width="120" height="190" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<rect x="347" y="70" width="54" height="84" rx="8" fill="#ffffff" stroke="#8a806b" stroke-width="2" opacity="1"/>
+<rect x="354" y="81.0" width="40" height="16.666666666666668" rx="4" fill="#f6e3c4" opacity="1"/>
+<circle cx="386" cy="89.33333333333333" r="3" fill="#d9922e"/>
+<line x1="360" y1="89.33333333333333" x2="376" y2="89.33333333333333" stroke="#8a806b" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="354" y="103.66666666666667" width="40" height="16.666666666666668" rx="4" fill="#f6e3c4" opacity="1"/>
+<circle cx="386" cy="112.0" r="3" fill="#d9922e"/>
+<line x1="360" y1="112.0" x2="376" y2="112.0" stroke="#8a806b" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="354" y="126.33333333333334" width="40" height="16.666666666666668" rx="4" fill="#f6e3c4" opacity="1"/>
+<circle cx="386" cy="134.66666666666669" r="3" fill="#d9922e"/>
+<line x1="360" y1="134.66666666666669" x2="376" y2="134.66666666666669" stroke="#8a806b" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<text x="374" y="186" font-size="12" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">server scene</text>
+<text x="374" y="204" font-size="12" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">in the background</text>
+<rect x="458" y="40" width="118" height="150" rx="10" fill="#ffffff" stroke="#8a806b" stroke-width="1.8" opacity="1"/>
+<line x1="458" y1="62" x2="576" y2="62" stroke="#e6dcc8" stroke-width="1.5" stroke-linecap="round" opacity="1"/>
+<circle cx="472" cy="51" r="3.5" fill="#d8cfbd"/>
+<circle cx="484" cy="51" r="3.5" fill="#d8cfbd"/>
+<circle cx="496" cy="51" r="3.5" fill="#d8cfbd"/>
+<rect x="466" y="70" width="102" height="110" rx="6" fill="#f6e3c4" opacity="1"/>
+<g opacity="1" fill="#d9922e"><circle cx="517" cy="128.75" r="6.8"/><path d="M 505.95 150 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<text x="517" y="218" font-size="12" font-weight="600" fill="#8a806b" text-anchor="middle" opacity="1">Test player 1</text>
+<rect x="588" y="40" width="118" height="150" rx="10" fill="#ffffff" stroke="#8a806b" stroke-width="1.8" opacity="1"/>
+<line x1="588" y1="62" x2="706" y2="62" stroke="#e6dcc8" stroke-width="1.5" stroke-linecap="round" opacity="1"/>
+<circle cx="602" cy="51" r="3.5" fill="#d8cfbd"/>
+<circle cx="614" cy="51" r="3.5" fill="#d8cfbd"/>
+<circle cx="626" cy="51" r="3.5" fill="#d8cfbd"/>
+<rect x="596" y="70" width="102" height="110" rx="6" fill="#f6e3c4" opacity="1"/>
+<g opacity="1" fill="#2a251b"><circle cx="647" cy="128.75" r="6.8"/><path d="M 635.95 150 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<text x="647" y="218" font-size="12" font-weight="600" fill="#8a806b" text-anchor="middle" opacity="1">Test player 2</text>
+<rect x="718" y="40" width="118" height="150" rx="10" fill="#ffffff" stroke="#8a806b" stroke-width="1.8" opacity="1"/>
+<line x1="718" y1="62" x2="836" y2="62" stroke="#e6dcc8" stroke-width="1.5" stroke-linecap="round" opacity="1"/>
+<circle cx="732" cy="51" r="3.5" fill="#d8cfbd"/>
+<circle cx="744" cy="51" r="3.5" fill="#d8cfbd"/>
+<circle cx="756" cy="51" r="3.5" fill="#d8cfbd"/>
+<rect x="726" y="70" width="102" height="110" rx="6" fill="#f6e3c4" opacity="1"/>
+<g opacity="1" fill="#2a251b"><circle cx="777" cy="128.75" r="6.8"/><path d="M 765.95 150 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<text x="777" y="218" font-size="12" font-weight="600" fill="#8a806b" text-anchor="middle" opacity="1">Test player 3</text>
+<text x="651" y="262" font-size="12" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">one window per player, side by side</text>
+</svg>

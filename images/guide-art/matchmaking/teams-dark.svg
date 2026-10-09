@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 276" width="880" height="276" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="275" rx="16" fill="#1b1810" stroke="#3a3428"/>
+<text x="40" y="40" font-size="15" font-weight="600" fill="#ede6d6" text-anchor="start" opacity="1">Teams are filled exactly; a party stays together</text>
+<rect x="40" y="62" width="330" height="190" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<text x="60" y="88" font-size="13" font-weight="500" fill="#9b927f" text-anchor="start" opacity="1">Searching</text>
+<rect x="64" y="104" width="104" height="70" rx="12" fill="none" stroke="#f0b566" stroke-width="1.8" stroke-dasharray="4 4" opacity="1"/>
+<text x="116" y="194" font-size="12" font-weight="600" fill="#f0b566" text-anchor="middle" opacity="1">party</text>
+<g opacity="1" fill="#f0b566"><circle cx="96" cy="140.75" r="6.8"/><path d="M 84.95 162 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<g opacity="1" fill="#f0b566"><circle cx="136" cy="140.75" r="6.8"/><path d="M 124.95 162 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<g opacity="1" fill="#ede6d6"><circle cx="214" cy="128.75" r="6.8"/><path d="M 202.95 150 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<g opacity="1" fill="#ede6d6"><circle cx="262" cy="150.75" r="6.8"/><path d="M 250.95 172 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<g opacity="1" fill="#ede6d6"><circle cx="310" cy="124.75" r="6.8"/><path d="M 298.95 146 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<g opacity="1" fill="#ede6d6"><circle cx="236" cy="204.75" r="6.8"/><path d="M 224.95 226 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<line x1="384" y1="157" x2="426" y2="157" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 423 151 L 432 157 L 423 163" fill="none" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="446" y="62" width="394" height="90" rx="14" fill="#3d3121" stroke="#f0b566" stroke-width="2" opacity="1"/>
+<text x="470" y="114" font-size="14" font-weight="700" fill="#f0b566" text-anchor="start" opacity="1">Team 0</text>
+<rect x="446" y="162" width="394" height="90" rx="14" fill="#213040" stroke="#7fb3d5" stroke-width="2" opacity="1"/>
+<text x="470" y="214" font-size="14" font-weight="700" fill="#7fb3d5" text-anchor="start" opacity="1">Team 1</text>
+<rect x="560" y="82" width="104" height="62" rx="12" fill="none" stroke="#f0b566" stroke-width="1.8" stroke-dasharray="4 4" opacity="1"/>
+<g opacity="1" fill="#f0b566"><circle cx="592" cy="112.75" r="6.8"/><path d="M 580.95 134 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<g opacity="1" fill="#f0b566"><circle cx="632" cy="112.75" r="6.8"/><path d="M 620.95 134 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<g opacity="1" fill="#ede6d6"><circle cx="712" cy="112.75" r="6.8"/><path d="M 700.95 134 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<g opacity="1" fill="#ede6d6"><circle cx="592" cy="212.75" r="6.8"/><path d="M 580.95 234 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<g opacity="1" fill="#ede6d6"><circle cx="652" cy="212.75" r="6.8"/><path d="M 640.95 234 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<g opacity="1" fill="#ede6d6"><circle cx="712" cy="212.75" r="6.8"/><path d="M 700.95 234 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+</svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 270" width="880" height="270" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="269" rx="16" fill="#1b1810" stroke="#3a3428"/>
+<text x="40" y="40" font-size="15" font-weight="600" fill="#ede6d6" text-anchor="start" opacity="1">Each item you sell maps to a look you made</text>
+<rect x="40" y="66" width="800" height="84" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<rect x="64" y="88" width="150" height="32" rx="16" fill="#3d3121" stroke="#f0b566" stroke-width="1.5" opacity="1"/>
+<text x="139" y="109" font-size="13" font-weight="700" fill="#f0b566" text-anchor="middle" opacity="1">Gold crown</text>
+<line x1="232" y1="104" x2="284" y2="104" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 281 98 L 290 104 L 281 110" fill="none" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="306" y="109" font-size="14" font-weight="500" fill="#ede6d6" text-anchor="start" opacity="1">a scene, attached to the head</text>
+<line x1="600" y1="104" x2="654" y2="104" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 651 98 L 660 104 L 651 110" fill="none" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<g opacity="1" fill="#ede6d6"><circle cx="740" cy="107.75" r="8.4"/><path d="M 726.35 134 v -6.300000000000001 a 13.65 11.55 0 0 1 27.3 0 v 6.300000000000001 z"/></g>
+<path d="M 730.55 101.44999999999999 L 730.55 93.04999999999998 L 735.275 97.24999999999999 L 740 90.94999999999999 L 744.725 97.24999999999999 L 749.45 93.04999999999998 L 749.45 101.44999999999999 Z" fill="#f0b566"/>
+<rect x="40" y="168" width="800" height="84" rx="14" fill="#242017" stroke="#3a3428" stroke-width="1.5" opacity="1"/>
+<rect x="64" y="190" width="150" height="32" rx="16" fill="#3d3121" stroke="#f0b566" stroke-width="1.5" opacity="1"/>
+<text x="139" y="211" font-size="13" font-weight="700" fill="#f0b566" text-anchor="middle" opacity="1">Night skin</text>
+<line x1="232" y1="206" x2="284" y2="206" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 281 200 L 290 206 L 281 212" fill="none" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<text x="306" y="211" font-size="14" font-weight="500" fill="#ede6d6" text-anchor="start" opacity="1">a material, on the body</text>
+<line x1="600" y1="206" x2="654" y2="206" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 651 200 L 660 206 L 651 212" fill="none" stroke="#9b927f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<g opacity="1" fill="#7fb3d5"><circle cx="740" cy="209.75" r="8.4"/><path d="M 726.35 236 v -6.300000000000001 a 13.65 11.55 0 0 1 27.3 0 v 6.300000000000001 z"/></g>
+</svg>

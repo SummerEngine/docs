@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 310" width="880" height="310" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+<rect x="0.5" y="0.5" width="879" height="309" rx="16" fill="#fbf7ef" stroke="#e6dcc8"/>
+<rect x="40" y="30" width="200" height="190" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="140" y="60" font-size="14" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">A player sends</text>
+<path d="M 72 128 l 6 -10 h 114.0 a 8 8 0 0 0 8 -8 v -12 a 8 8 0 0 0 -8 -8 h -122.0 a 8 8 0 0 0 -8 8 v 12 a 8 8 0 0 0 4 7 z" fill="#f6e3c4"/>
+<text x="135.0" y="106" font-size="12" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">gg, well played</text>
+<g opacity="1" fill="#d9922e"><circle cx="80" cy="159.0" r="8.0"/><path d="M 67.0 184 v -6.0 a 13.0 11.0 0 0 1 26.0 0 v 6.0 z"/></g>
+<line x1="252" y1="125" x2="294" y2="125" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 291 119 L 300 125 L 291 131" fill="none" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="312" y="30" width="236" height="190" rx="14" fill="#ffffff" stroke="#d9922e" stroke-width="2" opacity="1"/>
+<text x="430" y="60" font-size="14" font-weight="700" fill="#d9922e" text-anchor="middle" opacity="1">Summer</text>
+<path d="M 430 83.4 l 24.200000000000003 8.8 v 15.400000000000002 c 0 15.400000000000002 -11.0 26.400000000000002 -24.200000000000003 33.0 c -13.200000000000001 -6.6000000000000005 -24.200000000000003 -17.6 -24.200000000000003 -33.0 v -15.400000000000002 z" fill="#d9922e"/>
+<path d="M 421.2 114.2 l 6.6000000000000005 6.6000000000000005 l 12.100000000000001 -13.200000000000001" fill="none" stroke="#fbf7ef" stroke-width="3.3000000000000003" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="325.86" y="166" width="52.279999999999994" height="24" rx="12" fill="#ffffff" stroke="#d9922e" stroke-width="1.5" opacity="1"/>
+<text x="352" y="182.5" font-size="11" font-weight="700" fill="#d9922e" text-anchor="middle" opacity="1">filter</text>
+<rect x="387.86" y="166" width="52.279999999999994" height="24" rx="12" fill="#ffffff" stroke="#d9922e" stroke-width="1.5" opacity="1"/>
+<text x="414" y="182.5" font-size="11" font-weight="700" fill="#d9922e" text-anchor="middle" opacity="1">blocks</text>
+<rect x="449.91" y="166" width="84.17999999999999" height="24" rx="12" fill="#ffffff" stroke="#d9922e" stroke-width="1.5" opacity="1"/>
+<text x="492" y="182.5" font-size="11" font-weight="700" fill="#d9922e" text-anchor="middle" opacity="1">rate limits</text>
+<line x1="560" y1="125" x2="602" y2="125" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
+<path d="M 599 119 L 608 125 L 599 131" fill="none" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+<rect x="620" y="30" width="220" height="190" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
+<text x="730" y="60" font-size="14" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">Everyone in the World</text>
+<g opacity="1" fill="#2a251b"><circle cx="672" cy="162.75" r="6.8"/><path d="M 660.95 184 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<rect x="652" y="104" width="40" height="22" rx="8" fill="#f6e3c4" opacity="1"/>
+<line x1="662" y1="115" x2="682" y2="115" stroke="#d9922e" stroke-width="3" stroke-linecap="round" opacity="1"/>
+<g opacity="1" fill="#2a251b"><circle cx="730" cy="162.75" r="6.8"/><path d="M 718.95 184 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<rect x="710" y="122" width="40" height="22" rx="8" fill="#f6e3c4" opacity="1"/>
+<line x1="720" y1="133" x2="740" y2="133" stroke="#d9922e" stroke-width="3" stroke-linecap="round" opacity="1"/>
+<g opacity="1" fill="#2a251b"><circle cx="788" cy="162.75" r="6.8"/><path d="M 776.95 184 v -5.1 a 11.049999999999999 9.35 0 0 1 22.099999999999998 0 v 5.1 z"/></g>
+<rect x="768" y="104" width="40" height="22" rx="8" fill="#f6e3c4" opacity="1"/>
+<line x1="778" y1="115" x2="798" y2="115" stroke="#d9922e" stroke-width="3" stroke-linecap="round" opacity="1"/>
+<rect x="392" y="236" width="34" height="52" rx="8" fill="#ffffff" stroke="#8a806b" stroke-width="2" opacity="1"/>
+<rect x="399" y="247.0" width="20" height="6.0" rx="4" fill="#f6e3c4" opacity="1"/>
+<circle cx="411" cy="250.0" r="3" fill="#d9922e"/>
+<line x1="405" y1="250.0" x2="401" y2="250.0" stroke="#8a806b" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="399" y="259.0" width="20" height="6.0" rx="4" fill="#f6e3c4" opacity="1"/>
+<circle cx="411" cy="262.0" r="3" fill="#d9922e"/>
+<line x1="405" y1="262.0" x2="401" y2="262.0" stroke="#8a806b" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<rect x="399" y="271.0" width="20" height="6.0" rx="4" fill="#f6e3c4" opacity="1"/>
+<circle cx="411" cy="274.0" r="3" fill="#d9922e"/>
+<line x1="405" y1="274.0" x2="401" y2="274.0" stroke="#8a806b" stroke-width="2" stroke-linecap="round" opacity="1"/>
+<text x="440" y="266" font-size="12" font-weight="600" fill="#8a806b" text-anchor="start" opacity="1">Your game's server: not involved, nothing to moderate</text>
+</svg>

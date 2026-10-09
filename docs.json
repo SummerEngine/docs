@@ -49,23 +49,7 @@
             "pages": [
               "index",
               "essentials/installation",
-              "quickstarts/fresh-project",
-              "api-reference/summer-sdk/build-your-first-summer-game"
-            ]
-          },
-          {
-            "group": "Summer SDK",
-            "pages": [
-              "api-reference/summer-sdk"
-            ]
-          },
-          {
-            "group": "Test and publish",
-            "pages": [
-              "api-reference/summer-sdk/testing-your-game-locally",
-              "api-reference/summer-sdk/exporting-and-uploading-your-game",
-              "api-reference/summer-sdk/submission-guide",
-              "api-reference/summer-sdk/updating-your-game"
+              "quickstarts/fresh-project"
             ]
           },
           {
@@ -144,6 +128,82 @@
         ]
       },
       {
+        "tab": "Build your game",
+        "groups": [
+          {
+            "group": "Start here",
+            "pages": [
+              "build/multiplayer"
+            ]
+          },
+          {
+            "group": "Games like yours",
+            "pages": [
+              "build/games-like/tactical-shooter",
+              "build/games-like/moba",
+              "build/games-like/survival-sandbox",
+              "build/games-like/co-op",
+              "build/games-like/party-games",
+              "build/games-like/card-games",
+              "build/games-like/single-player"
+            ]
+          },
+          {
+            "group": "Play together",
+            "pages": [
+              "build/matchmaking",
+              "build/parties",
+              "build/persistent-worlds"
+            ]
+          },
+          {
+            "group": "Real-time feel",
+            "pages": [
+              "build/movement",
+              "build/hit-detection",
+              "build/shared-state"
+            ]
+          },
+          {
+            "group": "Progress",
+            "pages": [
+              "build/player-progress"
+            ]
+          },
+          {
+            "group": "Compete",
+            "pages": [
+              "build/leaderboards",
+              "build/match-results"
+            ]
+          },
+          {
+            "group": "Social",
+            "pages": [
+              "build/friends",
+              "build/chat"
+            ]
+          },
+          {
+            "group": "Make money",
+            "pages": [
+              "build/store",
+              "build/cosmetics",
+              "build/paid-games"
+            ]
+          },
+          {
+            "group": "Run your game",
+            "pages": [
+              "build/server-size",
+              "build/console-commands",
+              "build/analytics",
+              "build/publish"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "MCP",
         "icon": "plug",
         "groups": [
@@ -193,39 +253,13 @@
         ]
       },
       {
-        "tab": "Summer SDK",
+        "tab": "Reference",
         "icon": "code",
         "groups": [
           {
-            "group": "Summer SDK reference",
-            "pages": [
-              "api-reference/summer-sdk/summer",
-              "api-reference/summer-sdk/summer-game",
-              "api-reference/summer-sdk/summer-player",
-              "api-reference/summer-sdk/subsystems-signals",
-              "api-reference/summer-sdk/guides/multiplayer-ffa-coin-collector",
-              "api-reference/summer-sdk/guides/multiplayer-persistence-rpg",
-              "api-reference/summer-sdk/guides/team-based-game",
-              "api-reference/summer-sdk/guides/making-a-2d-game-multiplayer",
-              "api-reference/summer-sdk/guides/making-a-turn-based-or-card-game-multiplayer"
-            ]
-          },
-          {
-            "group": "Automation",
-            "pages": [
-              "agent-setup",
-              "agent-setup/prompt",
-              "api-reference/summer-sdk/ai-agent-playbook"
-            ]
-          },
-          {
             "group": "Reference",
             "pages": [
-              "api-reference/summer-sdk/manifest-json-reference",
-              "api-reference/summer-sdk/banned-apis-reference",
-              "api-reference/summer-sdk/naming",
-              "reference/compatibility",
-              "api-reference/summer-sdk/production-launch-runbook"
+              "reference/compatibility"
             ]
           },
           {
@@ -466,75 +500,163 @@
     },
     {
       "source": "/api-reference/crafty-sdk",
-      "destination": "/api-reference/summer-sdk"
+      "destination": "/build/multiplayer"
     },
     {
       "source": "/api-reference/crafty-sdk/crafty",
-      "destination": "/api-reference/summer-sdk/summer"
+      "destination": "/build/multiplayer"
     },
     {
       "source": "/api-reference/crafty-sdk/crafty-game",
-      "destination": "/api-reference/summer-sdk/summer-game"
+      "destination": "/build/multiplayer"
     },
     {
       "source": "/api-reference/crafty-sdk/crafty-player",
-      "destination": "/api-reference/summer-sdk/summer-player"
+      "destination": "/build/multiplayer"
     },
     {
       "source": "/api-reference/crafty-sdk/build-your-first-crafty-game",
-      "destination": "/api-reference/summer-sdk/build-your-first-summer-game"
+      "destination": "/build/multiplayer"
     },
     {
       "source": "/api-reference/crafty-sdk/subsystems-signals",
-      "destination": "/api-reference/summer-sdk/subsystems-signals"
+      "destination": "/build/shared-state"
     },
     {
       "source": "/api-reference/crafty-sdk/manifest-json-reference",
-      "destination": "/api-reference/summer-sdk/manifest-json-reference"
+      "destination": "/build/publish"
     },
     {
       "source": "/api-reference/crafty-sdk/production-launch-runbook",
-      "destination": "/api-reference/summer-sdk/production-launch-runbook"
+      "destination": "/build/publish"
     },
     {
       "source": "/api-reference/crafty-sdk/submission-guide",
-      "destination": "/api-reference/summer-sdk/submission-guide"
+      "destination": "/build/publish"
     },
     {
       "source": "/api-reference/crafty-sdk/testing-your-game-locally",
-      "destination": "/api-reference/summer-sdk/testing-your-game-locally"
+      "destination": "/build/multiplayer"
     },
     {
       "source": "/api-reference/crafty-sdk/exporting-and-uploading-your-game",
-      "destination": "/api-reference/summer-sdk/exporting-and-uploading-your-game"
+      "destination": "/build/publish"
     },
     {
       "source": "/api-reference/crafty-sdk/banned-apis-reference",
-      "destination": "/api-reference/summer-sdk/banned-apis-reference"
+      "destination": "/build/publish"
     },
     {
       "source": "/api-reference/crafty-sdk/ai-agent-playbook",
-      "destination": "/api-reference/summer-sdk/ai-agent-playbook"
+      "destination": "/build/multiplayer"
     },
     {
       "source": "/api-reference/crafty-sdk/guides/multiplayer-ffa-coin-collector",
-      "destination": "/api-reference/summer-sdk/guides/multiplayer-ffa-coin-collector"
+      "destination": "/build/games-like/party-games"
     },
     {
       "source": "/api-reference/crafty-sdk/guides/multiplayer-persistence-rpg",
-      "destination": "/api-reference/summer-sdk/guides/multiplayer-persistence-rpg"
+      "destination": "/build/player-progress"
     },
     {
       "source": "/api-reference/crafty-sdk/guides/team-based-game",
-      "destination": "/api-reference/summer-sdk/guides/team-based-game"
+      "destination": "/build/matchmaking"
     },
     {
       "source": "/api-reference/crafty-sdk/guides/making-a-2d-game-multiplayer",
-      "destination": "/api-reference/summer-sdk/guides/making-a-2d-game-multiplayer"
+      "destination": "/build/multiplayer"
     },
     {
       "source": "/api-reference/crafty-sdk/guides/making-a-turn-based-or-card-game-multiplayer",
-      "destination": "/api-reference/summer-sdk/guides/making-a-turn-based-or-card-game-multiplayer"
+      "destination": "/build/games-like/card-games"
+    },
+    {
+      "source": "/api-reference/summer-sdk",
+      "destination": "/build/multiplayer"
+    },
+    {
+      "source": "/api-reference/summer-sdk/summer",
+      "destination": "/build/multiplayer"
+    },
+    {
+      "source": "/api-reference/summer-sdk/summer-game",
+      "destination": "/build/multiplayer"
+    },
+    {
+      "source": "/api-reference/summer-sdk/summer-player",
+      "destination": "/build/multiplayer"
+    },
+    {
+      "source": "/api-reference/summer-sdk/subsystems-signals",
+      "destination": "/build/shared-state"
+    },
+    {
+      "source": "/api-reference/summer-sdk/build-your-first-summer-game",
+      "destination": "/build/multiplayer"
+    },
+    {
+      "source": "/api-reference/summer-sdk/testing-your-game-locally",
+      "destination": "/build/multiplayer"
+    },
+    {
+      "source": "/api-reference/summer-sdk/exporting-and-uploading-your-game",
+      "destination": "/build/publish"
+    },
+    {
+      "source": "/api-reference/summer-sdk/submission-guide",
+      "destination": "/build/publish"
+    },
+    {
+      "source": "/api-reference/summer-sdk/updating-your-game",
+      "destination": "/build/publish"
+    },
+    {
+      "source": "/api-reference/summer-sdk/manifest-json-reference",
+      "destination": "/build/publish"
+    },
+    {
+      "source": "/api-reference/summer-sdk/banned-apis-reference",
+      "destination": "/build/publish"
+    },
+    {
+      "source": "/api-reference/summer-sdk/production-launch-runbook",
+      "destination": "/build/publish"
+    },
+    {
+      "source": "/api-reference/summer-sdk/ai-agent-playbook",
+      "destination": "/build/multiplayer"
+    },
+    {
+      "source": "/api-reference/summer-sdk/naming",
+      "destination": "/build/multiplayer"
+    },
+    {
+      "source": "/api-reference/summer-sdk/guides/multiplayer-ffa-coin-collector",
+      "destination": "/build/games-like/party-games"
+    },
+    {
+      "source": "/api-reference/summer-sdk/guides/multiplayer-persistence-rpg",
+      "destination": "/build/player-progress"
+    },
+    {
+      "source": "/api-reference/summer-sdk/guides/team-based-game",
+      "destination": "/build/matchmaking"
+    },
+    {
+      "source": "/api-reference/summer-sdk/guides/making-a-2d-game-multiplayer",
+      "destination": "/build/multiplayer"
+    },
+    {
+      "source": "/api-reference/summer-sdk/guides/making-a-turn-based-or-card-game-multiplayer",
+      "destination": "/build/games-like/card-games"
+    },
+    {
+      "source": "/agent-setup",
+      "destination": "/mcp/setup"
+    },
+    {
+      "source": "/agent-setup/prompt",
+      "destination": "/build/multiplayer"
     }
   ]
 }

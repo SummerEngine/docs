@@ -1,0 +1,101 @@
+---
+title: "Make a single-player or mobile game"
+sidebarTitle: "Single-player and mobile"
+description: "The Summer pieces behind a single-player or mobile game: the player's Summer account, items that follow them, a Sparks shop, analytics and publishing, with no server to run."
+icon: "smartphone"
+---
+
+A single-player game doesn't need a server to feel connected. With Summer,
+every player already has an account. Items they unlock or buy belong to that
+account, so they survive a reinstall and follow the player to a new device.
+Your shop runs through Summer's own checkout, and analytics show you what
+players do. This page shows how the pieces fit together.
+
+## The pieces you need
+
+<CardGroup cols={2}>
+  <Card title="Sell items for Sparks" icon="store" href="/build/store">
+    A shop where players buy items with Sparks through Summer's checkout.
+  </Card>
+  <Card title="Cosmetics" icon="sparkles" href="/build/cosmetics">
+    Skins and themes the player owns and equips.
+  </Card>
+  <Card title="See what players do" icon="chart-column" href="/build/analytics">
+    Events from your game in your analytics.
+  </Card>
+  <Card title="Charge for your game" icon="badge-dollar-sign" href="/build/paid-games">
+    Sell the game itself, or accept tips from players.
+  </Card>
+  <Card title="Save player progress" icon="save" href="/build/player-progress">
+    Save on the device, and add a server when saves should follow the player
+    everywhere.
+  </Card>
+  <Card title="Ratings and leaderboards" icon="trophy" href="/build/leaderboards">
+    Show a public top 50; a Summer server records the scores.
+  </Card>
+  <Card title="Publish your game" icon="rocket" href="/build/publish">
+    Ship it to summer.games.
+  </Card>
+</CardGroup>
+
+## How it fits together
+
+<img className="block dark:hidden" src="/images/guide-art/games-like/single-player-light.svg" alt="The single-player loop: the player plays on their device, unlocks items owned by their Summer account, buys more in a shop through Summer checkout, and the creator learns from analytics." />
+<img className="hidden dark:block" src="/images/guide-art/games-like/single-player-dark.svg" alt="The single-player loop: the player plays on their device, unlocks items owned by their Summer account, buys more in a shop through Summer checkout, and the creator learns from analytics." />
+
+The game runs on the player's device, and the player is signed in to Summer.
+The items they own come from their account, so your game unlocks content from
+what they really own. When they buy something, Summer shows its own checkout
+over the game, and your game unlocks the item once Summer confirms it. Your
+analytics show which levels players finish and what they buy.
+
+## Plan my game
+
+<Prompt description="**Plan my single-player game.** Your agent reads your project and lays out the Summer pieces in the order to build them.">
+I'm making a single-player game in Summer. Read my project and plan how to
+add these Summer features with these skills, in this order; if you don't have
+them installed, find them in the Summer library:
+
+1. `save-load`: progress saved on the device, with a versioned save format.
+2. `in-game-purchases`: a shop that sells items for Sparks through Summer's
+   checkout, unlocking only what the player owns.
+3. `summer-analytics`: events for the moments I care about, such as a level
+   finished or an item bought.
+4. `export-and-ship`: get the game ready to publish.
+
+For each step, tell me what changes in my project and what I'll see when I
+test it. Don't change any files yet.
+</Prompt>
+
+## Build the signature features
+
+### A shop that unlocks for real
+
+<Prompt description="**Add a Sparks shop.** Players buy items through Summer's checkout; the game unlocks what they own.">
+In my Summer project, add a shop that sells [ITEMS] for Sparks. Use the
+Summer `in-game-purchases` skill; if you don't have it installed, find it in
+the Summer library.
+
+- Buying opens Summer's own checkout over the game.
+- The game unlocks an item only once the player owns it, so it survives a
+  reinstall and works on their other devices.
+- If the shop isn't available, hide it and keep the game playable.
+
+Read my project first and tell me where the shop fits. Then tell me what I
+can only check once the game is published.
+</Prompt>
+
+### Learn what players do
+
+<Prompt description="**Add analytics events.** See where players stop and what they buy.">
+In my Summer project, send analytics events for [MOMENTS, for example "level
+started, level finished, item bought"]. Use the Summer `summer-analytics`
+skill; if you don't have it installed, find it in the Summer library.
+
+Events must never slow down or block the game. Read my project first and tell
+me which events you'd add and where, before you change anything.
+</Prompt>
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)
