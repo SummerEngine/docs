@@ -129,6 +129,7 @@
       },
       {
         "tab": "Build your game",
+        "icon": "hammer",
         "groups": [
           {
             "group": "Start here",
