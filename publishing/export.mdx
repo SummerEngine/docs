@@ -1,0 +1,158 @@
+---
+title: "Export your game for Summer Games"
+sidebarTitle: "Export your game"
+description: "Which file the Summer Games store takes for iPhone, Android, Mac, Windows and the web; how summer_export_game makes it; export templates from the Summer CDN; file names, icons and signing."
+icon: "package"
+---
+
+The Summer Games store takes two kinds of build. Which one you need depends on where players run your game.
+
+| Kind | Players run it | Platforms | Made by |
+|---|---|---|---|
+| **Store bundle** | inside the Summer Games apps | iPhone, Android, Mac, Windows | `summer_export_game` (default) |
+| **Web build or download** | in the browser on summer.games, or as a file they download | web, Mac, Windows | `summer_export_game` with `format: "download"` |
+
+## Which one do I need?
+
+| Target | Build | Upload with | Rule |
+|---|---|---|---|
+| iPhone | store bundle | `summer_publish_build` | any game |
+| Android | store bundle | `summer_publish_build` | any game; needs the engine release after 0.7.0 |
+| Mac app | store bundle | `summer_publish_build` | multiplayer games (with a server) only |
+| Windows app | store bundle | `summer_publish_build` | multiplayer games (with a server) only |
+| Web (play in the browser) | web build | store version `web` | Forward+ projects; not the Compatibility renderer |
+| Mac download | download | store version `macos-universal` | any game |
+| Windows download | download | store version `windows-x64` | any game |
+
+A game **without a server** can use the store bundle only for iPhone and Android. For Mac and Windows it uses a download.
+
+One store bundle serves every platform it lists, so it carries every texture format those platforms need: ETC2/ASTC for iPhone, Android and Mac, S3TC/BPTC for Windows. In **Project Settings → Rendering → Textures**, turn on the formats your platforms need.
+
+## Export with your agent
+
+The local summer-engine MCP runs Summer Engine on your computer without a window. You do not need to open the editor.
+
+```json title="Store bundle for iPhone and Android"
+{ "tool": "summer_export_game", "targets": ["ios", "android"] }
+```
+
+```json title="Web build"
+{ "tool": "summer_export_game", "targets": ["web"] }
+```
+
+```json title="Mac download"
+{ "tool": "summer_export_game", "targets": ["macos"], "format": "download" }
+```
+
+```json title="Windows download"
+{ "tool": "summer_export_game", "targets": ["windows"], "format": "download" }
+```
+
+| Input | Meaning |
+|---|---|
+| `project` | Folder with `project.godot`. Defaults to the open project, then the working folder. |
+| `targets` | Bundle: any of `macos`, `windows`, `ios`, `android` (omit for every platform the project declares). Download: exactly one of `web`, `macos`, `windows`. |
+| `format` | `bundle` (default) or `download`. `["web"]` means `download`. |
+| `out` | Output path. Defaults to `<project>/.summer/exports/`. |
+| `debug` | `true` for a debug build. |
+| `timeoutSeconds` | Default 900. The first export imports every asset, so it is slow. |
+
+It returns the file path, its SHA-256, its size, and for a bundle the manifest: main scene, platforms and whether it has a server. For a download it also returns the store platform to upload it as.
+
+For a store bundle the MCP writes a named preset `summer.games <targets>` into `export_presets.cfg`. It only changes that preset's platform options.
+
+## Export in the editor
+
+Open **Project → Export**, pick the **summer.games** preset and click **Export Project**. You get one `.zip`. See [Publish your game](/build/publish).
+
+## What is in each file
+
+<Tabs>
+  <Tab title="Store bundle">
+    A `.zip` in the `summer.bundle.v1` format:
+
+    | Entry | What it is |
+    |---|---|
+    | `summer-bundle.json` | The manifest: Summer version, engine, main scene, platforms, file hashes. |
+    | `client.pck` | Your game for players. |
+    | `server.pck` | Multiplayer games: the server. |
+    | `config/` | Multiplayer games: Summer settings. |
+
+    At most 16 entries and 40 GiB. The platforms in the manifest must match the platforms you upload it for. Summer runs `client.pck` on its own engine in the Summer Games apps, so you need no export template.
+  </Tab>
+  <Tab title="Web build">
+    A `.zip` with `index.html` at its root. At most 500 MiB, 2,000 files and 200 MiB per file. Threads off. summer.games plays it in a frame.
+
+    It uses Summer's **WebGPU Forward+** web template (`web_summer_jspi_release.zip`). Projects on the Compatibility renderer are refused.
+  </Tab>
+  <Tab title="Download">
+    - **Mac:** a `.app` in a `.zip`, named `<name>-macos-universal.zip`. Ad hoc signed by the MCP.
+    - **Windows:** an `.exe` with the game pack inside, zipped as `<name>-windows-x64.zip`.
+
+    At most 20 GiB. Players download it from your game page.
+  </Tab>
+</Tabs>
+
+## Export templates
+
+Only web builds and downloads need export templates. Store bundles do not.
+
+**What you already have:** the Mac app of Summer Engine comes with the Mac template, the Windows app with the Windows templates. Both can come with the web template pair. Linux and cloud editors have none.
+
+**Get the missing ones** from Summer's CDN with your agent:
+
+```json title="List what you have and what is published"
+{ "tool": "summer_export_templates", "action": "list" }
+```
+
+```json title="Install the web template"
+{ "tool": "summer_export_templates", "action": "install", "platforms": ["web"] }
+```
+
+| Input | Meaning |
+|---|---|
+| `action` | `list` or `install`. |
+| `platforms` | `web`, `macos`, `windows`, `linux`, `ios`, `android`. Default `["web"]`. |
+| `includeDebug` | Also install debug templates. |
+| `summerVersion` | Your Summer Engine version (Help → About, for example `0.7.1`). Read for you on Mac; needed on Windows and Linux. |
+
+The MCP checks each file's SHA-256 before it installs it. Do not use the editor's own template download: it fetches stock templates, not Summer's.
+
+**Where templates go.** The engine looks in its own folder first, then in your user folder:
+
+| System | Folder |
+|---|---|
+| Mac | `Summer.app/Contents/Resources/export_templates/<version>/`, then `~/Library/Application Support/Godot/export_templates/<version>/` |
+| Windows | `<Summer folder>\export_templates\<version>\`, then `%APPDATA%\Godot\export_templates\<version>\` |
+| Linux | `~/.local/share/godot/export_templates/<version>/` |
+
+`<version>` is the engine's full version, for example `4.7.2.stable` (or `4.7.2.stable.mono`) for Summer Engine 0.7.x.
+
+The CDN address is `https://downloads.summer.games/engine-templates/<summerVersion>/manifest.json`.
+
+{/* TODO(coordinator): the CDN fills with the first coordinated templates run (Summer Engine 0.7.1). 0.7.0 is not on the CDN. Until then summer_export_templates answers templates_not_published. Remove this note when the first version is published. */}
+
+## File names and versions
+
+- Give every upload a new version: `vMAJOR.MINOR.PATCH`, for example `v1.0.0`, then `v1.0.1`.
+- Download files are named `<name>-macos-universal.zip` and `<name>-windows-x64.zip`.
+- The default output folder `<project>/.summer/exports/` is ignored by the editor and by git.
+
+## Icons
+
+- **Store icon:** the icon on your store page comes from your store art, never from the build. See [Store art](/publishing/store-art).
+- **Download icon:** Mac and Windows downloads use your project icon (**Project Settings → Application → Config → Icon**).
+
+## Signing
+
+You do not need to sign anything for the Summer Games store.
+
+- **Summer Games apps** (iPhone, Android, Mac, Windows): Summer signs the apps that run your game. No App Store account, no keystore.
+- **Mac download:** the MCP signs it ad hoc. It is not notarized.
+- **Windows download:** no signing needed.
+
+Selling your game in other stores needs their own signing. That is outside this guide.
+
+## Next
+
+[Upload and submit](/publishing/upload-and-submit).

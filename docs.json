@@ -65,6 +65,36 @@
             ]
           },
           {
+            "group": "Create and publish your game",
+            "pages": [
+              "publishing/summer-games",
+              "publishing/what-you-need",
+              "publishing/agent-publishing",
+              "publishing/cost",
+              {
+                "group": "Step by step",
+                "pages": [
+                  "publishing/connect-your-agent",
+                  "publishing/export",
+                  "publishing/store-art",
+                  "publishing/generate-store-art",
+                  "publishing/store-text",
+                  "publishing/upload-and-submit",
+                  "publishing/owner-approval",
+                  "publishing/analytics",
+                  "publishing/summer-games-troubleshooting"
+                ]
+              },
+              {
+                "group": "For agents",
+                "pages": [
+                  "publishing/agent-checklist",
+                  "publishing/mcp-tools"
+                ]
+              }
+            ]
+          },
+          {
             "group": "Other ways to start",
             "pages": [
               "quickstarts/ai-game-dev",

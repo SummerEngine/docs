@@ -1,0 +1,64 @@
+---
+title: "Approve publishing: the one step only you do"
+sidebarTitle: "Approve publishing"
+description: "When your agent submits your game, it waits for you. Open the approval link in Studio, check the page, art, build and price, and click Approve publishing. What each state means and what to do."
+icon: "badge-check"
+---
+
+Your agent can do every publishing step except one: it cannot send your game to review by itself. When it submits, Summer Games records exactly that version and waits for you.
+
+## Approve it
+
+<Steps>
+  <Step title="Open the link">
+    Your agent gives you a link like `summerengine.com/studio/store/<game>/approve/<id>`. Open it signed in to your Summer account.
+  </Step>
+  <Step title="Check what will publish">
+    The page shows **What will publish**: the stores, the title, the desktop and mobile text, the build, the price and your agent's note. Below it is the **store page preview**: how players will see this version.
+  </Step>
+  <Step title="Approve, or not now">
+    Click **Approve publishing** to send it to Summer for review. Click **Not now** to turn it down; nothing is published, and your agent can submit again later.
+  </Step>
+</Steps>
+
+When you approve:
+
+1. The proposed price is set as you. A price needs payouts set up; without them nothing is submitted, and the page tells you.
+2. The page goes to Summer for review.
+3. When Summer approves it, you click **Go live**. See [Publish your game](/build/publish).
+
+{/* TODO(coordinator): confirm the approval link host and path once PublicSummerEngine #769 is live. */}
+
+## When you publish yourself
+
+If you click **Submit for review** in Studio yourself, that is your approval. There is no extra step.
+
+## What the states mean
+
+| State | Meaning | What to do |
+|---|---|---|
+| **Awaiting owner approval** | Your agent submitted. Nothing is published. | Open the link. |
+| **Approved** | You approved it. It went to Summer for review. | Wait for review, then go live. |
+| **Cancelled** | You clicked **Not now**, or your agent withdrew it. | Ask your agent to submit again when ready. |
+| **Stale** | The store page changed after your agent asked. | Ask your agent to submit again, so you approve exactly what will publish. |
+
+## What your agent can and cannot do
+
+| Your agent can | Only you can |
+|---|---|
+| Read your games, store pages and builds | Approve publishing |
+| Create a store game and edit the draft | Set up payouts |
+| Upload art and builds | Finish a web build or download on a game that is already live |
+| Make a preview link | |
+| Submit, and withdraw its own submit | |
+
+{/* TODO(coordinator): the platform contract lets an agent go live with exactly what was approved, but no MCP tool does it yet. Until one exists, the owner clicks Go live in Studio. */}
+
+The Summer Games store enforces this, not your agent. Any other publishing call from an agent is refused with `owner_approval_required`.
+
+## For agents
+
+- After `summer_store_submit`, give the owner the `approvalUrl`. Do not say the game is published, submitted for review or live.
+- `summer_store_get_listing` lists the owner approvals and their states. Read it to see whether the owner approved.
+- If the state is **Stale**, read the listing again and submit again.
+- After the owner approves and Summer approves the review, the owner goes live in Studio.

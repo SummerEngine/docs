@@ -1,0 +1,73 @@
+---
+title: "Store page text for the desktop and mobile stores"
+sidebarTitle: "Store page text"
+description: "Title, tagline, desktop and mobile descriptions, tags and age rating for a Summer Games store page. Limits, how to write each one, and how Same as desktop works."
+icon: "type"
+---
+
+Your store page has one title and one set of tags. The tagline and description come in two versions: one for the **desktop store** and a shorter one for the **mobile store**, because the mobile text sits on a phone card.
+
+## The fields
+
+| Field | Store | Limit | Write |
+|---|---|---|---|
+| **Title** | both | up to 60 characters | The game's real name. No slogan. |
+| **Tagline** | desktop | up to 80 characters | What you do, in words players search for. |
+| **Description** | desktop | 120-300 characters | The first sentence sells the game: what you do and why it is fun. Then what is different. |
+| **Mobile tagline** | mobile | up to 80 characters | The same hook, or "Same as desktop". |
+| **Mobile description** | mobile | 120-170 characters | Shorter: it fits on the phone story card. |
+| **Tags** | both | 3-8 | Store categories players browse. |
+| **Age rating** | both | one | Everyone, Everyone 10+ or Teen, plus what applies: mild fantasy action, competitive play, user-generated content, flashing lights, simulated gambling. |
+| **Release date** | both | optional | A day, a month, a quarter or a year, or "coming soon". |
+
+A game only on iPhone and Android uses the desktop fields as its mobile text, so keep them to 120-170 characters.
+
+## Same as desktop
+
+When the desktop text already fits the phone, use **Same as desktop** instead of typing it again.
+
+- It copies the desktop tagline and description into the mobile store **once**. Later desktop edits do not follow.
+- If the copy is longer than 170 characters, the field shows the counter in red. Nothing is cut silently. Shorten it.
+- An empty mobile field shows the desktop text on phones.
+- Only text copies. Art never copies between stores.
+
+Your agent does the same with `mobileSameAsDesktop: true` in `summer_store_update_listing`.
+
+## Good and bad
+
+| | Good | Bad |
+|---|---|---|
+| Tagline | "Co-op cave diving with a rope that ties you together" | "An epic adventure awaits" |
+| Description start | "Dive caves with up to four friends, tied by one rope: if one falls, everyone feels it." | "Embark on an immersive journey like never before." |
+
+Studio flags filler phrases such as "unleash", "embark on", "immersive journey", "like never before", "next level" and "endless possibilities".
+
+## Tags
+
+Pick 3-8 of the store's categories:
+
+Horror, City & settlement, Casual, Anime, Fighting, Story rich, Open world, Visual novel, Puzzle, Role-playing, Simulation, Survival, Racing, Adventure, Action, Free to play, Sci-fi & cyberpunk, Cooperative, Strategy, Roguelike, Platformer, Sports.
+
+## Rules
+
+- Describe only what the game has. No invented features, modes, player counts or awards.
+- No prices or fees in the text. The price is set separately.
+- Saving never submits.
+
+## With your agent
+
+```json title="Desktop text, mobile copied once"
+{
+  "tool": "summer_store_update_listing",
+  "gameId": "<gameId>",
+  "desktop": {
+    "tagline": "Co-op cave diving with a rope that ties you together",
+    "description": "Dive caves with up to four friends, tied by one rope: if one falls, everyone feels it. Map the dark, share air and haul treasure back up before the water rises.",
+    "tags": ["Cooperative", "Adventure", "Survival"]
+  },
+  "mobileSameAsDesktop": true,
+  "contentRating": "everyone10Plus"
+}
+```
+
+See [summer_store_update_listing](/publishing/mcp-tools#summer_store_update_listing).

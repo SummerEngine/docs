@@ -1,0 +1,101 @@
+---
+title: "Analytics: wire events into your game and read them in Grow"
+sidebarTitle: "Analytics in Grow"
+description: "What Summer counts for every published game, how to send custom events before you export, where they work, and how to read the numbers in Studio Grow or through your agent."
+icon: "chart-line"
+---
+
+Do this **before you export**: events your game sends are only in the builds that include them.
+
+## What Summer counts for you
+
+Every game on Summer Games gets four numbers with no code and no setting:
+
+| Number | Counted when |
+|---|---|
+| **Store page views** | someone opens your game's page on summer.games |
+| **Launches** | the game starts in the Summer Games desktop app or in the browser |
+| **Play sessions** | a play session ends: the game quits, or the player leaves the browser game |
+| **Play time** | the length of each finished session, added up |
+
+These do not use your analytics storage, and their history does not expire. Days are in UTC.
+
+{/* TODO(coordinator): these four counts ship with summer-platform #1518 (ingest), #1520 (summer.games) and #1521 (desktop). Confirm live before merge. */}
+
+{/* TODO(coordinator): iOS and Android launch counts arrive when the native apps report activity (native apps lane). Update this page then. */}
+
+## Send your own events
+
+For things only your game knows: `level_completed`, `boss_defeated`, `tutorial_step_completed`. The full guide, with prompts for your agent, is [See what players do](/build/analytics). The short version:
+
+```gdscript
+var _analytics_warned := false
+
+## Fire and forget: never await this, never retry it.
+func _track(event: String, properties: Dictionary = {}) -> void:
+	var capture := Summer.client.analytics.capture(event, properties)
+	var result: SummerResult = await capture.get_result_or_completed_signal()
+	if not result.ok and not _analytics_warned:
+		_analytics_warned = true
+		push_warning("analytics unavailable: %s" % result.code)
+
+func _on_level_completed(level: int, seconds: float) -> void:
+	_track("level_completed", {"level": level, "seconds": int(seconds)})
+```
+
+On a multiplayer server, use `Summer.authority.analytics.capture` for what the server decides: a match won, a coin collected, an item bought.
+
+### Rules
+
+- **Names** are fixed words in the past tense: 1-64 characters, matching `^[A-Za-z][A-Za-z0-9_.:-]{0,63}$`. Never start a name with `summer.`.
+- **Values go in properties**, not in names: `{"level": 3}`, not `level_3_completed`.
+- **Properties:** at most 64 values, nested at most 4 deep, one event at most 16 KiB.
+- **No personal data:** no emails, ids, tokens or text the player typed. Summer adds the player, game and build itself.
+- **Gameplay never waits.** Call `_track(...)` without `await`.
+- **Never send again after a failure.** The first call may already be stored.
+
+### Where your events work
+
+| Where the game runs | Your events |
+|---|---|
+| Summer Games desktop app (Mac, Windows) | Yes |
+| Summer Games apps for iPhone and Android | Yes |
+| Multiplayer server | Yes |
+| Browser (summer.games web player) | Not yet: `capture` reports `unavailable` |
+| Local Play and the editor | No: `capture` reports `unavailable`, nothing is stored |
+
+**Storage:** each game keeps 10,000 custom events for 7 days for free. Send a few events that answer questions, not one per frame.
+
+## Read your numbers
+
+### In Studio
+
+Open **Grow → Analytics**, pick your game and 7, 28 or 90 days. You see:
+
+- store page views, launches, play sessions and play time, as totals and by day;
+- the average play session;
+- **Custom events your game sent**, with counts.
+
+{/* TODO(coordinator): Grow > Analytics ships with PublicSummerEngine #773 at /studio/grow/analytics. Confirm the menu path when it is live. */}
+
+### With your agent
+
+The hosted Summer MCP reads the same numbers.
+
+```json
+{ "tool": "summer_grow_analytics", "gameId": "<gameId>", "days": 28 }
+```
+
+It returns the totals, the average session, the daily rows and your top custom events, each labelled with its window (for example "last 28 days", UTC). If analytics is unavailable it says so instead of showing zeros.
+
+`summer_grow_overview` gives the wider picture: your games, players, retention and earnings in Sparks.
+
+{/* TODO(coordinator): summer_grow_analytics is specified in PLAN.md but not yet in a lane B PR. summer_grow_overview player numbers are sample data until lane E lands. Remove this note when both are live. */}
+
+## Checklist before you export
+
+- [ ] The game sends 3-10 events that answer your questions, such as where players stop and what they finish.
+- [ ] No `await` on `_track` in gameplay code.
+- [ ] No personal data in properties.
+- [ ] Under Local Play the game plays normally while events report `unavailable`.
+- [ ] After the first published build, open Grow → Analytics and check that your events appear. A short delay is normal.

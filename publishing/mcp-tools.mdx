@@ -1,0 +1,347 @@
+---
+title: "Publishing tools reference"
+sidebarTitle: "Publishing tools"
+description: "Every Summer MCP tool used to publish a game: projects, assets, store page, art, build upload, web builds and downloads, submit, Grow, export and templates. Inputs and an example for each."
+icon: "wrench"
+---
+
+Two servers. **Hosted** = `https://mcp.summerengine.com/mcp`. **Local** = the `summer-engine` npm MCP on your computer. Setup: [Connect your agent](/publishing/connect-your-agent).
+
+The full list of local engine tools is on [MCP tools reference](/mcp/tools-reference). This page covers only publishing.
+
+{/* TODO(coordinator): hosted tools come from PublicSummerEngine #772 (store, build, submit), #770 (Grow, skills, docs) and #771 (board). Re-check every input below against the merged code before this PR merges. */}
+
+## Projects
+
+### summer_list_projects
+
+Hosted. Your Summer Studio projects, newest first: id, name, kind, last edit, share state.
+
+| Input | Type | Meaning |
+|---|---|---|
+| `limit` | 1-100 | Default 20. |
+
+```json
+{ "tool": "summer_list_projects", "limit": 10 }
+```
+
+### summer_get_project
+
+Hosted. One project: name, kind, its board id, the idea it was made from, share state.
+
+| Input | Type | Meaning |
+|---|---|---|
+| `projectId` | uuid | From `summer_list_projects`. |
+
+```json
+{ "tool": "summer_get_project", "projectId": "<projectId>" }
+```
+
+A Studio project and its store game are separate records.
+
+## Store page
+
+### summer_store_list_games
+
+Hosted. Your games on the Summer Games store: game id, name, status, platforms. No inputs.
+
+```json
+{ "tool": "summer_store_list_games" }
+```
+
+### summer_store_create_game
+
+Hosted. A new store game with its first draft. Nothing is published.
+
+| Input | Type | Meaning |
+|---|---|---|
+| `title` | string, 1-60 | The game's name. |
+| `targets` | list | `web`, `macos-universal`, `windows-x64`, `linux-x64`, `ios`, `android`. They decide the stores. |
+| `tagline` | string, up to 80 | Optional. |
+| `description` | string, up to 300 | Optional. |
+| `idempotencyKey` | string | Reuse only to retry the same create. |
+
+```json
+{ "tool": "summer_store_create_game", "title": "Star Weavers", "targets": ["macos-universal", "ios"] }
+```
+
+### summer_store_get_listing
+
+Hosted. The store page as the store will show it: review state, platforms and stores, text per store, art per slot, price, builds, the **publish checklist**, and owner approvals with their links.
+
+| Input | Type | Meaning |
+|---|---|---|
+| `gameId` | string | From `summer_store_list_games`. |
+| `previews` | boolean | Also return short-lived image URLs to look at the art. |
+
+```json
+{ "tool": "summer_store_get_listing", "gameId": "<gameId>", "previews": true }
+```
+
+### summer_store_update_listing
+
+Hosted. Edit the draft. Omitted fields keep their value. Saving never submits.
+
+| Input | Type | Meaning |
+|---|---|---|
+| `gameId` | string | |
+| `title` | string, up to 60 | |
+| `targets` | list | Same values as create. |
+| `desktop` | object | `tagline` (80), `description` (120-300), `tags` (3-8 store categories). |
+| `mobile` | object | `tagline`, `description` (120-170). `null` shows the desktop text on phones. |
+| `mobileSameAsDesktop` | boolean | Copy the desktop tagline and description to mobile once. |
+| `release` | object or `null` | `comingSoon` and an optional `date`: `"2026-11-14"`, `"2026-11"`, `"2026-Q4"` or `"2026"`. `null`: out once published. |
+| `contentRating` | enum | `everyone`, `everyone10Plus`, `teen`. |
+| `contentDescriptors` | list | `mildFantasyAction`, `competitivePlay`, `userGeneratedContent`, `flashingLights`, `simulatedGambling`. Empty: none apply. |
+
+```json
+{
+  "tool": "summer_store_update_listing",
+  "gameId": "<gameId>",
+  "desktop": { "tagline": "Weave constellations with a friend", "tags": ["Puzzle", "Cooperative", "Casual"] },
+  "mobileSameAsDesktop": true,
+  "contentRating": "everyone"
+}
+```
+
+Text rules: [Store page text](/publishing/store-text).
+
+### summer_store_set_art
+
+Hosted. Put pictures into one art slot. Each picture is checked against the slot's shape and size before upload.
+
+| Input | Type | Meaning |
+|---|---|---|
+| `gameId` | string | |
+| `slot` | enum | `desktop.keyArt`, `desktop.screenshots`, `desktop.icon`, `desktop.capsuleTall`, `desktop.capsuleWide`, `mobile.icon`, `mobile.tallCover`, `mobile.keyArt`, `mobile.screenshots`. |
+| `sources` | list, up to 8 | Each `{ "assetId": "…" }` (one of your assets) or `{ "url": "https://…" }`. Empty clears the slot. |
+| `mode` | enum | `replace` (default) or `append`. Screenshots only take a list. |
+| `focalPoint` | `{x, y}`, 0-1 | What stays in view when the store crops. Key art and covers. |
+
+```json
+{ "tool": "summer_store_set_art", "gameId": "<gameId>", "slot": "desktop.keyArt", "sources": [{ "assetId": "<assetId>" }], "focalPoint": { "x": 0.5, "y": 0.42 } }
+```
+
+Slot sizes: [Store art](/publishing/store-art).
+
+### summer_store_preview_link
+
+Hosted. A private link to the saved draft on summer.games. Hidden from search; Buy and Play do nothing.
+
+| Input | Type | Meaning |
+|---|---|---|
+| `gameId` | string | |
+| `expires` | enum | `1h`, `1d` (default), `7d`. |
+
+```json
+{ "tool": "summer_store_preview_link", "gameId": "<gameId>", "expires": "7d" }
+```
+
+## Build upload
+
+Store bundles for the Summer Games apps. The local `summer_publish_build` does all four hosted steps for you.
+
+### summer_build_begin_upload
+
+Hosted. Start an upload. Returns `publicationId` and a plan of 64 MiB parts. Calling again for the same file resumes.
+
+| Input | Type | Meaning |
+|---|---|---|
+| `gameId` | string | |
+| `format` | enum | `summer-bundle` or `pck`. |
+| `sha256` | string | SHA-256 of the whole file. |
+| `sizeBytes` | integer | |
+| `clientVersion` | string | `vMAJOR.MINOR.PATCH`. |
+| `targetPlatforms` | list | `ios`, `macos`, `windows`. |
+| `entryPoint` | string | `res://` path of the main scene. |
+| `hostedBuild` | object | Multiplayer games: the exported `summer.build.json`. |
+| `idempotencyKey` | string | Optional. |
+
+{/* TODO(coordinator): targetPlatforms here lists ios, macos, windows; summer_publish_build (summer#65) also sends android. Confirm the hosted enum includes android before merge. */}
+
+### summer_build_sign_parts
+
+Hosted. Upload URLs for parts, each bound to the part's SHA-256. Send every returned header with the PUT. Sign again for any part that failed.
+
+| Input | Type | Meaning |
+|---|---|---|
+| `gameId`, `publicationId` | string | |
+| `parts` | list | `{ "partNumber": 1, "sha256": "…" }` |
+
+### summer_build_complete_upload
+
+Hosted. After every part is PUT: Summer seals the file, makes the build and checks it on each platform. Call again with the same inputs until `ready` or `failed`. Nothing goes live.
+
+| Input | Type | Meaning |
+|---|---|---|
+| `gameId`, `publicationId` | string | |
+| `clientVersion` | string | |
+| `entryPoint` | string | `res://` main scene. |
+| `clientPack` | object | `sha256` and `sizeBytes` of `client.pck` inside the bundle (or of the `.pck` itself). |
+| `compositionPath` | string | Multiplayer games: `res://` path of the network composition. |
+
+### summer_build_status
+
+Hosted. Builds of a game, or one: version, platforms, state (`uploading`, `processing`, `checking`, `ready`, `failed`) and what to do next.
+
+```json
+{ "tool": "summer_build_status", "gameId": "<gameId>", "publicationId": "<publicationId>" }
+```
+
+## Web builds and downloads
+
+Store versions: `web` (played on summer.games), `macos-universal`, `windows-x64`, `linux-x64` (downloaded).
+
+### summer_store_version_begin_upload
+
+Hosted. Returns `versionId` and the part plan.
+
+| Input | Type | Meaning |
+|---|---|---|
+| `gameId` | string | |
+| `platform` | enum | `web`, `macos-universal`, `windows-x64`, `linux-x64`. |
+| `fileName` | string | |
+| `sizeBytes` | integer | Web: up to 500 MiB. Downloads: up to 20 GiB. |
+| `label` | string, up to 80 | A version label players may see, such as `1.0.2`. |
+
+```json
+{ "tool": "summer_store_version_begin_upload", "gameId": "<gameId>", "platform": "web", "fileName": "star-weavers-web.zip", "sizeBytes": 48211022, "label": "1.0.0" }
+```
+
+### summer_store_version_sign_parts
+
+Hosted. Upload URLs for part numbers. Inputs: `gameId`, `versionId`, `partNumbers`.
+
+### summer_store_version_complete
+
+Hosted. Summer checks the file and marks it `ready` or `rejected`. On a live game only the owner can finish one, because it goes live at once. Inputs: `gameId`, `versionId`.
+
+### summer_store_version_status
+
+Hosted. Web builds and downloads, or one: platform, status (`awaiting_upload`, `processing`, `ready`, `rejected`) and the parts already stored. Inputs: `gameId`, optional `versionId`.
+
+## Submit
+
+### summer_store_submit
+
+Hosted. Ask the owner to publish. It never publishes: it returns `awaiting_owner_approval` and an `approvalUrl` for the owner.
+
+| Input | Type | Meaning |
+|---|---|---|
+| `gameId` | string | |
+| `buildPublicationId` | string | Default: the newest ready build. |
+| `priceUsdCents` | integer | Proposed price in US cents; `0` is free; omit to keep the price. |
+| `note` | string, up to 500 | For the owner: what changed and why. |
+
+```json
+{ "tool": "summer_store_submit", "gameId": "<gameId>", "priceUsdCents": 0, "note": "First release, build v1.0.0." }
+```
+
+### summer_store_cancel_submission
+
+Hosted. Withdraw a waiting approval so its link stops working. Inputs: `gameId`, `approvalId`.
+
+## Grow
+
+### summer_grow_overview
+
+Hosted, read-only. Your games, players, retention and earnings in Sparks.
+
+| Input | Type | Meaning |
+|---|---|---|
+| `about` | enum | `overview`, `games`, `earnings`. |
+| `gameId` | string | Optional: one game. |
+| `range` | 7, 28, 90 | Days. Default 7 (earnings 28). |
+
+### summer_grow_analytics
+
+Hosted, read-only. Store page views, launches, play sessions, play time and your custom events for one game.
+
+| Input | Type | Meaning |
+|---|---|---|
+| `gameId` | string | From `summer_store_list_games`. |
+| `days` | 7, 28, 90 | Default 7. |
+
+{/* TODO(coordinator): summer_grow_analytics is specified in PLAN.md (lane E to lane B) but not in a PR yet. Confirm its name and inputs. */}
+
+## Art and assets
+
+These tools already exist. They are listed here because publishing uses them.
+
+| Tool | Use |
+|---|---|
+| `summer_list_my_assets`, `summer_search_assets`, `summer_get_asset` | Find art you already have. |
+| `summer_generate_image` | Make a picture. Returns the asset. |
+| `summer_check_job` | Wait for a generation. |
+| `summer_remove_background` | Cut out an icon subject. |
+| `summer_board_read`, `summer_board_game_soul` | The game's look and world. |
+
+See [Make store art with your agent](/publishing/generate-store-art).
+
+## Local tools
+
+### summer_export_game
+
+Local. Export with the installed Summer Engine, without a window.
+
+| Input | Type | Meaning |
+|---|---|---|
+| `project` | string | Folder with `project.godot`. |
+| `targets` | list | Bundle: `macos`, `windows`, `ios`, `android`. Download: one of `web`, `macos`, `windows`. |
+| `format` | enum | `bundle` (default) or `download`. |
+| `out` | string | Default `<project>/.summer/exports/`. |
+| `debug` | boolean | Debug build. |
+| `timeoutSeconds` | 10-7200 | Default 900. |
+
+```json
+{ "tool": "summer_export_game", "targets": ["ios", "android"] }
+```
+
+Details: [Export your game](/publishing/export).
+
+### summer_export_templates
+
+Local. List and install export templates from Summer's CDN, SHA-256 checked.
+
+| Input | Type | Meaning |
+|---|---|---|
+| `action` | enum | `list` or `install`. |
+| `platforms` | list | `web`, `macos`, `windows`, `linux`, `ios`, `android`. Default `["web"]`. |
+| `includeDebug` | boolean | Also debug templates. |
+| `summerVersion` | string | Your Summer Engine version. Needed on Windows and Linux. |
+
+```json
+{ "tool": "summer_export_templates", "action": "install", "platforms": ["web"] }
+```
+
+### summer_publish_build
+
+Local. Upload a store bundle from disk. The first call previews; `confirm: true` uploads.
+
+| Input | Type | Meaning |
+|---|---|---|
+| `gameId` | string | Omit to list your games. |
+| `file` | string | Default: the last export. |
+| `clientVersion` | string | Required. `vMAJOR.MINOR.PATCH`. |
+| `confirm` | boolean | `true` only after the owner approves the exact upload. |
+| `publish` | boolean | Leave `false` when you submit with `summer_store_submit`. |
+| `waitSeconds` | 0-1800 | Default 600. |
+
+```json
+{ "tool": "summer_publish_build", "gameId": "<gameId>", "clientVersion": "v1.0.0", "confirm": true }
+```
+
+## Skills and docs
+
+The hosted MCP also serves skills as prompts and resources:
+
+| Resource | What |
+|---|---|
+| `summer://skills/publish-your-game` | The whole journey, in order. |
+| `summer://skills/store-listing` | Store page text and fields. |
+| `summer://skills/store-art` | Every art slot and why. |
+| `summer://docs` | This documentation. Fetch any page as `.md`; the index is `/llms.txt`. |
+
+## Deprecated
+
+`summer_creator_publish`, `summer_creator_releases` and `summer publish` sent a `.pck` to an older creator API. Use `summer_export_game`, then `summer_publish_build`.

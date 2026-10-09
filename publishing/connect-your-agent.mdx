@@ -1,0 +1,104 @@
+---
+title: "Connect your agent to publish"
+sidebarTitle: "Connect your agent"
+description: "Connect Claude, Codex or ChatGPT to the two Summer MCP servers: the hosted Summer MCP for the store page, art and submit, and the local summer-engine MCP for export and upload. Sign in once."
+icon: "plug"
+---
+
+Publishing uses two Summer MCP servers. Most agents use both.
+
+| Server | Address | Does | Sign-in |
+|---|---|---|---|
+| **Hosted Summer MCP** | `https://mcp.summerengine.com/mcp` | Projects, My assets, art generation, the store page, build upload, submit, Grow numbers | OAuth in your browser, once per agent |
+| **Local summer-engine MCP** | `npx -y summer-engine@latest mcp` | Summer Engine on your computer: export, export templates, upload from disk | `summer login --store`, once per computer |
+
+ChatGPT and other chat apps in the browser use only the hosted MCP. They cannot reach your computer, so they cannot export. Export there with Summer Engine yourself, or use an agent on your computer (Claude Code or Codex).
+
+{/* TODO(coordinator): hosted MCP access is gated by HOSTED_MCP_ALLOWED_USER_IDS (lane A). Say who can connect once it opens (everyone, or by invite). */}
+
+## Claude Code
+
+Add the local MCP (if you have not yet) and the hosted MCP:
+
+```bash
+npx -y summer-engine@latest setup claude-code --yes
+claude mcp add --transport http summer-cloud https://mcp.summerengine.com/mcp
+```
+
+Then run `/mcp` in Claude Code, choose **summer-cloud** and sign in. More on the local MCP: [Claude Code setup](/mcp/claude-code).
+
+## Codex
+
+```bash
+npx -y summer-engine@latest setup codex --yes
+codex mcp add summer-cloud --url https://mcp.summerengine.com/mcp
+codex mcp login summer-cloud
+```
+
+{/* TODO(coordinator): run the two codex commands once against mcp.summerengine.com and confirm the flags. */}
+
+More on the local MCP: [Codex setup](/mcp/codex).
+
+## Claude (web, desktop and phone)
+
+<Steps>
+  <Step title="Add the connector">
+    On [claude.ai](https://claude.ai) or in Claude Desktop, open **Settings → Connectors** and choose **Add custom connector**.
+  </Step>
+  <Step title="Paste the address">
+    Name it **Summer Engine** and paste `https://mcp.summerengine.com/mcp`. Choose **Add**.
+  </Step>
+  <Step title="Sign in">
+    Claude opens summerengine.com. Sign in to your Summer account, check the app name, and choose **Allow**.
+  </Step>
+</Steps>
+
+The connector then works in every Claude app with the same Claude account, the phone app too.
+
+## ChatGPT
+
+<Steps>
+  <Step title="Add Summer Engine">
+    On [chatgpt.com](https://chatgpt.com), add a custom MCP server (connector) with the address `https://mcp.summerengine.com/mcp` and OAuth sign-in. ChatGPT may ask you to turn on developer mode first; where that setting lives changes, so check OpenAI's help if you do not see it.
+  </Step>
+  <Step title="Sign in">
+    ChatGPT opens summerengine.com. Sign in, check the app name, and choose **Allow**.
+  </Step>
+</Steps>
+
+{/* TODO(coordinator): if the Summer Engine ChatGPT app is listed in the ChatGPT app directory, replace step 1 with "find Summer Engine in Apps". */}
+
+## Sign in the local MCP to the store
+
+The local MCP uploads builds from your disk, so it needs its own store sign-in. Run this once per computer:
+
+```bash
+npx -y summer-engine@latest login --store
+```
+
+Your browser opens. Sign in and choose **Allow**. The sign-in is saved in `~/.summer/oauth-token` and renews itself. `summer logout` removes it.
+
+| Command | What it does |
+|---|---|
+| `summer login` | Core sign-in for the engine and Summer's cloud tools. |
+| `summer login --store` | Store sign-in, so the agent can upload builds. |
+| `summer login --store --force` | Registers this computer again, if store sign-in keeps failing. |
+| `summer logout` | Removes both sign-ins. |
+
+The local MCP listens on port 47615, 47616 or 47617 during sign-in. Keep one of them free.
+
+{/* TODO(coordinator): the store tools in the local MCP need the summer-engine npm release after 3.2.1. Put the version here when it ships. */}
+
+## What the agent may do
+
+When you sign in, you let the agent act as you on the store, with one limit: **it cannot publish**. A submit from an agent waits for you to click **Approve publishing**. The store refuses any other publishing step from an agent. See [Approve publishing](/publishing/owner-approval).
+
+## Check it works
+
+Ask your agent:
+
+```text
+List my Summer projects and my Summer Games store games.
+```
+
+It calls `summer_list_projects` and `summer_store_list_games`. If it says the store did not accept its sign-in, see [Troubleshooting](/publishing/summer-games-troubleshooting#the-store-did-not-accept-the-sign-in).

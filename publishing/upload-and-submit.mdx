@@ -1,0 +1,98 @@
+---
+title: "Upload your build and submit"
+sidebarTitle: "Upload and submit"
+description: "Upload a Summer Games store bundle with summer_publish_build, or a web build or download as a store version, wait for Summer's checks, make a preview link, and submit for the owner's approval."
+icon: "upload"
+---
+
+After the store page is filled and the game is exported, your agent uploads the build and submits. In Studio you do the same under **Check and submit**; see [Publish your game](/build/publish).
+
+## 1. Upload a store bundle
+
+The local summer-engine MCP uploads straight from your disk. The first call shows what it will upload; the second, with `confirm: true`, uploads it.
+
+```json title="1. Preview"
+{ "tool": "summer_publish_build", "gameId": "<gameId>", "clientVersion": "v1.0.0" }
+```
+
+It returns the exact game, file, SHA-256, size and version. Your agent shows you this and asks.
+
+```json title="2. Upload"
+{ "tool": "summer_publish_build", "gameId": "<gameId>", "clientVersion": "v1.0.0", "confirm": true }
+```
+
+| Input | Meaning |
+|---|---|
+| `gameId` | The store game. Omit it to get the list of your games. |
+| `file` | The `.zip`. Defaults to the last `summer_export_game` result. |
+| `clientVersion` | `vMAJOR.MINOR.PATCH`. A new upload needs a new version. |
+| `confirm` | `true` only after you approve the exact upload. |
+| `publish` | Leave `false` when you will submit with `summer_store_submit`. |
+| `waitSeconds` | How long to wait for Summer's checks (default 600). On timeout, call again to keep waiting. |
+
+It uploads in 64 MiB parts. If the connection drops, call it again with the same file and version: it continues the same upload.
+
+**Without the local MCP** (for example from a cloud agent with the file), use the hosted tools in this order: `summer_build_begin_upload`, `summer_build_sign_parts`, PUT each part to its URL with every returned header, `summer_build_complete_upload`. Call `summer_build_complete_upload` again until it reports `ready` or `failed`. See the [tools reference](/publishing/mcp-tools#build-upload).
+
+## 2. Upload a web build or a download
+
+Web builds and Mac or Windows downloads are **store versions**, one per platform: `web`, `macos-universal`, `windows-x64`, `linux-x64`.
+
+1. `summer_store_version_begin_upload` with the platform, file name, size and a label such as `1.0.0`.
+2. `summer_store_version_sign_parts` for the part numbers, then PUT each part with its headers.
+3. `summer_store_version_complete`. Summer checks the file (a web `.zip` needs `index.html` at its root) and marks it `ready` or `rejected`.
+
+`summer_store_version_status` lists the parts already stored, so you can resume.
+
+<Warning>
+  On a game that is already live, a finished store version goes live at once. So on a live game only the owner can finish one, in Studio.
+</Warning>
+
+{/* TODO(coordinator): lane B said the local npm MCP will wrap the store-version tools like summer_publish_build. Name that tool here when it lands. */}
+
+## 3. Wait for the checks
+
+`summer_build_status` shows each build's state: `uploading`, `processing`, `checking`, `ready` or `failed`. Summer checks the build on every platform it lists. A `failed` build says what to fix; see [Troubleshooting](/publishing/summer-games-troubleshooting).
+
+## 4. Look at it first (optional)
+
+```json
+{ "tool": "summer_store_preview_link", "gameId": "<gameId>", "expires": "1d" }
+```
+
+A private link to the saved page on summer.games. It is hidden from search, and Buy and Play do nothing. It expires after `1h`, `1d` or `7d`.
+
+## 5. Check what is missing
+
+`summer_store_get_listing` returns the publish checklist for each store. Fix everything it lists before you submit. Read it again after each change.
+
+## 6. Submit
+
+```json
+{
+  "tool": "summer_store_submit",
+  "gameId": "<gameId>",
+  "priceUsdCents": 0,
+  "note": "First release: desktop and mobile store pages, build v1.0.0."
+}
+```
+
+| Input | Meaning |
+|---|---|
+| `buildPublicationId` | The build to publish. Defaults to the newest ready build. |
+| `priceUsdCents` | Proposed price in US cents. `0` is free. Omit it to keep the current price. |
+| `note` | A short note for the owner: what changed and why. |
+
+It checks the publish checklist first. Then it returns `awaiting_owner_approval` and an `approvalUrl`. **Nothing is published.** Give the owner the link.
+
+To withdraw it: `summer_store_cancel_submission` with the `approvalId`.
+
+## What happens next
+
+1. The owner opens the link and clicks **Approve publishing**. See [Approve publishing](/publishing/owner-approval).
+2. Summer staff review the page.
+3. When it is approved, the owner clicks **Go live**.
+
+## Updates
+
+Export again with a new version, upload it the same way, and submit again. Players keep the current version until the new one is live.

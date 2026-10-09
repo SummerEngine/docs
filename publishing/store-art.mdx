@@ -1,0 +1,80 @@
+---
+title: "Store art: every slot, size and rule"
+sidebarTitle: "Store art"
+description: "The art for the Summer Games desktop and mobile stores: key art, icon, screenshots, capsules, the mobile tall cover and the trailer. Sizes, shapes, text rules, focal points, the 20-image budget, and why each one matters."
+icon: "image"
+---
+
+Summer Games shows your game in four places: **summer.games**, the **desktop app**, the **iPhone app** and the **Android app**. They show it in different shapes: wide heroes, tall tiles, small squares and a tall phone card. One landscape picture cropped into all of these cuts faces and logos off.
+
+So your store page has **two art sets**, one per store, and you fill only the stores your game ships on:
+
+| Store | Shows on | Opened by these platforms |
+|---|---|---|
+| **Desktop store** | summer.games and the Summer Games desktop app | web, Mac, Windows, Linux |
+| **Mobile store** | the Summer Games apps for iPhone and Android | iPhone, Android |
+
+A game on Mac and iPhone needs both sets.
+
+## Desktop store
+
+| Slot | Slot id | Size | Shape | Text in the art | Needed |
+|---|---|---|---|---|---|
+| **Key art** | `desktop.keyArt` | at least 1920×1080 | 16:9 | **None**, no logo | Yes |
+| **Screenshots** | `desktop.screenshots` | at least 1920×1080 | 16:9 | None: real gameplay, no captions | Yes, 4-8 (4-6 is plenty) |
+| **Icon** | `desktop.icon` | 1024×1024 (at least 512) | 1:1 | None: the mark only | Yes |
+| Tall capsule | `desktop.capsuleTall` | at least 600×800 (1200×1600 is best) | 3:4 | Logo is fine, inside the middle 80% | Optional |
+| Wide capsule | `desktop.capsuleWide` | at least 920×430 | 460:215 | Logo is fine | Optional |
+| Trailer | — | 16:9 MP4 | 16:9 | Opens on gameplay, not logos | Optional |
+
+**Why each one matters:**
+
+- **Key art.** The home hero and the desktop app draw your title, price and buttons over it. Text in the picture fights them. Every other desktop crop is cut around its focal point.
+- **Screenshots.** Players judge the game by these on its page and in the featured row. Fake shots break trust and fail review.
+- **Icon.** The mark in square tiles, library rows and search. Words cannot be read at that size.
+- **Tall capsule.** The 3:4 shelf tiles and the library. Nothing is drawn on top, so a logo reads well. **If missing:** a 3:4 crop of your key art.
+- **Wide capsule.** Beside the game page and in link previews. **If missing:** cropped from your key art.
+- **Trailer.** The first seconds play muted on hover and in the hero. A muted 15-30 second MP4 that opens on gameplay works best.
+
+## Mobile store
+
+**No text in any mobile picture.** The apps draw the title, tagline and buttons over the art.
+
+| Slot | Slot id | Size | Shape | Needed |
+|---|---|---|---|---|
+| **Icon** | `mobile.icon` | 1024×1024 (at least 512) | 1:1 | Yes |
+| **Tall cover** | `mobile.tallCover` | at least 1080×1920 | 9:16 (up to 9:19.5) | Strongly recommended (a warning, not a block) |
+| **Key art** | `mobile.keyArt` | at least 1920×1080 | 16:9 | Yes |
+| **Screenshots** | `mobile.screenshots` | short side at least 1080 | 9:16 for portrait games, 16:9 for landscape (up to 19.5:9) | Yes, 3-8 (3-5 is plenty) |
+| Trailer | — | — | — | Not shown yet |
+
+**Why each one matters:**
+
+- **Icon.** 40 to 112 points wide on a phone: in rows, on shelves and above the game page. Use a clear silhouette on a plain background. If your desktop icon is right, use it here too.
+- **Tall cover.** The front-page story card on iPhone and the full-height Today card on Android. Both draw the title, tagline and buttons over its lower part. Keep the subject inside the **middle 4:5 area** and keep the **bottom third calm**. **If missing:** your landscape key art is cropped to a tall card and most of its width is lost.
+- **Key art.** The phone game page hero and the Discover cards, under a shade and the title.
+- **Screenshots.** The phone game page gallery. Shoot them in the way the game is played. A short tagline may cover at most a fifth of the picture; small text cannot be read on a phone.
+
+## Rules for every slot
+
+- **Art is per store.** Never put a desktop picture in a mobile slot, or the reverse, even when it fits. Only the icon may be shared.
+- **Shape check.** Each picture must match its slot's shape within 2% and meet the minimum size. A near fit is cut from the centre.
+- **Focal point.** Key art, capsules and the tall cover keep a focal point: the part that must stay in view when the store crops. Set it on the subject's face or the main object. Keep it away from the edges.
+- **The 20-picture budget.** One store page holds at most **20 pictures and videos across both stores**. That is why 4-6 desktop and 3-5 mobile screenshots are plenty.
+- **Real gameplay.** Screenshots and trailers show the real game. No mock-ups, no other games' characters.
+- **No text where the store draws text:** key art (both stores), the tall cover, icons and screenshots.
+
+## Common mistakes
+
+| Mistake | What happens |
+|---|---|
+| Title or logo in the key art | The store draws the real title on top. Two titles. |
+| The square icon used as a cover | It is cropped into a tall card and a wide hero. |
+| Subject at the edge of the key art | The 3:4 and tall crops cut it off. |
+| Captions on phone screenshots | Unreadable on a phone. |
+| 8 + 8 screenshots and a trailer | Over the 20-picture budget. |
+
+## Set the art
+
+- **Studio:** open your game's store page, then **Desktop store** or **Mobile store**. The live preview shows every crop.
+- **Your agent:** `summer_store_set_art` with the slot id. See [Make store art with your agent](/publishing/generate-store-art) and the [tools reference](/publishing/mcp-tools#summer_store_set_art).

@@ -1,0 +1,91 @@
+---
+title: "Agent checklist: publish a Summer game end to end"
+sidebarTitle: "Agent checklist"
+description: "One ordered checklist an AI agent follows from a built game to a submitted Summer Games store page, through the Summer MCP. It stops at the owner's approval link."
+icon: "clipboard-check"
+---
+
+For AI agents. Follow it from top to bottom. Each step names the tool and what must be true before you go on. Fetch this page as Markdown: `https://docs.summerengine.com/publishing/agent-checklist.md`.
+
+**Never** say the game is published, in review or live. You stop at the approval link. The owner approves.
+
+## 0. Connected
+
+- [ ] The hosted MCP answers: `summer_store_list_games` returns a list (it may be empty).
+- [ ] For export and upload from disk: the local MCP answers, and the owner ran `summer login --store` once.
+- [ ] If either fails, give the owner the steps on [Connect your agent](/publishing/connect-your-agent) and stop.
+
+## 1. The game
+
+- [ ] `summer_list_projects`, then `summer_get_project`: the project and its board id.
+- [ ] Read the project: genre, main scene, single-player or multiplayer, platforms it is built for.
+- [ ] Ask the owner **only** what the project does not say: platforms, price.
+
+## 2. The store game
+
+- [ ] `summer_store_list_games`. If the game is there, use its `gameId`.
+- [ ] Otherwise `summer_store_create_game` with the title and `targets`.
+  - Web, Mac, Windows, Linux → `web`, `macos-universal`, `windows-x64`, `linux-x64` (desktop store).
+  - iPhone, Android → `ios`, `android` (mobile store).
+- [ ] `summer_store_get_listing`: note the stores, the empty slots and the checklist.
+
+## 3. Analytics (before export)
+
+- [ ] Optional. If the owner wants events, add 3-10 with the `summer-analytics` skill. Fire and forget, no personal data. See [Analytics in Grow](/publishing/analytics).
+
+## 4. Text
+
+- [ ] `summer_store_update_listing`:
+  - desktop `tagline` (up to 80), `description` (120-300), `tags` (3-8 store categories);
+  - mobile: `mobileSameAsDesktop: true` if it fits 120-170, else its own `tagline` and `description`;
+  - `contentRating` and `contentDescriptors`.
+- [ ] Only what the game really has. No filler phrases, no prices.
+- [ ] Rules: [Store page text](/publishing/store-text).
+
+## 5. Art
+
+For each empty required slot of each store the game is on:
+
+- [ ] Look in My assets first: `summer_list_my_assets`, `summer_search_assets`.
+- [ ] If nothing fits, read the board's look (`summer_board_game_soul`) and make it: `summer_generate_image`, `summer_check_job`.
+- [ ] Crop to the slot's exact shape, subject at the focal point. See [Make store art](/publishing/generate-store-art).
+- [ ] `summer_store_set_art` with the slot, the source and a `focalPoint`.
+- [ ] Screenshots are real gameplay: capture with the engine or ask the owner. Desktop 4-6, mobile 3-5.
+- [ ] No text in key art, the tall cover, icons or screenshots. At most 20 pictures in total.
+- [ ] Slot table: [Store art](/publishing/store-art).
+
+| Store | Required | Recommended | Optional |
+|---|---|---|---|
+| Desktop | `desktop.keyArt`, `desktop.screenshots` (4+), `desktop.icon` | | `desktop.capsuleTall`, `desktop.capsuleWide`, trailer |
+| Mobile | `mobile.icon`, `mobile.keyArt`, `mobile.screenshots` (3+) | `mobile.tallCover` | |
+
+## 6. Export
+
+- [ ] Pick the build per platform: [Export your game](/publishing/export#which-one-do-i-need).
+- [ ] Web or download: `summer_export_templates` `list`, then `install` what is missing.
+- [ ] `summer_export_game` with `targets` (and `format: "download"` for web, Mac or Windows downloads).
+- [ ] The result lists the right platforms and a main scene.
+
+## 7. Upload
+
+- [ ] Store bundle: `summer_publish_build` with `gameId` and a new `clientVersion`. Show the owner the preview; call again with `confirm: true` after they agree.
+- [ ] Web build or download: `summer_store_version_begin_upload`, `summer_store_version_sign_parts`, PUT each part, `summer_store_version_complete`.
+- [ ] `summer_build_status` (or `summer_store_version_status`) says `ready`. On `failed`, fix and upload a new version.
+
+## 8. Check
+
+- [ ] `summer_store_get_listing`: the checklist has nothing missing.
+- [ ] Optional: `summer_store_preview_link` and show the owner.
+
+## 9. Submit and hand over
+
+- [ ] `summer_store_submit` with the build, the price the owner asked for (`priceUsdCents`, `0` = free) and a short `note`.
+- [ ] Give the owner the `approvalUrl` and say: "Open this link and click **Approve publishing**. Summer reviews it next."
+- [ ] Stop.
+
+## After the owner approves
+
+- [ ] `summer_store_get_listing` shows the approval as approved.
+- [ ] Summer staff review the page. When it is approved, the owner clicks **Go live** in Studio.
+- [ ] If the approval is **Stale**, read the listing again and submit again.
+- [ ] Later: `summer_grow_analytics` and `summer_grow_overview` for the numbers.
