@@ -20,6 +20,8 @@ W, H = 1200, 630
 MAX_W = W * 0.86
 MAX_H = H * 0.62
 MAX_SIZE = 200
+ZOOM = 1.4
+CROP_TOP = 0.26
 
 
 def nav_pages(node):
@@ -77,15 +79,16 @@ def layout(text, draw):
 
 def render(title, out):
     bg = Image.open(HERE / "background.jpg").convert("RGB")
-    scale = max(W / bg.width, H / bg.height)
+    # Zoom into the meadow so the sky is only the top fifth and the text sits on grass.
+    scale = max(W / bg.width, H / bg.height) * ZOOM
     bg = bg.resize((round(bg.width * scale), round(bg.height * scale)), Image.LANCZOS)
-    left, top = (bg.width - W) // 2, (bg.height - H) // 2
+    left, top = (bg.width - W) // 2, min(round(bg.height * CROP_TOP), bg.height - H)
     img = bg.crop((left, top, left + W, top + H))
     draw = ImageDraw.Draw(img)
     size, lines = layout(title.upper(), draw)
     f = font(size)
     line_h = size * 0.98
-    y = H * 0.56 - line_h * len(lines) / 2  # sit on the grass, below the bright sky
+    y = H * 0.56 - line_h * len(lines) / 2
     for line in lines:
         l, t, r, b = draw.textbbox((0, 0), line, font=f, anchor="ls")
         draw.text(((W - (r - l)) / 2 - l, y + size * 0.78), line, font=f, fill="white", anchor="ls")
