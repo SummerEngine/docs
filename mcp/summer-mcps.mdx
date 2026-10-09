@@ -1,6 +1,6 @@
 ---
 title: "Summer MCPs"
-description: "Summer has two public MCP servers. Summer Engine lets an AI agent build games. Summer Games lets a player use their Summer account from Claude or ChatGPT: friends, messages and party invites."
+description: "Summer has two public MCP servers. Summer Engine lets an AI agent build games. Summer Games lets a player use their Summer account from Claude or ChatGPT: friends, messages, game invites, rivals and in-chat cards."
 icon: "layers"
 ---
 
@@ -9,7 +9,7 @@ Summer has two public MCP servers. One is for making games. One is for playing t
 | | **Summer Engine MCP** | **Summer Games MCP** |
 |---|---|---|
 | For | Creators who build games | Players on [summer.games](https://summer.games) |
-| What the AI does | Edits scenes, writes GDScript, imports and generates assets, runs and debugs the game | Reads your friends and who is online, sends messages, invites friends to your party |
+| What the AI does | Edits scenes, writes GDScript, imports and generates assets, runs and debugs the game | Reads who of your friends is online, sends messages, invites friends to a Game, tells you when they join, handles rivals, and opens pages in the Summer Games desktop app |
 | Where it runs | On your computer, next to the Summer Engine editor (`npx summer-engine mcp`) | On Summer's servers: `https://mcp.summer.games/mcp` |
 | Works in | Coding agents: Claude Code and [many more](/mcp/agents) | Claude (web, desktop and phone), ChatGPT, Claude Code and any MCP app with OAuth sign-in |
 | Sign in | `npx summer-engine login` | Your Summer account, on summer.games |
@@ -37,7 +37,7 @@ npx -y summer-engine@latest setup <agent> --yes
 
 ## Summer Games MCP: play with friends
 
-The Summer Games MCP lets an AI app act on your Summer account, as you. Ask it "who of my friends is online?" or "text my friends and ask who wants to play", and it does it. You sign in on summer.games and choose what it may do. You can disconnect it at any time.
+The Summer Games MCP lets an AI app act on your Summer account, as you. Ask it "who of my friends is online?", "text my friends and ask who wants to play" or "invite them to Star Weavers", and it does it. Claude and ChatGPT show the answers as cards in the chat, and tell you when a friend joins. You sign in on summer.games and choose what it may do. You can disconnect it at any time.
 
 <CardGroup cols={2}>
   <Card title="Play with friends from Claude or ChatGPT" icon="users" href="/mcp/summer-games">
@@ -56,7 +56,7 @@ The Summer Games MCP lets an AI app act on your Summer account, as you. Ask it "
 | | Summer Engine MCP | Summer Games MCP |
 |---|---|---|
 | Account | Your Summer Engine account | Your Summer account on summer.games |
-| Permissions | Everything the editor can do in the open project | Two: **read** (see your friends, messages, party) and **act** (send, invite, edit your profile). You choose on summer.games. |
+| Permissions | Everything the editor can do in the open project | Two: **read** (see your friends, messages, party, inbox, rivals) and **act** (send, invite, change your profile and settings, open desktop pages). You choose on summer.games. |
 | Before it changes something | The edit shows in the editor, and undo works | Your AI app asks you before each act tool |
 | Costs | Engine control and asset search are free. Cloud generation uses credits. | No tool buys anything or spends Sparks |
 | Stop it | Remove the server from your agent's MCP config | Settings → Connected apps on summer.games |
@@ -77,6 +77,6 @@ These words mean the same thing on both servers and in the Summer apps.
 | **Invite** | An invitation to join your party. The other player accepts or declines it. |
 | **Message** | A direct message to one friend, or a message in your party chat. |
 | **Notification** | An entry in your Summer inbox, such as a friend request or a party invite. |
-| **Rival** | A player you both agreed to compete with. Player against player only. Coming soon. |
+| **Rival** | A player you both agreed to compete with. A rival request works like a friend request. Player against player only. |
 | **Connected app** | An AI app you allowed to act for your Summer account. |
 | **Sparks** | Summer's currency. No MCP tool buys or spends Sparks. |

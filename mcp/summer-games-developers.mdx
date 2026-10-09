@@ -1,6 +1,6 @@
 ---
 title: "Summer Games MCP for Game Developers"
-description: "Players can now gather friends from Claude or ChatGPT. What that means for your Summer game: the party, friends and rankings your game already reads, and how to make your game easy for an AI app to find."
+description: "Players can gather friends for your game from Claude or ChatGPT, compare with rivals in your rankings, and open your store page. What that means for your Summer game, and how to make it easy for an AI app to find."
 icon: "gamepad-2"
 ---
 
@@ -23,14 +23,12 @@ Both report `is_available() == false` when the Summer app running your game does
 Do not build your own friends list, chat or invite system. Use the Summer ones. Then invites and messages that players send from an AI app reach your players too.
 </Tip>
 
-## Coming soon
+## What players can do with your game
 
-These are built and in review. They are not live yet.
-
-- **Play your game together.** A player says "I want to play your game with Ana and Ben". The AI app finds your game by name, sets it as the party's Game, and sends the invites with a link to it. When a friend joins, the chat says the game is ready.
-- **Rivals compare your rankings.** Two players who agreed to be rivals can ask "am I ahead of Leo in your game?". The answer uses each player's playtime in your game and their place in your game's rankings.
-- **"Take me to the store page."** On desktop, a player can ask the AI app to open your game's store page in the Summer Games desktop app.
-- **Phone alerts** for party invites and joins, with a link back to the party.
+- **Play your game together.** A player says "I want to play your game with Ana and Ben". The AI app finds your game by name, sets it as the party's Game, and sends the invites with a link to it. Friends get the invite in their Summer inbox and as a phone alert. When a friend joins, the party card in Claude or ChatGPT says the game is ready.
+- **Rivals compare your rankings.** Two players who agreed to be rivals ask "am I ahead of Leo in your game?". The answer uses each player's playtime in your game, when they last played, and their place in up to 5 of your game's rankings.
+- **"Take me to the store page."** On desktop, a player asks the AI app to open your game's store page in the Summer Games desktop app. It only shows the page; the player buys or plays there.
+- **Find and talk about your game.** "Find Star Weavers on Summer" returns a game's title and summer.games link, shown as a Game card in the chat.
 
 ## Make your game easy for an AI app
 
@@ -38,7 +36,7 @@ An AI app knows your game only from what Summer shows about it. Help it:
 
 - **Use a clear title.** Players will say it out loud to an AI app. Avoid symbols and look-alike spellings.
 - **Write a plain store description.** Say in the first sentence what the player does and how many people play together. The AI app repeats it when a player asks "what is this game?".
-- **Name your rankings plainly.** When rivals compare, the ranking name is what players see. "Best lap" reads better than `rank_v2`.
+- **Name your rankings plainly.** When rivals compare, the AI app gets the ranking ID and says it to players. `best_lap` reads better than `rank_v2`.
 - **Use the Summer party for play together.** Read the party, show who has your game open, and let the leader start. Players who gathered in a chat then arrive in your game together.
 
 ## Build with an AI agent too
