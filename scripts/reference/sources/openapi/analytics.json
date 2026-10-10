@@ -1,0 +1,493 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Summer Analytics API",
+    "version": "1.0.0",
+    "description": "Read your game's analytics: the activity overview and the catalog of events your game sends."
+  },
+  "servers": [
+    {
+      "url": "https://api.summer.games"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Analytics management",
+      "description": "Developer-authorized typed analytics reads."
+    }
+  ],
+  "paths": {
+    "/v1/management/games/{gameId}/environments/{envId}/analytics/activity": {
+      "get": {
+        "tags": [
+          "Analytics management"
+        ],
+        "operationId": "getGameActivityOverview",
+        "summary": "Read built-in Game activity for the last whole UTC days",
+        "description": "Store page views, launches, play sessions and play time for the last\n`days` UTC days, today included. Every day of the window is present,\noldest first; a day without reports is zero. collectionStart is the\nfirst day this Game ever received a report, or null. Requires exact\ngame/environment analytics.read authorization.\n",
+        "security": [
+          {
+            "DeveloperBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/GameID"
+          },
+          {
+            "$ref": "#/components/parameters/EnvironmentID"
+          },
+          {
+            "name": "days",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 90,
+              "default": 7
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Zero-filled daily counters and window totals.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ActivityOverview"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/ManagementUnauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/ManagementNotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/ManagementInvalidQuery"
+          },
+          "429": {
+            "$ref": "#/components/responses/ManagementRateLimited"
+          },
+          "503": {
+            "$ref": "#/components/responses/ManagementUnavailable"
+          }
+        }
+      }
+    },
+    "/v1/management/games/{gameId}/environments/{envId}/analytics/catalog": {
+      "get": {
+        "tags": [
+          "Analytics management"
+        ],
+        "operationId": "getAnalyticsCatalog",
+        "summary": "Discover observed event and property names",
+        "security": [
+          {
+            "DeveloperBearer": []
+          }
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/GameID"
+          },
+          {
+            "$ref": "#/components/parameters/EnvironmentID"
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Inclusive lower bound; requires `to` when supplied."
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Exclusive upper bound; requires `from` when supplied."
+          },
+          {
+            "name": "eventPrefix",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "maxLength": 64
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Bounded observed catalog.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CatalogResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/ManagementUnauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/ManagementNotFound"
+          },
+          "422": {
+            "$ref": "#/components/responses/ManagementInvalidQuery"
+          },
+          "429": {
+            "$ref": "#/components/responses/ManagementRateLimited"
+          },
+          "503": {
+            "$ref": "#/components/responses/ManagementUnavailable"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "EnvironmentID": {
+        "name": "envId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/OpaqueID"
+        }
+      },
+      "GameID": {
+        "name": "gameId",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "$ref": "#/components/schemas/OpaqueID"
+        }
+      }
+    },
+    "schemas": {
+      "ActivityCounts": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "storePageViews",
+          "launches",
+          "playSessions",
+          "playSeconds"
+        ],
+        "properties": {
+          "storePageViews": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "launches": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "playSessions": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "playSeconds": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "ActivityDay": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "date",
+          "storePageViews",
+          "launches",
+          "playSessions",
+          "playSeconds"
+        ],
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "storePageViews": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "launches": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "playSessions": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "playSeconds": {
+            "type": "integer",
+            "minimum": 0
+          }
+        }
+      },
+      "ActivityOverview": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "from",
+          "to",
+          "days",
+          "collectionStart",
+          "totals",
+          "daily"
+        ],
+        "properties": {
+          "from": {
+            "type": "string",
+            "format": "date-time",
+            "description": "First day of the window, UTC midnight."
+          },
+          "to": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Midnight after the last day, exclusive."
+          },
+          "days": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 90
+          },
+          "collectionStart": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date"
+          },
+          "totals": {
+            "$ref": "#/components/schemas/ActivityCounts"
+          },
+          "daily": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ActivityDay"
+            }
+          }
+        }
+      },
+      "CatalogEvent": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "firstSeenAt",
+          "lastSeenAt",
+          "approximateCount",
+          "properties"
+        ],
+        "properties": {
+          "name": {
+            "$ref": "#/components/schemas/EventName"
+          },
+          "firstSeenAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastSeenAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "approximateCount": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "properties": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CatalogProperty"
+            }
+          }
+        }
+      },
+      "CatalogProperty": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "name",
+          "types",
+          "filterable"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "filterable": {
+            "type": "boolean"
+          }
+        }
+      },
+      "CatalogResponse": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "events"
+        ],
+        "properties": {
+          "events": {
+            "type": "array",
+            "maxItems": 500,
+            "items": {
+              "$ref": "#/components/schemas/CatalogEvent"
+            }
+          }
+        }
+      },
+      "EventName": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 64,
+        "pattern": "^[A-Za-z][A-Za-z0-9_.:-]{0,63}$",
+        "description": "Developer ingestion rejects the reserved `summer.` prefix."
+      },
+      "ManagementError": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "code",
+          "message",
+          "requestId",
+          "retryable"
+        ],
+        "properties": {
+          "code": {
+            "$ref": "#/components/schemas/ManagementErrorCode"
+          },
+          "message": {
+            "type": "string"
+          },
+          "requestId": {
+            "type": "string"
+          },
+          "retryable": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ManagementErrorCode": {
+        "type": "string",
+        "enum": [
+          "not_signed_in",
+          "not_found",
+          "invalid_query",
+          "rate_limited",
+          "query_rate_limited",
+          "analytics_query_timeout",
+          "analytics_unavailable",
+          "unavailable"
+        ]
+      },
+      "ManagementErrorEnvelope": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "$ref": "#/components/schemas/ManagementError"
+          }
+        }
+      },
+      "OpaqueID": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256,
+        "pattern": "^[A-Za-z0-9][A-Za-z0-9._:-]{0,255}$"
+      }
+    },
+    "responses": {
+      "ManagementInvalidQuery": {
+        "description": "Query parameters or typed request are invalid.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ManagementErrorEnvelope"
+            }
+          }
+        }
+      },
+      "ManagementNotFound": {
+        "description": "Target is absent or hidden by exact-scope authorization.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ManagementErrorEnvelope"
+            }
+          }
+        }
+      },
+      "ManagementRateLimited": {
+        "description": "Request or analytics query budget exceeded.",
+        "headers": {
+          "Retry-After": {
+            "$ref": "#/components/headers/RetryAfter"
+          }
+        },
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ManagementErrorEnvelope"
+            }
+          }
+        }
+      },
+      "ManagementUnauthorized": {
+        "description": "Valid developer authentication is required.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ManagementErrorEnvelope"
+            }
+          }
+        }
+      },
+      "ManagementUnavailable": {
+        "description": "Management or analytics query dependency unavailable or timed out.",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ManagementErrorEnvelope"
+            }
+          }
+        }
+      }
+    },
+    "headers": {
+      "RetryAfter": {
+        "description": "Minimum number of seconds before retrying.",
+        "schema": {
+          "type": "string",
+          "pattern": "^[1-9][0-9]*$"
+        }
+      }
+    },
+    "securitySchemes": {
+      "DeveloperBearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "Summer developer access token",
+        "description": "Your Summer account token, the same one the creator management API uses (`summer login --store`). You can read only games you own or manage."
+      }
+    }
+  }
+}

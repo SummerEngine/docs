@@ -459,7 +459,10 @@ for (const abs of mdxFiles) {
       );
     } else if (changedFiles.has(rel) && !process.env.DOCS_ALLOW_GENERATED_EDIT) {
       const generatorInRepo = existsSync(join(ROOT, generator));
-      const generatorChanged = generatorInRepo && changedFiles.has(generator);
+      // A generator may be a directory (code + pinned inputs); any change under it counts.
+      const generatorChanged =
+        generatorInRepo &&
+        (changedFiles.has(generator) || [...changedFiles].some((f) => f.startsWith(`${generator.replace(/\/$/, "")}/`)));
       if (!generatorChanged) {
         err(
           "generated-pages",

@@ -37,6 +37,8 @@ One store bundle serves every platform it lists, so it carries every texture for
 
 The local summer-engine MCP runs Summer Engine on your computer without a window. You do not need to open the editor.
 
+**You need Summer Engine 0.7.0 or later.** Older engines cannot make summer.games exports. `summer doctor` warns when the installed engine is too old, and `summer_export_game` stops before it changes anything. Update with `summer install --yes`, or download the latest Summer Engine from [summerengine.com/download](https://summerengine.com/download).
+
 ```json title="Store bundle for iPhone and Android"
 { "tool": "summer_export_game", "targets": ["ios", "android"] }
 ```
@@ -65,6 +67,33 @@ The local summer-engine MCP runs Summer Engine on your computer without a window
 It returns the file path, its SHA-256, its size, and for a bundle the manifest: main scene, platforms and whether it has a server. For a download it also returns the store platform to upload it as.
 
 For a store bundle the MCP writes a named preset `summer.games <targets>` into `export_presets.cfg`. It only changes that preset's platform options.
+
+When an export fails, the result names the engine's own `ERROR:` lines. Read them first: they say what to fix.
+
+## Hosted games: the source graph
+
+A game with a server splits its files into a client part and a server part. `deployment/source-domains.json` (the source graph) says which folders belong to which part. The `authority_engine` roots are server only: the client pack leaves them out.
+
+If the export fails with an error like this, a file the client needs sits inside a server-only root:
+
+```text
+compositionPath res://game/net/caper_composition.tres is in the source graph's authority_engine domain, which the client pack leaves out
+```
+
+Fix: narrow the `authority_engine` root to the server-only files, so the shared files (such as the network composition `.tres`) stay in the client pack.
+
+```json title="deployment/source-domains.json"
+{
+  "schema": "summer.source-domain-graph.v1",
+  "roots": [
+    { "domain": "shared", "paths": ["content", "game/domain"] },
+    { "domain": "authority_engine", "paths": ["game/net/authority.tscn", "game/net/caper_authority.gd"] }
+  ],
+  "dependencies": []
+}
+```
+
+A game laid out on Summer Engine 0.6 can hit this on 0.7 when its server root is the whole network folder. The `multiplayer-project` skill explains every file of a hosted game.
 
 ## Export in the editor
 

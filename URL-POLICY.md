@@ -113,8 +113,17 @@ Generated pages publish to their existing frozen URLs rather than to a new
 | Page | Generated from |
 |---|---|
 | `/ai-tools/operations` | The engine's unified operation registry |
-| `/mcp/tools-reference` | The MCP server's tool definitions |
+| `/mcp/tools-reference`, `/mcp/tools/*` | The MCP tools' own definitions: the `summer-engine` npm package and the hosted MCP (`scripts/reference`) |
 | `/mcp/cli-reference` | The CLI's command definitions |
+| `/api-reference/http/*` | summer-platform `api/*/openapi.yaml`, filtered to public operations (`scripts/reference`) |
+| `/api-reference/gdscript/*` | The engine's class reference XML for the `Summer` singleton (`scripts/reference`) |
+| `/api-reference/overview` | The three references above (`scripts/reference`) |
+
+`scripts/reference/generate.mjs --check` runs in `npm run check` and fails when a page
+under `scripts/reference` no longer matches its pinned inputs. `scripts/reference/sync.mjs`
+refreshes those inputs from the sources; the `reference-drift` workflow flags when they fall behind.
+Generated reference URLs come from stable identifiers (tool group, operationId, class name);
+when one disappears from its source, its page goes and needs a redirect like any other page.
 
 If a generated page is wrong, fix the source. Never the page.
 

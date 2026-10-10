@@ -7,7 +7,7 @@ icon: "wrench"
 
 All tools are in the **Summer Engine MCP**. **Hosted** tools run on `https://mcp.summerengine.com/mcp`; the `summer-engine` npm MCP on your computer loads the same tools after `summer login --store` and adds the **local** ones that touch your disk. Setup: [Connect your agent](/publishing/connect-your-agent).
 
-The full list of local engine tools is on [MCP tools reference](/mcp/tools-reference). This page covers only publishing.
+This page covers only publishing. Every tool with its full input schema, what it needs and an example is in the generated [MCP tools reference](/mcp/tools-reference); the publishing ones are on [MCP tools: publish](/mcp/tools/publish).
 
 ## Projects
 
@@ -282,7 +282,7 @@ Hosted. Finish the upload. Returns the `assetId` for `summer_store_set_art`.
 |---|---|---|
 | `publicId` | string | `public_id` from the upload answer. |
 | `version` | integer | `version` from the upload answer. |
-| `signature` | string | `signature` from the upload answer. |
+| `signature` | string | `signature` from Cloudinary's upload answer, not the one in `fields`. |
 | `format` | enum | `png`, `jpg`, `jpeg`, `webp`. |
 | `title` | string | Optional name in My assets. |
 
@@ -297,10 +297,12 @@ These tools already exist. They are listed here because publishing uses them.
 | Tool | Use |
 |---|---|
 | `summer_list_my_assets`, `summer_search_assets`, `summer_get_asset` | Find art you already have. |
-| `summer_generate_image` | Make a picture. Returns the asset. |
+| `summer_generate_image` | Make a picture. Pass `aspectRatio` (and `width`, `height`) for a slot's shape; the result gives the real size and model. |
 | `summer_check_job` | Wait for a generation. |
 | `summer_remove_background` | Cut out an icon subject. |
 | `summer_board_read`, `summer_board_game_soul` | The game's look and world. |
+| `summer_capture_gameplay` | Local. Real gameplay screenshots from an offscreen engine run, no editor needed. |
+| `summer_screenshot` | Local. With `target: "game"`, a frame of the game the editor is playing. |
 
 See [Make store art with your agent](/publishing/generate-store-art).
 
@@ -308,7 +310,7 @@ See [Make store art with your agent](/publishing/generate-store-art).
 
 ### summer_export_game
 
-Local. Export with the installed Summer Engine, without a window.
+Local. Export with the installed Summer Engine, without a window. Needs Summer Engine 0.7.0 or later; an older engine is refused before anything changes. On failure the result names the engine's `ERROR:` lines.
 
 | Input | Type | Meaning |
 |---|---|---|

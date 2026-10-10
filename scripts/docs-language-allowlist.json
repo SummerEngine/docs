@@ -19,12 +19,20 @@
       "maxOccurrences": 1,
       "owner": "docs-mcp",
       "reason": "Literal gdscript-patterns skill identifier; the adjacent prose spells GDScript correctly."
+    },
+    {
+      "rule": "blanket-all-assets",
+      "file": "mcp/tools/build.mdx",
+      "match": "all in the asset root's own frame, the frame position/rotation apply",
+      "maxOccurrences": 2,
+      "owner": "docs-reference",
+      "reason": "Generated from the summer_inspect_asset and summer_connect_ports tool descriptions; it names a coordinate frame, not format compatibility. Change the wording in the tool source, not here."
     }
   ],
   "requiredTerms": [
     {
       "file": "index.mdx",
-      "terms": ["Summer Engine", "Summer game", "GDScript", "Summer SDK"]
+      "terms": ["Summer Engine", "Summer game", "Summer SDK"]
     },
     {
       "file": "essentials/installation.mdx",
@@ -32,7 +40,7 @@
     },
     {
       "file": "quickstarts/fresh-project.mdx",
-      "terms": ["Summer Engine", "Summer game", "GDScript", "Summer SDK"]
+      "terms": ["Summer Engine", "Summer game", "Summer SDK"]
     }
   ]
 }

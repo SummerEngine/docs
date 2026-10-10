@@ -36,9 +36,9 @@ def journey(k):
     k.text(30, 36, "Your agent", 13, c["muted"], 600, anchor="start")
     k.text(704, 36, "You", 13, c["muted"], 600, anchor="start")
     steps = [
-        ("Store page", "text per store"),
-        ("Art", "every slot"),
         ("Export", "one file"),
+        ("Art", "every slot"),
+        ("Store page", "text per store"),
         ("Upload", "checked by Summer"),
         ("Submit", "gets a link"),
     ]
@@ -162,7 +162,7 @@ def slots_desktop(k):
 
 def slots_mobile(k):
     c = k.c
-    k.text(30, 34, "Mobile store: the iPhone and Android apps. No text in any picture.", 15, weight=700, anchor="start")
+    k.text(30, 34, "Mobile store: the iPhone and Android apps. No text in the art.", 15, weight=700, anchor="start")
     # Tall cover 9:16 with safe area and title zone.
     x, y, w, h = 30, 56, 135, 240
     picture(k, x, y, w, h)
@@ -191,6 +191,7 @@ def slots_mobile(k):
         k.device(600 + j * 82, 56, 66, 116)
     k.text(723, 196, "Screenshots", 13, weight=600)
     k.text(723, 214, "3-8, in the way the game is played", 11, c["muted"])
+    k.text(723, 230, "own HUD is fine", 11, c["muted"])
     k.text(200, 318, "One page holds at most 20 pictures and videos across both stores.", 12, c["muted"], anchor="start")
 
 
