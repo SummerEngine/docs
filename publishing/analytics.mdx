@@ -84,8 +84,10 @@ Your own events will need **Summer Pro**. The four numbers Summer counts for you
 
 - **Without Pro:** Summer does not store your game's custom events. The game keeps running: `capture` still succeeds, but nothing is stored. Studio shows **Events need Summer Pro** with a link to upgrade.
 - **With Pro:** each month includes a large allowance of custom events across all your games. Only the live game counts; tests in Local Play and the editor do not. Months follow UTC.
-- **Monthly cap:** past the cap, Summer stops storing events until the next month; `capture` still succeeds. Need more? Ask us on Discord to raise your cap.
-- **Who it counts for:** the game's owner. Every game they own shares one allowance and one cap.
+- **Your monthly limit:** you choose how many custom events Summer stores each month. It starts at the amount Pro includes, so you never get a bill you did not choose. Need more? Raise it in Grow → Analytics, **Monthly limit**, or ask your agent. Events above the included amount are extra and are billed at the end of the month; Studio says so when this applies to you.
+- **When you reach your limit:** Summer stops storing events until the next month; `capture` still succeeds. Raise the limit to keep counting.
+- **Monthly cap:** your limit can go up to a cap. Need more than the cap? Ask us on Discord to raise it.
+- **Who it counts for:** the game's owner. Every game they own shares one allowance, one limit and one cap.
 
 Send a few events that answer questions, not one per frame.
 
@@ -116,7 +118,7 @@ Open **Grow → Analytics**, pick your game and 7, 28 or 90 days. You see:
 
 If the answer says `sample: true`, the numbers are sample data, and your agent says so.
 
-`summer_grow_analytics` (one game) also returns `customEventUsage`: this month's events, allowance, cap and status. In Studio, ask the assistant "how many analytics events have I used this month?"
+`summer_grow_analytics` (one game) also returns `customEventUsage`: this month's events, allowance, limit, cap and status. `summer_grow_event_limit` reads your monthly limit, and changes it when you ask. In Studio, ask the assistant "how many analytics events have I used this month?" or "raise my events limit to 2 million".
 
 <Prompt description="**How is my game doing?** Your agent reads your Grow numbers and tells you what they mean. No changes.">
 Tell me how my game is doing on Summer Games over the last 28 days. Use the
