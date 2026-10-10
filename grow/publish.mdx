@@ -1,0 +1,92 @@
+---
+title: "Publish your game from Summer Studio"
+sidebarTitle: "Publish your game"
+description: "Publish a game on Summer Games from Studio: name it and pick its platforms, fill the desktop and mobile store pages, upload a web export for browser play or downloads for Mac, Windows and Linux, then submit for review and go live."
+icon: "upload"
+---
+
+Publishing on Summer Games is free. You make a store page in Studio, upload your build and submit it. Summer staff review it, and then your game goes live on [summer.games](https://summer.games).
+
+Start at [summerengine.com/studio/upload](https://summerengine.com/studio/upload), or click **Publish a game** in Grow. You can fill in the first step before you sign in; Studio keeps your draft and asks you to sign in when you save.
+
+<Tip>
+  Want your AI agent to do every step? It fills the store page, makes the art, uploads the build and submits, then stops at one **Approve publishing** click for you. See [Create and publish your game](/publishing/summer-games).
+</Tip>
+
+## The steps
+
+Studio walks you through one step at a time. You can go back to any step.
+
+<Steps>
+  <Step title="Game and targets">
+    Give your game a **title** (up to 60 characters) and choose its **targets**: Web, macOS, Windows, Linux, iPhone and Android. Targets decide which store pages you fill next:
+
+    - **Web, macOS, Windows or Linux** open the **Desktop store**: summer.games and the Summer Games desktop app.
+    - **iPhone or Android** open the **Mobile store**: the Summer Games apps for iPhone and Android.
+
+    You can add a **build file** here too, or later. If a jam is open, you can enter it here: see [Summer Games Jam](/grow/game-jam). Click **Save and continue**. This makes a private draft of your store page. It does not submit anything.
+  </Step>
+  <Step title="Desktop store">
+    The text and art for summer.games and the desktop app, with a live preview next to the form: a tagline (up to 80 characters), a description (120-300 characters), 3-8 tags, key art, 4-8 screenshots and an icon. A trailer and capsule art are optional. See [Store page text](/publishing/store-text) and [Store art](/publishing/store-art).
+  </Step>
+  <Step title="Mobile store">
+    The same for the phone apps, with a phone preview: a shorter description (120-170 characters), key art, 3-8 screenshots and an icon. **Same as desktop** copies your desktop text once; **Use desktop icon** reuses the icon.
+  </Step>
+  <Step title="Get paid">
+    Choose free or paid. A paid game needs a price and a connected Stripe account; free games work without one. See [Earnings & payouts](/grow/earnings).
+  </Step>
+  <Step title="Check and submit">
+    The **Before launch** checklist shows what is still needed to go live and what makes the page shine. Each row links to its fix. When nothing required is left, click **Submit for review**.
+  </Step>
+  <Step title="Live">
+    Where your game is on its way to players: in review, approved, or live.
+  </Step>
+</Steps>
+
+The full dashboard of a game (**Full dashboard** on its page, in **Your games**) has every field in tabs: **Store page**, **Audience** (platforms, content classification, languages, system requirements, release date), **Builds** and **Sales**.
+
+## Your build: browser play or downloads
+
+| Players get | Upload | Rules |
+|---|---|---|
+| **Play in the browser** on summer.games | A **web export**, zipped, under **Play in the browser** on the game's page | `index.html` at the root of the zip, not in a folder. Up to 500 MB, 2,000 files and 200 MB per file. |
+| **A download** for Mac, Windows or Linux | One file per platform | Up to 40 GB in Studio. |
+| **The Summer Games apps** on iPhone and Android | A Summer export from the editor | Checked by Summer for each platform. See [Export your game](/publishing/export). |
+
+- A **Summer export** is checked in Studio and made ready for each platform. It asks for a version, such as `v1.0.0`.
+- **Any other build** (`.zip`, `.exe`, `.dmg`, `.apk` or `.ipa`) stays private, and Summer staff check it during review.
+- Without a web export, players download your game instead of playing it in the browser.
+- Games that use C# (.NET) need a download per platform; they do not run in the browser or the Summer Games apps.
+
+Large uploads resume if they stop. Keep the tab open until the upload finishes.
+
+## Review and going live
+
+| Status | What it means |
+|---|---|
+| **Draft** | Not submitted. Saving never submits. |
+| **In review** | Summer staff are reviewing your page and build. You can edit again once the review is done. |
+| **Changes requested** / **Not approved** | The review found something to change. Change it and submit again. |
+| **Approved** | Click **Go live** to put the page on Summer Games. |
+| **Live** | Your page is on summer.games. |
+
+A live store page and a released version are two things:
+
+- A **web export** and **downloads** go to players as soon as the page is live.
+- A **Summer export** goes out when you pick it under **Versions** and click **Promote to production**. Uploading a new version never replaces the live one by itself.
+
+Editing a live page starts a new draft, which goes through review before players see it.
+
+<Tip>
+  **Share a preview.** On the store page, **Share preview** makes a private link that expires in 1 hour, 1 day or 7 days. Anyone with the link sees your saved page before it is on Summer Games.
+</Tip>
+
+## With your agent
+
+In Studio, ask the assistant "publish my game". It opens **Publish a game**, fills the title and targets, and walks the store page with you. It never presses **Submit for review** unless you ask for exactly that. See [Use the agent](/grow/use-the-agent).
+
+From Claude, Codex or ChatGPT, the Summer Engine MCP does every step and gives you an approval link. See [Approve publishing](/publishing/owner-approval).
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)
