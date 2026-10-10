@@ -1,0 +1,83 @@
+---
+title: "Use the agent for Grow"
+sidebarTitle: "Use the agent"
+description: "The Studio assistant and the Summer Engine MCP can do Grow for you: read your numbers, open any Grow page, fill in forms, set prices, run A/B tests, invite your team and apply for promotions, ads and featured places. You press publish, upload and pay yourself."
+icon: "bot"
+---
+
+Summer is the game engine built for AI, and Grow is built for agents too. Every Grow page can be read, opened and filled in by the Studio assistant, or by your own agent (Claude, Codex, ChatGPT) through the Summer Engine MCP.
+
+## In Studio
+
+Open the chat in Studio and ask in your own words. The assistant:
+
+- **takes you there**: "open Promotions", "show me my A/B tests";
+- **reads your numbers**: "how is my game doing this month?", "what did I earn?", "how many wishlists?";
+- **fills the page with you**: you see each field fill in, and you can undo it from the chat;
+- **does the job**: sets prices by country, creates A/B tests, invites people, sends growth applications.
+
+It never presses a button that publishes, uploads, pays or deletes unless you asked for exactly that. Your numbers are always your real ones; when a page shows example data, the assistant says so.
+
+### Things to ask
+
+| You say | It does |
+|---|---|
+| "How is my game doing?" | Reads your numbers for the window you mean, finds the weakest step from store page to play, and gives one next step. |
+| "Publish my game" | Opens **Publish a game**, fills the title and targets, and walks the store page with you. |
+| "Enter my game in the jam" | Picks the open jam on **Publish a game**. |
+| "Set my price in Germany to 9.99" | Sets a price by country. |
+| "Test a darker key art" | Creates a store page A/B test as a draft, and starts it when you say so. |
+| "Invite sam@example.com as a developer" | Invites them to the game. |
+| "I want ads on TikTok in the US" | Fills and sends a paid growth application. |
+| "Apply for New and noteworthy" | Sends a featured placement application with your pitch. |
+| "Make a dashboard called Morning check" | Creates the board. |
+| "Raise my events limit to 2 million" | Changes your monthly custom events limit. |
+
+## From your own agent (MCP)
+
+[Connect your agent](/publishing/connect-your-agent) to the hosted Summer Engine MCP. These tools cover Grow:
+
+| Tool | What it does | Changes things |
+|---|---|---|
+| `summer_grow_overview` | All your games: store page views, launches, play sessions and play time against the days before. Add `include` for prices, interest (wishlists, follows), readiness or earnings. | No |
+| `summer_grow_analytics` | One game by day, its custom events and this month's custom events usage. | No |
+| `summer_grow_event_limit` | Read or change your monthly custom events limit. | When asked |
+| `summer_grow_prices` | Read prices, set the base price, set or clear a price by country. | Yes |
+| `summer_grow_ab_tests` | List tests, read results, create, start and stop store page A/B tests. | Yes |
+| `summer_grow_members` | List, invite, change roles, remove and withdraw invites for a game's team. | Yes |
+| `summer_grow_apply` | Apply for a promotion, ads, email outreach, creator introductions, a featured place or an A/B test run. Nothing is charged. | Yes |
+| `summer_grow_applications` | The status of a game's applications. | No |
+
+Publishing has its own tools (`summer_store_*`, `summer_build_*`): see [Publishing tools](/publishing/mcp-tools). An agent never publishes alone: `summer_store_submit` returns a link where you click **Approve publishing**.
+
+### Drive your Studio tab
+
+Your agent can also move and fill your open Studio tab, the same way the Studio assistant does:
+
+| Tool | What it does |
+|---|---|
+| `summer_studio_map` | Every Studio page, with its id and path. Grow pages start with `grow`. |
+| `summer_studio_open` | Opens a page in your tab, such as `grow-promotions`. |
+| `summer_studio_page` | Reads the open page: its fields and buttons. |
+| `summer_studio_use_page` | Fills fields and presses one button. Buttons that publish, upload, pay or delete are highlighted for you to click. |
+
+<Prompt description="**Grow my game.** Your agent reads your numbers and proposes one next step. No changes.">
+Use the Summer Engine MCP. Read how my game did on Summer Games over the last
+28 days with summer_grow_overview, including prices, interest and readiness.
+Don't change anything.
+
+Name each number with its window. Tell me the weakest step from store page to
+play, and the one thing in Summer Grow I should do next: a store page fix, a
+sale, an A/B test, or an application for a featured place.
+</Prompt>
+
+## What agents do not do
+
+- Press **Submit for review**, **Approve publishing**, upload or pay buttons without your clear ask.
+- Connect your payouts: that is your click in Stripe.
+- Promise that an application is accepted, or that alerts email you.
+- Present example data as your numbers.
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

@@ -89,6 +89,7 @@ These top-level paths are canonical. They do not move.
 | `/api-reference/*` | Summer SDK and public APIs |
 | `/guides/*` | Task-oriented how-to |
 | `/publishing/*` | Export and ship |
+| `/grow/*` | Summer Grow in Studio: publish, analytics, earnings, promotions and growth tools |
 | `/knowledge-base/*` | Question-shaped pages, answered directly |
 | `/changelog/*` | Release notes |
 | `/security/*` | Data protection and privacy |

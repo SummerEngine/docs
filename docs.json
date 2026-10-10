@@ -247,6 +247,46 @@
         ]
       },
       {
+        "tab": "Grow",
+        "icon": "trending-up",
+        "groups": [
+          {
+            "group": "Start here",
+            "pages": [
+              "grow/overview",
+              "grow/publish",
+              "grow/game-jam"
+            ]
+          },
+          {
+            "group": "Insights",
+            "pages": [
+              "grow/analytics",
+              "grow/earnings"
+            ]
+          },
+          {
+            "group": "Grow your game",
+            "pages": [
+              "grow/promotions",
+              "grow/paid-growth",
+              "grow/featured-placement",
+              "grow/ab-tests",
+              "grow/dashboards",
+              "grow/alerts",
+              "grow/community",
+              "grow/live-ops"
+            ]
+          },
+          {
+            "group": "With your agent",
+            "pages": [
+              "grow/use-the-agent"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "MCP",
         "icon": "plug",
         "groups": [
