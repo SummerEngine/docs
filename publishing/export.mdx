@@ -25,7 +25,7 @@ The Summer Games store takes two kinds of build. Which one you need depends on w
 | Android | store bundle | `android` | any game; needs Summer Engine 0.7.1 or later |
 | Mac app | store bundle | `macos` | multiplayer games (with a server) only |
 | Windows app | store bundle | `windows` | multiplayer games (with a server) only |
-| Web (play in the browser) | web build | `web` | Forward+ projects; not the Compatibility renderer |
+| Web (play in the browser) | web build | `web` | Forward+ or Mobile projects. A standard Godot Web export (Compatibility renderer) also plays: upload its `.zip` in Studio |
 | Mac download | download | `macos-universal` | any game |
 | Windows download | download | `windows-x64` | any game |
 
@@ -117,9 +117,9 @@ Open **Project → Export**, pick the **summer.games** preset and click **Export
     At most 16 entries and 40 GiB. The platforms in the manifest must match the platforms you upload it for. Summer runs `client.pck` on its own engine in the Summer Games apps, so you need no export template.
   </Tab>
   <Tab title="Web build">
-    A `.zip` with `index.html` at its root. At most 500 MiB, 2,000 files and 200 MiB per file. Threads off. summer.games plays it in a frame.
+    A `.zip` with `index.html` at its root. At most 500 MiB, 2,000 files and 200 MiB per file. With thread support off, summer.games plays it in a frame on the game page; a build with threads opens in its own tab.
 
-    It uses Summer's **WebGPU Forward+** web template (`web_summer_jspi_release.zip`). Projects on the Compatibility renderer are refused.
+    `summer_export_game` builds it on Summer's **WebGPU** web template (`web_summer_jspi_release.zip`), with threads off, for projects on the Forward+ or Mobile renderer; it refuses Compatibility projects. summer.games plays any web export, so a standard Godot Web export on the Compatibility renderer (WebGL 2) works too: zip the export folder and upload it under **Play in the browser** in Studio.
   </Tab>
   <Tab title="Download">
     - **Mac:** a `.app` in a `.zip`, named `<name>-macos-universal.zip`. Ad hoc signed by the MCP.
