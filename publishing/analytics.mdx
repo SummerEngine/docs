@@ -106,19 +106,18 @@ Open **Grow → Analytics**, pick your game and 7, 28 or 90 days. You see:
 
 ### With your agent
 
-`summer_grow_overview` reads your Grow numbers: store page views, launches, play sessions and play time, per game and in total, for all your games or one. Players, new players, day-7 retention, peak players and Sparks earned are coming soon.
+`summer_grow_overview` reads your Grow numbers: store page views, launches, play sessions and play time, per game and in total, compared with the days before. It also gives a short reading of what they mean. For one game's days and custom events, use `summer_grow_analytics`.
 
 ```json
-{ "tool": "summer_grow_overview", "gameId": "<gameId>", "range": 28 }
+{ "tool": "summer_grow_overview", "days": 28 }
 ```
 
 | Input | Meaning |
 |---|---|
-| `about` | `overview` (default) or `games`. `earnings` (Sparks) is coming soon. Ignored when `gameId` is set. |
-| `gameId` | One game: its Grow game id or title. |
-| `range` | 7, 28 or 90 days. Default 7. |
+| `days` | 7, 28 or 90 days (UTC, today included). Default 7. |
+| `include` | Also read `prices`, `interest`, `readiness` or `earnings`. |
 
-If the answer says `sample: true`, the numbers are sample data, and your agent says so.
+The numbers are always your real ones. When analytics are unavailable, the answer says so instead of showing zeros.
 
 `summer_grow_analytics` (one game) also returns `customEventUsage`: this month's events, allowance, limit, cap and status. `summer_grow_event_limit` reads your monthly limit, and changes it when you ask. In Studio, ask the assistant "how many analytics events have I used this month?" or "raise my events limit to 2 million".
 
