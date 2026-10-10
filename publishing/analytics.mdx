@@ -78,7 +78,20 @@ Read my project first and list the events you'd add before you change anything.
 | Browser (summer.games web player) | Not yet: `capture` reports `unavailable` |
 | Local Play and the editor | No: `capture` reports `unavailable`, nothing is stored |
 
-**Storage:** each game keeps 10,000 custom events for 7 days for free. Send a few events that answer questions, not one per frame.
+### Summer Pro, allowance and cap
+
+Your own events will need **Summer Pro**. The four numbers Summer counts for you stay free for every game.
+
+**Enforcement starts later.** Until then Summer stores and counts every custom event from every game, with or without Pro; Grow → Analytics shows your usage as soon as usage counting is live. The rules below apply once enforcement starts.
+
+- **Without Pro:** Summer does not store your game's custom events. The game keeps running: `capture` still succeeds, but nothing is stored. Studio shows **Events need Summer Pro** with a link to upgrade.
+- **With Pro:** each month includes 1 million custom events across all your games. Unused events do not carry over to the next month. Only the live game counts; tests in Local Play and the editor do not. Months follow UTC.
+- **Your monthly limit:** you choose how many custom events Summer stores each month. It starts at the amount Pro includes, so you never get a bill you did not choose. Need more? Raise it in Grow → Analytics, **Monthly limit**, or ask your agent. Events above the included amount are extra: they are billed at the end of the month, and the more you send, the less each extra event costs. Once this applies to you, Studio shows an estimate of the month's extra cost.
+- **When you reach your limit:** Summer stops storing events until the next month; `capture` still succeeds. Raise the limit to keep counting.
+- **Monthly cap:** your limit can go up to a cap. Need more than the cap? Ask us on Discord to raise it.
+- **Who it counts for:** the game's owner. Every game they own shares one allowance, one limit and one cap.
+
+Send a few events that answer questions, not one per frame.
 
 ## Read your numbers
 
@@ -88,7 +101,8 @@ Open **Grow → Analytics**, pick your game and 7, 28 or 90 days. You see:
 
 - store page views, launches, play sessions and play time, as totals and by day;
 - the average play session;
-- **Custom events your game sent**, with counts.
+- **Custom events your game sent**, with counts;
+- **Custom events usage** for this month: events sent, the allowance, the cap and the status (within the allowance, over it, cap reached, or needs Summer Pro).
 
 ### With your agent
 
@@ -106,6 +120,8 @@ Open **Grow → Analytics**, pick your game and 7, 28 or 90 days. You see:
 
 If the answer says `sample: true`, the numbers are sample data, and your agent says so.
 
+`summer_grow_analytics` (one game) also returns `customEventUsage`: this month's events, allowance, limit, cap and status. `summer_grow_event_limit` reads your monthly limit, and changes it when you ask. In Studio, ask the assistant "how many analytics events have I used this month?" or "raise my events limit to 2 million".
+
 <Prompt description="**How is my game doing?** Your agent reads your Grow numbers and tells you what they mean. No changes.">
 Tell me how my game is doing on Summer Games over the last 28 days. Use the
 Summer Engine MCP: summer_grow_overview for my game. Don't change anything.
@@ -120,6 +136,7 @@ two events I should add to my game to understand players better.
 - [ ] No `await` on `_track` in gameplay code.
 - [ ] No personal data in properties.
 - [ ] Under Local Play the game plays normally while events report `unavailable`.
+- [ ] You have Summer Pro, or you accept that only the four built-in numbers are counted.
 - [ ] After the first published build, open Grow → Analytics and check that your events appear. A short delay is normal.
 
 ## Technical reference
