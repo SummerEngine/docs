@@ -137,6 +137,19 @@ Hosted. A private link to the saved draft on summer.games. Hidden from search; B
 { "tool": "summer_store_preview_link", "gameId": "<gameId>", "expires": "7d" }
 ```
 
+### summer_store_set_trailer
+
+Hosted. Set or remove the trailer at the top of the store page: one MP4 (H.264) or WebM video, at most 64 MB and 3 minutes. 15 to 30 seconds of mostly real gameplay works best. Summer Games checks the video before it shows; the tool waits for that check.
+
+| Input | Type | Meaning |
+|---|---|---|
+| `gameId` | string | |
+| `source` | object or `null` | `{ "assetId": "…" }` (one of your videos, for example from `summer_generate_video`) or `{ "url": "https://…" }`. `null` removes the trailer. |
+
+```json
+{ "tool": "summer_store_set_trailer", "gameId": "<gameId>", "source": { "assetId": "<videoAssetId>" } }
+```
+
 ## Build upload
 
 Store bundles for the Summer Games apps. The local `summer_publish_build` does all four hosted steps for you.
@@ -254,17 +267,85 @@ Hosted. After the owner approved and Summer's review passed: release the approve
 
 It answers `current` (already live), `waiting` (with the reason) or the release state.
 
-## Grow
+### summer_store_releases
 
-### summer_grow_overview
+Hosted, read-only. What players get now and what can go out next, like the version history in Studio:
 
-Hosted, read-only. Players, new players, sessions, play time, day-7 retention, peak players and Sparks earned, for all your games or one. `sample: true` in the answer means sample data.
+- whether Summer approved the game;
+- the live version on each platform (iPhone, Mac, Windows, server);
+- every uploaded bundle build, with whether it can be released and, if not, why;
+- the web build and downloads players get;
+- the owner approval and its link;
+- the next step.
 
 | Input | Type | Meaning |
 |---|---|---|
-| `about` | enum | `overview`, `games`, `earnings`. |
-| `gameId` | string | Optional: one game. |
-| `range` | 7, 28, 90 | Days. Default 7 (earnings 28). |
+| `gameId` | string | |
+
+```json
+{ "tool": "summer_store_releases", "gameId": "<gameId>" }
+```
+
+## Grow
+
+All Grow tools read and change the owner's real numbers and settings on Summer Games. They never use sample data. `game` takes the game id from `summer_store_list_games` or its name, and can be left out when you have one game.
+
+### summer_grow_overview
+
+Hosted, read-only. Store page views, launches, play sessions and play time per game and in total, for the last 7, 28 or 90 days (UTC), compared with the days before. It also gives a short reading: store page to play, drops, and one next step.
+
+| Input | Type | Meaning |
+|---|---|---|
+| `days` | 7, 28, 90 | Default 7. |
+| `include` | list | Also read `prices`, `interest` (wishlists, follows, likes, comments), `readiness` (featured placement) or `earnings`. |
+
+### summer_grow_analytics
+
+Hosted, read-only. One game's days and its top custom events, plus this month's custom event usage. Inputs: `gameId`, `days` (7, 28 or 90).
+
+### summer_grow_prices
+
+Hosted. The game's own price: `read` (base price, discount, prices by country), `set_base`, `set_country` or `clear_country`. Prices are in US cents. A country price is rounded to a whole dollar ending in .99, unless `roundTo99` is `false`. In VAT and GST countries, players see the price with tax. Prices lock while a price test runs.
+
+```json
+{ "tool": "summer_grow_prices", "action": "set_country", "game": "Star Weavers", "country": "DE", "cents": 1499 }
+```
+
+### summer_grow_ab_tests
+
+Hosted. Store page A/B tests (art, text, language): `list`, `results`, `create` (a draft with 2 to 4 versions), `start`, `stop` (with an optional winner).
+
+### summer_grow_apply and summer_grow_applications
+
+Hosted. `summer_grow_apply` applies for a growth service run by Summer: promotion, ads, email outreach, creator introductions, featured placement or an A/B test. It is an application, not a purchase. `summer_grow_applications` lists the applications sent for a game and their status.
+
+### summer_grow_members
+
+Hosted. The people on a game. The actions are:
+- `list`;
+- `invite` (by email, as `admin`, `developer` or `viewer`; Summer emails a join link);
+- `set_role`;
+- `remove`;
+- `withdraw` (an invite);
+- `leave`.
+
+### summer_grow_event_limit
+
+Hosted. Read or change your monthly limit for custom game events.
+
+<Note>
+Some Grow changes stay with the owner signed in to Studio: prices, starting and stopping a test, and member changes. When an agent asks for one, the answer says so and gives the Studio page.
+</Note>
+
+## Team and assets
+
+### summer_team
+
+Hosted. Your teams in Summer Studio (shared workspaces, where members share assets and projects): `list`, `create`, `rename`, `invite` (by email, as `admin` or `member`) and `revoke` (an invite).
+
+### summer_update_asset and summer_delete_asset
+
+Hosted. Change one of your own assets: `title`, `description`, `tags`, and `visibility` (`private`, `team` or `public`). `summer_delete_asset` deletes an asset for good. It needs `confirm: true`.
 
 ## Art and assets
 
