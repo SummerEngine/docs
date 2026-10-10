@@ -106,7 +106,7 @@ Open **Grow → Analytics**, pick your game and 7, 28 or 90 days. You see:
 
 ### With your agent
 
-`summer_grow_overview` reads your Grow numbers: players, new players, sessions, play time, day-7 retention, peak players and Sparks earned, for all your games or one.
+`summer_grow_overview` reads your Grow numbers: store page views, launches, play sessions and play time, per game and in total, for all your games or one. Players, new players, day-7 retention, peak players and Sparks earned are coming soon.
 
 ```json
 { "tool": "summer_grow_overview", "gameId": "<gameId>", "range": 28 }
@@ -114,9 +114,9 @@ Open **Grow → Analytics**, pick your game and 7, 28 or 90 days. You see:
 
 | Input | Meaning |
 |---|---|
-| `about` | `overview` (default), `games` or `earnings`. Ignored when `gameId` is set. |
+| `about` | `overview` (default) or `games`. `earnings` (Sparks) is coming soon. Ignored when `gameId` is set. |
 | `gameId` | One game: its Grow game id or title. |
-| `range` | 7, 28 or 90 days. Default 7 (earnings 28). |
+| `range` | 7, 28 or 90 days. Default 7. |
 
 If the answer says `sample: true`, the numbers are sample data, and your agent says so.
 
