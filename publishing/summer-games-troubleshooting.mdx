@@ -87,6 +87,7 @@ The local MCP waits for the browser on port 47615, 47616 or 47617. Close the pro
 | Problem | Fix |
 |---|---|
 | Every online join fails with `world_start_timeout`, but Local Play works | Your server pack most likely starts your title scene instead of your server scene. Add `summer_authority` to the server preset's **Custom Features**, export a new version and promote it. See [Players can't join online](/publishing/release-readiness#players-cant-join-online). |
+| Online joins still fail with `world_start_timeout` after that | Your game may pass a fixed Game ID. Call `Summer.initialize()` with no ID. See [check 6](/publishing/release-readiness#6-your-game-doesnt-hard-code-its-game-id). |
 
 Before each release, run the [release readiness checklist](/publishing/release-readiness).
 
