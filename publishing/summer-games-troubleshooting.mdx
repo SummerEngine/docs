@@ -30,7 +30,7 @@ The local MCP waits for the browser on port 47615, 47616 or 47617. Close the pro
 |---|---|
 | Template missing | Web builds and downloads need export templates. Run `summer_export_templates` with `action: "install"` and the platform. See [Export templates](/publishing/export#export-templates). |
 | `templates_not_published` | Templates are on the CDN from Summer Engine 0.7.1. Update Summer Engine, or use the templates that came with it. |
-| Compatibility renderer refused | The web build needs Forward+. Switch the renderer in **Project Settings → Rendering → Renderer**. |
+| Compatibility renderer refused | `summer_export_game`'s web template runs Forward+ or Mobile. Switch the renderer in **Project Settings → Rendering → Renderer**, or keep Compatibility, export with Godot's standard Web export and upload the `.zip` in Studio. |
 | Android not supported | Android in the store bundle needs Summer Engine 0.7.1 or later. Update Summer Engine. |
 | Platform not allowed | A game without a server can use the store bundle only for iPhone and Android. Use a download for Mac and Windows. |
 | The export times out | The first export imports every asset. Raise `timeoutSeconds` (up to 7200). |
