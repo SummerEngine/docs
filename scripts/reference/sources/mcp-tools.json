@@ -5,8 +5,8 @@
     "local": {
       "package": "summer-engine",
       "repository": "SummerEngine/summer",
-      "version": "3.3.0",
-      "integrity": "sha512-fWuaA1RRbH7WYNsSxIzij33g8NZgXKWbJBv5GOCKPyOipPtGvSAV0uNzU++11XMUyt+t7zKvEB98/ENearWxCw==",
+      "version": "3.4.1",
+      "integrity": "sha512-uzG89ns0zWst3+RsseoyFgW3lNsEp3wk+9fnmY20Hvqozt95HiQ8sNpC4GqyozfH1Jcwo0Pu78vgTIdWbSA80w==",
       "paths": [
         "dist/mcp/server.js (tools/list)",
         "library/tools/*/resource.yaml",
@@ -17,7 +17,7 @@
       "endpoint": "https://mcp.summerengine.com/mcp",
       "repository": "SummerEngine/publicsummerengine",
       "path": "src/lib/mcp/hosted",
-      "commit": "8c4351ee30b2861c347e0e4bf2776aac83177dda",
+      "commit": "cfcdc04b75ddc453c05a3a70c4a86cded14d371d",
       "excludedConditionalFiles": [
         "src/lib/mcp/hosted/chatgpt-engine-tools.ts",
         "src/lib/mcp/hosted/chatgpt-game-widget.ts",
@@ -1770,7 +1770,7 @@
       "auth": {
         "engine": true,
         "login": null,
-        "store": false,
+        "store": true,
         "creator": false
       }
     },
@@ -4430,7 +4430,7 @@
     {
       "name": "summer_generate_image",
       "title": null,
-      "description": "Generate an image using AI models via Summer Engine Studio.\n\nKnown models:\n  - \"nano-banana-2\" (default) — High quality, supports txt2img and img2img\n  - \"gemini-flash\" — Google Gemini 2.5 Flash, fast\n  - \"flux-2\" — FLUX.2, good for specific styles\n\nModel ids are an ALLOWLIST, not a passthrough. An unrecognised id is rejected\nwith 400 and the response lists every accepted id — it is not silently swapped.\n\nTwo modes:\n  - txt2img (default): just pass prompt\n  - img2img (edit): pass prompt + referenceImageUrl to edit/transform an existing image\n\nStyle presets: \"realistic\" (default), \"cartoon\", \"anime\", \"none\"\n\nFor an alpha PNG, set removeBackground: true. Prompt wording alone does not\nguarantee transparency; background removal runs server-side after generation.\n\nThe 'options' object is passed directly to the AI provider for full control.\n\nReturns the asset with fileUrl (hosted) and localPath (temp file on disk).\nUse the Read tool on localPath to show the image to the user for approval.\n\nCloud tool — runs on Summer's servers and works WITHOUT the Summer Engine app open.\nRequires authentication: run 'npx -y summer-engine@latest login' first.",
+      "description": "Generate an image using AI models via Summer Engine Studio.\n\nKnown models:\n  - \"nano-banana-2\" (default) — High quality, supports txt2img and img2img\n  - \"gemini-flash\" — Google Gemini 2.5 Flash, fast\n  - \"flux-2\" — FLUX.2, good for specific styles\n\nModel ids are an ALLOWLIST, not a passthrough. An unrecognised id is rejected\nwith 400 and the response lists every accepted id — it is not silently swapped.\n\nTwo modes:\n  - txt2img (default): just pass prompt\n  - img2img (edit): pass prompt + referenceImageUrl to edit/transform an existing image\n\nStyle presets: \"realistic\" (default), \"cartoon\", \"anime\", \"none\"\n\nFor an alpha PNG, set removeBackground: true. Prompt wording alone does not\nguarantee transparency; background removal runs server-side after generation.\n\nSize: aspectRatio (1:1, 16:9, 9:16, 4:3, 3:4, ...) or width + height (the\nsmallest size you need). For store art ask width 1920 height 1080 (key art)\nor width 1080 height 1920 (tall cover): the server picks a model that reaches\nthat size, or refuses a named model that cannot, before anything is spent.\nEach result reports the real width and height and the model that ran.\n\n'options' carries extra model params (seed, negative_prompt, ...); the result\nlists any the server did not use in ignoredOptions.\n\nReturns the asset with fileUrl (hosted) and localPath (temp file on disk).\nUse the Read tool on localPath to show the image to the user for approval.\n\nCloud tool — runs on Summer's servers and works WITHOUT the Summer Engine app open.\nRequires authentication: run 'npx -y summer-engine@latest login' first.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -4456,10 +4456,38 @@
             "type": "boolean",
             "description": "Remove the background server-side and return an alpha PNG for sprites, icons, or isolated objects."
           },
+          "aspectRatio": {
+            "type": "string",
+            "enum": [
+              "1:1",
+              "16:9",
+              "9:16",
+              "4:3",
+              "3:4",
+              "3:2",
+              "2:3",
+              "5:4",
+              "4:5",
+              "21:9"
+            ],
+            "description": "Aspect ratio of the output (default 1:1). The result reports the real width and height."
+          },
+          "width": {
+            "type": "integer",
+            "minimum": 64,
+            "maximum": 4096,
+            "description": "Smallest output width in pixels; pass with height. 1920 with height 1080 for store key art, 1080 with 1920 for a tall cover."
+          },
+          "height": {
+            "type": "integer",
+            "minimum": 64,
+            "maximum": 4096,
+            "description": "Smallest output height in pixels; pass with width."
+          },
           "options": {
             "type": "object",
             "additionalProperties": {},
-            "description": "Provider-specific params (guidance_scale, seed, image_size, negative_prompt, etc.)"
+            "description": "Extra model params (seed, negative_prompt, ...). The result lists any it did not use in ignoredOptions."
           }
         },
         "required": [
@@ -4672,7 +4700,7 @@
     {
       "name": "summer_generate_3d",
       "title": null,
-      "description": "Generate a 3D model via Summer Engine Studio.\n\nAvailable models:\n  - \"hunyuan\" (default) — Hunyuan 3D v3.1 Pro, high quality\n  - \"trellis\" — Trellis 2, fast and detailed\n  - \"meshy\" — Meshy, legacy option\n\nModel ids are an ALLOWLIST, not a passthrough. An unrecognised id is rejected\nwith 400 listing the accepted ids.\n\nAvailable kinds:\n  - \"text-to-3d\" (default) — From text description. Requires 'prompt'.\n    Internally generates a 3D-optimized reference image first, then converts to 3D.\n  - \"image-to-3d\" — From your own image. Requires 'imageUrl'.\n  - \"texture\" — Generate textures for a model. Requires 'imageUrl'.\n\nOptional rig pass (image-to-3d only):\n  Set options.rig = true to add an auto-rig pass via Meshy v6. The result\n  job (poll via summer_check_job) will include rigAssetId — the asset ID\n  of the rigged glb. Use that rigAssetId with summer_generate_motion to\n  add animation clips.\n\nExample:\n  summer_generate_3d({\n    kind: \"image-to-3d\",\n    imageUrl: \"https://...\",\n    options: { rig: true }\n  })\n  // Returns jobId; poll until result includes { assetId, rigAssetId }.\n\nSingle-image generation automatically assesses whether the source is suitable\nfor 3D. If needed, Summer prepares an isolated object view or rig-safe character\npose before conversion. Set referencePreparation=\"always\" or \"never\" only when\nyou intentionally want to override that shared Studio behavior.\n\nFor a complete animated humanoid package, pass rig=true plus animationNames or\nactionIds. This routes through the shared character pipeline instead of a\none-off mesh job.\n\nBy default, waits for completion (up to 10 min) and returns the result directly.\nSet wait=false to get the jobId immediately and poll manually with summer_check_job.\n\nCloud tool — runs on Summer's servers and works WITHOUT the Summer Engine app open.\nRequires authentication: run 'npx -y summer-engine@latest login' first.",
+      "description": "Generate a 3D model via Summer Engine Studio.\n\nAvailable models:\n  - \"hunyuan\" (default) — Hunyuan 3D v3.1 Pro, high quality\n  - \"trellis\" — Trellis 2, fast and detailed\n  - \"meshy\" — Meshy, legacy option\n\nModel ids are an ALLOWLIST, not a passthrough. An unrecognised id is rejected\nwith 400 listing the accepted ids.\n\nAvailable kinds:\n  - \"text-to-3d\" (default) — From text description. Requires 'prompt'.\n    Internally generates a 3D-optimized reference image first, then converts to 3D.\n  - \"image-to-3d\" — From your own image. Requires 'imageUrl'.\n  - \"texture\" — Generate textures for a model. Requires 'imageUrl'.\n\nOptional rig pass (image-to-3d only):\n  Set options.rig = true to add an auto-rig pass via Meshy v6. The result\n  job (poll via summer_check_job) will include rigAssetId — the asset ID\n  of the rigged glb. Use that rigAssetId with summer_generate_motion to\n  add animation clips. Adds ~60s to the job.\n\nExample:\n  summer_generate_3d({\n    kind: \"image-to-3d\",\n    imageUrl: \"https://...\",\n    options: { rig: true }\n  })\n  // Returns jobId; poll until result includes { assetId, rigAssetId }.\n\nSingle-image generation automatically assesses whether the source is suitable\nfor 3D. If needed, Summer prepares an isolated object view or rig-safe character\npose before conversion. Set referencePreparation=\"always\" or \"never\" only when\nyou intentionally want to override that shared Studio behavior.\n\nFor a complete animated humanoid package, pass rig=true plus animationNames or\nactionIds. This routes through the shared character pipeline instead of a\none-off mesh job.\n\nBy default, waits for completion (up to 10 min) and returns the result directly.\nSet wait=false to get the jobId immediately and poll manually with summer_check_job.\n\nCloud tool — runs on Summer's servers and works WITHOUT the Summer Engine app open.\nRequires authentication: run 'npx -y summer-engine@latest login' first.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -4956,7 +4984,7 @@
     {
       "name": "summer_generate_motion",
       "title": null,
-      "description": "Generate animation clips for a rigged 3D model via Summer Engine Studio.\n\nBackends (pick one):\n  - \"meshy-library\" (default) — a curated mocap clip by motionName on a\n    Summer-rigged humanoid (rigAssetId from summer_generate_3d with\n    options.rig=true). Fast (~30s), cheap, real mocap quality.\n    Names that always work: idle, walk, run, jump, attack; anything else must\n    be an exact library name.\n  - \"text-to-motion\" — custom 2-second clips (60 frames) from text prompts on\n    ANY of your own rigged models: humanoid, animal, creature, cartoon plant,\n    prop (GLB/FBX 3d_model, one skinned armature, 5-70 bones). Use it for\n    actions the library lacks (nod, bow, shrug, wave with the right arm) and\n    for non-humanoid rigs. Pass prompt or prompts (1-8), optional takes (1-4),\n    cfgScale (1.5-8, default 3; 5 for clearer gestures), and lockJoints for\n    rooted characters (e.g. [\"Hips\",\"Spine\"] on a plant; never on characters\n    that walk). Human-style bone names (Hips, Spine, LeftArm...) animate far\n    better, even on non-humans. Jobs take ~1-2 min; result.assets lists one\n    animation asset per prompt x take.\n\nEach clip (meshy: each motion; text-to-motion: each prompt x take) is billed.\nState the clip list and estimated cost and confirm with the user before\nspending.\n\nBy default, waits for completion (up to 10 min) and returns the result directly.\nSet wait=false to get the jobId immediately and poll with summer_check_job.\nImport finished clips with summer_import_asset_by_id.\n\nErrors: backend_unavailable means text-to-motion is not enabled on this server\nyet — use meshy-library for humanoids and do not retry. Job failures starting\n\"text_motion:\" (no skinned armature, too many/few joints, unknown joint) are\ninput problems and are refunded; fix the rig or request instead of retrying.\n\nCloud tool — runs on Summer's servers and works WITHOUT the Summer Engine app open.\nRequires authentication: run 'npx -y summer-engine@latest login' first.",
+      "description": "Generate animation clips for a rigged 3D model via Summer Engine Studio.\n\nBackends (pick one):\n  - \"meshy-library\" (default) — a curated mocap clip by motionName on a\n    Summer-rigged humanoid (rigAssetId from summer_generate_3d with\n    options.rig=true). Fast (~30s), real mocap quality.\n    Names that always work: idle, walk, run, jump, attack; anything else must\n    be an exact library name.\n  - \"text-to-motion\" — custom 2-second clips (60 frames) from text prompts on\n    ANY of your own rigged models: humanoid, animal, creature, cartoon plant,\n    prop (GLB/FBX 3d_model, one skinned armature, 5-70 bones). Use it for\n    actions the library lacks (nod, bow, shrug, wave with the right arm) and\n    for non-humanoid rigs. Pass prompt or prompts (1-8), optional takes (1-4),\n    cfgScale (1.5-8, default 3; 5 for clearer gestures), and lockJoints for\n    rooted characters (e.g. [\"Hips\",\"Spine\"] on a plant; never on characters\n    that walk). Human-style bone names (Hips, Spine, LeftArm...) animate far\n    better, even on non-humans. Jobs take ~1-2 min; result.assets lists one\n    animation asset per prompt x take.\n\nEach clip (meshy: each motion; text-to-motion: each prompt x take) is billed.\nState the clip list and estimated cost and confirm with the user before\nspending.\n\nBy default, waits for completion (up to 10 min) and returns the result directly.\nSet wait=false to get the jobId immediately and poll with summer_check_job.\nImport finished clips with summer_import_asset_by_id.\n\nErrors: backend_unavailable means text-to-motion is not enabled on this server\nyet — use meshy-library for humanoids and do not retry. Job failures starting\n\"text_motion:\" (no skinned armature, too many/few joints, unknown joint) are\ninput problems and are refunded; fix the rig or request instead of retrying.\n\nCloud tool — runs on Summer's servers and works WITHOUT the Summer Engine app open.\nRequires authentication: run 'npx -y summer-engine@latest login' first.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -5080,7 +5108,7 @@
     {
       "name": "summer_export_game",
       "title": null,
-      "description": "Export the game in the exact file the Summer Games store takes, with the installed Summer Engine headless (no window). format \"bundle\" (default): the summer.games .zip the Summer apps run on iPhone, Android, macOS and Windows; targets picks the platforms (a game without a server: ios and android only); upload it with summer_publish_build. format \"download\" with one target: web (an HTML5 .zip on Summer's WebGPU Forward+ web template, played on summer.games), macos (.app zip, macos-universal) or windows (.exe zip, windows-x64); these need the export template from summer_export_templates and are uploaded as store versions. Works without the editor running. Returns path, sha256, size, the manifest or store platform, and warnings.",
+      "description": "Export the game in the exact file the Summer Games store takes, with the installed Summer Engine headless (no window). format \"bundle\" (default): the summer.games .zip the Summer apps run on iPhone, Android, macOS and Windows; targets picks the platforms (a game without a server: ios and android only); upload it with summer_publish_build. format \"download\" with one target: web (an HTML5 .zip on Summer's WebGPU Forward+ web template, played on summer.games), macos (.app zip, macos-universal) or windows (.exe zip, windows-x64); these need the export template from summer_export_templates and are uploaded as store versions. Needs Summer Engine 0.7.0 or newer: an older engine is refused before anything is written (code engine_too_old). Works without the editor running. Returns path, sha256, size, the manifest or store platform, and warnings.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -5265,15 +5293,105 @@
       }
     },
     {
+      "name": "summer_capture_gameplay",
+      "title": null,
+      "description": "Capture real gameplay frames without a running editor: starts the game in Summer Engine's offscreen verify instance (a real renderer, a window parked offscreen with no focus, never on screen), lets it run waitSeconds, and saves PNG frames of what the game draws, HUD included. Use for store screenshots (1920x1080 landscape or 1080x1920 portrait). With an editor open, summer_screenshot target game also works. Returns each frame's path, width and height; look at them before using them.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "project": {
+            "type": "string",
+            "description": "Project folder with project.godot. Defaults to the MCP's bound project, then the working directory."
+          },
+          "scene": {
+            "type": "string",
+            "description": "Scene to start (res://... or uid://...). Default: the project's main scene, which is often a title menu; pass the gameplay scene for gameplay frames."
+          },
+          "resolution": {
+            "type": "string",
+            "description": "Window size WIDTHxHEIGHT (default 1920x1080; 1080x1920 for portrait)."
+          },
+          "frames": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "description": "Frames to save (default 1)."
+          },
+          "waitSeconds": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 120,
+            "description": "Seconds the game runs before the first frame (default 3)."
+          },
+          "intervalSeconds": {
+            "type": "number",
+            "minimum": 0.1,
+            "maximum": 60,
+            "description": "Seconds between frames (default 1)."
+          },
+          "out": {
+            "type": "string",
+            "description": "Output folder. Defaults to <project>/.summer/captures/<time>/ (ignored by git)."
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": null,
+      "annotations": null,
+      "descriptor": {
+        "id": "tool/capture-gameplay",
+        "slug": "capture-gameplay",
+        "version": "1.0.0",
+        "status": "preview",
+        "summary": "Capture real gameplay frames (PNG, HUD included) in Summer Engine's offscreen verify instance, without a running editor, e.g. store screenshots.",
+        "useWhen": [
+          "\"take gameplay screenshots for my store page\"",
+          "\"I need screenshots but the editor is not open\"",
+          "\"capture a 1920x1080 frame of my game\"",
+          "collecting real gameplay screenshots for summer_store_set_art desktop.screenshots or mobile.screenshots"
+        ],
+        "doNotUseWhen": [
+          "the editor is open and the game is running — tool/screenshot with target game shows the live game",
+          "key art, covers or icons — those are generated art, not gameplay frames",
+          "checking an interaction with inputs and assertions — RunVerification through tool/batch"
+        ],
+        "lifecycle": [
+          "launch",
+          "build"
+        ],
+        "domains": [
+          "creator",
+          "headless"
+        ],
+        "remote": true,
+        "authority": {
+          "filesystem": true,
+          "editor_mutation": false,
+          "network": false,
+          "credentials": false,
+          "publish": false
+        },
+        "cliCommand": null,
+        "module": "src/core/capabilities/capture-gameplay.ts"
+      },
+      "auth": {
+        "engine": false,
+        "login": null,
+        "store": false,
+        "creator": false
+      }
+    },
+    {
       "name": "summer_publish_build",
       "title": null,
-      "description": "Upload an export from summer_export_game to the creator's game on summer.games, through the same store upload Studio uses, straight from disk. A store bundle (format bundle): declare, upload parts, seal, wait until Summer makes the Build, name its client pack, and with publish=true approve it. A web build or native download (format download): upload it as the game's store version for its platform (web, macos-universal, windows-x64, linux-x64; read from the last export) and wait until Summer has checked it. First call with confirm=false and show the user the returned target; set confirm only after they approve. Needs \"summer login --store\". A retry with the same file and clientVersion continues the same upload. Nothing here makes a game live: the owner approves publishing (summer_store_submit).",
+      "description": "Upload an export from summer_export_game to the creator's game on summer.games, through the same store upload Studio uses, straight from disk. A store bundle (format bundle): declare, upload parts, seal, wait until Summer makes the Build, name its client pack, and with publish=true approve it. A web build or native download (format download): upload it as the game's store version for its platform (web, macos-universal, windows-x64, linux-x64; read from the last export) and wait until Summer has checked it. First call with confirm=false: it checks that the game exists for this account and warns when its store page does not list the export's platforms, then returns the target (game name and id, file, digest, size, version) to show the user; set confirm only after they approve. Needs \"summer login --store\". A retry with the same file and clientVersion continues the same upload. Nothing here makes a game live: the owner approves publishing (summer_store_submit).",
       "inputSchema": {
         "type": "object",
         "properties": {
           "gameId": {
             "type": "string",
-            "description": "The store game id (Studio store page URL). Omit to get the list of your games."
+            "description": "The store game id (from summer_store_list_games, or the Studio store page URL). Without it the call fails with game_required and lists your store games, or says why the store did not list them."
           },
           "file": {
             "type": "string",
@@ -5328,13 +5446,17 @@
           "\"upload my game to summer.games\"",
           "\"publish this build to my store page\"",
           "\"put my game online so my friends can play it\"",
+          "\"release version 1.2.0 of my game\"",
+          "\"ship this exported build to the live channel\"",
           "uploading the .zip from summer_export_game as a new Build",
           "uploading a web build or a macOS or Windows download from summer_export_game format download"
         ],
         "doNotUseWhen": [
           "the user has not approved the exact game, file, digest, version and publish choice",
           "the game is not exported yet — summer_export_game first",
-          "store page text, images or price — those are edited in Studio"
+          "store page text, art or price — summer_store_update_listing, summer_store_set_art (mounted after summer login --store)",
+          "making the build live — summer_store_submit (the owner approves publishing), then summer_build_release",
+          "what players get now — summer_store_releases"
         ],
         "lifecycle": [
           "launch"
@@ -5416,13 +5538,13 @@
         "slug": "creator-publish",
         "version": "1.1.0",
         "status": "deprecated",
-        "summary": "Deprecated: publishes a .pck to the legacy Summercraft API. Use summer_export_game, then summer_publish_build, to upload to summer.games.",
+        "summary": "Deprecated: publishes a .pck to the legacy creator API. Use summer_export_game, then summer_publish_build, to upload to summer.games.",
         "useWhen": [
-          "releasing a user-approved build to a Summercraft channel",
-          "\"ship this exported build to the live channel\"",
-          "\"release version 1.2.0 of my game\""
+          "an old project that still publishes a .pck to the legacy Summercraft creator channel with an sc_ creator token",
+          "a ~/.summer/config.json that names a legacy creator projectId and channel"
         ],
         "doNotUseWhen": [
+          "releasing a version on summer.games — summer_publish_build, then summer_store_submit (the owner approves)",
           "uploading to summer.games — summer_export_game, then summer_publish_build",
           "the user has not approved the exact version, digest, and channel",
           "the game is not exported yet — export the .pck first (skill/export-and-ship)"
@@ -5455,7 +5577,7 @@
     {
       "name": "summer_creator_releases",
       "title": null,
-      "description": "List real creator-owned releases from the versioned Summer Platform creator API. The server independently verifies the exact publish scope and project ownership.",
+      "description": "Deprecated: lists releases on the legacy Summercraft creator API (separate sc_ token), not summer.games. For what players get on summer.games, and which upload can be released, use summer_store_releases.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -5483,14 +5605,14 @@
         "id": "tool/creator-releases",
         "slug": "creator-releases",
         "version": "1.0.2",
-        "status": "stable",
-        "summary": "List creator-owned releases from the Summercraft creator API with server-verified scope and ownership.",
+        "status": "deprecated",
+        "summary": "Deprecated: lists releases on the legacy creator API. For summer.games use summer_store_releases.",
         "useWhen": [
-          "reviewing which versions of a project are live per channel",
-          "\"what version is live right now?\"",
-          "\"did the publish go through?\" — confirming a release landed"
+          "an old project that published a .pck to the legacy Summercraft creator channel with an sc_ creator token",
+          "paging legacy creator releases by projectId and cursor"
         ],
         "doNotUseWhen": [
+          "what players get on summer.games, or whether a release landed — summer_store_releases",
           "publishing a new release — summer_publish_build"
         ],
         "lifecycle": [
@@ -9454,7 +9576,7 @@
     {
       "name": "summer_generate_image",
       "title": null,
-      "description": "Generate or edit an image. Models are an allowlist (default \"nano-banana-2\"); an unknown id returns the accepted ids. Pass referenceImageUrl (public URL) to edit an image. Set removeBackground for an alpha PNG. Runs on Summer servers; the asset lands in the user's Summer library, where the local engine can import it with summer_import_asset_by_id.",
+      "description": "Generate or edit an image. Models are an allowlist (default \"nano-banana-2\", about 1K); an unknown id returns the accepted ids, and a compatibility alias that runs another model is named in modelNote. aspectRatio and width/height are honoured; the result gives the real width and height. width x height is the smallest output wanted: a named model that cannot reach it is refused with the models that can, and without a model one that can is picked. Store art: key art 16:9 and the mobile tall cover 9:16 need at least 1920x1080 / 1080x1920, so pass aspectRatio \"16:9\" (or \"9:16\") with width 1920 and height 1080 (or 1080 and 1920): seedream-5-pro returns 2048x1152 (1152x2048), which the store slots take as is. Pass referenceImageUrl (public URL) to edit an image. Set removeBackground for an alpha PNG. Runs on Summer servers; the asset lands in the user's Summer library, where the local engine can import it with summer_import_asset_by_id.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -9472,8 +9594,32 @@
             "type": "string"
           },
           "aspectRatio": {
-            "description": "Aspect ratio, e.g. 1:1 (default), 16:9, 9:16.",
-            "type": "string"
+            "description": "Aspect ratio: 1:1 (default), 16:9, 9:16, 4:3, 3:4, 3:2, 2:3, 5:4, 4:5, 21:9.",
+            "type": "string",
+            "enum": [
+              "1:1",
+              "16:9",
+              "9:16",
+              "4:3",
+              "3:4",
+              "3:2",
+              "2:3",
+              "5:4",
+              "4:5",
+              "21:9"
+            ]
+          },
+          "width": {
+            "description": "Smallest output width in pixels; pass with height (ratio 1:1, 16:9, 9:16, 4:3 or 3:4). E.g. 1920 for store key art.",
+            "type": "integer",
+            "minimum": 64,
+            "maximum": 4096
+          },
+          "height": {
+            "description": "Smallest output height in pixels; pass with width. E.g. 1080 for store key art.",
+            "type": "integer",
+            "minimum": 64,
+            "maximum": 4096
           },
           "numImages": {
             "type": "integer",
@@ -12795,6 +12941,11 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 128
+          },
+          "eventSlug": {
+            "description": "Enter this open Summer Games Jam (summer_store_jams lists them). The entry shows on the jam page; it updates as the page and builds change.",
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{0,63}$"
           }
         },
         "required": [
@@ -12814,9 +12965,68 @@
       "source": "src/lib/mcp/hosted/store-tools.ts"
     },
     {
+      "name": "summer_store_jams",
+      "title": null,
+      "description": "List the Summer Games Jams open for entries (slug, title, theme, closing time, prize, rules), and, with gameId, whether that game is entered. An entry shows the game's title, pitch, key art and builds on the jam page on summer.games; a ready web build (summer_store_version_begin_upload, platform web) gives it a Play button.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "gameId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}$"
+          }
+        },
+        "$schema": "https://json-schema.org/draft/2020-12/schema"
+      },
+      "outputSchema": null,
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": false
+      },
+      "oauth": true,
+      "source": "src/lib/mcp/hosted/store-tools.ts"
+    },
+    {
+      "name": "summer_store_enter_jam",
+      "title": null,
+      "description": "Enter a store game in a Summer Games Jam, or withdraw it (withdraw: true). Owner or team only. Safe to repeat: entering again refreshes the entry (title, pitch, key art, builds). By entering, the owner agrees to the Summer Games Jam rules and the Summer Games Terms (rulesUrl in summer_store_jams).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "gameId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}$"
+          },
+          "eventSlug": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9-]{0,63}$"
+          },
+          "withdraw": {
+            "default": false,
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "gameId",
+          "eventSlug"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema"
+      },
+      "outputSchema": null,
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "oauth": true,
+      "source": "src/lib/mcp/hosted/store-tools.ts"
+    },
+    {
       "name": "summer_store_get_listing",
       "title": null,
-      "description": "Read a game's store page as the store will show it: review state, targets and store flows, text per flow (desktop, mobile), art per slot, price, uploaded builds, the publish checklist (what is missing), and any owner approvals with their links.",
+      "description": "Read a game's store page as the store will show it: review state, targets and store flows, text per flow (desktop, mobile), the long description, support contact, links and release date, art per slot, price, uploaded builds, the publish checklist (what is missing), any owner approvals with their links, and availableTags: the tags a page can pick (pass their ids or labels to summer_store_update_listing).",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -12847,7 +13057,7 @@
     {
       "name": "summer_store_update_listing",
       "title": null,
-      "description": "Edit the store page draft: title, targets, desktop text (tagline, description, 3-8 tags), mobile text (its own shorter tagline and description, or mobileSameAsDesktop to copy the desktop text once), release date and content classification. Omitted fields keep their value. A page that was published or sent back starts a new draft; a page in review cannot change. Saving never submits. Slot sizes and text rules: read the store-art and store-listing skills (MCP prompts/resources).",
+      "description": "Edit the store page draft: title, targets, desktop text (tagline, description, 3-8 tags from availableTags in summer_store_get_listing; an unknown tag is refused with the closest ones), mobile text (its own shorter tagline and description, or mobileSameAsDesktop to copy the desktop text once), the long description (\"About this game\"), the support contact, release date and content classification. Release date: omit or null and the game is out the moment its approved build is released, with no date shown; {comingSoon:true, date:\"2026-11\"} shows \"Coming soon · November 2026\" (the page is visible and wishlistable, not playable; date may be a day, month, quarter \"2026-Q4\", year, or omitted for TBA); {comingSoon:false, date:\"2026-11-14\"} records the day it came out. Omitted fields keep their value. A page that was published or sent back starts a new draft; a page in review cannot change. Saving never submits. Slot sizes and text rules: read the store-art and store-listing skills (MCP prompts/resources).",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -12922,6 +13132,30 @@
             "description": "Copy the desktop tagline and description into the mobile store now (later desktop edits do not follow).",
             "type": "boolean"
           },
+          "longDescription": {
+            "description": "\"About this game\" on the game page: a few paragraphs of plain text (no markdown), a blank line between paragraphs, up to 12000 characters. null removes it.",
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 12000
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "support": {
+            "description": "Where players get help: one email address (help@yourgame.com) or an https page. Shown as \"Get support\" on the game page. null removes it.",
+            "anyOf": [
+              {
+                "type": "string",
+                "maxLength": 2048
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
           "release": {
             "description": "Coming soon with a date, or released ({comingSoon:false, date:\"YYYY-MM-DD\"}); null: out once published.",
             "anyOf": [
@@ -12987,7 +13221,7 @@
     {
       "name": "summer_store_set_art",
       "title": null,
-      "description": "Put images into one store art slot from your Summer assets (assetId) or public image URLs. Slots: desktop.keyArt, desktop.screenshots, desktop.icon, desktop.capsuleTall, desktop.capsuleWide, mobile.icon, mobile.tallCover, mobile.keyArt, mobile.screenshots. Each image is checked against the slot's shape and minimum size before upload (icons 1:1, key art 16:9, tall capsule 3:4, wide capsule 460:215, mobile tall cover 9:16, phone screenshots 16:9 or 9:16); no text in key art, icons, the tall cover or screenshots. Screenshots take a list (mode replace or append); other slots take one image. An empty sources list clears the slot. Generate missing art with summer_generate_image first. Slot sizes and text rules: read the store-art and store-listing skills (MCP prompts/resources).",
+      "description": "Put images into one store art slot from your Summer assets (assetId) or public image URLs. Slots: desktop.keyArt, desktop.screenshots, desktop.icon, desktop.capsuleTall, desktop.capsuleWide, mobile.icon, mobile.tallCover, mobile.keyArt, mobile.screenshots. Each image is checked against the slot's shape and minimum size before upload (icons 1:1, key art 16:9, tall capsule 3:4, wide capsule 460:215, mobile tall cover 9:16, phone screenshots 16:9 or 9:16); no text, logo or UI in key art, icons or the tall cover (the store draws the title over them). Screenshots are real gameplay: the game's own HUD is fine, but add no captions, logos or overlays; capture them with summer_capture_gameplay from the summer-engine npm package, or summer_screenshot target game with a running editor. Each upload waits for the image check of Summer Games before it is placed (an image it cannot read goes once more as a plain PNG or JPEG; a refusal names its reason). Screenshots take a list (mode replace or append); other slots take one image. An empty sources list clears the slot. Generate missing key art and covers with summer_generate_image first: aspectRatio 16:9 with width 1920 and height 1080 (9:16 with 1080 x 1920 for the tall cover) returns a big enough image. Slot sizes and text rules: read the store-art and store-listing skills (MCP prompts/resources).",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -13076,6 +13310,72 @@
           "gameId",
           "slot",
           "sources"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema"
+      },
+      "outputSchema": null,
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "oauth": true,
+      "source": "src/lib/mcp/hosted/store-tools.ts"
+    },
+    {
+      "name": "summer_store_set_trailer",
+      "title": null,
+      "description": "Set or remove the store page trailer, as the Trailer section in Studio: one MP4 (H.264) or WebM video, at most 64 MB and 3 minutes (15-30 s is best), muted and looping at the top of the page. From your Summer video asset (assetId, e.g. from summer_generate_video) or a public video URL; source null removes it. Summer Games checks the video (format, length) before it shows; this waits for that check. At least half of a trailer should be real gameplay.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "gameId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}$"
+          },
+          "source": {
+            "description": "The video, or null to remove the trailer.",
+            "anyOf": [
+              {
+                "anyOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "assetId": {
+                        "description": "One of your Summer video assets (summer_list_my_assets, summer_generate_video).",
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "required": [
+                      "assetId"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "url": {
+                        "description": "A public https MP4 or WebM URL.",
+                        "type": "string",
+                        "format": "uri"
+                      }
+                    },
+                    "required": [
+                      "url"
+                    ]
+                  }
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "gameId",
+          "source"
         ],
         "$schema": "https://json-schema.org/draft/2020-12/schema"
       },
@@ -13366,7 +13666,7 @@
     {
       "name": "summer_store_version_begin_upload",
       "title": null,
-      "description": "Start uploading a web build or a desktop download to a store game (summer_export_game with format \"download\" makes these). web: a .zip with index.html at its root (at most 500 MiB, 2000 files), played on summer.games in a frame. macos-universal, windows-x64, linux-x64: the archive players download (at most 20 GiB). Returns versionId and the part plan; then summer_store_version_sign_parts, PUT each part, summer_store_version_complete. The local summer-engine MCP does all of this from disk.",
+      "description": "Start uploading a web build or a desktop download to a store game (summer_export_game with format \"download\" makes these). web: a .zip with index.html at its root (at most 500 MiB, 2000 files), played on summer.games in a frame; a standard Godot Web export with the Compatibility renderer. Without a web build, players download the game. macos-universal, windows-x64, linux-x64: the archive players download (at most 20 GiB). Returns versionId and the part plan; then summer_store_version_sign_parts, PUT each part, summer_store_version_complete. The local summer-engine MCP does all of this from disk.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -13599,6 +13899,32 @@
       "source": "src/lib/mcp/hosted/store-tools.ts"
     },
     {
+      "name": "summer_store_releases",
+      "title": null,
+      "description": "What players get now and what can go out next, like the version history in Studio: the store page review state, the live version on each platform (iPhone, Mac, Windows, server), every uploaded bundle build with whether it can be released and why not, the web build and downloads players get, and the build the owner approved. Read-only. Use after summer_store_submit and before summer_build_release.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "gameId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}$"
+          }
+        },
+        "required": [
+          "gameId"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema"
+      },
+      "outputSchema": null,
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": false
+      },
+      "oauth": true,
+      "source": "src/lib/mcp/hosted/store-tools.ts"
+    },
+    {
       "name": "summer_build_release",
       "title": null,
       "description": "After the owner approved publishing and Summer staff approved the game, release the approved bundle build to players on every platform it passed its checks for. Works only for the exact build the owner approved (summer_store_submit); anything else is the owner's click in Studio. Web builds and downloads need no release: they play as soon as the store page is live.",
@@ -13628,7 +13954,7 @@
     {
       "name": "summer_upload_image_begin",
       "title": null,
-      "description": "Start uploading a PNG, JPEG or WebP image from your disk (at most 32 MB) into the user's Summer assets, e.g. store art you generated and cropped to a slot's size. Returns a signed upload: POST multipart/form-data to uploadUrl with every field in fields plus file=@<path> (curl -F). Then pass public_id, version, signature and format from Cloudinary's JSON answer to summer_upload_image_complete. Free.",
+      "description": "Start uploading a PNG, JPEG or WebP image from your disk (at most 32 MB) into the user's Summer assets, e.g. store art you generated and cropped to a slot's size. Returns a signed upload: POST multipart/form-data to uploadUrl with every field in fields plus file=@<path> (curl -F). Then pass public_id, version and format from Cloudinary's JSON answer to summer_upload_image_complete, with the answer's signature as uploadSignature (not the signature in fields). Free.",
       "inputSchema": {
         "type": "object",
         "properties": {},
@@ -13647,7 +13973,7 @@
     {
       "name": "summer_upload_image_complete",
       "title": null,
-      "description": "Finish an image upload from summer_upload_image_begin: checks it is the upload Summer signed for this user, reads the image and saves it to the user's assets (private). Returns the assetId for summer_store_set_art or any other tool.",
+      "description": "Finish an image upload from summer_upload_image_begin: checks it is the upload Summer signed for this user, reads the image and saves it to the user's assets (private). Pass uploadSignature: the signature in Cloudinary's JSON answer, which differs from the request signature in fields. Returns the assetId for summer_store_set_art or any other tool.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -13662,7 +13988,14 @@
             "exclusiveMinimum": 0,
             "maximum": 9007199254740991
           },
+          "uploadSignature": {
+            "description": "signature from Cloudinary's JSON answer to the upload (not the request signature in fields).",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
           "signature": {
+            "description": "Deprecated name for uploadSignature.",
             "type": "string",
             "minLength": 1,
             "maxLength": 128
@@ -13686,7 +14019,6 @@
         "required": [
           "publicId",
           "version",
-          "signature",
           "format"
         ],
         "$schema": "https://json-schema.org/draft/2020-12/schema"
@@ -13704,12 +14036,12 @@
     {
       "name": "summer_grow_overview",
       "title": null,
-      "description": "Summer Grow across the signed-in owner's games on Summer Games: store page views, launches, play sessions and play time per game and in total, for the last 7, 28 or 90 days (UTC). Real data from Summer Games; read-only. For one game's daily numbers and custom events use summer_grow_analytics.",
+      "description": "Summer Grow across the signed-in owner's games on Summer Games: store page views, launches, play sessions and play time per game and in total for the last 7, 28 or 90 days (UTC), against the days before, with a reading (store page to play, drops, one next step). include adds prices and discounts, wishlists, follows, likes and comments, store page readiness, or earnings (paid copies in USD, items sold for Sparks; Sparks are never money). Real data, read-only; read the grow-analytics prompt before advising. For one game's days and custom events use summer_grow_analytics.",
       "inputSchema": {
         "type": "object",
         "properties": {
           "days": {
-            "description": "Window in whole UTC days, today included: 7, 28 or 90.",
+            "description": "Window in whole UTC days, today included: 7, 28 or 90. Compared with the same number of days before (not for 90).",
             "default": 7,
             "anyOf": [
               {
@@ -13725,6 +14057,20 @@
                 "const": 90
               }
             ]
+          },
+          "include": {
+            "description": "Also read: prices (price and discount now), interest (wishlists, follows, likes, comments), readiness (store page readiness to be featured), earnings (sales and Sparks by game).",
+            "maxItems": 4,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "prices",
+                "interest",
+                "readiness",
+                "earnings"
+              ]
+            }
           }
         },
         "$schema": "https://json-schema.org/draft/2020-12/schema"
@@ -13741,7 +14087,7 @@
     {
       "name": "summer_grow_analytics",
       "title": null,
-      "description": "One game's analytics on Summer Games for the last 7, 28 or 90 days (UTC): totals (store page views, launches, play sessions, play time, average session), every day of the window, and the game's top custom events (sent with Summer.client.analytics.capture; counts are approximate). Real data; read-only. gameId comes from summer_store_list_games.",
+      "description": "One game's analytics on Summer Games for the last 7, 28 or 90 days (UTC): totals (store page views, launches, play sessions, play time, average session) against the days before, every day of the window, the top custom events (sent with Summer.client.analytics.capture; counts are approximate), players and day-N return (when collected), wishlists, follows, likes and newest comments, paid copies, price, and a reading (store page to play, drops, one next step). This month's custom event usage too (custom events need Summer Pro; Pro includes a monthly allowance and a limit stops events past it). Real data; read-only. gameId comes from summer_store_list_games or summer_grow_overview.",
       "inputSchema": {
         "type": "object",
         "properties": {
@@ -13750,7 +14096,7 @@
             "pattern": "^[A-Za-z0-9_-]{1,128}$"
           },
           "days": {
-            "description": "Window in whole UTC days, today included: 7, 28 or 90.",
+            "description": "Window in whole UTC days, today included: 7, 28 or 90. Compared with the same number of days before (not for 90).",
             "default": 7,
             "anyOf": [
               {
@@ -13781,6 +14127,537 @@
       },
       "oauth": true,
       "source": "src/lib/mcp/hosted/grow-tools.ts"
+    },
+    {
+      "name": "summer_grow_apply",
+      "title": null,
+      "description": "Apply for a growth service run by Summer for one of the owner's games on Summer Games: promotion (a promotion slot), paid_ads (Summer runs ads on Google Search, YouTube, Meta, TikTok and Reddit that link to the game; budget plus a management fee), email_outreach (emails to players), creator_connect (introductions to streamers, video makers and other creators), featured_placement, ab_test. An application, never a purchase: nothing is charged; the Summer team reaches out by email. Call only when the person asked to apply and gave the game, what they hope to achieve and a budget. The answer has the indicative from price. gameId comes from summer_store_list_games.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "service": {
+            "type": "string",
+            "enum": [
+              "promotion",
+              "paid_ads",
+              "email_outreach",
+              "creator_connect",
+              "featured_placement",
+              "ab_test"
+            ]
+          },
+          "gameId": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,128}$"
+          },
+          "goals": {
+            "description": "What they hope to achieve, in their words.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "budget": {
+            "description": "The budget they have in mind (for paid_ads: the total ad budget).",
+            "type": "object",
+            "properties": {
+              "amount": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1000000000
+              },
+              "currency": {
+                "default": "USD",
+                "type": "string",
+                "enum": [
+                  "USD",
+                  "EUR",
+                  "GBP",
+                  "CAD",
+                  "AUD",
+                  "JPY",
+                  "SEK",
+                  "NOK",
+                  "DKK",
+                  "CHF",
+                  "BRL"
+                ]
+              }
+            },
+            "required": [
+              "amount"
+            ]
+          },
+          "details": {
+            "description": "The form fields: paid_ads {channels: google_search|youtube|meta|tiktok|reddit[], countries: ISO codes[], durationDays, goal: players|wishlists|sales, creative: own|summer_makes_it, creativeNote}; email_outreach {audience[], message}; creator_connect {partners[], idea}; featured_placement {placement, pitch, when}; promotion {discountPercent, startsAt, endsAt, audience}; ab_test {kind, variants[], metric}.",
+            "type": "object",
+            "propertyNames": {
+              "type": "string"
+            },
+            "additionalProperties": {}
+          },
+          "requestId": {
+            "description": "Send the same id when retrying, so one application is kept.",
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{8,100}$"
+          }
+        },
+        "required": [
+          "service",
+          "gameId",
+          "goals",
+          "budget"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema"
+      },
+      "outputSchema": null,
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "oauth": true,
+      "source": "src/lib/mcp/hosted/grow-tools.ts"
+    },
+    {
+      "name": "summer_grow_event_limit",
+      "title": null,
+      "description": "The signed-in owner's monthly limit for custom game events on Summer Games: read it, or set it when they ask. It starts at the amount Summer Pro includes; raising it (up to their cap) lets more events through, and extra events may be billed at month end once Summer turns that on. monthlyLimit sets a number; backToIncluded returns to the included amount; neither reads. Never a price.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "monthlyLimit": {
+            "description": "New monthly limit, only when the owner asked for it.",
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100000000000
+          },
+          "backToIncluded": {
+            "description": "true: back to the amount included with Pro.",
+            "type": "boolean"
+          }
+        },
+        "$schema": "https://json-schema.org/draft/2020-12/schema"
+      },
+      "outputSchema": null,
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "oauth": true,
+      "source": "src/lib/mcp/hosted/grow-tools.ts"
+    },
+    {
+      "name": "summer_grow_ab_tests",
+      "title": null,
+      "description": "The signed-in owner's store A/B tests on Summer Games, through the same owner-scoped proxy as Studio > Grow > A/B tests. action list: the game's tests; results: visitors, purchases, conversion and revenue per version; create: a draft with 2-4 versions (version A first, usually {} = the published store page; others change name, subtitle, description, locale and/or art asset ids from the game's published media); start; stop (optional winner letter: a winning price becomes the game's price; winning text or art must then be published through the store page). One test runs per game at a time. Price tests are not open yet. Change tests only when the owner asks.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "results",
+              "create",
+              "start",
+              "stop"
+            ]
+          },
+          "game": {
+            "description": "Game id (summer_store_list_games) or its name; optional when the owner has one game.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "test": {
+            "description": "Test id or name for results, start and stop; default: the running or newest test.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "name": {
+            "description": "create: the test name.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "countries": {
+            "description": "create: only players in these countries (ISO codes), e.g. DE, AT, CH for a German text test. Empty: everyone.",
+            "maxItems": 50,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "pattern": "^[A-Za-z]{2}$"
+            }
+          },
+          "variants": {
+            "minItems": 2,
+            "maxItems": 4,
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "weight": {
+                  "description": "Whole-percent share of visitors; all add up to 100. Left out on every version: even split.",
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 99
+                },
+                "name": {
+                  "type": "string",
+                  "maxLength": 80
+                },
+                "subtitle": {
+                  "type": "string",
+                  "maxLength": 160
+                },
+                "description": {
+                  "type": "string",
+                  "maxLength": 4000
+                },
+                "locale": {
+                  "description": "BCP 47 language of this version's text, e.g. de.",
+                  "type": "string",
+                  "pattern": "^[a-z]{2,3}(-[A-Z]{2})?$"
+                },
+                "art": {
+                  "type": "object",
+                  "properties": {
+                    "keyArt": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                    },
+                    "capsuleWide": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                    },
+                    "capsuleTall": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9_-]{1,128}$"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "winner": {
+            "description": "stop: the winning version letter.",
+            "type": "string",
+            "pattern": "^[A-Da-d]$"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema"
+      },
+      "outputSchema": null,
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "oauth": true,
+      "source": "src/lib/mcp/hosted/grow-tools.ts"
+    },
+    {
+      "name": "summer_grow_members",
+      "title": null,
+      "description": "The people on the owner's games on Summer Games, the same as Studio > Grow > Organization > Members: list members and pending invites; invite someone by email as admin, developer or viewer (Summer emails them a join link); change a member's role; remove a member; withdraw an invite; leave a game. Summer Games checks every role, and changing who can act on a game may need the owner signed in to Studio: then the answer says so and gives the page. Change members only when the person asked, with the exact email or person they named.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "invite",
+              "set_role",
+              "remove",
+              "withdraw",
+              "leave"
+            ]
+          },
+          "game": {
+            "description": "Game id (summer_store_list_games) or its name; optional when the owner has one game.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "email": {
+            "description": "invite: the email address to invite.",
+            "type": "string",
+            "maxLength": 254,
+            "format": "email",
+            "pattern": "^(?!\\.)(?!.*\\.\\.)([A-Za-z0-9_'+\\-\\.]*)[A-Za-z0-9_+-]@([A-Za-z0-9][A-Za-z0-9\\-]*\\.)+[A-Za-z]{2,}$"
+          },
+          "role": {
+            "description": "invite, set_role: admin (everything but payouts and ownership), developer (edit and publish, no earnings) or viewer (read only).",
+            "type": "string",
+            "enum": [
+              "admin",
+              "developer",
+              "viewer"
+            ]
+          },
+          "member": {
+            "description": "set_role, remove: the member's user id, @handle or name (from list).",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "invitation": {
+            "description": "withdraw: the invite id or the invited email.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 254
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema"
+      },
+      "outputSchema": null,
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "oauth": true,
+      "source": "src/lib/mcp/hosted/grow-tools.ts"
+    },
+    {
+      "name": "summer_grow_prices",
+      "title": null,
+      "description": "The owner's game price on Summer Games, the same as Studio > Grow > Promotions > Prices by country: read the base price (US dollars), any discount and the prices set per country; set the base price; set one country's price (US cents; rounded to a whole dollar ending in .99 unless roundTo99 false); clear a country's price. In VAT and GST countries players see the price with tax. Prices lock while a price test runs. Summer Games may keep price changes for the owner signed in to Studio: then the answer says so and gives the page. Change only when the owner asked, with the exact amount.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "read",
+              "set_base",
+              "set_country",
+              "clear_country"
+            ]
+          },
+          "game": {
+            "description": "Game id (summer_store_list_games) or its name; optional when the owner has one game.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "country": {
+            "description": "set_country, clear_country: ISO code, e.g. DE.",
+            "type": "string",
+            "pattern": "^[A-Za-z]{2}$"
+          },
+          "cents": {
+            "description": "set_base, set_country: the price in US cents.",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 10000000
+          },
+          "roundTo99": {
+            "description": "set_country: round to a whole dollar ending in .99 (default true).",
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema"
+      },
+      "outputSchema": null,
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "oauth": true,
+      "source": "src/lib/mcp/hosted/grow-tools.ts"
+    },
+    {
+      "name": "summer_grow_applications",
+      "title": null,
+      "description": "The growth applications sent for one of the owner's games (from summer_grow_apply or the Grow forms): service, status, goals, budget and when, newest first. Read-only.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "game": {
+            "description": "Game id (summer_store_list_games) or its name; optional when the owner has one game.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          }
+        },
+        "$schema": "https://json-schema.org/draft/2020-12/schema"
+      },
+      "outputSchema": null,
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "openWorldHint": false
+      },
+      "oauth": true,
+      "source": "src/lib/mcp/hosted/grow-tools.ts"
+    },
+    {
+      "name": "summer_update_asset",
+      "title": null,
+      "description": "Change one of the person's own assets, as on its page in Studio: title, description, tags, and visibility (private: only them; team: their team workspace; public: listed in Summer's asset store for everyone). Only the fields given change. Make an asset public only when the person asked.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "assetId": {
+            "description": "The asset id (summer_list_my_assets, summer_search_assets).",
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 4000
+          },
+          "tags": {
+            "maxItems": 30,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 40
+            }
+          },
+          "visibility": {
+            "type": "string",
+            "enum": [
+              "private",
+              "team",
+              "public"
+            ]
+          }
+        },
+        "required": [
+          "assetId"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema"
+      },
+      "outputSchema": null,
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "oauth": true,
+      "source": "src/lib/mcp/hosted/asset-edit-tools.ts"
+    },
+    {
+      "name": "summer_delete_asset",
+      "title": null,
+      "description": "Delete one of the person's own assets for good, as Delete on its page in Studio. Its files are removed. Call only when the person asked to delete this exact asset, and pass confirm true. An asset used by a team or a shared project may be refused.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "assetId": {
+            "description": "The asset id (summer_list_my_assets, summer_search_assets).",
+            "type": "string",
+            "format": "uuid",
+            "pattern": "^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$"
+          },
+          "confirm": {
+            "description": "true: the person asked to delete this asset.",
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": [
+          "assetId",
+          "confirm"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema"
+      },
+      "outputSchema": null,
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": true,
+        "idempotentHint": true,
+        "openWorldHint": false
+      },
+      "oauth": true,
+      "source": "src/lib/mcp/hosted/asset-edit-tools.ts"
+    },
+    {
+      "name": "summer_team",
+      "title": null,
+      "description": "The signed-in person's teams in Summer Studio (shared workspaces: their members share assets and projects), the same as Studio > Team: list teams, or one team's members and pending invites; create a team; rename it; invite someone by email as admin or member (Summer emails them a join link, also returned as inviteUrl); revoke a pending invite. A personal workspace cannot be shared. Game members on Summer Games are separate: summer_grow_members. Change the team only when the person asked, with the exact email.",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "list",
+              "create",
+              "rename",
+              "invite",
+              "revoke"
+            ]
+          },
+          "workspace": {
+            "description": "The team's name or id; default: the person's only shared team.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "name": {
+            "description": "create, rename: the team name.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "email": {
+            "description": "invite: the email address; revoke: the invited email or invite id.",
+            "type": "string",
+            "minLength": 3,
+            "maxLength": 254
+          },
+          "role": {
+            "description": "invite: admin (can invite) or member (default).",
+            "type": "string",
+            "enum": [
+              "admin",
+              "member"
+            ]
+          }
+        },
+        "required": [
+          "action"
+        ],
+        "$schema": "https://json-schema.org/draft/2020-12/schema"
+      },
+      "outputSchema": null,
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "oauth": true,
+      "source": "src/lib/mcp/hosted/team-tools.ts"
     }
   ],
   "hostedPrompts": [
@@ -13793,6 +14670,11 @@
       "name": "store-listing",
       "title": "Store listing rules",
       "description": "The store page per flow (desktop, mobile): targets, title, tagline, descriptions, tags, and what to never write."
+    },
+    {
+      "name": "grow-analytics",
+      "title": "Read and analyse Grow",
+      "description": "How to read a creator's Summer Grow numbers (store page views, launches, play sessions, play time) and analyse them: compare windows, walk the funnel, flag drops, give one next step."
     },
     {
       "name": "store-art",
