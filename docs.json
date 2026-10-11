@@ -79,6 +79,7 @@
                   "publishing/store-art",
                   "publishing/generate-store-art",
                   "publishing/store-text",
+                  "publishing/release-readiness",
                   "publishing/upload-and-submit",
                   "publishing/owner-approval",
                   "publishing/analytics",
