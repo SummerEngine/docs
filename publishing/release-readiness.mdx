@@ -1,7 +1,7 @@
 ---
 title: "Release readiness checklist"
 sidebarTitle: "Release readiness"
-description: "Checks to run before you publish or promote a version of your Summer game, so players can actually play it: the server starts its server scene, online join works, progress is saved, and players can get back to the title. Each check comes from a real release that failed."
+description: "Checks to run before you publish or promote a version of your Summer game, so players can actually play it: the server starts its server scene, online join works, progress is saved, players can get back to the title, and your game was exported with a released Summer editor. Each check comes from a real release that failed."
 icon: "list-checks"
 ---
 
@@ -36,6 +36,9 @@ whenever that happens again.
 
 - [ ] **Your game doesn't hard-code its Game ID.** See
       [check 6](#6-your-game-doesnt-hard-code-its-game-id).
+- [ ] **You exported with a released Summer editor, and your scripts compile
+      on the Summer that players get.** See
+      [check 7](#7-export-with-a-released-summer-editor).
 
 ## The checks
 
@@ -142,6 +145,45 @@ fallback. Then join online with the released version (check 2). Local Play
 and a local run of `server.pck` don't run under a hosted identity, so they
 can't catch this.
 
+### 7. Export with a released Summer editor
+
+Use the released Summer editor from the
+[download page](https://summerengine.com/download), not a development build.
+After you update Summer, export again before you upload.
+
+Your export records which Summer made it, and players' apps run your game on
+the released Summer of that version. A development build can call itself a
+version that is already released while it has features that version lacks.
+Your scripts then use something that isn't there on players' devices. They
+fail to load, and the game opens to an empty window for every player. Summer
+doesn't compile your scripts when you upload, so the upload still passes.
+
+**Check it.** Read which Summer made your `.zip`:
+
+```sh
+unzip -p build/my-game.summer.zip summer-bundle.json
+```
+
+Under `"export"`, `summerVersion` must be a released Summer version, and
+`engineSha` must match the `engineSha` that Summer publishes for that version
+at `https://downloads.summer.games/engine-templates/<summerVersion>/manifest.json`
+(Summer 0.7.1 and later). If it differs, a development build made the export.
+If that address has nothing for your version, update Summer and export again.
+
+Then run your game on that released Summer and look for scripts that fail to
+load:
+
+```sh
+unzip -o build/my-game.summer.zip client.pck -d build/bundle
+<summer> --headless --verbose --main-pack build/bundle/client.pck --quit-after 600 2>&1 | grep -E 'SCRIPT ERROR|Parse Error|Failed to load script'
+```
+
+`<summer>` is the released Summer Engine executable of that version. The
+command must print nothing. Don't rely on the run failing: it finishes
+normally even when a script can't load. The run loads your main scene and
+autoloads; a script that loads only later in play is checked when you play
+to it.
+
 ## Troubleshooting
 
 ### Players can't join online
@@ -169,6 +211,20 @@ If checks 1 and 6 pass and joins still fail, ask on
 [Discord](https://discord.gg/summerengine) with your game's name and the time
 you tried.
 
+### Game opens to a blank window
+
+Your game opens to an empty or black window for every player, while it works
+in your editor. Running your `.zip` as in
+[check 7](#7-export-with-a-released-summer-editor) prints lines such as
+`Parse Error: Static function "…" not found` and
+`Failed to load script "res://…"`.
+
+**Most likely cause:** a development build of Summer exported the game, and
+your scripts use something the released version doesn't have. Re-export with
+the current Summer release from the
+[download page](https://summerengine.com/download), upload the new version
+and promote it. Run check 7 on the new `.zip` before you upload it.
+
 ## Ask your agent
 
 <Prompt description="**Check my game is ready to release.** Your agent runs every check on this page and tells you what fails.">
@@ -179,6 +235,9 @@ https://docs.summerengine.com/publishing/release-readiness.md.
   of it and run it with --main-pack and no scene, as the page shows. Tell me
   which scene it loads first.
 - Find every Summer.initialize call and tell me which Game ID it passes.
+- Read the export stamp in summer-bundle.json, tell me which Summer version
+  and engine made it, and whether that is a released Summer. Run client.pck
+  on that released Summer and show me any script that fails to load.
 - Go through every other check on the page and tell me pass, fail or "I can't
   check this, you need to" for each one.
 - Don't change anything until I've seen the list.
