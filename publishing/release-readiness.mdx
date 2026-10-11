@@ -1,0 +1,189 @@
+---
+title: "Release readiness checklist"
+sidebarTitle: "Release readiness"
+description: "Checks to run before you publish or promote a version of your Summer game, so players can actually play it: the server starts its server scene, online join works, progress is saved, and players can get back to the title. Each check comes from a real release that failed."
+icon: "list-checks"
+---
+
+Summer checks every upload: the platforms, the packs and the files they name.
+Those checks show that your export is well formed. They can't show that a
+player who presses **Play online** gets into a game. This page covers what
+the upload checks can't see.
+
+Each check is here because a real release failed without it. We add a check
+whenever that happens again.
+
+## Before every release
+
+### Games with a server
+
+- [ ] **Your server starts its server scene.** See
+      [check 1](#1-your-server-starts-its-server-scene).
+- [ ] **Online join works with the version you release.** See
+      [check 2](#2-join-online-with-the-version-you-release).
+
+### Games with online play
+
+- [ ] **Players can find online play** without changing a setting, or you
+      decided on purpose that they can't. See
+      [check 3](#3-players-can-find-online-play).
+- [ ] **Online progress is saved by your server**, not only on the player's
+      device. See [check 4](#4-your-server-saves-online-progress).
+- [ ] **Players can get back to the title** from inside the game. See
+      [check 5](#5-players-can-get-back-to-the-title).
+
+### Every game that uses Summer
+
+- [ ] **Your game doesn't hard-code its Game ID.** See
+      [check 6](#6-your-game-doesnt-hard-code-its-game-id).
+
+## The checks
+
+Run the checks on the file you upload: your summer.games `.zip`. Export it
+as usual, in the editor (**Project → Export**, the **summer.games** preset) or
+with your agent, and take the server out of it:
+
+```sh
+unzip -o build/my-game.summer.zip server.pck -d build/bundle
+```
+
+A server pack you export on its own with your server preset is not the same
+file. It can pass a check that the uploaded `.zip` fails.
+
+### 1. Your server starts its server scene
+
+Summer starts your game's server with no scene named. The server pack's own
+main scene decides what runs. Your server preset carries the custom feature
+`summer_authority`, and `project.godot` sets that feature's main scene to
+your server scene:
+
+```ini title="project.godot"
+[application]
+
+run/main_scene="res://client/main.tscn"
+run/main_scene.summer_client="res://client/main.tscn"
+run/main_scene.summer_authority="res://authority/main.tscn"
+```
+
+```ini title="export_presets.cfg (your server preset)"
+name="Duel Authority"
+platform="Linux"
+dedicated_server=true
+custom_features="summer_authority"
+```
+
+If the preset is missing `summer_authority`, the server starts your
+**players'** main scene instead, usually the title screen. That scene never
+tells Summer the server is ready, so every online join fails.
+
+**Check it.** Start the server from your `.zip` the way Summer does, with no
+scene named:
+
+```sh
+<summer> --headless --verbose --main-pack build/bundle/server.pck
+```
+
+`<summer>` is the Summer Engine executable. Stop it after a few seconds and find the first `Completed load for: 'res://…tscn'` line. It
+must be your server scene, such as `res://authority/main.tscn`. If it shows
+your title or client scene, add `summer_authority` to the server preset's
+**Custom Features** and export again.
+
+Local Play always starts your server scene by name, so a game can work
+there and still fail this check.
+
+### 2. Join online with the version you release
+
+The check above runs on your computer. Players use a hosted server, so
+also test there: right after you promote a new version, open your game in a
+Summer Games app, join online and play until you're in the game. Do it
+before you tell players about the update. If the join fails, see
+[Players can't join online](#players-cant-join-online).
+
+### 3. Players can find online play
+
+A new player should reach online play without changing a setting. If online
+play is off by default, for example behind a grown-ups setting, make that a
+deliberate choice. Then join online yourself before every release, because
+no player will find it broken for you.
+
+### 4. Your server saves online progress
+
+In online play, your server saves each player's progress with
+[player progress](/build/player-progress) and loads it when they join.
+Progress kept only on the player's device is lost when they reinstall or
+switch device, and players can edit it. To test, play online, earn
+something, leave, then join from another device.
+
+### 5. Players can get back to the title
+
+Inside a game, players need a way back to the title screen, such as a pause
+menu or a **Leave** button, online and offline. Without one, the only way out
+is to close the app.
+
+### 6. Your game doesn't hard-code its Game ID
+
+Start Summer with no Game ID:
+
+```gdscript
+var result: SummerResult = await Summer.initialize().get_result_or_completed_signal()
+```
+
+Summer then takes your game's identity from wherever the game runs: the
+Summer Games app, your hosted server or Local Play. The exported `.zip` is
+portable, so its `summer.build.json` has no `gameId`. If your code reads
+`gameId` from that file and falls back to a made-up ID such as
+`"game.my-game"`, the hosted server refuses it with
+`game_identity_mismatch`. Your server then stops before it is ready, and
+players' online joins fail. The Summer Games app refuses it the same way.
+
+**Check it.** Search your project for `Summer.initialize`. Every call passes
+no ID, or an ID your game received from Summer, never a fixed string or a
+fallback. Then join online with the released version (check 2). Local Play
+and a local run of `server.pck` don't run under a hosted identity, so they
+can't catch this.
+
+## Troubleshooting
+
+### Players can't join online
+
+Every online join waits and then fails with `world_start_timeout`, while the
+game works in Local Play.
+
+**Most likely causes:**
+
+- **Your server pack starts the wrong scene.** Run
+  [check 1](#1-your-server-starts-its-server-scene). If it loads your title or
+  client scene, add `summer_authority` to your server preset's **Custom
+  Features**, export a new version, upload it and promote it.
+- **Your game passes a fixed Game ID.** Run
+  [check 6](#6-your-game-doesnt-hard-code-its-game-id). Call
+  `Summer.initialize()` with no ID, export a new version, upload it and
+  promote it.
+
+**An empty server log does not mean nothing ran.** A release server holds
+back what your game prints when it isn't attached to a terminal. Its output
+can look empty even while your title scene is running. Use check 1 on your
+own computer to see which scene starts.
+
+If checks 1 and 6 pass and joins still fail, ask on
+[Discord](https://discord.gg/summerengine) with your game's name and the time
+you tried.
+
+## Ask your agent
+
+<Prompt description="**Check my game is ready to release.** Your agent runs every check on this page and tells you what fails.">
+Check that my Summer game is ready to release. Follow
+https://docs.summerengine.com/publishing/release-readiness.md.
+
+- For a game with a server, export the summer.games .zip, take server.pck out
+  of it and run it with --main-pack and no scene, as the page shows. Tell me
+  which scene it loads first.
+- Find every Summer.initialize call and tell me which Game ID it passes.
+- Go through every other check on the page and tell me pass, fail or "I can't
+  check this, you need to" for each one.
+- Don't change anything until I've seen the list.
+</Prompt>
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)
