@@ -36,6 +36,8 @@ The local MCP waits for the browser on port 47615, 47616 or 47617. Close the pro
 | The export times out | The first export imports every asset. Raise `timeoutSeconds` (up to 7200). |
 | Textures look wrong on one platform | Turn on that platform's texture format in **Project Settings → Rendering → Textures**: ETC2/ASTC for iPhone, Android and Mac, S3TC/BPTC for Windows. |
 | Game opens to a blank window | Re-export with the current Summer release from the [download page](https://summerengine.com/download), not a development build, then upload and promote the new version. See [Game opens to a blank window](/publishing/release-readiness#game-opens-to-a-blank-window). |
+| Text shows as boxes on iPhone | Your game reads a font file that isn't in the pack and falls back to `SystemFont`. Add the file to the summer.games preset's non-resource filter, or import the font, then upload and promote a new version. See [Text shows as boxes on iPhone](/publishing/release-readiness#text-shows-as-boxes-on-iphone). |
+| The game could not start (iPhone or Android) | Your `.zip` comes from a Summer version line the app doesn't carry. Update Summer, export again, then upload and promote the new version. See [The game could not start](/publishing/release-readiness#the-game-could-not-start). |
 
 ## Upload
 
