@@ -1,7 +1,7 @@
 ---
 title: "Release readiness checklist"
 sidebarTitle: "Release readiness"
-description: "Checks to run before you publish or promote a version of your Summer game, so players can actually play it: the server starts its server scene, online join works, progress is saved, players can get back to the title, your game was exported with a released Summer editor, every file it reads is in the pack, and the Summer Games apps run its Summer version. Each check comes from a real release that failed."
+description: "Checks to run before you publish or promote a version of your Summer game, so players can actually play it: the server starts its server scene, online join works, progress is saved, players can get back to the title, your game was exported with a released Summer editor, every file it reads is in the pack, the Summer Games apps run its Summer version, and players keep playing while signed in. Each check comes from a real release that failed."
 icon: "list-checks"
 ---
 
@@ -44,6 +44,9 @@ whenever that happens again.
       [check 8](#8-every-file-your-game-reads-is-in-the-pack).
 - [ ] **You exported with the Summer version the Summer Games apps run.** See
       [check 9](#9-export-with-the-summer-version-the-apps-run).
+- [ ] **A signed-in player keeps playing for 3 minutes on each Summer Games
+      app, and stays signed in.** See
+      [check 10](#10-play-for-three-minutes-while-signed-in).
 
 ## The checks
 
@@ -278,6 +281,21 @@ new version line, for example from 0.6 to 0.7, update Summer, export your
 game again, upload it as a new version and promote it. Then open it on a
 phone, as in [check 2](#2-join-online-with-the-version-you-release).
 
+### 10. Play for three minutes while signed in
+
+While your game runs, it uses Summer services for the signed-in player, such
+as analytics, player progress and the store. A short test can end before the
+first of those calls. Play long enough to reach them.
+
+**Check it.** Sign in to a Summer Games app on a phone, open the version you
+release and play it for at least 3 minutes. Do something that sends one of
+your analytics events. The game must not close, and you must still be signed
+in afterwards. Do this in each Summer Games app your game targets.
+
+If the game closes or you are signed out, the fault is Summer's, not your
+game's. See
+[The game closes after about a minute](#the-game-closes-after-about-a-minute).
+
 ## Troubleshooting
 
 ### Players can't join online
@@ -338,6 +356,17 @@ export again, upload the new version and promote it. If the versions match
 and it still fails, ask on [Discord](https://discord.gg/summerengine) with
 your game's name and the time you tried.
 
+### The game closes after about a minute
+
+A Summer Games app closes your game after 20 to 60 seconds of play with
+**Play paused** or **That link can't be opened**, and the player finds they
+are signed out.
+
+This happens when a Summer service refuses the player's sign-in while your
+game plays. It is Summer's fault, and you don't need to change your game.
+Report it on [Discord](https://discord.gg/summerengine) with your game's
+name, the app and the time it happened.
+
 ## Ask your agent
 
 <Prompt description="**Check my game is ready to release.** Your agent runs every check on this page and tells you what fails.">
@@ -355,6 +384,8 @@ https://docs.summerengine.com/publishing/release-readiness.md.
   of those files are missing from it. Tell me if any text uses SystemFont.
 - Tell me whether the summerVersion in summer-bundle.json is on the same
   version line as the current Summer release.
+- Remind me to play the release for 3 minutes in each Summer Games app while
+  signed in (check 10); you can't do that one for me.
 - Go through every other check on the page and tell me pass, fail or "I can't
   check this, you need to" for each one.
 - Don't change anything until I've seen the list.
