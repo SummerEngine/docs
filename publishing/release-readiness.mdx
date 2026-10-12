@@ -1,7 +1,7 @@
 ---
 title: "Release readiness checklist"
 sidebarTitle: "Release readiness"
-description: "Checks to run before you publish or promote a version of your Summer game, so players can actually play it: the server starts its server scene, online join works, progress is saved, players can get back to the title, and your game was exported with a released Summer editor. Each check comes from a real release that failed."
+description: "Checks to run before you publish or promote a version of your Summer game, so players can actually play it: the server starts its server scene, online join works, progress is saved, players can get back to the title, your game was exported with a released Summer editor, every file it reads is in the pack, and the Summer Games apps run its Summer version. Each check comes from a real release that failed."
 icon: "list-checks"
 ---
 
@@ -39,6 +39,11 @@ whenever that happens again.
 - [ ] **You exported with a released Summer editor, and your scripts compile
       on the Summer that players get.** See
       [check 7](#7-export-with-a-released-summer-editor).
+- [ ] **Every file your game reads at run time is in the pack, and text shows
+      as letters on iPhone.** See
+      [check 8](#8-every-file-your-game-reads-is-in-the-pack).
+- [ ] **You exported with the Summer version the Summer Games apps run.** See
+      [check 9](#9-export-with-the-summer-version-the-apps-run).
 
 ## The checks
 
@@ -184,6 +189,95 @@ normally even when a script can't load. The run loads your main scene and
 autoloads; a script that loads only later in play is checked when you play
 to it.
 
+### 8. Every file your game reads is in the pack
+
+Summer packs your scenes, scripts and imported assets for you. A file that
+your game opens itself at run time, with `FileAccess` or another call that
+reads a `res://` path, is different. If Summer doesn't import the file, for
+example a `.bin`, `.json` or `.txt`, it goes into the pack only when your
+export preset's **Resources → Filters to export non-resource files/folders**
+matches it. Each preset has its own filters, so set them on the
+**summer.games** preset that makes your `.zip`. A file the filters leave out
+is not an export error: your game just can't find it on players' devices.
+
+Fonts are where this shows first. On iPhone your game can't use the
+phone's own fonts, so a `SystemFont` draws every letter as a box there. On
+your Mac or PC the same game looks fine, because `SystemFont` finds a font
+on your computer.
+
+**Check it.**
+
+1. Search your scripts for files they read by path:
+
+   ```sh
+   grep -rn -E 'FileAccess\.|DirAccess\.|load_from_file|load_dynamic_font|ConfigFile' --include='*.gd' .
+   ```
+
+   Note every `res://` file or folder those lines read. Skip `user://`
+   paths; those are saves.
+2. List what is in your pack. Save this script outside your project, for
+   example as `list_pack.gd` in your home folder:
+
+   ```gdscript title="list_pack.gd"
+   extends SceneTree
+   # Prints one "PACK res://..." line per file in the pack.
+   func _init() -> void:
+       _walk("res://")
+       quit()
+
+   func _walk(dir: String) -> void:
+       var d := DirAccess.open(dir)
+       if d == null:
+           return
+       d.include_hidden = true
+       for f in d.get_files():
+           print("PACK ", dir.path_join(f))
+       for s in d.get_directories():
+           _walk(dir.path_join(s))
+   ```
+
+   Then run it on the `client.pck` from your `.zip`:
+
+   ```sh
+   unzip -o build/my-game.summer.zip client.pck -d build/bundle
+   <summer> --headless --main-pack build/bundle/client.pck --script ~/list_pack.gd | grep '^PACK '
+   ```
+
+   Every file from step 1 must have its own `PACK res://…` line. If one is
+   missing, add it to the summer.games preset's non-resource filter, for
+   example `fonts/*.bin`, export again and check again.
+3. Don't use `SystemFont` for text that phone players see, not even as a
+   fallback. Put the font in your project: import a `.ttf` or `.otf`, or read
+   its bytes from a file that step 2 shows is in the pack. If you need a
+   fallback, use `ThemeDB.fallback_font`, Summer's built-in font.
+4. Right after you promote the version, open your game on an iPhone in the
+   Summer Games app and look at the title screen and one menu. Every label
+   must show letters, not boxes. Your editor, Local Play and the desktop app
+   can't show this problem.
+
+### 9. Export with the Summer version the apps run
+
+The Summer Games apps for iPhone and Android carry Summer inside them. An
+app runs a game exported with the same Summer version line, the first two
+numbers such as `0.7`, at the app's patch number or lower. A game exported
+with `0.6.x` doesn't start in an app that carries `0.7`, and players see
+**The game could not start**. The desktop app gets the right Summer for each
+game, so your game can work on Mac and Windows and still fail on every
+phone.
+
+**Check it.** Read which Summer made your `.zip`:
+
+```sh
+unzip -p build/my-game.summer.zip summer-bundle.json
+```
+
+Under `"export"`, the first two numbers of `summerVersion` must match the
+current Summer release on the
+[download page](https://summerengine.com/download). When Summer moves to a
+new version line, for example from 0.6 to 0.7, update Summer, export your
+game again, upload it as a new version and promote it. Then open it on a
+phone, as in [check 2](#2-join-online-with-the-version-you-release).
+
 ## Troubleshooting
 
 ### Players can't join online
@@ -225,6 +319,25 @@ the current Summer release from the
 [download page](https://summerengine.com/download), upload the new version
 and promote it. Run check 7 on the new `.zip` before you upload it.
 
+### Text shows as boxes on iPhone
+
+Every letter in your game draws as an empty box on iPhone, while it looks
+right on your computer. Your game most likely reads a font file that isn't
+in your pack and falls back to `SystemFont`. Run
+[check 8](#8-every-file-your-game-reads-is-in-the-pack): add the font to the
+summer.games preset's non-resource filter, or import it, export a new
+version, upload it and promote it.
+
+### The game could not start
+
+The Summer Games app on iPhone or Android says **The game could not start**,
+while the game works on desktop. Your `.zip` most likely comes from a Summer
+version line the app doesn't carry. Run
+[check 9](#9-export-with-the-summer-version-the-apps-run): update Summer,
+export again, upload the new version and promote it. If the versions match
+and it still fails, ask on [Discord](https://discord.gg/summerengine) with
+your game's name and the time you tried.
+
 ## Ask your agent
 
 <Prompt description="**Check my game is ready to release.** Your agent runs every check on this page and tells you what fails.">
@@ -238,6 +351,10 @@ https://docs.summerengine.com/publishing/release-readiness.md.
 - Read the export stamp in summer-bundle.json, tell me which Summer version
   and engine made it, and whether that is a released Summer. Run client.pck
   on that released Summer and show me any script that fails to load.
+- Find every file my scripts read by path, list client.pck and tell me which
+  of those files are missing from it. Tell me if any text uses SystemFont.
+- Tell me whether the summerVersion in summer-bundle.json is on the same
+  version line as the current Summer release.
 - Go through every other check on the page and tell me pass, fail or "I can't
   check this, you need to" for each one.
 - Don't change anything until I've seen the list.
