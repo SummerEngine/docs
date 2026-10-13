@@ -16,7 +16,7 @@ Load the SDK and the UI kit as ES modules, with root paths, from the app's own h
 <script type="module" src="/summer-ui/v1/ui.js"></script>
 ```
 
-A classic `<script>` tag or another path does not work. An app only runs inside Summer Studio: publish it and open it at `/studio/apps/<appId>`. Opening `index.html` on its own never connects, because the app runs in a sandboxed frame (no cookies, no storage, no network) and waits for Studio.
+Use `type="module"` (a classic script still works but warns); other paths do not work. An app only runs inside Summer Studio: publish it and open it at `/studio/apps/<appId>`. Opening `index.html` on its own never connects, because the app runs in a sandboxed frame (no cookies, no storage, no network) and waits for Studio.
 
 Every method returns a promise and runs as **the person using the app**: their team, their assets, their credits. A call the [manifest](/apps/manifest) does not allow rejects with `permission_missing`. Errors are `SummerError` with a `code` and a `message`.
 
