@@ -39,6 +39,7 @@ Every publish sends a manifest. Summer writes it into the app as `summer.app.jso
       }
     }
   ],
+  "surface": "both",
   "dock": { "preferred": "bottom" }
 }
 ```
@@ -52,6 +53,7 @@ Every publish sends a manifest. Summer writes it into the app as `summer.app.jso
 | `collections` | no | Up to 50 shared data collections, keyed by name (lowercase `a-z 0-9 _ . -`): `description` and `fields` (up to 50) with `type` (`string`, `number`, `integer`, `boolean`, `object`, `array`, `any`), `description`, `required`. Agents read it to know a record's shape; writes are not rejected for it. |
 | `agentEvents` | no | Up to 50 event names (`a-z 0-9 _ . -`) the app sends with `summer.agent.send`. |
 | `agentTools` | no | Up to 20 tools: `name` (`a-z 0-9 _`), `description`, `input` (JSON Schema, up to 8 KB). |
+| `surface` | no | `page` (the Studio app page, default), `dock` (an editor dock) or `both`. A dock layout must work from 320 px wide; docked apps get selection and scene events. |
 | `dock` | no | `{ "preferred": "left" \| "right" \| "bottom" }` for the editor. |
 | `plugin` | no | `{ "name": "<plugin>" }`: the app may also write `res://addons/<plugin>/`. |
 

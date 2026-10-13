@@ -9,6 +9,18 @@ icon: "hammer"
 **Draft, not published.** TODO: run this walkthrough end to end on production with Claude Code and the `summer-engine` MCP before publishing. Update every step to what actually happens (tool names, the Studio notice, timings).
 </Warning>
 
+## First: does Summer already do it?
+
+An app is something your team has to keep. Your agent checks first whether Summer already does the job: Studio features (the asset library with collections and groups, Pick one and sound choices, Grow dashboards, Team) and the Summer MCP tools. If Summer does it, the agent uses that and tells you where it is. It builds an app only when the need is real and missing, or as a Scratch throwaway it calls throwaway. What is missing, it reports to Summer with `summer_app_report_gap`, so Summer can build it for everyone.
+
+| You ask | Your agent |
+|---|---|
+| "Let me pick from these 12 sword sounds" | Uses Pick one, or puts the sounds in a library collection. No app. |
+| "Group our assets into a moodboard for the forest level" | Uses the asset library's collections and groups. No app. |
+| "A weapon balance table that writes res://data/weapons.json" | Builds an app: nothing in Summer edits game data with your balance rules. |
+
+## Before you start
+
 You need:
 
 - A Summer account, signed in to Summer Studio in your browser or in Summer Engine.
