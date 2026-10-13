@@ -1,0 +1,26 @@
+---
+title: "Summer Apps security"
+sidebarTitle: "Security"
+description: "What a Summer App can and cannot do: a separate sandboxed site, no cookies or network, declared permissions, calls that run as the person, engine limits, spend caps and switches."
+icon: "shield"
+---
+
+<Warning>
+**Draft, not published.** TODO: confirm each control on production after the live test (frame headers, cookie isolation, non-member access, spend cap).
+</Warning>
+
+Agents write app code, so Summer does not trust it. Safety comes from how apps run, not from pop-ups.
+
+| Risk | What Summer does |
+|---|---|
+| An app tries to act as you on summerengine.com | App code is served only from `apps.summerengine.app`, a different site, inside a sandbox with no cookies, no storage and no access to Summer's pages. It can only ask the Studio page that hosts it, over one private channel. |
+| An app sends your data somewhere | Apps have no network access. A team admin can allow specific domains for their team's apps. |
+| An app does more than it says | Every call is checked against the permissions in its [manifest](/apps/manifest), twice: in Studio and on Summer's servers. |
+| An app reads another team's data | Every call runs as the person using the app, with their team membership. People outside the team get "not found". |
+| An app damages your project | Only an allowlist of editor operations, only declared files, no scripts or shell, no deletes. Enforced by Summer and inside Summer Engine. |
+| An app spends your credits | Paid calls are charged to the person using the app, shown in the app's cost meter, and capped per app and day ($50 by default for members; admins can change it). |
+| A bad app is shared in a team | Apps are shared only inside a team. Owners and admins can turn off one app or all apps for the team. |
+| Someone frames an app elsewhere | App pages can only be shown inside Summer Studio. |
+| An app's files are changed | Every published version is immutable, and every file is checked against its recorded hash when it is served. |
+
+Buttons inside an app that delete, publish, pay or send are pressed only by a person, never by an agent through `summer_app_page`.

@@ -1,0 +1,65 @@
+---
+title: "Summer Apps design kit"
+sidebarTitle: "Design kit"
+description: "The Summer UI kit for apps: tokens, Geist, summer-* components that follow Studio light and dark, the layout format, and the rules that make an agent-built tool look crafted."
+icon: "palette"
+---
+
+<Warning>
+**Draft, not published.** TODO: add screenshots of a real app in light and dark after the live test, and check the component list against the shipped `/summer-ui/v1/ui.js`.
+</Warning>
+
+Apps should look like Summer: calm, precise studio instruments around colourful game content. The kit and the `summer-apps-design` skill carry the rules, so agents get them right without being told.
+
+## Load the kit
+
+```html
+<script type="module" src="/summer-ui/v1/ui.js"></script>
+```
+
+It adds the Summer design tokens (CSS variables `--se-*`), the Geist font and every `<summer-*>` component, and follows Studio's light or dark theme.
+
+## Components
+
+| Need | Component |
+|---|---|
+| Key numbers | `summer-stat` |
+| Records | `summer-table` (`columns`, `rows`, `sortable`) |
+| Trends and comparisons | `summer-chart` (`kind` line, bar, area or pie) |
+| Sound | `summer-audio` (our player and waveform, never the browser's) |
+| Pick one version | `summer-choice-grid` |
+| Media | `summer-image`, `summer-video`, `summer-model-viewer` |
+| Inputs | `summer-select`, `summer-slider`, `summer-toggle`, `summer-text-input`, `summer-button` |
+| Layout | `summer-stack`, `summer-grid`, `summer-tabs`, `summer-card`, `summer-heading`, `summer-markdown` |
+| People | `summer-avatar-stack` |
+| States | `summer-empty-state`; `summerUI.toast(text)` for a finished action |
+
+## The rules in short
+
+- One line says what the tool does and where its data goes. One primary button finishes the task.
+- Tokens only: no hex colours. Geist only; weights 400, 500, 600; numbers tabular and right-aligned.
+- No frame around the whole app, no cards inside cards, no badge on every row, no native audio, video, select or range controls.
+- Design loading (skeletons), empty and error states.
+- When a teammate or agent changes something, flash that row briefly instead of showing a toast.
+- Check light and dark, at phone and desktop widths.
+
+The full rules are in the `summer-apps-design` skill and in `summer_app_guide` (section `design`).
+
+## Layout apps
+
+For a quick decision UI, an agent can publish a **layout** instead of code: one JSON object of kit nodes that Summer draws inside the sandbox. No code runs.
+
+```json
+{
+  "version": 1,
+  "title": "Sword swing: pick a sound",
+  "root": { "type": "stack", "props": { "gap": "md" }, "children": [
+    { "type": "choice-group", "id": "pick", "props": { "label": "Versions", "items": [
+      { "id": "a", "label": "Version A", "assetId": "<asset id>" },
+      { "id": "b", "label": "Version B", "assetId": "<asset id>" } ] } },
+    { "type": "button", "id": "use", "props": { "label": "Use this one", "variant": "primary", "action": { "type": "send", "name": "sound.picked" } } }
+  ] }
+}
+```
+
+Node types: stack, grid, tabs, card, form, heading, text, stat, table, chart, image, audio, video, model3d, asset, choice-group, button, slider, select, toggle, text-input. Buttons can send an event to the agent, open a Studio page, or generate (metered). `summer_app_guide` (section `layout`) has every prop.

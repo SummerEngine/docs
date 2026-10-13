@@ -1,0 +1,81 @@
+---
+title: "Agents and Summer Apps"
+sidebarTitle: "Agents and apps"
+description: "Summer Apps are built for agents: an app's shared data is its API, apps can give agents new tools, and every app is built and changed through the summer_app MCP tools."
+icon: "bot"
+---
+
+<Warning>
+**Draft, not published.** TODO: verify each tool below from Claude Code against production (hosted MCP and the npm package) before publishing, and check `summer_app_dock` on a Summer Engine release with app docks.
+</Warning>
+
+Everything a person sees in a Summer App, an agent can read and use.
+
+## Data is the API
+
+An app keeps its shared data in **collections** of JSON records. Your agent reads and writes them with `summer_app_data`, with no app open. Every write is a revisioned change, so everyone with the app open sees it live.
+
+Read:
+
+```json
+{ "appId": "<app id>", "collection": "items" }
+```
+
+Write (one revision, applied in order):
+
+```json
+{
+  "appId": "<app id>",
+  "ops": [
+    { "op": "patch", "collection": "items", "recordId": "bow", "patch": { "damage": 36 } },
+    { "op": "put", "collection": "items", "recordId": "axe", "data": { "name": "Axe", "damage": 50, "speed": 0.8 } },
+    { "op": "remove", "collection": "items", "recordId": "old-sword" }
+  ]
+}
+```
+
+`patch` merges keys (`null` removes one). Add `"ifRevision": <n>` to an op to apply it only if the record has not changed since you read it (`0`: only if it does not exist yet).
+
+## Agent tools
+
+An app can expose logic to agents, for example a balance formula. It declares the tools in its [manifest](/apps/manifest) (`agentTools`) and handles them in its code:
+
+```js
+summer.agent.tool("nerf_item", async ({ id, percent }) => {
+  const record = await summer.data.collection("items").get(id);
+  const damage = Math.round(record.data.damage * (1 - percent / 100));
+  await summer.data.collection("items").patch(id, { damage }, { ifRevision: record.revision });
+  return { id, damage };
+});
+```
+
+Your agent lists them with `summer_app_tools` and runs one with `summer_app_call`. The call runs inside the app open in your Studio tab or editor dock, with your rights, and waits up to 60 seconds. If the app is not open, the answer is `app_not_open`: use `summer_app_data`, or open the app.
+
+Use data for plain reads and edits. Use a tool for logic that lives in the app.
+
+## Events: the app talks back
+
+An app sends events to your agent with `summer.agent.send(name, payload)`, for example when you press "Write to game". Your agent waits for them with `summer_app_events` (up to 50 seconds per call). The same stream carries errors in the app and feedback from your team.
+
+## The MCP tools
+
+The same tools are on the hosted Summer Engine MCP and in the `summer-engine` npm package.
+
+| Tool | Does |
+|---|---|
+| `summer_app_guide` | The build guide: SDK, manifest, UI kit, layout format, design rules, worked examples. Read it first. |
+| `summer_app_list` | Your workspaces' apps. |
+| `summer_app_create` | A new scratch app; your Studio tab opens it. |
+| `summer_app_publish` | A new version from files, a local folder (npm package) or a layout, plus the manifest. |
+| `summer_app_get` | An app's manifest, current files and data summary. |
+| `summer_app_events` | Waits for what the app sends, errors, feedback and tool calls. |
+| `summer_app_page` | Reads or fills the fields and presses the buttons an open app declared. Buttons that delete, publish, pay or send are pressed only by you. |
+| `summer_app_data` | Reads or writes the app's shared data. |
+| `summer_app_tools` | The app's agent tools. |
+| `summer_app_call` | Runs an agent tool in the open app. |
+| `summer_app_dock` | Docks an app in the Summer Engine editor (npm package; see [Engine and docks](/apps/engine-and-docks)). |
+| `summer_app_report_gap` | Tells Summer about a capability an app needed and the SDK lacks. |
+
+## Skills
+
+Two skills come with the Summer skill library: `summer-apps` (when to build an app, Layout or code, the build loop, data, tools and events) and `summer-apps-design` (how an app must look). Your agent loads them when you ask for a tool.

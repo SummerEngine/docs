@@ -149,6 +149,19 @@
             ]
           },
           {
+            "group": "Summer Apps",
+            "pages": [
+              "apps/overview",
+              "apps/build-your-first-app",
+              "apps/agents",
+              "apps/sdk",
+              "apps/manifest",
+              "apps/design-kit",
+              "apps/engine-and-docks",
+              "apps/security"
+            ]
+          },
+          {
             "group": "Other Engine Migration",
             "pages": [
               "quickstarts/unity-migration",

@@ -1,0 +1,37 @@
+---
+title: "Summer Apps, Summer Engine and docks"
+sidebarTitle: "Engine and docks"
+description: "How a Summer App reads and changes your open project in Summer Engine, which operations it may use, and how to dock an app next to your scene."
+icon: "plug"
+---
+
+<Warning>
+**Draft, not published.** The engine side ships with a Summer Engine release that is not out yet. TODO: verify on that release: engine calls from an app in the Studio tab and in a browser, docking with `summer_app_dock`, and a plugin message round trip.
+</Warning>
+
+## How an app reaches your engine
+
+- **Inside Summer Engine** (the Studio tab or a dock), engine calls go straight to your open project.
+- **In a browser**, they reach your running Summer Engine through Summer when your desktop app is online and signed in. Otherwise the call fails with `engine_offline` and the app shows "Open in Summer Engine".
+
+An app needs `engine:read` or `engine:write` in its [manifest](/apps/manifest), and it may read and write only the files it declares in `engineFiles` (plus `res://addons/<plugin>/` when it declares a `plugin`).
+
+## What an app may do
+
+Allowed operations: add, set, remove, move, reparent and replace nodes; instantiate scenes; set resource properties; connect signals; open and save scenes; undo; import from a URL; grep and search files; viewport, game, world and scene snapshots; play and stop; select nodes; navigate the editor.
+
+Never allowed from an app: running scripts or shell commands, deleting or moving files, writing files outside the declared paths, editor-window screenshots, or writing script source into a scene. These rules are enforced by Summer and again inside the engine.
+
+## Docks
+
+Any app can be docked as an editor panel (left, right or bottom). Docks stay in your editor layout per project. Ask your agent, or use the npm tool:
+
+```json
+{ "action": "open", "appId": "<app id>", "slot": "bottom" }
+```
+
+`summer_app_dock` also closes a dock (`"action": "close"`) and lists docks (`"action": "list"`). On engine builds without app docks it answers `engine_lacks_op`; open the app in the Studio tab instead.
+
+## Plugins
+
+An agent can build an editor plugin (`res://addons/<name>/`) together with an app; the plugin and the app message each other through the engine (`summer.engine.plugin.send` and `onMessage` in the app). TODO: document the plugin side (`SummerApps.send`, `message_received`, `summer_app_id` in `plugin.cfg`) once verified on the engine release.

@@ -1,0 +1,77 @@
+---
+title: "Summer App manifest"
+sidebarTitle: "Manifest"
+description: "summer.app.json: an app's name, purpose, permissions, engine files, agent events, agent tools, dock and plugin, sent with every publish."
+icon: "file-json"
+---
+
+<Warning>
+**Draft, not published.** TODO: confirm the limits and error messages against production after the live test.
+</Warning>
+
+Every publish sends a manifest. Summer writes it into the app as `summer.app.json`. Unknown keys and unknown permissions are refused, and the error says what to fix.
+
+```json
+{
+  "name": "Loot table",
+  "purpose": "Balance item stats and write them to the game data file",
+  "permissions": ["data", "engine:read", "engine:write"],
+  "engineFiles": ["res://data/items.json"],
+  "agentEvents": ["items.written"],
+  "agentTools": [
+    {
+      "name": "nerf_item",
+      "description": "Lower one item's damage by a percent",
+      "input": {
+        "type": "object",
+        "properties": { "id": { "type": "string" }, "percent": { "type": "number" } },
+        "required": ["id", "percent"]
+      }
+    }
+  ],
+  "dock": { "preferred": "bottom" }
+}
+```
+
+| Key | Required | Rules |
+|---|---|---|
+| `name` | yes | 1-80 characters. |
+| `purpose` | no | Up to 280 characters: what the tool does and where its data goes. |
+| `permissions` | no | From the list below. Only what the app uses. |
+| `engineFiles` | no | Up to 50 `res://` paths the app may read and write. |
+| `agentEvents` | no | Up to 50 event names (`a-z 0-9 _ . -`) the app sends with `summer.agent.send`. |
+| `agentTools` | no | Up to 32 tools: `name` (`a-z 0-9 _`), `description`, `input` (JSON Schema, up to 8 KB). |
+| `dock` | no | `{ "preferred": "left" \| "right" \| "bottom" }` for the editor. |
+| `plugin` | no | `{ "name": "<plugin>" }`: the app may also write `res://addons/<plugin>/`. |
+
+## Permissions
+
+People see them on the app page as "This app can". Nothing asks them to confirm each one.
+
+| Permission | Allows |
+|---|---|
+| `data` | Save shared data for your team |
+| `assets:read` | See your team's assets |
+| `assets:write` | Upload and save assets |
+| `generate` | Generate images, sounds, music, voices, models and video (uses credits) |
+| `ai` | Ask Summer AI (uses credits) |
+| `projects:read` | See your projects |
+| `team:read` | See who is on your team |
+| `grow:read` | See your game analytics |
+| `engine:read` | Read your open project in Summer Engine |
+| `engine:write` | Change your open project in Summer Engine |
+| `choices` | See and pick from your sound choice sets |
+
+`engine:write` includes `engine:read`; `assets:write` includes `assets:read`.
+
+## Bundle limits
+
+| Limit | Value |
+|---|---|
+| Whole app | 10 MB |
+| Files | 300 |
+| One file | 5 MB |
+| Publishes | 30 per app per minute |
+| File types | html, js, mjs, css, json, txt, md, svg, png, jpg, gif, webp, avif, ico, woff, woff2, ttf, otf, mp3, ogg, wav, m4a, mp4, webm, glb, gltf |
+
+A code app needs `index.html` at its root.
