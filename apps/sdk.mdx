@@ -16,7 +16,7 @@ Load the SDK and the UI kit as ES modules, with root paths, from the app's own h
 <script type="module" src="/summer-ui/v1/ui.js"></script>
 ```
 
-Use `type="module"` (a classic script still works but warns); other paths do not work. An app only runs inside Summer Studio: publish it and open it at `/studio/apps/<appId>`. Opening `index.html` on its own never connects, because the app runs in a sandboxed frame (no cookies, no storage, no network) and waits for Studio.
+Use `type="module"` (a classic script still works but warns); other paths do not work. An app only runs inside Summer Studio. To preview one, publish it to Scratch and open it at `/studio/apps/<appId>`; there is no offline host. Opening `index.html` on its own never connects, because the app runs in a sandboxed frame (`allow-scripts allow-forms allow-popups allow-modals allow-downloads`, never `allow-same-origin`: no cookies, no storage, no network) and waits for Studio.
 
 Every method returns a promise and runs as **the person using the app**: their team, their assets, their credits. A call the [manifest](/apps/manifest) does not allow rejects with `permission_missing`. Errors are `SummerError` with a `code` and a `message`.
 
@@ -29,12 +29,12 @@ await summer.ready; // the Studio host connected
 | Call | Does |
 |---|---|
 | `summer.app.info({ params })` | The app, its version and manifest, and the launch params from the app page URL. |
-| `summer.app.viewer()` | Who is using the app: name, role, today's spend through the app, their daily cap. |
+| `summer.app.viewer()` | Who is using the app: name, role, today's spend through the app, their daily cap. `(await summer.ready).viewer` has the same `userId` and name; use that for "You". |
 | `summer.app.setTitle(title)` | The title in the app page's top bar. |
 | `summer.app.notify(text)` | A notice in Studio. |
 | `summer.app.needsYou(count)` | The "needs you" badge on the Apps row (0 clears it). |
 | `summer.app.open(path)` | Moves Studio to a Studio page (`/studio/...` only). |
-| `summer.app.theme()`, `summer.app.onTheme(fn)` | Studio's light or dark theme. |
+| `summer.app.theme()`, `summer.app.onTheme(fn)` | Studio's light or dark theme. The kit applies it by itself (`html.dark`); apps never toggle it. Use these only for your own drawing, such as a canvas. |
 | `summer.app.onSnapshot(() => state)` | State to keep when Studio moves an idle app to a fresh frame (every few minutes). The new frame reads it from `(await summer.ready).restored`. Up to 256 KB. Shared data needs nothing. |
 | `summer.app.busy(on)` | Wrap Web Audio playback in `busy(true)` / `busy(false)` so the frame is not moved mid-sound. `<audio>` and `<video>` count on their own. |
 
@@ -45,7 +45,7 @@ const items = summer.data.collection("items");
 await items.put("bow", { name: "Bow", damage: 40, speed: 1.2 });
 await items.patch("bow", { damage: 36 }, { ifRevision: 4 });
 const { records, next } = await items.list({ limit: 200 });
-const bow = await items.get("bow");      // { data, revision, actor, updatedAt } or null
+const bow = await items.get("bow");      // { data, revision, actor, createdBy, updatedAt } or null
 await items.remove("bow");
 const stop = items.subscribe((change) => render()); // live edits from the team and agents
 ```
@@ -55,11 +55,11 @@ There is no `summer.data.list(name)`: always go through `summer.data.collection(
 | Call | Returns |
 |---|---|
 | `list({ limit, after })` | `{ revision, records, next, collections }`; pass `next` as `after` for the next page |
-| `get(id)` | a record `{ collection, recordId, data, revision, actor, updatedAt, deleted }`, or `null` (also for a removed record) |
+| `get(id)` | a record `{ collection, recordId, data, revision, actor, createdBy, createdAt, updatedAt, deleted }`, or `null` (also for a removed record) |
 | `put`, `patch`, `remove` | `{ revision, operation, records, replayed }` |
 | `subscribe(fn)` | a stop function; `fn` gets `{ revision, actor, ops }`, or `{ revision, reset: true }` (then list again) |
 
-`list()` never returns removed records. `actor` is `{ userId, kind: "person" | "agent", agent?, via? }`. Writes an agent made with `summer_app_data`, and writes your code made while running an agent tool for `summer_app_call` (`via: "agent-tool"`), have `kind: "agent"`, so your app can mark agent-made rows. `userId` is the same id as `app.viewer().userId` and `(await summer.ready).viewer.userId`.
+`list()` never returns removed records. `actor` is the last writer: `{ userId, kind: "person" | "agent" | "seed", agent?, via? }`. `createdBy` has the same shape and is who created the record; later edits do not change it, so show "by agent" from `createdBy.kind`. `kind: "seed"` is starter data an agent wrote for the team; show no author for it. Writes an agent made with `summer_app_data`, and writes your code made while running an agent tool for `summer_app_call` (`via: "agent-tool"`), have `kind: "agent"`, so your app can mark agent-made rows. `userId` is the same id as `app.viewer().userId` and `(await summer.ready).viewer.userId`.
 
 Records are JSON up to 64 KB, 10,000 per collection, 50 collections per app. `summer.data.commands({ requestId, baseRevision, ops })` applies up to 100 changes in one revision.
 

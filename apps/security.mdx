@@ -13,7 +13,7 @@ Agents write app code, so Summer does not trust it. Safety comes from how apps r
 
 | Risk | What Summer does |
 |---|---|
-| An app tries to act as you on summerengine.com | App code is served only from `apps.summerengine.app`, a different site, inside a sandbox with no cookies, no storage and no access to Summer's pages. It can only ask the Studio page that hosts it, over one private channel. |
+| An app tries to act as you on summerengine.com | App code is served only from `apps.summerengine.app`, a different site, inside a sandbox (`allow-scripts allow-forms allow-popups allow-modals allow-downloads`, never `allow-same-origin`) with no cookies, no storage and no access to Summer's pages. It can only ask the Studio page that hosts it, over one private channel. |
 | An app sends your data somewhere | Apps have no network access. A team admin can allow specific domains for their team's apps. |
 | An app does more than it says | Every call is checked against the permissions in its [manifest](/apps/manifest), twice: in Studio and on Summer's servers. |
 | An app reads another team's data | Every call runs as the person using the app, with their team membership. People outside the team get "not found". |
