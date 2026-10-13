@@ -118,7 +118,7 @@ See [Engine and docks](/apps/engine-and-docks).
 | `summer.team.members()` | `team:read` (names and roles, never emails) |
 | `summer.team.presence()` | none |
 | `summer.projects.list()`, `summer.projects.get(id)` | `projects:read` |
-| `summer.grow.portfolio()`, `summer.grow.game(id)`, `summer.grow.earnings()` | `grow:read` |
+| `summer.grow.portfolio({ range: 7 \| 28 \| 90 })` (totals and each game carry `previous`, the window before, for "+12% vs last 28 days"), `summer.grow.game(id)`, `summer.grow.earnings()` | `grow:read` |
 
 ## page (no permission)
 
