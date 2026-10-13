@@ -25,7 +25,7 @@ It adds the Summer design tokens (CSS variables `--se-*`), the Geist font and ev
 |---|---|
 | The page | `summer-page` (`heading`, `purpose`, header actions), then `summer-section`s |
 | Key numbers | `summer-stats` holding `summer-stat`s |
-| Records | `summer-table` (`columns`, `rows`, `sortable`, `clickable`); a status column gets `badges` (`{"draft":"quiet","review":"info","done":"ok"}`); columns take `width`, `minWidth` and `wrap` (text wraps by default); below 640 px the table stacks by itself |
+| Records | `summer-table` (`columns`, `rows`, `sortable`, `clickable`); a status column gets `badges` (`{"draft":"quiet","review":"info","done":"ok"}`); columns take `width` (`"narrow"`, `"wide"` or a size), `minWidth` and `wrap` (text wraps to two lines by default); below 640 px badge columns fold into the first cell, and rows stack only if they still do not fit |
 | Edit a record | `summer-dialog` holding a `summer-form`: `form.setValues(record)`, then `dialog.show()`; the form's `submit` event gives the values (numbers as numbers) |
 | An error | `summer-notice tone="error" text="..." action="Try again"`, and listen for its `action` event |
 | Trends and comparisons | `summer-chart` (`kind` line, bar, area or pie; `highlight` marks the bars that matter; whole-number data gets whole-number axes) |
