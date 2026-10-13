@@ -32,6 +32,8 @@ await summer.ready; // the Studio host connected
 | `summer.app.needsYou(count)` | The "needs you" badge on the Apps row (0 clears it). |
 | `summer.app.open(path)` | Moves Studio to a Studio page (`/studio/...` only). |
 | `summer.app.theme()`, `summer.app.onTheme(fn)` | Studio's light or dark theme. |
+| `summer.app.onSnapshot(() => state)` | State to keep when Studio moves an idle app to a fresh frame (every few minutes). The new frame reads it from `(await summer.ready).restored`. Up to 256 KB. Shared data needs nothing. |
+| `summer.app.busy(on)` | Wrap Web Audio playback in `busy(true)` / `busy(false)` so the frame is not moved mid-sound. `<audio>` and `<video>` count on their own. |
 
 ## data (`data`)
 
