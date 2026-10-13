@@ -53,6 +53,8 @@ summer.agent.tool("nerf_item", async ({ id, percent }) => {
 });
 ```
 
+The handler gets the input and a second argument `{ agent }`: the name of the agent that called. Data writes made while the handler runs are recorded with `actor.kind: "agent"` and `via: "agent-tool"`.
+
 Your agent lists them with `summer_app_tools` and runs one with `summer_app_call`. The call runs inside the app open in your Studio tab or editor dock, with your rights, and waits up to 60 seconds. If the app is not open, the answer is `app_not_open`: use `summer_app_data`, or open the app.
 
 Use data for plain reads and edits. Use a tool for logic that lives in the app.
