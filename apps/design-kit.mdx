@@ -23,8 +23,11 @@ It adds the Summer design tokens (CSS variables `--se-*`), the Geist font and ev
 
 | Need | Component |
 |---|---|
-| Key numbers | `summer-stat` |
-| Records | `summer-table` (`columns`, `rows`, `sortable`) |
+| The page | `summer-page` (`heading`, `purpose`, header actions), then `summer-section`s |
+| Key numbers | `summer-stats` holding `summer-stat`s |
+| Records | `summer-table` (`columns`, `rows`, `sortable`, `clickable`); a status column gets `badges` (`{"draft":"quiet","review":"info","done":"ok"}`); on a phone it stacks by itself |
+| Edit a record | `summer-dialog` holding a `summer-form`: `form.setValues(record)`, then `dialog.show()`; the form's `submit` event gives the values (numbers as numbers) |
+| An error | `summer-notice tone="error" text="..." action="Try again"`, and listen for its `action` event |
 | Trends and comparisons | `summer-chart` (`kind` line, bar, area or pie) |
 | Sound | `summer-audio` (our player and waveform, never the browser's) |
 | Pick one version | `summer-choice-grid` |
@@ -32,7 +35,7 @@ It adds the Summer design tokens (CSS variables `--se-*`), the Geist font and ev
 | Inputs | `summer-select`, `summer-slider`, `summer-toggle`, `summer-text-input`, `summer-button` |
 | Layout | `summer-stack`, `summer-grid`, `summer-tabs`, `summer-card`, `summer-heading`, `summer-markdown` |
 | People | `summer-avatar-stack` |
-| States | `summer-empty-state`; `summerUI.toast(text)` for a finished action |
+| States | `loading` on data components while fetching, `empty-text` on a table or `summer-empty-state`; `summerUI.toast(text)` for a finished action |
 
 ## The rules in short
 
