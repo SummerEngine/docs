@@ -9,11 +9,14 @@ icon: "code"
 **Draft, not published.** TODO: check every signature against the shipped `/summer-sdk/v1.js` and run each namespace once in a real app on production. `summer.agent.tool` and `summer.choices.*` were not yet in the client build when this was written.
 </Warning>
 
-Load the SDK as a module in your app:
+Load the SDK and the UI kit as ES modules, with root paths, from the app's own host (`apps.summerengine.app`):
 
 ```html
 <script type="module" src="/summer-sdk/v1.js"></script>
+<script type="module" src="/summer-ui/v1/ui.js"></script>
 ```
+
+A classic `<script>` tag or another path does not work.
 
 Every method returns a promise and runs as **the person using the app**: their team, their assets, their credits. A call the [manifest](/apps/manifest) does not allow rejects with `permission_missing`. Errors are `SummerError` with a `code` and a `message`.
 
@@ -46,6 +49,15 @@ const bow = await items.get("bow");      // { data, revision, updatedBy, updated
 await items.remove("bow");
 const stop = items.subscribe((change) => render()); // live edits from the team and agents
 ```
+
+There is no `summer.data.list(name)`: always go through `summer.data.collection(name)`.
+
+| Call | Returns |
+|---|---|
+| `list({ limit, after })` | `{ revision, records, next, collections }`; pass `next` as `after` for the next page |
+| `get(id)` | a record `{ collection, recordId, data, revision, updatedBy, updatedAt, deleted }`, or `null` |
+| `put`, `patch`, `remove` | `{ revision, operation, records, replayed }` |
+| `subscribe(fn)` | a stop function; `fn` gets `{ revision, actorId, ops }`, or `{ revision, reset: true }` (then list again) |
 
 Records are JSON up to 64 KB, 10,000 per collection, 50 collections per app. `summer.data.commands({ requestId, baseRevision, ops })` applies several changes in one revision.
 

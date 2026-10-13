@@ -34,6 +34,8 @@ Write (one revision, applied in order):
 }
 ```
 
+Reads also return `declaredCollections`, the record shape the app declares in its [manifest](/apps/manifest) (`collections`), and `summer_app_tools` lists it too. That is how an agent asked to "add a note" knows what a note looks like.
+
 `patch` merges keys (`null` removes one). Add `"ifRevision": <n>` to an op to apply it only if the record has not changed since you read it (`0`: only if it does not exist yet).
 
 ## Agent tools
