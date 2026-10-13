@@ -16,7 +16,7 @@ Load the SDK and the UI kit as ES modules, with root paths, from the app's own h
 <script type="module" src="/summer-ui/v1/ui.js"></script>
 ```
 
-A classic `<script>` tag or another path does not work.
+A classic `<script>` tag or another path does not work. An app only runs inside Summer Studio: publish it and open it at `/studio/apps/<appId>`. Opening `index.html` on its own never connects, because the app runs in a sandboxed frame (no cookies, no storage, no network) and waits for Studio.
 
 Every method returns a promise and runs as **the person using the app**: their team, their assets, their credits. A call the [manifest](/apps/manifest) does not allow rejects with `permission_missing`. Errors are `SummerError` with a `code` and a `message`.
 
@@ -45,7 +45,7 @@ const items = summer.data.collection("items");
 await items.put("bow", { name: "Bow", damage: 40, speed: 1.2 });
 await items.patch("bow", { damage: 36 }, { ifRevision: 4 });
 const { records, next } = await items.list({ limit: 200 });
-const bow = await items.get("bow");      // { data, revision, updatedBy, updatedAt } or null
+const bow = await items.get("bow");      // { data, revision, actor, updatedAt } or null
 await items.remove("bow");
 const stop = items.subscribe((change) => render()); // live edits from the team and agents
 ```
@@ -55,11 +55,13 @@ There is no `summer.data.list(name)`: always go through `summer.data.collection(
 | Call | Returns |
 |---|---|
 | `list({ limit, after })` | `{ revision, records, next, collections }`; pass `next` as `after` for the next page |
-| `get(id)` | a record `{ collection, recordId, data, revision, updatedBy, updatedAt, deleted }`, or `null` |
+| `get(id)` | a record `{ collection, recordId, data, revision, actor, updatedAt, deleted }`, or `null` (also for a removed record) |
 | `put`, `patch`, `remove` | `{ revision, operation, records, replayed }` |
-| `subscribe(fn)` | a stop function; `fn` gets `{ revision, actorId, ops }`, or `{ revision, reset: true }` (then list again) |
+| `subscribe(fn)` | a stop function; `fn` gets `{ revision, actor, ops }`, or `{ revision, reset: true }` (then list again) |
 
-Records are JSON up to 64 KB, 10,000 per collection, 50 collections per app. `summer.data.commands({ requestId, baseRevision, ops })` applies several changes in one revision.
+`list()` never returns removed records. `actor` is `{ userId, kind: "person" | "agent", agent?, via? }`. Writes an agent made with `summer_app_data`, and writes your code made while running an agent tool for `summer_app_call` (`via: "agent-tool"`), have `kind: "agent"`, so your app can mark agent-made rows. `userId` is the same id as `app.viewer().userId` and `(await summer.ready).viewer.userId`.
+
+Records are JSON up to 64 KB, 10,000 per collection, 50 collections per app. `summer.data.commands({ requestId, baseRevision, ops })` applies up to 100 changes in one revision.
 
 ## assets (`assets:read`, `assets:write`)
 
