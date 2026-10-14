@@ -120,9 +120,10 @@ After every publish:
 - `summer_app_screenshot { "appId": "<app id>" }`
 - `summer_app_screenshot { "appId": "<app id>", "width": 390 }`: badge columns fold under the name, rows stack only if they still do not fit.
 - `summer_app_screenshot { "appId": "<app id>", "theme": "dark" }`
+- `summer_app_screenshot { "appId": "<app id>", "steps": [{ "click": "summer-table >>> tbody tr" }] }`: clicks the first item, so the capture shows the edit dialog with the item's values.
 - `summer_app_screenshot { "appId": "<app id>", "params": { "tab": "quests" } }` if the app opens a tab from launch params.
 
-The screenshot shows the first tab and no open dialog. Check that `declared.actions` lists **Add item** and **Add quest**.
+Without `steps`, the screenshot shows the first tab and no open dialog. Check that `declared.actions` lists **Add item** and **Add quest**.
 
 With the next Summer Engine update, the app can also write `res://data/items.json` and `res://data/quests.json`; check `summer.engine.status()` first.
 

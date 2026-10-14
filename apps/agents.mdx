@@ -42,7 +42,7 @@ The answer is `{ revision, operation, records, replayed }`.
 
 - 1 to 100 ops per call. A record is JSON up to 64 KB. Record ids: letters, digits and `_ . : -`, max 128 characters.
 - `put` creates or replaces. `patch` merges keys (`null` removes a key). `remove` deletes.
-- `ifRevision` applies an op only if the record is still at that revision. Take it from the record's `revision` in your last read. `0` means "only if it does not exist yet". A mismatch fails the call with `conflict`: read again and retry.
+- A record's `revision` is the app's data revision at the record's last write: one counter for the whole app, not one per record. `ifRevision` applies an op only if the record is still at that revision. Take it from the record's `revision` in your last read. `0` means "only if it does not exist yet". A mismatch fails the call with `conflict`: read again and retry.
 - Your writes are recorded with `actor.kind: "agent"` and your agent's name, and as `createdBy` on records you create. The app can show which rows an agent made.
 - `"as": "seed"` writes starter data that belongs to the team: `kind: "seed"`, shown with no author. Use it to fill a new app.
 
@@ -100,13 +100,13 @@ The hosted Summer Engine MCP (`https://mcp.summerengine.com/mcp`) and the `summe
 
 | Tool | Does |
 |---|---|
-| `summer_app_guide` | The build guide. `section`: `overview`, `manifest`, `sdk`, `kit`, `layout`, `design`, `examples` or `types` (the SDK's TypeScript types). Default: all except `types`. Read it first. |
+| `summer_app_guide` | The build guide, as Markdown. `section`: `overview` (default), `examples`, `sdk`, `manifest`, `kit`, `design`, `layout`, `types` (the SDK's TypeScript types) or `all` (every section except `types`, about 100 KB). Read `overview` first, then what the app needs. |
 | `summer_app_list` | The apps in the person's workspaces. `workspaceId` and `q` (search) are optional. |
-| `summer_app_create` | A new scratch app: `{ name, purpose, format, workspaceId?, folder? }`. `format` is `code` (default) or `layout`. Returns `{ app, studio, url }`; the app id is `app.id`. The person's Studio tab opens it. |
-| `summer_app_publish` | A new version: `{ appId, files or layout, manifest, note?, idempotencyKey? }`. Files are `[{ path, content, encoding }]` (`utf8` or `base64`). The npm package also takes `dir`, a local folder. |
+| `summer_app_create` | A new scratch app: `{ name, purpose, format, workspaceId?, folder? }`. `format` is `code` (default) or `layout`. Returns `{ app, studio, url }`; the app id is `app.id`. The person's Studio tab opens it. `studio.reason: "no_tab"`: no tab was open; give the person `/studio/apps/<appId>`. |
+| `summer_app_publish` | A new version: `{ appId, files or layout, manifest, note?, idempotencyKey? }`. Files are `[{ path, content, encoding }]` (`utf8` or `base64`). The npm package also takes `dir`, a local folder. The answer can carry `warnings`: SDK calls whose permission the manifest lacks, and undeclared `agentEvents` or `agentTools`. Fix them and publish again. |
 | `summer_app_update` | Renames an app or changes its purpose, folder or status: `{ appId, name?, purpose?, status?, folder? }`. `status` is `scratch`, `kept` (the team keeps it) or `archived`. Archive the throwaway apps you made when the person is done with them. `folder: null` takes an app out of its folder. |
 | `summer_app_get` | `{ app, version, files, data, url }`: the manifest, the current files and a summary of the data. Read it before you change an app. |
-| `summer_app_screenshot` | Renders the published app headless and read-only, with the person's data. Returns the picture plus console lines, errors, refused calls, `connected` and `rendered`, and the declared fields, buttons and agent tools. `{ appId, width?, height?, theme?, fullPage?, version?, params? }`; the npm package also takes `out`, a local path for the PNG. |
+| `summer_app_screenshot` | Renders the published app headless and read-only, with the person's data. Returns the picture plus console lines, errors, refused calls, `connected` and `rendered`, and the declared fields, buttons and agent tools. `{ appId, width?, height?, theme?, fullPage?, version?, params?, steps? }`. `steps` (up to 5) click a selector, press a declared action or wait before the capture. The npm package also takes `out`, a local path for the PNG. See [Build with your agent](/apps/build-with-your-agent). |
 | `summer_app_events` | Waits for what the app sends, errors, feedback and tool calls. |
 | `summer_app_page` | Reads or uses the fields and buttons an open app declared. |
 | `summer_app_data` | Reads or writes the app's shared data. |

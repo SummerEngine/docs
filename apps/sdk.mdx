@@ -99,7 +99,7 @@ Op     = { op: "put", collection, recordId, data, ifRevision? }
        | { op: "remove", collection, recordId, ifRevision? }
 ```
 
-`ifRevision: n` applies a write only if the record is still at revision `n` (`0`: only if it does not exist). Otherwise the call rejects with `conflict`; read again and retry.
+A record's `revision` is the app's data revision at the record's last write: one counter for the whole app, not one per record. `ifRevision: n` applies a write only if the record is still at revision `n` (`0`: only if it does not exist). Otherwise the call rejects with `conflict`; read again and retry.
 
 **Who changed it.** `actor` is the last writer. `createdBy` has the same shape, is who created the record and does not change on later edits. Take a "by agent" label from `createdBy.kind === "agent"`. `kind: "agent"` marks:
 
