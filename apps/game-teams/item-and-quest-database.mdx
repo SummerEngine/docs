@@ -1,0 +1,156 @@
+---
+title: "Item and quest database: a Summer App for game teams"
+sidebarTitle: "Item and quest database"
+description: "One shared database of your game's items and quests, with search, filters, edit dialogs, a reference check and an export to your project. Manifest, seed data, agent edits and the look check."
+icon: "database"
+---
+
+<Warning>
+**Draft.** Summer Apps is in a closed test. This page goes live after the end-to-end test on production.
+</Warning>
+
+## What your team gets
+
+- Two tabs, **Items** and **Quests**, each a searchable, sortable table. Click a row to edit it in a dialog.
+- Quest status as badges: draft, in review, done. Filter by status with one click.
+- A reference check: quests that reward an item that does not exist are flagged.
+- **Export to game** writes `res://data/items.json` and `res://data/quests.json` in your open project.
+- Your agent adds and changes items and quests by asking ("make the Iron Sword cost 120 gold", "add a fetch quest in Mossbank").
+
+## Ask your agent
+
+<Prompt description="**Item and quest database.** Your agent builds, seeds and checks the app.">
+Build us a Summer App called "Game database" with two tabs: Items (name, type, rarity,
+price, description) and Quests (title, giver, region, minimum level, status draft /
+review / done, reward gold, reward items, steps). Search and a status filter above each
+table, click a row to edit it in a dialog, and flag quests whose reward items do not
+exist. An "Export to game" button writes res://data/items.json and
+res://data/quests.json. Give agents a check_references tool. Seed it with our items and
+quests using summer_app_data with "as": "seed". Follow the summer-apps and
+summer-apps-design skills, then check it with summer_app_screenshot (default, width 390,
+theme dark) and fix what it reports.
+</Prompt>
+
+## The manifest
+
+```json
+{
+  "name": "Game database",
+  "purpose": "Every item and quest in the game. Exports to res://data/items.json and quests.json.",
+  "permissions": ["data", "engine:write"],
+  "engineFiles": ["res://data/items.json", "res://data/quests.json"],
+  "collections": {
+    "items": {
+      "description": "One item. The record id is the item id the game uses.",
+      "fields": {
+        "name": { "type": "string", "required": true },
+        "type": { "type": "string", "description": "weapon, armour, consumable, material or quest" },
+        "rarity": { "type": "string", "description": "common, rare, epic or legendary" },
+        "price": { "type": "integer", "description": "Shop price in gold" },
+        "description": { "type": "string" }
+      }
+    },
+    "quests": {
+      "description": "One quest. The record id is the quest id the game uses.",
+      "fields": {
+        "title": { "type": "string", "required": true },
+        "giver": { "type": "string", "description": "The NPC who gives it" },
+        "region": { "type": "string" },
+        "minLevel": { "type": "integer" },
+        "status": { "type": "string", "description": "draft, review or done" },
+        "rewardGold": { "type": "integer" },
+        "rewardItems": { "type": "array", "description": "Item record ids" },
+        "steps": { "type": "array", "description": "The steps, as text, in order" }
+      }
+    }
+  },
+  "agentEvents": ["data.exported"],
+  "agentTools": [
+    {
+      "name": "check_references",
+      "description": "List quests whose rewardItems name an item that does not exist, and items no quest rewards.",
+      "input": { "type": "object", "properties": {} }
+    }
+  ]
+}
+```
+
+## Seed the data
+
+```json
+{
+  "appId": "<app id>",
+  "as": "seed",
+  "ops": [
+    { "op": "put", "collection": "items", "recordId": "iron-sword", "data": { "name": "Iron Sword", "type": "weapon", "rarity": "common", "price": 100, "description": "A plain, honest blade." } },
+    { "op": "put", "collection": "items", "recordId": "moss-cloak", "data": { "name": "Moss Cloak", "type": "armour", "rarity": "rare", "price": 340, "description": "Quiet in the forest." } },
+    { "op": "put", "collection": "items", "recordId": "healing-draught", "data": { "name": "Healing Draught", "type": "consumable", "rarity": "common", "price": 25, "description": "Restores 50 health." } },
+    { "op": "put", "collection": "items", "recordId": "drowned-bell", "data": { "name": "Drowned Bell", "type": "quest", "rarity": "epic", "price": 0, "description": "It still rings under water." } },
+    { "op": "put", "collection": "quests", "recordId": "the-drowned-bell", "data": { "title": "The Drowned Bell", "giver": "Old Maren", "region": "Mossbank", "minLevel": 4, "status": "review", "rewardGold": 450, "rewardItems": ["moss-cloak"], "steps": ["Find the bell in the flooded chapel", "Ring it three times", "Return to Old Maren"] } },
+    { "op": "put", "collection": "quests", "recordId": "supplies-for-the-ferry", "data": { "title": "Supplies for the Ferry", "giver": "Tobin", "region": "Mossbank", "minLevel": 2, "status": "draft", "rewardGold": 120, "rewardItems": ["healing-draught", "rope"], "steps": ["Bring Tobin five planks", "Bring Tobin a rope"] } }
+  ]
+}
+```
+
+The second quest rewards `rope`, which is not an item. The app flags it, and `check_references` returns it.
+
+## An agent edit: "make the Iron Sword cost 120 gold"
+
+Read the items:
+
+```json
+{ "appId": "<app id>", "collection": "items" }
+```
+
+In the answer, `iron-sword` has `"price": 100` and a `revision`, here `1`. Write the change, and add the missing rope item in the same revision. `"ifRevision": 0` adds the rope only if no record `rope` exists yet:
+
+```json
+{
+  "appId": "<app id>",
+  "ops": [
+    { "op": "patch", "collection": "items", "recordId": "iron-sword", "patch": { "price": 120 }, "ifRevision": 1 },
+    { "op": "put", "collection": "items", "recordId": "rope", "data": { "name": "Rope", "type": "material", "rarity": "common", "price": 5, "description": "Ten metres of hemp." }, "ifRevision": 0 }
+  ]
+}
+```
+
+A `conflict` means a record changed or already exists: read again and retry. The flag on "Supplies for the Ferry" goes away for everyone with the app open.
+
+## Check the look
+
+After every publish:
+
+- `summer_app_screenshot { "appId": "<app id>" }`
+- `summer_app_screenshot { "appId": "<app id>", "width": 390 }`: badge columns fold under the name, rows stack only if they still do not fit.
+- `summer_app_screenshot { "appId": "<app id>", "theme": "dark" }`
+- `summer_app_screenshot { "appId": "<app id>", "params": { "tab": "quests" } }` if the app opens a tab from launch params.
+
+The screenshot shows the first tab and no open dialog. Check that the declared buttons in `declared.actions` include **Export to game**, marked `critical`.
+
+## What it uses
+
+**SDK:** `summer.ready`; `summer.data.collection("items")` and `summer.data.collection("quests")` with `.list()`, `.put()`, `.patch()`, `.remove()` and `.subscribe()`; `summer.engine.writeFile()` for each file; `summer.agent.send("data.exported")`; `summer.agent.tool("check_references")`; `summer.page.declare()` with **Export to game** as a `critical` action.
+
+**Kit:** `summer-page` with **Export to game** in `slot="actions"`; `summer-tabs` (`labels` `["Items", "Quests"]`); `summer-toolbar` with `summer-search` and `summer-segmented` (status, with counts); `summer-table` (`row-key="id"`, `sortable`, `clickable`; a status column with `badges` `{ "draft": "quiet", "review": { "tone": "info", "label": "In review" }, "done": "ok" }`; a reference column of `type: "badge"` filled only on broken rows); `summer-dialog` with `summer-form`, `summer-text-input`, `summer-select` and a `type="number"` input; `summer-empty-state`; `summer-notice` for a failed load.
+
+The reference check, used by the table and by the tool:
+
+```js
+async function brokenReferences() {
+  const [items, quests] = await Promise.all([
+    summer.data.collection("items").list({ limit: 500 }),
+    summer.data.collection("quests").list({ limit: 500 }),
+  ]);
+  const ids = new Set(items.records.map((r) => r.recordId));
+  const rewarded = new Set();
+  const broken = [];
+  for (const q of quests.records) {
+    for (const id of q.data.rewardItems ?? []) {
+      rewarded.add(id);
+      if (!ids.has(id)) broken.push({ quest: q.recordId, item: id });
+    }
+  }
+  return { broken, unused: [...ids].filter((id) => !rewarded.has(id)) };
+}
+summer.agent.tool("check_references", () => brokenReferences());
+```

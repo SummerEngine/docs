@@ -1,137 +1,201 @@
 ---
 title: "Summer Apps SDK reference"
 sidebarTitle: "SDK reference"
-description: "window.summer inside a Summer App: app, data, assets, generate, ai, agent, engine, team, projects, grow and page, with the permission each needs."
+description: "window.summer inside a Summer App: app, data, assets, generate, ai, agent, page, engine, team, projects, grow and choices, with the permission each call needs and what it returns. Exact TypeScript types at /summer-sdk/v1.d.ts."
 icon: "code"
 ---
 
 <Warning>
-**Draft, not published.** TODO: check every signature against the shipped `/summer-sdk/v1.js` and run each namespace once in a real app on production. `summer.agent.tool` and `summer.choices.*` were not yet in the client build when this was written.
+**Draft.** Summer Apps is in a closed test. This page goes live after the end-to-end test on production.
 </Warning>
 
-Load the SDK and the UI kit as ES modules, with root paths, from the app's own host (`apps.summerengine.app`):
+{/* TODO before publishing: run each namespace once in a real app on production. */}
+
+## Load it
+
+Load the SDK and the UI kit as ES modules, with root paths. They come from the app's own host, `apps.summerengine.app`:
 
 ```html
 <script type="module" src="/summer-sdk/v1.js"></script>
 <script type="module" src="/summer-ui/v1/ui.js"></script>
+<script type="module" src="app.js"></script>
 ```
 
-Use `type="module"` (a classic script still works but warns); other paths do not work. An app only runs inside Summer Studio. To preview one, publish it to Scratch and open it at `/studio/apps/<appId>`; there is no offline host. Opening `index.html` on its own never connects, because the app runs in a sandboxed frame (`allow-scripts allow-forms allow-popups allow-modals allow-downloads`, never `allow-same-origin`: no cookies, no storage, no network) and waits for Studio.
-
-Every method returns a promise and runs as **the person using the app**: their team, their assets, their credits. A call the [manifest](/apps/manifest) does not allow rejects with `permission_missing`. Errors are `SummerError` with a `code` and a `message`.
+Other paths do not work. Module scripts run in order, so `app.js` runs after the SDK. Then wait for Studio before the first call:
 
 ```js
-await summer.ready; // the Studio host connected
+const info = await summer.ready; // { app, viewer: { userId, name }, permissions, params, theme, restored? }
 ```
+
+`summer.ready` resolves only inside Summer Studio. An app runs in a sandboxed frame (`allow-scripts allow-forms allow-popups allow-modals allow-downloads`, never `allow-same-origin`): no cookies, no `localStorage`, no network. Opening `index.html` on its own never connects. There is no offline host; do not mock the SDK. To see an app, publish it and call `summer_app_screenshot` (see [Build an app with your agent](/apps/build-with-your-agent)).
+
+## Exact types
+
+The SDK's exact TypeScript types are at `/summer-sdk/v1.d.ts` on the app host, and in `summer_app_guide` section `types`. Save the file as `summer-sdk.d.ts` outside the app folder (for example one folder up) and start `app.js` with:
+
+```js
+// @ts-check
+/// <reference path="../summer-sdk.d.ts" />
+```
+
+Your editor, or `tsc --checkJs --noEmit`, then reports a wrong method, a missing argument or a wrong result field before you publish. Do not publish the `.d.ts` file: `.ts` is not an app file type. Types are in the `Summer` namespace, for example `/** @type {Summer.DataRecord<Item>} */`.
+
+## Rules for every call
+
+- Every call returns a promise and runs as **the person using the app**: their team, their assets, their credits.
+- A call that the [manifest](/apps/manifest) does not allow rejects with `permission_missing`.
+- A failed call rejects with a `SummerError`: `{ code, message, details? }`. `summer.SummerError` is the class, for `instanceof`.
+- `summer.call(method, args)` reaches any method by name with named arguments, for example `summer.call("data.list", { collection: "items" })`.
 
 ## app (no permission)
 
-| Call | Does |
+| Call | Returns |
 |---|---|
-| `summer.app.info({ params })` | The app, its version and manifest, and the launch params from the app page URL. |
-| `summer.app.viewer()` | Who is using the app: name, role, today's spend through the app, their daily cap. `(await summer.ready).viewer` has the same `userId` and name; use that for "You". |
-| `summer.app.setTitle(title)` | The title in the app page's top bar. |
-| `summer.app.notify(text)` | A notice in Studio. |
-| `summer.app.needsYou(count)` | The "needs you" badge on the Apps row (0 clears it). |
-| `summer.app.open(path)` | Moves Studio to a Studio page (`/studio/...` only). |
-| `summer.app.theme()`, `summer.app.onTheme(fn)` | Studio's light or dark theme. The kit applies it by itself (`html.dark`); apps never toggle it. Use these only for your own drawing, such as a canvas. |
-| `summer.app.onSnapshot(() => state)` | State to keep when Studio moves an idle app to a fresh frame (every few minutes). The new frame reads it from `(await summer.ready).restored`. Up to 256 KB. Shared data needs nothing. |
-| `summer.app.busy(on)` | Wrap Web Audio playback in `busy(true)` / `busy(false)` so the frame is not moved mid-sound. `<audio>` and `<video>` count on their own. |
+| `summer.ready` | `{ app: { id, name, version, surface, format }, viewer: { userId, name }, permissions, params, theme, restored? }`. Use `viewer` for "You". |
+| `summer.app.info()` | `{ app, version, manifest, params }`. `manifest` has its defaults filled in. `params` are the launch params from the app page URL (`/studio/apps/<appId>?set=boss` gives `{ set: "boss" }`). |
+| `summer.app.viewer()` | `{ userId, name, image, role, canManage, spentTodayMicro, dailyCapMicro }`. `role` is `owner`, `admin` or `member`. `dailyCapMicro` is `null` when there is no cap. |
+| `summer.app.setTitle(title)` | `null`. The title in the app page's top bar (max 120 characters). |
+| `summer.app.notify(text)` | `null`. A Studio toast (1 to 500 characters). For a toast inside the app, use `summerUI.toast(text)`. |
+| `summer.app.needsYou(count)` | `{ count }`. The "needs you" badge on the Apps row, 0 to 999 (0 clears it). |
+| `summer.app.open(path)` | `null`. Moves Studio to a Studio page. Only `/studio/...` paths. |
+| `summer.app.theme()`, `summer.app.onTheme(fn)` | `"light"` or `"dark"`; a stop function. The kit follows the theme by itself. Use these only for your own drawing, such as a canvas. |
+| `summer.app.onSnapshot(() => state)` | A stop function. Studio moves an idle app to a fresh frame every few minutes. The new frame gets `state` (JSON, up to 256 KB) as `(await summer.ready).restored`. Shared data needs nothing. |
+| `summer.app.busy(on)` | Nothing. Wrap Web Audio playback in `busy(true)` and `busy(false)`, so the frame does not move mid-sound. `<audio>` and `<video>` count by themselves. |
 
 ## data (`data`)
 
+Shared data is collections of JSON records. Everyone in the team sees changes live, and agents read and write the same records with `summer_app_data`.
+
 ```js
 const items = summer.data.collection("items");
-await items.put("bow", { name: "Bow", damage: 40, speed: 1.2 });
-await items.patch("bow", { damage: 36 }, { ifRevision: 4 });
+await items.put("bow", { name: "Bow", damage: 40, speed: 1.2 }); // create or replace
+await items.patch("bow", { damage: 36 }, { ifRevision: 4 });     // shallow merge; null removes a key
 const { records, next } = await items.list({ limit: 200 });
-const bow = await items.get("bow");      // { data, revision, actor, createdBy, updatedAt } or null
+const bow = await items.get("bow");                               // a record, or null
 await items.remove("bow");
-const stop = items.subscribe((change) => render()); // live edits from the team and agents
+const stop = items.subscribe((change) => load());                 // live edits from the team and agents
 ```
 
-There is no `summer.data.list(name)`: always go through `summer.data.collection(name)`.
+There is no `summer.data.list(name)`. It rejects with `invalid`. Always go through `summer.data.collection(name)`.
 
 | Call | Returns |
 |---|---|
-| `list({ limit, after })` | `{ revision, records, next, collections }`; pass `next` as `after` for the next page |
-| `get(id)` | a record `{ collection, recordId, data, revision, actor, createdBy, createdAt, updatedAt, deleted }`, or `null` (also for a removed record) |
-| `put`, `patch`, `remove` | `{ revision, operation, records, replayed }` |
-| `subscribe(fn)` | a stop function; `fn` gets `{ revision, actor, ops }`, or `{ revision, reset: true }` (then list again) |
+| `collection(name)` | The collection. Names: lowercase `a-z 0-9 _ . -`, max 48 characters. |
+| `.list({ limit, after })` | `{ revision, records, next, collections }`. `limit` 1 to 500, default 200. Pass `next` as `after` for the next page; `next` is `null` on the last page. `collections` is `[{ name, count }]`. Removed records are never listed. |
+| `.get(id)` | A record, or `null` (also for a removed record). |
+| `.put(id, data, { ifRevision })` | A write. Creates or replaces. |
+| `.patch(id, partial, { ifRevision })` | A write. Shallow merge; `null` removes a key; creates the record if it is missing. |
+| `.remove(id, { ifRevision })` | A write. |
+| `.subscribe(fn)` | A stop function. `fn` gets `{ revision, actor, ops }`, or `{ revision, reset: true }`: then list again. |
+| `summer.data.subscribe(fn)` | The same for every collection. |
+| `summer.data.commands({ requestId, baseRevision, ops })` | A write. Up to 100 ops in one revision. `requestId` is a fresh UUID (`crypto.randomUUID()`); `baseRevision` is the last revision you saw (`0` is always accepted). |
 
-`list()` never returns removed records. `actor` is the last writer: `{ userId, kind: "person" | "agent" | "seed", agent?, via? }`. `createdBy` has the same shape and is who created the record; later edits do not change it, so show "by agent" from `createdBy.kind`. `kind: "seed"` is starter data an agent wrote for the team; show no author for it. Writes an agent made with `summer_app_data`, and writes your code made while running an agent tool for `summer_app_call` (`via: "agent-tool"`), have `kind: "agent"`, so your app can mark agent-made rows. `userId` is the same id as `app.viewer().userId` and `(await summer.ready).viewer.userId`.
+```ts
+Record = { collection, recordId, data, revision, updatedBy, actor, createdBy, createdAt, updatedAt, deleted }
+Write  = { revision, operation: { revision, requestId, actorId, actor, ops, createdAt }, records, replayed }
+Actor  = { userId, kind: "person" | "agent" | "seed", agent?, via?: "agent-tool" | "agent-page" }
+Op     = { op: "put", collection, recordId, data, ifRevision? }
+       | { op: "patch", collection, recordId, patch, ifRevision? }
+       | { op: "remove", collection, recordId, ifRevision? }
+```
 
-Records are JSON up to 64 KB, 10,000 per collection, 50 collections per app. `summer.data.commands({ requestId, baseRevision, ops })` applies up to 100 changes in one revision.
+`ifRevision: n` applies a write only if the record is still at revision `n` (`0`: only if it does not exist). Otherwise the call rejects with `conflict`; read again and retry.
+
+**Who changed it.** `actor` is the last writer. `createdBy` has the same shape, is who created the record and does not change on later edits. Take a "by agent" label from `createdBy.kind === "agent"`. `kind: "agent"` marks:
+
+- writes an agent made with `summer_app_data`,
+- writes your code made while it ran an agent tool for `summer_app_call` (`via: "agent-tool"`),
+- writes the `run()` of a declared button made after an agent pressed it with `summer_app_page` (`via: "agent-page"`). Return the promise from `run()`.
+
+`kind: "seed"` is starter data that an agent wrote for the team (`summer_app_data` with `"as": "seed"`). Show no author for it. `userId` is the account the write ran as: the same id as `ready.viewer.userId`.
+
+Limits: a record is JSON up to 64 KB, 10,000 records per collection, 50 collections per app. Record ids: letters, digits and `_ . : -`, max 128 characters.
 
 ## assets (`assets:read`, `assets:write`)
 
-| Call | Permission |
-|---|---|
-| `summer.assets.search(q, { filters, limit })` | `assets:read` |
-| `summer.assets.get(id)` | `assets:read` |
-| `summer.assets.upload({ name, contentType, base64 })` | `assets:write` |
-| `summer.assets.saveToLibrary(id, { name })` | `assets:write` |
+| Call | Permission | Returns |
+|---|---|---|
+| `summer.assets.search(q, { filters, limit })` | `assets:read` | `{ assets, count, source, message }`. Each hit has `id`, `title`, `type`, `fileUrl`, `thumbnailUrl`, `tags` and more. `filters.source`: `my_assets` (default), `library`, `community`, `curated` or `all`. `limit` 1 to 100. |
+| `summer.assets.get(id)` | `assets:read` | `{ asset }` with `id`, `title`, `type`, `status`, `fileUrl`, `thumbnailUrl`, `mimeType` and more. |
+| `summer.assets.upload({ name, contentType, base64 })` | `assets:write` | `{ asset: { id, title, fileUrl, thumbnailUrl, mimeType } }`. PNG, JPEG, WebP or GIF up to 10 MB; base64 without a `data:` prefix. |
+| `summer.assets.saveToLibrary(id, { name })` | `assets:write` | `{ saved: true, assetId, title }`. Only the person's own asset. |
 
 ## generate (`generate`) and ai (`ai`)
 
-These spend the credits of the person using the app, through the same pricing as the rest of Summer. A team can cap spend per app and day (`spend_cap_reached`).
+These calls spend the credits of the person using the app, at the same prices as the rest of Summer. Members have a daily cap per app ($50 by default); a call over it rejects with `spend_cap_reached`.
 
-| Call | Makes |
+| Call | Returns |
 |---|---|
-| `summer.generate.image({ prompt })` | An image |
-| `summer.generate.sfx({ prompt, durationSeconds })` | A sound effect |
-| `summer.generate.sfxChoices({ prompt })` | Several versions of a sound effect to pick from |
-| `summer.generate.music({ prompt, durationSeconds })` | Music |
-| `summer.generate.voice({ text, voiceId })` | Speech |
-| `summer.generate.model3d({ prompt })` or `({ imageAssetId })` | A 3D model (a job) |
-| `summer.generate.video({ prompt })` | A video (a job) |
-| `summer.generate.job(jobId)` | A job's status |
-| `summer.ai.complete({ prompt, system, json })` | Text from a Summer-chosen model |
+| `summer.generate.image({ prompt, model })` | `{ success, asset: { id, fileUrl, thumbnailUrl, width, height, ... }, assets, costUsd, price }` |
+| `summer.generate.sfx({ prompt, durationSeconds })` | `{ success, asset, costUsd, price }`. `durationSeconds` up to 30. |
+| `summer.generate.music({ prompt, durationSeconds })` | The same. `durationSeconds` up to 300. |
+| `summer.generate.voice({ text, voiceId })` | The same. `text` up to 5,000 characters. |
+| `summer.generate.sfxChoices({ prompt, models })` | `{ choiceSetId, studioPath, clips: [{ clipId, modelName, audioUrl, assetId, durationSeconds, ... }], failed, costUsd, price, ... }`. One sound from up to 4 models, to pick from. |
+| `summer.generate.model3d({ prompt })` or `({ imageAssetId })` | `{ queued: true, jobId, model, message, ... }`: a job. |
+| `summer.generate.video({ prompt, imageAssetId })` | A job, the same shape. |
+| `summer.generate.job(jobId)` | `{ jobId, status, message, progress?, result?, error? }`. `completed` and `failed` are final. Free. |
+| `summer.ai.complete({ prompt, system, json })` | `{ text, json?, model, costUsd }`. With `json: true` it also parses the answer (`json` is `null` if it was not JSON). |
 
-## agent (no permission)
+## agent and page (no permission)
 
-| Call | Does |
+| Call | Returns |
 |---|---|
-| `summer.agent.send(name, payload)` | An event your agent reads with `summer_app_events`. Declare `name` in `agentEvents`. |
-| `summer.agent.onMessage(fn)` | Messages for the app. |
-| `summer.agent.tool(name, handler)` | Implements an agent tool declared in `agentTools`. See [Agents and apps](/apps/agents). |
+| `summer.agent.send(name, payload)` | `{ seq }`. `name` must be in the manifest's `agentEvents`. Agents read it with `summer_app_events`. |
+| `summer.agent.tool(name, async (input, { agent }) => result)` | A stop function with `.registered`, a promise that rejects when the manifest does not declare `name`. `name` must be in the manifest's `agentTools`. `summer_app_call` runs the handler; return JSON under 100 KB; a throw becomes `tool_failed`. See [Agents and apps](/apps/agents). |
+| `summer.agent.onMessage((notice) => ...)` | A stop function. `notice` is `{ seq, kind }` (`agent`, `error`, `feedback` or `tool`): a new entry in the app's event log. |
+| `summer.page.declare({ fields, actions })` | `null`. Tells Studio which inputs and buttons the app has, so the person's agent can read and use them with `summer_app_page`. Call it again when values change. |
+
+`page.declare` takes at most 40 fields and 40 actions:
+
+- A field: `{ id, label, kind, value, options?, max?, hint?, set(value) }`. `kind` is `text`, `long-text`, `number`, `toggle` or `choice`; `options` is `[{ value, label }]` for `choice`. `id`: letters, digits, `_` and `-`, max 40.
+- An action: `{ id, label, description?, critical?, run() }`. Mark actions that delete, publish, pay or send as `critical: true`. Only the person presses those.
 
 ## engine (`engine:read`, `engine:write`)
 
 See [Engine and docks](/apps/engine-and-docks).
 
-| Call | Permission |
-|---|---|
-| `summer.engine.status()` | `engine:read` |
-| `summer.engine.readFile(path)` | `engine:read`, path in `engineFiles` |
-| `summer.engine.writeFile(path, content)` | `engine:write`, path in `engineFiles` |
-| `summer.engine.ops(ops)` | `engine:write` (app op allowlist) |
-| `summer.engine.play(scene)`, `summer.engine.stop()` | `engine:write` |
-| `summer.engine.screenshot("viewport" or "game")` | `engine:read` |
-| `summer.engine.onEvent(fn)` | `engine:read` |
-| `summer.engine.plugin.send(message)`, `summer.engine.plugin.onMessage(fn)` | `engine:write` / `engine:read` |
+| Call | Permission | Returns |
+|---|---|---|
+| `summer.engine.status()` | `engine:read` | In a browser: `{ connected, via: "server", target, targets?, reason? }`. Inside Summer Engine: `{ connected: true, via: "desktop", projectId }`. |
+| `summer.engine.targets()`, `summer.engine.useTarget(instanceId)` | `engine:read` | `{ targets: [{ instanceId, projectId, projectName?, observedAt, picked }] }`. Picks the engine this app's calls run on. Browser only. |
+| `summer.engine.readFile(path)` | `engine:read` | `{ path, content, truncated }`. `content` is `null` for a binary file. Only paths in `engineFiles` (and `res://addons/<plugin>/`). |
+| `summer.engine.writeFile(path, content)` | `engine:write` | `{ ok?, results, scenePath? }`. Same paths as `readFile`. |
+| `summer.engine.ops(ops, { scenePath })` | `engine:write` | The same shape. 1 to 50 ops from the app op allowlist. Values are Godot strings: `"Vector3(0, 10, 0)"`. |
+| `summer.engine.state(kind)` | `engine:read` | `{ kind, state }`. Kinds: `scene`, `inspector`, `project`, `project-health`, `fs-tree`, `resource`, `selection`, `diagnostics`, `script-errors`, `debugger-errors`, `theme`. |
+| `summer.engine.play(scene)`, `summer.engine.stop()` | `engine:write` | `{ ok?, results }`. Without a scene, `play` runs the main scene. |
+| `summer.engine.screenshot(target)` | `engine:read` | `{ ok?, results }`. `target`: `viewport` (default) or `game`. |
+| `summer.engine.onEvent(fn)` | `engine:read` | A stop function. Inside Summer Engine only. |
+| `summer.engine.plugin.send(message)`, `summer.engine.plugin.onMessage(fn)` | `engine:write`, `engine:read` | `{ delivered: true }`; a stop function. Inside Summer Engine only. |
 
-## team, projects, grow
+## team, projects, grow, choices
 
-| Call | Permission |
-|---|---|
-| `summer.team.members()` | `team:read` (names and roles, never emails) |
-| `summer.team.presence()` | none |
-| `summer.projects.list()`, `summer.projects.get(id)` | `projects:read` |
-| `summer.grow.portfolio({ range: 7 \| 28 \| 90 })` (totals and each game carry `previous`, the window before, for "+12% vs last 28 days"), `summer.grow.game(id)`, `summer.grow.earnings()` | `grow:read` |
-
-## page (no permission)
-
-`summer.page.declare({ fields, actions })` tells Studio which inputs and buttons your app has, so your agent can read and use them with `summer_app_page`. Give each field a `set(value)` and each action a `run()`. Mark actions that delete, publish, pay or send as `critical`: only the person presses those.
+| Call | Permission | Returns |
+|---|---|---|
+| `summer.team.members()` | `team:read` | `{ members: [{ userId, role, name, image }] }`. Never emails. |
+| `summer.team.presence()` | none | `{ presence: [{ userId, name, image, surface, seenAt }] }`: who has the app open now. |
+| `summer.projects.list()`, `summer.projects.get(id)` | `projects:read` | `{ projects: [{ id, name, projectType, lastOpenedAt, createdAt }] }`; `{ project }`. |
+| `summer.grow.portfolio({ range })` | `grow:read` | `{ range, rangeDays, previous, games, days, partial, truncated, readAt }`. `range`: 7, 28 (default) or 90 days. `games` rows have `views`, `launches`, `sessions`, `playMinutes` and `previous` (the same-length window before, or `null`). |
+| `summer.grow.game(id)`, `summer.grow.earnings()` | `grow:read` | `{ days: 28, game }`; `{ days: 28, earnings }`. Grow's own field names; see the types. |
+| `summer.choices.list()` | `choices` | `{ sets }`: the person's sound choice sets. |
+| `summer.choices.get(choiceSetId)` | `choices` | A set: `{ choiceSetId, prompt, status, clips: [{ clipId, modelName, audioUrl, approved, note? }], ... }`. |
+| `summer.choices.update(choiceSetId, { clips, done })` | `choices` | The set. `clips`: `[{ clipId, approved, note }]`. |
 
 ## Errors
 
 | Code | Means |
 |---|---|
-| `permission_missing` | Add the permission to the manifest and publish again. |
-| `invalid` | The arguments are wrong; the message says which. |
+| `permission_missing` | Add the permission (or the `engineFiles` path, `agentEvents` name or `agentTools` name) to the manifest and publish again. |
+| `invalid` | The arguments are wrong. The message names the field. |
+| `not_found` | The record, asset or app does not exist for this person. |
+| `conflict` | A write lost a race (`ifRevision`). Read again and retry. |
+| `too_large` | A record, file or payload is over its limit. |
 | `unknown_method` | Not in SDK v1. Summer records it as a missing capability. |
-| `rate_limited` | Too many calls (600 a minute, 60 paid calls a minute per person and app). |
-| `spend_cap_reached` | The person's daily cap for this app is reached. |
-| `engine_offline` | No Summer Engine is connected for this person. |
-| `conflict` | A data change lost a race (`ifRevision`); read again and retry. |
+| `rate_limited` | Too many calls: 600 a minute, 60 paid calls a minute, per person and app. |
+| `spend_cap_reached`, `credits_required` | The person's daily cap for this app is reached, or they have no credits. |
+| `engine_offline` | No Summer Engine is connected for this person. Show "Open in Summer Engine". |
+| `engine_target_ambiguous` | Several engines are open and none is picked. `details.targets` lists them; call `summer.engine.useTarget`. |
+| `engine_update_required` | Only a Summer Engine too old for apps is open. Show the message. |
+| `engine_lacks_op`, `op_not_allowed` | The engine does not have the operation, or apps may not use it. |
+| `not_implemented`, `unavailable` | Summer cannot do it now. The message says what to do. |
+
+The full list is `Summer.ErrorCode` in the types.

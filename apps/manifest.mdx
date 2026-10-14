@@ -1,20 +1,20 @@
 ---
 title: "Summer App manifest"
 sidebarTitle: "Manifest"
-description: "summer.app.json: an app's name, purpose, permissions, engine files, agent events, agent tools, dock and plugin, sent with every publish."
+description: "summer.app.json: an app's name, purpose, permissions, engine files, data collections, agent events, agent tools, surface, dock and plugin. Sent with every summer_app_publish."
 icon: "file-json"
 ---
 
 <Warning>
-**Draft, not published.** TODO: confirm the limits and error messages against production after the live test.
+**Draft.** Summer Apps is in a closed test. This page goes live after the end-to-end test on production.
 </Warning>
 
-Every publish sends a manifest. Summer writes it into the app as `summer.app.json`. Unknown keys and unknown permissions are refused, and the error says what to fix.
+Every `summer_app_publish` sends a manifest as `manifest`. Summer writes it into the app as `summer.app.json`. Unknown keys and unknown permissions are refused, and the error names what to fix. `summer_app_guide` section `manifest` returns the same schema as JSON Schema.
 
 ```json
 {
   "name": "Loot table",
-  "purpose": "Balance item stats and write them to the game data file",
+  "purpose": "Balance item stats and write them to res://data/items.json",
   "permissions": ["data", "engine:read", "engine:write"],
   "engineFiles": ["res://data/items.json"],
   "collections": {
@@ -23,7 +23,8 @@ Every publish sends a manifest. Summer writes it into the app as `summer.app.jso
       "fields": {
         "name": { "type": "string", "required": true },
         "damage": { "type": "number", "description": "Damage per hit" },
-        "speed": { "type": "number", "description": "Attacks per second" }
+        "speed": { "type": "number", "description": "Attacks per second" },
+        "tags": { "type": "array" }
       }
     }
   },
@@ -46,28 +47,31 @@ Every publish sends a manifest. Summer writes it into the app as `summer.app.jso
 
 | Key | Required | Rules |
 |---|---|---|
-| `name` | yes | 1-80 characters. |
+| `name` | yes | 1 to 80 characters. |
 | `purpose` | no | Up to 280 characters: what the tool does and where its data goes. |
-| `permissions` | no | From the list below. Only what the app uses. |
-| `engineFiles` | no | Up to 50 `res://` paths the app may read and write. |
-| `collections` | no | Up to 50 shared data collections, keyed by name (lowercase `a-z 0-9 _ . -`): `description` and `fields` (up to 50) with `type` (`string`, `number`, `integer`, `boolean`, `object`, `array`, `any`), `description`, `required`. Agents read it to know a record's shape; writes are not rejected for it. |
-| `agentEvents` | no | Up to 50 event names (`a-z 0-9 _ . -`) the app sends with `summer.agent.send`. |
-| `agentTools` | no | Up to 20 tools: `name` (`a-z 0-9 _`), `description`, `input` (JSON Schema, up to 8 KB). |
-| `surface` | no | `page` (the Studio app page, default), `dock` (an editor dock) or `both`. A dock layout must work from 320 px wide; docked apps get selection and scene events. |
-| `dock` | no | `{ "preferred": "left" \| "right" \| "bottom" }` for the editor. |
-| `plugin` | no | `{ "name": "<plugin>" }`: the app may also write `res://addons/<plugin>/`. |
+| `permissions` | no | From the list below, each once. Only what the app uses. Default `[]`. |
+| `engineFiles` | no | Up to 50 `res://` paths (no `..`) that `engine.readFile` and `engine.writeFile` may touch. |
+| `collections` | no | Up to 50 shared data collections, keyed by name (lowercase `a-z 0-9 _ . -`, max 48). Each has `description` (max 500) and `fields` (up to 50). A field name is letters, digits and `_` (max 64); a field has `type` (`string`, `number`, `integer`, `boolean`, `object`, `array` or `any`), `description` (max 300) and `required`. Agents and people read it to know a record's shape. Writes are not rejected for it. |
+| `agentEvents` | no | Up to 50 event names (lowercase `a-z 0-9 _ . -`, max 48) the app sends with `summer.agent.send`. |
+| `agentTools` | no | Up to 20 tools, unique names: `name` (lowercase `a-z 0-9 _`, max 64), `description` (1 to 1,000 characters), `input` (a JSON Schema object, up to 8 KB; default `{ "type": "object", "properties": {} }`). |
+| `surface` | no | `page` (the Studio app page, default), `dock` (an editor dock) or `both`. A dock layout must work from 320 px wide. Docked apps get selection and scene events (`summer.engine.onEvent`). |
+| `dock` | no | `{ "preferred": "left" \| "right" \| "bottom" }`. |
+| `plugin` | no | `{ "name": "<folder>" }` (lowercase `a-z 0-9 _ -`): the app may also read and write `res://addons/<folder>/`. |
+| `entry` | no | Always `index.html`. You can leave it out. |
+
+The whole manifest is at most 200 KB.
 
 ## Permissions
 
-People see them on the app page as "This app can". Nothing asks them to confirm each one.
+People see them on the app page under "This app can". Nothing asks them to confirm each one.
 
 | Permission | Allows |
 |---|---|
 | `data` | Save shared data for your team |
-| `assets:read` | See your team's assets |
+| `assets:read` | See your team assets |
 | `assets:write` | Upload and save assets |
-| `generate` | Generate images, sounds, music, voices, models and video (uses credits) |
-| `ai` | Ask Summer AI (uses credits) |
+| `generate` | Generate images, sounds, music, voices, models and video (uses your credits) |
+| `ai` | Ask Summer AI (uses your credits) |
 | `projects:read` | See your projects |
 | `team:read` | See who is on your team |
 | `grow:read` | See your game analytics |
@@ -75,16 +79,20 @@ People see them on the app page as "This app can". Nothing asks them to confirm 
 | `engine:write` | Change your open project in Summer Engine |
 | `choices` | See and pick from your sound choice sets |
 
-`engine:write` includes `engine:read`; `assets:write` includes `assets:read`.
+`engine:write` includes `engine:read`. `assets:write` includes `assets:read`. The `app.*`, `agent.*` and `page.*` calls and `team.presence` need no permission. The call each permission opens is in the [SDK reference](/apps/sdk).
 
-## Bundle limits
+## Publish limits
 
 | Limit | Value |
 |---|---|
+| A publish | Exactly one of `files` (a code app) or `layout` (a layout app), plus `manifest` |
 | Whole app | 10 MB |
 | Files | 300 |
 | One file | 5 MB |
+| File paths | Relative, up to 200 characters and 8 folders deep; letters, digits and `_ - . /`; no hidden or `..` parts |
+| File types | html, js, mjs, css, json, txt, md, svg, png, jpg, jpeg, gif, webp, avif, ico, woff, woff2, ttf, otf, mp3, ogg, wav, m4a, mp4, webm, glb, gltf |
+| Version note | Up to 500 characters |
 | Publishes | 30 per app per minute |
-| File types | html, js, mjs, css, json, txt, md, svg, png, jpg, gif, webp, avif, ico, woff, woff2, ttf, otf, mp3, ogg, wav, m4a, mp4, webm, glb, gltf |
+| Layout | 200 KB |
 
-A code app needs `index.html` at its root. The whole manifest is at most 200 KB.
+A code app needs `index.html` at its root. A layout app's publish adds the permissions its layout needs (`generate`, `assets:read`) and its `send` event names to the manifest. Every publish is a new, immutable version.

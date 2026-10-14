@@ -1,25 +1,29 @@
 ---
 title: "Agents and Summer Apps"
 sidebarTitle: "Agents and apps"
-description: "Summer Apps are built for agents: an app's shared data is its API, apps can give agents new tools, and every app is built and changed through the summer_app MCP tools."
+description: "Summer Apps are built for agents: an app's shared data is its API, apps give agents new tools, and agents build, see and change every app through the summer_app MCP tools."
 icon: "bot"
 ---
 
 <Warning>
-**Draft, not published.** TODO: verify each tool below from Claude Code against production (hosted MCP and the npm package) before publishing, and check `summer_app_dock` on a Summer Engine release with app docks.
+**Draft.** Summer Apps is in a closed test. This page goes live after the end-to-end test on production.
 </Warning>
 
-Everything a person sees in a Summer App, an agent can read and use.
+{/* TODO before publishing: run each tool from Claude Code against production (hosted MCP and the npm package); check summer_app_dock on a Summer Engine release with app docks. */}
+
+Everything a person sees in a Summer App, an agent can read and use. To build one, see [Build an app with your agent](/apps/build-with-your-agent).
 
 ## Data is the API
 
-An app keeps its shared data in **collections** of JSON records. Your agent reads and writes them with `summer_app_data`, with no app open. Every write is a revisioned change, so everyone with the app open sees it live.
+An app keeps its shared data in **collections** of JSON records. Your agent reads and writes them with `summer_app_data`, with no app open. Every write is one revision, and everyone with the app open sees it live.
 
-Read:
+Read (no `ops`):
 
 ```json
 { "appId": "<app id>", "collection": "items" }
 ```
+
+The answer is `{ revision, records, next, collections, declaredCollections }`. Leave out `collection` to read every collection. `limit` is 1 to 500 (default 200); pass `next` as `after` for the next page. Removed records are not returned. `declaredCollections` is the record shape the app declares in its [manifest](/apps/manifest) (`collections`). That is how an agent asked to "add a note" knows what a note looks like.
 
 Write (one revision, applied in order):
 
@@ -27,61 +31,91 @@ Write (one revision, applied in order):
 {
   "appId": "<app id>",
   "ops": [
-    { "op": "patch", "collection": "items", "recordId": "bow", "patch": { "damage": 36 } },
+    { "op": "patch", "collection": "items", "recordId": "bow", "patch": { "damage": 36 }, "ifRevision": 7 },
     { "op": "put", "collection": "items", "recordId": "axe", "data": { "name": "Axe", "damage": 50, "speed": 0.8 } },
     { "op": "remove", "collection": "items", "recordId": "old-sword" }
   ]
 }
 ```
 
-Reads also return `declaredCollections`, the record shape the app declares in its [manifest](/apps/manifest) (`collections`), and `summer_app_tools` lists it too. That is how an agent asked to "add a note" knows what a note looks like.
+The answer is `{ revision, operation, records, replayed }`.
 
-Up to 100 ops per call. Your writes are recorded with `actor.kind: "agent"` and your agent's name (and as `createdBy` on records you create), so the app can show which rows an agent made. To fill a new app with starter data that belongs to the team, add `"as": "seed"`: those rows have `kind: "seed"` and show no author.
-
-`patch` merges keys (`null` removes one). Add `"ifRevision": <n>` to an op to apply it only if the record has not changed since you read it (`0`: only if it does not exist yet).
+- 1 to 100 ops per call. A record is JSON up to 64 KB. Record ids: letters, digits and `_ . : -`, max 128 characters.
+- `put` creates or replaces. `patch` merges keys (`null` removes a key). `remove` deletes.
+- `ifRevision` applies an op only if the record is still at that revision. Take it from the record's `revision` in your last read. `0` means "only if it does not exist yet". A mismatch fails the call with `conflict`: read again and retry.
+- Your writes are recorded with `actor.kind: "agent"` and your agent's name, and as `createdBy` on records you create. The app can show which rows an agent made.
+- `"as": "seed"` writes starter data that belongs to the team: `kind: "seed"`, shown with no author. Use it to fill a new app.
 
 ## Agent tools
 
-An app can expose logic to agents, for example a balance formula. It declares the tools in its [manifest](/apps/manifest) (`agentTools`) and handles them in its code:
+An app can give agents its own logic, for example a balance formula. It declares the tools in its [manifest](/apps/manifest) (`agentTools`) and handles them in its code:
 
 ```js
-summer.agent.tool("nerf_item", async ({ id, percent }) => {
-  const record = await summer.data.collection("items").get(id);
+summer.agent.tool("nerf_item", async ({ id, percent }, { agent }) => {
+  const items = summer.data.collection("items");
+  const record = await items.get(id);
+  if (!record) throw new Error(`No item ${id}`);
   const damage = Math.round(record.data.damage * (1 - percent / 100));
-  await summer.data.collection("items").patch(id, { damage }, { ifRevision: record.revision });
+  await items.patch(id, { damage }, { ifRevision: record.revision });
   return { id, damage };
 });
 ```
 
-The handler gets the input and a second argument `{ agent }`: the name of the agent that called. Data writes made while the handler runs are recorded with `actor.kind: "agent"` and `via: "agent-tool"`.
+`agent` is the name of the agent that called. Data writes made while the handler runs are recorded with `actor.kind: "agent"` and `via: "agent-tool"`. Return JSON under 100 KB; a throw becomes `tool_failed`.
 
-Your agent lists them with `summer_app_tools` and runs one with `summer_app_call`. The call runs inside the app open in your Studio tab or editor dock, with your rights, and waits up to 60 seconds. If the app is not open, the answer is `app_not_open`: use `summer_app_data`, or open the app.
+Your agent lists the tools with `summer_app_tools` (`{ appId, version, tools, collections }`) and runs one with `summer_app_call`:
+
+```json
+{ "appId": "<app id>", "tool": "nerf_item", "input": { "id": "bow", "percent": 10 } }
+```
+
+The answer is `{ ok: true, result, seq }`. The call runs inside the app open in the person's Studio tab or editor dock, with their rights, and waits up to 60 seconds. If the app is not open, the answer is `app_not_open`: use `summer_app_data`, or ask the person to open the app.
 
 Use data for plain reads and edits. Use a tool for logic that lives in the app.
 
 ## Events: the app talks back
 
-An app sends events to your agent with `summer.agent.send(name, payload)`, for example when you press "Write to game". Your agent waits for them with `summer_app_events` (up to 50 seconds per call). The same stream carries errors in the app and feedback from your team.
+An app sends events to your agent with `summer.agent.send(name, payload)`, for example when the person presses "Write to game". Your agent waits for them with `summer_app_events`:
+
+```json
+{ "appId": "<app id>", "after": 0 }
+```
+
+The answer is `{ events, cursor, timedOut }`. Each event is `{ seq, kind, actorId, payload, createdAt }`. Pass `cursor` as `after` in the next call. The call waits up to 50 seconds for the first new event: `timeoutSeconds` on the hosted MCP, `waitSeconds` in the npm package (default 25).
+
+| `kind` | Payload |
+|---|---|
+| `agent` | `{ name, payload }` from `summer.agent.send` |
+| `error` | `{ message, source?, line?, column?, stack? }`: an uncaught error in the app, or a `console.error` line |
+| `feedback` | `{ thumbs?, note? }` from the person |
+| `tool` | An agent tool call and its result. Not returned by default; ask with `"kinds": ["tool"]`. |
+
+## The page an agent can use
+
+An app declares its inputs and buttons with `summer.page.declare` (see the [SDK reference](/apps/sdk)). While the app is open, `summer_app_page` reads them (no `fill`, no `press`), fills fields (`"fill": [{ "field": "<id>", "value": 12 }]`) and presses a button (`"press": "<action id>"`). Buttons marked `critical` (delete, publish, pay, send) are pressed only by the person. If the app is not open, the answer is `app_not_open`.
 
 ## The MCP tools
 
-The same tools are on the hosted Summer Engine MCP and in the `summer-engine` npm package.
+The hosted Summer Engine MCP (`https://mcp.summerengine.com/mcp`) and the `summer-engine` npm package have the same `summer_app_*` tools, except `summer_app_dock`, which is only in the npm package.
 
 | Tool | Does |
 |---|---|
-| `summer_app_guide` | The build guide: SDK, manifest, UI kit, layout format, design rules, worked examples. Read it first. |
-| `summer_app_list` | Your workspaces' apps. |
-| `summer_app_create` | A new scratch app; your Studio tab opens it. |
-| `summer_app_publish` | A new version from files, a local folder (npm package) or a layout, plus the manifest. |
-| `summer_app_get` | An app's manifest, current files and data summary. |
+| `summer_app_guide` | The build guide. `section`: `overview`, `manifest`, `sdk`, `kit`, `layout`, `design`, `examples` or `types` (the SDK's TypeScript types). Default: all except `types`. Read it first. |
+| `summer_app_list` | The apps in the person's workspaces. `workspaceId` and `q` (search) are optional. |
+| `summer_app_create` | A new scratch app: `{ name, purpose, format, workspaceId?, folder? }`. `format` is `code` (default) or `layout`. Returns `{ app, studio, url }`; the app id is `app.id`. The person's Studio tab opens it. |
+| `summer_app_publish` | A new version: `{ appId, files or layout, manifest, note?, idempotencyKey? }`. Files are `[{ path, content, encoding }]` (`utf8` or `base64`). The npm package also takes `dir`, a local folder. |
+| `summer_app_get` | `{ app, version, files, data, url }`: the manifest, the current files and a summary of the data. Read it before you change an app. |
+| `summer_app_screenshot` | Renders the published app headless and read-only, with the person's data. Returns the picture plus console lines, errors, refused calls, `connected` and `rendered`, and the declared fields, buttons and agent tools. `{ appId, width?, height?, theme?, fullPage?, version?, params? }`; the npm package also takes `out`, a local path for the PNG. |
 | `summer_app_events` | Waits for what the app sends, errors, feedback and tool calls. |
-| `summer_app_page` | Reads or fills the fields and presses the buttons an open app declared. Buttons that delete, publish, pay or send are pressed only by you. |
+| `summer_app_page` | Reads or uses the fields and buttons an open app declared. |
 | `summer_app_data` | Reads or writes the app's shared data. |
-| `summer_app_tools` | The app's agent tools. |
+| `summer_app_tools` | The app's agent tools and data collections. |
 | `summer_app_call` | Runs an agent tool in the open app. |
-| `summer_app_dock` | Docks an app in the Summer Engine editor (npm package; see [Engine and docks](/apps/engine-and-docks)). |
-| `summer_app_report_gap` | Tells Summer about a capability an app needed and the SDK lacks. |
+| `summer_app_report_gap` | Tells Summer about a capability an app needed and the SDK lacks: `{ capability, detail?, method?, appId? }`. |
+| `summer_app_dock` | npm package only. Docks an app in the running Summer Engine editor. See [Engine and docks](/apps/engine-and-docks). |
+
+All of them except `summer_app_call` (which can run a tool that generates) are free.
 
 ## Skills
 
-Two skills come with the Summer skill library: `summer-apps` (when to build an app, Layout or code, the build loop, data, tools and events) and `summer-apps-design` (how an app must look). Your agent loads them when you ask for a tool.
+The Summer skill library has two skills for apps: `summer-apps` (when to build an app, layout or code, the build loop, data, tools and events) and `summer-apps-design` (how an app must look). The npm package installs them with the rest of the library.
