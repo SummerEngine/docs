@@ -26,13 +26,14 @@ An app is something your team has to keep. Your agent first checks whether Summe
 You need:
 
 - A Summer account, signed in to Summer Studio in your browser or in Summer Engine.
-- An agent with the Summer Engine MCP: the `summer-engine` npm MCP on your computer or the hosted MCP at `https://mcp.summerengine.com/mcp`. See [Connect your agent](/apps/build-with-your-agent#connect-your-agent). Agents build apps through the MCP only.
+- An agent with the Summer Engine MCP: the `summer-engine` npm MCP on your computer or the hosted MCP at `https://mcp.summerengine.com/mcp`. See [Connect your agent](/apps/build-with-your-agent#connect-your-agent).
+- Or no agent of your own: describe the tool to Summer in Studio chat. **Build a new app** in **Studio > Apps** opens it.
 
 ## 1. Ask for the tool
 
-Open Summer Studio, then ask your agent:
+Open Summer Studio, then ask your agent (or paste the same text into Studio chat):
 
-<Prompt description="**Loot table.** A shared table of your items with DPS, written back to your game.">
+<Prompt description="**Loot table.** A shared table of your items with DPS, kept in Summer.">
 Build us a Summer App called "Loot table": our items with damage, speed and DPS,
 kept in the app's shared data, and a DPS chart that flags items over 60. Seed it with
 our items using summer_app_data. Read summer_app_guide first, follow the summer-apps
@@ -74,7 +75,7 @@ width 390 and in dark theme) before you tell me it is done.
 
 ## 4. Change it
 
-Ask again. Your agent reads the current files with `summer_app_get`, changes them and publishes version 2. The open app reloads on the new version. **Versions** on the app page lists every version; **Make live** goes back to one.
+Ask again, or choose **Edit with agent** on the app page to change it in Studio chat. Your agent reads the current files with `summer_app_get`, changes them and publishes version 2. The open app reloads on the new version. **Versions** on the app page lists every version; **Make live** goes back to one.
 
 <Prompt description="**Change an app.** Your agent edits the app and publishes a new version.">
 In our Loot table app, add a column for price and sort by DPS by default.
