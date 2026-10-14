@@ -1,0 +1,60 @@
+---
+title: "Summer Apps"
+sidebarTitle: "Overview"
+description: "Ask any agent for a tool your team is missing, and it builds a real app inside Summer Studio: shared with your team, live on your assets and game data."
+icon: "app-window"
+---
+
+<Warning>
+**Draft.** Summer Apps is in a closed test. This page goes live after the end-to-end test on production.
+</Warning>
+
+{/* TODO before publishing: verify on production that an agent builds an app through MCP, the Studio tab opens it, and two people see the same edits live. */}
+
+A **Summer App** is a tool for your game team that lives inside Summer Studio. Your agent builds it in minutes; your whole team uses it.
+
+Examples: a weapon balance table, an item and quest database, a loot table editor, a level progress tracker, a grid to pick the best of three sound effects, a live-ops view of your games. See [Apps for game teams](/apps/game-teams/weapon-balance-table).
+
+## What an app is
+
+| | |
+|---|---|
+| **Shared** | An app belongs to a team (workspace). Everyone in the team can open it and sees the same data, live. |
+| **Real code** | An app is a small web page (HTML, JS, CSS) built with the Summer SDK and UI kit, or a quick JSON layout. |
+| **Live on your work** | Apps read and change your Summer assets, generate new ones and read your game analytics. Access to your open project in Summer Engine comes with the next Summer Engine update. |
+| **For agents too** | An app's data is an API your agent reads and writes, and an app can give your agent new tools. See [Agents and apps](/apps/agents). |
+| **Versioned** | Every publish is a new version. **Versions** on the app page shows them; **Make live** goes back to one. |
+| **Safe** | Apps run sandboxed, with only the permissions they declare. See [Security](/apps/security). |
+
+## Where apps live
+
+- **Studio > Apps** lists your team's apps in **Pinned**, **Scratch**, **Team apps** and **Archived**. **Starter apps** adds ready-made ones to your team: Pick one, Asset tracker, Balance table and Live ops.
+- An app opens at `summerengine.com/studio/apps/<appId>`.
+- New apps start in **Scratch**. Choose **Keep** in the app's menu to move it to your team's apps. A Scratch app nobody opens for 14 days is archived. You can restore it for 30 more days.
+- **Pin to sidebar** puts an app in your Studio sidebar.
+- In Summer Engine, apps open in the Studio tab. Docking an app next to your scene comes with the next Summer Engine update. See [Engine and docks](/apps/engine-and-docks).
+
+## How to get one
+
+Ask your agent: Claude Code, Codex, Cursor, Claude or ChatGPT with the Summer Engine MCP. Or describe it to Summer in Studio chat: choose **Build a new app** in **Studio > Apps**.
+
+<Prompt description="**Build a team tool.** Your agent builds a Summer App and opens it in your Studio tab.">
+Build us a Summer App: a weapon balance table with damage, attack speed and DPS
+per weapon, kept in the app's shared data, and a DPS chart that flags weapons over
+60 DPS. Read summer_app_guide first, and look at the app with summer_app_screenshot
+before you tell me it is done.
+</Prompt>
+
+Next: [Build your first app](/apps/build-your-first-app).
+
+## Pages in this section
+
+- [Build your first app](/apps/build-your-first-app): the walkthrough for the person who asks.
+- [Build an app with your agent](/apps/build-with-your-agent): the build loop, what breaks apps and prompts that work.
+- [Agents and apps](/apps/agents): data as an API, agent tools, events and the MCP tools.
+- [SDK reference](/apps/sdk): `window.summer` inside an app, with exact types.
+- [Manifest](/apps/manifest): name, permissions, data collections, events and tools.
+- [Design kit](/apps/design-kit): the UI kit and the rules that make apps look right.
+- [Engine and docks](/apps/engine-and-docks): apps that change your project. Coming with the next Summer Engine update.
+- [Security](/apps/security): what an app can and cannot do.
+- Apps for game teams: [economy balance sheet](/apps/game-teams/economy-balance-sheet), [item and quest database](/apps/game-teams/item-and-quest-database), [weapon balance table](/apps/game-teams/weapon-balance-table), [loot table editor](/apps/game-teams/loot-table-editor), [level progress tracker](/apps/game-teams/level-progress-tracker).

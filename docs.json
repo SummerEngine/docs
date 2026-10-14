@@ -149,6 +149,30 @@
             ]
           },
           {
+            "group": "Summer Apps",
+            "pages": [
+              "apps/overview",
+              "apps/build-your-first-app",
+              "apps/build-with-your-agent",
+              "apps/agents",
+              "apps/sdk",
+              "apps/manifest",
+              "apps/design-kit",
+              "apps/engine-and-docks",
+              "apps/security",
+              {
+                "group": "Apps for game teams",
+                "pages": [
+                  "apps/game-teams/economy-balance-sheet",
+                  "apps/game-teams/item-and-quest-database",
+                  "apps/game-teams/weapon-balance-table",
+                  "apps/game-teams/loot-table-editor",
+                  "apps/game-teams/level-progress-tracker"
+                ]
+              }
+            ]
+          },
+          {
             "group": "Other Engine Migration",
             "pages": [
               "quickstarts/unity-migration",

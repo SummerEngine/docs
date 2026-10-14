@@ -83,6 +83,7 @@ These top-level paths are canonical. They do not move.
 | `/auto-mode/*` | Model selection and routing |
 | `/ai-tools/*` | Working with the agent inside Summer |
 | `/art-system/*` | Summer Studio and asset generation |
+| `/apps/*` | Summer Apps: team tools agents build inside Summer Studio |
 | `/migration/*` | Coming from another engine |
 | `/desktop/*` | Desktop application specifics |
 | `/mcp/*` | MCP server, CLI, per-harness setup |

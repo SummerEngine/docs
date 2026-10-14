@@ -1,0 +1,146 @@
+---
+title: "Economy balance sheet: a Summer App for game teams"
+sidebarTitle: "Economy balance sheet"
+description: "A shared sheet of every currency source and sink per hour of play, with net income against your target per currency. Manifest, seed data, agent edits and the look check."
+icon: "coins"
+---
+
+<Warning>
+**Draft.** Summer Apps is in a closed test. This page goes live after the end-to-end test on production.
+</Warning>
+
+## What your team gets
+
+- Every source (quest rewards, drops, selling) and sink (repairs, shops, upgrades) of each currency, as an amount per hour of play.
+- Per currency: sources, sinks and net per hour, against the net your design aims for. A net far from the target shows in warning colour.
+- A bar chart of the flows per hour, sinks in red.
+- Your agent changes the economy by asking ("cut quest gold by 10%") and can scale all sources or sinks of a currency at once.
+
+## Ask your agent
+
+<Prompt description="**Economy balance sheet.** Your agent builds, seeds and checks the app.">
+Build us a Summer App called "Economy": one sheet per currency (switch with a segmented
+control) listing every source and sink as an amount per hour of play. Show sources,
+sinks and net per hour against the currency's target net, a bar chart of every flow
+with sinks highlighted in red, and make amounts editable in place with a save bar. Give agents a
+scale_flows tool. Seed it with our gold and gem flows using summer_app_data with
+"as": "seed". Follow the summer-apps and summer-apps-design skills, then check it with
+summer_app_screenshot (default, width 390, theme dark) and fix what it reports.
+</Prompt>
+
+## The manifest
+
+```json
+{
+  "name": "Economy",
+  "purpose": "Currency sources and sinks per hour of play, against our target net.",
+  "permissions": ["data"],
+  "collections": {
+    "currencies": {
+      "description": "One currency",
+      "fields": {
+        "name": { "type": "string", "required": true },
+        "targetNetPerHour": { "type": "number", "description": "Net gain per hour of play the design aims for" }
+      }
+    },
+    "flows": {
+      "description": "One source or sink of a currency",
+      "fields": {
+        "name": { "type": "string", "required": true },
+        "currency": { "type": "string", "required": true, "description": "Record id of the currency" },
+        "kind": { "type": "string", "required": true, "description": "source or sink" },
+        "amountPerHour": { "type": "number", "required": true, "description": "Average amount per hour of play, always positive" },
+        "note": { "type": "string" }
+      }
+    }
+  },
+  "agentTools": [
+    {
+      "name": "scale_flows",
+      "description": "Scale every source or every sink of one currency by a percent (-90 to 300). Returns the new net per hour.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "currency": { "type": "string" },
+          "kind": { "type": "string", "enum": ["source", "sink"] },
+          "percent": { "type": "number", "minimum": -90, "maximum": 300 }
+        },
+        "required": ["currency", "kind", "percent"]
+      }
+    }
+  ]
+}
+```
+
+## Seed the data
+
+```json
+{
+  "appId": "<app id>",
+  "as": "seed",
+  "ops": [
+    { "op": "put", "collection": "currencies", "recordId": "gold", "data": { "name": "Gold", "targetNetPerHour": 800 } },
+    { "op": "put", "collection": "currencies", "recordId": "gems", "data": { "name": "Gems", "targetNetPerHour": 5 } },
+    { "op": "put", "collection": "flows", "recordId": "quest-gold", "data": { "name": "Quest rewards", "currency": "gold", "kind": "source", "amountPerHour": 1200 } },
+    { "op": "put", "collection": "flows", "recordId": "drop-gold", "data": { "name": "Enemy drops", "currency": "gold", "kind": "source", "amountPerHour": 600 } },
+    { "op": "put", "collection": "flows", "recordId": "sell-gold", "data": { "name": "Selling loot", "currency": "gold", "kind": "source", "amountPerHour": 400 } },
+    { "op": "put", "collection": "flows", "recordId": "repairs", "data": { "name": "Repairs", "currency": "gold", "kind": "sink", "amountPerHour": 350 } },
+    { "op": "put", "collection": "flows", "recordId": "potions", "data": { "name": "Potion shop", "currency": "gold", "kind": "sink", "amountPerHour": 500 } },
+    { "op": "put", "collection": "flows", "recordId": "upgrades", "data": { "name": "Upgrades", "currency": "gold", "kind": "sink", "amountPerHour": 700 } },
+    { "op": "put", "collection": "flows", "recordId": "daily-gems", "data": { "name": "Daily login", "currency": "gems", "kind": "source", "amountPerHour": 10 } },
+    { "op": "put", "collection": "flows", "recordId": "cosmetics", "data": { "name": "Cosmetic shop", "currency": "gems", "kind": "sink", "amountPerHour": 6 } }
+  ]
+}
+```
+
+Gold now nets 650 per hour against a target of 800. Gems net 4 against 5.
+
+## An agent edit: "cut quest gold by 10%"
+
+Read the flows:
+
+```json
+{ "appId": "<app id>", "collection": "flows" }
+```
+
+In the answer, `quest-gold` has `"amountPerHour": 1200` and a `revision`, here `1`. Write the change:
+
+```json
+{
+  "appId": "<app id>",
+  "ops": [
+    { "op": "patch", "collection": "flows", "recordId": "quest-gold", "patch": { "amountPerHour": 1080 }, "ifRevision": 1 }
+  ]
+}
+```
+
+Gold net per hour drops from 650 to 530. A `conflict` means someone changed the flow: read again and retry. For "make every gold sink 15% bigger", call the app's tool while the person has it open: `summer_app_call` with `{ "tool": "scale_flows", "input": { "currency": "gold", "kind": "sink", "percent": 15 } }`.
+
+## Check the look
+
+After every publish:
+
+- `summer_app_screenshot { "appId": "<app id>" }`
+- `summer_app_screenshot { "appId": "<app id>", "width": 390 }`
+- `summer_app_screenshot { "appId": "<app id>", "theme": "dark" }`
+- `summer_app_screenshot { "appId": "<app id>", "params": { "currency": "gems" } }` if the app reads the currency from launch params.
+
+The net per hour must be right for each currency, and the chart must show sinks in red. Fix every entry in `errors` and `console`.
+
+## What it uses
+
+**SDK:** `summer.ready` (its `params` for a starting currency); `summer.data.collection("currencies")` and `summer.data.collection("flows")` with `.list()` and `.subscribe()`; `summer.data.commands()` to save table edits and `scale_flows` in one revision; `summer.agent.tool("scale_flows")`; `summer.page.declare()` with a `choice` field for the currency.
+
+**Kit:** `summer-page`; `summer-toolbar` with `summer-segmented` (one option per currency); `summer-stats` and `summer-stat` (sources, sinks and net per hour; the net with `delta` against the target and `tone="warn"` when it is more than 20% away); `summer-chart` (`kind="bar"`, `x="name"`, `y` `["perHour"]`, `highlight` `{ "key": "kind", "equals": "sink", "tone": "bad", "label": "Sinks", "otherLabel": "Sources" }`; the chart starts at zero, so keep amounts positive); `summer-table` (`row-key="id"`, `sortable`, an `editable` amount column with `format: "number"`); `summer-save-bar`; `summer-dialog` with `summer-form` and `summer-select` to add a flow.
+
+The numbers per currency:
+
+```js
+const flows = (await summer.data.collection("flows").list({ limit: 500 })).records.map((r) => ({ id: r.recordId, ...r.data }));
+const of = (currency) => flows.filter((f) => f.currency === currency);
+const total = (list, kind) => list.filter((f) => f.kind === kind).reduce((sum, f) => sum + f.amountPerHour, 0);
+const sheet = (currency) => {
+  const list = of(currency), sources = total(list, "source"), sinks = total(list, "sink");
+  return { sources, sinks, net: sources - sinks, bars: list.map((f) => ({ name: f.name, kind: f.kind, perHour: f.amountPerHour })) };
+};
+```

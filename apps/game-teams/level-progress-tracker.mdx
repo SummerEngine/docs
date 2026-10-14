@@ -1,0 +1,145 @@
+---
+title: "Level progress tracker: a Summer App for game teams"
+sidebarTitle: "Level progress tracker"
+description: "A shared board of every level from blockout to done, with owners, blockers and playtest scores, and a stand-up report for your agent. Manifest, seed data, agent edits and the look check."
+icon: "map"
+---
+
+<Warning>
+**Draft.** Summer Apps is in a closed test. This page goes live after the end-to-end test on production.
+</Warning>
+
+## What your team gets
+
+- A board with one lane per stage: blockout, art, lighting, playtest, done. One card per level, with its owner and its blocker or playtest score. Drag a card to move the level.
+- At the top: levels done, a progress bar, levels blocked and the average playtest score.
+- Click a card to edit the level: owner (from your team), blocker, score.
+- Your agent moves levels and writes blockers by asking ("Lantern Bridge is fixed, move it to playtest"), and gives you a stand-up report.
+
+## Ask your agent
+
+<Prompt description="**Level progress tracker.** Your agent builds, seeds and checks the app.">
+Build us a Summer App called "Levels": a board with lanes blockout, art, lighting,
+playtest and done, one card per level with its owner and its blocker (or its playtest
+score). Dragging a card saves the new stage. Above the board: levels done with a progress
+bar, levels blocked, and the average playtest score. Click a card to edit the level in a
+dialog; the owner is picked from our team. Give agents a status_report tool for
+stand-ups. Seed it with our levels using summer_app_data with "as": "seed". Follow the
+summer-apps and summer-apps-design skills, then check it with summer_app_screenshot
+(default, width 390, theme dark) and fix what it reports.
+</Prompt>
+
+## The manifest
+
+```json
+{
+  "name": "Levels",
+  "purpose": "Every level from blockout to done, with owners, blockers and playtest scores.",
+  "permissions": ["data", "team:read"],
+  "collections": {
+    "levels": {
+      "description": "One level of the game",
+      "fields": {
+        "name": { "type": "string", "required": true },
+        "order": { "type": "integer", "description": "Position in the game, from 1" },
+        "stage": { "type": "string", "required": true, "description": "blockout, art, lighting, playtest or done" },
+        "owner": { "type": "string", "description": "Name of the team member who owns it" },
+        "blocker": { "type": "string", "description": "What blocks it. Leave it out when nothing does." },
+        "playtestScore": { "type": "number", "description": "Average fun score from 1 to 5 at the last playtest" },
+        "scene": { "type": "string", "description": "res:// path of the level scene" }
+      }
+    }
+  },
+  "agentEvents": ["level.moved"],
+  "agentTools": [
+    {
+      "name": "status_report",
+      "description": "Levels per stage, blocked levels with their blockers, and the average playtest score, for a stand-up.",
+      "input": { "type": "object", "properties": {} }
+    }
+  ]
+}
+```
+
+## Seed the data
+
+```json
+{
+  "appId": "<app id>",
+  "as": "seed",
+  "ops": [
+    { "op": "put", "collection": "levels", "recordId": "ashfall-gate", "data": { "name": "Ashfall Gate", "order": 1, "stage": "done", "owner": "Mia", "playtestScore": 4.2, "scene": "res://levels/ashfall_gate.tscn" } },
+    { "op": "put", "collection": "levels", "recordId": "cinder-mines", "data": { "name": "Cinder Mines", "order": 2, "stage": "playtest", "owner": "Tom", "playtestScore": 3.1, "scene": "res://levels/cinder_mines.tscn" } },
+    { "op": "put", "collection": "levels", "recordId": "lantern-bridge", "data": { "name": "Lantern Bridge", "order": 3, "stage": "lighting", "owner": "Rae", "blocker": "Players fall through the bridge collision", "scene": "res://levels/lantern_bridge.tscn" } },
+    { "op": "put", "collection": "levels", "recordId": "clocktower", "data": { "name": "Clocktower", "order": 4, "stage": "art", "owner": "Mia", "scene": "res://levels/clocktower.tscn" } },
+    { "op": "put", "collection": "levels", "recordId": "drowned-chapel", "data": { "name": "Drowned Chapel", "order": 5, "stage": "blockout", "owner": "Tom", "scene": "res://levels/drowned_chapel.tscn" } }
+  ]
+}
+```
+
+Use your team members' names for `owner`, so the cards show the right initials.
+
+## An agent edit: "Lantern Bridge is fixed, move it to playtest"
+
+Read the levels:
+
+```json
+{ "appId": "<app id>", "collection": "levels" }
+```
+
+In the answer, `lantern-bridge` has `"stage": "lighting"`, a `blocker` and a `revision`, here `1`. Move it and clear the blocker. In a `patch`, `null` removes a key:
+
+```json
+{
+  "appId": "<app id>",
+  "ops": [
+    { "op": "patch", "collection": "levels", "recordId": "lantern-bridge", "patch": { "stage": "playtest", "blocker": null }, "ifRevision": 1 }
+  ]
+}
+```
+
+The card moves to the playtest lane for everyone with the app open, and the blocked count drops to 0. A `conflict` means someone changed the level: read again and retry. For the stand-up, call `summer_app_call` with `{ "tool": "status_report" }` while the person has the app open, or read the levels and count them yourself.
+
+## Check the look
+
+After every publish:
+
+- `summer_app_screenshot { "appId": "<app id>", "fullPage": true }`: the whole board, all five lanes.
+- `summer_app_screenshot { "appId": "<app id>", "width": 390, "fullPage": true }`
+- `summer_app_screenshot { "appId": "<app id>", "theme": "dark" }`
+
+`summer.team.members()` is a read, so it works in the screenshot and fills the owner list. A drag is a write, so test moves with `summer_app_data` instead.
+
+## What it uses
+
+**SDK:** `summer.ready`; `summer.data.collection("levels")` with `.list()`, `.get()`, `.patch()` and `.subscribe()`; `summer.team.members()` (`team:read`) for the owner list; `summer.agent.send("level.moved")`; `summer.agent.tool("status_report")`; `summer.page.declare()` with an **Add level** action.
+
+**Kit:** `summer-page`; `summer-stats` and `summer-stat` (done, blocked with `tone="warn"` when above 0, average score); `summer-progress` (`value` from 0 to 1); `summer-board` with one `summer-lane` per stage (`lane-id` is the stage) and a `summer-board-card` per level (`card-id` is the record id, `heading`, `person`, `meta`, `done`); `summer-dialog` with `summer-form`, `summer-select` (owner, stage), `summer-text-input` (blocker, and `type="number"` for the score); `summer-empty-state` for a board with no levels.
+
+Saving a move and the stand-up report:
+
+```js
+const levels = summer.data.collection("levels");
+const board = document.getElementById("board");
+await summer.ready;
+
+// summer-move fires before the card moves. Save it; on failure, load the board again.
+board.addEventListener("summer-move", (event) => {
+  const { cardId, toLane } = event.detail;
+  levels.patch(cardId, { stage: toLane })
+    .then(() => summer.agent.send("level.moved", { id: cardId, stage: toLane }))
+    .catch((error) => { summerUI.toast(error.message, { tone: "error" }); load(); });
+});
+
+summer.agent.tool("status_report", async () => {
+  const all = (await levels.list({ limit: 500 })).records.map((r) => ({ id: r.recordId, ...r.data }));
+  const scored = all.filter((l) => typeof l.playtestScore === "number");
+  const perStage = {};
+  for (const l of all) perStage[l.stage] = (perStage[l.stage] ?? 0) + 1;
+  return {
+    perStage,
+    blocked: all.filter((l) => l.blocker).map((l) => ({ id: l.id, name: l.name, blocker: l.blocker, owner: l.owner })),
+    averageScore: scored.length ? scored.reduce((sum, l) => sum + l.playtestScore, 0) / scored.length : null,
+  };
+});
+```

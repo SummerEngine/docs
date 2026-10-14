@@ -1,0 +1,158 @@
+---
+title: "Weapon balance table: a Summer App for game teams"
+sidebarTitle: "Weapon balance table"
+description: "A shared table of every weapon with damage, attack speed and DPS, a chart that flags weapons over the DPS budget, and in-place edits. Manifest, seed data, agent edits and the look check."
+icon: "swords"
+---
+
+<Warning>
+**Draft.** Summer Apps is in a closed test. This page goes live after the end-to-end test on production.
+</Warning>
+
+## What your team gets
+
+- Every weapon in one table: damage, attacks per second, DPS, range, price and tier. Edit a number in place and save.
+- A DPS chart. Weapons over the DPS budget turn red, with a dashed budget line.
+- Your agent changes weapons by asking ("nerf the bow by 10%"), with or without the app open. Everyone with the app open sees it live.
+
+## Ask your agent
+
+<Prompt description="**Weapon balance table.** Your agent builds, seeds and checks the app.">
+Build us a Summer App called "Weapon balance": a table of every weapon with damage,
+attacks per second, DPS (damage x attacks per second), range, price and tier. Damage,
+speed and price are editable in place with a save bar. A DPS bar chart flags weapons
+over the DPS budget (60, stored in the app's data) with a budget line. Keep all data in
+the app's shared data. Give agents a nerf_weapon tool. Seed it with our weapons (or
+five sample weapons) using summer_app_data with "as": "seed". Follow the summer-apps and
+summer-apps-design skills, then check it with summer_app_screenshot (default, width 390,
+theme dark) and fix what it reports.
+</Prompt>
+
+## The manifest
+
+```json
+{
+  "name": "Weapon balance",
+  "purpose": "Damage, speed and DPS for every weapon. Weapons live in this app's shared data.",
+  "permissions": ["data"],
+  "collections": {
+    "weapons": {
+      "description": "One weapon",
+      "fields": {
+        "name": { "type": "string", "required": true },
+        "class": { "type": "string", "description": "bow, sword, axe, staff or dagger" },
+        "damage": { "type": "number", "required": true, "description": "Damage per hit" },
+        "attacksPerSecond": { "type": "number", "required": true },
+        "range": { "type": "number", "description": "Range in metres" },
+        "price": { "type": "integer", "description": "Shop price in gold" },
+        "tier": { "type": "integer", "description": "1 to 5" }
+      }
+    },
+    "settings": {
+      "description": "Balance rules. One record, id rules.",
+      "fields": { "dpsBudget": { "type": "number", "description": "Weapons above this DPS are flagged" } }
+    }
+  },
+  "agentEvents": ["weapons.saved"],
+  "agentTools": [
+    {
+      "name": "nerf_weapon",
+      "description": "Lower one weapon's damage by a percent. Returns the new damage and DPS.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string", "description": "The weapon's record id" },
+          "percent": { "type": "number", "minimum": 1, "maximum": 90 }
+        },
+        "required": ["id", "percent"]
+      }
+    }
+  ]
+}
+```
+
+With the next Summer Engine update, the app can also write `res://data/weapons.json`; check `summer.engine.status()` first.
+
+## Seed the data
+
+One `summer_app_data` call writes every starter row in one revision. `"as": "seed"` marks the rows as the team's, with no author.
+
+```json
+{
+  "appId": "<app id>",
+  "as": "seed",
+  "ops": [
+    { "op": "put", "collection": "settings", "recordId": "rules", "data": { "dpsBudget": 60 } },
+    { "op": "put", "collection": "weapons", "recordId": "bow", "data": { "name": "Hunting Bow", "class": "bow", "damage": 40, "attacksPerSecond": 1.2, "range": 30, "price": 120, "tier": 1 } },
+    { "op": "put", "collection": "weapons", "recordId": "longsword", "data": { "name": "Longsword", "class": "sword", "damage": 55, "attacksPerSecond": 1.0, "range": 2, "price": 150, "tier": 2 } },
+    { "op": "put", "collection": "weapons", "recordId": "war-axe", "data": { "name": "War Axe", "class": "axe", "damage": 90, "attacksPerSecond": 0.8, "range": 2, "price": 260, "tier": 3 } },
+    { "op": "put", "collection": "weapons", "recordId": "ember-staff", "data": { "name": "Ember Staff", "class": "staff", "damage": 34, "attacksPerSecond": 1.5, "range": 18, "price": 200, "tier": 2 } },
+    { "op": "put", "collection": "weapons", "recordId": "dagger", "data": { "name": "Dagger", "class": "dagger", "damage": 22, "attacksPerSecond": 2.6, "range": 1, "price": 80, "tier": 1 } }
+  ]
+}
+```
+
+`put` replaces, so running the seed again does not make duplicates.
+
+## An agent edit: "nerf the bow by 10%"
+
+Read the bow first, to get its damage and its revision:
+
+```json
+{ "appId": "<app id>", "collection": "weapons" }
+```
+
+In the answer, the bow record has `"damage": 40` and a `revision`, here `1`. Write 10% less damage, only if nobody changed the bow since the read:
+
+```json
+{
+  "appId": "<app id>",
+  "ops": [
+    { "op": "patch", "collection": "weapons", "recordId": "bow", "patch": { "damage": 36 }, "ifRevision": 1 }
+  ]
+}
+```
+
+The bow's DPS goes from 48 to 43.2. A `conflict` means someone changed it: read again and retry. When the person has the app open, `summer_app_call` with `{ "tool": "nerf_weapon", "input": { "id": "bow", "percent": 10 } }` does the same through the app's own formula.
+
+## Check the look
+
+After every publish:
+
+- `summer_app_screenshot { "appId": "<app id>" }`
+- `summer_app_screenshot { "appId": "<app id>", "width": 390 }`: on a phone, secondary columns hide and the table stays readable.
+- `summer_app_screenshot { "appId": "<app id>", "theme": "dark" }`
+
+Fix every entry in `errors` and `console`, and every refused call that is not a write. The screenshot is read-only, so saves are refused there; they work in Studio.
+
+## What it uses
+
+**SDK:** `summer.ready`; `summer.data.collection("weapons")` with `.list()`, `.patch()`, `.get()` and `.subscribe()`; `summer.data.collection("settings").get("rules")`; `summer.data.commands()` to save all table edits in one revision; `summer.agent.send("weapons.saved")` after a save; `summer.agent.tool("nerf_weapon")`; `summer.page.declare()` with a **Save** action.
+
+**Kit:** `summer-page`; `summer-stats` and `summer-stat` (weapons, median DPS, over budget); `summer-section`; `summer-chart` (`kind="bar"`, `x="name"`, `y` `["dps"]`, `highlight` `{ "above": 60, "tone": "bad", "label": "Over budget", "otherLabel": "In budget" }`, `reference` `{ "value": 60, "label": "Budget" }`); `summer-table` (`row-key="id"`, `sortable`, `editable` number columns, a DPS column with `type: "bar"` and `over: 60`); `summer-save-bar`; `summer-notice` for a failed load.
+
+The save path, from the table's edits to one data revision:
+
+```js
+const weapons = summer.data.collection("weapons");
+const table = document.getElementById("table"), saveBar = document.getElementById("save");
+await summer.ready;
+
+table.addEventListener("edit", (event) => saveBar.setAttribute("count", String(event.detail.edits)));
+saveBar.addEventListener("save", async () => {
+  saveBar.setAttribute("busy", "");
+  try {
+    const ops = table.edits.map(({ row, key, value }) => ({ op: "patch", collection: "weapons", recordId: row, patch: { [key]: value } }));
+    await summer.data.commands({ requestId: crypto.randomUUID(), baseRevision: 0, ops });
+    await summer.agent.send("weapons.saved", { count: ops.length });
+    table.commit();
+    saveBar.setAttribute("count", "0");
+  } catch (error) {
+    summerUI.toast(error.message, { tone: "error" });
+  } finally {
+    saveBar.removeAttribute("busy");
+  }
+});
+saveBar.addEventListener("discard", () => { table.discard(); saveBar.setAttribute("count", "0"); });
+weapons.subscribe(() => load()); // load() lists the weapons and sets table.rows, the chart and the stats
+```

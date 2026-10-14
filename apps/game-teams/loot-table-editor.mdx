@@ -1,0 +1,158 @@
+---
+title: "Loot table editor: a Summer App for game teams"
+sidebarTitle: "Loot table editor"
+description: "A shared editor for your loot tables: weights per drop, the real chance per roll and per kill, and a tool that sets a drop to an exact chance. Manifest, seed data, agent edits and the look check."
+icon: "dice-5"
+---
+
+<Warning>
+**Draft.** Summer Apps is in a closed test. This page goes live after the end-to-end test on production.
+</Warning>
+
+## What your team gets
+
+- One loot table at a time (pick it from a menu): every drop with its weight, quantity and rarity.
+- The real numbers: chance per roll (weight divided by the table's total weight) and chance per kill or open (with the table's number of rolls).
+- A pie chart of the table. Edit weights in place and save.
+- Your agent changes drops by asking ("halve the Moonfang chance from wolves", "make the Ember Staff a 2% drop from the boss chest").
+
+## Ask your agent
+
+<Prompt description="**Loot table editor.** Your agent builds, seeds and checks the app.">
+Build us a Summer App called "Loot tables": pick a loot table from a menu, then see
+every drop with weight, quantity, rarity, chance per roll (weight / total weight) and
+chance per kill (1 - (1 - chance per roll) ^ rolls). Weights are editable in place with
+a save bar, and a pie chart shows the table. Give agents a set_chance tool that sets one
+drop to an exact chance per roll. Seed it with our loot tables using summer_app_data with
+"as": "seed". Follow the summer-apps and summer-apps-design skills, then check it with
+summer_app_screenshot (default, width 390, theme dark) and fix what it reports.
+</Prompt>
+
+## The manifest
+
+```json
+{
+  "name": "Loot tables",
+  "purpose": "Drop weights and real drop chances for every loot table.",
+  "permissions": ["data"],
+  "collections": {
+    "tables": {
+      "description": "One loot table",
+      "fields": {
+        "name": { "type": "string", "required": true },
+        "source": { "type": "string", "description": "The enemy or chest that rolls it" },
+        "rolls": { "type": "integer", "required": true, "description": "Drops rolled per kill or open" }
+      }
+    },
+    "drops": {
+      "description": "One possible drop in a loot table",
+      "fields": {
+        "table": { "type": "string", "required": true, "description": "Record id of the loot table" },
+        "item": { "type": "string", "required": true },
+        "weight": { "type": "number", "required": true, "description": "Chance per roll = weight / sum of weights in the table" },
+        "minQty": { "type": "integer" },
+        "maxQty": { "type": "integer" },
+        "rarity": { "type": "string", "description": "common, rare, epic or legendary" }
+      }
+    }
+  },
+  "agentTools": [
+    {
+      "name": "set_chance",
+      "description": "Set one drop's weight so its chance per roll is exactly percent. Other weights stay. Returns the new weight and chances.",
+      "input": {
+        "type": "object",
+        "properties": {
+          "drop": { "type": "string", "description": "Record id of the drop" },
+          "percent": { "type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 100 }
+        },
+        "required": ["drop", "percent"]
+      }
+    }
+  ]
+}
+```
+
+## Seed the data
+
+```json
+{
+  "appId": "<app id>",
+  "as": "seed",
+  "ops": [
+    { "op": "put", "collection": "tables", "recordId": "wolf", "data": { "name": "Grey Wolf", "source": "Grey Wolf", "rolls": 1 } },
+    { "op": "put", "collection": "tables", "recordId": "boss-chest", "data": { "name": "Bell Keeper chest", "source": "Bell Keeper", "rolls": 3 } },
+    { "op": "put", "collection": "drops", "recordId": "wolf-pelt", "data": { "table": "wolf", "item": "Wolf Pelt", "weight": 60, "minQty": 1, "maxQty": 2, "rarity": "common" } },
+    { "op": "put", "collection": "drops", "recordId": "wolf-fang", "data": { "table": "wolf", "item": "Wolf Fang", "weight": 30, "minQty": 1, "maxQty": 1, "rarity": "common" } },
+    { "op": "put", "collection": "drops", "recordId": "wolf-draught", "data": { "table": "wolf", "item": "Healing Draught", "weight": 9, "minQty": 1, "maxQty": 1, "rarity": "rare" } },
+    { "op": "put", "collection": "drops", "recordId": "wolf-moonfang", "data": { "table": "wolf", "item": "Moonfang", "weight": 1, "minQty": 1, "maxQty": 1, "rarity": "legendary" } },
+    { "op": "put", "collection": "drops", "recordId": "chest-gold", "data": { "table": "boss-chest", "item": "Gold Pouch", "weight": 50, "minQty": 20, "maxQty": 60, "rarity": "common" } },
+    { "op": "put", "collection": "drops", "recordId": "chest-cloak", "data": { "table": "boss-chest", "item": "Moss Cloak", "weight": 30, "minQty": 1, "maxQty": 1, "rarity": "rare" } },
+    { "op": "put", "collection": "drops", "recordId": "chest-staff", "data": { "table": "boss-chest", "item": "Ember Staff", "weight": 20, "minQty": 1, "maxQty": 1, "rarity": "epic" } }
+  ]
+}
+```
+
+Each table's weights add up to 100 here, so a weight is the chance per roll in percent. That is not required: chances always come from the total.
+
+## An agent edit: "halve the Moonfang chance from wolves"
+
+Read the drops:
+
+```json
+{ "appId": "<app id>", "collection": "drops" }
+```
+
+In the answer, `wolf-moonfang` has `"weight": 1` and a `revision`, here `1`. Halve the weight:
+
+```json
+{
+  "appId": "<app id>",
+  "ops": [
+    { "op": "patch", "collection": "drops", "recordId": "wolf-moonfang", "patch": { "weight": 0.5 }, "ifRevision": 1 }
+  ]
+}
+```
+
+The Moonfang chance per wolf goes from 1% to about 0.5% (0.5 of 99.5). A `conflict` means someone changed the drop: read again and retry. For an exact chance, call the app's tool while the person has it open: `summer_app_call` with `{ "tool": "set_chance", "input": { "drop": "chest-staff", "percent": 2 } }`.
+
+## Check the look
+
+After every publish:
+
+- `summer_app_screenshot { "appId": "<app id>" }`
+- `summer_app_screenshot { "appId": "<app id>", "width": 390 }`
+- `summer_app_screenshot { "appId": "<app id>", "theme": "dark" }`
+- `summer_app_screenshot { "appId": "<app id>", "params": { "table": "boss-chest" } }` if the app opens a table from launch params.
+
+Check the chances by hand once: a wolf drops Wolf Pelt 60% per kill, and the boss chest (3 rolls) drops the Ember Staff 48.8% per open.
+
+## What it uses
+
+**SDK:** `summer.ready` (its `params` for the starting table); `summer.data.collection("tables")` and `summer.data.collection("drops")` with `.list()`, `.get()`, `.patch()` and `.subscribe()`; `summer.data.commands()` to save table edits in one revision; `summer.agent.tool("set_chance")`; `summer.page.declare()` with a `choice` field for the table.
+
+**Kit:** `summer-page`; `summer-section` with `summer-select` in `slot="aside"` to pick the table; `summer-stats` and `summer-stat` (drops, rolls, the rarest drop's chance per kill); `summer-table` (`row-key="id"`, `sortable`; an `editable` weight column with `format: "number"`; chance columns with `format: "percent"` and `digits: 1`, which take a fraction from 0 to 1); `summer-chart` (`kind="pie"`, `x="item"`, `y` `["weight"]`); `summer-save-bar`; `summer-dialog` with `summer-form` to add a drop.
+
+The chances, and the weight for an exact chance:
+
+```js
+function chances(drops, rolls) {
+  const total = drops.reduce((sum, d) => sum + d.weight, 0);
+  return drops.map((d) => {
+    const perRoll = total ? d.weight / total : 0;
+    return { ...d, perRoll, perKill: 1 - (1 - perRoll) ** rolls };
+  });
+}
+// The weight w that gives drop d a chance p, keeping the other weights: w = p * others / (1 - p)
+summer.agent.tool("set_chance", async ({ drop, percent }) => {
+  const drops = summer.data.collection("drops");
+  const target = await drops.get(drop);
+  if (!target) throw new Error(`No drop ${drop}`);
+  const { records } = await drops.list({ limit: 500 });
+  const others = records.filter((r) => r.data.table === target.data.table && r.recordId !== drop).reduce((sum, r) => sum + r.data.weight, 0);
+  const p = percent / 100;
+  const weight = Math.round((p * others / (1 - p)) * 1000) / 1000;
+  await drops.patch(drop, { weight }, { ifRevision: target.revision });
+  return { drop, weight };
+});
+```

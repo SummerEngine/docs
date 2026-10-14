@@ -1,0 +1,56 @@
+---
+title: "Summer Apps, Summer Engine and docks"
+sidebarTitle: "Engine and docks"
+description: "How a Summer App reads and changes your open project in Summer Engine, which operations it may use, and how to dock an app next to your scene."
+icon: "plug"
+---
+
+<Note>
+**Coming with the next Summer Engine update.** Nothing on this page works yet: editor docks, apps that read or write your game files, the `summer.engine.*` calls, `summer_app_dock` and paired plugins all need that release. Until then, keep an app's data in Summer with `summer.data` collections.
+</Note>
+
+{/* TODO before publishing: verify on that release: engine calls from an app in the Studio tab and in a browser, docking with summer_app_dock, and a plugin message round trip. Document the plugin side (SummerApps.send, message_received, summer_app_id in plugin.cfg) once verified. */}
+
+## How an app reaches your engine
+
+- **Inside Summer Engine** (the Studio tab or a dock), engine calls go straight to your open project.
+- **In a browser**, they reach your running Summer Engine through Summer when the desktop app is online and signed in. If no engine is connected, the call fails with `engine_offline`; show "Open in Summer Engine".
+- If more than one Summer Engine is open, a call fails with `engine_target_ambiguous` until one is picked: `summer.engine.targets()` lists them and `summer.engine.useTarget(instanceId)` picks one. Studio also asks the person "Which Summer Engine?".
+- If only a Summer Engine too old for apps is open, a call fails with `engine_update_required`.
+
+An app needs `engine:read` or `engine:write` in its [manifest](/apps/manifest). It may read and write only the files it declares in `engineFiles`, plus `res://addons/<plugin>/` when it declares a `plugin`. `summer.engine.onEvent` and `summer.engine.plugin.*` work only inside Summer Engine.
+
+## What an app may do
+
+Allowed operations (`summer.engine.ops`, 1 to 50 per call):
+
+| Kind | Operations | Permission |
+|---|---|---|
+| Scene changes | `AddNode`, `SetProp`, `RemoveNode`, `MoveNode`, `ReparentNode`, `ReplaceNode`, `InstantiateScene`, `SetResourceProperty`, `ConnectSignal`, `OpenScene`, `SaveScene`, `Undo` | `engine:write` |
+| Imports | `ImportFromUrl`, `ImportFromUrlBatch` | `engine:write` |
+| Play | `PlayGame`, `StopGame` | `engine:write` |
+| Read and look | `Grep`, `SearchInFiles`, `IsGameRunning`, `GameSnapshot`, `ViewportSnapshot`, `ScenePreview`, `GetWorldSnapshot`, `DiffWorldSnapshot`, `SelectNode`, `Navigate` | `engine:read` |
+
+Values are Godot strings, not JSON objects: `"position": "Vector3(0, 10, 0)"`, `"light_color": "#fffef0"`. Scene changes edit `scenePath` (a `res://` `.tscn` or `.scn` file; default: the scene open in the editor).
+
+More rules:
+
+- `SaveScene` saves only `.tscn` and `.scn` files.
+- Imports write asset files outside `res://addons/`, unless the path is declared.
+- Scene changes may not carry script source.
+
+Never allowed from an app: running scripts, editor scripts or shell commands; deleting, moving or renaming files; writing or reading files outside the declared paths; project settings; extracting zip files; editor-window screenshots. Summer enforces these rules, and the engine enforces them again.
+
+## Docks
+
+An app can dock as an editor panel (left, right or bottom). Docks stay in your editor layout per project. Ask your agent. It uses `summer_app_dock` from the `summer-engine` npm package:
+
+```json
+{ "action": "open", "appId": "<app id>", "slot": "bottom" }
+```
+
+`slot` is `left`, `right` (default) or `bottom`. `summer_app_dock` also closes a dock (`"action": "close"`) and lists docks (`"action": "list"`). On engine builds without app docks it answers `engine_lacks_op`; open the app in the Studio tab instead. On the app page, **Dock in editor** does the same in the desktop app.
+
+## Plugins
+
+An agent can build an editor plugin (`res://addons/<name>/`) together with an app. Declare it as `"plugin": { "name": "<name>" }` in the manifest. The app and the plugin message each other through the engine: `summer.engine.plugin.send(message)` and `summer.engine.plugin.onMessage(fn)` in the app. The npm package's `summer_enable_plugin` turns the plugin on in the open project and reports the result.
