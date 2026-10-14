@@ -13,7 +13,7 @@ This page is for the agent and for the person who drives it. It has the build lo
 
 ## Connect your agent
 
-The `summer_app_*` tools are in the Summer Engine MCP. Use one of the two forms.
+The `summer_app_*` tools are in the Summer Engine MCP. Agents build apps through this MCP only. Use one of the two forms.
 
 <Tabs>
   <Tab title="On your computer (npm)">
@@ -26,7 +26,7 @@ The `summer_app_*` tools are in the Summer Engine MCP. Use one of the two forms.
 
     `setup` adds the MCP (`npx -y summer-engine@latest mcp`) to your agent and installs the Summer skills, `summer-apps` and `summer-apps-design` among them. `login` signs you in to your Summer account in the browser. Restart your agent. Other agents: [MCP setup](/mcp/setup).
 
-    The npm package adds two things: `summer_app_publish` takes `dir`, a local folder, and `summer_app_dock` docks an app in Summer Engine.
+    The npm package adds `dir` to `summer_app_publish`: publish a local folder. Its `summer_app_dock` docks an app in Summer Engine; that comes with the next Summer Engine update.
   </Tab>
   <Tab title="In the browser (hosted)">
     For Claude and ChatGPT: add a custom connector with the address `https://mcp.summerengine.com/mcp` and sign in to your Summer account. Step by step: [Connect your agent](/publishing/connect-your-agent).
@@ -52,10 +52,10 @@ The `summer_app_*` tools are in the Summer Engine MCP. Use one of the two forms.
     `summer_app_screenshot { appId }`, then again with `width: 390` (a phone) and `theme: "dark"`. Fix every error, console line and refused call it reports, publish, and look again. Repeat until it is clean.
   </Step>
   <Step title="Listen">
-    `summer_app_events { appId, after }` waits up to 50 seconds for what the app sends (`summer.agent.send`), errors (uncaught ones and `console.error` lines) and the team's feedback. Pass the returned `cursor` as `after` next time.
+    `summer_app_events { appId, after, timeoutSeconds }` waits up to 50 seconds for what the app sends (`summer.agent.send`), errors (uncaught ones and `console.error` lines) and the team's feedback. Pass the returned `cursor` as `after` next time.
   </Step>
-  <Step title="Change it">
-    To change the app, `summer_app_get { appId }` returns the current files and manifest. Edit them and publish again. To change only data, use `summer_app_data`; no publish needed.
+  <Step title="Change it, keep it or archive it">
+    To change the app, `summer_app_get { appId }` returns the current files and manifest. Edit them and publish again. To change only data, use `summer_app_data`; no publish needed. When the team keeps the app, `summer_app_update { appId, status: "kept" }`. Archive throwaway apps when you are done: `summer_app_update { appId, status: "archived" }`.
   </Step>
 </Steps>
 

@@ -1,7 +1,7 @@
 ---
 title: "Item and quest database: a Summer App for game teams"
 sidebarTitle: "Item and quest database"
-description: "One shared database of your game's items and quests, with search, filters, edit dialogs, a reference check and an export to your project. Manifest, seed data, agent edits and the look check."
+description: "One shared database of your game's items and quests, with search, filters, edit dialogs and a reference check. Manifest, seed data, agent edits and the look check."
 icon: "database"
 ---
 
@@ -14,7 +14,6 @@ icon: "database"
 - Two tabs, **Items** and **Quests**, each a searchable, sortable table. Click a row to edit it in a dialog.
 - Quest status as badges: draft, in review, done. Filter by status with one click.
 - A reference check: quests that reward an item that does not exist are flagged.
-- **Export to game** writes `res://data/items.json` and `res://data/quests.json` in your open project.
 - Your agent adds and changes items and quests by asking ("make the Iron Sword cost 120 gold", "add a fetch quest in Mossbank").
 
 ## Ask your agent
@@ -24,8 +23,7 @@ Build us a Summer App called "Game database" with two tabs: Items (name, type, r
 price, description) and Quests (title, giver, region, minimum level, status draft /
 review / done, reward gold, reward items, steps). Search and a status filter above each
 table, click a row to edit it in a dialog, and flag quests whose reward items do not
-exist. An "Export to game" button writes res://data/items.json and
-res://data/quests.json. Give agents a check_references tool. Seed it with our items and
+exist. Keep all data in the app's shared data. Give agents a check_references tool. Seed it with our items and
 quests using summer_app_data with "as": "seed". Follow the summer-apps and
 summer-apps-design skills, then check it with summer_app_screenshot (default, width 390,
 theme dark) and fix what it reports.
@@ -36,9 +34,8 @@ theme dark) and fix what it reports.
 ```json
 {
   "name": "Game database",
-  "purpose": "Every item and quest in the game. Exports to res://data/items.json and quests.json.",
-  "permissions": ["data", "engine:write"],
-  "engineFiles": ["res://data/items.json", "res://data/quests.json"],
+  "purpose": "Every item and quest in the game. They live in this app's shared data.",
+  "permissions": ["data"],
   "collections": {
     "items": {
       "description": "One item. The record id is the item id the game uses.",
@@ -64,7 +61,7 @@ theme dark) and fix what it reports.
       }
     }
   },
-  "agentEvents": ["data.exported"],
+  "agentEvents": ["record.saved"],
   "agentTools": [
     {
       "name": "check_references",
@@ -125,13 +122,15 @@ After every publish:
 - `summer_app_screenshot { "appId": "<app id>", "theme": "dark" }`
 - `summer_app_screenshot { "appId": "<app id>", "params": { "tab": "quests" } }` if the app opens a tab from launch params.
 
-The screenshot shows the first tab and no open dialog. Check that the declared buttons in `declared.actions` include **Export to game**, marked `critical`.
+The screenshot shows the first tab and no open dialog. Check that `declared.actions` lists **Add item** and **Add quest**.
+
+With the next Summer Engine update, the app can also write `res://data/items.json` and `res://data/quests.json`; check `summer.engine.status()` first.
 
 ## What it uses
 
-**SDK:** `summer.ready`; `summer.data.collection("items")` and `summer.data.collection("quests")` with `.list()`, `.put()`, `.patch()`, `.remove()` and `.subscribe()`; `summer.engine.writeFile()` for each file; `summer.agent.send("data.exported")`; `summer.agent.tool("check_references")`; `summer.page.declare()` with **Export to game** as a `critical` action.
+**SDK:** `summer.ready`; `summer.data.collection("items")` and `summer.data.collection("quests")` with `.list()`, `.put()`, `.patch()`, `.remove()` and `.subscribe()`; `summer.agent.send("record.saved")` after a dialog save; `summer.agent.tool("check_references")`; `summer.page.declare()` with **Add item** and **Add quest** actions.
 
-**Kit:** `summer-page` with **Export to game** in `slot="actions"`; `summer-tabs` (`labels` `["Items", "Quests"]`); `summer-toolbar` with `summer-search` and `summer-segmented` (status, with counts); `summer-table` (`row-key="id"`, `sortable`, `clickable`; a status column with `badges` `{ "draft": "quiet", "review": { "tone": "info", "label": "In review" }, "done": "ok" }`; a reference column of `type: "badge"` filled only on broken rows); `summer-dialog` with `summer-form`, `summer-text-input`, `summer-select` and a `type="number"` input; `summer-empty-state`; `summer-notice` for a failed load.
+**Kit:** `summer-page` with **Add item** or **Add quest** (for the open tab) in `slot="actions"`; `summer-tabs` (`labels` `["Items", "Quests"]`); `summer-toolbar` with `summer-search` and `summer-segmented` (status, with counts); `summer-table` (`row-key="id"`, `sortable`, `clickable`; a status column with `badges` `{ "draft": "quiet", "review": { "tone": "info", "label": "In review" }, "done": "ok" }`; a reference column of `type: "badge"` filled only on broken rows); `summer-dialog` with `summer-form`, `summer-text-input`, `summer-select` and a `type="number"` input; `summer-empty-state`; `summer-notice` for a failed load.
 
 The reference check, used by the table and by the tool:
 

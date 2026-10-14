@@ -69,19 +69,19 @@ Your agent lists the tools with `summer_app_tools` (`{ appId, version, tools, co
 { "appId": "<app id>", "tool": "nerf_item", "input": { "id": "bow", "percent": 10 } }
 ```
 
-The answer is `{ ok: true, result, seq }`. The call runs inside the app open in the person's Studio tab or editor dock, with their rights, and waits up to 60 seconds. If the app is not open, the answer is `app_not_open`: use `summer_app_data`, or ask the person to open the app.
+The answer is `{ ok: true, result, seq }`. The call runs inside the app open in the person's Studio tab, with their rights, and waits up to 60 seconds. If the app is not open, the answer is `app_not_open`: use `summer_app_data`, or ask the person to open the app.
 
 Use data for plain reads and edits. Use a tool for logic that lives in the app.
 
 ## Events: the app talks back
 
-An app sends events to your agent with `summer.agent.send(name, payload)`, for example when the person presses "Write to game". Your agent waits for them with `summer_app_events`:
+An app sends events to your agent with `summer.agent.send(name, payload)`, for example when the person presses "Send to agent". Your agent waits for them with `summer_app_events`:
 
 ```json
-{ "appId": "<app id>", "after": 0 }
+{ "appId": "<app id>", "after": 0, "timeoutSeconds": 50 }
 ```
 
-The answer is `{ events, cursor, timedOut }`. Each event is `{ seq, kind, actorId, payload, createdAt }`. Pass `cursor` as `after` in the next call. The call waits up to 50 seconds for the first new event: `timeoutSeconds` on the hosted MCP, `waitSeconds` in the npm package (default 25).
+The answer is `{ events, cursor, timedOut }`. Each event is `{ seq, kind, actorId, payload, createdAt }`. Pass `cursor` as `after` in the next call. `timeoutSeconds` (0 to 50, default 25) is how long the call waits for the first new event.
 
 | `kind` | Payload |
 |---|---|
@@ -96,7 +96,7 @@ An app declares its inputs and buttons with `summer.page.declare` (see the [SDK 
 
 ## The MCP tools
 
-The hosted Summer Engine MCP (`https://mcp.summerengine.com/mcp`) and the `summer-engine` npm package have the same `summer_app_*` tools, except `summer_app_dock`, which is only in the npm package.
+The hosted Summer Engine MCP (`https://mcp.summerengine.com/mcp`) and the `summer-engine` npm package have the same `summer_app_*` tools, except `summer_app_dock`, which is only in the npm package and comes with the next Summer Engine update.
 
 | Tool | Does |
 |---|---|
@@ -104,6 +104,7 @@ The hosted Summer Engine MCP (`https://mcp.summerengine.com/mcp`) and the `summe
 | `summer_app_list` | The apps in the person's workspaces. `workspaceId` and `q` (search) are optional. |
 | `summer_app_create` | A new scratch app: `{ name, purpose, format, workspaceId?, folder? }`. `format` is `code` (default) or `layout`. Returns `{ app, studio, url }`; the app id is `app.id`. The person's Studio tab opens it. |
 | `summer_app_publish` | A new version: `{ appId, files or layout, manifest, note?, idempotencyKey? }`. Files are `[{ path, content, encoding }]` (`utf8` or `base64`). The npm package also takes `dir`, a local folder. |
+| `summer_app_update` | Renames an app or changes its purpose, folder or status: `{ appId, name?, purpose?, status?, folder? }`. `status` is `scratch`, `kept` (the team keeps it) or `archived`. Archive the throwaway apps you made when the person is done with them. `folder: null` takes an app out of its folder. |
 | `summer_app_get` | `{ app, version, files, data, url }`: the manifest, the current files and a summary of the data. Read it before you change an app. |
 | `summer_app_screenshot` | Renders the published app headless and read-only, with the person's data. Returns the picture plus console lines, errors, refused calls, `connected` and `rendered`, and the declared fields, buttons and agent tools. `{ appId, width?, height?, theme?, fullPage?, version?, params? }`; the npm package also takes `out`, a local path for the PNG. |
 | `summer_app_events` | Waits for what the app sends, errors, feedback and tool calls. |
@@ -112,7 +113,7 @@ The hosted Summer Engine MCP (`https://mcp.summerengine.com/mcp`) and the `summe
 | `summer_app_tools` | The app's agent tools and data collections. |
 | `summer_app_call` | Runs an agent tool in the open app. |
 | `summer_app_report_gap` | Tells Summer about a capability an app needed and the SDK lacks: `{ capability, detail?, method?, appId? }`. |
-| `summer_app_dock` | npm package only. Docks an app in the running Summer Engine editor. See [Engine and docks](/apps/engine-and-docks). |
+| `summer_app_dock` | npm package only. Docks an app in the running Summer Engine editor. Coming with the next Summer Engine update; see [Engine and docks](/apps/engine-and-docks). |
 
 All of them except `summer_app_call` (which can run a tool that generates) are free.
 

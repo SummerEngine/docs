@@ -1,7 +1,7 @@
 ---
 title: "Summer Apps security"
 sidebarTitle: "Security"
-description: "What a Summer App can and cannot do: a separate sandboxed site, no cookies or network, declared permissions, calls that run as the person, engine limits, spend caps and switches."
+description: "What a Summer App can and cannot do: a separate sandboxed site, no cookies or network, declared permissions, calls that run as the person, engine limits, spending limits and switches."
 icon: "shield"
 ---
 
@@ -19,8 +19,8 @@ Agents write app code, so Summer does not trust it. Safety comes from how apps r
 | An app sends your data somewhere | Apps have no network access. A team admin can allow specific domains for their team's apps. |
 | An app does more than it says | Every call is checked against the permissions in its [manifest](/apps/manifest), twice: in Studio and on Summer's servers. |
 | An app reads another team's data | Every call runs as the person using the app, with their team membership. People outside the team get "not found". |
-| An app damages your project | Only an allowlist of editor operations, only declared files, no scripts or shell, no deletes. Enforced by Summer and inside Summer Engine. |
-| An app spends your credits | Paid calls are charged to the person using the app, shown in the app's cost meter, and capped per person, app and day for members ($50 a day by default; an admin can change it per app). Owners and admins have no cap. |
+| An app damages your project (engine access comes with the next Summer Engine update) | Only an allowlist of editor operations, only declared files, no scripts or shell, no deletes. Enforced by Summer and inside Summer Engine. |
+| An app spends your credits | Paid calls are charged to the person using the app and shown in the app's cost meter. Members have a daily spending limit per app that owners and admins can change. |
 | A bad app is shared in a team | Apps are shared only inside a team. Owners and admins can turn off one app or all apps for the team. |
 | Someone frames an app elsewhere | App pages can only be shown inside Summer Studio. |
 | An agent's look at an app changes something | `summer_app_screenshot` renders the app read-only: writes and paid calls are refused, events and notices are not delivered. |

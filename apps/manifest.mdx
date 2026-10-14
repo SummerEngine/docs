@@ -14,9 +14,8 @@ Every `summer_app_publish` sends a manifest as `manifest`. Summer writes it into
 ```json
 {
   "name": "Loot table",
-  "purpose": "Balance item stats and write them to res://data/items.json",
-  "permissions": ["data", "engine:read", "engine:write"],
-  "engineFiles": ["res://data/items.json"],
+  "purpose": "Balance item stats. Items live in this app's shared data.",
+  "permissions": ["data"],
   "collections": {
     "items": {
       "description": "One weapon or armour piece",
@@ -28,7 +27,7 @@ Every `summer_app_publish` sends a manifest as `manifest`. Summer writes it into
       }
     }
   },
-  "agentEvents": ["items.written"],
+  "agentEvents": ["items.changed"],
   "agentTools": [
     {
       "name": "nerf_item",
@@ -39,9 +38,7 @@ Every `summer_app_publish` sends a manifest as `manifest`. Summer writes it into
         "required": ["id", "percent"]
       }
     }
-  ],
-  "surface": "both",
-  "dock": { "preferred": "bottom" }
+  ]
 }
 ```
 
@@ -50,13 +47,13 @@ Every `summer_app_publish` sends a manifest as `manifest`. Summer writes it into
 | `name` | yes | 1 to 80 characters. |
 | `purpose` | no | Up to 280 characters: what the tool does and where its data goes. |
 | `permissions` | no | From the list below, each once. Only what the app uses. Default `[]`. |
-| `engineFiles` | no | Up to 50 `res://` paths (no `..`) that `engine.readFile` and `engine.writeFile` may touch. |
+| `engineFiles` | no | Next Summer Engine update. Up to 50 `res://` paths (no `..`) that `engine.readFile` and `engine.writeFile` may touch. |
 | `collections` | no | Up to 50 shared data collections, keyed by name (lowercase `a-z 0-9 _ . -`, max 48). Each has `description` (max 500) and `fields` (up to 50). A field name is letters, digits and `_` (max 64); a field has `type` (`string`, `number`, `integer`, `boolean`, `object`, `array` or `any`), `description` (max 300) and `required`. Agents and people read it to know a record's shape. Writes are not rejected for it. |
 | `agentEvents` | no | Up to 50 event names (lowercase `a-z 0-9 _ . -`, max 48) the app sends with `summer.agent.send`. |
 | `agentTools` | no | Up to 20 tools, unique names: `name` (lowercase `a-z 0-9 _`, max 64), `description` (1 to 1,000 characters), `input` (a JSON Schema object, up to 8 KB; default `{ "type": "object", "properties": {} }`). |
-| `surface` | no | `page` (the Studio app page, default), `dock` (an editor dock) or `both`. A dock layout must work from 320 px wide. Docked apps get selection and scene events (`summer.engine.onEvent`). |
-| `dock` | no | `{ "preferred": "left" \| "right" \| "bottom" }`. |
-| `plugin` | no | `{ "name": "<folder>" }` (lowercase `a-z 0-9 _ -`): the app may also read and write `res://addons/<folder>/`. |
+| `surface` | no | `page` (the Studio app page, default), `dock` (an editor dock) or `both`. Docks come with the next Summer Engine update. A dock layout must work from 320 px wide. Docked apps get selection and scene events (`summer.engine.onEvent`). |
+| `dock` | no | Next Summer Engine update. `{ "preferred": "left" \| "right" \| "bottom" }`. |
+| `plugin` | no | Next Summer Engine update. `{ "name": "<folder>" }` (lowercase `a-z 0-9 _ -`): the app may also read and write `res://addons/<folder>/`. |
 | `entry` | no | Always `index.html`. You can leave it out. |
 
 The whole manifest is at most 200 KB.
@@ -75,8 +72,8 @@ People see them on the app page under "This app can". Nothing asks them to confi
 | `projects:read` | See your projects |
 | `team:read` | See who is on your team |
 | `grow:read` | See your game analytics |
-| `engine:read` | Read your open project in Summer Engine |
-| `engine:write` | Change your open project in Summer Engine |
+| `engine:read` | Read your open project in Summer Engine (next Summer Engine update) |
+| `engine:write` | Change your open project in Summer Engine (next Summer Engine update) |
 | `choices` | See and pick from your sound choice sets |
 
 `engine:write` includes `engine:read`. `assets:write` includes `assets:read`. The `app.*`, `agent.*` and `page.*` calls and `team.presence` need no permission. The call each permission opens is in the [SDK reference](/apps/sdk).

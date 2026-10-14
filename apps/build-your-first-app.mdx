@@ -13,31 +13,31 @@ icon: "hammer"
 
 ## First: does Summer already do it?
 
-An app is something your team has to keep. Your agent first checks whether Summer already does the job: Studio features (the asset library with collections and groups, Pick one and sound choices, Grow dashboards, Team) and the Summer MCP tools. If Summer does it, the agent uses that and tells you where it is. It builds an app only when the need is real and missing, or as a Scratch throwaway that it calls a throwaway. When something is missing, it reports it to Summer with `summer_app_report_gap`.
+An app is something your team has to keep. Your agent first checks whether Summer already does the job: Studio features (the asset library with collections and groups, Pick one and sound choices, Grow dashboards, Team) and the Summer MCP tools. If Summer does it, the agent uses that and tells you where it is. It builds an app only when the need is real and missing, or as a Scratch throwaway that it calls a throwaway and archives with `summer_app_update` when you are done with it. When something is missing, it reports it to Summer with `summer_app_report_gap`.
 
 | You ask | Your agent |
 |---|---|
 | "Let me pick from these 12 sword sounds" | Uses Pick one, or puts the sounds in a library collection. No app. |
 | "Group our assets into a moodboard for the forest level" | Uses the asset library's collections and groups. No app. |
-| "A weapon balance table that writes res://data/weapons.json" | Builds an app: nothing in Summer edits game data with your balance rules. |
+| "A weapon balance table with our DPS budget" | Builds an app: nothing in Summer edits game data with your balance rules. |
 
 ## Before you start
 
 You need:
 
 - A Summer account, signed in to Summer Studio in your browser or in Summer Engine.
-- An agent with the Summer Engine MCP. See [Connect your agent](/apps/build-with-your-agent#connect-your-agent).
+- An agent with the Summer Engine MCP: the `summer-engine` npm MCP on your computer or the hosted MCP at `https://mcp.summerengine.com/mcp`. See [Connect your agent](/apps/build-with-your-agent#connect-your-agent). Agents build apps through the MCP only.
 
 ## 1. Ask for the tool
 
 Open Summer Studio, then ask your agent:
 
 <Prompt description="**Loot table.** A shared table of your items with DPS, written back to your game.">
-Build us a Summer App called "Loot table": every item from res://data/items.json
-with damage, speed and DPS, a DPS chart that flags items over 60, and a
-"Write to game" button that saves the file. Read summer_app_guide first, follow the
-summer-apps and summer-apps-design skills, and check the app with
-summer_app_screenshot (also at width 390 and in dark theme) before you tell me it is done.
+Build us a Summer App called "Loot table": our items with damage, speed and DPS,
+kept in the app's shared data, and a DPS chart that flags items over 60. Seed it with
+our items using summer_app_data. Read summer_app_guide first, follow the summer-apps
+and summer-apps-design skills, and check the app with summer_app_screenshot (also at
+width 390 and in dark theme) before you tell me it is done.
 </Prompt>
 
 ## 2. What your agent does
@@ -50,23 +50,26 @@ summer_app_screenshot (also at width 390 and in dark theme) before you tell me i
     `summer_app_create` makes a Scratch app in your workspace. Your open Studio tab moves to it with the notice "Your agent built Loot table".
   </Step>
   <Step title="Writes the files">
-    An `index.html`, its JavaScript, and a manifest that declares what the app may do. Here: shared data, and reading and writing `res://data/items.json`.
+    An `index.html`, its JavaScript, and a manifest that declares what the app may do. Here: shared data (`data`), with an `items` collection.
   </Step>
   <Step title="Publishes">
     `summer_app_publish` uploads the files as version 1. Your tab shows the files arriving, then starts the app.
+  </Step>
+  <Step title="Seeds the data">
+    `summer_app_data` writes your items into the app's `items` collection, as the team's starter data.
   </Step>
   <Step title="Looks at it">
     `summer_app_screenshot` renders the app with your data and reports errors. The agent fixes them and publishes again until the app is clean in light, dark and at phone width.
   </Step>
   <Step title="Listens">
-    `summer_app_events` waits for what you do in the app (for example "Write to game") and for errors, so the agent can react.
+    `summer_app_events` waits for what you do in the app and for errors, so the agent can react.
   </Step>
 </Steps>
 
 ## 3. Use it with your team
 
 - Everyone in the workspace can open it from **Studio > Apps**. Edits show up for everyone, live.
-- Choose **Keep** in the app's menu, so it does not expire with the Scratch apps.
+- Choose **Keep** in the app's menu, so it does not expire with the Scratch apps. Your agent can do it too: `summer_app_update` with `status: "kept"`.
 - Choose **Pin to sidebar** to keep it one click away.
 
 ## 4. Change it
@@ -95,4 +98,3 @@ More in [Agents and apps](/apps/agents).
 | A publish error names a file or a key | Ask the agent to fix it and publish again. |
 | `permission_missing` | The manifest lacks a permission. Ask the agent to add it and publish again. |
 | The app shows an error | The agent reads it with `summer_app_events` (kind `error`) or `summer_app_screenshot`. Ask it to fix the app. |
-| "Open in Summer Engine" in the app | The app needs your engine (`engine_offline`). Open Summer Engine with your project, or open the app in its Studio tab. |

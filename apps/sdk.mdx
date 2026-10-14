@@ -122,7 +122,7 @@ Limits: a record is JSON up to 64 KB, 10,000 records per collection, 50 collecti
 
 ## generate (`generate`) and ai (`ai`)
 
-These calls spend the credits of the person using the app, at the same prices as the rest of Summer. Members have a daily cap per app ($50 by default); a call over it rejects with `spend_cap_reached`.
+These calls spend the credits of the person using the app, at the same prices as the rest of Summer. Members have a daily spending limit per app that owners and admins can change; a call over it rejects with `spend_cap_reached`.
 
 | Call | Returns |
 |---|---|
@@ -152,7 +152,9 @@ These calls spend the credits of the person using the app, at the same prices as
 
 ## engine (`engine:read`, `engine:write`)
 
-See [Engine and docks](/apps/engine-and-docks).
+<Note>
+**Coming with the next Summer Engine update.** These calls do not work yet. Keep an app's data in `summer.data` collections. See [Engine and docks](/apps/engine-and-docks).
+</Note>
 
 | Call | Permission | Returns |
 |---|---|---|
