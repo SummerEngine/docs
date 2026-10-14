@@ -131,7 +131,7 @@ The net per hour must be right for each currency, and the chart must show sinks 
 
 **SDK:** `summer.ready` (its `params` for a starting currency); `summer.data.collection("currencies")` and `summer.data.collection("flows")` with `.list()` and `.subscribe()`; `summer.data.commands()` to save table edits and `scale_flows` in one revision; `summer.agent.tool("scale_flows")`; `summer.page.declare()` with a `choice` field for the currency.
 
-**Kit:** `summer-page`; `summer-toolbar` with `summer-segmented` (one option per currency); `summer-stats` and `summer-stat` (sources, sinks and net per hour; the net with `delta` against the target and `tone="warn"` when it is more than 20% away); `summer-chart` (`kind="bar"`, `x="name"`, `y` `["perHour"]`, `highlight` `{ "key": "kind", "equals": "sink", "tone": "bad", "label": "Sinks", "otherLabel": "Sources" }`; the chart starts at zero, so keep amounts positive); `summer-table` (`row-key="id"`, `sortable`, an `editable` amount column with `format: "number"`); `summer-save-bar`; `summer-dialog` with `summer-form` and `summer-select` to add a flow.
+**Kit:** `summer-page`; `summer-toolbar` with `summer-segmented` (one option per currency); `summer-stats` and `summer-stat` (sources, sinks and net per hour; the net with `delta` against the target and `tone="warn"` when it is more than 20% away); `summer-chart` (`kind="bar"`, `x="name"`, `y` `["perHour"]`, `highlight` `{ "key": "kind", "equals": "sink", "tone": "bad", "label": "Sinks", "otherLabel": "Sources" }`); `summer-table` (`row-key="id"`, `sortable`, an `editable` amount column with `format: "number"`); `summer-save-bar`; `summer-dialog` with `summer-form` and `summer-select` to add a flow.
 
 The numbers per currency:
 

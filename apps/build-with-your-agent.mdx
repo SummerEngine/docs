@@ -37,19 +37,19 @@ The `summer_app_*` tools are in the Summer Engine MCP. Use one of the two forms.
 
 <Steps>
   <Step title="Read the guide">
-    `summer_app_guide` once per session (whole), then one `section` when you need it: `examples` starts with a complete working app; `sdk`, `manifest` and `kit` have every call, field and component; `design` has the look; `types` has the SDK's TypeScript types. Load the `summer-apps` and `summer-apps-design` skills when you have them.
+    `summer_app_guide` returns Markdown. Without a `section` it returns `overview`: when to build an app, layout or code, the loop and the rules. Read it first. Then read what the app needs: `examples` starts with a complete working app; `sdk`, `manifest` and `kit` have every call, field and component; `design` has the look; `layout` the layout format; `types` the SDK's TypeScript types. `all` returns every section except `types` at once, about 100 KB. Load the `summer-apps` and `summer-apps-design` skills when you have them.
   </Step>
   <Step title="Create the app">
-    `summer_app_create { name, purpose, format }`. `format` is `code` (default) or `layout`. The app id is `app.id` in the answer. The person's open Studio tab moves to the new app.
+    `summer_app_create { name, purpose, format }`. `format` is `code` (default) or `layout`. The app id is `app.id` in the answer. The person's open Studio tab moves to the new app. If the answer has `studio.reason: "no_tab"`, no Studio tab was open: give the person the link `/studio/apps/<appId>`.
   </Step>
   <Step title="Write and publish">
-    Write `index.html` and `app.js` (and CSS if you need it), then `summer_app_publish { appId, files, manifest, note }`. With the npm package, pass `dir` instead of `files`. Each publish is a new, immutable version. A publish error names the file or the rule: fix it and publish again.
+    Write `index.html` and `app.js` (and CSS if you need it), then `summer_app_publish { appId, files, manifest, note }`. With the npm package, pass `dir` instead of `files`. Each publish is a new, immutable version. A publish error names the file or the rule: fix it and publish again. A publish that goes through can still answer `warnings`: SDK calls whose permission the manifest lacks, and `summer.agent.send` events or `summer.agent.tool` tools the manifest does not declare. Those fail when the app runs. Fix the warnings and publish again.
   </Step>
   <Step title="Seed data">
     If the app should start with content, write it with `summer_app_data` and `"as": "seed"`. Seed rows belong to the team and show no author.
   </Step>
   <Step title="Look at it">
-    `summer_app_screenshot { appId }`, then again with `width: 390` (a phone) and `theme: "dark"`. Fix every error, console line and refused call it reports, publish, and look again. Repeat until it is clean.
+    `summer_app_screenshot { appId }`, then again with `width: 390` (a phone) and `theme: "dark"`. To see a dialog or a second state, add `steps`. Fix every error, console line and refused call it reports, publish, and look again. Repeat until it is clean.
   </Step>
   <Step title="Listen">
     `summer_app_events { appId, after, timeoutSeconds }` waits up to 50 seconds for what the app sends (`summer.agent.send`), errors (uncaught ones and `console.error` lines) and the team's feedback. Pass the returned `cursor` as `after` next time.
@@ -100,6 +100,7 @@ Summer renders the published app headless, as the person and with their data, an
 | `theme` | `light` | `light` or `dark`. |
 | `fullPage` | `false` | The whole scroll height, up to 4,000 px. |
 | `params` | | Launch params, as in `/studio/apps/<appId>?key=value`. |
+| `steps` | | Up to 5 steps, run in order before the capture: `{ "click": "<css selector>" }`, `{ "press": "<declared action id>" }` or `{ "wait": <ms> }` (up to 3,000). In a selector, `>>>` reaches inside kit components: `"summer-table >>> tbody tr"`. Writes that a step causes are refused, as always. |
 | `out` | | npm package only: also save the PNG to this local path. |
 
 The report:
@@ -107,12 +108,21 @@ The report:
 | Field | Tells you |
 |---|---|
 | `connected` | The SDK loaded and Studio's stand-in connected it. `false`: fix how `index.html` loads `/summer-sdk/v1.js`. |
-| `rendered` | The first SDK calls settled and the app painted within 8 seconds. |
+| `rendered` | The first SDK calls settled and the app painted within 8 seconds. The capture then waits until the app's SDK calls settle and no kit element shows `loading`, up to 6 seconds. |
 | `console`, `errors` | Console lines and uncaught errors, with source and line. |
 | `calls` | Every SDK call with `ok`, and `code` for a refused one. |
 | `declared` | The fields and buttons from `summer.page.declare`. |
 | `agentTools` | The agent tools the app registered. |
-| `title`, `notices`, `hints` | `setTitle` and `notify` text, and hints on what to fix. |
+| `steps` | Each step with `ok`, and `error` for one that failed. |
+| `title`, `notices`, `hints` | `setTitle` and `notify` text, and hints on what to fix. A hint says when the page still shows loading placeholders. |
+
+To see the edit dialog of an app whose table rows open one, click the first row before the capture:
+
+```json
+{ "appId": "<app id>", "steps": [{ "click": "summer-table >>> tbody tr" }, { "wait": 300 }] }
+```
+
+For a button the app declared with `summer.page.declare`, `{ "press": "<action id>" }` works the same way.
 
 The screenshot is read-only. Reads run as the person (data, assets, team, projects, Grow, choices, engine status). Writes, paid calls and other engine calls are refused with `invalid`; events and notices are recorded, not delivered. They all work in Studio. To see data in a screenshot, seed it first with `summer_app_data`. A screenshot before the first publish fails with `not_found`.
 

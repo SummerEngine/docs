@@ -45,6 +45,16 @@ The full catalog, with every attribute, property, method, event and a copyable e
 | People and progress | `summer-avatar-stack`, `summer-badge`, `summer-progress` (`value` 0 to 1) |
 | States | `loading` on data components while fetching; `empty-text` on a table or chart, or `summer-empty-state`; `summerUI.toast(text)` for a finished action |
 
+## Rules for every component
+
+- `hidden` hides any kit component.
+- A JSON attribute is also a property of the same name: `select.options = [...]`, `table.rows = [...]`.
+- Setting `.value` from code never emits `change`. Only the person's input does, so updating a control while you render never loops.
+- Clear `loading` once the data is shown, also when the data is empty.
+- Number inputs have no `min` or `max`. Check the range in the form's `submit` handler and set the field's `error`.
+- Tables have no buttons per row. For a one-click row action, use `summer-list` row actions, or clickable rows that open a dialog.
+- A chart with several `y` keys draws grouped bars side by side, not stacked. Negative values hang below zero.
+
 ## The rules in short
 
 - One line says what the tool does and where its data goes. One primary button finishes the task.
