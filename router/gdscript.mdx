@@ -169,7 +169,7 @@ var img := await Summer.client.router.generate("image", {"prompt": "a mossy ston
 
 ## Fallbacks
 
-Write the fallback first. It is the game when AI is not there: your own lines, a password prompt, buttons. Use it on `unavailable`, `ai_disabled`, `limit_reached`, `credits_required`, `age_restricted` and `not_signed_in` for the rest of the session, and on `provider_unavailable`, `rate_limited` and `moderated` for one line. Never retry in a loop.
+Write the fallback first. It is the game when AI is not there: your own lines, a password prompt, buttons. Use it on `unavailable`, `router_disabled`, `limit_reached`, `credits_required`, `age_restricted` and `not_signed_in` for the rest of the session, and on `provider_unavailable`, `rate_limited` and `moderated` for one line. Never retry in a loop.
 
 ## The microphone
 
