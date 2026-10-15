@@ -1,6 +1,7 @@
 ---
-title: "MCP API Reference"
-description: "Summer Engine MCP API. Connect Cursor, Claude Code, Devin Desktop. Tools for scene, debug, project, assets, and generation."
+title: "How Summer answers"
+sidebarTitle: "How Summer answers"
+description: "Every Summer operation gives one answer: done, running, needs_approval or dry_run, or an error with one next step and a retry hint. The 18 error codes, dryRun, idempotencyKey, jobs and jobs.wait, and 3.x tool names."
 icon: "plug"
 "og:image": "https://docs.summerengine.com/images/og/api-reference-mcp.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/api-reference-mcp.jpg"
@@ -8,69 +9,112 @@ icon: "plug"
 
 {/* Do not reintroduce a hardcoded MCP tool count here. The tool list grows every release and a baked-in number has already gone stale twice. */}
 
-## MCP API Reference
+Summer is the game engine built for AI. Every Summer operation answers in one JSON shape: on the hosted MCP (`https://mcp.summerengine.com/mcp`), on the `summer-engine` npm MCP and in the `summer` CLI (`--json`). Your agent reads `status` first. Connect your agent: [MCP setup](/mcp/setup).
 
-Summer Engine's Model Context Protocol (MCP) integration is live. Connect Cursor, Claude Code, or Devin Desktop to control the engine from your IDE. Add nodes, set properties, import assets, run the game, and debug, all through natural language.
+## The answer
 
-<Card
-  title="MCP Setup Guide"
-  icon="plug"
-  href="/mcp/setup"
->
-  Prerequisites, one-click Cursor install, manual config for any IDE
-</Card>
+| `status` | Means | What the agent does next |
+|---|---|---|
+| `done` | Finished. `result` holds the answer. | Use `result`. |
+| `running` | Long work started. `job.id` names it. | Call `jobs.wait` with the job id until it is done. |
+| `needs_approval` | The change waits for a person's yes. Nothing has changed. | Give the person `approval.url`, then call `jobs.wait` with `job.id`. |
+| `dry_run` | A check only (`dryRun: true`). Nothing changed and nothing was spent. | Read `preview`: the changes, and for spend operations the estimated credits. |
 
-## What You Get
+```json
+{ "ok": true, "status": "done", "result": { "items": [] } }
+{ "ok": true, "status": "running", "job": { "id": "gen:<id>", "state": "running" } }
+{ "ok": true, "status": "needs_approval",
+  "approval": { "id": "apr_<id>", "url": "https://www.summerengine.com/studio/approvals/apr_<id>", "who": "person", "summary": "Invite sam@example.com as a developer." },
+  "job": { "id": "apr:<id>", "state": "awaiting_approval" } }
+{ "ok": true, "status": "dry_run", "preview": { "summary": "Change the base price.", "changes": [], "approval": "none", "valid": true } }
+{ "ok": false, "error": { "code": "no_credits", "message": "Not enough credits for this call.", "next": { "url": "https://www.summerengine.com/studio/credits", "label": "Add credits" }, "retry": "no" } }
+```
 
-- **Focused tools**: Scene manipulation, debugging, project settings, asset search, asset import, and generation
-- **Same operations as built-in chat**: AddNode, SetProp, SaveScene, ImportFromUrl. Identical behavior.
-- **Lazy connection**: MCP server starts when your IDE starts; connects to the engine on first tool call
-- **No API keys**: Engine uses local tokens. Run `summer login` once for account features.
+A `needs_approval` answer comes when a switch in **Studio > Settings > Agent permissions** is off, when the change always asks, or when Summer Games asks a game's owner. Nothing changes until the person approves. See [Agent permissions and approvals](/mcp/permissions).
 
-## Quick Links
+## Errors
+
+An error answers `ok: false` with `error.code`, a plain `message`, one `next` step and `retry`. Do the `next` step first. `next` is one of:
+
+- `{ "op": "...", "input": {...} }`: the operation to call;
+- `{ "url": "...", "label": "..." }`: a link to give the person;
+- `{ "say": "..." }`: what to tell the person.
+
+`retry` says if the same call may run again:
+
+| `retry` | Means |
+|---|---|
+| `no` | Do not repeat it. Do the `next` step. |
+| `safe` | Run the same call again after the `next` step. |
+| `same_key` | Check with the read in `next`, then retry only with the same `idempotencyKey`. |
+| `after` | Wait `details.retryAfterSeconds`, then retry. |
+
+The list of codes is closed: a new code is a new version of the catalog.
+
+| `code` | When | `retry` |
+|---|---|---|
+| `invalid_input` | The input does not match the operation. details.path names the field. | `no` |
+| `not_signed_in` | The operation needs a Summer sign-in and there is none. | `no` |
+| `forbidden` | Signed in, but not allowed: not your game, or not a member. | `no` |
+| `not_found` | The target does not exist or has expired. | `no` |
+| `conflict` | The thing changed since it was read. Read it again, then retry. | `no` |
+| `idempotency_conflict` | The same idempotencyKey was used with a different input. | `no` |
+| `in_progress` | The first call with this idempotencyKey is still running. | `after` |
+| `rate_limited` | Too many calls. details.retryAfterSeconds says when to try again. | `after` |
+| `no_credits` | Not enough credits for this call. | `no` |
+| `over_limit` | A plan or allowance limit was reached. | `no` |
+| `engine_not_running` | An engine operation was called and no Summer Engine is open. | `safe` |
+| `engine_lacks_op` | The open Summer Engine is too old for this operation. | `no` |
+| `unsupported` | This server cannot run the operation (an engine operation on the hosted server). | `no` |
+| `not_in_profile` | The operation exists, but this server version does not serve it. | `no` |
+| `moved` | A 3.x tool was called with arguments that now belong to another operation. next has the exact new call. | `no` |
+| `outcome_unknown` | The call may or may not have happened. Check with the read in next before retrying with the same key. | `same_key` |
+| `unavailable` | A Summer service is down for a moment. | `after` |
+| `internal` | A bug on Summer's side. The answer has a requestId for support. | `no` |
+
+When credits run out, the answer is `no_credits` with one link: `https://www.summerengine.com/studio/credits` (**Add credits**). In ChatGPT, the agent tells you in words.
+
+## dryRun
+
+Every operation that changes something takes `dryRun: true`. Summer checks and describes the call: nothing changes, nothing is spent and nothing is sent. The answer is `dry_run` with a `preview`: a summary, the changes, the approval it needs, and for spend operations your estimated credits.
+
+## idempotencyKey
+
+Every operation that changes something takes an `idempotencyKey`. The same key with the same input gives the first answer again and never does the work twice. Use a new key for each new request, and the same key only to retry it. The same key with a different input answers `idempotency_conflict`. Operations that go live or move money require a key, such as `store.publish`, `store.release` and the `pricing` changes.
+
+## Jobs
+
+Long work answers `running` with a job, and a request for approval answers `needs_approval` with one. Generating 3D, video and motion always answers with a job. A job id starts with its kind, such as `gen:`, `apr:`, `upload:` or `op:`.
+
+| Operation | Tool | Does |
+|---|---|---|
+| [`jobs.wait`](/mcp/operations/jobs#wait) | `summer_jobs_wait` | Waits for a job to finish, at most 50 seconds per call (`timeoutSeconds`, default 25). Call it again until the job ends. |
+| [`jobs.get`](/mcp/operations/jobs#get) | `summer_jobs_get` | Reads a job once. |
+| [`jobs.list`](/mcp/operations/jobs#list) | `summer_call` | Lists recent jobs. |
+| [`jobs.cancel`](/mcp/operations/jobs#cancel) | `summer_call` | Cancels a job that has not finished. |
+
+A job ends `done` (with its result), `failed`, `cancelled`, `declined`, `expired` or `stale`. While it waits for approval, its state is `awaiting_approval`.
+
+## 3.x tool names
+
+Every 3.x tool name keeps working for all of 4.x: `summer_call` accepts it as the `op` and runs the operation that replaced it. If a 3.x call's arguments now belong to another operation, the answer is `moved`, and its `next` has the exact new call. The old-to-new table: [3.x tool names](/mcp/operations/legacy-names).
+
+The versions of Summer in the ChatGPT and Claude app directories keep their 3.x tools. See [Summer in ChatGPT and Claude](/mcp/chatgpt-and-claude).
+
+## More
 
 <CardGroup cols={2}>
-  <Card
-    title="How do I make games with Cursor?"
-    icon="cursor"
-    href="/mcp/cursor"
-  >
-    Cursor setup: one-click or manual
+  <Card title="Operations reference" icon="list-tree" href="/mcp/operations">
+    Every operation, its input, its answer and an example call
   </Card>
-  <Card
-    title="How do I make games with Claude Code?"
-    icon="message-square"
-    href="/mcp/claude-code"
-  >
-    Claude Code MCP configuration
+  <Card title="Agent permissions" icon="shield-check" href="/mcp/permissions">
+    What your agent may do without asking, and approvals
   </Card>
-  <Card
-    title="How do I use the CLI?"
-    icon="terminal"
-    href="/mcp/cli"
-  >
-    CLI quick start
+  <Card title="MCP setup" icon="plug" href="/mcp/setup">
+    The hosted URL, and the npm MCP for engine work
   </Card>
-  <Card
-    title="CLI Reference"
-    icon="list"
-    href="/mcp/cli-reference"
-  >
-    All commands: install, run, create, mcp
-  </Card>
-  <Card
-    title="Tools Reference"
-    icon="wrench"
-    href="/mcp/tools-reference"
-  >
-    Every MCP tool with parameters
-  </Card>
-  <Card
-    title="Building a Game"
-    icon="gamepad-2"
-    href="/mcp/building-a-game"
-  >
-    AI agent playbook for building games
+  <Card title="CLI reference" icon="list" href="/mcp/cli-reference">
+    Every command, and operations from the shell
   </Card>
 </CardGroup>
 

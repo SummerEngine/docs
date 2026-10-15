@@ -113,14 +113,17 @@ Results are diversified: you won't get ten assets from the same pack. Each resul
 
 ## Error Handling
 
-| Error | Cause | Resolution |
+Every error has a `code` and one next step (`next`). Do that step first. All codes: [How Summer answers](/api-reference/mcp#errors).
+
+| Code | Cause | Resolution |
 |-------|-------|------------|
-| `Not logged in` | No auth token | Run `summer login` |
-| `rate_limited` | Too many searches in a short time | Wait a moment, then search again |
-| `Invalid or expired token` | Token expired or invalid | Run `summer login --force` |
-| `No results` | Query didn't match any assets | Try different keywords or broaden the search |
-| `Engine error` | Summer Engine not running | Open Summer Engine first |
-| `Import failed` | Download or import pipeline failed | Check engine logs; verify asset URL is accessible |
+| `not_signed_in` | No sign-in | Hosted: your agent opens the Summer sign-in page. Local: run `npx -y summer-engine@latest login` |
+| `rate_limited` | Too many searches in a short time | Wait `details.retryAfterSeconds`, then search again |
+| `invalid_input` | A wrong input | `details.path` names the field |
+| `engine_not_running` | Import only: Summer Engine is not running | Open the project in Summer Engine, then retry |
+| `unavailable` | A Summer service is down for a moment | Try again later |
+
+No results is not an error: the list is empty. Try different keywords or broaden the search. If an import fails, check the engine logs and that the asset URL is reachable.
 
 ---
 

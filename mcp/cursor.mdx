@@ -122,13 +122,15 @@ Once configured, the AI has access to Summer Engine's tools. You don't need to m
 
 ## Troubleshooting
 
-### "Summer Engine is not running"
+### "Summer Engine is not running" (`engine_not_running`)
 
 The MCP server can't connect to the engine. Fix:
 
 1. Open Summer Engine and load your project
 2. Or run `npx summer-engine run` from the project folder
 3. Wait a few seconds for the engine to start, then try your request again
+
+Every Summer error names its code and one next step (`next`). `not_signed_in`: run `npx -y summer-engine login`. `no_credits`: add credits at `https://www.summerengine.com/studio/credits`. All codes: [How Summer answers](/api-reference/mcp#errors).
 
 ### MCP server not appearing
 
@@ -138,7 +140,7 @@ The MCP server can't connect to the engine. Fix:
 
 ### Tools return errors
 
-If a specific tool fails, the error message usually explains why. Common causes:
+If a specific tool fails, its error names one next step (`next`): do that step. `retry` says if the same call can run again. Common causes:
 
 - **Wrong node path:** Paths use `./` prefix (e.g., `./World/Player`). The root is `./` or `./Root` depending on your scene.
 - **Engine not ready:** Some operations require the game to be stopped. Use `summer_stop` before making scene changes.

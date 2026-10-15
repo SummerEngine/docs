@@ -1,6 +1,6 @@
 ---
 title: "CLI Reference"
-description: "Complete reference for the Summer Engine CLI: setup, doctor, install, login, run, create, plan, memory, skills, and the MCP server."
+description: "Complete reference for the Summer Engine CLI: setup, doctor, install, login, run, create, plan, memory, skills, tool, config, events, debug, the MCP server, and any Summer operation from the shell with summer <area> <action>."
 icon: "terminal"
 "og:image": "https://docs.summerengine.com/images/og/mcp-cli-reference.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/mcp-cli-reference.jpg"
@@ -10,19 +10,19 @@ icon: "terminal"
 
 ## Overview
 
-The Summer Engine CLI (`summer`) installs the engine, configures your AI agent, manages projects, signs you in, and runs the MCP server. Run any command without a global install using `npx`:
+The Summer Engine CLI (`summer`) installs the engine, configures your AI agent, manages projects, signs you in, runs the MCP server, and runs any Summer operation from the shell (`summer <area> <action>`, see [Operations from the shell](#operations-from-the-shell)). Run any command without a global install using `npx`:
 
 ```bash
 npx -y summer-engine@latest <command>
 ```
 
-The fastest way to get started is the one-line setup, which wires up your agent's MCP config, installs the recommended skills, and runs diagnostics in a single step:
+The fastest way to get started is the one-line setup, which wires up your agent's MCP config, installs the whole skill library, and runs diagnostics in a single step:
 
 ```bash
 npx -y summer-engine@latest setup claude-code --yes
 ```
 
-Swap `claude-code` for any supported agent: `claude-code`, `cursor`, `codex`, `windsurf`, `cline`, `roo-code`, `kilo-code`, `gemini`, `github-copilot`, `vscode-copilot`, `opencode`, `lm-studio`.
+Swap `claude-code` for any id on [Every Supported Agent](/mcp/agents).
 
 ---
 
@@ -99,14 +99,16 @@ summer install [--path <dir>]
 Sign in to your Summer Engine account via browser OAuth.
 
 ```bash
-summer login [--force]
+summer login [--force] [--store] [--no-store]
 ```
 
 | Option | Description |
 |--------|-------------|
 | `--force` | Re-authenticate even if already logged in |
+| `--store` | Repeat only the store sign-in |
+| `--no-store` | Only the Summer account sign-in; skip the store sign-in |
 
-**What it does:** Opens your browser to the login page. After you sign in with Google, GitHub, or email, the CLI saves the token to `~/.summer/auth-token`. Login is required for asset search and AI generation tools, and recommended in general. The MCP server uses a separate local token (`~/.summer/api-token`) for engine communication.
+**What it does:** Opens your browser once: you sign in to your Summer account with Google, GitHub, or email, then approve the store, publishing and Grow tools. The CLI saves `~/.summer/auth-token` and `~/.summer/oauth-token`. One sign-in covers every cloud operation. The MCP server uses a separate local token (`~/.summer/api-token`) for engine communication.
 
 ---
 
@@ -246,7 +248,7 @@ summer plan <goal...> [--json]
 summer plan make a small arena shooter
 ```
 
-This is the CLI surface of the same router exposed to agents as the `summer_start_game_task` MCP tool.
+This is the CLI surface of the same router exposed to agents as the `docs.plan` operation (3.x name `summer_start_game_task`).
 
 ---
 
@@ -285,10 +287,17 @@ summer memory show .summer/memory/casting/voices.md
 Start the MCP server for AI tool integration.
 
 ```bash
-summer mcp
+summer mcp [--profile <profile>] [--toolsets <list>] [--project <path>] [--instance <id>]
 ```
 
-**What it does:** Starts the MCP server on stdio. Your IDE or agent invokes this automatically when it loads the MCP config you wrote with `summer setup`, so you rarely run it by hand. Exposes tools for scene editing, debugging, project context, asset search, and AI generation. See the [Tools Reference](/mcp/tools-reference).
+| Option | Description |
+|--------|-------------|
+| `--profile <profile>` | `full` (default), `engine` (engine, generation and the store; for clients with a tool limit) or `assets` (generation and the asset library, no engine). Env: `SUMMER_PROFILE` |
+| `--toolsets <list>` | Comma-separated toolsets to add. `summer mcp --help` lists them. Env: `SUMMER_TOOLSETS` |
+| `--project <path>` | Bind engine tools to the editor running this project |
+| `--instance <id>` | Bind engine tools to one exact Summer Engine instance |
+
+**What it does:** Starts the MCP server on stdio. Your IDE or agent invokes this automatically when it loads the MCP config you wrote with `summer setup`, so you rarely run it by hand. Engine tools keep their names (`summer_add_node`, `summer_run_script`, `summer_play`, `summer_screenshot`). Cloud work goes through a short list of direct tools plus `summer_search` (find an operation) and `summer_call` (run it); after `summer login` the server carries every cloud operation. See the [Tools Reference](/mcp/tools-reference) and the [Operations reference](/mcp/operations).
 
 There is also a lower-level `summer mcp setup <agent>` subcommand that writes only the MCP config (no skills, no diagnostics). Prefer the top-level `summer setup <agent>` for onboarding.
 
@@ -320,11 +329,105 @@ Most users never call this directly: `summer setup <agent> --yes` installs the w
 
 ---
 
+### summer tool
+
+Run any Summer tool from the shell, with the same code the MCP runs.
+
+```bash
+summer tool --list                                    # Every tool with a one-line summary
+summer tool <name> [--args '<json>']                  # Run one: a slug (add-node) or an MCP name (summer_add_node)
+```
+
+Engine tools need Summer Engine running with the project open.
+
+---
+
+### summer config
+
+Read or change the shared `~/.summer` configuration.
+
+```bash
+summer config [--json]
+summer config get <key>
+summer config set <key> <value>
+summer config unset <key>
+```
+
+---
+
+### summer events
+
+Print recent engine events, or follow them live.
+
+```bash
+summer events [--follow] [--kinds <csv>] [--limit <n>] [--json]
+```
+
+`--kinds` takes event kinds such as `play.started,script.error`. Output is JSON lines when piped.
+
+---
+
+### summer debug
+
+Write a support-ready Markdown report of what is broken.
+
+```bash
+summer debug [issue...] [--play] [-o <path>] [--json]
+```
+
+`--play` also launches the game briefly and collects what happened after play.
+
+---
+
+## Operations from the shell
+
+Every Summer operation runs from the shell, with the same input and the same answer as in the MCP. Every operation and its input: [Operations reference](/mcp/operations).
+
+```bash
+summer <area> <action> [--<field> <value> ...] [--input '<json>'] [--dry-run] [--idempotency-key <k>] [--wait] [--json]
+```
+
+- **Names are kebab-case.** The operation `assets.generate_image` is `summer assets generate-image`, and its input `aspectRatio` is `--aspect-ratio`.
+- **Fields:** `--<field> <value>` for each input field; `--no-<field>` sets it to false; repeat a flag for a list. `--input '<json>'` passes the whole input, or the parts that are objects.
+- `--dry-run`: check and describe the call. Nothing changes, nothing is spent.
+- `--idempotency-key <k>`: the retry key. Operations that go live or move money require it.
+- `--wait`: follow a job or an approval to the end. The approval link prints first.
+- `--json`: print the answer envelope only. See [How Summer answers](/api-reference/mcp).
+- **Exit code:** `0` for any ok answer (`done`, `running`, `needs_approval`, `dry_run`), `1` for an error.
+
+Cloud operations need `summer login`. Engine and local operations run on your computer and need Summer Engine open; they have no `--dry-run`.
+
+| Command | What it does |
+|---|---|
+| `summer whoami` | Who is signed in, the agent app, plan and credits |
+| `summer ops search <words...>` | Find operations from the job in plain words (`--area`, `--limit`, `--json`) |
+| `summer ops describe <op>` | One operation with its exact input |
+
+**Examples:**
+
+```bash
+summer whoami
+summer ops search set a game price
+summer ops describe pricing.set_base
+summer games list --json
+summer assets generate-image --prompt "a knight in a misty forest" --aspect-ratio 16:9 --wait --json
+summer store status --game-id <gameId> --json
+summer store publish --game-id <gameId> --idempotency-key <k> --input '{"price":{"currency":"USD","amountMinor":499}}' --dry-run
+```
+
+`summer tool <slug>` stays: it runs a tool by its slug or 3.x name.
+
+---
+
 ## Environment Variables
 
 | Variable | Description |
 |----------|-------------|
 | `SUMMER_GATEWAY_URL` | Override the auth/gateway URL (default `https://www.summerengine.com`). Used for local development. |
+| `SUMMER_TOKEN` | A Summer account token. It wins over `~/.summer/auth-token`; `summer logout` does not clear it. |
+| `SUMMER_PROFILE` | The `summer mcp --profile` default |
+| `SUMMER_TOOLSETS` | The `summer mcp --toolsets` default |
+| `SUMMER_NO_TELEMETRY` | `1` stops signed-in MCP sessions from reporting each tool call to Summer |
 
 There is no environment variable for the engine port. The CLI reads the port from the
 `~/.summer/api-port` file listed below, which the engine writes on startup, and falls back
@@ -337,6 +440,7 @@ to `6550` when that file is absent.
 | Path | Purpose |
 |------|---------|
 | `~/.summer/auth-token` | User auth token (from `summer login`) |
+| `~/.summer/oauth-token`, `~/.summer/oauth-client` | The store sign-in (from `summer login`); it renews itself |
 | `~/.summer/user.json` | Cached user info (id, email, name) |
 | `~/.summer/api-token` | Local engine API token (created by the engine on startup) |
 | `~/.summer/api-port` | Port override if the default 6550 is occupied |

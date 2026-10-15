@@ -116,9 +116,11 @@ Claude will use the MCP tools when your requests involve game development. You c
 
 ## Troubleshooting
 
-### "Summer Engine is not running"
+### "Summer Engine is not running" (`engine_not_running`)
 
 The MCP server couldn't connect to the engine. Start Summer Engine, open your project, and try again. The engine runs a local API on port 6550; the MCP server discovers it via `~/.summer/api-token`.
+
+Every Summer error names its code and one next step (`next`). `not_signed_in`: run `npx -y summer-engine login`. `no_credits`: add credits at `https://www.summerengine.com/studio/credits`. All codes: [How Summer answers](/api-reference/mcp#errors).
 
 ### Config not loading
 
