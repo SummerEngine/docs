@@ -1,7 +1,7 @@
 ---
 title: "Use the agent for Grow"
 sidebarTitle: "Use the agent"
-description: "The Studio assistant and the Summer Engine MCP can do Grow for you: read your numbers, open any Grow page, fill in forms, set prices, run A/B tests, invite your team and apply for promotions, ads and featured places. What your agent may do without asking is set in Agent permissions."
+description: "The Studio assistant and the Summer Engine MCP can do Grow for you: read your numbers, open any Grow page, fill in forms, set prices, run A/B tests, invite your team and apply for promotions, ads and featured places. What your agent may do without asking is in Agent permissions."
 icon: "bot"
 ---
 
@@ -42,13 +42,13 @@ It never presses a button that publishes, uploads, pays or deletes unless you as
 | [`analytics.overview`](/mcp/operations/analytics#overview) | All your games: store page views, launches, play sessions and play time against the days before. Add `include` for prices, interest, readiness or earnings. | Never: reads |
 | [`analytics.summary`](/mcp/operations/analytics#summary), `analytics.events`, `analytics.trend`, `analytics.funnel` | One game by day, its custom events, trends and funnels. | Never: reads |
 | `analytics.event_limit`, [`analytics.set_event_limit`](/mcp/operations/analytics#set_event_limit) | Read, or change, your monthly custom events limit. | A change always asks |
-| [`pricing.get`](/mcp/operations/pricing), `pricing.set_base`, `pricing.set_country`, `pricing.clear_country`, `pricing.schedule_discount`, `pricing.clear_discount` | Read prices; set the base price, country prices and sales. | No (Prices and live changes) |
-| [`experiments.list`](/mcp/operations/experiments), `experiments.results`, `experiments.create`, `experiments.start`, `experiments.stop` | Store page A/B tests. | No (Prices and live changes) |
-| [`games.members`](/mcp/operations/games#members), `games.set_member_role` | A game's team, and member roles. | No (Prices and live changes) |
+| [`pricing.get`](/mcp/operations/pricing), `pricing.set_base`, `pricing.set_country`, `pricing.clear_country`, `pricing.schedule_discount`, `pricing.clear_discount` | Read prices; set the base price, country prices and sales. | Changes: yes, for now (later: Prices and live changes) |
+| [`experiments.list`](/mcp/operations/experiments), `experiments.results`, `experiments.create`, `experiments.start`, `experiments.stop` | Store page A/B tests. | Start and stop: yes, for now (later: Prices and live changes) |
+| [`games.members`](/mcp/operations/games#members), `games.set_member_role` | A game's team, and member roles. | Role changes: yes, for now (later: Prices and live changes) |
 | `games.invite_member`, `games.remove_member`, `games.withdraw_invite` | Invite, remove, withdraw an invite. | Yes (Contact people, Delete for good) |
 | [`marketing.apply`](/mcp/operations/marketing#apply), `marketing.applications` | Apply for a promotion, ads, email outreach, creator introductions, a featured place or an A/B test run; read the status. Nothing is charged. | Applying asks (Contact people) |
 
-Publishing has its own operations (`store.*`; tools `summer_store_get_listing`, `summer_store_update_listing`, `summer_store_status` and `summer_store_publish`): see [Publishing operations](/publishing/mcp-tools). With **Publish** on in [Agent permissions](/mcp/permissions) (the default), your agent publishes with `summer_store_publish`, and Summer's store review still runs before players see it. Summer Games may still ask the game's owner to approve a publish; then the answer is `needs_approval` with the owner's approval link.
+Publishing has its own operations (`store.*`; tools `summer_store_get_listing`, `summer_store_update_listing`, `summer_store_status` and `summer_store_publish`): see [Publishing operations](/publishing/mcp-tools). Your agent publishes with `summer_store_publish`, and Summer's store review still runs before players see it. For now Summer Games still asks the game's owner to approve an agent's publish: the answer is `needs_approval` with the owner's approval link. Soon, with **Publish** on in [Agent permissions](/mcp/permissions) (the default), it publishes at once.
 
 ### Drive your Studio tab
 
@@ -73,7 +73,7 @@ sale, an A/B test, or an application for a featured place.
 
 ## What your agent asks first
 
-With the default [Agent permissions](/mcp/permissions), your agent asks you before it deletes for good (members, invites), contacts people (team invites, growth applications), raises your custom events limit, enters a jam, or changes auto top-up or Agent permissions. It also asks for anything whose switch you turned off. It asks with a link (`https://www.summerengine.com/studio/approvals/<id>`) and a card in your open Studio tab. **Studio > Settings > Agent activity** lists what agents changed, with Undo for prices, sales, country prices, member roles and the event limit.
+With the default [Agent permissions](/mcp/permissions), your agent asks you before it deletes for good (members, invites), contacts people (team invites, growth applications), raises your custom events limit, enters a jam, or changes auto top-up or Agent permissions. For now it also asks before price, A/B test and member changes, because Summer Games still asks; you can change the switches soon. It asks with a link (`https://www.summerengine.com/studio/approvals/<id>`) and a card in your open Studio tab. **Studio > Settings > Agent activity** lists what agents changed, with Undo for prices, sales, country prices, member roles and the event limit.
 
 ## What agents do not do
 

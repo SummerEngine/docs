@@ -90,7 +90,7 @@ A private link to the saved page on summer.games. It is hidden from search, and 
 It checks the publish checklist first. Then:
 
 - `done`: it went to Summer's review.
-- `needs_approval`: give the person `approval.url`, then wait with `summer_jobs_wait` and `job.id`. Nothing is published until they approve. This happens when **Publish** is off in [Agent permissions](/mcp/permissions). Summer Games may still ask the game's owner to approve a publish; then the answer is `needs_approval` with the owner's approval link.
+- `needs_approval`: give the person `approval.url`, then wait with `summer_jobs_wait` and `job.id`. Nothing is published until they approve. This happens when **Publish** is off in [Agent permissions](/mcp/permissions), and for now on every agent publish: Summer Games still asks the game's owner, and the answer is `needs_approval` with the owner's approval link.
 
 To withdraw a request that still waits: `store.cancel_publish` with `gameId` and the `approvalId`.
 
