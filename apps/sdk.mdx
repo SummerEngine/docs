@@ -122,19 +122,19 @@ Limits: a record is JSON up to 64 KB, 10,000 records per collection, 50 collecti
 
 ## generate (`generate`) and ai (`ai`)
 
-These calls spend the credits of the person using the app, at the same prices as the rest of Summer. Members have a daily spending limit per app that owners and admins can change; a call over it rejects with `spend_cap_reached`.
+These calls spend the credits of the person using the app, like the rest of Summer. Members have a daily spending limit per app that owners and admins can change; a call over it rejects with `spend_cap_reached`.
 
 | Call | Returns |
 |---|---|
-| `summer.generate.image({ prompt, model })` | `{ success, asset: { id, fileUrl, thumbnailUrl, width, height, ... }, assets, costUsd, price }` |
-| `summer.generate.sfx({ prompt, durationSeconds })` | `{ success, asset, costUsd, price }`. `durationSeconds` up to 30. |
+| `summer.generate.image({ prompt, model })` | `{ success, asset: { id, fileUrl, thumbnailUrl, width, height, ... }, assets }` |
+| `summer.generate.sfx({ prompt, durationSeconds })` | `{ success, asset }`. `durationSeconds` up to 30. |
 | `summer.generate.music({ prompt, durationSeconds })` | The same. `durationSeconds` up to 300. |
 | `summer.generate.voice({ text, voiceId })` | The same. `text` up to 5,000 characters. |
-| `summer.generate.sfxChoices({ prompt, models })` | `{ choiceSetId, studioPath, clips: [{ clipId, modelName, audioUrl, assetId, durationSeconds, ... }], failed, costUsd, price, ... }`. One sound from up to 4 models, to pick from. |
+| `summer.generate.sfxChoices({ prompt, models })` | `{ choiceSetId, studioPath, clips: [{ clipId, modelName, audioUrl, assetId, durationSeconds, ... }], failed, ... }`. One sound from up to 4 models, to pick from. |
 | `summer.generate.model3d({ prompt })` or `({ imageAssetId })` | `{ queued: true, jobId, model, message, ... }`: a job. |
 | `summer.generate.video({ prompt, imageAssetId })` | A job, the same shape. |
 | `summer.generate.job(jobId)` | `{ jobId, status, message, progress?, result?, error? }`. `completed` and `failed` are final. Free. |
-| `summer.ai.complete({ prompt, system, json })` | `{ text, json?, model, costUsd }`. With `json: true` it also parses the answer (`json` is `null` if it was not JSON). |
+| `summer.ai.complete({ prompt, system, json })` | `{ text, json?, model }`. With `json: true` it also parses the answer (`json` is `null` if it was not JSON). |
 
 ## agent and page (no permission)
 
