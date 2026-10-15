@@ -1,0 +1,29 @@
+---
+title: "Summer Router transcribe: audio clip to text"
+sidebarTitle: "Transcribe"
+description: "Turn a short audio clip into text with Summer Router, for example a spoken answer the game then checks. The microphone rules still apply."
+icon: "captions"
+---
+
+<Warning>
+**Preview.** Runs when the Summer Router platform and the engine release with `Summer.client.router` ship.
+</Warning>
+
+```gdscript
+var t := await Summer.client.router.transcribe(clip)   # an AudioStream recorded after request_access()
+if t.ok:
+	_check_answer(t.text)
+```
+
+## Input
+
+| Field | Rule |
+| --- | --- |
+| clip | Up to 1 MiB of audio (WAV, Ogg, MP3, WebM or MP4) |
+| options.language | For example `en`; leave it out to detect |
+
+## Result
+
+`text`, `language`, `usage.audio_ms`.
+
+Record the clip only after `await Summer.client.mic.request_access()` returned `ok` from a player's tap. See [Microphone permissions](/router/permissions). For a conversation, use [Character voice](/router/character-voice): it transcribes as the player talks.

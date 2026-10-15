@@ -1,0 +1,147 @@
+---
+title: "Summer Router errors and fixes"
+sidebarTitle: "Errors"
+description: "Every Summer Router error tag, what it means, what the game does and how to fix it: errors in game code (Summer.client.router) and errors from the summer router CLI."
+icon: "triangle-alert"
+---
+
+<Warning>
+**Preview.** The tags are final for v1. Game calls return them when the Summer Router platform and engine release ship.
+</Warning>
+
+Every error carries a stable tag (`error` in GDScript, `error.code` in JSON), a one-line `fix`, a `docs_url` to the section below, and a `request_id` for support. Branch on the tag, never on the message. AI is always optional: no error stops the game.
+
+## Errors in the game
+
+### unavailable
+
+No Summer host (the editor without a host, an export outside Summer) or an engine without Summer Router.
+**Game does:** the fallback for the session.
+**Fix:** keep the fallback. Run the game through Summer (summer.games or the Summer Games apps) to use Summer Router.
+
+### not_signed_in
+
+The player is not signed in to Summer.
+**Game does:** the fallback. Summer asks the player to sign in.
+**Fix:** none in the game.
+
+### mic_denied
+
+The player said no to the microphone, in Summer's primer or in the system prompt. `scope` says which: `game`, `app`, `device`, `policy` or `dismissed`.
+**Game does:** text mode. The character still speaks.
+**Fix:** never send the player to Settings. See [Microphone permissions](/router/permissions).
+
+### mic_needs_player_action
+
+`request_access()` was called outside a player's input (from `_ready()`, a timer, a cutscene).
+**Fix:** call it from the talk button's pressed signal.
+
+### age_restricted
+
+Realtime voice needs a confirmed adult. Children and players with no declared age get this.
+**Game does:** text mode or the fallback for this player.
+
+### character_not_found
+
+The game asked for a character id that is not pushed for this game.
+**Fix:** `summer router push`, then call it by its id.
+
+### tool_unhandled
+
+The character called a client tool that has no handler in the session's `tools`.
+**Fix:** add the handler: `guard.tools = {"open_gate": _on_open_gate}`. `summer router push` catches this before it ships.
+
+### limit_reached
+
+A cap is used up. `scope` names it (`player_day`, `game_day`, `game_month`, `account_month`, `character_player_day`, `character_game_day`) and `resets_at` says when it resets. Players never see the amount.
+**Game does:** the fallback until `resets_at`. Never retry in a loop.
+**Fix:** the owner raises the cap in Studio or with `summer router limits set`. See [Limits and usage](/router/limits-and-usage).
+
+### credits_required
+
+The owner's Summer account needs credits. The error has a `studioUrl`.
+**Game does:** the fallback.
+**Fix:** the owner adds credits in Studio.
+
+### ai_disabled
+
+The owner turned Summer Router off for this game.
+**Game does:** the fallback for the session.
+**Fix:** turn it on in Studio or with `summer router limits set --enabled on`.
+
+### provider_unavailable
+
+The AI provider failed or timed out.
+**Game does:** the fallback for this line. Retry later.
+
+### moderated
+
+The provider's safety filter blocked the turn.
+**Game does:** show your own line.
+
+### invalid_input
+
+The input does not match the kind's schema (for example an audio clip that is too large).
+**Fix:** a bug in the call. Read the message and fix the input.
+
+### rate_limited
+
+Too many calls too fast. The answer has `Retry-After`.
+**Game does:** wait, then retry once.
+
+## Errors from the CLI
+
+### not_signed_in (CLI)
+
+This computer is not signed in. `next_step` is `summer login`.
+**Fix:** run `summer login`. An agent shows `browser_url` to the person, then runs `summer login --complete`.
+
+### tool_unhandled (CLI)
+
+`summer router push` found a client tool with no handler in any `.gd` file of the project. Exit 1. `details.handler_snippet` holds the GDScript to add.
+**Fix:** register the tool in the character's `tools` Dictionary. See [GDScript: Tools](/router/gdscript#tools).
+
+### invalid_character
+
+A character file does not match the schema. `details` lists each field and rule.
+**Fix:** fix each field, then `summer router push --dry-run`.
+
+### studio_changed
+
+Summer has a newer version of a character than this project last pushed or pulled (someone edited it in Studio). Nothing was overwritten.
+**Fix:** `summer router pull <id>` to take Summer's version, or `summer router push --force` to keep yours.
+
+### local_changes
+
+`summer router pull` kept a local file that has edits you never pushed.
+**Fix:** push them, or `summer router pull <id> --force` to take Summer's version.
+
+### owner_action_required
+
+Only the game's owner can do this: change caps or the switch, or change a character of a live game. The error has `studio_url`.
+**Fix:** show `studio_url` to the owner. They open it and save.
+
+### expectation_failed
+
+`summer router test --expect-tool` did not see the tool called.
+**Fix:** make the tool description say exactly when to call it, push, and test again.
+
+### game_id_missing
+
+Exit 2. The command needs the game on Summer.
+**Fix:** pass `--game <gameId>`, set `SUMMER_GAME_ID`, or add `gameId` to `summer.build.json`.
+
+### not_a_project
+
+Exit 2. No `project.godot` at or above the folder.
+**Fix:** run in the project folder, or pass `--project <dir>`.
+
+### version_conflict
+
+The character changed on Summer between the read and the write.
+**Fix:** run the command again.
+
+### unavailable (CLI)
+
+Summer Router is not on in this Summer environment yet, or the route is not served yet.
+**Fix:** retry after the platform release; `summer router doctor` shows what answers.

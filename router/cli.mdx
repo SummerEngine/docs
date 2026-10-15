@@ -1,0 +1,136 @@
+---
+title: "summer router CLI reference"
+sidebarTitle: "CLI"
+description: "Every summer router command: setup, character add, push, pull, test, limits, logs and doctor. Agent mode, JSON output, exit codes and the agent sign-in."
+icon: "terminal"
+---
+
+<Warning>
+**Preview.** `summer router` comes with the next `summer-engine` npm release. There, `setup`, `character add`, `push --dry-run` and `doctor` work offline. `push`, `pull`, `test`, `limits` and `logs` need the Summer Router platform; until it ships they answer with a clear error.
+</Warning>
+
+Install: the `summer-engine` npm package (Node 20 or later). Run any command with `npx -y summer-engine@latest <command>`, or `summer <command>` after `npm install -g summer-engine`.
+
+## Global options
+
+| Option | Use |
+| --- | --- |
+| `--json` | Print one JSON object on stdout. The default when stdout is not a terminal or an agent runs the CLI. |
+| `--game <gameId>` | The game on Summer. Default: `SUMMER_GAME_ID`, then `gameId` in `summer.build.json`. |
+| `--project <dir>` | The project folder. Default: the nearest folder with `project.godot`. |
+
+## Agent mode
+
+When stdout is not a terminal, `--json` is set, or the CLI runs inside Claude Code, Codex or CI:
+
+- Nothing prompts.
+- stdout holds only the result, one JSON object. Messages go to stderr.
+- Exit codes: `0` done, `1` the command ran and failed, `2` a usage error (bad option, no project, no game id).
+- A failure is `{"ok": false, "error": {"code", "message", "fix", "docs_url"?, "studio_url"?, "request_id"?}}`.
+- A human step is always one URL: `browser_url` (sign in) or `studio_url` (the game's owner approves in Studio).
+
+## Sign in
+
+```bash
+summer login                 # agents: prints {status, browser_url, verification_code, next_step} and exits
+summer login --complete      # waits for the person (default 600 s, --timeout <s>), then connects the store
+```
+
+In a terminal, `summer login` opens the browser and waits, as before. With no terminal on stdin it prints:
+
+```json
+{"status": "pending", "browser_url": "https://www.summerengine.com/login?cli_session=...", "verification_code": "1A2B-3C4D", "next_step": "summer login --complete"}
+```
+
+Show `browser_url` to the person, then run `next_step`. It prints `{"status": "signed_in", "email": "...", "store": true}`. For CI, set `SUMMER_TOKEN`.
+
+## setup
+
+```bash
+summer router setup [--yes] [--agent claude-code|codex]
+```
+
+Gives Claude Code and Codex (found on this computer, or named) the `summer-engine` MCP and the `summer-router` and `voice-and-mic-permissions` skills. Without `--yes` it prints the plan. It is idempotent and never replaces an existing `summer-engine` entry.
+
+```json
+{"ok": true, "applied": true, "agents": [{"agent": "claude-code", "mcp": {"status": "configured"}, "skills": [{"name": "summer-router", "status": "installed"}]}], "signed_in": false, "next_steps": ["summer login", "..."]}
+```
+
+## character add
+
+```bash
+summer router character add <id> [--template voice-npc|shopkeeper|companion] [--name "..."]
+  [--voice "description" | --voice-id <id>] [--tools a,b] [--force]
+```
+
+Writes `ai/characters/<id>.json` from a template. `--tools` adds client tools with an empty parameter schema. The result lists tools that have no GDScript handler yet and the code to add (`handler_snippet`).
+
+## push
+
+```bash
+summer router push [ids...] [--dry-run] [--force]
+```
+
+1. Reads `ai/characters/*.json` (or the ids you name).
+2. Checks each file against the character schema. Each problem names the field, for example `guard/temperature must be 2 or less`.
+3. Checks that every client tool has a handler in the project's GDScript. If not: exit 1, `tool_unhandled`, and the code to add.
+4. `--dry-run` stops here. It needs no sign-in.
+5. Saves each character on Summer. An unchanged character is skipped.
+
+`push` never overwrites a change made on Summer (in Studio, or by someone else) since this project last pushed or pulled. It stops with `studio_changed`. Run `pull` to take Summer's version, or `push --force` to keep yours. The last known versions are in `.summer/router.json`; commit it with the character files.
+
+```json
+{"ok": true, "game_id": "game_01...", "pushed": [{"id": "guard", "version": 3, "action": "updated"}], "studio_url": "https://www.summerengine.com/studio/games/game_01.../router?panel=characters"}
+```
+
+Before the game is live, an agent may push. After it is live, the owner approves in Studio: the error is `owner_action_required` with `studio_url`.
+
+## pull
+
+```bash
+summer router pull [ids...] [--force]
+```
+
+Writes Summer's characters to `ai/characters/`. It keeps a local file that has edits you never pushed (`local_changes`), unless you pass `--force`.
+
+## test
+
+```bash
+summer router test <id> --say "text" [--expect-tool <name>]... [--var name=value]... [--context "text"]
+```
+
+Runs one text turn with a pushed character and prints the reply, the tool calls and the usage. Exit 1 when the turn has an error or an `--expect-tool` was not called (`expectation_failed`).
+
+```json
+{"ok": true, "character": "guard", "reply": "Fine. Go through.", "tool_calls": [{"call_id": "c1", "name": "open_gate", "args": {}}], "expected_tools": [{"name": "open_gate", "called": true}]}
+```
+
+## limits
+
+```bash
+summer router limits get
+summer router limits set [--player-day <amount>] [--game-day <amount>] [--game-month <amount>]
+  [--account-month <amount>] [--enabled on|off] [--text-model <id>] [--image-model <id>]
+```
+
+Amounts are US dollars of usage. `get` shows the switch, the default models, each cap and how much of it is used, with the time it resets. `set` needs the game's owner: an agent gets `owner_action_required` and the `studio_url` of the limits page. `caps` and `settings` are aliases. See [Limits and usage](/router/limits-and-usage).
+
+## logs
+
+```bash
+summer router logs [--since 10m|2h|3d|<date>] [--limit 100] [--character <id>]
+```
+
+Recent calls for the game. While per-call records are not served, it returns daily totals per kind (`"source": "daily_usage"`).
+
+## doctor
+
+```bash
+summer router doctor
+```
+
+Checks the project, the game id, the sign-in, the registry version, each character, the tool handlers, the game on Summer (is Summer Router on?) and the agent skills. Exit 1 when a check fails.
+
+```json
+{"ok": true, "checks": [{"id": "tool_handlers", "status": "ok", "message": "Every client tool has a GDScript handler."}], "summary": {"ok": 8, "warnings": 1, "failures": 0}}
+```

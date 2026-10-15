@@ -120,6 +120,7 @@ Generated pages publish to their existing frozen URLs rather than to a new
 | `/api-reference/http/*` | summer-platform `api/*/openapi.yaml`, filtered to public operations (`scripts/reference`) |
 | `/api-reference/gdscript/*` | The engine's class reference XML for the `Summer` singleton (`scripts/reference`) |
 | `/api-reference/overview` | The three references above (`scripts/reference`) |
+| `/llms.txt` | `docs.json` navigation, each page's `title` and `description`, and the Agent instructions block (`scripts/generate-llms.mjs`; `npm run generate:llms` after any navigation change) |
 
 `scripts/reference/generate.mjs --check` runs in `npm run check` and fails when a page
 under `scripts/reference` no longer matches its pinned inputs. `scripts/reference/sync.mjs`

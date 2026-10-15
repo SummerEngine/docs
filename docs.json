@@ -253,6 +253,29 @@
             ]
           },
           {
+            "group": "AI characters (Summer Router, preview)",
+            "pages": [
+              "router/overview",
+              "router/quickstart",
+              "router/gdscript",
+              "router/cli",
+              "router/characters",
+              "router/limits-and-usage",
+              "router/permissions",
+              "router/errors",
+              {
+                "group": "Kinds",
+                "pages": [
+                  "router/character-reply",
+                  "router/character-voice",
+                  "router/speech",
+                  "router/transcribe",
+                  "router/image"
+                ]
+              }
+            ]
+          },
+          {
             "group": "Make money",
             "pages": [
               "build/store",

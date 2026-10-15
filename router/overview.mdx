@@ -1,0 +1,48 @@
+---
+title: "Summer Router: AI characters and generation in your game"
+sidebarTitle: "Overview"
+description: "Summer Router lets a Summer game use frontier AI while it runs: talking characters with text and realtime voice that call tools in your game, speech, transcription and images. No keys in the build."
+icon: "route"
+---
+
+<Warning>
+**Preview.** The `summer router` CLI comes with the next `summer-engine` npm release. The game calls (`Summer.client.router`) run when the Summer Engine release and the Summer Router platform ship. Until then a game gets `unavailable` and uses its fallback, so code written now keeps working.
+</Warning>
+
+Summer Router is the AI layer for games made with Summer. A player talks to a guard with their voice, and the guard opens the gate when the player says the password. A shopkeeper sells through a tool call. A narrator speaks a line on demand. The game makes a picture from a prompt.
+
+Fetch any page as Markdown: add `.md` to the URL, for example `https://docs.summerengine.com/router/quickstart.md`.
+
+## How it works
+
+1. **You describe a character in a file.** `ai/characters/guard.json` holds its instructions, voice, tools and limits. See [Characters](/router/characters).
+2. **You push it to Summer.** `summer router push` checks the file and checks that your GDScript handles every tool, then saves it on Summer for your game. See [CLI](/router/cli).
+3. **The game sends only an id and the player's input.** `Summer.client.router.talk("guard")`. Summer holds the instructions, model, voice and keys. See [GDScript](/router/gdscript).
+4. **Summer runs the turn** with the provider, calls your tools on the player's device, meters the usage and enforces your caps.
+
+A build never holds a key, a prompt or a model name. A player cannot turn your guard into a general chatbot, because the build cannot change what the character is unless the file allows it.
+
+## What you can use
+
+| Kind | GDScript | Page |
+| --- | --- | --- |
+| Text turn with a character (tools allowed) | `Summer.client.router.reply()` or a session | [Character reply](/router/character-reply) |
+| Realtime voice with a character (tools allowed) | `Summer.client.router.talk(id, {"mode": "voice"})` or `SummerRouterCharacter` | [Character voice](/router/character-voice) |
+| Text to speech in a character's voice | `Summer.client.router.speak()` | [Speech](/router/speech) |
+| Audio clip to text | `Summer.client.router.transcribe()` | [Transcribe](/router/transcribe) |
+| Image from a prompt | `Summer.client.router.generate("image", ...)` | [Image](/router/image) |
+
+## Who pays, and what players see
+
+Usage is billed from your Summer account; spend is visible in Studio. Players never pay and never see a key. Caps are on by default: per player per day, per game per day and month, and per account per month. See [Limits and usage](/router/limits-and-usage).
+
+Any signed-in Summer player can use your characters inside your game. Realtime voice needs a confirmed adult; other players get text. AI is always optional: every error leaves the game running. See [Errors](/router/errors).
+
+## The microphone
+
+Summer asks for the microphone, never your game, and only when the player taps Talk. A player who says no types instead, and the character still speaks. See [Microphone permissions](/router/permissions).
+
+## Start
+
+- Agents: [Quickstart for agents](/router/quickstart) has a prompt you can paste into Claude Code or Codex.
+- People: the same page lists each command.

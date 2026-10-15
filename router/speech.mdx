@@ -1,0 +1,31 @@
+---
+title: "Summer Router speech: text to speech in a character's voice"
+sidebarTitle: "Speech"
+description: "Turn text into speech in a Summer Router character's pinned voice, or voice a reply the player just got. The game never sends a provider voice id."
+icon: "volume-2"
+---
+
+<Warning>
+**Preview.** Runs when the Summer Router platform and the engine release with `Summer.client.router` ship.
+</Warning>
+
+```gdscript
+var a := await Summer.client.router.speak("Welcome, traveller!", {"character": "narrator"})
+if a.ok:
+	$Narrator.stream = a.audio   # an AudioStream
+	$Narrator.play()
+```
+
+## Input
+
+| Field | Rule |
+| --- | --- |
+| text | 1 to 5,000 characters |
+| options.character | A pushed character with a voice (`voice.design` or `voice.id`) |
+| options.exchange_id | Instead of text and character: voice the reply of that turn |
+
+## Result
+
+`audio` (an `AudioStream`), `usage.characters`.
+
+For pre-recorded lines made in the editor, use the `voice-line` skill instead: no runtime call needed.
