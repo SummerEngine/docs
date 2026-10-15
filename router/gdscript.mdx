@@ -105,6 +105,9 @@ tools = {"open_gate": _on_open_gate}                # in a script that extends S
 guard.tools["open_gate"] = _on_open_gate
 guard.tools.merge({"open_gate": _on_open_gate})
 const HANDLERS := {"open_gate": _on_open_gate}      # then: guard.tools = HANDLERS
+guard.tool("open_gate", _on_open_gate)              # also session.tool(...)
+Summer.client.router.talk("guard", {"mode": "voice", "tools": {"open_gate": _on_open_gate}})
+Summer.client.router.reply("guard", "open up", {"tools": {"open_gate": _on_open_gate}})
 ```
 
 `summer router push` fails with `tool_unhandled` when a client tool in a character file has no handler in any `.gd` file of the project. That stops the silent failure where the model calls a tool and nothing answers.
@@ -112,7 +115,9 @@ const HANDLERS := {"open_gate": _on_open_gate}      # then: guard.tools = HANDLE
 Rules for handlers:
 
 - Check game state and clamp values. The model can be talked into calling any tool with any arguments.
-- Return fast. A tool times out after `timeout_ms` (default in the templates: 5000).
+- A handler gets the arguments `Dictionary` (a handler with no parameters also works) and may `await`.
+- It returns any JSON value; `null` sends `{"ok": true}`. A `Dictionary` with an `"error"` key sends a tool error, and the character goes on.
+- Return fast. A text-turn handler that does not answer in 30 s sends `{"error": "timeout"}`.
 - A tool that changes shared state in a multiplayer game belongs on the authority. `runs_on: "authority"` is on the roadmap; until then keep client tools to effects the player's own client may make.
 
 ## Your own session
@@ -156,7 +161,7 @@ var img := await Summer.client.router.generate("image", {"prompt": "a mossy ston
 ```
 
 - `speak` takes a character (its pinned voice), never a raw provider voice id.
-- Use a session or the node for tools. `reply` returns `r.tool_calls`, but a session answers them for you.
+- For tools in a one-shot turn, pass them in the options: `reply("guard", "open up", {"tools": {"open_gate": _on_open_gate}})`. A session or the node keeps its tools for the whole conversation.
 
 ## Results
 
