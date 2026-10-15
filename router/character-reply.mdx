@@ -17,7 +17,7 @@ else:
 	_use_fallback()   # r.error, r.fix
 ```
 
-For a conversation with tools, use a session (`Summer.client.router.talk("guard", {"mode": "text"})`) or the `SummerRouterCharacter` node: they call your tool handlers and send the results back for you. See [GDScript](/router/gdscript).
+To run tools in this turn, pass handlers in the options: `Summer.client.router.reply("guard", "open up", {"tools": {"open_gate": _on_open_gate}})`. Summer calls them and sends the results back for you. For a whole conversation with tools, use a session (`Summer.client.router.talk("guard", {"mode": "text"})`) or the `SummerRouterCharacter` node. See [GDScript: Tools](/router/gdscript#tools).
 
 ## Input
 
@@ -28,6 +28,7 @@ For a conversation with tools, use a session (`Summer.client.router.talk("guard"
 | options.conversation_id | Continue a conversation (Summer keeps the history; the game never sends it) |
 | options.variables | Only when the character lists `variables` in `overridable` |
 | options.context | Up to 4,000 characters: what just happened in the game |
+| options.tools | Tool name to `Callable`, for the client tools this turn may call |
 
 ## Result
 
