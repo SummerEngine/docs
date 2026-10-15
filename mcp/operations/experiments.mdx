@@ -20,8 +20,8 @@ Generated from the operation catalog: `src/lib/ops/public-catalog.json` at `b1a8
 | [`experiments.create`](#create) | Make a draft store page test with 2 to 4 versions (A first, usually the published page; others change name, tagline, description, language or art). | Not by default |
 | [`experiments.list`](#list) | The store page A/B tests of one game: each test's id, state (draft, running, stopped), versions and what each changes, countries and winner. | Never |
 | [`experiments.results`](#results) | Visitors, purchases, conversion and revenue for each version of one test (default: the running or newest one). | Never |
-| [`experiments.start`](#start) | Start a draft A/B test, so players see its versions; one test runs per game at a time. | Not by default |
-| [`experiments.stop`](#stop) | Stop a running A/B test, with or without a winning version, or discard a draft; a winning price becomes the price. | Not by default |
+| [`experiments.start`](#start) | Start a draft A/B test, so players see its versions; one test runs per game at a time. | Yes, for now |
+| [`experiments.stop`](#stop) | Stop a running A/B test, with or without a winning version, or discard a draft; a winning price becomes the price. | Yes, for now |
 
 ---
 
@@ -37,7 +37,7 @@ Make a draft store page test with 2 to 4 versions (A first, usually the publishe
 | **CLI** | `summer experiments create` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes your own drafts, files or settings. Nobody else sees it yet. |
-| **Asks you first** | No, while **Make and build** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | No: **Make and build** is on by default in Agent permissions. When it is off, your agent asks you first. |
 | **3.x names** | `summer_grow_ab_tests#create` |
 
 **Inputs:**
@@ -557,7 +557,7 @@ Start a draft A/B test, so players see its versions; one test runs per game at a
 | **CLI** | `summer experiments start` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes what players see or pay, or who can act on a game. |
-| **Asks you first** | No, while **Prices and live changes** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | Yes, for now: Summer Games still asks you first. Soon it follows **Prices and live changes** in Agent permissions (on by default). |
 | **3.x names** | `summer_grow_ab_tests#start` |
 
 **Inputs:**
@@ -711,7 +711,7 @@ Stop a running A/B test, with or without a winning version, or discard a draft; 
 | **CLI** | `summer experiments stop` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes what players see or pay, or who can act on a game. |
-| **Asks you first** | No, while **Prices and live changes** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | Yes, for now: Summer Games still asks you first. Soon it follows **Prices and live changes** in Agent permissions (on by default). |
 | **3.x names** | `summer_grow_ab_tests#stop` |
 
 **Inputs:**

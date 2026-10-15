@@ -24,7 +24,7 @@ Generated from the operation catalog: `src/lib/ops/public-catalog.json` at `b1a8
 | [`games.list`](#list) | List the person's games on Summer Games: game id, name, status, targets and store link, newest change first. | Never |
 | [`games.members`](#members) | The people on one game on Summer Games: members and their roles, pending invites, the person's own role and whether they may manage members. | Never |
 | [`games.remove_member`](#remove_member) | Remove a member from a game, so they lose access to it. | Yes, by default |
-| [`games.set_member_role`](#set_member_role) | Change what a member may do on a game (admin, developer or viewer). | Not by default |
+| [`games.set_member_role`](#set_member_role) | Change what a member may do on a game (admin, developer or viewer). | Yes, for now |
 | [`games.withdraw_invite`](#withdraw_invite) | Withdraw a pending invite to a game, so its link stops working. | Yes, by default |
 
 ---
@@ -41,7 +41,7 @@ Create a game on Summer Games with its first store page draft; nothing is publis
 | **CLI** | `summer games create` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes your own drafts, files or settings. Nobody else sees it yet. |
-| **Asks you first** | No, while **Make and build** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | No: **Make and build** is on by default in Agent permissions. When it is off, your agent asks you first. |
 | **3.x names** | `summer_store_create_game` |
 
 **Inputs:**
@@ -322,7 +322,7 @@ Invite someone by email to work on a game, with a role; Summer emails them a lin
 | **CLI** | `summer games invite-member` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes your own drafts, files or settings. Nobody else sees it yet. |
-| **Asks you first** | Yes, unless you turn on **Contact people** in Agent permissions (off by default). |
+| **Asks you first** | Yes: **Contact people** is off by default in Agent permissions. |
 | **3.x names** | `summer_grow_members#invite` |
 
 **Inputs:**
@@ -486,7 +486,7 @@ Leave a game the person works on, so they lose access to it; the owner cannot le
 | **CLI** | `summer games leave` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Removes or stops something for good. |
-| **Asks you first** | Yes, unless you turn on **Delete for good** in Agent permissions (off by default). |
+| **Asks you first** | Yes: **Delete for good** is off by default in Agent permissions. |
 | **3.x names** | `summer_grow_members#leave` |
 
 **Inputs:**
@@ -941,7 +941,7 @@ Remove a member from a game, so they lose access to it. Runs when the person all
 | **CLI** | `summer games remove-member` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Removes or stops something for good. |
-| **Asks you first** | Yes, unless you turn on **Delete for good** in Agent permissions (off by default). |
+| **Asks you first** | Yes: **Delete for good** is off by default in Agent permissions. |
 | **3.x names** | `summer_grow_members#remove` |
 
 **Inputs:**
@@ -1076,7 +1076,7 @@ Change what a member may do on a game (admin, developer or viewer). Runs when th
 | **CLI** | `summer games set-member-role` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes what players see or pay, or who can act on a game. |
-| **Asks you first** | No, while **Prices and live changes** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | Yes, for now: Summer Games still asks you first. Soon it follows **Prices and live changes** in Agent permissions (on by default). |
 | **3.x names** | `summer_grow_members#set_role` |
 
 **Inputs:**
@@ -1227,7 +1227,7 @@ Withdraw a pending invite to a game, so its link stops working. Runs when the pe
 | **CLI** | `summer games withdraw-invite` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Removes or stops something for good. |
-| **Asks you first** | Yes, unless you turn on **Delete for good** in Agent permissions (off by default). |
+| **Asks you first** | Yes: **Delete for good** is off by default in Agent permissions. |
 | **3.x names** | `summer_grow_members#withdraw` |
 
 **Inputs:**

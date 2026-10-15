@@ -17,12 +17,12 @@ Generated from the operation catalog: `src/lib/ops/public-catalog.json` at `b1a8
 
 | Operation | What it does | Asks you first |
 |---|---|---|
-| [`pricing.clear_country`](#clear_country) | Remove a game's own price in one country, so players there pay the base price again. | Not by default |
-| [`pricing.clear_discount`](#clear_discount) | End or cancel a game's sale, running or scheduled, so players pay the base price. | Not by default |
+| [`pricing.clear_country`](#clear_country) | Remove a game's own price in one country, so players there pay the base price again. | Yes, for now |
+| [`pricing.clear_discount`](#clear_discount) | End or cancel a game's sale, running or scheduled, so players pay the base price. | Yes, for now |
 | [`pricing.get`](#get) | A game's price on Summer Games: the base price, any sale (now or scheduled), what players pay now and the prices set per country. | Never |
-| [`pricing.schedule_discount`](#schedule_discount) | Put a paid game on sale: a percent off from startsAt (default now) to endsAt, at most 90 days, replacing any other sale. | Not by default |
-| [`pricing.set_base`](#set_base) | Change a paid game's base price on Summer Games. | Not by default |
-| [`pricing.set_country`](#set_country) | Set a paid game's price in one country, rounded to a whole dollar ending in .99 unless roundTo99 is false. | Not by default |
+| [`pricing.schedule_discount`](#schedule_discount) | Put a paid game on sale: a percent off from startsAt (default now) to endsAt, at most 90 days, replacing any other sale. | Yes, for now |
+| [`pricing.set_base`](#set_base) | Change a paid game's base price on Summer Games. | Yes, for now |
+| [`pricing.set_country`](#set_country) | Set a paid game's price in one country, rounded to a whole dollar ending in .99 unless roundTo99 is false. | Yes, for now |
 
 ---
 
@@ -38,7 +38,7 @@ Remove a game's own price in one country, so players there pay the base price ag
 | **CLI** | `summer pricing clear-country` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes what players see or pay, or who can act on a game. |
-| **Asks you first** | No, while **Prices and live changes** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | Yes, for now: Summer Games still asks you first. Soon it follows **Prices and live changes** in Agent permissions (on by default). |
 | **Retry key** | Required: send a new `idempotencyKey` for each new request, the same one only to retry it. |
 | **3.x names** | `summer_grow_prices#clear_country` |
 
@@ -298,7 +298,7 @@ End or cancel a game's sale, running or scheduled, so players pay the base price
 | **CLI** | `summer pricing clear-discount` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes what players see or pay, or who can act on a game. |
-| **Asks you first** | No, while **Prices and live changes** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | Yes, for now: Summer Games still asks you first. Soon it follows **Prices and live changes** in Agent permissions (on by default). |
 | **Retry key** | Required: send a new `idempotencyKey` for each new request, the same one only to retry it. |
 
 **Inputs:**
@@ -784,7 +784,7 @@ Put a paid game on sale: a percent off from startsAt (default now) to endsAt, at
 | **CLI** | `summer pricing schedule-discount` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes what players see or pay, or who can act on a game. |
-| **Asks you first** | No, while **Prices and live changes** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | Yes, for now: Summer Games still asks you first. Soon it follows **Prices and live changes** in Agent permissions (on by default). |
 | **Retry key** | Required: send a new `idempotencyKey` for each new request, the same one only to retry it. |
 
 **Inputs:**
@@ -1061,7 +1061,7 @@ Change a paid game's base price on Summer Games. Runs at once when the person al
 | **CLI** | `summer pricing set-base` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes what players see or pay, or who can act on a game. |
-| **Asks you first** | No, while **Prices and live changes** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | Yes, for now: Summer Games still asks you first. Soon it follows **Prices and live changes** in Agent permissions (on by default). |
 | **Retry key** | Required: send a new `idempotencyKey` for each new request, the same one only to retry it. |
 | **3.x names** | `summer_grow_prices#set_base` |
 
@@ -1341,7 +1341,7 @@ Set a paid game's price in one country, rounded to a whole dollar ending in .99 
 | **CLI** | `summer pricing set-country` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes what players see or pay, or who can act on a game. |
-| **Asks you first** | No, while **Prices and live changes** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | Yes, for now: Summer Games still asks you first. Soon it follows **Prices and live changes** in Agent permissions (on by default). |
 | **Retry key** | Required: send a new `idempotencyKey` for each new request, the same one only to retry it. |
 | **3.x names** | `summer_grow_prices#set_country` |
 

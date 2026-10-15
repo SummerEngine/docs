@@ -61,7 +61,7 @@ Add one of Summer's starter apps (pick-one, asset-tracker, balance-table, live-o
 | **CLI** | `summer apps add-starter` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes your own drafts, files or settings. Nobody else sees it yet. |
-| **Asks you first** | No, while **Make and build** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | No: **Make and build** is on by default in Agent permissions. When it is off, your agent asks you first. |
 
 **Inputs:**
 
@@ -176,7 +176,7 @@ Run one of a Summer App's own agent tools in the person's open app, with their r
 | **CLI** | `summer apps call` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Spends your credits. |
-| **Asks you first** | No, while **Spend credits** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | No: **Spend credits** is on by default in Agent permissions. When it is off, your agent asks you first. |
 | **3.x names** | `summer_app_call` |
 
 **Inputs:**
@@ -296,7 +296,7 @@ Create a new scratch Summer App and open it in the person's Studio tab. Without 
 | **CLI** | `summer apps create` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes your own drafts, files or settings. Nobody else sees it yet. |
-| **Asks you first** | No, while **Make and build** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | No: **Make and build** is on by default in Agent permissions. When it is off, your agent asks you first. |
 | **3.x names** | `summer_app_create` |
 
 **Inputs:**
@@ -443,7 +443,7 @@ Ask the person to delete a Summer App: it leaves the team's Apps for everyone, w
 | **CLI** | `summer apps delete` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Removes or stops something for good. |
-| **Asks you first** | Yes, unless you turn on **Delete for good** in Agent permissions (off by default). |
+| **Asks you first** | Yes: **Delete for good** is off by default in Agent permissions. |
 
 **Inputs:**
 
@@ -543,7 +543,7 @@ Copy a Summer App and its live version into a new scratch app, in the same team 
 | **CLI** | `summer apps duplicate` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes your own drafts, files or settings. Nobody else sees it yet. |
-| **Asks you first** | No, while **Make and build** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | No: **Make and build** is on by default in Agent permissions. When it is off, your agent asks you first. |
 
 **Inputs:**
 
@@ -792,7 +792,7 @@ Send the person's feedback on a Summer App to its makers: thumbs up or down and 
 | **CLI** | `summer apps feedback` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes your own drafts, files or settings. Nobody else sees it yet. |
-| **Asks you first** | No, while **Make and build** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | No: **Make and build** is on by default in Agent permissions. When it is off, your agent asks you first. |
 
 **Inputs:**
 
@@ -1466,7 +1466,7 @@ Publish a new version of a Summer App for the person's team: files with index.ht
 | **CLI** | `summer apps publish` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes your own drafts, files or settings. Nobody else sees it yet. |
-| **Asks you first** | No, while **Make and build** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | No: **Make and build** is on by default in Agent permissions. When it is off, your agent asks you first. |
 | **3.x names** | `summer_app_publish` |
 
 **Inputs:**
@@ -1787,7 +1787,7 @@ Tell Summer about something a Summer App needed that the SDK cannot do yet (for 
 | **CLI** | `summer apps report-gap` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes your own drafts, files or settings. Nobody else sees it yet. |
-| **Asks you first** | No, while **Make and build** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | No: **Make and build** is on by default in Agent permissions. When it is off, your agent asks you first. |
 | **3.x names** | `summer_app_report_gap` |
 
 **Inputs:**
@@ -1902,7 +1902,7 @@ Ask the owner to make an older version of a Summer App the live one everyone on 
 | **CLI** | `summer apps rollback` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Publishes: makes something public or live. |
-| **Asks you first** | No, while **Publish** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | No: **Publish** is on by default in Agent permissions. When it is off, your agent asks you first. |
 
 **Inputs:**
 
@@ -2295,7 +2295,7 @@ Rename a Summer App, change its purpose or folder, set its status (kept, archive
 | **CLI** | `summer apps update` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes your own drafts, files or settings. Nobody else sees it yet. |
-| **Asks you first** | No, while **Make and build** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | No: **Make and build** is on by default in Agent permissions. When it is off, your agent asks you first. |
 | **3.x names** | `summer_app_update` |
 
 **Inputs:**
@@ -2433,7 +2433,7 @@ Ask the owner to make the newest starter the live version of a starter app the t
 | **CLI** | `summer apps update-starter` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Publishes: makes something public or live. |
-| **Asks you first** | No, while **Publish** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | No: **Publish** is on by default in Agent permissions. When it is off, your agent asks you first. |
 
 **Inputs:**
 
@@ -2533,7 +2533,7 @@ Fill fields and press one button a Summer App declared, while it is open in the 
 | **CLI** | `summer apps use-page` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes your own drafts, files or settings. Nobody else sees it yet. |
-| **Asks you first** | No, while **Make and build** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | No: **Make and build** is on by default in Agent permissions. When it is off, your agent asks you first. |
 | **3.x names** | `summer_app_page#use` |
 
 **Inputs:**
@@ -2708,7 +2708,7 @@ Write a Summer App's shared data in one revision, with no app open: put, patch (
 | **CLI** | `summer apps write-data` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes your own drafts, files or settings. Nobody else sees it yet. |
-| **Asks you first** | No, while **Make and build** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | No: **Make and build** is on by default in Agent permissions. When it is off, your agent asks you first. |
 | **3.x names** | `summer_app_data#write` |
 
 **Inputs:**

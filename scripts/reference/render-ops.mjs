@@ -66,15 +66,30 @@ function groupsById(src) {
   return Object.fromEntries(src.permissionGroups.map((g) => [g.id, g]));
 }
 
+/**
+ * Changes Summer Games still keeps for the person even when their switch is
+ * on, until it honors Agent permissions for agents (summer-platform #2634).
+ * Remove this list when that is live.
+ */
+const PLATFORM_STILL_ASKS = new Set([
+  "pricing.set_base", "pricing.set_country", "pricing.clear_country", "pricing.schedule_discount", "pricing.clear_discount",
+  "experiments.start", "experiments.stop", "games.set_member_role",
+  "store.publish", "store.release", "store.update_release_notes",
+]);
+
 function asksFirst(op, groups) {
   const permission = permissionOf(op);
   if (permission === "free") return { short: "Never", long: "No. It changes nothing." };
   if (permission === "ask") return { short: "Always", long: "Always. You approve it in Studio; an agent can never skip this." };
   const g = groups[permission];
   if (!g) return { short: "-", long: "-" };
+  if (PLATFORM_STILL_ASKS.has(op.name)) {
+    const who = op.name.startsWith("store.publish") || op.name === "store.release" ? "the game's owner" : "you";
+    return { short: "Yes, for now", long: `Yes, for now: Summer Games still asks ${who} first. Soon it follows **${g.label}** in Agent permissions (on by default).` };
+  }
   return g.default
-    ? { short: "Not by default", long: `No, while **${g.label}** is on in Agent permissions (on by default). When it is off, your agent asks you first.` }
-    : { short: "Yes, by default", long: `Yes, unless you turn on **${g.label}** in Agent permissions (off by default).` };
+    ? { short: "Not by default", long: `No: **${g.label}** is on by default in Agent permissions. When it is off, your agent asks you first.` }
+    : { short: "Yes, by default", long: `Yes: **${g.label}** is off by default in Agent permissions.` };
 }
 
 // ------------------------------------------------------------- examples
@@ -342,11 +357,14 @@ export function renderOpsIndexPage(src, byArea) {
     "",
     "## What your agent may do without asking",
     "",
-    "You choose once in Studio, in **Settings > Agent permissions**. The same switches show when you connect an agent. They apply to every agent you connect. When a switch is off, the operation answers `needs_approval` with a link, and your open Studio tab shows the request. Nothing changes until you approve. **Settings > Agent activity** lists what your agents did, with Undo for prices, sales, member roles, team names and the event limit.",
+    "Studio shows six switches in **Settings > Agent permissions**. They apply to every app you connect. These defaults apply now. You can change them soon. Until then, Summer Games still asks the game's owner before an agent publishes, and price, A/B test and member changes ask you first. When a change asks, the operation answers `needs_approval` with a link, and your open Studio tab shows the request. Nothing changes until you approve. **Settings > Agent activity** lists what your agents did, with Undo for prices, sales, member roles, team names and the event limit.",
     "",
     "| Permission | By default | Operations |",
     "|---|---|---|",
-    ...groups.map((g) => `| ${g.label} | ${g.default ? "On: runs at once" : "Off: asks you first"} | ${countIn(g.id)} |`),
+    ...groups.map((g) => {
+      const held = all.some((o) => permissionOf(o) === g.id && PLATFORM_STILL_ASKS.has(o.name));
+      return `| ${g.label} | ${g.default ? (held ? "On: runs at once, except what Summer Games still asks for" : "On: runs at once") : "Off: asks you first"} | ${countIn(g.id)} |`;
+    }),
     `| Always asks | You approve each time | ${countIn("ask")} |`,
     `| Reads | Never ask | ${countIn("free")} |`,
     "",

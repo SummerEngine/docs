@@ -37,7 +37,7 @@ Create a team (a shared workspace) in Summer Studio with the person as its owner
 | **CLI** | `summer team create` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes your own drafts, files or settings. Nobody else sees it yet. |
-| **Asks you first** | No, while **Make and build** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | No: **Make and build** is on by default in Agent permissions. When it is off, your agent asks you first. |
 | **3.x names** | `summer_team#create` |
 
 **Inputs:**
@@ -150,7 +150,7 @@ Invite someone by email to one of the person's teams in Summer Studio; Summer em
 | **CLI** | `summer team invite` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes your own drafts, files or settings. Nobody else sees it yet. |
-| **Asks you first** | Yes, unless you turn on **Contact people** in Agent permissions (off by default). |
+| **Asks you first** | Yes: **Contact people** is off by default in Agent permissions. |
 | **3.x names** | `summer_team#invite` |
 
 **Inputs:**
@@ -504,7 +504,7 @@ Rename one of the person's teams in Summer Studio. Its members see the new name.
 | **CLI** | `summer team rename` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes your own drafts, files or settings. Nobody else sees it yet. |
-| **Asks you first** | No, while **Make and build** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | No: **Make and build** is on by default in Agent permissions. When it is off, your agent asks you first. |
 | **3.x names** | `summer_team#rename` |
 
 **Inputs:**
@@ -626,7 +626,7 @@ Withdraw a pending invite to one of the person's teams, so its link stops workin
 | **CLI** | `summer team withdraw-invite` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Removes or stops something for good. |
-| **Asks you first** | Yes, unless you turn on **Delete for good** in Agent permissions (off by default). |
+| **Asks you first** | Yes: **Delete for good** is off by default in Agent permissions. |
 | **3.x names** | `summer_team#revoke` |
 
 **Inputs:**

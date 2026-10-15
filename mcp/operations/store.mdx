@@ -20,8 +20,8 @@ Generated from the operation catalog: `src/lib/ops/public-catalog.json` at `b1a8
 | [`store.cancel_publish`](#cancel_publish) | Withdraw a publish request that still waits for the owner, so its approval link stops working. | Not by default |
 | [`store.get_listing`](#get_listing) | Read a game's store page as the store will show it: page state, targets, text per store, art per slot, price, the publish checklist (what is missing), publish requests and the tags a page can pick. | Never |
 | [`store.preview_link`](#preview_link) | Make a private link to the saved store page draft on summer.games (not indexed; Buy and Play do nothing) to look at it or show it to someone. | Not by default |
-| [`store.publish`](#publish) | Ask the owner to publish the store page draft with a build and price. | Not by default |
-| [`store.release`](#release) | Release the bundle build the owner approved with store.publish to players, once Summer approved the game. | Not by default |
+| [`store.publish`](#publish) | Ask the owner to publish the store page draft with a build and price. | Yes, for now |
+| [`store.release`](#release) | Release the bundle build the owner approved with store.publish to players, once Summer approved the game. | Yes, for now |
 | [`store.remove_build`](#remove_build) | Remove a bundle build that no environment serves from the game's versions. | Yes, by default |
 | [`store.remove_file`](#remove_file) | Remove a file that was kept privately for Summer review (store.status files): it leaves the list, and no build uses it. | Yes, by default |
 | [`store.remove_trailer`](#remove_trailer) | Take the trailer off the store page draft. | Yes, by default |
@@ -30,7 +30,7 @@ Generated from the operation catalog: `src/lib/ops/public-catalog.json` at `b1a8
 | [`store.set_trailer`](#set_trailer) | Set the store page trailer from the person's video asset or a public MP4 or WebM URL; Summer Games checks it first. | Not by default |
 | [`store.status`](#status) | Read where a game stands on Summer Games in one call: the review and its feedback, a publish request waiting for the owner, every upload and its checks, and what players get now on each platform. | Never |
 | [`store.update_listing`](#update_listing) | Edit the store page draft: title, targets, desktop and mobile text, tags, long description, support contact, release stage, content rating and other languages. | Not by default |
-| [`store.update_release_notes`](#update_release_notes) | Write the release notes players read for a released bundle build: a title and Markdown text. | Not by default |
+| [`store.update_release_notes`](#update_release_notes) | Write the release notes players read for a released bundle build: a title and Markdown text. | Yes, for now |
 | [`store.upload_begin`](#upload_begin) | Start uploading a build to a game: kind bundle (the summer.games export or one .pck), web (an HTML5 zip with index.html) or download (a desktop archive). | Not by default |
 | [`store.upload_complete`](#upload_complete) | Finish a store upload after every part is PUT: Summer seals it and checks it. | Not by default |
 | [`store.upload_sign_parts`](#upload_sign_parts) | Get upload URLs for parts of a store upload, up to 100 at a time. | Not by default |
@@ -57,7 +57,7 @@ Withdraw a publish request that still waits for the owner, so its approval link 
 | **CLI** | `summer store cancel-publish` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes your own drafts, files or settings. Nobody else sees it yet. |
-| **Asks you first** | No, while **Make and build** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | No: **Make and build** is on by default in Agent permissions. When it is off, your agent asks you first. |
 | **3.x names** | `summer_store_cancel_submission` |
 
 **Inputs:**
@@ -559,7 +559,7 @@ Make a private link to the saved store page draft on summer.games (not indexed; 
 | **CLI** | `summer store preview-link` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes your own drafts, files or settings. Nobody else sees it yet. |
-| **Asks you first** | No, while **Make and build** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | No: **Make and build** is on by default in Agent permissions. When it is off, your agent asks you first. |
 | **3.x names** | `summer_store_preview_link` |
 
 **Inputs:**
@@ -674,7 +674,7 @@ Ask the owner to publish the store page draft with a build and price. Checks the
 | **CLI** | `summer store publish` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Publishes: makes something public or live. |
-| **Asks you first** | No, while **Publish** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | Yes, for now: Summer Games still asks the game's owner first. Soon it follows **Publish** in Agent permissions (on by default). |
 | **Retry key** | Required: send a new `idempotencyKey` for each new request, the same one only to retry it. |
 | **3.x names** | `summer_store_submit` |
 
@@ -824,7 +824,7 @@ Release the bundle build the owner approved with store.publish to players, once 
 | **CLI** | `summer store release` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Publishes: makes something public or live. |
-| **Asks you first** | No, while **Publish** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | Yes, for now: Summer Games still asks the game's owner first. Soon it follows **Publish** in Agent permissions (on by default). |
 | **Long work** | Answers with a job at once. Wait with `jobs.wait`. |
 | **Retry key** | Required: send a new `idempotencyKey` for each new request, the same one only to retry it. |
 | **3.x names** | `summer_build_release` |
@@ -955,7 +955,7 @@ Remove a bundle build that no environment serves from the game's versions. Its v
 | **CLI** | `summer store remove-build` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Removes or stops something for good. |
-| **Asks you first** | Yes, unless you turn on **Delete for good** in Agent permissions (off by default). |
+| **Asks you first** | Yes: **Delete for good** is off by default in Agent permissions. |
 
 **Inputs:**
 
@@ -1063,7 +1063,7 @@ Remove a file that was kept privately for Summer review (store.status files): it
 | **CLI** | `summer store remove-file` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Removes or stops something for good. |
-| **Asks you first** | Yes, unless you turn on **Delete for good** in Agent permissions (off by default). |
+| **Asks you first** | Yes: **Delete for good** is off by default in Agent permissions. |
 
 **Inputs:**
 
@@ -1175,7 +1175,7 @@ Take the trailer off the store page draft. The live page keeps its trailer until
 | **CLI** | `summer store remove-trailer` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Removes or stops something for good. |
-| **Asks you first** | Yes, unless you turn on **Delete for good** in Agent permissions (off by default). |
+| **Asks you first** | Yes: **Delete for good** is off by default in Agent permissions. |
 
 **Inputs:**
 
@@ -1270,7 +1270,7 @@ Put images into one store art slot from the person's assets (assetId) or public 
 | **CLI** | `summer store set-art` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes your own drafts, files or settings. Nobody else sees it yet. |
-| **Asks you first** | No, while **Make and build** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | No: **Make and build** is on by default in Agent permissions. When it is off, your agent asks you first. |
 | **3.x names** | `summer_store_set_art` |
 
 **Inputs:**
@@ -1514,7 +1514,7 @@ Set the soft loop visitors hear on the game's summer.games page: a loop from the
 | **CLI** | `summer store set-sound` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes your own drafts, files or settings. Nobody else sees it yet. |
-| **Asks you first** | No, while **Make and build** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | No: **Make and build** is on by default in Agent permissions. When it is off, your agent asks you first. |
 | **3.x names** | `summer_store_set_sound` |
 
 **Inputs:**
@@ -1682,7 +1682,7 @@ Set the store page trailer from the person's video asset or a public MP4 or WebM
 | **CLI** | `summer store set-trailer` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes your own drafts, files or settings. Nobody else sees it yet. |
-| **Asks you first** | No, while **Make and build** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | No: **Make and build** is on by default in Agent permissions. When it is off, your agent asks you first. |
 | **3.x names** | `summer_store_set_trailer` |
 
 **Inputs:**
@@ -2299,7 +2299,7 @@ Edit the store page draft: title, targets, desktop and mobile text, tags, long d
 | **CLI** | `summer store update-listing` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes your own drafts, files or settings. Nobody else sees it yet. |
-| **Asks you first** | No, while **Make and build** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | No: **Make and build** is on by default in Agent permissions. When it is off, your agent asks you first. |
 | **3.x names** | `summer_store_update_listing` |
 
 **Inputs:**
@@ -2699,7 +2699,7 @@ Write the release notes players read for a released bundle build: a title and Ma
 | **CLI** | `summer store update-release-notes` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes what players see or pay, or who can act on a game. |
-| **Asks you first** | No, while **Prices and live changes** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | Yes, for now: Summer Games still asks you first. Soon it follows **Prices and live changes** in Agent permissions (on by default). |
 
 **Inputs:**
 
@@ -2828,7 +2828,7 @@ Start uploading a build to a game: kind bundle (the summer.games export or one .
 | **CLI** | `summer store upload-begin` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes your own drafts, files or settings. Nobody else sees it yet. |
-| **Asks you first** | No, while **Make and build** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | No: **Make and build** is on by default in Agent permissions. When it is off, your agent asks you first. |
 | **3.x names** | `summer_build_begin_upload`, `summer_store_version_begin_upload` |
 
 **Inputs:**
@@ -3041,7 +3041,7 @@ Finish a store upload after every part is PUT: Summer seals it and checks it. An
 | **CLI** | `summer store upload-complete` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes your own drafts, files or settings. Nobody else sees it yet. |
-| **Asks you first** | No, while **Make and build** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | No: **Make and build** is on by default in Agent permissions. When it is off, your agent asks you first. |
 | **Long work** | Answers with a job at once. Wait with `jobs.wait`. |
 | **3.x names** | `summer_build_complete_upload`, `summer_store_version_complete` |
 
@@ -3231,7 +3231,7 @@ Get upload URLs for parts of a store upload, up to 100 at a time. PUT each part 
 | **CLI** | `summer store upload-sign-parts` |
 | **Runs** | On Summer's servers: the hosted MCP, or the npm MCP after `summer login`. Needs your Summer sign-in. |
 | **Effect** | Changes your own drafts, files or settings. Nobody else sees it yet. |
-| **Asks you first** | No, while **Make and build** is on in Agent permissions (on by default). When it is off, your agent asks you first. |
+| **Asks you first** | No: **Make and build** is on by default in Agent permissions. When it is off, your agent asks you first. |
 | **3.x names** | `summer_build_sign_parts`, `summer_store_version_sign_parts` |
 
 **Inputs:**
