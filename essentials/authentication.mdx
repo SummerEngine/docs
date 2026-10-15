@@ -1,6 +1,6 @@
 ---
 title: "Authentication"
-description: "Set up your Summer Engine account and API access"
+description: "Create your Summer account and sign in your agent. There is no API key: your agent signs in with your Summer account in the browser."
 icon: "key"
 "og:image": "https://docs.summerengine.com/images/og/essentials-authentication.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/essentials-authentication.jpg"
@@ -8,7 +8,7 @@ icon: "key"
 
 ## Creating Your Account
 
-Summer Engine requires an account to access AI features and sync your projects.
+Summer Engine needs an account for hosted AI, asset generation, publishing and your connected agents.
 
 <Steps>
   <Step title="Sign up">
@@ -31,25 +31,14 @@ Summer Engine uses a streamlined authentication system:
 3. **Automatic Authentication**: Summer Engine will open a secure deeplink to authenticate your account
 4. **Return to Summer Engine**: Once authenticated, you'll be redirected back to Summer Engine with full access
 
-## API Key Setup
+## Sign in your agent
 
-For advanced integrations and API access:
+There is no API key. Your agent signs in with your Summer account in the browser, once.
 
-<CodeGroup>
+- **Hosted MCP** (Claude, ChatGPT and any app that adds a remote MCP server): add `https://mcp.summerengine.com/mcp`. The app opens the Summer sign-in page. Sign in and choose **Allow**.
+- **On your computer** (the `summer-engine` MCP and CLI): run `npx -y summer-engine@latest login`. One browser sign-in covers your Summer account and the store, publishing and Grow tools.
 
-```bash Terminal
-# Set your API key as an environment variable
-export SUMMER_API_KEY="your-api-key-here"
-```
-
-```javascript JavaScript
-// Use in your applications
-const summer = new SummerAPI({
-  apiKey: process.env.SUMMER_API_KEY
-});
-```
-
-</CodeGroup>
+See [MCP setup](/mcp/setup) and [Connect your agent](/publishing/connect-your-agent).
 
 ## Account Tiers
 
@@ -68,7 +57,6 @@ const summer = new SummerAPI({
 >
   - Extended agent usage and higher AI asset creation limits
   - Local MCP workflows stay free
-  - Asset search across the library
   - Priority support
 </Card>
 
@@ -81,10 +69,9 @@ See [Pricing](/essentials/pricing) for full plan details including Pro+ and Ultr
 - Ensure your account is verified
 - Try resetting your password
 
-**API key not working?**
-- Verify the key is correctly set
-- Check your account tier supports API access
-- Ensure the key hasn't expired
+**Your agent cannot sign in?**
+- On your computer: run `npx -y summer-engine@latest login --force`
+- Hosted MCP: remove `https://mcp.summerengine.com/mcp` from your agent, add it again and sign in
 
 Need help? Contact us at [founders@summerengine.com](mailto:founders@summerengine.com).
 

@@ -96,14 +96,13 @@ icon: "wrench"
 - Check firewall isn't blocking Summer Engine
 - Try signing in through browser first
 
-### API key issues
-**Symptoms**: API calls fail with authentication errors
+### Agent sign-in issues
+**Symptoms**: Your agent's Summer tools say you are not signed in
 
 **Solutions**:
-- Regenerate API key in dashboard
-- Check key format (no extra spaces/characters)
-- Verify account tier supports API access
-- Test with curl first to isolate issues
+- On your computer: run `npx -y summer-engine@latest login --force`
+- Hosted MCP: remove `https://mcp.summerengine.com/mcp` from your agent, add it again and sign in
+- Summer has no API key. Your agent signs in with your Summer account in the browser
 
 ## Getting Help
 

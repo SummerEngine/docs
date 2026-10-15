@@ -49,7 +49,7 @@
         "POST /v1/management/games/{gameId}/environments/{envId}/release-drafts/{draftId}:publish"
       ],
       "description": "Create and manage your Summer Games store games: store page drafts, revisions, preview links, media, builds and releases, and the owner approval that publishes them.",
-      "auth": "Your Summer account token. An agent gets it by signing in with OAuth: `summer login --store` in the Summer CLI, or the Summer connector in an AI app. Agent tokens can call only the operations on these pages. Publishing needs an approval from the game's owner first."
+      "auth": "Your Summer account token. An agent gets it by signing in with OAuth: `summer login` in the Summer CLI, or the Summer connector in an AI app. Agent tokens can call only the operations on these pages. Publishing needs an approval from the game's owner first."
     },
     {
       "id": "analytics",
@@ -60,7 +60,7 @@
         "GET /v1/management/games/{gameId}/environments/{envId}/analytics/catalog"
       ],
       "description": "Read your game's analytics: the activity overview and the catalog of events your game sends.",
-      "auth": "Your Summer account token, the same one the creator management API uses (`summer login --store`). You can read only games you own or manage."
+      "auth": "Your Summer account token, the same one the creator management API uses (`summer login`). You can read only games you own or manage."
     },
     {
       "id": "player",

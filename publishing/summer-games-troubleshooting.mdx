@@ -15,7 +15,7 @@ Find the message you see, then do what the right column says.
 
 `Summer Games did not accept this connector sign-in` or HTTP `401`.
 
-- Reconnect the Summer Engine connector in your agent, or run `npx -y summer-engine@latest login --store` again.
+- Reconnect the Summer Engine connector in your agent, or run `npx -y summer-engine@latest login --force` to sign in again.
 - Still failing: run `summer login --store --force` to register this computer again.
 - `403 agent_access_not_enabled`: agent publishing is available to invited creators during the rollout, and your account is not on the list yet. Publish in Studio for now at [summerengine.com/studio/upload](https://www.summerengine.com/studio/upload); see [Publish your game](/build/publish).
 
@@ -61,7 +61,7 @@ The local MCP waits for the browser on port 47615, 47616 or 47617. Close the pro
 | `asset_not_found` | The asset is not one of yours. Find yours with `summer_list_my_assets`. |
 | `image_unreadable` | Upload a PNG, JPEG or WebP with `summer_upload_image_begin`, or use a public `https` image URL. |
 | `invalid_upload` | The image upload expired or was not signed for you. Start again with `summer_upload_image_begin`. |
-| No publishing tools in the npm MCP | Run `summer login --store`. Until then the MCP shows one tool, `summer_store_tools`, that says so. |
+| No publishing tools in the npm MCP | Run `summer login`. Until then the MCP shows one tool, `summer_store_tools`, that says so. |
 | Mobile description too long | The mobile description is 120-170 characters. Shorten it after **Same as desktop**. |
 | Too many pictures | A page holds at most 20 pictures and videos across both stores. Remove some screenshots. |
 
