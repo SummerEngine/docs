@@ -1,7 +1,7 @@
 ---
 title: "Connect your agent to publish"
 sidebarTitle: "Connect your agent"
-description: "Connect Claude Code, Codex, Claude or ChatGPT to the Summer Engine MCP. On your computer, the summer-engine npm MCP plus summer login --store; in the browser, the hosted MCP at mcp.summerengine.com."
+description: "Connect Claude Code, Codex, Claude or ChatGPT to the Summer Engine MCP. On your computer, the summer-engine npm MCP and one summer login; in the browser, the hosted MCP at mcp.summerengine.com."
 icon: "plug"
 "og:image": "https://docs.summerengine.com/images/og/publishing-connect-your-agent.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/publishing-connect-your-agent.jpg"
@@ -35,14 +35,14 @@ A chat app in the browser cannot reach your computer, so it cannot export. Expor
 
     Other agents: [MCP setup](/mcp/setup).
   </Step>
-  <Step title="Sign in to the store">
+  <Step title="Sign in once">
     Once per computer:
 
     ```bash
-    npx -y summer-engine@latest login --store
+    npx -y summer-engine@latest login
     ```
 
-    Your browser opens. Sign in to your Summer account and choose **Allow**.
+    Your browser opens. Sign in to your Summer account, then choose **Allow** for the store, publishing and Grow tools. One sign-in covers every Summer tool on this computer.
   </Step>
   <Step title="Restart your agent">
     The MCP now lists the publishing tools next to the engine tools: `summer_store_*`, `summer_build_*`, `summer_upload_image_*` and more.
@@ -55,9 +55,9 @@ The store sign-in is saved in `~/.summer/oauth-token` and renews itself.
 
 | Command | What it does |
 |---|---|
-| `summer login` | Core sign-in for the engine and Summer's cloud tools. |
-| `summer login --store` | Store sign-in. The MCP then loads the publishing tools. |
-| `summer login --store --force` | Registers this computer again, if store sign-in keeps failing. |
+| `summer login` | One sign-in for the engine, Summer's cloud tools and the store, publishing and Grow tools. |
+| `summer login --force` | Signs in again, if a sign-in expired or was refused. |
+| `summer login --store --force` | Registers this computer with the store again, if the store sign-in keeps failing. |
 | `summer logout` | Removes the sign-ins. |
 
 During sign-in the MCP listens on port 47615, 47616 or 47617. Keep one of them free.
@@ -101,8 +101,8 @@ Summer Games. Follow
 https://docs.summerengine.com/publishing/connect-your-agent.md.
 
 - Run the Summer Engine setup for the agent you are.
-- Then tell me to run `npx -y summer-engine@latest login --store` and sign
-  in, because you cannot sign in for me.
+- Then tell me to run `npx -y summer-engine@latest login` and sign in,
+  because you cannot sign in for me.
 - After I have signed in, list my Summer projects and my store games to
   check that it works.
 </Prompt>

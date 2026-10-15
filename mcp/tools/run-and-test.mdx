@@ -19,7 +19,7 @@ Generated from the tools' own definitions: the `summer-engine` npm package `3.4.
 |---|---|---|
 | [`summer_camera_bookmark`](#summer_camera_bookmark) | Engine | Save, list, or delete named camera viewpoints for the edited 3D scene. |
 | [`summer_clear_console`](#summer_clear_console) | Engine | Clear the editor's Output panel. |
-| [`summer_create_debug_report`](#summer_create_debug_report) | Engine + Store sign-in | Create a support-ready Markdown report for /summer debug. |
+| [`summer_create_debug_report`](#summer_create_debug_report) | Engine + Signed in | Create a support-ready Markdown report for /summer debug. |
 | [`summer_debug_views`](#summer_debug_views) | Engine | One pose rendered as a grid of debug views next to the beauty pass: beauty, lighting (light only: direction, pools, dead-dark areas), unshaded (albedo: texture quality, value grouping), normals (world-space, x red y… |
 | [`summer_frame_nodes`](#summer_frame_nodes) | Engine | Frame one or more nodes with a camera fitted to their WORLD bounds and render it with the scene's REAL WorldEnvironment, lights, fog and tonemap (unlike summer_screenshot nodePath, which only works with the flat… |
 | [`summer_frame_shot`](#summer_frame_shot) | Engine | Smart framing: find good camera poses for a shot type automatically, measured in-engine against the real geometry. |
@@ -212,7 +212,7 @@ sending because local paths and stack traces may appear.
 
 | | |
 |---|---|
-| **Needs** | Summer Engine open with your project<br />Store sign-in: `summer login --store` |
+| **Needs** | Summer Engine open with your project<br />Signed in: `summer login` |
 | **Effects** | writes files, changes the open project, uses the network |
 | **CLI** | `summer debug` |
 
