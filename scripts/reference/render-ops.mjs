@@ -269,7 +269,7 @@ export function renderOpsLegacyPage(src, byArea) {
     "",
     banner(src),
     "",
-    `Summer 4.0 names every capability as an operation. The 3.x tool names keep working for all of 4.x: ${code("summer_call")} accepts them, and adding ${code("toolsets=legacy")} to the MCP lists them again. A name with ${code("#action")} is one action of a 3.x tool that did several jobs; the 3.x ${code("action")} argument picks the operation. ${rows.length} names.`,
+    `Summer 4.0 names every capability as an operation. The 3.x tool names keep working for all of 4.x: ${code("summer_call")} accepts them on every server, and the npm MCP lists them again with ${code("summer mcp --toolsets legacy")} (and by itself while your installed Summer skills are older than 4.0). A name with ${code("#action")} is one action of a 3.x tool that did several jobs; the 3.x ${code("action")} argument picks the operation. ${rows.length} names.`,
     "",
     "| 3.x name | Operation |",
     "|---|---|",
