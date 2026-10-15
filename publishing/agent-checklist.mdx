@@ -102,7 +102,7 @@ For each empty required slot of each store the game is on:
 
 - [ ] `summer_store_publish` with `gameId`, the price the owner asked for as `price: {"currency": "USD", "amountMinor": 499}` (`amountMinor: 0` is free; leave `price` out to keep the current one), a short `note` and a new `idempotencyKey`.
 - [ ] `done`: Summer's review runs next.
-- [ ] `needs_approval`: give the owner `approval.url` and say: "Open this link and approve it. Summer reviews it next." Then `summer_jobs_wait` with `job.id` until the job ends. Summer Games may ask the owner even when **Publish** is on in [Agent permissions](/mcp/permissions).
+- [ ] `needs_approval`: give the owner `approval.url` and say: "Open this link and approve it. Summer reviews it next." Then `summer_jobs_wait` with `job.id` until the job ends. For now Summer Games asks the owner even when **Publish** is on in [Agent permissions](/mcp/permissions).
 
 ## After the publish
 

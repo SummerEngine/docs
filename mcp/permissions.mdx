@@ -1,15 +1,15 @@
 ---
 title: "Agent permissions and approvals"
 sidebarTitle: "Agent permissions"
-description: "Choose what agents you connect to Summer may do without asking: six switches in Studio > Settings > Agent permissions. When a switch is off, your agent asks first with an approval link. Agent activity lists every change, with Undo."
+description: "What agents you connect to Summer may do without asking: six switches in Studio > Settings > Agent permissions. When a change asks, your agent gives you an approval link. Agent activity lists every change, with Undo."
 icon: "shield-check"
 ---
 
-Summer is the game engine built for AI. Any agent you connect builds, tests and publishes your game. You choose once what it may do without asking.
+Summer is the game engine built for AI. Any agent you connect builds, tests and publishes your game. Six switches say what it may do without asking.
 
 ## The six switches
 
-Open **Studio > Settings > Agent permissions** (`https://www.summerengine.com/studio?tab=settings`). The same switches show when you connect an agent, on the sign-in screen. They apply to every app you connect, like Claude, ChatGPT, Claude Code, Codex or Cursor.
+They are in **Studio > Settings > Agent permissions** (`https://www.summerengine.com/studio?tab=settings`). They apply to every app you connect, like Claude, ChatGPT, Claude Code, Codex or Cursor. These defaults apply now. You can change them soon. Until then, Summer Games still asks the game's owner before an agent publishes, and price, A/B test and member changes ask you first.
 
 | Switch | By default | What it covers |
 |---|---|---|
@@ -24,7 +24,7 @@ Reads never ask. Each operation names the switch it needs: see [Operations](/mcp
 
 ## When a switch is off
 
-Your agent asks you first. Its call answers `needs_approval` with a link:
+Your agent asks you first. Changes Summer Games still asks for work the same way. The call answers `needs_approval` with a link:
 
 ```text
 https://www.summerengine.com/studio/approvals/<id>
@@ -58,7 +58,7 @@ Some changes ask you every time, whatever the switches say:
 
 Publishing never skips Summer's store review. A game goes live on Summer Games only after the review passes.
 
-Summer Games may still ask the game's owner to approve a publish; then the answer is `needs_approval` with the owner's approval link. See [Approve publishing](/publishing/owner-approval).
+Until Summer Games follows the switches, it asks the game's owner to approve an agent's publish; the answer is `needs_approval` with the owner's approval link. See [Approvals](/publishing/owner-approval).
 
 ## Credits
 
