@@ -80,7 +80,7 @@ summer router push [ids...] [--dry-run] [--force]
 `push` never overwrites a change made on Summer (in Studio, or by someone else) since this project last pushed or pulled. It stops with `studio_changed`. Run `pull` to take Summer's version, or `push --force` to keep yours. The last known versions are in `.summer/router.json`; commit it with the character files.
 
 ```json
-{"ok": true, "game_id": "game_01...", "pushed": [{"id": "guard", "version": 3, "action": "updated"}], "studio_url": "https://www.summerengine.com/studio/games/game_01.../router?panel=characters"}
+{"ok": true, "game_id": "game_01...", "pushed": [{"id": "guard", "version": 3, "action": "updated"}], "studio_url": "https://www.summerengine.com/studio/store/game_01...?view=all&tab=router"}
 ```
 
 Before the game is live, an agent may push. After it is live, the owner approves in Studio: the error is `owner_action_required` with `studio_url`.
