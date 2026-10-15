@@ -1,0 +1,76 @@
+---
+title: "Agent permissions and approvals"
+sidebarTitle: "Agent permissions"
+description: "Choose what agents you connect to Summer may do without asking: six switches in Studio > Settings > Agent permissions. When a switch is off, your agent asks first with an approval link. Agent activity lists every change, with Undo."
+icon: "shield-check"
+---
+
+Summer is the game engine built for AI. Any agent you connect builds, tests and publishes your game. You choose once what it may do without asking.
+
+## The six switches
+
+Open **Studio > Settings > Agent permissions** (`https://www.summerengine.com/studio?tab=settings`). The same switches show when you connect an agent, on the sign-in screen. They apply to every app you connect, like Claude, ChatGPT, Claude Code, Codex or Cursor.
+
+| Switch | By default | What it covers |
+|---|---|---|
+| **Make and build** | On | Edit drafts, scenes, plans and uploads, and start builds. |
+| **Spend credits** | On | Generate assets and run paid builds, within your credits and auto top-up limit. |
+| **Publish** | On | Publish store pages, versions and releases. Summer's store review still runs first. |
+| **Prices and live changes** | On | Change prices and sales, start or stop A/B tests, change member roles. |
+| **Delete for good** | Off | Delete or remove things for good. |
+| **Contact people** | Off | Send invites and other emails to real people. |
+
+Reads never ask. Each operation names the switch it needs: see [Operations](/mcp/operations).
+
+## When a switch is off
+
+Your agent asks you first. Its call answers `needs_approval` with a link:
+
+```text
+https://www.summerengine.com/studio/approvals/<id>
+```
+
+If you have Studio open in a tab, a card shows there too. It says what your agent wants to do, with a button to approve it and one to turn it down. **Nothing changes until you approve.** Your agent waits with `jobs.wait` and goes on when you answer.
+
+A request for your own yes expires after 24 hours. A request for a game owner's yes expires after 7 days.
+
+## What always asks
+
+Some changes ask you every time, whatever the switches say:
+
+- changing your agent permissions (an agent can turn a switch off, never on);
+- auto top-up settings;
+- entering a jam (you agree to the jam rules);
+- the monthly limit for your analytics events.
+
+## Agent activity and Undo
+
+**Studio > Settings > Agent activity** lists what your connected agents changed or asked for, newest first. Requests that wait for you show **Review**.
+
+**Undo** puts back:
+
+- prices, sales and country prices;
+- member roles;
+- team names;
+- the analytics event limit.
+
+## Summer's review still runs
+
+Publishing never skips Summer's store review. A game goes live on Summer Games only after the review passes.
+
+Summer Games may still ask the game's owner to approve a publish; then the answer is `needs_approval` with the owner's approval link. See [Approve publishing](/publishing/owner-approval).
+
+## Credits
+
+With **Spend credits** on, your agent spends within your credits and the monthly limit of your auto top-up. It does not ask per call. When credits run out, the answer is the error `no_credits` with one link: `https://www.summerengine.com/studio/credits`. See [Account and billing](/essentials/account-billing).
+
+## For agents
+
+- Read `status` on every answer. `done`: it happened. `needs_approval`: give the person `approval.url`, then call `summer_jobs_wait` with `job.id` until the job ends.
+- Never say a change happened while it waits for approval.
+- `dryRun: true` shows what a call would change and which approval it needs. Nothing changes.
+- The answer shapes and error codes: [Operations](/mcp/operations#the-answer).
+
+---
+
+Does this not help you? [Reach out on Discord!](https://discord.gg/summerengine)

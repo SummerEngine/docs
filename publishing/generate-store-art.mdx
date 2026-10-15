@@ -21,22 +21,22 @@ The version of Summer made for Claude's connector directory cannot generate art.
     `summer_store_get_listing` lists every slot and what is in it. Add `previews: true` to see the current art.
   </Step>
   <Step title="Check My assets">
-    `summer_list_my_assets` and `summer_search_assets` find art you already have: key art, your hero, logos, screenshots. `summer_get_asset` shows one.
+    `summer_assets_search` with `scope: "mine"` finds art you already have: key art, your hero, logos, screenshots. `summer_assets_get` shows one.
   </Step>
-  <Step title="Read the board">
-    If your game has a board, `summer_board_read` and `summer_board_game_soul` hold its look, characters and world. New art should match them.
+  <Step title="Read the plan">
+    If your game has a plan, `plans.get` and `plans.directions` (its saved directions) hold its look, characters and world. New art should match them.
   </Step>
   <Step title="Make what is missing">
-    `summer_generate_image` makes the picture, then `summer_check_job` waits for it. The new picture is saved in My assets.
+    `summer_assets_generate_image` makes the picture, then `summer_jobs_wait` waits for it. The new picture is saved in My assets.
   </Step>
   <Step title="Crop it to the slot">
     The agent crops the picture to the slot's exact shape and size itself, keeping the subject at the focal point.
   </Step>
   <Step title="Upload the crop">
-    `summer_upload_image_begin`, then `summer_upload_image_complete`. The crop becomes one of your assets.
+    `assets.upload_begin`, then `assets.upload_complete`. The crop becomes one of your assets.
   </Step>
   <Step title="Put it in the slot">
-    `summer_store_set_art` with the slot id, the asset id and the focal point. The tool checks the shape before it uploads.
+    `store.set_art` with the slot id, the asset id and the focal point. It checks the shape before it uploads.
   </Step>
 </Steps>
 
@@ -56,7 +56,7 @@ Ask the generator for the slot's own shape. Do not make one landscape picture an
 
 Key art needs at least 1920×1080 and the tall cover at least 1080×1920. Many models return 1024×1024 by default, which is too small.
 
-- Ask for the slot's shape: pass `aspectRatio` (`"16:9"`, `"9:16"`, `"1:1"`) to `summer_generate_image`, and `width` and `height` where the model takes them.
+- Ask for the slot's shape: pass `aspectRatio` (`"16:9"`, `"9:16"`, `"1:1"`) to `summer_assets_generate_image`, and `width` and `height` where the model takes them.
 - Check what came back: the result gives the real width and height and the model that made the picture. If the size is below the slot's minimum, do not stretch it.
 - Or generate a large square and crop it. A 2048×2048 picture (for example from `seedream-5-pro`) crops to 2048×1152 for key art and 1152×2048 for the tall cover, both above the minimum.
 
@@ -102,7 +102,7 @@ Each slot's shape must match within 2%.
 
 ## Upload the crop
 
-`summer_upload_image_begin` takes no inputs. It returns a signed upload: an `uploadUrl`, the `fields` to send, and a ready `curl` example. Send the file with every field:
+`assets.upload_begin` takes no inputs. It returns a signed upload: an `uploadUrl`, the `fields` to send, and a ready `curl` example. Send the file with every field:
 
 ```bash
 curl -sS "<uploadUrl>" -F api_key=… -F timestamp=… -F signature=… \
@@ -110,16 +110,18 @@ curl -sS "<uploadUrl>" -F api_key=… -F timestamp=… -F signature=… \
   -F file=@./tall-cover.jpg
 ```
 
-Then pass four values from Cloudinary's answer to `summer_upload_image_complete`. The `signature` here is the one in that answer, not the one you sent in `fields`:
+Then pass four values from Cloudinary's answer to `assets.upload_complete`. Its `uploadSignature` is the `signature` in that answer, not the one you sent in `fields`:
 
 ```json
 {
-  "tool": "summer_upload_image_complete",
-  "publicId": "<public_id>",
-  "version": 1760040000,
-  "signature": "<signature>",
-  "format": "jpg",
-  "title": "Tall cover"
+  "op": "assets.upload_complete",
+  "input": {
+    "publicId": "<public_id>",
+    "version": 1760040000,
+    "uploadSignature": "<signature>",
+    "format": "jpg",
+    "title": "Tall cover"
+  }
 }
 ```
 
@@ -127,23 +129,29 @@ It returns the `assetId`. Uploads are free, at most 32 MB per picture. A picture
 
 ## Put it in the slot
 
+Run `store.set_art` with `summer_call`:
+
 ```json title="One picture, with a focal point"
 {
-  "tool": "summer_store_set_art",
-  "gameId": "<gameId>",
-  "slot": "mobile.tallCover",
-  "sources": [{ "assetId": "<assetId>" }],
-  "focalPoint": { "x": 0.45, "y": 0.4 }
+  "op": "store.set_art",
+  "input": {
+    "gameId": "<gameId>",
+    "slot": "mobile.tallCover",
+    "sources": [{ "assetId": "<assetId>" }],
+    "focalPoint": { "x": 0.45, "y": 0.4 }
+  }
 }
 ```
 
 ```json title="Add screenshots"
 {
-  "tool": "summer_store_set_art",
-  "gameId": "<gameId>",
-  "slot": "desktop.screenshots",
-  "sources": [{ "assetId": "<shot1>" }, { "assetId": "<shot2>" }],
-  "mode": "append"
+  "op": "store.set_art",
+  "input": {
+    "gameId": "<gameId>",
+    "slot": "desktop.screenshots",
+    "sources": [{ "assetId": "<shot1>" }, { "assetId": "<shot2>" }],
+    "mode": "append"
+  }
 }
 ```
 
@@ -159,12 +167,12 @@ MCP and the `store-art` skill, and follow
 https://docs.summerengine.com/publishing/generate-store-art.md.
 
 - Read my store page and list the empty slots. Look in My assets first.
-- For each slot still empty, read my board's look and make one picture in
-  the slot's own shape with summer_generate_image, at least the slot's
-  minimum size. No text, and no other game's characters.
+- For each slot still empty, read my plan's saved direction and make one
+  picture in the slot's own shape with summer_assets_generate_image, at least
+  the slot's minimum size. No text, and no other game's characters.
 - Crop it yourself to the slot's exact size around the subject, upload it
-  with summer_upload_image_begin and summer_upload_image_complete, and put
-  it in the slot with a focal point.
+  with assets.upload_begin and assets.upload_complete, and put it in the
+  slot with store.set_art and a focal point.
 - Show me each picture before it goes in. Never generate screenshots:
   capture real gameplay with summer_capture_gameplay.
 </Prompt>
@@ -172,7 +180,7 @@ https://docs.summerengine.com/publishing/generate-store-art.md.
 ## Rules
 
 - Make art from **your** game: your hero, your world, your look. Never another game's characters. Never fake gameplay.
-- Check My assets before you make anything. Making art uses your Summer credits.
+- Check My assets before you make anything. Making art uses your Summer credits: your agent spends within your credits and auto top-up limit.
 - No text, logo or caption in key art, the tall cover or icons. Screenshots may show the game's own HUD, never added captions, logos or overlays.
 - Stay inside the 20-picture budget across both stores.
 

@@ -1,13 +1,13 @@
 ---
 title: "How do I publish my game on Summer?"
 sidebarTitle: "How do I publish?"
-description: "Export your game, make its art and store page, upload the build and submit. Do it yourself in Studio, or let your AI agent do every step through the Summer Engine MCP and approve it with one click."
+description: "Export your game, make its art and store page, upload the build and submit. Do it yourself in Studio, or let your AI agent do every step through the Summer Engine MCP."
 icon: "rocket"
 "og:image": "https://docs.summerengine.com/images/og/publishing-summer-games.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/publishing-summer-games.jpg"
 ---
 
-You publish a game on Summer Games in five steps: **export** it, add its **art**, write its **store page**, **upload** the build, and **submit**. Export comes first: a build that does not export stops everything, so you find out before you make art. Then you approve it, Summer reviews it, and it goes live on summer.games.
+You publish a game on Summer Games in five steps: **export** it, add its **art**, write its **store page**, **upload** the build, and **publish**. Export comes first: a build that does not export stops everything, so you find out before you make art. Then Summer reviews it, and it goes live on summer.games.
 
 You can do it yourself in Studio, or let your AI agent do every step. The result is the same.
 
@@ -24,12 +24,12 @@ summer.games is where players play. Its **Upload** button brings you to the same
 
 [Connect your agent](/publishing/connect-your-agent) to the Summer Engine MCP, open your game's folder, and paste this:
 
-<Prompt description="**Publish my game to Summer Games.** Your agent does every step and stops at the approval link.">
+<Prompt description="**Publish my game to Summer Games.** Your agent does every step and gives you any approval link.">
 Publish my game to Summer Games. Use the Summer Engine MCP and its
 `publish-your-game` skill, and follow
 https://docs.summerengine.com/publishing/agent-checklist.md from top to bottom.
 
-1. Read my project and its board. Ask me only what they don't say: which
+1. Read my project and its plan. Ask me only what they don't say: which
    platforms, and free or which price.
 2. Find or create the store game, then export the game for my platforms.
 3. Fill every art slot. Use my art in My assets first. Make only what is
@@ -40,10 +40,11 @@ https://docs.summerengine.com/publishing/agent-checklist.md from top to bottom.
 5. Upload the build. Show me what you will upload before you upload it.
 6. Check the store page's checklist until nothing is missing. Send me a
    private preview link.
-7. Submit, and give me the approval link. Do not say the game is published.
+7. Publish it. If you get an approval link, give it to me. Do not say the
+   game is live until Summer's review passes.
 </Prompt>
 
-Your agent stops at the approval link. You open it, check the page, and click **Approve publishing**. See [Can my AI agent do it for me?](/publishing/agent-publishing)
+You choose what your agent may do without asking in [Agent permissions](/mcp/permissions). If your agent gives you an approval link, open it, check the page and approve it. See [Can my AI agent do it for me?](/publishing/agent-publishing)
 
 ## Do it yourself in Studio
 
@@ -56,7 +57,7 @@ Export in the editor, then open [summerengine.com/studio/upload](https://www.sum
     A checklist: the build, the text, the art and the price.
   </Card>
   <Card title="Can my AI agent do it for me?" icon="bot" href="/publishing/agent-publishing">
-    Yes, everything except the approval, which you do.
+    Yes. You choose what it may do without asking.
   </Card>
   <Card title="What does it cost?" icon="badge-dollar-sign" href="/publishing/cost">
     Publishing is free. Summer takes 30% only if you set a price.
@@ -75,11 +76,11 @@ Export in the editor, then open [summerengine.com/studio/upload](https://www.sum
 | Art for every store slot, with sizes and rules | [Store art](/publishing/store-art) |
 | Make art with Summer and crop it to each slot | [Make store art with your agent](/publishing/generate-store-art) |
 | Tagline, description and tags for each store | [Store page text](/publishing/store-text) |
-| Upload the build and submit | [Upload and submit](/publishing/upload-and-submit) |
-| Approve what your agent submitted | [Approve publishing](/publishing/owner-approval) |
+| Upload the build and publish | [Upload and publish](/publishing/upload-and-submit) |
+| Approve what your agent asks for | [Approvals](/publishing/owner-approval) |
 | Record events and read your numbers | [Analytics in Grow](/publishing/analytics) |
 | Something failed | [Troubleshooting](/publishing/summer-games-troubleshooting) |
-| Every MCP tool, its inputs and an example | [Publishing tools reference](/publishing/mcp-tools) |
+| Which operation does each publishing job | [Publishing operations](/publishing/mcp-tools) |
 | One list an agent follows from top to bottom | [Agent checklist](/publishing/agent-checklist) |
 
 <Note>
@@ -90,7 +91,7 @@ Export in the editor, then open [summerengine.com/studio/upload](https://www.sum
 
 Your game gets its own page at `summer.games/games/<your-game>`. Players find it on summer.games, in the Summer Games desktop app for Mac and Windows, and in the Summer Games apps for iPhone and Android, depending on the platforms you pick.
 
-Nothing reaches players until you approve and Summer's review passes. Saving a draft, uploading a build or submitting never makes the game public by itself.
+Nothing reaches players until Summer's review passes. Saving a draft or uploading a build never makes the game public by itself.
 
 ---
 
