@@ -36,7 +36,7 @@
   },
   "seo": {
     "metatags": {
-      "description": "The AI game engine for people and agents. Build real 2D and 3D games with Claude Code, Codex, Cursor or Summer Agent, publish on Summer Games or Steam, and earn."
+      "description": "The game engine built for AI. Any agent builds, tests and publishes a full multiplayer game on Summer Games."
     }
   },
   "topbarLinks": [
@@ -321,7 +321,8 @@
             "pages": [
               "mcp/summer-mcps",
               "mcp/overview",
-              "mcp/setup"
+              "mcp/setup",
+              "mcp/chatgpt-and-claude"
             ]
           },
           {

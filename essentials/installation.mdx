@@ -27,21 +27,24 @@ Summer runs on Windows and macOS with the following minimum requirements:
 
 ### Alternative: Install via CLI
 
-If you use Cursor, Claude Code, or any MCP-compatible AI tool, you can install Summer Engine from the command line:
+**Cloud work needs nothing installed.** Add `https://mcp.summerengine.com/mcp` to your agent and sign in once. Your agent can then make assets, work on plans, write the store page and publish.
+
+**Engine work (scenes, scripts, play, screenshots)** needs Summer Engine on your computer. If you use Cursor, Claude Code, or any MCP-compatible AI tool, you can install it from the command line:
 
 ```bash
 npx -y summer-engine@latest install
 ```
 
 This downloads and installs Summer Engine (macOS: `/Applications/Summer.app`; Windows:
-the installer-selected location). No global npm install is required. After installation:
+the installer-selected location). No global npm install is required. Then connect your agent, sign in and start the engine:
 
 ```bash
+npx -y summer-engine@latest setup <agent> --yes
 npx -y summer-engine@latest login
 npx -y summer-engine@latest run
 ```
 
-For MCP setup (connecting your IDE to Summer Engine), see [MCP Setup](/mcp/setup).
+For each agent, see [MCP Setup](/mcp/setup).
 
 ## Installation Steps
 

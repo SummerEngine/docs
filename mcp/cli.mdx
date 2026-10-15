@@ -26,7 +26,7 @@ Downloads and installs Summer Engine to your system (macOS: `/Applications/Summe
 npx summer-engine login
 ```
 
-Opens your browser to sign in with Google, GitHub, or email. Saves your session.
+Opens your browser once. You sign in to your Summer account with Google, GitHub, or email, then approve the store, publishing and Grow tools in the same browser. If that second step does not finish, run `summer login --store`.
 
 ## Create a Project
 
@@ -46,7 +46,13 @@ Launches Summer Engine with your project. The engine must be running for MCP too
 
 ## Start MCP (for Cursor, Claude Code, Devin Desktop)
 
-Add this to your IDE's MCP config. The IDE spawns `summer mcp` when it connects. You don't run it manually:
+One command writes the MCP config for your agent and installs the Summer skills:
+
+```bash
+npx -y summer-engine@latest setup <agent> --yes
+```
+
+The agent spawns `summer mcp` when it connects. You don't run it manually. To edit the config by hand, add this to your agent's MCP config:
 
 ```json
 {
@@ -59,7 +65,7 @@ Add this to your IDE's MCP config. The IDE spawns `summer mcp` when it connects.
 }
 ```
 
-See [MCP setup](/mcp/setup) for IDE-specific instructions.
+See [MCP setup](/mcp/setup) for each agent. For cloud work only (assets, plans, the store, publishing), you can skip the install and add `https://mcp.summerengine.com/mcp` to your agent instead.
 
 ## Full CLI Reference
 

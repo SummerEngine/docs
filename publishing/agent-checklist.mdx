@@ -11,11 +11,16 @@ For AI agents. Follow it from top to bottom. Each step names the tool and what m
 
 **Never** say the game is published, in review or live. You stop at the approval link. The owner approves.
 
+<Note>
+In the version of Summer made for Claude's connector directory (`https://mcp.summerengine.com/directory`), the tools keep their 3.x names (`summer_store_list_games`, `summer_store_submit`, `summer_build_release`) and there is no art generation: use My assets or upload the owner's art. The version made for ChatGPT (`https://mcp.summerengine.com/chatgpt`) cannot publish. Use the full server, `https://mcp.summerengine.com/mcp`.
+</Note>
+
 ## 0. Connected
 
-- [ ] The hosted MCP answers: `summer_store_list_games` returns a list (it may be empty).
-- [ ] On the owner's computer: the npm `summer-engine` MCP lists the `summer_store_*` tools. If it shows only `summer_store_tools`, the owner runs `summer login --store` once.
-- [ ] If either fails, give the owner the steps on [Connect your agent](/publishing/connect-your-agent) and stop.
+- [ ] `summer_whoami` answers with the owner's account.
+- [ ] `summer_games_list` returns a list (it may be empty).
+- [ ] On the owner's computer, the npm MCP is set up (`npx -y summer-engine@latest setup <agent> --yes`) and signed in (`summer login`).
+- [ ] If any of these fails, give the owner the steps on [Connect your agent](/publishing/connect-your-agent) and stop.
 
 ## 1. The game
 

@@ -1,18 +1,18 @@
 ---
 title: "Connect your agent to publish"
 sidebarTitle: "Connect your agent"
-description: "Connect Claude Code, Codex, Claude or ChatGPT to the Summer Engine MCP. On your computer, the summer-engine npm MCP plus summer login --store; in the browser, the hosted MCP at mcp.summerengine.com."
+description: "Connect Claude Code, Codex, Claude or ChatGPT to the Summer Engine MCP. On your computer, the summer-engine npm MCP and one summer login; in the browser, the hosted MCP at mcp.summerengine.com."
 icon: "plug"
 "og:image": "https://docs.summerengine.com/images/og/publishing-connect-your-agent.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/publishing-connect-your-agent.jpg"
 ---
 
-Publishing uses one MCP: the **Summer Engine MCP**. It comes in two forms with the same publishing tools:
+Publishing uses one MCP: the **Summer Engine MCP**. It comes in two forms:
 
-| Form | For | Adds |
+| Form | For | What it does |
 |---|---|---|
-| **summer-engine** (npm), on your computer | Claude Code, Codex and other agents on your computer | Summer Engine on your disk: export, export templates, upload from disk |
-| **mcp.summerengine.com**, hosted | Claude and ChatGPT in the browser or the app | Nothing to install |
+| `https://mcp.summerengine.com/mcp`, hosted | Any agent: Claude and ChatGPT in the browser or the app, Claude Code, Codex, Cursor | Cloud work: store page, art, analytics, prices. Nothing to install. |
+| **summer-engine** (npm), on your computer | Claude Code, Codex and other agents on your computer | Engine work and files on your disk: export, export templates, upload from disk. After `summer login` it also runs the cloud work, so your agent needs one server. |
 
 <img className="block dark:hidden" src="/images/guide-art/publishing/servers-light.svg" alt="Claude Code and Codex on your computer use the summer-engine npm MCP, which exports with Summer Engine on your disk and carries every hosted tool. Claude and ChatGPT in the browser use the same MCP hosted at mcp.summerengine.com. Both reach the Summer Games store." />
 <img className="hidden dark:block" src="/images/guide-art/publishing/servers-dark.svg" alt="Claude Code and Codex on your computer use the summer-engine npm MCP, which exports with Summer Engine on your disk and carries every hosted tool. Claude and ChatGPT in the browser use the same MCP hosted at mcp.summerengine.com. Both reach the Summer Games store." />
@@ -35,29 +35,29 @@ A chat app in the browser cannot reach your computer, so it cannot export. Expor
 
     Other agents: [MCP setup](/mcp/setup).
   </Step>
-  <Step title="Sign in to the store">
+  <Step title="Sign in once">
     Once per computer:
 
     ```bash
-    npx -y summer-engine@latest login --store
+    npx -y summer-engine@latest login
     ```
 
-    Your browser opens. Sign in to your Summer account and choose **Allow**.
+    Your browser opens. Sign in to your Summer account, then choose **Allow** for the store, publishing and Grow tools. One sign-in covers every Summer tool on this computer.
   </Step>
   <Step title="Restart your agent">
-    The MCP now lists the publishing tools next to the engine tools: `summer_store_*`, `summer_build_*`, `summer_upload_image_*` and more.
+    The MCP now lists the store and publishing tools next to the engine tools, such as `summer_store_get_listing` and `summer_store_publish`. For work with no tool of its own, `summer_search` finds the operation and `summer_call` runs it. See [Operations](/mcp/operations).
   </Step>
 </Steps>
 
-The publishing tools need **summer-engine 3.3.0** or later. `npx -y summer-engine@latest` always runs the newest version.
+`npx -y summer-engine@latest` always runs the newest version.
 
 The store sign-in is saved in `~/.summer/oauth-token` and renews itself.
 
 | Command | What it does |
 |---|---|
-| `summer login` | Core sign-in for the engine and Summer's cloud tools. |
-| `summer login --store` | Store sign-in. The MCP then loads the publishing tools. |
-| `summer login --store --force` | Registers this computer again, if store sign-in keeps failing. |
+| `summer login` | One sign-in for the engine, Summer's cloud tools and the store, publishing and Grow tools. |
+| `summer login --force` | Signs in again, if a sign-in expired or was refused. |
+| `summer login --store --force` | Registers this computer with the store again, if the store sign-in keeps failing. |
 | `summer logout` | Removes the sign-ins. |
 
 During sign-in the MCP listens on port 47615, 47616 or 47617. Keep one of them free.
@@ -78,6 +78,8 @@ During sign-in the MCP listens on port 47615, 47616 or 47617. Keep one of them f
 
 The connector then works in every Claude app with the same Claude account, the phone app too.
 
+Use this full address to publish. The version of Summer made for Claude's connector directory (`https://mcp.summerengine.com/directory`) cannot generate art. See [Summer in ChatGPT and Claude](/mcp/chatgpt-and-claude).
+
 ## In the browser: ChatGPT
 
 <Steps>
@@ -88,6 +90,8 @@ The connector then works in every Claude app with the same Claude account, the p
     ChatGPT opens summerengine.com. Sign in, check the app name, and choose **Allow**.
   </Step>
 </Steps>
+
+Use this full address to publish. The Summer app version for ChatGPT (`https://mcp.summerengine.com/chatgpt`) makes games and assets, but it does not publish. See [Summer in ChatGPT and Claude](/mcp/chatgpt-and-claude).
 
 ## What the agent may do
 
@@ -101,8 +105,8 @@ Summer Games. Follow
 https://docs.summerengine.com/publishing/connect-your-agent.md.
 
 - Run the Summer Engine setup for the agent you are.
-- Then tell me to run `npx -y summer-engine@latest login --store` and sign
-  in, because you cannot sign in for me.
+- Then tell me to run `npx -y summer-engine@latest login` and sign in,
+  because you cannot sign in for me.
 - After I have signed in, list my Summer projects and my store games to
   check that it works.
 </Prompt>

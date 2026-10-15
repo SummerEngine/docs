@@ -16,6 +16,11 @@ This page is for the agent and for the person who drives it. It has the build lo
 The `summer_app_*` tools are in the Summer Engine MCP. Use one of the two forms. Or describe the app to Summer in Studio chat: **Build a new app** in **Studio > Apps** and **Edit with agent** on an app page open it.
 
 <Tabs>
+  <Tab title="Any agent (hosted)">
+    Add `https://mcp.summerengine.com/mcp` to your agent and sign in to your Summer account once. Nothing to install. Claude Code: `claude mcp add --transport http summer https://mcp.summerengine.com/mcp`, then `/mcp` and sign in. Claude and ChatGPT: add it as a custom connector. Step by step: [Connect your agent](/publishing/connect-your-agent).
+
+    Use the custom connector, not the versions of Summer made for the ChatGPT and Claude app directories: those do not have Summer Apps.
+  </Tab>
   <Tab title="On your computer (npm)">
     For Claude Code, Codex, Cursor and other agents on your computer:
 
@@ -27,9 +32,6 @@ The `summer_app_*` tools are in the Summer Engine MCP. Use one of the two forms.
     `setup` adds the MCP (`npx -y summer-engine@latest mcp`) to your agent and installs the Summer skills, `summer-apps` and `summer-apps-design` among them. `login` signs you in to your Summer account in the browser. Restart your agent. Other agents: [MCP setup](/mcp/setup).
 
     The npm package adds `dir` to `summer_app_publish`: publish a local folder. Its `summer_app_dock` docks an app in Summer Engine; that comes with the next Summer Engine update.
-  </Tab>
-  <Tab title="In the browser (hosted)">
-    For Claude and ChatGPT: add a custom connector with the address `https://mcp.summerengine.com/mcp` and sign in to your Summer account. Step by step: [Connect your agent](/publishing/connect-your-agent).
   </Tab>
 </Tabs>
 

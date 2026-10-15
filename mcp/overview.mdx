@@ -1,6 +1,6 @@
 ---
 title: "MCP: Build Games with AI"
-description: "How to make games with AI: Cursor, Claude Code, Devin Desktop, Antigravity, Codex, Gemini, GitHub Copilot, OpenCode, VS Code, Zed. Summer Engine MCP, CLI, and API. 50+ tools."
+description: "Summer is the game engine built for AI. Connect Claude Code, Codex, Cursor, Claude, ChatGPT or any agent: one URL for cloud work, one command for engine work."
 icon: "plug"
 "og:image": "https://docs.summerengine.com/images/og/mcp-overview.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/mcp-overview.jpg"
@@ -14,7 +14,16 @@ This page is about the Summer Engine MCP, for building games. To play with frien
 
 ## How Do I Make Games with AI?
 
-Summer Engine is an AI game engine. Describe what you want in natural language ("Add a player that can jump," "Create a main menu," "Import a 3D tree") and the AI modifies your scenes, writes code, and imports assets. No context switching. One environment.
+Summer is the game engine built for AI. Any agent builds, tests and publishes a full multiplayer game. Describe what you want in natural language ("Add a player that can jump," "Create a main menu," "Import a 3D tree") and the agent changes your scenes, writes code, and imports assets.
+
+<CardGroup cols={2}>
+  <Card title="Cloud work: one URL" icon="cloud" href="/mcp/setup">
+    Add `https://mcp.summerengine.com/mcp` and sign in once. Assets, plans, the store, publishing, prices and analytics. Nothing to install.
+  </Card>
+  <Card title="Engine work: one command" icon="terminal" href="/mcp/setup">
+    `npx -y summer-engine@latest setup <agent> --yes`. Scenes, scripts, play and screenshots in Summer Engine.
+  </Card>
+</CardGroup>
 
 <Card
   title="Make a Game with Just AI"
@@ -42,7 +51,7 @@ Use Cursor's AI to control Summer Engine. Add the MCP config, open your project,
 
 ## How Do I Make Games with Claude Code?
 
-Claude Code can control Summer Engine via MCP. Add the config to `~/.claude/claude_code_config.json`, start the engine, and Claude can modify your game scenes, run the game, and debug, all from the same conversation.
+Claude Code can control Summer Engine via MCP. Run `npx -y summer-engine@latest setup claude-code --yes` (it writes `~/.claude.json`), open your project in the engine, and Claude can change your game scenes, run the game, and debug, all from the same conversation.
 
 <Card
   title="Claude Code Setup"
@@ -184,12 +193,12 @@ Summer Engine's MCP server exposes its tools over the Model Context Protocol. Th
 
 Summer Engine gives you:
 
-- **A full MCP toolset**: Scene (AddNode, SetProp, SaveScene, etc.), Debug and Play (Play, Stop, diagnostics, script and debugger errors, and screenshot the viewport or running game), Project (settings, input, import, context), Asset Library (search and import), Generation (image, 3D, audio, video, motion), and Publishing (export, build upload, store page)
+- **A full MCP toolset**: Scene (AddNode, SetProp, SaveScene, etc.), Debug and Play (Play, Stop, diagnostics, script and debugger errors, and screenshot the viewport or running game), Project (settings, input, import, context), Asset Library (search and import), Generation (image, 3D, audio, video, motion), Plans, Publishing (export, build upload, store page), Prices, Analytics and Team. See [Operations](/mcp/operations).
 - **Evaluate existing projects**: Familiar source formats reduce migration work, but
   compatibility ranges are not fully measured. Commit first and verify imports, tutorials,
   plugins, native extensions, and exports against the current Summer Engine release.
 - **CLI + MCP + API**: Install via CLI, control via MCP, same local API under the hood
-- **One workflow**: Whether you use the built-in chat, Cursor, Claude Code, Devin Desktop, Antigravity, Codex, VS Code, or Zed, the operations are identical
+- **One workflow**: Whether you use the built-in chat, Cursor, Claude Code, Devin Desktop, Antigravity, Codex, VS Code, Zed, or Claude and ChatGPT (web, desktop, phone), the operations are identical
 
 ---
 
@@ -206,10 +215,12 @@ Summer Engine gives you:
 | Use Codex with Summer Engine | [Codex setup](/mcp/codex) |
 | Use VS Code or GitHub Copilot with Summer Engine | [VS Code & Copilot setup](/mcp/vscode) |
 | Use Zed with Summer Engine | [Zed setup](/mcp/zed) |
+| Use Claude or ChatGPT in the browser | [Summer in ChatGPT and Claude](/mcp/chatgpt-and-claude) |
 | Make games for free with a local LLM | [Local models setup](/mcp/local-models) |
 | Use the CLI | [CLI quick start](/mcp/cli) · [CLI reference](/mcp/cli-reference) |
 | Move my project to another machine | [Git and GitHub](/guides/github-from-changes-dock) |
 | See all MCP tools | [Tools reference](/mcp/tools-reference) |
+| See every operation, how Summer answers, and jobs | [Operations](/mcp/operations) |
 | Build a game with MCP (for AI agents) | [Building a game](/mcp/building-a-game) |
 | MCP setup & prerequisites | [MCP setup](/mcp/setup) |
 

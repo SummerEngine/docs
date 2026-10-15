@@ -1,0 +1,49 @@
+---
+title: "Summer in ChatGPT and Claude"
+sidebarTitle: "ChatGPT and Claude"
+description: "Use Summer from ChatGPT and Claude. Add the full Summer MCP, https://mcp.summerengine.com/mcp, as a custom connector and sign in once. Summer also has two reviewed versions made for the ChatGPT and Claude app directories."
+icon: "message-circle"
+---
+
+Summer is the game engine built for AI. Any agent builds, tests and publishes a full multiplayer game. In ChatGPT and Claude, you add Summer as a connector and sign in to your Summer account once. Nothing to install.
+
+## Add the full Summer MCP
+
+For everything Summer does in the cloud, add this address as a custom connector:
+
+```text
+https://mcp.summerengine.com/mcp
+```
+
+<Steps>
+  <Step title="Add the connector">
+    **Claude** (web, desktop and phone): add a custom connector and paste the address.
+
+    **ChatGPT**: turn on developer mode, then add a custom connector (an app) with the address and OAuth sign-in. Where the setting lives can change, so check OpenAI's help if you do not see it.
+  </Step>
+  <Step title="Sign in">
+    The app opens the Summer sign-in page. Sign in to your Summer account, check the app name, and choose **Allow**.
+  </Step>
+</Steps>
+
+Your agent can then make assets, work on your plans and projects, write the store page, publish to Summer Games, change prices, and read analytics. Common jobs have their own tools. For anything else, `summer_search` finds the operation and `summer_call` runs it. See [Operations](/mcp/operations).
+
+Engine work (scenes, scripts, play, screenshots) needs Summer Engine on your computer and an agent that runs there, such as Claude Code, Codex or Cursor. See [MCP setup](/mcp/setup).
+
+Step by step for publishing: [Connect your agent](/publishing/connect-your-agent).
+
+## The versions for the app directories
+
+Summer also has two reviewed versions of the Summer Engine MCP, one for each app directory. Each follows its store's rules. Each has a fixed list of tools under their 3.x names, and no `summer_search` or `summer_call`.
+
+| | **ChatGPT app** | **Claude connector directory** |
+|---|---|---|
+| Address | `https://mcp.summerengine.com/chatgpt` | `https://mcp.summerengine.com/directory` |
+| It can | Start a game in the chat and shape its plan. Make images, 3D models, motion, audio and video into your Summer assets. Read your account and assets. | Work on plans and projects, write the store page, upload builds and publish, read your Grow numbers and send growth applications. Read your account and assets. |
+| It cannot | Publish or upload, change prices, use Grow, Summer Apps or Summer Studio pages. It shows no checkout or billing links: when you run out of credits, it tells you in words. | Generate images, 3D models, audio or video (concept art inside a plan stays). Change prices, A/B tests, members or your team, or use Summer Apps or Summer Studio pages. |
+
+For everything, use the full server: add `https://mcp.summerengine.com/mcp` as a custom connector.
+
+<Note>
+This page is about making games. To play with friends from ChatGPT or Claude, connect the Summer Games MCP instead. See [Play with friends from Claude or ChatGPT](/mcp/summer-games).
+</Note>

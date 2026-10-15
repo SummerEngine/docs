@@ -21,8 +21,9 @@ This guide covers both **VS Code** (with Copilot or other AI extensions) and **G
 ## Prerequisites
 
 - **VS Code**: With GitHub Copilot (agent mode) or another MCP-aware AI extension
-- **Node.js**: For running the MCP server (Node 18+)
-- **Summer Engine**: Installed and running with your project open
+- **Node.js 20+**: For running the MCP server
+- **Summer Engine**: Open with your project, for engine work only
+- **Sign in once**: `npx -y summer-engine@latest login`. One browser sign-in also connects the store, publishing and Grow tools
 
 ## Configuration
 
@@ -82,6 +83,23 @@ Close and reopen VS Code (or reload the window) so it loads the new MCP config. 
 
 If the node appears in Summer Engine, the setup is working.
 
+## Cloud work only: connect by URL
+
+For assets, plans, the store, publishing and Grow, with nothing to install, add the hosted Summer server to `.vscode/mcp.json` in your project, then sign in when VS Code asks:
+
+```json .vscode/mcp.json
+{
+  "servers": {
+    "summer": {
+      "type": "http",
+      "url": "https://mcp.summerengine.com/mcp"
+    }
+  }
+}
+```
+
+Engine tools (scenes, scripts, play, screenshots) need the local server above. After `summer login`, the local server also runs the cloud tools, so use one of the two.
+
 ## Using Summer Engine with VS Code / Copilot
 
 Once configured, the AI can use Summer Engine's tools when you ask for game-related changes. Example prompts:
@@ -93,7 +111,7 @@ Once configured, the AI can use Summer Engine's tools when you ask for game-rela
 - "Set the project's main scene to res://main.tscn"
 
 <Tip>
-**Engine must be running.** VS Code and Copilot talk to Summer Engine over localhost. Open your project in the engine first, or run `npx summer-engine run` from the project directory.
+**Engine tools need the engine.** Open your project in Summer Engine first, or run `npx summer-engine run` from the project directory. Asset, plan, store and publishing tools do not need it.
 </Tip>
 
 ## Troubleshooting

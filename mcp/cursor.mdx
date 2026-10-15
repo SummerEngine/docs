@@ -88,6 +88,22 @@ Close and reopen Cursor so it loads the new MCP config. The MCP server starts wh
 
 If you don't see it, check that the JSON is valid (no trailing commas, proper quotes) and that the file path is correct.
 
+## Cloud work only: connect by URL
+
+For assets, plans, the store, publishing and Grow, with nothing to install, add the hosted Summer server to `~/.cursor/mcp.json`, then sign in when Cursor asks:
+
+```json ~/.cursor/mcp.json
+{
+  "mcpServers": {
+    "summer": {
+      "url": "https://mcp.summerengine.com/mcp"
+    }
+  }
+}
+```
+
+Engine tools (scenes, scripts, play, screenshots) need the local server above. After `summer login`, the local server also runs the cloud tools, so use one of the two.
+
 ## Using Summer Engine in Cursor
 
 Once configured, the AI has access to Summer Engine's tools. You don't need to mention "Summer Engine" in every message. If the AI knows you're building a game and the tools are available, it will use them when appropriate.
@@ -101,7 +117,7 @@ Once configured, the AI has access to Summer Engine's tools. You don't need to m
 - "Set the main scene to res://main.tscn"
 
 <Tip>
-**Engine must be running.** Summer Engine needs to be open with your project loaded. If you haven't started it yet, run `npx summer-engine run` from your project directory, or open the project from the Summer Engine app.
+**Engine tools need the engine.** Open your project in Summer Engine first, or run `npx summer-engine run` from the project directory. Asset, plan, store and publishing tools do not need it.
 </Tip>
 
 ## Troubleshooting
