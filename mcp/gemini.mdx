@@ -21,8 +21,9 @@ Summer ships as a Gemini extension, so setup installs both the MCP bridge and a 
 ## Prerequisites
 
 - **Gemini CLI**: Google's terminal agent
-- **Node.js**: For running the MCP server (Node 18+)
-- **Summer Engine**: Installed and running with your project open
+- **Node.js 20+**: For running the MCP server
+- **Summer Engine**: Open with your project, for engine work only
+- **Sign in once**: `npx -y summer-engine@latest login`. One browser sign-in also connects the store, publishing and Grow tools
 
 ## Configuration
 
@@ -83,7 +84,7 @@ Once configured, Gemini can use Summer Engine's tools when you ask for game-rela
 - "Set the project's main scene to res://main.tscn"
 
 <Tip>
-**Engine must be running.** Gemini talks to Summer Engine over localhost. Open your project in the engine first, or run `npx summer-engine run` from the project directory.
+**Engine tools need the engine.** Open your project in Summer Engine first, or run `npx summer-engine run` from the project directory. Asset, plan, store and publishing tools do not need it.
 </Tip>
 
 ## Troubleshooting

@@ -17,8 +17,9 @@ This guide covers the configuration steps. The setup takes about a minute.
 ## Prerequisites
 
 - **Claude Code**: The desktop app or IDE integration
-- **Node.js**: For running the MCP server (Node 18+)
-- **Summer Engine**: Installed and running with your project open
+- **Node.js 20+**: For running the MCP server
+- **Summer Engine**: Open with your project, for engine work only
+- **Sign in once**: `npx -y summer-engine@latest login`. One browser sign-in also connects the store, publishing and Grow tools
 
 ## Configuration
 
@@ -87,6 +88,16 @@ When you start a conversation, Claude should have access to Summer Engine's tool
 
 If Claude says it doesn't have access to Summer Engine tools, run `/mcp` to see the server list, then check the config file path and that the JSON is valid. `summer doctor` checks the same things from the terminal.
 
+## Cloud work only: connect by URL
+
+For assets, plans, the store, publishing and Grow, with nothing to install, add the hosted Summer server:
+
+```bash
+claude mcp add --transport http summer https://mcp.summerengine.com/mcp
+```
+
+Then run `/mcp` in Claude Code and sign in to your Summer account. Engine tools (scenes, scripts, play, screenshots) need the local server above. After `summer login`, the local server also runs the cloud tools, so use one of the two.
+
 ## Using Summer Engine with Claude
 
 Claude will use the MCP tools when your requests involve game development. You can be explicit ("Use Summer Engine to...") or implicit ("Add a player character to the scene"). If you're in a game project, Claude may infer that Summer Engine is the right tool.
@@ -100,7 +111,7 @@ Claude will use the MCP tools when your requests involve game development. You c
 - "Save the current scene to res://levels/level1.tscn"
 
 <Tip>
-**Engine must be running.** Claude's tools talk to Summer Engine over localhost. Open your project in the engine first, or run `npx summer-engine run` from the project directory.
+**Engine tools need the engine.** Open your project in Summer Engine first, or run `npx summer-engine run` from the project directory. Asset, plan, store and publishing tools do not need it.
 </Tip>
 
 ## Troubleshooting

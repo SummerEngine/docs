@@ -21,8 +21,9 @@ This guide covers the configuration. Setup takes about a minute.
 ## Prerequisites
 
 - **Codex**: OpenAI's AI coding assistant (CLI or IDE extension)
-- **Node.js**: For running the MCP server (Node 18+)
-- **Summer Engine**: Installed and running with your project open
+- **Node.js 20+**: For running the MCP server
+- **Summer Engine**: Open with your project, for engine work only
+- **Sign in once**: `npx -y summer-engine@latest login`. One browser sign-in also connects the store, publishing and Grow tools
 
 ## Configuration
 
@@ -38,7 +39,7 @@ You can configure via the CLI or by editing the config file directly.
 Add Summer Engine with a single command:
 
 ```bash
-codex mcp add summer-engine -- npx summer-engine mcp
+codex mcp add summer-engine -- npx -y summer-engine@latest mcp
 ```
 
 ### Option 2: Edit config.toml
@@ -79,6 +80,17 @@ In the Codex TUI, use `/mcp` to see your active MCP servers. You should see "sum
 
 If the node appears in Summer Engine, the setup is working.
 
+## Cloud work only: connect by URL
+
+For assets, plans, the store, publishing and Grow, with nothing to install, add the hosted Summer server. The second command opens your browser to sign in:
+
+```bash
+codex mcp add summer --url https://mcp.summerengine.com/mcp
+codex mcp login summer
+```
+
+Engine tools (scenes, scripts, play, screenshots) need the local server above. After `summer login`, the local server also runs the cloud tools, so use one of the two.
+
 ## Using Summer Engine with Codex
 
 Once configured, Codex can use Summer Engine's tools when you ask for game-related changes. Example prompts:
@@ -90,7 +102,7 @@ Once configured, Codex can use Summer Engine's tools when you ask for game-relat
 - "Set the project's main scene to res://main.tscn"
 
 <Tip>
-**Engine must be running.** Codex talks to Summer Engine over localhost. Open your project in the engine first, or run `npx summer-engine run` from the project directory.
+**Engine tools need the engine.** Open your project in Summer Engine first, or run `npx summer-engine run` from the project directory. Asset, plan, store and publishing tools do not need it.
 </Tip>
 
 ## Troubleshooting

@@ -12,9 +12,9 @@ Summer has two public MCP servers. One is for making games. One is for playing t
 |---|---|---|
 | For | Creators who build games | Players on [summer.games](https://summer.games) |
 | What the AI does | Edits scenes, writes GDScript, imports and generates assets, runs and debugs the game | Reads who of your friends is online, sends messages, invites friends to a Game, tells you when they join, handles rivals, and opens pages in the latest Summer Games desktop app |
-| Where it runs | On your computer, next to the Summer Engine editor (`npx summer-engine mcp`) | On Summer's servers: `https://mcp.summer.games/mcp` |
-| Works in | Coding agents: Claude Code and [many more](/mcp/agents) | Claude (web, desktop and phone), ChatGPT, Claude Code and any MCP app with OAuth sign-in |
-| Sign in | `npx summer-engine login` | Your Summer account, on summer.games |
+| Where it runs | Hosted at `https://mcp.summerengine.com/mcp` for cloud work, and on your computer for engine work (`npx -y summer-engine@latest setup <agent> --yes`) | On Summer's servers: `https://mcp.summer.games/mcp` |
+| Works in | Claude (web, desktop and phone), ChatGPT, Claude Code, Cursor, Codex and any MCP app with OAuth sign-in; on your computer, [many more](/mcp/agents) | Claude (web, desktop and phone), ChatGPT, Claude Code and any MCP app with OAuth sign-in |
+| Sign in | Hosted: once in the browser when the app connects. On your computer: `npx -y summer-engine@latest login` | Your Summer account, on summer.games |
 | Start here | [MCP setup](/mcp/setup) | [Play with friends from Claude or ChatGPT](/mcp/summer-games) |
 | Every tool | [Tools reference](/mcp/tools-reference) | [Summer Games MCP tools](/mcp/summer-games-tools) |
 
@@ -22,18 +22,20 @@ You can connect both. Build a game with the Summer Engine MCP, then ask your AI 
 
 ## Summer Engine MCP: build games
 
-The Summer Engine MCP gives a coding agent control of the Summer Engine editor. The agent uses the same operations as the chat inside Summer Engine. One command sets it up for your agent:
+The Summer Engine MCP lets any agent build, test and publish a game. For cloud work (assets, plans, the store, publishing, prices, analytics), add `https://mcp.summerengine.com/mcp` and sign in once. For engine work, the agent controls the Summer Engine editor with the same operations as the chat inside Summer Engine. One command sets it up for your agent:
 
 ```bash
 npx -y summer-engine@latest setup <agent> --yes
 ```
 
+For the ChatGPT app directory and Claude's connector directory, Summer also has two reviewed versions with fixed tool lists: `https://mcp.summerengine.com/chatgpt` (no checkout or billing links) and `https://mcp.summerengine.com/directory` (no image, 3D, audio or video generation). For everything, use `https://mcp.summerengine.com/mcp`. See [Summer in ChatGPT and Claude](/mcp/chatgpt-and-claude).
+
 <CardGroup cols={2}>
   <Card title="MCP setup" icon="settings" href="/mcp/setup">
     One command for any agent, and what it writes
   </Card>
-  <Card title="Tools reference" icon="wrench" href="/mcp/tools-reference">
-    Every Summer Engine tool with parameters
+  <Card title="Operations" icon="list-tree" href="/mcp/operations">
+    Every Summer operation, its input and its answer
   </Card>
 </CardGroup>
 

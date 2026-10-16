@@ -7,21 +7,17 @@ icon: "plug"
 "twitter:image": "https://docs.summerengine.com/images/og/publishing-connect-your-agent.jpg"
 ---
 
-Publishing uses one MCP: the **Summer Engine MCP**. It comes in two forms with the same publishing tools:
+Publishing uses one MCP: the **Summer Engine MCP**. It comes in two forms:
 
-| Form | For | Adds |
+| Form | For | What it does |
 |---|---|---|
-| **summer-engine** (npm), on your computer | Claude Code, Codex and other agents on your computer | Summer Engine on your disk: export, export templates, upload from disk |
-| **mcp.summerengine.com**, hosted | Claude and ChatGPT in the browser or the app | Nothing to install |
+| `https://mcp.summerengine.com/mcp`, hosted | Any agent: Claude and ChatGPT in the browser or the app, Claude Code, Codex, Cursor | Cloud work: store page, art, analytics, prices. Nothing to install. |
+| **summer-engine** (npm), on your computer | Claude Code, Codex and other agents on your computer | Engine work and files on your disk: export, export templates, upload from disk. After `summer login` it also runs the cloud work, so your agent needs one server. |
 
 <img className="block dark:hidden" src="/images/guide-art/publishing/servers-light.svg" alt="Claude Code and Codex on your computer use the summer-engine npm MCP, which exports with Summer Engine on your disk and carries every hosted tool. Claude and ChatGPT in the browser use the same MCP hosted at mcp.summerengine.com. Both reach the Summer Games store." />
 <img className="hidden dark:block" src="/images/guide-art/publishing/servers-dark.svg" alt="Claude Code and Codex on your computer use the summer-engine npm MCP, which exports with Summer Engine on your disk and carries every hosted tool. Claude and ChatGPT in the browser use the same MCP hosted at mcp.summerengine.com. Both reach the Summer Games store." />
 
 A chat app in the browser cannot reach your computer, so it cannot export. Export there with Summer Engine yourself, or use an agent on your computer.
-
-<Note>
-  Agent publishing is rolling out. It is available to invited creators while the store opens it to everyone.
-</Note>
 
 ## On your computer: Claude Code, Codex and others
 
@@ -45,11 +41,11 @@ A chat app in the browser cannot reach your computer, so it cannot export. Expor
     Your browser opens. Sign in to your Summer account, then choose **Allow** for the store, publishing and Grow tools. One sign-in covers every Summer tool on this computer.
   </Step>
   <Step title="Restart your agent">
-    The MCP now lists the publishing tools next to the engine tools: `summer_store_*`, `summer_build_*`, `summer_upload_image_*` and more.
+    The MCP now lists the store and publishing tools next to the engine tools, such as `summer_store_get_listing` and `summer_store_publish`. For work with no tool of its own, `summer_search` finds the operation and `summer_call` runs it. See [Operations](/mcp/operations).
   </Step>
 </Steps>
 
-The publishing tools need **summer-engine 3.3.0** or later. `npx -y summer-engine@latest` always runs the newest version.
+`npx -y summer-engine@latest` always runs the newest version.
 
 The store sign-in is saved in `~/.summer/oauth-token` and renews itself.
 
@@ -78,6 +74,8 @@ During sign-in the MCP listens on port 47615, 47616 or 47617. Keep one of them f
 
 The connector then works in every Claude app with the same Claude account, the phone app too.
 
+Use this full address to publish. The version of Summer made for Claude's connector directory (`https://mcp.summerengine.com/directory`) cannot generate art. See [Summer in ChatGPT and Claude](/mcp/chatgpt-and-claude).
+
 ## In the browser: ChatGPT
 
 <Steps>
@@ -88,6 +86,8 @@ The connector then works in every Claude app with the same Claude account, the p
     ChatGPT opens summerengine.com. Sign in, check the app name, and choose **Allow**.
   </Step>
 </Steps>
+
+Use this full address to publish. The Summer app version for ChatGPT (`https://mcp.summerengine.com/chatgpt`) makes games and assets, but it does not publish. See [Summer in ChatGPT and Claude](/mcp/chatgpt-and-claude).
 
 ## What the agent may do
 

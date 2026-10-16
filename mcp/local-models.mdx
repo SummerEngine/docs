@@ -15,8 +15,9 @@ This page covers the three setups that actually work in 2026.
 ## Prerequisites
 
 - **A GPU with 12 GB+ of VRAM** (or Apple Silicon with 16 GB+ unified memory). 24 GB is the sweet spot.
-- **Node.js**: For running the MCP server (Node 18+)
-- **Summer Engine**: Installed and running with your project open
+- **Node.js 20+**: For running the MCP server
+- **Summer Engine**: Open with your project, for engine work only
+- **Sign in once**: `npx -y summer-engine@latest login`. One browser sign-in also connects the store, publishing and Grow tools
 
 ## Option 1: LM Studio (easiest)
 
@@ -78,7 +79,7 @@ Tool calling is the hard part for local models. Use Q4_K_M quantization or bette
 
 ## Troubleshooting
 
-- **The model never calls tools, or hallucinates them**: context window too small. MCP tool schemas plus the system prompt overflow a 4k–8k window instantly. Set 32k minimum, 64k recommended.
+- **The model never calls tools, or hallucinates them**: context window too small. MCP tool schemas plus the system prompt overflow a 4k–8k window instantly. Set 32k minimum, 64k recommended. To list fewer tools, set up with the engine profile: `npx -y summer-engine@latest setup <agent> --yes --profile engine`.
 - **Tool calls come out malformed**: quantization too aggressive (use Q4_K_M+), or the model is too small (7B is the practical floor, 14B+ for multi-server setups).
 - **Cline users**: Cline's "compact prompt" option for local models disables MCP entirely. Keep the full system prompt on.
 - **Slow first response**: keep only a couple of MCP servers enabled so tool schemas leave room for actual work.
