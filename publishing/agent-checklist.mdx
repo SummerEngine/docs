@@ -1,15 +1,21 @@
 ---
 title: "Agent checklist: publish a Summer game end to end"
 sidebarTitle: "Agent checklist"
-description: "One ordered checklist an AI agent follows from a built game to a submitted Summer Games store page, through the Summer MCP. It stops at the owner's approval link."
+description: "One ordered checklist an AI agent follows from a built game to a published Summer Games store page, through the Summer MCP operations. It hands the owner any approval link."
 icon: "clipboard-check"
 "og:image": "https://docs.summerengine.com/images/og/publishing-agent-checklist.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/publishing-agent-checklist.jpg"
 ---
 
-For AI agents. Follow it from top to bottom. Each step names the tool and what must be true before you go on. Fetch this page as Markdown: `https://docs.summerengine.com/publishing/agent-checklist.md`.
+For AI agents. Follow it from top to bottom. Each step names the operation and what must be true before you go on. Fetch this page as Markdown: `https://docs.summerengine.com/publishing/agent-checklist.md`.
 
-**Never** say the game is published, in review or live. You stop at the approval link. The owner approves.
+Operations with their own tool are named `summer_<area>_<action>` (`summer_games_list`). Run any other operation with `summer_call`: `{"op": "games.create", "input": {...}}`. Every input: [Operations](/mcp/operations).
+
+Read `status` on every answer. `done`: it happened. `running`: wait with `summer_jobs_wait`. `needs_approval`: give the owner `approval.url`, then `summer_jobs_wait` with `job.id`. **Never** say the game is live until `summer_store_status` says so.
+
+<Note>
+In the version of Summer made for Claude's connector directory (`https://mcp.summerengine.com/directory`), the tools keep their 3.x names (`summer_store_list_games`, `summer_store_submit`, `summer_build_release`) and there is no art generation: use My assets or upload the owner's art. The version made for ChatGPT (`https://mcp.summerengine.com/chatgpt`) cannot publish. Use the full server, `https://mcp.summerengine.com/mcp`.
+</Note>
 
 <Note>
 In the version of Summer made for Claude's connector directory (`https://mcp.summerengine.com/directory`), the tools keep their 3.x names (`summer_store_list_games`, `summer_store_submit`, `summer_build_release`) and there is no art generation: use My assets or upload the owner's art. The version made for ChatGPT (`https://mcp.summerengine.com/chatgpt`) cannot publish. Use the full server, `https://mcp.summerengine.com/mcp`.
@@ -24,7 +30,7 @@ In the version of Summer made for Claude's connector directory (`https://mcp.sum
 
 ## 1. The game
 
-- [ ] `summer_list_projects`, then `summer_get_project`: the project and its board id.
+- [ ] `summer_projects_list`, then `projects.get`: the project and its plan (`planId`).
 - [ ] Read the project: genre, main scene, single-player or multiplayer, platforms it is built for.
 - [ ] Ask the owner **only** what the project does not say: platforms, price.
 
@@ -34,9 +40,9 @@ In the version of Summer made for Claude's connector directory (`https://mcp.sum
 
 ## 3. The store game
 
-- [ ] `summer_store_list_games`. If the game is there, use its `gameId`.
-- [ ] Otherwise `summer_store_create_game` with the title and the listing `targets` from this table.
-- [ ] `summer_store_get_listing`: note the stores, the empty slots and the checklist.
+- [ ] `summer_games_list`. If the game is there, use its `gameId`.
+- [ ] Otherwise `games.create` with `title` and the listing `targets` from this table.
+- [ ] `summer_store_get_listing` with `gameId`: note the stores, the empty slots and the checklist.
 
 | Your game | Export (`summer_export_game`) | Listing `targets` |
 |---|---|---|
@@ -61,11 +67,11 @@ Export first: a build that does not export stops the whole run, so find out befo
 
 For each empty required slot of each store the game is on:
 
-- [ ] Look in My assets first: `summer_list_my_assets`, `summer_search_assets`.
-- [ ] If nothing fits, read the board's look (`summer_board_game_soul`) and make it: `summer_generate_image` in the slot's shape, `summer_check_job`.
+- [ ] Look in My assets first: `summer_assets_search` with `scope: "mine"`, then `scope: "library"`.
+- [ ] If nothing fits, read the plan's saved direction (`plans.directions` with `planId`) and make it: `summer_assets_generate_image` with the slot's `aspectRatio`, then `summer_jobs_wait`.
 - [ ] Crop to the slot's exact shape and minimum size, subject at the focal point. See [Make store art](/publishing/generate-store-art).
-- [ ] Upload the crop: `summer_upload_image_begin`, POST the file, `summer_upload_image_complete` → `assetId`.
-- [ ] `summer_store_set_art` with the slot, the `assetId` and a `focalPoint`.
+- [ ] Upload the crop: `assets.upload_begin`, POST the file, `assets.upload_complete` (pass `uploadSignature`) → `assetId`.
+- [ ] `store.set_art` with `gameId`, `slot`, `sources: [{"assetId": "<assetId>"}]` and a `focalPoint`.
 - [ ] Screenshots are real gameplay, never generated: `summer_capture_gameplay` (no editor needed), `summer_screenshot` with `target: "game"` while the editor plays the game, or ask the owner. Desktop 4-6, mobile 3-5.
 - [ ] No text, logo or caption in key art, the tall cover or icons. Screenshots show the game as it is played: its own HUD is fine, added captions, logos and overlays are not. At most 20 pictures in total.
 - [ ] Slot table: [Store art](/publishing/store-art).
@@ -86,28 +92,29 @@ For each empty required slot of each store the game is on:
 
 ## 7. Upload
 
-- [ ] Each export: `summer_publish_build` with `gameId` and a new `clientVersion` (web builds and downloads take their `platform` from the export). Show the owner the preview; call again with `confirm: true` after they agree.
+- [ ] With the npm MCP: each export with `summer_publish_build` (operation `store.upload_file`), `gameId` and a new `clientVersion` (web builds and downloads take their `platform` from the export). The first call checks the game and returns what it will upload; call again with `confirm: true` to upload.
+- [ ] Without the npm MCP: `store.upload_begin` (`kind`: `bundle`, `web` or `download`), `store.upload_sign_parts`, PUT each part, `store.upload_complete`, then `summer_jobs_wait`. See [Upload and publish](/publishing/upload-and-submit).
 - [ ] On a game that is already live, a web build or download is finished by the owner in Studio.
-- [ ] `summer_build_status` (or `summer_store_version_status`) says `ready`. On `failed`, fix and upload a new version.
+- [ ] `summer_store_status` shows each upload `ready`. On `failed`, fix and upload a new version.
 
 ## 8. Check
 
 - [ ] `summer_store_get_listing`: the checklist has nothing missing.
-- [ ] Optional: `summer_store_preview_link` and show the owner.
+- [ ] Optional: `store.preview_link` and show the owner.
 
-## 9. Submit and hand over
+## 9. Publish
 
-- [ ] `summer_store_submit` with the build, the price the owner asked for (`priceUsdCents`, `0` = free) and a short `note`.
-- [ ] Give the owner the `approvalUrl` and say: "Open this link and click **Approve publishing**. Summer reviews it next."
-- [ ] Stop.
+- [ ] `summer_store_publish` with `gameId`, the price the owner asked for as `price: {"currency": "USD", "amountMinor": 499}` (`amountMinor: 0` is free; leave `price` out to keep the current one), a short `note` and a new `idempotencyKey`.
+- [ ] `done`: Summer's review runs next.
+- [ ] `needs_approval`: give the owner `approval.url` and say: "Open this link and approve it. Summer reviews it next." Then `summer_jobs_wait` with `job.id` until the job ends. For now Summer Games asks the owner even when **Publish** is on in [Agent permissions](/mcp/permissions).
 
-## After the owner approves
+## After the publish
 
-- [ ] `summer_store_get_listing` shows the approval as approved.
+- [ ] `summer_store_status` shows the review and its feedback.
 - [ ] Summer staff review the page. When the review passes, the game goes live. No second click.
-- [ ] If the approved store bundle is not yet what players get, `summer_build_release` releases exactly that build.
-- [ ] If the approval is **Stale**, read the listing again and submit again.
-- [ ] Later: `summer_grow_overview` for the numbers.
+- [ ] If the store bundle that passed review is not yet what players get, `store.release` with `gameId` and a new `idempotencyKey` releases exactly that build. Wait with `summer_jobs_wait`.
+- [ ] If the job ends `stale`, read the store page again and publish again with a new `idempotencyKey`.
+- [ ] Later: `analytics.overview` with `days: 28` for the numbers.
 
 ---
 

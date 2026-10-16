@@ -322,6 +322,7 @@
               "mcp/summer-mcps",
               "mcp/overview",
               "mcp/setup",
+              "mcp/permissions",
               "mcp/chatgpt-and-claude"
             ]
           },

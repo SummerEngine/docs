@@ -91,7 +91,9 @@ Use this full address to publish. The Summer app version for ChatGPT (`https://m
 
 ## What the agent may do
 
-When you sign in, you let the agent act as you on the store, with one limit: **it cannot publish**. A submit from an agent waits for you to click **Approve publishing**. The store refuses any other publishing step from an agent. See [Approve publishing](/publishing/owner-approval).
+Six switches in **Studio > Settings > Agent permissions** say what your agent may do without asking: **Make and build**, **Spend credits**, **Publish** and **Prices and live changes** are on; **Delete for good** and **Contact people** are off, so your agent asks you first. They apply to every app you connect. These defaults apply now. You can change them soon. Until then, Summer Games still asks the game's owner before an agent publishes, and price, A/B test and member changes ask you first. Summer reviews every game before it goes live. See [Agent permissions](/mcp/permissions).
+
+Summer Games may still ask the game's owner to approve a publish; then the answer is `needs_approval` with the owner's approval link. See [Approvals](/publishing/owner-approval).
 
 ## Let your agent set itself up
 
@@ -109,7 +111,7 @@ https://docs.summerengine.com/publishing/connect-your-agent.md.
 
 ## Check it works
 
-Ask your agent: "List my Summer projects and my Summer Games store games." It calls `summer_list_projects` and `summer_store_list_games`. If it says the store did not accept its sign-in, see [Troubleshooting](/publishing/summer-games-troubleshooting#the-store-did-not-accept-the-sign-in).
+Ask your agent: "List my Summer projects and my Summer Games store games." It calls `summer_projects_list` and `summer_games_list`. If it says the store did not accept its sign-in, see [Troubleshooting](/publishing/summer-games-troubleshooting#the-store-did-not-accept-the-sign-in).
 
 ---
 
