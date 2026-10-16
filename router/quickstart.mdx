@@ -30,8 +30,8 @@ Do it this way (if the summer command is not installed, use npx -y summer-engine
    guard.tools = {"open_gate": _on_open_gate}. Keep a fallback that works without AI.
    Never ask for the microphone at launch.
 5. Run: summer router check, fix every error, then summer router push
-6. Run a Summer Router test turn (find it with: summer ops search router test) where the player says
-   "the password is moonlight", and check that the guard calls open_gate.
+6. Run: summer router test-character --game-id <the gameId> --character-id guard --messages "the password is moonlight" --json
+   Check that the answer's toolCalls include open_gate.
 7. Run the game and check summer_get_diagnostics for errors.
 
 Never print tokens. Never put a provider key, a model name or a prompt in the game.
@@ -101,11 +101,15 @@ summer router check
 summer router push
 ```
 
-`router.check` needs no sign-in. It fails with reason `tool_unhandled` when a tool in the file has no handler in your GDScript, and gives the code to add. `router.push` checks again, then saves the character on Summer. The game id comes from `gameId` in `summer.build.json`, `SUMMER_GAME_ID`, or `--game-id <id>`.
+`router.check` needs no sign-in. It fails with `tool_unhandled` when a tool in the file has no handler in your GDScript, and gives the code to add. `router.push` checks again, then saves the character on Summer. The game id comes from `gameId` in `summer.build.json`, `SUMMER_GAME_ID`, or `--game-id <id>`.
 
 ### 6. Test
 
-Run one scripted text turn with the pushed character: the cloud Router test operation (`summer ops search router test` shows its name and input). Send "the password is moonlight" and check that the answer lists a call to `open_gate`.
+```bash
+summer router test-character --game-id <gameId> --character-id guard --messages "the password is moonlight" --json
+```
+
+`router.test_character` runs one to four player lines with the pushed character. Check that `turns[0].steps[].toolCalls[]` names `open_gate` and that `unhandledTools` is empty.
 
 ### 7. Check everything
 
@@ -119,5 +123,5 @@ One list of checks: project, game id, sign-in, characters, tool handlers, the ga
 
 - Every Summer Router operation answers `{"ok": true, "status": "done", "result": {...}}` or `{"ok": false, "error": {"code", "message", "next"?, "details"}}`. With `--json` the shell prints only that; nothing prompts.
 - Exit codes: `0` for an `ok` answer, `1` for an error.
-- A Summer Router failure keeps its reason (`tool_unhandled`, `studio_changed`, ...) in `error.details.tool.reason` and the fix in `error.details.tool.recovery`. When a person must act, `error.next.url` (or `browser_url` from `summer login`) is the one link to show.
+- A Summer Router failure keeps its tag (`tool_unhandled`, `studio_changed`, ...) in `error.details.was`; a local operation's fix is `error.details.tool.recovery`. When a person must act, `error.next.url` (or `browser_url` from `summer login`) is the one link to show.
 - In MCP, run the same operations with `summer_call` (`{"op": "router.check"}`). All codes and fixes: [Errors](/router/errors). Every operation: [CLI and operations](/router/cli).

@@ -52,7 +52,7 @@ Secrets for the game (a password, a quest answer) belong in `instructions` or `v
 
 | Field | Rule | Use |
 | --- | --- | --- |
-| `model` | A Summer catalogue id | Leave it out to use the game's default model (the Router settings show it). |
+| `model` | A Summer catalogue id | Leave it out to use the game's default model (`router.settings`). `router.models` lists the ids. |
 | `temperature` | 0 to 2 | Higher is more varied. |
 | `max_output_tokens` | 1 to 8192 | The longest reply. |
 | `reasoning` | `off`, `low`, `medium`, `high` | Thinking effort, where the model supports it. |
@@ -88,7 +88,7 @@ Each tool is something the character can do in the game.
 | `runs_on` | `client` (default) or `authority` | `client` runs in the player's game. `authority` (the game server) is on the roadmap. |
 | `timeout_ms` | 100 to 60,000 | How long the character waits for the result. |
 
-At most 32 tools. `router.check` and `router.push` fail with reason `tool_unhandled` when a `client` tool has no handler in the project's GDScript. See [GDScript: Tools](/router/gdscript#tools).
+At most 32 tools. `router.check` and `router.push` fail with `tool_unhandled` when a `client` tool has no handler in the project's GDScript. See [GDScript: Tools](/router/gdscript#tools).
 
 ## Limits
 

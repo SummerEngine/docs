@@ -23,11 +23,11 @@ The answer is always one of these:
 
 ```json
 {"ok": true, "status": "done", "result": {...}}
-{"ok": false, "error": {"code": "conflict", "message": "...", "next": {"url": "https://www.summerengine.com/studio/store/game_01...?view=all&tab=router", "label": "Open in Studio"}, "details": {"tool": {"reason": "studio_changed", "recovery": "..."}}}}
+{"ok": false, "error": {"code": "conflict", "message": "...", "next": {"url": "https://www.summerengine.com/studio/store/game_01...?view=all&tab=router", "label": "Open in Studio"}, "details": {"was": "studio_changed", "tool": {"recovery": "..."}}}}
 ```
 
 - `error.code` is the Summer error code (`invalid_input`, `not_signed_in`, `forbidden`, `not_found`, `conflict`, `unavailable`, ...).
-- `error.details.tool.reason` is the Summer Router reason (`tool_unhandled`, `studio_changed`, ...) and `error.details.tool.recovery` the fix. See [Errors](/router/errors).
+- `error.details.was` is the Summer Router tag (`tool_unhandled`, `studio_changed`, `limit_reached`, ...), on local and cloud operations alike. A local operation's fix is `error.details.tool.recovery`. See [Errors](/router/errors).
 - A step for a person is one URL in `error.next.url` (or `browser_url` from `summer login`). Show it.
 - In the shell, `--json` prints only the answer; the exit code is 0 for `ok`, 1 for an error. `--dry-run` checks the input and does nothing.
 
@@ -79,7 +79,7 @@ summer router check [--characters guard]
 
 1. Reads `ai/characters/*.json` (or the characters you name).
 2. Checks each file against the character schema. Each problem names the field, for example `guard/temperature must be 2 or less`.
-3. Checks that every client tool has a handler in the project's GDScript. If not: reason `tool_unhandled`, with the code to add in `details.tool.details.handler_snippet`.
+3. Checks that every client tool has a handler in the project's GDScript. If not: `tool_unhandled`, with the code to add in `details.tool.details.handler_snippet`.
 
 Offline; it needs no sign-in.
 
@@ -95,13 +95,13 @@ summer router push [--characters guard] [--force] [--game-id <id>]
 
 Runs `router.check`, then saves each character on Summer for the game. An unchanged character is skipped.
 
-`router.push` never overwrites a change made on Summer (in Studio, or by someone else) since this project last pushed or pulled: it stops with reason `studio_changed` (code `conflict`). Run `router.pull` to take Summer's version, or push with `force` to keep yours. The last known versions are in `.summer/router.json`; commit it with the character files.
+`router.push` never overwrites a change made on Summer (in Studio, or by someone else) since this project last pushed or pulled: it stops with `studio_changed` (code `conflict`). Run `router.pull` to take Summer's version, or push with `force` to keep yours. The last known versions are in `.summer/router.json`; commit it with the character files.
 
 ```json
 {"ok": true, "status": "done", "result": {"game_id": "game_01...", "pushed": [{"id": "guard", "version": 3, "action": "updated"}], "studio_url": "https://www.summerengine.com/studio/store/game_01...?view=all&tab=router"}}
 ```
 
-Before the game is live, an agent may push. After it is live, the owner approves in Studio: reason `owner_action_required` (code `forbidden`) with the Studio link in `error.next.url`.
+Before the game is live, an agent may push. After it is live, `router.push` stops with `owner_action_required` (code `forbidden`) and the Studio link in `error.next.url`; call `router.save_character` with the character document to get the person's approval link instead.
 
 ### router.pull
 
@@ -109,7 +109,7 @@ Before the game is live, an agent may push. After it is live, the owner approves
 summer router pull [--characters guard] [--force]
 ```
 
-Writes Summer's characters to `ai/characters/`. It keeps a local file that has edits you never pushed (reason `local_changes`), unless you pass `force`.
+Writes Summer's characters to `ai/characters/`. It keeps a local file that has edits you never pushed (`local_changes`), unless you pass `force`.
 
 ### router.doctor
 
@@ -125,11 +125,26 @@ Checks the project, the game id, the sign-in, the registry version, each charact
 
 ## Cloud operations (on Summer's server)
 
-These run on the hosted Summer server with the person's sign-in; the local MCP and the shell forward them:
+These run on the hosted Summer server with the person's sign-in. In MCP, find them with `summer_search` and run them with `summer_call` (there is no direct tool); in a shell, `summer router <action>` forwards them. They need `gameId` (no project default).
 
-- a scripted test turn with a pushed character: what it says and which tools it calls;
-- the game's settings: the on/off switch, the default models and the caps (US dollars of usage; the owner approves every change);
-- usage: calls and units per day and kind, and how much of each cap is used;
-- the catalog: models, voices, kinds, the character schema and the error tags.
+| Operation | Effect | Input | Answer |
+| --- | --- | --- | --- |
+| `router.models` | read | `include?` (models, voices, kinds, schema, errors) | Models, voices, kinds (GDScript call, docs), the character and settings schemas, errors with fixes |
+| `router.list_characters` | read | `gameId` | `characters[{id, name, version, model, voice, tools, updatedAt}]`, `studioUrl` |
+| `router.get_character` | read | `gameId`, `characterId`, `version?` | `version`, `deleted`, `updatedAt`, `file`, `character` |
+| `router.character_versions` | read | `gameId`, `characterId` | Every saved version |
+| `router.save_character` | live change | `gameId`, `character` (the whole document), `expectedVersion?` | `version`, `created`, `unchanged`, `file`, `studioUrl`. Runs at once before launch; on a live game it answers `needs_approval` with the person's link |
+| `router.delete_character` | asks the person | `gameId`, `characterId` | `needs_approval`, then the deletion |
+| `router.test_character` | metered | `gameId`, `characterId`, `messages` (1 to 4 lines), `variables?`, `context?`, `overrides?`, `toolOutputs?`, `draft?` | `turns[{player, steps[{text, toolCalls[{name, args, runsOn, answered}]}]}]`, `unhandledTools`, `usage` |
+| `router.settings` | read | `gameId` | `enabled`, `caps`, `defaultCaps`, `accountLimit`, models, `revision`, `studioUrl`, `addCreditsUrl` |
+| `router.set_settings` | always asks the person | `gameId`, `enabled?`, `caps?{playerDay?, gameDay?, gameMonth?}`, `textModel?`, `imageModel?` | `needs_approval`, then the settings |
+| `router.set_account_limit` | always asks the person | the monthly limit across your games | `needs_approval`, then the limit |
+| `router.usage` | read | `gameId`, `days` (1 to 90) | `calls`, `failed`, `byKind`, `daily`, `caps[{scope, title, cap, usedPercent, resetsAt}]` |
 
-Find each one and its exact input with `summer_search` (for example "summer router test turn") or `summer ops search router`. See [Limits and usage](/router/limits-and-usage).
+Test a character after `router.push`:
+
+```bash
+summer router test-character --game-id game_01... --character-id guard --messages "the password is moonlight" --json
+```
+
+Check that `turns[0].steps[].toolCalls[]` names `open_gate` and that `unhandledTools` is empty. `router.test_character` has no expected-tools input: read the tool calls in the answer. See [Limits and usage](/router/limits-and-usage).

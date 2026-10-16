@@ -110,7 +110,7 @@ Summer.client.router.talk("guard", {"mode": "voice", "tools": {"open_gate": _on_
 Summer.client.router.reply("guard", "open up", {"tools": {"open_gate": _on_open_gate}})
 ```
 
-`router.check` and `router.push` fail with reason `tool_unhandled` when a client tool in a character file has no handler in any `.gd` file of the project. That stops the silent failure where the model calls a tool and nothing answers.
+`router.check` and `router.push` fail with `tool_unhandled` when a client tool in a character file has no handler in any `.gd` file of the project. That stops the silent failure where the model calls a tool and nothing answers.
 
 Rules for handlers:
 

@@ -91,7 +91,7 @@ Too many calls too fast. The answer has `Retry-After`.
 
 ## Errors from the router operations
 
-The local operations (`router.add_character`, `router.check`, `router.push`, `router.pull`) answer a failure as `{"ok": false, "error": {"code", "message", "next"?, "details": {"tool": {"reason", "recovery", ...}}}}`. `code` is the Summer error code; `reason` is one of the headings below; `recovery` is the fix.
+Every `router.*` operation answers a failure as `{"ok": false, "error": {"code", "message", "next"?, "details": {"was", ...}}}`. `code` is the Summer error code (`invalid_input`, `forbidden`, `conflict`, `not_signed_in`, `over_limit`, ...); `details.was` is the Summer Router tag: one of the headings on this page. A cloud operation adds `details.fix` and `details.docsUrl`; a local one (`router.add_character`, `router.check`, `router.push`, `router.pull`) has the fix in `details.tool.recovery`. When a person must act, `error.next` holds the link.
 
 ### not_signed_in (operations)
 
@@ -121,7 +121,7 @@ Code `conflict`. `router.pull` kept a local file that has edits you never pushed
 ### owner_action_required
 
 Code `forbidden`. Only the game's owner can do this: change a character of a live game, the caps or the switch. `error.next.url` is the Router tab of the game's store page in Studio.
-**Fix:** show that link to the owner. They open it and save.
+**Fix:** call `router.save_character` with the character document: it answers with the person's approval link. Or show the Studio link to the owner; they save it there.
 
 ### character_exists
 
