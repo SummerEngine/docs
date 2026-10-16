@@ -5,10 +5,10 @@ name: reference-drift
 # the other side: that the pinned inputs still match their sources. It fails
 # when a source moved, so someone runs `npm run sync:reference` and opens a PR.
 #
-# It needs the optional SUMMER_REFERENCE_TOKEN secret (read access to
-# SummerEngine/summer-platform and SummerEngine/SummerEngine); without it nothing
-# is checked. The operation catalog is checked when the token can also read
-# SummerEngine/PublicSummerEngine.
+# The operation catalog is read from summer-engine@latest on npm (4.1.0 and
+# later ship it), so it needs no secret. The HTTP and GDScript sources need the
+# optional SUMMER_REFERENCE_TOKEN secret (read access to
+# SummerEngine/summer-platform and SummerEngine/SummerEngine).
 
 on:
   schedule:
@@ -41,21 +41,8 @@ jobs:
           node scripts/reference/sync.mjs --http --gdscript --work "$RUNNER_TEMP/reference" \
             --platform "$RUNNER_TEMP/summer-platform" --engine "$RUNNER_TEMP/SummerEngine"
 
-      - name: Operation catalog
-        env:
-          TOKEN: ${{ secrets.SUMMER_REFERENCE_TOKEN }}
-        run: |
-          if [ -z "$TOKEN" ]; then
-            echo "::notice::SUMMER_REFERENCE_TOKEN is not set; the operation catalog was not checked."
-            exit 0
-          fi
-          git init -q "$RUNNER_TEMP/PublicSummerEngine"
-          git -C "$RUNNER_TEMP/PublicSummerEngine" remote add origin "https://x-access-token:$TOKEN@github.com/SummerEngine/PublicSummerEngine.git"
-          if ! git -C "$RUNNER_TEMP/PublicSummerEngine" fetch -q --filter=blob:none --depth=1 origin main:refs/remotes/origin/main; then
-            echo "::notice::SUMMER_REFERENCE_TOKEN cannot read PublicSummerEngine; the operation catalog was not checked."
-            exit 0
-          fi
-          node scripts/reference/sync.mjs --ops --work "$RUNNER_TEMP/reference" --pse "$RUNNER_TEMP/PublicSummerEngine"
+      - name: Operation catalog (summer-engine@latest)
+        run: node scripts/reference/sync.mjs --ops --work "$RUNNER_TEMP/reference"
 
       - name: Fail when the pinned reference is behind its sources
         run: |

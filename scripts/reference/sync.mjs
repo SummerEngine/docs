@@ -8,12 +8,14 @@
  * Parts (default: all):
  *   --http      Summer Platform HTTP API (summer-platform api/*\/openapi.yaml)
  *   --gdscript  In-game Summer GDScript API
- *   --ops       Summer operation catalog (publicsummerengine public-catalog.json
- *               + the engine and local operations of the summer-engine npm package)
+ *   --ops       Summer operation catalog: the public catalog the summer-engine npm
+ *               package ships (or, with --pse, publicsummerengine's own copy) and the
+ *               package's engine and local operations
  *
  * Options:
  *   --summer-engine <spec>   npm spec for the engine and local operations (default: summer-engine@latest)
- *   --pse <checkout>         publicsummerengine git checkout (operation catalog)
+ *   --pse <checkout>         read the operation catalog from a publicsummerengine checkout
+ *                            instead of the npm package (for a catalog not yet released)
  *   --platform <checkout>    summer-platform git checkout (OpenAPI specs)
  *   --engine <checkout>      summerengine git checkout (GDScript bindings)
  *   --ref <git ref>          ref to read in every checkout (default: origin/main)
@@ -62,10 +64,13 @@ export const gitIn = (repo) => (...args) =>
   execFileSync("git", ["-C", repo, ...args], { encoding: "utf8", maxBuffer: 256 << 20 });
 
 async function syncOps(opts) {
-  if (!opts.pse) throw new Error("--pse <publicsummerengine checkout> is required for --ops");
-  const { installNpmPackage, readCloudCatalog, readLocalOperations, operationsSource } = await import("./lib/ops-source.mjs");
-  const cloud = readCloudCatalog(gitIn(opts.pse), opts.ref);
+  const { installNpmPackage, readCloudCatalog, readPackagedCatalog, readLocalOperations, operationsSource } = await import("./lib/ops-source.mjs");
   const npm = installNpmPackage(opts.work, opts.summerEngine);
+  const cloud = opts.pse ? readCloudCatalog(gitIn(opts.pse), opts.ref) : readPackagedCatalog(npm.dir);
+  if (!cloud) {
+    console.log(`::notice::summer-engine ${npm.version} ships no operation catalog; operations were not synced (pass --pse <publicsummerengine checkout>)`);
+    return;
+  }
   const local = await readLocalOperations(npm.dir);
   if (!local) console.log(`summer-engine ${npm.version} has no operation catalog; engine and local operations keep their names only`);
   writeJson(join(SOURCES, "operations.json"), operationsSource(cloud, local, npm));

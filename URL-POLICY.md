@@ -115,7 +115,7 @@ Generated pages publish to their existing frozen URLs rather than to a new
 | Page | Generated from |
 |---|---|
 | `/ai-tools/operations` | The engine's unified operation registry |
-| `/mcp/operations`, `/mcp/operations/*` | The Summer operation catalog: publicsummerengine `src/lib/ops/public-catalog.json` and the engine and local operations of the `summer-engine` npm package (`scripts/reference`) |
+| `/mcp/operations`, `/mcp/operations/*` | The Summer operation catalog: the public catalog (publicsummerengine `src/lib/ops/public-catalog.json`, shipped in the `summer-engine` npm package as `registry/operations/public-catalog.json`) and the package's engine and local operations (`scripts/reference`) |
 | `/mcp/cli-reference` | The CLI's command definitions |
 | `/api-reference/http/*` | summer-platform `api/*/openapi.yaml`, filtered to public operations (`scripts/reference`) |
 | `/api-reference/gdscript/*` | The engine's class reference XML for the `Summer` singleton (`scripts/reference`) |

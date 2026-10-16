@@ -23,7 +23,7 @@ import { findPublicTextViolation } from "./lib/redact.mjs";
 import { code, fm } from "./lib/mdx.mjs";
 import { HTTP_BASE, httpNav, httpOperations, renderHttpOperationPage, renderHttpOverview } from "./render-http.mjs";
 import { GD_BASE, gdPages, renderGdClassPage, renderGdOverviewExtras } from "./render-gdscript.mjs";
-import { OPS_AREAS, OPS_BASE, OPS_LEGACY_PAGE, opsAreaPath, opsByArea, renderOpsAreaPage, renderOpsIndexPage, renderOpsLegacyPage } from "./render-ops.mjs";
+import { cloudVersion, cloudWhere, OPS_AREAS, OPS_BASE, OPS_LEGACY_PAGE, opsAreaPath, opsByArea, renderOpsAreaPage, renderOpsIndexPage, renderOpsLegacyPage } from "./render-ops.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, "..", "..");
@@ -105,7 +105,7 @@ put(
     "",
     "| Reference | Source of truth | Version |",
     "|---|---|---|",
-    `| Operations | ${code(opsSrc.sources.cloud.path)} in publicsummerengine${opsSrc.sources.local ? ` and ${code(opsSrc.sources.local.path)} in the ${code("summer-engine")} npm package` : ""} | ${code(opsSrc.sources.cloud.commit.slice(0, 10))}${opsSrc.sources.local ? `, ${code(opsSrc.sources.local.version)}` : ""} |`,
+    `| Operations | ${code(opsSrc.sources.cloud.path)} in ${cloudWhere(opsSrc)}${opsSrc.sources.local ? ` and ${code(opsSrc.sources.local.path)} in the ${code("summer-engine")} npm package` : ""} | ${code(cloudVersion(opsSrc))}${opsSrc.sources.local && opsSrc.sources.local.version !== cloudVersion(opsSrc) ? `, ${code(opsSrc.sources.local.version)}` : ""} |`,
     `| HTTP API | ${httpManifest.apis.map((a) => code(a.spec)).join(", ")} in summer-platform | ${code(httpManifest.commit.slice(0, 10))} |`,
     `| GDScript API | ${gdSrc.paths.map(code).join(", ")} in SummerEngine | ${code(gdSrc.commit.slice(0, 10))} |`,
     "",

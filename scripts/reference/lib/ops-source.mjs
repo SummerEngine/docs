@@ -1,7 +1,9 @@
 // Reads the Summer operation catalog (Summer 4.0) from its sources of truth:
 //  - cloud operations: publicsummerengine src/lib/ops/public-catalog.json,
 //    the checked-in public catalog that a publicsummerengine test keeps equal
-//    to the defined ops. Read with `git show <ref>:<path>`.
+//    to the defined ops. summer-engine 4.1.0 and later ship a byte copy as
+//    registry/operations/public-catalog.json, read from the npm package; with
+//    --pse it is read from a publicsummerengine checkout (`git show <ref>:<path>`).
 //  - engine and local operations: the summer-engine npm package (4.0 and
 //    later ship dist/core/ops/catalog.js). An older package has none; then
 //    the page lists their names and links to their MCP tool.
@@ -38,6 +40,17 @@ export function readCloudCatalog(gitIn, ref) {
   return { commit, catalog };
 }
 
+export const PACKAGED_CATALOG_PATH = "registry/operations/public-catalog.json";
+
+/** The public catalog the summer-engine package ships (4.1.0 and later), or null for an older package. */
+export function readPackagedCatalog(npmDir) {
+  const file = join(npmDir, "node_modules/summer-engine", PACKAGED_CATALOG_PATH);
+  if (!existsSync(file)) return null;
+  const catalog = JSON.parse(readFileSync(file, "utf8"));
+  if (catalog.contract !== 1) throw new Error(`${PACKAGED_CATALOG_PATH}: unsupported contract ${catalog.contract}`);
+  return { catalog };
+}
+
 /** The npm package's engine and local operations, or null for a package without the catalog (3.x). */
 export async function readLocalOperations(npmDir) {
   const file = join(npmDir, "node_modules/summer-engine/dist/core/ops/catalog.js");
@@ -65,7 +78,9 @@ export function operationsSource({ commit, catalog }, local, npm) {
     schemaVersion: 1,
     generatedBy: "scripts/reference/sync.mjs --ops",
     sources: {
-      cloud: { repository: "SummerEngine/publicsummerengine", path: PUBLIC_CATALOG_PATH, commit },
+      cloud: commit
+        ? { repository: "SummerEngine/publicsummerengine", path: PUBLIC_CATALOG_PATH, commit }
+        : { package: "summer-engine", repository: "SummerEngine/summer", version: npm.version, path: PACKAGED_CATALOG_PATH },
       local: local ? { package: "summer-engine", repository: "SummerEngine/summer", version: npm.version, path: "dist/core/ops/catalog.js" } : null,
     },
     contract: catalog.contract,
