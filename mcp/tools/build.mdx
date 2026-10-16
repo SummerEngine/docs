@@ -101,7 +101,7 @@ Show the signed-in Summer account: plan, spendable credits (USD), whether cloud 
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `readOnlyHint` |
 
 **Inputs:**
@@ -751,7 +751,7 @@ Stop a queued or running board agent task. Work it already saved stays on the bo
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `idempotentHint` |
 
 **Inputs:**
@@ -809,7 +809,7 @@ Ask the board's own agent to work on the board, as typing in Studio does: it rea
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `idempotentHint`, `openWorldHint` |
 
 **Inputs:**
@@ -933,7 +933,7 @@ One board agent task: its status, reply and what it changed.
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `readOnlyHint` |
 
 **Inputs:**
@@ -991,7 +991,7 @@ The board agent's tasks on this board, with their replies.
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `readOnlyHint` |
 
 **Inputs:**
@@ -1041,7 +1041,7 @@ Build a playable game from a saved Game Soul version (soulVersionId from [`summe
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `idempotentHint`, `openWorldHint` |
 
 **Inputs:**
@@ -1106,7 +1106,7 @@ Stop a board build that has not finished.
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `idempotentHint` |
 
 **Inputs:**
@@ -1164,7 +1164,7 @@ One board build: status, progress and, when done, what it made.
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `readOnlyHint` |
 
 **Inputs:**
@@ -1222,7 +1222,7 @@ Recent game builds from this board and whether cloud builds are available now.
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `readOnlyHint` |
 
 **Inputs:**
@@ -1272,7 +1272,7 @@ Read the shared board conversation with server-attributed participants and times
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `readOnlyHint` |
 
 **Inputs:**
@@ -1345,7 +1345,7 @@ Create a new board, optionally for one of the user's projects (projectId from [`
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 
 **Inputs:**
 
@@ -1400,7 +1400,7 @@ Apply an explicitly requested edit as one atomic batch. Never overwrite whole bo
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `destructiveHint`, `idempotentHint` |
 
 **Inputs:**
@@ -1947,7 +1947,7 @@ Turn on shared editing for an older board (the board agent, builds and conversat
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `idempotentHint` |
 
 **Inputs:**
@@ -1997,7 +1997,7 @@ Board changes since a revision (what Studio's live view receives): each committe
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `readOnlyHint` |
 
 **Inputs:**
@@ -2054,7 +2054,7 @@ Read immutable Game Soul versions and their exact reference assets, for continui
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `readOnlyHint` |
 
 **Inputs:**
@@ -2104,7 +2104,7 @@ Link a board to one of the user's projects (projectId from [`summer_list_project
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `idempotentHint` |
 
 **Inputs:**
@@ -2162,7 +2162,7 @@ List boards this authenticated Summer user can access.
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `readOnlyHint` |
 
 **Inputs:**
@@ -2199,7 +2199,7 @@ Who is on the board right now, with their selection and topic.
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `readOnlyHint` |
 
 **Inputs:**
@@ -2249,7 +2249,7 @@ Which of the user's boards belong to which projects.
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `readOnlyHint` |
 
 **Inputs:**
@@ -2286,7 +2286,7 @@ Read the authoritative board graph, stable item and asset IDs, current field rev
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `readOnlyHint` |
 
 **Inputs:**
@@ -2336,7 +2336,7 @@ Save an explicitly selected game direction as an immutable Game Soul version. In
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `idempotentHint` |
 
 **Inputs:**
@@ -2886,7 +2886,7 @@ Delete one of the person's own assets for good, as Delete on its page in Studio.
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `destructiveHint`, `idempotentHint` |
 
 **Inputs:**
@@ -6389,7 +6389,7 @@ The map of Summer Studio: every page (destination id, title, what it is for, pat
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `readOnlyHint` |
 
 **Inputs:**
@@ -6434,7 +6434,7 @@ Move the person's open Summer Studio tab to a Studio page (a destination id from
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 
 **Inputs:**
 
@@ -6488,7 +6488,7 @@ Read the person's open Summer Studio tab: its path, the fields an agent may fill
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `readOnlyHint` |
 
 **Inputs:**
@@ -6533,7 +6533,7 @@ Fill fields and press one button on the person's open Summer Studio tab, exactly
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 
 **Inputs:**
 
@@ -6617,7 +6617,7 @@ The signed-in person's teams in Summer Studio (shared workspaces: their members 
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 
 **Inputs:**
 
@@ -7062,7 +7062,7 @@ Change one of the person's own assets, as on its page in Studio: title, descript
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 
 **Inputs:**
 

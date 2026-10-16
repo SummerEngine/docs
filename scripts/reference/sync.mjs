@@ -19,7 +19,7 @@
  *   --no-hosted              keep the hosted tool list from the current snapshot
  *
  * Checkouts are read with `git show <ref>:<path>`; nothing in them is modified.
- * The hosted tool list needs a store sign-in (`summer login --store`) because
+ * The hosted tool list needs a signed-in Summer CLI (`summer login`) because
  * it is read from the hosted Summer Engine MCP exactly as the npm package
  * mounts it. Docs builds never run this; they only render the pinned inputs
  * (scripts/reference/generate.mjs --check).

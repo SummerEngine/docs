@@ -23,13 +23,13 @@ Generated from the tools' own definitions: the `summer-engine` npm package `3.4.
 | [`summer_build_sign_parts`](#summer_build_sign_parts) | Summer account | Get upload URLs for parts of a build started with summer_build_begin_upload. |
 | [`summer_build_status`](#summer_build_status) | Summer account | Read uploaded builds of a store game (or one, by publicationId): version, targets, state (uploading, processing, checking, ready, failed) and what to do next. |
 | [`summer_creator_config`](#summer_creator_config) | Engine | Read or update the shared non-secret ~/.summer configuration used by the CLI and this MCP. |
-| [`summer_creator_publish`](#summer_creator_publish) | Engine + Creator token | Deprecated: use summer_export_game, then summer_publish_build, which upload the summer.games .zip to the game's store listing. |
-| [`summer_creator_releases`](#summer_creator_releases) | Creator token | Deprecated: lists releases on the legacy Summercraft creator API (separate sc\_ token), not summer.games. |
+| [`summer_creator_publish`](#summer_creator_publish) | Engine + Signed in | Deprecated: use summer_export_game, then summer_publish_build, which upload the summer.games .zip to the game's store listing. |
+| [`summer_creator_releases`](#summer_creator_releases) | Signed in | Deprecated: lists releases on the legacy Summercraft creator API (separate sc\_ token), not summer.games. |
 | [`summer_export_game`](#summer_export_game) | Nothing | Export the game in the exact file the Summer Games store takes, with the installed Summer Engine headless (no window). |
 | [`summer_export_templates`](#summer_export_templates) | Nothing | List, download and install Summer Engine export templates from Summer's CDN into the folder the installed engine reads, checking each file's sha256. |
 | [`summer_get_project`](#summer_get_project) | Summer account | Get one Studio project: name, kind, its board id (summer_board_read), the idea it was made from, share state and address. |
 | [`summer_list_projects`](#summer_list_projects) | Summer account | List the user's Summer Studio projects (games), newest first: id, name, kind (create: made in the browser; cloud; desktop), last edit, share state and where it opens. |
-| [`summer_publish_build`](#summer_publish_build) | Store sign-in | Upload an export from summer_export_game to the creator's game on summer.games, through the same store upload Studio uses, straight from disk. |
+| [`summer_publish_build`](#summer_publish_build) | Signed in | Upload an export from summer_export_game to the creator's game on summer.games, through the same store upload Studio uses, straight from disk. |
 | [`summer_store_cancel_submission`](#summer_store_cancel_submission) | Summer account | Withdraw a waiting owner approval (from summer_store_submit) so its link no longer works. |
 | [`summer_store_create_game`](#summer_store_create_game) | Summer account | Create a game on the Summer Games store with its first store page draft. |
 | [`summer_store_enter_jam`](#summer_store_enter_jam) | Summer account | Enter a store game in a Summer Games Jam, or withdraw it (withdraw: true). |
@@ -55,7 +55,7 @@ Start uploading an exported game build (the summer.games .zip bundle or one .pck
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 
 **Inputs:**
 
@@ -177,7 +177,7 @@ Finish a build upload after every part is PUT: Summer seals it, makes the Build 
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 
 **Inputs:**
 
@@ -279,7 +279,7 @@ After the owner approved publishing and Summer staff approved the game, release 
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 
 **Inputs:**
 
@@ -327,7 +327,7 @@ Get upload URLs for parts of a build started with [`summer_build_begin_upload`](
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 
 **Inputs:**
 
@@ -415,7 +415,7 @@ Read uploaded builds of a store game (or one, by publicationId): version, target
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `readOnlyHint` |
 
 **Inputs:**
@@ -554,7 +554,7 @@ Deprecated: use [`summer_export_game`](/mcp/tools/publish#summer_export_game), t
 
 | | |
 |---|---|
-| **Needs** | Summer Engine open with your project<br />Creator token: `summer login --creator` |
+| **Needs** | Summer Engine open with your project<br />Signed in: `summer login` |
 | **Effects** | writes files, uses the network, publishes |
 | **CLI** | `summer publish` |
 
@@ -655,7 +655,7 @@ Deprecated: lists releases on the legacy Summercraft creator API (separate sc\_ 
 
 | | |
 |---|---|
-| **Needs** | Creator token: `summer login --creator` |
+| **Needs** | Signed in: `summer login` |
 | **Effects** | uses the network |
 | **CLI** | `summer releases` |
 
@@ -919,7 +919,7 @@ Get one Studio project: name, kind, its board id ([`summer_board_read`](/mcp/too
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `readOnlyHint` |
 
 **Inputs:**
@@ -969,7 +969,7 @@ List the user's Summer Studio projects (games), newest first: id, name, kind (cr
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `readOnlyHint` |
 
 **Inputs:**
@@ -1015,7 +1015,7 @@ Upload an export from [`summer_export_game`](/mcp/tools/publish#summer_export_ga
 
 | | |
 |---|---|
-| **Needs** | Store sign-in: `summer login --store` |
+| **Needs** | Signed in: `summer login` |
 | **Effects** | writes files, uses the network, publishes |
 | **CLI** | `summer tool publish-build --args '<json>'` |
 
@@ -1124,7 +1124,7 @@ Withdraw a waiting owner approval (from [`summer_store_submit`](/mcp/tools/publi
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 
 **Inputs:**
 
@@ -1179,7 +1179,7 @@ Create a game on the Summer Games store with its first store page draft. Targets
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 
 **Inputs:**
 
@@ -1273,7 +1273,7 @@ Enter a store game in a Summer Games Jam, or withdraw it (withdraw: true). Owner
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 
 **Inputs:**
 
@@ -1333,7 +1333,7 @@ Read a game's store page as the store will show it: review state, targets and st
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `readOnlyHint` |
 
 **Inputs:**
@@ -1388,7 +1388,7 @@ List the Summer Games Jams open for entries (slug, title, theme, closing time, p
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `readOnlyHint` |
 
 **Inputs:**
@@ -1432,7 +1432,7 @@ List the user's games on the Summer Games store (the creator catalog): game id, 
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `readOnlyHint` |
 
 **Inputs:**
@@ -1469,7 +1469,7 @@ Make a private link to the saved store page draft on summer.games (noindex; Buy 
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 
 **Inputs:**
 
@@ -1527,7 +1527,7 @@ What players get now and what can go out next, like the version history in Studi
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `readOnlyHint` |
 
 **Inputs:**
@@ -1576,7 +1576,7 @@ Put images into one store art slot from your Summer assets (assetId) or public i
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 
 **Inputs:**
 
@@ -1714,7 +1714,7 @@ Set or remove the store page trailer, as the Trailer section in Studio: one MP4 
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 
 **Inputs:**
 
@@ -1805,7 +1805,7 @@ Ask the owner to publish the store page draft with a build and price. This never
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 
 **Inputs:**
 
@@ -1872,7 +1872,7 @@ Edit the store page draft: title, targets, desktop text (tagline, description, 3
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 
 **Inputs:**
 
@@ -2072,7 +2072,7 @@ Start uploading a web build or a desktop download to a store game ([`summer_expo
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 
 **Inputs:**
 
@@ -2155,7 +2155,7 @@ Finish a store version upload after every part is PUT. Summer checks the file (a
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 
 **Inputs:**
 
@@ -2210,7 +2210,7 @@ Get upload URLs for parts of a store version (web build or download). Send every
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 
 **Inputs:**
 
@@ -2280,7 +2280,7 @@ Read a store game's web builds and downloads (or one, by versionId): platform, s
 
 | | |
 |---|---|
-| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login --store` |
+| **Needs** | Your Summer account (OAuth). In the npm MCP: `summer login` |
 | **Hints** | `readOnlyHint` |
 
 **Inputs:**
