@@ -101,7 +101,13 @@ Runs `router.check`, then saves each character on Summer for the game. An unchan
 {"ok": true, "status": "done", "result": {"game_id": "game_01...", "pushed": [{"id": "guard", "version": 3, "action": "updated"}], "studio_url": "https://www.summerengine.com/studio/store/game_01...?view=all&tab=router"}}
 ```
 
-Before the game is live, an agent may push. After it is live, `router.push` stops with `owner_action_required` (code `forbidden`) and the Studio link in `error.next.url`; call `router.save_character` with the character document to get the person's approval link instead.
+Before the game is live, an agent may push and the save runs at once. After it is live, Summer refuses an agent's save; `router.push` then asks through `router.save_character` and answers with the person's approval link and a job, in the same call:
+
+```json
+{"ok": true, "status": "needs_approval", "approval": {"id": "goa_...", "url": "https://www.summerengine.com/studio/approvals/goa_...", "who": "person", "summary": "..."}, "job": {"id": "apr:...", "state": "awaiting_approval"}}
+```
+
+Give the person the link, then `summer jobs wait --job-id <job id>` (or `--wait` on the push). Pushing the same file again gives the same approval. Several live characters: the answer carries the first, and `warnings` lists the others. Only when that hosted call fails does `router.push` stop with `owner_action_required` (code `forbidden`) and the Studio link in `error.next.url`.
 
 ### router.pull
 
