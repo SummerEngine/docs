@@ -17,7 +17,7 @@ Every Summer MCP error has a `code`, a `message` and one `next` step. Do the `ne
 
 `Summer Games did not accept this connector sign-in`, HTTP `401`, or the code `not_signed_in` or `forbidden`.
 
-- Reconnect the Summer Engine connector in your agent, or run `npx -y summer-engine@latest login --store` again.
+- Reconnect the Summer Engine connector in your agent, or run `npx -y summer-engine@latest login --force` to sign in again.
 - Still failing: run `summer login --store --force` to register this computer again.
 - `403 agent_access_not_enabled`: the email of your Summer account is not confirmed yet. Open the link Summer sent you, then try again.
 
