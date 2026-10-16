@@ -42,7 +42,7 @@ Creates a new project from a template. Templates: `empty` (minimal 3D) or `3d-ba
 npx summer-engine run my-game
 ```
 
-Launches Summer Engine with your project. The engine must be running for MCP tools to work.
+Launches Summer Engine with your project. Engine tools need the engine running with your project. Cloud operations (assets, plans, the store, prices, analytics) do not.
 
 ## Start MCP (for Cursor, Claude Code, Devin Desktop)
 
@@ -67,12 +67,28 @@ The agent spawns `summer mcp` when it connects. You don't run it manually. To ed
 
 See [MCP setup](/mcp/setup) for each agent. For cloud work only (assets, plans, the store, publishing), you can skip the install and add `https://mcp.summerengine.com/mcp` to your agent instead.
 
+## Run Summer Operations from the Shell
+
+Every Summer operation runs from the shell, with the same answer as in the MCP:
+
+```bash
+summer whoami                                   # Who is signed in, plan and credits
+summer ops search put my game on sale           # Find the operation for a job
+summer ops describe pricing.schedule_discount   # Its exact input
+summer games list --json                        # Run one: summer <area> <action>
+```
+
+Add `--dry-run` to check a change first, `--wait` to follow a job or an approval, and `--json` for the answer only. Exit code `0` means an ok answer, `1` an error. Details: [Operations from the shell](/mcp/cli-reference#operations-from-the-shell).
+
 ## Full CLI Reference
 
 | Command | Description |
 |---------|-------------|
+| `summer setup <agent> --yes` | Configure your agent's MCP, install the Summer skills, run diagnostics |
+| `summer doctor` | Check Node, the CLI, skills, sign-in, the engine and the MCP server |
 | `summer install` | Download and install Summer Engine |
 | `summer login` | Sign in via browser |
+| `summer whoami` | Who is signed in, plan and credits |
 | `summer logout` | Clear auth tokens |
 | `summer status` | Check engine status, port, auth |
 | `summer run [path]` | Launch engine, optionally with project |
@@ -81,8 +97,11 @@ See [MCP setup](/mcp/setup) for each agent. For cloud work only (assets, plans, 
 | `summer list templates` | Show available templates |
 | `summer list projects` | Show projects in current directory |
 | `summer skills list` | List available skills |
-| `summer skills install <name>` | Install a skill to `~/.summer/skills/` |
+| `summer skills install <name> --agent <agent>` | Install a skill where that agent reads skills |
 | `summer mcp` | Start MCP server (used by IDEs) |
+| `summer tool <name>` | Run one Summer tool by its slug or MCP name |
+| `summer <area> <action>` | Run any Summer operation |
+| `summer ops search <words>` | Find the operation for a job |
 
 <Card
   title="Full CLI Reference"

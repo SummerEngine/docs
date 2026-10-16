@@ -10,32 +10,31 @@ icon: "gamepad-2"
 
 This page is a playbook for building games with Summer Engine's MCP tools. Follow it when the user asks you to create or modify a game. The tools execute operations in the engine: scenes, nodes, properties, imports, and debugging. So you can build real games from natural language requests.
 
-**Prerequisites:** Summer Engine must be running with a project open. If you get "Summer Engine is not running," tell the user to start the engine or run `npx summer-engine run` from the project directory.
+**Prerequisites:** Summer Engine must be running with a project open. If the engine is not running, a tool answers with the error code `engine_not_running` and one next step: open the project in Summer Engine (or run `npx summer-engine run <project-path>`), then retry the same call.
 
 ---
 
 ## Skills (Best-Practice Guides)
 
-Before building, install the relevant skill. Skills are bundled with the CLI and contain patterns for scene structure, GDScript, and MCP tool usage. Install them, then read the SKILL.md file and follow its patterns.
+Skills contain patterns for scene structure, GDScript, and tool usage. `npx -y summer-engine@latest setup <agent> --yes` installs the whole library where your agent reads skills. To add one: `npx -y summer-engine skills install <name> --agent <agent>`.
 
-**When to install which skill:**
+| Task | Skill |
+|------|-------|
+| FPS game, first-person movement | `fps-controller` |
+| Any GDScript, signals, exports | `gdscript-patterns` |
+| Scene structure, sub-scenes, hierarchy | `scene-composition` |
+| 3D lighting, environment, shadows | `3d-lighting` |
+| Menus, HUD, health bars, UI | `ui-basics` |
 
-| Task | Skill | Install command |
-|------|-------|-----------------|
-| FPS game, first-person movement | `fps-controller` | `npx summer-engine skills install fps-controller` |
-| Any GDScript, signals, exports | `gdscript-patterns` | `npx summer-engine skills install gdscript-patterns` |
-| Scene structure, sub-scenes, hierarchy | `scene-composition` | `npx summer-engine skills install scene-composition` |
-| 3D lighting, environment, shadows | `3d-lighting` | `npx summer-engine skills install 3d-lighting` |
-| Menus, HUD, health bars, UI | `ui-basics` | `npx summer-engine skills install ui-basics` |
-| All of the above | (all) | `npx summer-engine skills install --all` |
-
-**For Claude Code:** Add `--as-claude-skill` to install into `~/.claude/skills/`. **For Cursor:** Add `--as-cursor-skill` to install into the current project's `.cursor/rules/`, as `summer-<name>.mdc`. Cursor gets a rule file, not a `SKILL.md`, and it is project-scoped rather than written to your home directory. Example: `npx summer-engine skills install fps-controller --as-claude-skill`
-
-**After installing:** Read the skill file at `~/.summer/skills/<name>/SKILL.md` (with `--as-claude-skill`, `~/.claude/skills/<name>/SKILL.md`; with `--as-cursor-skill`, `.cursor/rules/summer-<name>.mdc` in the project). Follow the patterns when building.
+Read a skill at `~/.agents/skills/<name>/SKILL.md` (Cursor, Codex and most agents) or `~/.claude/skills/<name>/SKILL.md` (Claude Code), and follow its patterns.
 
 ---
 
 ## Core Workflow
+
+### 0. Look It Up First
+
+Search Summer's docs and skills before you build: `summer_docs_search`, then `summer_docs_read` on the best hit. For work outside the engine (assets, plans, the store, prices, analytics), call `summer_search` with the job in plain words, then `summer_call` with the `op` and `input` it returns. Long work, such as a 3D model, answers with a job: call `summer_jobs_wait` until it is done. See [How Summer answers](/api-reference/mcp).
 
 ### 1. Identify the Exact Scene
 
@@ -47,16 +46,15 @@ Call `summer_get_project_context`, choose the exact `res://` scene path, then pa
 
 Opening a scene only changes the visible editor tab. It does not select the mutation target.
 
-### 2. Add Nodes, Then Configure
+### 2. One Script for Three or More Edits
 
-The pattern is: add, then set properties.
+For one or two edits, use `summer_add_node` or `summer_set_prop` with `scenePath`:
 
-1. **Inspect:** `summer_get_scene_tree(scenePath="res://main.tscn")`
-2. **Add:** `summer_add_node(scenePath="res://main.tscn", parent="./", type="MeshInstance3D", name="Player")`
-3. **Configure:** `summer_set_prop(scenePath="res://main.tscn", path="./Player", key="position", value="Vector3(0, 1, 0)")`
-4. **Mesh:** `summer_set_prop(scenePath="res://main.tscn", path="./Player", key="mesh", value="BoxMesh")`
+`summer_set_prop(scenePath="res://main.tscn", path="./Player", key="position", value="Vector3(0, 1, 0)")`
 
-For nested resource properties (e.g., collision shape size, material color), use `summer_set_resource_property`.
+For 3 or more edits to one scene, write one GDScript and run it once with `summer_run_script` and `scenePath`. One script replaces a long chain of single edits, and it can compute placement (loops, grids, scatter). Call `ctx.set_owner_recursive(node)` on every node you create, or it is not saved. Then check the result with `summer_snapshot_diff` and `summer_screenshot(target="scene")`.
+
+For one nested resource property (e.g., collision shape size, material color), use `summer_set_resource_property`.
 
 ### 3. Use Engine Value Formats
 
@@ -66,7 +64,7 @@ Properties use engine string syntax, not JSON objects:
 |----------|---------|-------|
 | position | `"Vector3(0, 10, 0)"` | `{x: 0, y: 10, z: 0}` |
 | color | `"Color(1, 0.5, 0, 1)"` | `{r: 1, g: 0.5, b: 0}` |
-| mesh | `"BoxMesh"` | `"res://box.glb"` (use InstantiateScene for files) |
+| mesh | `"BoxMesh"` | `"res://box.glb"` (use `summer_instantiate_scene` for files) |
 
 ### 4. Trust the Receipt
 
@@ -78,22 +76,52 @@ Dedicated scene mutation tools append one final save automatically. Treat the re
 
 ### Basic 3D Scene
 
-A minimal playable 3D scene needs:
+A minimal playable 3D scene needs a camera, a light and a floor under the root (usually a Node3D named "World"). One `summer_run_script` with `scenePath="res://main.tscn"` adds all three:
 
-1. **Root:** Usually a Node3D named "World" (may already exist)
-2. **Camera:** `summer_add_node(scenePath="res://main.tscn", parent="./World", type="Camera3D", name="MainCamera")`
-3. **Light:** `summer_add_node(scenePath="res://main.tscn", parent="./World", type="DirectionalLight3D", name="Sun")`. Set `shadow_enabled: true`, `light_energy: 1.0`
-4. **Floor:** `summer_add_node(scenePath="res://main.tscn", parent="./World", type="MeshInstance3D", name="Floor")`. Set `mesh: "BoxMesh"`, use `summer_set_resource_property` with the same `scenePath` for BoxMesh `size` (e.g., `Vector3(20, 0.2, 20)`)
+```gdscript
+func run(ctx):
+    var root = ctx.get_scene_root()
+    var cam := Camera3D.new()
+    cam.name = "MainCamera"
+    cam.position = Vector3(0, 5, 10)
+    root.add_child(cam)
+    var sun := DirectionalLight3D.new()
+    sun.name = "Sun"
+    sun.shadow_enabled = true
+    sun.light_energy = 1.0
+    root.add_child(sun)
+    var ground := MeshInstance3D.new()
+    ground.name = "Floor"
+    var box := BoxMesh.new()
+    box.size = Vector3(20, 0.2, 20)
+    ground.mesh = box
+    root.add_child(ground)
+    for node in [cam, sun, ground]:
+        ctx.set_owner_recursive(node)
+    ctx.report("added", ["MainCamera", "Sun", "Floor"])
+```
 
 ### Player with Physics
 
-For a CharacterBody3D player:
+For a CharacterBody3D player, write the movement script first with `summer_write_file` (for example `res://player.gd`). Then one `summer_run_script` with `scenePath` builds the player and attaches it:
 
-1. Add `CharacterBody3D` named "Player"
-2. Add child `CollisionShape3D` under Player
-3. Set the shape: `summer_set_prop(scenePath="res://main.tscn", path="./Player/CollisionShape3D", key="shape", value="CapsuleShape3D")`
-4. Set capsule size: `summer_set_resource_property(scenePath="res://main.tscn", nodePath="./Player/CollisionShape3D", resourceProperty="shape", subProperty="radius", value="0.5")` and `height` similarly
-5. Attach a script (user may need to edit in external editor) or use `summer_connect_signal` for input
+```gdscript
+func run(ctx):
+    var root = ctx.get_scene_root()
+    var player := CharacterBody3D.new()
+    player.name = "Player"
+    player.position = Vector3(0, 1, 0)
+    var shape := CollisionShape3D.new()
+    shape.name = "CollisionShape3D"
+    var capsule := CapsuleShape3D.new()
+    capsule.radius = 0.5
+    capsule.height = 1.8
+    shape.shape = capsule
+    player.add_child(shape)
+    player.set_script(load("res://player.gd"))
+    root.add_child(player)
+    ctx.set_owner_recursive(player)
+```
 
 ### UI Layout
 
@@ -158,7 +186,7 @@ not that the game works. Booting the game after every change is expensive and mo
 you nothing new — a check that catches the failure you were actually worried about is worth
 more than a screenshot taken out of habit.
 
-For behaviour rather than appearance, `RunVerification` runs a GDScript probe against the
+For behaviour rather than appearance, a `RunVerification` op through `summer_batch` runs a GDScript probe against the
 live game and can assert over time — node state, counts, group membership, property values —
 rather than leaving you to squint at a frame.
 </Note>
@@ -200,7 +228,8 @@ events: [{ type: "key", key: "W" }]
 3. **Vector/Color as JSON:** Use `"Vector3(0, 10, 0)"` not `{x:0, y:10, z:0}`
 4. **Missing target:** Pass the exact `scenePath` on every scene mutation. `summer_open_scene` does not establish it.
 5. **Broken scene dependency:** If a target cannot load, inspect and repair the exact missing or invalid file named by the receipt, then retry.
-6. **InstantiateScene vs SetProp mesh:** Use `InstantiateScene` for .tscn/.glb files; use `SetProp` with `mesh` for built-in meshes (BoxMesh, SphereMesh, etc.)
+6. **Instantiate vs mesh:** Use `summer_instantiate_scene` for .tscn/.glb files; use `summer_set_prop` with `mesh` for built-in meshes (BoxMesh, SphereMesh, etc.)
+7. **Chains of single edits:** For 3 or more edits to one scene, run one `summer_run_script` with `scenePath`
 
 ---
 
@@ -216,7 +245,8 @@ When two edits touch the same file, file writes use content receipts. A stale ov
 
 | Task | Tool |
 |------|------|
-| Add object | `summer_add_node` with `scenePath` |
+| Build or change 3+ nodes | `summer_run_script` with `scenePath` |
+| Add one object | `summer_add_node` with `scenePath` |
 | Move/scale/rotate | `summer_set_prop` with `scenePath` |
 | Set mesh type | `summer_set_prop` with `scenePath` (mesh: "BoxMesh", etc.) |
 | Set collision size | `summer_set_resource_property` with `scenePath` |
@@ -225,6 +255,7 @@ When two edits touch the same file, file writes use content receipts. A stale ov
 | Import from URL | `summer_import_from_url` or `summer_import_from_url_batch` |
 | Wire up button | `summer_connect_signal` with `scenePath` |
 | Check errors | `summer_get_diagnostics` |
+| Wait for long work (3D, video) | `summer_jobs_wait` with the job id |
 | See how a scene looks | `summer_screenshot(target="scene", scenePath=...)` — offscreen, no window |
 | Run game | `summer_play` → `summer_screenshot(target="game")` → `summer_stop` — opens a window |
 | Standalone save/save-as | `summer_save_scene(scenePath=...)` |

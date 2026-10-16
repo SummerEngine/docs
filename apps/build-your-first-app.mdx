@@ -95,7 +95,8 @@ More in [Agents and apps](/apps/agents).
 
 | You see | Do |
 |---|---|
-| The agent has no `summer_app_*` tools, or gets `not_found` | Summer Apps is not open for your account yet, or the app is in a workspace you are not in. |
+| `summer_search` finds no `apps` operations, or a call answers `forbidden` | Summer Apps is not open for your account yet. |
+| `not_found` | The app is in a workspace you are not in. |
 | A publish error names a file or a key | Ask the agent to fix it and publish again. |
 | `permission_missing` | The manifest lacks a permission. Ask the agent to add it and publish again. |
 | The app shows an error | The agent reads it with `summer_app_events` (kind `error`) or `summer_app_screenshot`. Ask it to fix the app. |

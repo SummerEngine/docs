@@ -9,11 +9,13 @@ icon: "life-buoy"
 
 Find the message you see, then do what the right column says.
 
+Every Summer MCP error has a `code`, a `message` and one `next` step. Do the `next` step first. The store's own reason is in `error.details.was`. Every code: [How Summer answers](/api-reference/mcp#errors).
+
 ## Sign-in
 
 ### The store did not accept the sign-in
 
-`Summer Games did not accept this connector sign-in` or HTTP `401`.
+`Summer Games did not accept this connector sign-in`, HTTP `401`, or the code `not_signed_in` or `forbidden`.
 
 - Reconnect the Summer Engine connector in your agent, or run `npx -y summer-engine@latest login --force` to sign in again.
 - Still failing: run `summer login --store --force` to register this computer again.
@@ -45,35 +47,39 @@ The local MCP waits for the browser on port 47615, 47616 or 47617. Close the pro
 |---|---|
 | `declaration_mismatch` | The platforms in the bundle differ from the ones you uploaded it for. Export again with the same `targets`. |
 | Version already used | Every upload needs a new `clientVersion`, such as `v1.0.1`. |
-| Upload stopped halfway | Call `summer_publish_build` again with the same file and version. It continues. |
-| A part URL expired | Call `summer_build_sign_parts` again for that part. Sending a part again is safe. |
+| Upload stopped halfway | Call `store.upload_file` (`summer_publish_build`) again with the same file and version. It continues. |
+| A part URL expired | Call `store.upload_sign_parts` again for that part. Sending a part again is safe. |
 | Web build rejected | The `.zip` needs `index.html` at its root, at most 500 MiB, 2,000 files and 200 MiB per file. |
 | Only the owner can finish this | On a live game, a web build or download goes live at once, so only the owner finishes it in Studio. |
-| Build `failed` | Read the reason in `summer_build_status`, fix it, export with a new version and upload again. |
+| Build `failed` | Read the reason in `summer_store_status`, fix it, export with a new version and upload again. |
+| `in_progress` | Summer is still checking the upload. Wait `details.retryAfterSeconds`, then call again with the same `idempotencyKey`. |
 
 ## Store page
 
 | Message | Fix |
 |---|---|
-| The store page changed since it was read (`412`) | Read it again with `summer_store_get_listing`, then retry. |
+| `conflict`: the store page changed since it was read (`412`) | Read it again with `summer_store_get_listing`, then retry. |
 | A page in review cannot change | Wait for review to finish. A published or sent-back page starts a new draft when you edit it. |
 | Shape or size wrong | The picture must match the slot's shape within 2% and meet the minimum size. See [Store art](/publishing/store-art). |
-| `asset_not_found` | The asset is not one of yours. Find yours with `summer_list_my_assets`. |
-| `image_unreadable` | Upload a PNG, JPEG or WebP with `summer_upload_image_begin`, or use a public `https` image URL. |
-| `invalid_upload` | The image upload expired or was not signed for you. Start again with `summer_upload_image_begin`. |
-| No publishing tools in the npm MCP | Run `summer login`. Until then the MCP shows one tool, `summer_store_tools`, that says so. |
+| `not_found` (`asset_not_found`) | The asset is not one of yours. Find yours with `summer_assets_search` and `scope: "mine"`. |
+| `invalid_input` (`image_unreadable`) | Upload a PNG, JPEG or WebP with `assets.upload_begin`, or use a public `https` image URL. |
+| `invalid_input` on `uploadSignature` (`invalid_upload`) | The image upload expired or was not signed for you. Start again with `assets.upload_begin`, and pass the `signature` from the upload's own answer as `uploadSignature`. |
+| `not_signed_in` in the npm MCP | Run `npx -y summer-engine@latest login`. `summer whoami` shows who is signed in. |
 | Mobile description too long | The mobile description is 120-170 characters. Shorten it after **Same as desktop**. |
 | Too many pictures | A page holds at most 20 pictures and videos across both stores. Remove some screenshots. |
 
-## Submit and approval
+## Publish and approval
 
 | Message | Fix |
 |---|---|
-| Submit lists missing items | Fill what `summer_store_get_listing` lists in its checklist, then submit again. |
-| `owner_approval_required` | Only the owner can do this, in Studio. Use `summer_store_submit` and give the owner the link. |
-| The approval link says **This version changed** | The page changed after the agent asked. Ask your agent to submit again. |
+| Publish lists missing items | Fill what `summer_store_get_listing` lists in its checklist, then publish again with `summer_store_publish`. |
+| `invalid_input` on `idempotencyKey` | `store.publish` and `store.release` need an `idempotencyKey`. Send a new one. |
+| `idempotency_conflict` | The same `idempotencyKey` was used with a different input. Use a new key. |
+| `needs_approval`, or `forbidden` (`owner_approval_required`) | Give the owner the approval link. Nothing changes until they approve. See [Approvals](/publishing/owner-approval). |
+| The approval link says **This version changed** | The page changed after the agent asked. Ask your agent to publish again. |
 | Set up payouts before this game can have a price | Open **Get paid** in Studio and connect your payout account, or approve it as free. |
-| `no_approved_build` | `summer_build_release` only releases a build the owner approved. Submit with `summer_store_submit` first. |
+| `conflict` (`no_approved_build`) | `store.release` only releases a build that went through `store.publish`. Publish with `summer_store_publish` first. |
+| `no_credits` | Add credits at `https://www.summerengine.com/studio/credits` (**Add credits**), or turn on auto top-up in Billing. |
 | Only the game owner can approve publishing | Sign in with the account that owns the game. |
 
 ## Analytics

@@ -50,7 +50,7 @@ The local server lets the agent control the engine directly: read the scene tree
 
 The engine tools use the same engine operations as Summer Engine's built-in chat. The difference is where you type. Undo works the same. Changes are just as safe.
 
-**Lazy connection.** The local server starts immediately and connects to the engine on the first engine tool call. If the engine is not running, the tool says so and names the next step: open your project in Summer Engine (or run `npx summer-engine run <project-path>`), then try the same call again. Cloud tools do not need the engine.
+**Lazy connection.** The local server starts immediately and connects to the engine on the first engine tool call. If the engine is not running, the tool answers with the code `engine_not_running` and names the next step: open your project in Summer Engine (or run `npx summer-engine run <project-path>`), then try the same call again. Cloud tools do not need the engine.
 
 ## Prerequisites for Engine Work
 

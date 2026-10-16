@@ -132,6 +132,8 @@ Pre-checks run synchronously and return structured errors you can act on:
 | `EMPTY_SCRIPT_PATH` | `script=` is present but empty |
 | `SCRIPT_MISSING` | The script named by `script=` does not exist on disk |
 
+Through the MCP, these codes are in `error.details.tool`, and `error.code` is one of Summer's standard codes. See [How Summer answers](/api-reference/mcp#errors).
+
 <Warning>
 **`ok: true` means "queued", not "loaded".**
 
