@@ -66,15 +66,30 @@ function groupsById(src) {
   return Object.fromEntries(src.permissionGroups.map((g) => [g.id, g]));
 }
 
+/**
+ * Changes Summer Games still keeps for the person even when their switch is
+ * on, until it honors Agent permissions for agents (summer-platform #2634).
+ * Remove this list when that is live.
+ */
+const PLATFORM_STILL_ASKS = new Set([
+  "pricing.set_base", "pricing.set_country", "pricing.clear_country", "pricing.schedule_discount", "pricing.clear_discount",
+  "experiments.start", "experiments.stop", "games.set_member_role",
+  "store.publish", "store.release", "store.update_release_notes",
+]);
+
 function asksFirst(op, groups) {
   const permission = permissionOf(op);
   if (permission === "free") return { short: "Never", long: "No. It changes nothing." };
   if (permission === "ask") return { short: "Always", long: "Always. You approve it in Studio; an agent can never skip this." };
   const g = groups[permission];
   if (!g) return { short: "-", long: "-" };
+  if (PLATFORM_STILL_ASKS.has(op.name)) {
+    const who = op.name.startsWith("store.publish") || op.name === "store.release" ? "the game's owner" : "you";
+    return { short: "Yes, for now", long: `Yes, for now: Summer Games still asks ${who} first. Soon it follows **${g.label}** in Agent permissions (on by default).` };
+  }
   return g.default
-    ? { short: "Not by default", long: `No, while **${g.label}** is on in Agent permissions (on by default). When it is off, your agent asks you first.` }
-    : { short: "Yes, by default", long: `Yes, unless you turn on **${g.label}** in Agent permissions (off by default).` };
+    ? { short: "Not by default", long: `No: **${g.label}** is on by default in Agent permissions. When it is off, your agent asks you first.` }
+    : { short: "Yes, by default", long: `Yes: **${g.label}** is off by default in Agent permissions.` };
 }
 
 // ------------------------------------------------------------- examples
@@ -133,12 +148,21 @@ function mcpLine(op, src) {
   return `${code("summer_call")} with ${code(`"op": "${op.name}"`)}`;
 }
 
+/** Quoted node paths ('./World/Player') as code, so search engines never read them as relative links. */
+function codePaths(schema) {
+  if (Array.isArray(schema)) return schema.map(codePaths);
+  if (!schema || typeof schema !== "object") return schema;
+  return Object.fromEntries(
+    Object.entries(schema).map(([k, v]) => [k, k === "description" && typeof v === "string" ? v.replace(/'(\.\/[^'\s]*)'/g, "`$1`") : codePaths(v)]),
+  );
+}
+
 function opSection(op, src, groups, hosted) {
   const asks = asksFirst(op, groups);
   const facts = [
     `| **MCP** | ${mcpLine(op, src)} |`,
     `| **CLI** | ${code(cliOf(op.name))} |`,
-    `| **Runs** | ${RUNS[op.provider] ?? op.provider}${op.auth === "account" ? " Needs your Summer sign-in." : ""} |`,
+    `| **Runs** | ${RUNS[op.provider] ?? op.provider}${op.alsoLocal ? " The npm MCP also runs it on your computer." : ""}${op.auth === "account" ? " Needs your Summer sign-in." : ""} |`,
     `| **Effect** | ${EFFECT_WORDS[op.effect]} |`,
     `| **Asks you first** | ${asks.long} |`,
   ];
@@ -149,7 +173,7 @@ function opSection(op, src, groups, hosted) {
   if (op.status === "preview") lines.push("<Note>Preview: search finds it and `summer_call` runs it. It may still change.</Note>", "");
   if (op.deprecated) lines.push(`<Warning>Deprecated: use ${code(op.deprecated.replacedBy)}. It keeps working until at least ${op.deprecated.after}.</Warning>`, "");
   lines.push(escapeProse(op.summary), "", "| | |", "|---|---|", ...facts, "");
-  lines.push("**Inputs:**", "", inputTable(op.input), "", schemaBlock("Input JSON schema", op.input), "");
+  lines.push("**Inputs:**", "", inputTable(codePaths(op.input)), "", schemaBlock("Input JSON schema", op.input), "");
   if (op.output && Object.keys(op.output.properties ?? {}).length) lines.push(schemaBlock("Result JSON schema", op.output), "");
   lines.push(exampleBlock(op, hosted));
   return lines.join("\n");
@@ -186,10 +210,24 @@ function sourceNote(src) {
   ].join("\n");
 }
 
+/**
+ * One entry per operation name (SPEC-operations §7.9: one name, one contract).
+ * An op both servers run (docs.search, docs.read, studio.open) shows once,
+ * from the cloud catalog, marked as running locally too.
+ */
+function uniqueOps(src) {
+  const cloudNames = new Set(src.operations.map((op) => op.name));
+  const localNames = new Set(src.localOperations.map((op) => op.name));
+  const cloud = src.operations.map((op) => (localNames.has(op.name) ? { ...op, alsoLocal: true } : op));
+  const local = src.localOperations.filter((op) => !cloudNames.has(op.name));
+  return { cloud, local };
+}
+
 export function opsByArea(src) {
   const full = (op) => Boolean(op.summary);
-  const all = [...src.operations, ...src.localOperations.filter(full)];
-  const names = [...src.localOperations.filter((op) => !full(op))];
+  const { cloud, local } = uniqueOps(src);
+  const all = [...cloud, ...local.filter(full)];
+  const names = [...local.filter((op) => !full(op))];
   const by = new Map(OPS_AREAS.map((a) => [a.id, { ops: [], names: [] }]));
   for (const op of all) {
     const area = areaOf(op.name);
@@ -253,8 +291,13 @@ export function renderOpsAreaPage(area, src, byArea, mcpByName) {
 
 export function renderOpsLegacyPage(src, byArea) {
   const rows = [];
+  const seen = new Set();
   for (const op of [...src.operations, ...src.localOperations]) {
-    for (const legacy of op.legacy ?? []) rows.push({ legacy, op: op.name, area: areaOf(op.name) });
+    for (const legacy of op.legacy ?? []) {
+      if (seen.has(legacy)) continue;
+      seen.add(legacy);
+      rows.push({ legacy, op: op.name, area: areaOf(op.name) });
+    }
   }
   rows.sort((a, b) => a.legacy.localeCompare(b.legacy));
   return [
@@ -269,7 +312,7 @@ export function renderOpsLegacyPage(src, byArea) {
     "",
     banner(src),
     "",
-    `Summer 4.0 names every capability as an operation. The 3.x tool names keep working for all of 4.x: ${code("summer_call")} accepts them, and adding ${code("toolsets=legacy")} to the MCP lists them again. A name with ${code("#action")} is one action of a 3.x tool that did several jobs; the 3.x ${code("action")} argument picks the operation. ${rows.length} names.`,
+    `Summer 4.0 names every capability as an operation. The 3.x tool names keep working for all of 4.x: ${code("summer_call")} accepts them on every server, and the npm MCP lists them again with ${code("summer mcp --toolsets legacy")} (and by itself while your installed Summer skills are older than 4.0). A name with ${code("#action")} is one action of a 3.x tool that did several jobs; the 3.x ${code("action")} argument picks the operation. ${rows.length} names.`,
     "",
     "| 3.x name | Operation |",
     "|---|---|",
@@ -280,9 +323,10 @@ export function renderOpsLegacyPage(src, byArea) {
 
 export function renderOpsIndexPage(src, byArea) {
   const groups = src.permissionGroups;
-  const cloud = src.operations.length;
-  const local = src.localOperations.length;
-  const all = [...src.operations, ...src.localOperations.filter((o) => o.summary)];
+  const unique = uniqueOps(src);
+  const cloud = unique.cloud.length;
+  const local = unique.local.length;
+  const all = [...unique.cloud, ...unique.local.filter((o) => o.summary)];
   const byName = new Map(all.map((o) => [o.name, o]));
   const countIn = (id) => all.filter((o) => permissionOf(o) === id).length;
   const lines = [
@@ -342,11 +386,14 @@ export function renderOpsIndexPage(src, byArea) {
     "",
     "## What your agent may do without asking",
     "",
-    "You choose once in Studio, in **Settings > Agent permissions**. The same switches show when you connect an agent. They apply to every agent you connect. When a switch is off, the operation answers `needs_approval` with a link, and your open Studio tab shows the request. Nothing changes until you approve. **Settings > Agent activity** lists what your agents did, with Undo for prices, sales, member roles, team names and the event limit.",
+    "Studio shows six switches in **Settings > Agent permissions**. They apply to every app you connect. These defaults apply now. You can change them soon. Until then, Summer Games still asks the game's owner before an agent publishes, and price, A/B test and member changes ask you first. When a change asks, the operation answers `needs_approval` with a link, and your open Studio tab shows the request. Nothing changes until you approve. **Settings > Agent activity** lists what your agents did, with Undo for prices, sales, member roles, team names and the event limit.",
     "",
     "| Permission | By default | Operations |",
     "|---|---|---|",
-    ...groups.map((g) => `| ${g.label} | ${g.default ? "On: runs at once" : "Off: asks you first"} | ${countIn(g.id)} |`),
+    ...groups.map((g) => {
+      const held = all.some((o) => permissionOf(o) === g.id && PLATFORM_STILL_ASKS.has(o.name));
+      return `| ${g.label} | ${g.default ? (held ? "On: runs at once, except what Summer Games still asks for" : "On: runs at once") : "Off: asks you first"} | ${countIn(g.id)} |`;
+    }),
     `| Always asks | You approve each time | ${countIn("ask")} |`,
     `| Reads | Never ask | ${countIn("free")} |`,
     "",

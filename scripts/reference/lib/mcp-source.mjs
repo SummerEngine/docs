@@ -6,7 +6,7 @@
 //    descriptor facts (remote, authority, facets, use_when).
 //  - hosted tools: the hosted Summer Engine MCP (built from
 //    publicsummerengine src/lib/mcp/hosted), listed the way the npm package
-//    mounts it after "summer login --store". Each name is traced to the file
+//    mounts it after "summer login". Each name is traced to the file
 //    that registers it at a pinned publicsummerengine commit.
 
 import { execFileSync } from "node:child_process";

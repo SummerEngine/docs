@@ -54,23 +54,20 @@ function localNeeds(t) {
   const a = t.auth;
   const out = [];
   if (a.engine) out.push("Summer Engine open with your project");
-  if (a.store) out.push("Store sign-in: `summer login --store`");
-  if (a.creator) out.push("Creator token: `summer login --creator`");
-  if (a.login === "required") out.push("Signed in: `summer login`");
+  // Plain `summer login` signs in the account and the store; `summer login --creator` was removed.
+  if (a.login === "required" || a.store || a.creator) out.push("Signed in: `summer login`");
   if (!out.length && a.login === "optional") out.push("No open editor and no sign-in. Uses your `summer login` sign-in when you have one");
   if (!out.length) out.push("No open editor and no sign-in");
   return out;
 }
-const HOSTED_NEEDS = "Your Summer account (OAuth). In the npm MCP: `summer login --store`";
+const HOSTED_NEEDS = "Your Summer account (OAuth). In the npm MCP: `summer login`";
 
 export function needsSummary(e) {
   if (e.local) {
     const a = e.local.auth;
     const parts = [];
     if (a.engine) parts.push("Engine");
-    if (a.store) parts.push("Store sign-in");
-    if (a.creator) parts.push("Creator token");
-    if (a.login === "required") parts.push("Signed in");
+    if (a.login === "required" || a.store || a.creator) parts.push("Signed in");
     return parts.length ? parts.join(" + ") : "Nothing";
   }
   return "Summer account";
@@ -315,7 +312,7 @@ export function renderMcpIndexPage(entries, src) {
     "---",
     'title: "MCP tools reference"',
     'sidebarTitle: "MCP tools"',
-    `description: ${fm("Every Summer Engine MCP tool, generated from the tool definitions: what it does, what it needs (engine, sign-in, store sign-in), its inputs as JSON schema, its output and an example call.")}`,
+    `description: ${fm("Every Summer Engine MCP tool, generated from the tool definitions: what it does, what it needs (engine or sign-in), its inputs as JSON schema, its output and an example call.")}`,
     'icon: "wrench"',
     '"og:image": "https://docs.summerengine.com/images/og/mcp-tools-reference.jpg"',
     '"twitter:image": "https://docs.summerengine.com/images/og/mcp-tools-reference.jpg"',
@@ -325,7 +322,7 @@ export function renderMcpIndexPage(entries, src) {
     "",
     banner(src),
     "",
-    `The Summer Engine MCP gives an agent ${entries.length} tools: ${count((e) => e.local && !e.hosted)} run only in the \`summer-engine\` npm MCP on your computer, ${count((e) => e.hosted && !e.local)} only on the hosted MCP at ${code(src.sources.hosted.endpoint)}, and ${count((e) => e.local && e.hosted)} on both. The npm MCP mounts the hosted tools after \`summer login --store\`, so a local agent sees one server. The hosted tools listed are the ones every signed-in Summer account gets; tools the hosted server adds only behind a deployment setting are left out. Set it up in [MCP setup](/mcp/setup); for publishing step by step, see [Create and publish your game](/publishing/summer-games).`,
+    `The Summer Engine MCP gives an agent ${entries.length} tools: ${count((e) => e.local && !e.hosted)} run only in the \`summer-engine\` npm MCP on your computer, ${count((e) => e.hosted && !e.local)} only on the hosted MCP at ${code(src.sources.hosted.endpoint)}, and ${count((e) => e.local && e.hosted)} on both. The npm MCP mounts the hosted tools after \`summer login\`, so a local agent sees one server. The hosted tools listed are the ones every signed-in Summer account gets; tools the hosted server adds only behind a deployment setting are left out. Set it up in [MCP setup](/mcp/setup); for publishing step by step, see [Create and publish your game](/publishing/summer-games).`,
     "",
     sourceNote(src),
     "",
@@ -334,13 +331,11 @@ export function renderMcpIndexPage(entries, src) {
     "| Needs | Meaning |",
     "|---|---|",
     "| **Engine** | Summer Engine is open with your project. The tool talks to the running editor. |",
-    "| **Signed in** | You ran `summer login` once. The tool calls Summer's servers with your account. |",
-    "| **Store sign-in** | You ran `summer login --store`. Needed for Summer Games store and publishing tools. |",
-    "| **Creator token** | You ran `summer login --creator`. Needed for the creator release tools. |",
+    "| **Signed in** | You ran `summer login` once. One browser sign-in covers your Summer account and the store, publishing and Grow tools. The tool calls Summer's servers with your account. |",
     "| **Summer account** | A hosted tool. Your agent connects to the hosted MCP with your Summer account (OAuth). |",
     "| **Nothing** | No open editor and no sign-in. Some tools still use programs on your computer, such as the installed engine for exports. |",
     "",
-    "Hosted tools that spend credits say so in their description. Cost depends on the models and voices you choose. Your dashboard shows spend as it happens, and your limits cap it.",
+    "Operations that spend credits say so. They spend within your credits and your auto top-up limit.",
     "",
     "## Value formats",
     "",

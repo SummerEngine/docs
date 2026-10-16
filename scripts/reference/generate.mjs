@@ -52,7 +52,7 @@ for (const g of MCP_GROUPS) put(mcpGroupPath(g.id), renderMcpGroupPage(g, entrie
 const opsSrc = readJson(join(SOURCES, "operations.json"));
 const byArea = opsByArea(opsSrc);
 const mcpByName = new Map(entries.map((e) => [e.name, e]));
-const opsCount = opsSrc.operations.length + opsSrc.localOperations.length;
+const opsCount = new Set([...opsSrc.operations, ...opsSrc.localOperations].map((op) => op.name)).size;
 put(OPS_BASE, renderOpsIndexPage(opsSrc, byArea));
 put(OPS_LEGACY_PAGE, renderOpsLegacyPage(opsSrc, byArea));
 for (const a of OPS_AREAS) put(opsAreaPath(a.id), renderOpsAreaPage(a, opsSrc, byArea, mcpByName));
