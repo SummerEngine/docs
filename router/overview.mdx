@@ -6,8 +6,10 @@ icon: "route"
 ---
 
 <Warning>
-**Preview.** The `summer router` CLI comes with the next `summer-engine` npm release. The game calls (`Summer.client.router`) run when the Summer Engine release and the Summer Router platform ship. Until then a game gets `unavailable` and uses its fallback, so code written now keeps working.
+**Early access.** The `summer router` CLI comes with the next `summer-engine` npm release. The game calls (`Summer.client.router`) run when the Summer Engine release and the Summer Router platform ship. Until then a game gets `unavailable` and uses its fallback, so code written now keeps working.
 </Warning>
+
+Comments or problems? Tell us on the [Summer Discord](https://discord.gg/yUpgtxnZky) or write to [support](mailto:founders@summerengine.com).
 
 Summer Router is the AI layer for games made with Summer. A player talks to a guard with their voice, and the guard opens the gate when the player says the password. A shopkeeper sells through a tool call. A narrator speaks a line on demand. The game makes a picture from a prompt.
 
@@ -16,7 +18,7 @@ Fetch any page as Markdown: add `.md` to the URL, for example `https://docs.summ
 ## How it works
 
 1. **You describe a character in a file.** `ai/characters/guard.json` holds its instructions, voice, tools and limits. See [Characters](/router/characters).
-2. **You push it to Summer.** `summer router push` checks the file and checks that your GDScript handles every tool, then saves it on Summer for your game. See [CLI](/router/cli).
+2. **You push it to Summer.** `router.push` (`summer router push`) checks the file and checks that your GDScript handles every tool, then saves it on Summer for your game. See [CLI and operations](/router/cli).
 3. **The game sends only an id and the player's input.** `Summer.client.router.talk("guard")`. Summer holds the instructions, model, voice and keys. See [GDScript](/router/gdscript).
 4. **Summer runs the turn** with the provider, calls your tools on the player's device, meters the usage and enforces your caps.
 

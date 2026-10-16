@@ -6,7 +6,7 @@ icon: "gauge"
 ---
 
 <Warning>
-**Preview.** Caps and usage reads arrive with the Summer Router platform.
+**Early access.** Caps and usage reads arrive with the Summer Router platform.
 </Warning>
 
 Usage is billed from your Summer account; spend is visible in Studio. There is no separate account and no key to manage. Players never pay.
@@ -27,24 +27,18 @@ When a cap is reached, calls in that scope fail with `limit_reached`, with the `
 
 ## Read and change caps
 
-```bash
-summer router limits get
-summer router limits set --player-day 0.50 --game-day 20 --game-month 300
-summer router limits set --enabled off
-```
+Amounts are US dollars of usage. The game's owner changes caps, the on/off switch and the default models in Studio: the **Router** tab of the game's store page (`https://www.summerengine.com/studio/store/<gameId>?view=all&tab=router`). It shows each cap, how much of it is used (a percentage) and when it resets.
 
-Amounts are US dollars of usage. `limits get` shows each cap, how much of it is used (a percentage) and when it resets.
-
-Only the game's owner changes caps, the on/off switch and the default models. When an agent runs `limits set`, Summer answers `owner_action_required` with one Studio link; the owner opens it and saves. The owner can also change everything in Studio: the **Router** tab of the game's store page (`https://www.summerengine.com/studio/store/<gameId>?view=all&tab=router`).
+An agent reads and asks to change them through the cloud Router settings operation (find it with `summer ops search router settings`). A change answers `needs_approval` with the owner's link: nothing changes until the owner approves.
 
 ## Turn it off
 
-`summer router limits set --enabled off`, or the switch in Studio. The next call gets `router_disabled` and the game uses its fallback.
+The switch on the Router tab, or the same settings operation with `enabled` false. The next call gets `router_disabled` and the game uses its fallback.
 
 ## Usage
 
 - Studio shows calls and units per day and per kind, and each cap's use.
-- `summer router logs --since 1d` lists recent calls for an agent.
+- An agent reads the same numbers through the cloud Router usage operation (`summer ops search router usage`).
 - Every call result in GDScript carries `usage`: tokens, characters, seconds or images. Never a price.
 
 ## Credits

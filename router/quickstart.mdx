@@ -6,8 +6,10 @@ icon: "rocket"
 ---
 
 <Warning>
-**Preview.** `summer router` and the agent sign-in come with the next `summer-engine` npm release. `summer router push` and `test` need the Summer Router platform, and the voice in the game needs the Summer Engine release with `Summer.client.router`. Until both ship, `push` says the route is not served yet and the game uses its fallback.
+**Early access.** `summer router` and the agent sign-in come with the next `summer-engine` npm release. `summer router push` and `test` need the Summer Router platform, and the voice in the game needs the Summer Engine release with `Summer.client.router`. Until both ship, `push` says the route is not served yet and the game uses its fallback.
 </Warning>
+
+Comments or problems? Tell us on the [Summer Discord](https://discord.gg/yUpgtxnZky) or write to [support](mailto:founders@summerengine.com).
 
 ## The prompt
 
@@ -22,13 +24,14 @@ Do it this way (if the summer command is not installed, use npx -y summer-engine
    Then load the summer-router skill and follow it.
 2. Run: summer login
    If it prints JSON with browser_url, show me that one link and wait. Then run: summer login --complete
-3. Run: summer router character add guard --template voice-npc --voice "gruff old soldier" --tools open_gate
+3. Run: summer router add-character --id guard --template voice-npc --voice "gruff old soldier" --tools open_gate
    Put the password in the character's instructions and variables, never in GDScript.
 4. Add a SummerRouterCharacter node, a talk button and a text box. Register the tool:
    guard.tools = {"open_gate": _on_open_gate}. Keep a fallback that works without AI.
    Never ask for the microphone at launch.
-5. Run: summer router push --dry-run, fix every error, then summer router push
-6. Run: summer router test guard --say "the password is moonlight" --expect-tool open_gate
+5. Run: summer router check, fix every error, then summer router push
+6. Run a Summer Router test turn (find it with: summer ops search router test) where the player says
+   "the password is moonlight", and check that the guard calls open_gate.
 7. Run the game and check summer_get_diagnostics for errors.
 
 Never print tokens. Never put a provider key, a model name or a prompt in the game.
@@ -47,7 +50,7 @@ Run them in the project folder (the folder with `project.godot`).
 npx -y summer-engine@latest router setup --yes
 ```
 
-It finds Claude Code and Codex on this computer and gives each one the `summer-engine` MCP and the `summer-router` and `voice-and-mic-permissions` skills. Run it again any time: it changes nothing when everything is in place. Without `--yes` it prints the plan.
+This is the `router.setup` operation. It finds Claude Code and Codex on this computer and gives each one the `summer-engine` MCP and the `summer-router` and `voice-and-mic-permissions` skills. Run it again any time: it changes nothing when everything is in place. Without `--yes` it returns the plan.
 
 ### 2. Sign in
 
@@ -71,10 +74,10 @@ The agent shows `browser_url` to you. You sign in and click **Yes, Sign In**. Th
 ### 3. Make the character
 
 ```bash
-summer router character add guard --template voice-npc --voice "gruff old soldier" --tools open_gate
+summer router add-character --id guard --template voice-npc --voice "gruff old soldier" --tools open_gate
 ```
 
-This writes `ai/characters/guard.json`. Edit the instructions and the tool description. See [Characters](/router/characters) for every field.
+This is `router.add_character`. It writes `ai/characters/guard.json`. Edit the instructions and the tool description. See [Characters](/router/characters) for every field.
 
 ### 4. Write the game code
 
@@ -94,19 +97,15 @@ Keep a text box and a fallback. The full example is on [GDScript](/router/gdscri
 ### 5. Check and push
 
 ```bash
-summer router push --dry-run
+summer router check
 summer router push
 ```
 
-`--dry-run` needs no sign-in. It fails, with exit code 1 and `tool_unhandled`, when a tool in the file has no handler in your GDScript, and prints the code to add. The game id comes from `gameId` in `summer.build.json`, `SUMMER_GAME_ID`, or `--game <id>`.
+`router.check` needs no sign-in. It fails with reason `tool_unhandled` when a tool in the file has no handler in your GDScript, and gives the code to add. `router.push` checks again, then saves the character on Summer. The game id comes from `gameId` in `summer.build.json`, `SUMMER_GAME_ID`, or `--game-id <id>`.
 
 ### 6. Test
 
-```bash
-summer router test guard --say "the password is moonlight" --expect-tool open_gate
-```
-
-It sends one text turn. It exits 1 when the reply has an error or the character does not call `open_gate`.
+Run one scripted text turn with the pushed character: the cloud Router test operation (`summer ops search router test` shows its name and input). Send "the password is moonlight" and check that the answer lists a call to `open_gate`.
 
 ### 7. Check everything
 
@@ -118,7 +117,7 @@ One list of checks: project, game id, sign-in, characters, tool handlers, the ga
 
 ## For agents: the output contract
 
-- When stdout is not a terminal, `--json` is set, or the CLI runs inside an agent, every `summer router` command prints one JSON object on stdout and messages on stderr. Nothing prompts.
-- Exit codes: `0` done, `1` the command ran and failed, `2` a usage error.
-- A failure has `error.code` (a stable tag), `error.message` and `error.fix`. When a person must act, it also has `studio_url` (or `browser_url` from `summer login`). Show that one link.
-- All codes and fixes: [Errors](/router/errors).
+- Every Summer Router operation answers `{"ok": true, "status": "done", "result": {...}}` or `{"ok": false, "error": {"code", "message", "next"?, "details"}}`. With `--json` the shell prints only that; nothing prompts.
+- Exit codes: `0` for an `ok` answer, `1` for an error.
+- A Summer Router failure keeps its reason (`tool_unhandled`, `studio_changed`, ...) in `error.details.tool.reason` and the fix in `error.details.tool.recovery`. When a person must act, `error.next.url` (or `browser_url` from `summer login`) is the one link to show.
+- In MCP, run the same operations with `summer_call` (`{"op": "router.check"}`). All codes and fixes: [Errors](/router/errors). Every operation: [CLI and operations](/router/cli).

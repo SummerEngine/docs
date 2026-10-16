@@ -6,7 +6,7 @@ icon: "code"
 ---
 
 <Warning>
-**Preview.** These calls run when the Summer Engine release with `Summer.client.router` ships. Names follow the Summer Router contract. If the engine's class reference shows a different signature, the class reference is right.
+**Early access.** These calls run when the Summer Engine release with `Summer.client.router` ships. Names follow the Summer Router contract. If the engine's class reference shows a different signature, the class reference is right.
 </Warning>
 
 The game sends a character id and the player's input. Summer holds the instructions, model and voice. Every call returns a result with `ok`, `error` (a stable tag), `fix` and `usage`. Every error leaves the game running.
@@ -96,7 +96,7 @@ A character's client tools run in your game, on the player's device. Declare the
 guard.tools = {"open_gate": _on_open_gate, "give_key": _on_give_key}
 ```
 
-These shapes all count as handlers for `summer router push`:
+These shapes all count as handlers for `router.check` and `router.push`:
 
 ```gdscript
 guard.tools = {"open_gate": _on_open_gate}          # a SummerRouterCharacter node
@@ -110,7 +110,7 @@ Summer.client.router.talk("guard", {"mode": "voice", "tools": {"open_gate": _on_
 Summer.client.router.reply("guard", "open up", {"tools": {"open_gate": _on_open_gate}})
 ```
 
-`summer router push` fails with `tool_unhandled` when a client tool in a character file has no handler in any `.gd` file of the project. That stops the silent failure where the model calls a tool and nothing answers.
+`router.check` and `router.push` fail with reason `tool_unhandled` when a client tool in a character file has no handler in any `.gd` file of the project. That stops the silent failure where the model calls a tool and nothing answers.
 
 Rules for handlers:
 

@@ -6,7 +6,7 @@ icon: "triangle-alert"
 ---
 
 <Warning>
-**Preview.** The tags are final for v1. Game calls return them when the Summer Router platform and engine release ship.
+**Early access.** The tags are final for v1. Game calls return them when the Summer Router platform and engine release ship.
 </Warning>
 
 Every error carries a stable tag (`error` in GDScript, `error.code` in JSON), a one-line `fix`, a `docs_url` to the section below, and a `request_id` for support. Branch on the tag, never on the message. AI is always optional: no error stops the game.
@@ -55,7 +55,7 @@ The character called a client tool that has no handler in the session's `tools`.
 
 A cap is used up. `scope` names it (`player_day`, `game_day`, `game_month`, `account_month`, `character_player_day`, `character_game_day`) and `resets_at` says when it resets. Players never see the amount.
 **Game does:** the fallback until `resets_at`. Never retry in a loop.
-**Fix:** the owner raises the cap in Studio or with `summer router limits set`. See [Limits and usage](/router/limits-and-usage).
+**Fix:** the owner raises the cap in Studio (the Router tab of the game's store page). See [Limits and usage](/router/limits-and-usage).
 
 ### credits_required
 
@@ -67,7 +67,7 @@ The owner's Summer account needs credits. The error has a `studioUrl`.
 
 The owner turned Summer Router off for this game.
 **Game does:** the fallback for the session.
-**Fix:** turn it on in Studio or with `summer router limits set --enabled on`.
+**Fix:** the owner turns it on in Studio (the Router tab of the game's store page).
 
 ### provider_unavailable
 
@@ -89,59 +89,61 @@ The input does not match the kind's schema (for example an audio clip that is to
 Too many calls too fast. The answer has `Retry-After`.
 **Game does:** wait, then retry once.
 
-## Errors from the CLI
+## Errors from the router operations
 
-### not_signed_in (CLI)
+The local operations (`router.add_character`, `router.check`, `router.push`, `router.pull`) answer a failure as `{"ok": false, "error": {"code", "message", "next"?, "details": {"tool": {"reason", "recovery", ...}}}}`. `code` is the Summer error code; `reason` is one of the headings below; `recovery` is the fix.
 
-This computer is not signed in. `next_step` is `summer login`.
+### not_signed_in (operations)
+
+Code `not_signed_in`. This computer is not signed in.
 **Fix:** run `summer login`. An agent shows `browser_url` to the person, then runs `summer login --complete`.
 
-### tool_unhandled (CLI)
+### tool_unhandled (operations)
 
-`summer router push` found a client tool with no handler in any `.gd` file of the project. Exit 1. `details.handler_snippet` holds the GDScript to add.
-**Fix:** register the tool in the character's `tools` Dictionary. See [GDScript: Tools](/router/gdscript#tools).
+Code `invalid_input`. `router.check` (or `router.push`) found a client tool with no handler in any `.gd` file of the project. `details.tool.details.handler_snippet` holds the GDScript to add.
+**Fix:** register the tool on the character or session. See [GDScript: Tools](/router/gdscript#tools).
 
 ### invalid_character
 
-A character file does not match the schema. `details` lists each field and rule.
-**Fix:** fix each field, then `summer router push --dry-run`.
+Code `invalid_input`. A character file does not match the schema. `details.tool.details` lists each field and rule.
+**Fix:** fix each field, then run `router.check` again.
 
 ### studio_changed
 
-Summer has a newer version of a character than this project last pushed or pulled (someone edited it in Studio). Nothing was overwritten.
-**Fix:** `summer router pull <id>` to take Summer's version, or `summer router push --force` to keep yours.
+Code `conflict`. Summer has a newer version of a character than this project last pushed or pulled (someone edited it in Studio). Nothing was overwritten.
+**Fix:** `router.pull` to take Summer's version, or `router.push` with `force` to keep yours.
 
 ### local_changes
 
-`summer router pull` kept a local file that has edits you never pushed.
-**Fix:** push them, or `summer router pull <id> --force` to take Summer's version.
+Code `conflict`. `router.pull` kept a local file that has edits you never pushed.
+**Fix:** push them, or `router.pull` with `force` to take Summer's version.
 
 ### owner_action_required
 
-Only the game's owner can do this: change caps or the switch, or change a character of a live game. The error has `studio_url`.
-**Fix:** show `studio_url` to the owner. They open it and save.
+Code `forbidden`. Only the game's owner can do this: change a character of a live game, the caps or the switch. `error.next.url` is the Router tab of the game's store page in Studio.
+**Fix:** show that link to the owner. They open it and save.
 
-### expectation_failed
+### character_exists
 
-`summer router test --expect-tool` did not see the tool called.
-**Fix:** make the tool description say exactly when to call it, push, and test again.
+Code `conflict`. `router.add_character` found the file already.
+**Fix:** edit the file, or pass `force` to replace it with the template.
 
 ### game_id_missing
 
-Exit 2. The command needs the game on Summer.
-**Fix:** pass `--game <gameId>`, set `SUMMER_GAME_ID`, or add `gameId` to `summer.build.json`.
+Code `invalid_input`. The operation needs the game on Summer.
+**Fix:** pass `gameId`, set `SUMMER_GAME_ID`, or add `gameId` to `summer.build.json`.
 
 ### not_a_project
 
-Exit 2. No `project.godot` at or above the folder.
-**Fix:** run in the project folder, or pass `--project <dir>`.
+Code `invalid_input`. No `project.godot` at or above the folder.
+**Fix:** run in the project folder, or pass `project`.
 
 ### version_conflict
 
-The character changed on Summer between the read and the write.
-**Fix:** run the command again.
+Code `conflict`. The character changed on Summer between the read and the write.
+**Fix:** run the operation again.
 
-### unavailable (CLI)
+### unavailable (operations)
 
-Summer Router is not on in this Summer environment yet, or the route is not served yet.
-**Fix:** retry after the platform release; `summer router doctor` shows what answers.
+Code `unavailable` or `not_found`. Summer Router is not on in this Summer environment yet, or the route is not served yet.
+**Fix:** retry after the platform release; `router.doctor` shows what answers.

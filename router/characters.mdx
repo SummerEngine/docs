@@ -6,10 +6,10 @@ icon: "user-round"
 ---
 
 <Warning>
-**Preview.** The file format is final for v1. Pushing it needs the Summer Router platform.
+**Early access.** The file format is final for v1. Pushing it needs the Summer Router platform.
 </Warning>
 
-One file per character, in the game project: `ai/characters/<id>.json`. Commit it. `summer router push` checks it and saves it on Summer for your game; `summer router pull` brings Studio edits back. Only `id` and `instructions` are required.
+One file per character, in the game project: `ai/characters/<id>.json`. Commit it. `router.push` (`summer router push`) checks it and saves it on Summer for your game; `router.pull` brings Studio edits back. Only `id` and `instructions` are required.
 
 ```json
 {
@@ -52,7 +52,7 @@ Secrets for the game (a password, a quest answer) belong in `instructions` or `v
 
 | Field | Rule | Use |
 | --- | --- | --- |
-| `model` | A Summer catalogue id | Leave it out to use the game's default model (`summer router limits get`). |
+| `model` | A Summer catalogue id | Leave it out to use the game's default model (the Router settings show it). |
 | `temperature` | 0 to 2 | Higher is more varied. |
 | `max_output_tokens` | 1 to 8192 | The longest reply. |
 | `reasoning` | `off`, `low`, `medium`, `high` | Thinking effort, where the model supports it. |
@@ -88,7 +88,7 @@ Each tool is something the character can do in the game.
 | `runs_on` | `client` (default) or `authority` | `client` runs in the player's game. `authority` (the game server) is on the roadmap. |
 | `timeout_ms` | 100 to 60,000 | How long the character waits for the result. |
 
-At most 32 tools. `summer router push` fails with `tool_unhandled` when a `client` tool has no handler in the project's GDScript. See [GDScript: Tools](/router/gdscript#tools).
+At most 32 tools. `router.check` and `router.push` fail with reason `tool_unhandled` when a `client` tool has no handler in the project's GDScript. See [GDScript: Tools](/router/gdscript#tools).
 
 ## Limits
 
@@ -110,7 +110,7 @@ These sit inside the game and account caps. See [Limits and usage](/router/limit
 ## Check a file
 
 ```bash
-summer router push --dry-run
+summer router check
 ```
 
 Each problem names the field: `guard/turn/mode must be one of "server_vad", "push_to_talk"`.
