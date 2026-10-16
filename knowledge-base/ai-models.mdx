@@ -18,7 +18,7 @@ in the chat composer.
   chosen for the balance of quality, cost, and reliability. The specific model
   changes as we improve the routing.
 - **MAX** (paid plans) routes to a frontier model and maxes out context and tool
-  calls, billed at the API pricing of whatever it selects.
+  calls. It uses more of your credits.
 - **Picking a model yourself** gives you a specific model from OpenAI, Anthropic,
   DeepSeek, GLM, Kimi, Grok, or Qwen.
 
@@ -38,16 +38,13 @@ and Summer picks one based on the job:
 | **Audio** | ElevenLabs, for voice, dialogue, sound effects, and music. |
 | **Video** | Veo, Kling, Seedance, and Gemini Omni Flash, for cutscenes and image-to-video. |
 
-In Summer Studio you choose the backend yourself from a picker that shows each
-model's price. In chat, the agent picks one for the job. Prices differ by orders of
-magnitude — an image costs cents, a textured 3D model can cost most of a dollar —
-which is why the picker shows the cost next to every model.
+In Summer Studio you choose the backend yourself from a picker. In chat, the agent
+picks one for the job. Some backends use more of your credits than others.
 
 ### Choosing models
 
 You choose the chat model in the selector next to the composer. Asset backends are
-chosen per generation inside Summer Studio, where the model list and its prices are
-shown live.
+chosen per generation inside Summer Studio, where the model list is shown live.
 
 Summer does not accept your own provider API keys for hosted generation — hosted AI
 runs on your plan's usage. If you want to run your own model against your project,

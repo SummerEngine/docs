@@ -801,8 +801,8 @@
     ],
     "primary": {
       "type": "button",
-      "label": "Dashboard",
-      "href": "https://summerengine.com/dashboard"
+      "label": "Studio",
+      "href": "https://www.summerengine.com/studio"
     }
   },
   "contextual": {

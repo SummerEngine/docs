@@ -13,7 +13,7 @@ The guides explain how to make and ship a game. This reference lists every opera
 
 <CardGroup cols={2}>
   <Card title="Operations" icon="list-tree" href="/mcp/operations">
-    285 operations your agent runs through MCP or the `summer` CLI: assets, plans, the store, prices, analytics and the engine.
+    320 operations your agent runs through MCP or the `summer` CLI: assets, plans, the store, prices, analytics and the engine.
   </Card>
   <Card title="MCP tools" icon="wrench" href="/mcp/tools-reference">
     189 tools your agent can call: build, create assets, run and test, publish, grow.
@@ -30,7 +30,7 @@ The guides explain how to make and ship a game. This reference lists every opera
 
 | Reference | Source of truth | Version |
 |---|---|---|
-| Operations | `src/lib/ops/public-catalog.json` in publicsummerengine | `b1a88cf078` |
+| Operations | `src/lib/ops/public-catalog.json` in publicsummerengine and `dist/core/ops/catalog.js` in the `summer-engine` npm package | `0d85f61e2b`, `4.0.0` |
 | MCP tools (local) | `summer-engine` npm package: its MCP server's tool list, `library/tools/*/resource.yaml`, `registry/generated/index.json` | `3.4.1` |
 | MCP tools (hosted) | Hosted Summer Engine MCP, `src/lib/mcp/hosted` in publicsummerengine | `cfcdc04b75` |
 | HTTP API | `api/management/openapi.yaml`, `api/analytics/openapi.yaml`, `api/player/openapi.yaml` in summer-platform | `ff4f240996` |
