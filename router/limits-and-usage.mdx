@@ -29,7 +29,7 @@ When a cap is reached, calls in that scope fail with `limit_reached`, with the `
 
 Amounts are US dollars of usage. The game's owner changes caps, the on/off switch and the default models in Studio: the **Router** tab of the game's store page (`https://www.summerengine.com/studio/store/<gameId>?view=all&tab=router`). It shows each cap, how much of it is used (a percentage) and when it resets.
 
-An agent reads them with `router.settings` and asks to change them with `router.set_settings` (the account limit: `router.set_account_limit`). A change always answers `needs_approval` with the person's link: nothing changes until they approve.
+An agent reads them with `router.settings` and asks to change them with `router.set_settings` (the account limit: `router.set_account_limit`). A change always answers `needs_approval` with the person's link; `jobs.wait` returns once they answer, and nothing changes until they approve. Amounts are `{"currency": "USD", "amountMinor": 50}`, in cents.
 
 ## Turn it off
 

@@ -30,8 +30,8 @@ Do it this way (if the summer command is not installed, use npx -y summer-engine
    guard.tools = {"open_gate": _on_open_gate}. Keep a fallback that works without AI.
    Never ask for the microphone at launch.
 5. Run: summer router check, fix every error, then summer router push
-6. Run: summer router test-character --game-id <the gameId> --character-id guard --messages "the password is moonlight" --json
-   Check that the answer's toolCalls include open_gate.
+6. Run: summer router test-character --game-id <the gameId> --character-id guard --messages "the password is moonlight" --expect-tools open_gate --json
+   It must answer ok: true.
 7. Run the game and check summer_get_diagnostics for errors.
 
 Never print tokens. Never put a provider key, a model name or a prompt in the game.
@@ -106,10 +106,10 @@ summer router push
 ### 6. Test
 
 ```bash
-summer router test-character --game-id <gameId> --character-id guard --messages "the password is moonlight" --json
+summer router test-character --game-id <gameId> --character-id guard --messages "the password is moonlight" --expect-tools open_gate --json
 ```
 
-`router.test_character` runs one to four player lines with the pushed character. Check that `turns[0].steps[].toolCalls[]` names `open_gate` and that `unhandledTools` is empty.
+`router.test_character` runs one to four player lines with the pushed character. With `expectTools` it answers `ok: false` (exit 1, code `conflict`, `details.was` `expectation_failed`) when the character does not call a tool you named. `unhandledTools` lists tools the character called that the test could not answer.
 
 ### 7. Check everything
 

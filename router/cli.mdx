@@ -134,17 +134,17 @@ These run on the hosted Summer server with the person's sign-in. In MCP, find th
 | `router.get_character` | read | `gameId`, `characterId`, `version?` | `version`, `deleted`, `updatedAt`, `file`, `character` |
 | `router.character_versions` | read | `gameId`, `characterId` | Every saved version |
 | `router.save_character` | live change | `gameId`, `character` (the whole document), `expectedVersion?` | `version`, `created`, `unchanged`, `file`, `studioUrl`. Runs at once before launch; on a live game it answers `needs_approval` with the person's link |
-| `router.delete_character` | asks the person | `gameId`, `characterId` | `needs_approval`, then the deletion |
-| `router.test_character` | metered | `gameId`, `characterId`, `messages` (1 to 4 lines), `variables?`, `context?`, `overrides?`, `toolOutputs?`, `draft?` | `turns[{player, steps[{text, toolCalls[{name, args, runsOn, answered}]}]}]`, `unhandledTools`, `usage` |
+| `router.delete_character` | asks the person (unless they allow "Delete for good") | `gameId`, `characterId` | `needs_approval`, then the deletion |
+| `router.test_character` | metered | `gameId`, `characterId`, `messages` (1 to 4 lines), `expectTools?`, `variables?`, `context?`, `overrides?`, `toolOutputs?`, `draft?` | `turns[{player, steps[{text, toolCalls[{name, args, runsOn, answered}]}]}]`, `unhandledTools`, `expectedTools[{name, called}]`, `usage`. An expected tool not called: `ok: false`, code `conflict`, `details.was` `expectation_failed` with `missingTools` |
 | `router.settings` | read | `gameId` | `enabled`, `caps`, `defaultCaps`, `accountLimit`, models, `revision`, `studioUrl`, `addCreditsUrl` |
-| `router.set_settings` | always asks the person | `gameId`, `enabled?`, `caps?{playerDay?, gameDay?, gameMonth?}`, `textModel?`, `imageModel?` | `needs_approval`, then the settings |
-| `router.set_account_limit` | always asks the person | the monthly limit across your games | `needs_approval`, then the limit |
+| `router.set_settings` | always asks the person | `gameId`, `enabled?`, `caps?{playerDay?, gameDay?, gameMonth?}`, `textModel?`, `imageModel?` | `needs_approval` with the link, then `jobs.wait`; the settings |
+| `router.set_account_limit` | always asks the person | `monthly`: the limit across all your games | `needs_approval` with the link, then `jobs.wait`; the limit |
 | `router.usage` | read | `gameId`, `days` (1 to 90) | `calls`, `failed`, `byKind`, `daily`, `caps[{scope, title, cap, usedPercent, resetsAt}]` |
 
 Test a character after `router.push`:
 
 ```bash
-summer router test-character --game-id game_01... --character-id guard --messages "the password is moonlight" --json
+summer router test-character --game-id game_01... --character-id guard --messages "the password is moonlight" --expect-tools open_gate --json
 ```
 
-Check that `turns[0].steps[].toolCalls[]` names `open_gate` and that `unhandledTools` is empty. `router.test_character` has no expected-tools input: read the tool calls in the answer. See [Limits and usage](/router/limits-and-usage).
+It exits 1 (code `conflict`, `details.was` `expectation_failed`, `details.missingTools`) when the guard does not call `open_gate`. Money in settings (caps, the account limit) is `{"currency": "USD", "amountMinor": 50}`, in cents. See [Limits and usage](/router/limits-and-usage).

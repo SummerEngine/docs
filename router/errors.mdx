@@ -138,6 +138,21 @@ Code `invalid_input`. The operation needs the game on Summer.
 Code `invalid_input`. No `project.godot` at or above the folder.
 **Fix:** run in the project folder, or pass `project`.
 
+### expectation_failed
+
+Code `conflict`. `router.test_character` with `expectTools` did not see a tool called. `details.missingTools` names it; `details.turns` shows what the character said.
+**Fix:** make the tool description say exactly when to call it and the instructions say to call it instead of describing it. Push, then test again.
+
+### test_unavailable
+
+Code `unavailable`. The test route is not open in this Summer environment yet. Nothing was run or billed.
+**Fix:** retry after the platform release; use `router.check` and a play test meanwhile.
+
+### already_configured
+
+`router.set_settings` or `router.set_account_limit` asked for what is already set. Nothing was asked of the person.
+**Fix:** none.
+
 ### version_conflict
 
 Code `conflict`. The character changed on Summer between the read and the write.
