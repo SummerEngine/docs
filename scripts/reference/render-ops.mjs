@@ -148,12 +148,21 @@ function mcpLine(op, src) {
   return `${code("summer_call")} with ${code(`"op": "${op.name}"`)}`;
 }
 
+/** Quoted node paths ('./World/Player') as code, so search engines never read them as relative links. */
+function codePaths(schema) {
+  if (Array.isArray(schema)) return schema.map(codePaths);
+  if (!schema || typeof schema !== "object") return schema;
+  return Object.fromEntries(
+    Object.entries(schema).map(([k, v]) => [k, k === "description" && typeof v === "string" ? v.replace(/'(\.\/[^'\s]*)'/g, "`$1`") : codePaths(v)]),
+  );
+}
+
 function opSection(op, src, groups, hosted) {
   const asks = asksFirst(op, groups);
   const facts = [
     `| **MCP** | ${mcpLine(op, src)} |`,
     `| **CLI** | ${code(cliOf(op.name))} |`,
-    `| **Runs** | ${RUNS[op.provider] ?? op.provider}${op.auth === "account" ? " Needs your Summer sign-in." : ""} |`,
+    `| **Runs** | ${RUNS[op.provider] ?? op.provider}${op.alsoLocal ? " The npm MCP also runs it on your computer." : ""}${op.auth === "account" ? " Needs your Summer sign-in." : ""} |`,
     `| **Effect** | ${EFFECT_WORDS[op.effect]} |`,
     `| **Asks you first** | ${asks.long} |`,
   ];
@@ -164,7 +173,7 @@ function opSection(op, src, groups, hosted) {
   if (op.status === "preview") lines.push("<Note>Preview: search finds it and `summer_call` runs it. It may still change.</Note>", "");
   if (op.deprecated) lines.push(`<Warning>Deprecated: use ${code(op.deprecated.replacedBy)}. It keeps working until at least ${op.deprecated.after}.</Warning>`, "");
   lines.push(escapeProse(op.summary), "", "| | |", "|---|---|", ...facts, "");
-  lines.push("**Inputs:**", "", inputTable(op.input), "", schemaBlock("Input JSON schema", op.input), "");
+  lines.push("**Inputs:**", "", inputTable(codePaths(op.input)), "", schemaBlock("Input JSON schema", op.input), "");
   if (op.output && Object.keys(op.output.properties ?? {}).length) lines.push(schemaBlock("Result JSON schema", op.output), "");
   lines.push(exampleBlock(op, hosted));
   return lines.join("\n");
@@ -201,10 +210,24 @@ function sourceNote(src) {
   ].join("\n");
 }
 
+/**
+ * One entry per operation name (SPEC-operations §7.9: one name, one contract).
+ * An op both servers run (docs.search, docs.read, studio.open) shows once,
+ * from the cloud catalog, marked as running locally too.
+ */
+function uniqueOps(src) {
+  const cloudNames = new Set(src.operations.map((op) => op.name));
+  const localNames = new Set(src.localOperations.map((op) => op.name));
+  const cloud = src.operations.map((op) => (localNames.has(op.name) ? { ...op, alsoLocal: true } : op));
+  const local = src.localOperations.filter((op) => !cloudNames.has(op.name));
+  return { cloud, local };
+}
+
 export function opsByArea(src) {
   const full = (op) => Boolean(op.summary);
-  const all = [...src.operations, ...src.localOperations.filter(full)];
-  const names = [...src.localOperations.filter((op) => !full(op))];
+  const { cloud, local } = uniqueOps(src);
+  const all = [...cloud, ...local.filter(full)];
+  const names = [...local.filter((op) => !full(op))];
   const by = new Map(OPS_AREAS.map((a) => [a.id, { ops: [], names: [] }]));
   for (const op of all) {
     const area = areaOf(op.name);
@@ -268,8 +291,13 @@ export function renderOpsAreaPage(area, src, byArea, mcpByName) {
 
 export function renderOpsLegacyPage(src, byArea) {
   const rows = [];
+  const seen = new Set();
   for (const op of [...src.operations, ...src.localOperations]) {
-    for (const legacy of op.legacy ?? []) rows.push({ legacy, op: op.name, area: areaOf(op.name) });
+    for (const legacy of op.legacy ?? []) {
+      if (seen.has(legacy)) continue;
+      seen.add(legacy);
+      rows.push({ legacy, op: op.name, area: areaOf(op.name) });
+    }
   }
   rows.sort((a, b) => a.legacy.localeCompare(b.legacy));
   return [
@@ -295,9 +323,10 @@ export function renderOpsLegacyPage(src, byArea) {
 
 export function renderOpsIndexPage(src, byArea) {
   const groups = src.permissionGroups;
-  const cloud = src.operations.length;
-  const local = src.localOperations.length;
-  const all = [...src.operations, ...src.localOperations.filter((o) => o.summary)];
+  const unique = uniqueOps(src);
+  const cloud = unique.cloud.length;
+  const local = unique.local.length;
+  const all = [...unique.cloud, ...unique.local.filter((o) => o.summary)];
   const byName = new Map(all.map((o) => [o.name, o]));
   const countIn = (id) => all.filter((o) => permissionOf(o) === id).length;
   const lines = [
