@@ -9,10 +9,12 @@
  *   --mcp       Summer Engine MCP tools (summer-engine npm + hosted MCP)
  *   --http      Summer Platform HTTP API (summer-platform api/*\/openapi.yaml)
  *   --gdscript  In-game Summer GDScript API
+ *   --ops       Summer operation catalog (publicsummerengine public-catalog.json
+ *               + the engine and local operations of the summer-engine npm package)
  *
  * Options:
  *   --summer-engine <spec>   npm spec for the local MCP (default: summer-engine@latest)
- *   --pse <checkout>         publicsummerengine git checkout (hosted MCP provenance)
+ *   --pse <checkout>         publicsummerengine git checkout (hosted MCP provenance, operation catalog)
  *   --platform <checkout>    summer-platform git checkout (OpenAPI specs)
  *   --engine <checkout>      summerengine git checkout (GDScript bindings)
  *   --ref <git ref>          ref to read in every checkout (default: origin/main)
@@ -41,7 +43,7 @@ function parseArgs(argv) {
       if (i + 1 >= argv.length) throw new Error(`${a} needs a value`);
       return argv[++i];
     };
-    if (a === "--mcp" || a === "--http" || a === "--gdscript") opts.parts.add(a.slice(2));
+    if (a === "--mcp" || a === "--http" || a === "--gdscript" || a === "--ops") opts.parts.add(a.slice(2));
     else if (a === "--work") opts.work = resolve(next());
     else if (a === "--summer-engine") opts.summerEngine = next();
     else if (a === "--pse") opts.pse = resolve(next());
@@ -51,7 +53,7 @@ function parseArgs(argv) {
     else if (a === "--no-hosted") opts.hosted = false;
     else throw new Error(`unknown argument ${a}`);
   }
-  if (!opts.parts.size) ["mcp", "http", "gdscript"].forEach((p) => opts.parts.add(p));
+  if (!opts.parts.size) ["mcp", "http", "gdscript", "ops"].forEach((p) => opts.parts.add(p));
   if (!opts.work) throw new Error("--work <scratch dir> is required");
   return opts;
 }
@@ -120,6 +122,17 @@ async function syncMcp(opts) {
   });
 }
 
+async function syncOps(opts) {
+  if (!opts.pse) throw new Error("--pse <publicsummerengine checkout> is required for --ops");
+  const { installNpmPackage } = await import("./lib/mcp-source.mjs");
+  const { readCloudCatalog, readLocalOperations, operationsSource } = await import("./lib/ops-source.mjs");
+  const cloud = readCloudCatalog(gitIn(opts.pse), opts.ref);
+  const npm = installNpmPackage(opts.work, opts.summerEngine);
+  const local = await readLocalOperations(npm.dir);
+  if (!local) console.log(`summer-engine ${npm.version} has no operation catalog; engine and local operations keep their names only`);
+  writeJson(join(SOURCES, "operations.json"), operationsSource(cloud, local, npm));
+}
+
 async function syncHttp(opts) {
   if (!opts.platform) throw new Error("--platform <summer-platform checkout> is required for --http");
   const { syncOpenApi } = await import("./lib/http-source.mjs");
@@ -136,5 +149,6 @@ mkdirSync(opts.work, { recursive: true });
 if (opts.parts.has("mcp")) await syncMcp(opts);
 if (opts.parts.has("http")) await syncHttp(opts);
 if (opts.parts.has("gdscript")) await syncGdscript(opts);
+if (opts.parts.has("ops")) await syncOps(opts);
 execFileSync(process.execPath, [join(HERE, "generate.mjs")], { stdio: "inherit" });
 process.exit(0);

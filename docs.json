@@ -380,6 +380,36 @@
             ]
           },
           {
+            "group": "Operations",
+            "pages": [
+              "mcp/operations",
+              "mcp/operations/account",
+              "mcp/operations/ops",
+              "mcp/operations/jobs",
+              "mcp/operations/docs",
+              "mcp/operations/assets",
+              "mcp/operations/makers",
+              "mcp/operations/projects",
+              "mcp/operations/plans",
+              "mcp/operations/games",
+              "mcp/operations/store",
+              "mcp/operations/jams",
+              "mcp/operations/pricing",
+              "mcp/operations/analytics",
+              "mcp/operations/experiments",
+              "mcp/operations/marketing",
+              "mcp/operations/team",
+              "mcp/operations/profile",
+              "mcp/operations/apps",
+              "mcp/operations/studio",
+              "mcp/operations/chats",
+              "mcp/operations/stories",
+              "mcp/operations/plugins",
+              "mcp/operations/engine",
+              "mcp/operations/legacy-names"
+            ]
+          },
+          {
             "group": "MCP tools",
             "pages": [
               "mcp/tools-reference",

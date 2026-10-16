@@ -117,7 +117,7 @@ function rows(schema, prefix = "", required = new Set(), depth = 0, out = []) {
   return out;
 }
 
-function inputTable(schema) {
+export function inputTable(schema) {
   const r = rows(schema, "", new Set(schema?.required ?? []));
   if (!r.length) return "No inputs.";
   return ["| Input | Type | Required | Description |", "|---|---|---|---|", ...r].join("\n");
@@ -160,7 +160,7 @@ function example(name, schema) {
   return ["```json Example call", JSON.stringify(call, null, 2), "```"].join("\n");
 }
 
-function schemaBlock(title, schema) {
+export function schemaBlock(title, schema) {
   const { $schema, ...rest } = schema ?? {};
   return [`<Accordion title="${title}">`, "", "```json", JSON.stringify(rest, null, 2), "```", "", "</Accordion>"].join("\n");
 }
