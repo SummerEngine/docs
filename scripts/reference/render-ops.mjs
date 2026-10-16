@@ -1,7 +1,7 @@
 // Renders the Summer operations reference (Summer 4.0) from sources/operations.json.
 
 import { cell, code, escapeProse, firstSentence, fm } from "./lib/mdx.mjs";
-import { inputTable, mcpGroupPath, schemaBlock } from "./render-mcp.mjs";
+import { inputTable, schemaBlock } from "./lib/schema.mjs";
 
 export const OPS_BASE = "mcp/operations";
 export const OPS_LEGACY_PAGE = `${OPS_BASE}/legacy-names`;
@@ -181,16 +181,14 @@ function opSection(op, src, groups, hosted) {
 
 // ------------------------------------------------------------- local ops without a catalog
 
-function toolLink(name, mcpByName) {
-  const e = mcpByName.get(name);
-  return e ? `[${code(name)}](/${mcpGroupPath(e.group)}#${name})` : code(name);
-}
+/** A 3.x tool name, linked to its row on the 3.x tool names page. */
+const toolLink = (name) => `[${code(name)}](/${OPS_LEGACY_PAGE}#${name})`;
 
-function localNameRows(ops, mcpByName) {
+function localNameRows(ops) {
   return [
     "| Operation | MCP tool |",
     "|---|---|",
-    ...ops.map((op) => `| ${code(op.name)} | ${op.legacy.map((l) => l.split("#")[0]).filter((v, i, a) => a.indexOf(v) === i).map((l) => toolLink(l, mcpByName)).join(", ")} |`),
+    ...ops.map((op) => `| ${code(op.name)} | ${op.legacy.map((l) => l.split("#")[0]).filter((v, i, a) => a.indexOf(v) === i).map(toolLink).join(", ")} |`),
   ];
 }
 
@@ -246,7 +244,26 @@ export function opsByArea(src) {
   return by;
 }
 
-export function renderOpsAreaPage(area, src, byArea, mcpByName) {
+/** How engine operations take values (shown on the engine page, linked from the setup guides). */
+const ENGINE_VALUES = [
+  "## Value formats",
+  "",
+  "Engine properties such as `position`, `rotation_degrees` and `mesh` take engine string syntax, not JSON objects.",
+  "",
+  "| Type | Format | Example |",
+  "|---|---|---|",
+  '| Vector3 | `"Vector3(x, y, z)"` | `"Vector3(0, 10, 0)"` |',
+  '| Vector2 | `"Vector2(x, y)"` | `"Vector2(100, 200)"` |',
+  '| Color | `"Color(r, g, b, a)"`, 0 to 1 | `"Color(1, 0.5, 0, 1)"` |',
+  '| Transform3D | basis and origin | `"Transform3D(1,0,0, 0,1,0, 0,0,1, 0,5,0)"` |',
+  '| Resource | class name, created for you | `"BoxMesh"`, `"StandardMaterial3D"` |',
+  '| Number, boolean, string | plain JSON | `1.5`, `true`, `"hello"` |',
+  "",
+  "Node paths start with `./` from the scene root: `./World/Player` is the `Player` child of `World`. Every scene change names its scene with `scenePath`, such as `res://main.tscn`; the scene does not need to be the open editor tab. Three or more scene edits: one `summer_run_script` with `scenePath`.",
+  "",
+];
+
+export function renderOpsAreaPage(area, src, byArea) {
   const groups = groupsById(src);
   const hosted = new Set(src.profiles.hosted);
   const { ops, names } = byArea.get(area.id);
@@ -279,12 +296,13 @@ export function renderOpsAreaPage(area, src, byArea, mcpByName) {
   if (names.length) {
     lines.push(
       ...(ops.length ? ["## On your computer", ""] : []),
-      `These operations run in the ${code("summer-engine")} npm MCP on your computer and keep their tool names. Their inputs and examples are in the [MCP tools reference](/mcp/tools-reference).`,
+      `These operations run in the ${code("summer-engine")} npm MCP on your computer and keep their tool names.`,
       "",
-      ...localNameRows(names, mcpByName),
+      ...localNameRows(names),
       "",
     );
   }
+  if (area.id === "engine") lines.push(...ENGINE_VALUES);
   if (ops.length) lines.push(...ops.flatMap((op) => ["---", "", opSection(op, src, groups, hosted), ""]));
   return lines.join("\n").replace(/\n+$/, "\n");
 }
@@ -300,6 +318,7 @@ export function renderOpsLegacyPage(src, byArea) {
     }
   }
   rows.sort((a, b) => a.legacy.localeCompare(b.legacy));
+  const anchors = new Set();
   return [
     "---",
     'title: "3.x tool names"',
@@ -312,11 +331,18 @@ export function renderOpsLegacyPage(src, byArea) {
     "",
     banner(src),
     "",
-    `Summer 4.0 names every capability as an operation. The 3.x tool names keep working for all of 4.x: ${code("summer_call")} accepts them on every server, and the npm MCP lists them again with ${code("summer mcp --toolsets legacy")} (and by itself while your installed Summer skills are older than 4.0). A name with ${code("#action")} is one action of a 3.x tool that did several jobs; the 3.x ${code("action")} argument picks the operation. ${rows.length} names.`,
+    `Summer 4.0 names every capability as an operation. The 3.x tool names keep working for all of 4.x: ${code("summer_call")} accepts them on every server, the hosted MCP serves the 3.x tools at ${code("https://mcp.summerengine.com/mcp?surface=v3")}, and the npm MCP lists them again with ${code("summer mcp --toolsets legacy")} (and by itself while your installed Summer skills are older than 4.0). A name with ${code("#action")} is one action of a 3.x tool that did several jobs; the 3.x ${code("action")} argument picks the operation. ${rows.length} names.`,
+    "",
+    "Find a 3.x tool below; the link goes to the operation that does its job now, with its inputs and an example. The old 3.x tool pages (`/mcp/tools/*`) now open this page, at the row of the tool.",
     "",
     "| 3.x name | Operation |",
     "|---|---|",
-    ...rows.map((r) => `| ${code(r.legacy)} | [${code(r.op)}](/${opsAreaPath(r.area)}${byArea.get(r.area).ops.some((o) => o.name === r.op) ? `#${anchorOf(r.op)}` : ""}) |`),
+    ...rows.map((r) => {
+      // One anchor per 3.x tool, so an old link to the tool lands on its row.
+      const tool = r.legacy.split("#")[0];
+      const anchor = anchors.has(tool) ? "" : (anchors.add(tool), `<span id="${tool}" />`);
+      return `| ${anchor}${code(r.legacy)} | [${code(r.op)}](/${opsAreaPath(r.area)}${byArea.get(r.area).ops.some((o) => o.name === r.op) ? `#${anchorOf(r.op)}` : ""}) |`;
+    }),
     "",
   ].join("\n");
 }

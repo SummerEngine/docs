@@ -51,7 +51,7 @@ Text rules: [Store page text](/publishing/store-text). Slot sizes: [Store art](/
 | Upload a picture from your disk | [`assets.upload_begin`](/mcp/operations/assets#upload_begin), then [`assets.upload_complete`](/mcp/operations/assets#upload_complete) |
 | Cut out an icon subject | [`assets.remove_background`](/mcp/operations/assets#remove_background) |
 | Read the game's look | [`plans.get`](/mcp/operations/plans#get) and [`plans.directions`](/mcp/operations/plans#directions) (saved directions) |
-| Real gameplay screenshots | [`summer_capture_gameplay`](/mcp/tools/build#summer_capture_gameplay) and `summer_screenshot` (npm MCP) |
+| Real gameplay screenshots | [`summer_capture_gameplay`](/mcp/operations/engine#capture_gameplay) and `summer_screenshot` (npm MCP) |
 
 See [Make store art with your agent](/publishing/generate-store-art).
 
@@ -59,8 +59,8 @@ See [Make store art with your agent](/publishing/generate-store-art).
 
 | Job | Operation |
 |---|---|
-| Export the game (npm MCP) | [`summer_export_game`](/mcp/tools/publish#summer_export_game), with [`summer_export_templates`](/mcp/tools/publish#summer_export_templates) for web and downloads |
-| Upload an export from your disk (npm MCP) | `store.upload_file`: the tool [`summer_publish_build`](/mcp/tools/publish#summer_publish_build) |
+| Export the game (npm MCP) | [`summer_export_game`](/mcp/operations/engine#export_game), with [`summer_export_templates`](/mcp/operations/engine#export_templates) for web and downloads |
+| Upload an export from your disk (npm MCP) | `store.upload_file`: the tool [`summer_publish_build`](/mcp/operations/store#upload_file) |
 | Upload without the npm MCP | [`store.upload_begin`](/mcp/operations/store#upload_begin), [`store.upload_sign_parts`](/mcp/operations/store#upload_sign_parts), [`store.upload_complete`](/mcp/operations/store#upload_complete) |
 | See every upload, the review and what players get | [`store.status`](/mcp/operations/store#status) (`summer_store_status`) |
 | Remove an unused build or file (asks first) | [`store.remove_build`](/mcp/operations/store#remove_build), [`store.remove_file`](/mcp/operations/store#remove_file) |

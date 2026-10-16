@@ -103,6 +103,21 @@ Generated from the operation catalog: `src/lib/ops/public-catalog.json` at `0d85
 | [`engine.write_file`](#write_file) | Create a text file (create_only true) or overwrite one (expected_sha256 from engine.read_file); exactly one guard is required, so a stale write fails. | Not by default |
 | [`engine.zoom`](#zoom) | Render a close-up of part of a frame (a region, or mark N of a marks render) at full resolution: real detail, seams and gaps, not enlarged pixels. | Never |
 
+## Value formats
+
+Engine properties such as `position`, `rotation_degrees` and `mesh` take engine string syntax, not JSON objects.
+
+| Type | Format | Example |
+|---|---|---|
+| Vector3 | `"Vector3(x, y, z)"` | `"Vector3(0, 10, 0)"` |
+| Vector2 | `"Vector2(x, y)"` | `"Vector2(100, 200)"` |
+| Color | `"Color(r, g, b, a)"`, 0 to 1 | `"Color(1, 0.5, 0, 1)"` |
+| Transform3D | basis and origin | `"Transform3D(1,0,0, 0,1,0, 0,0,1, 0,5,0)"` |
+| Resource | class name, created for you | `"BoxMesh"`, `"StandardMaterial3D"` |
+| Number, boolean, string | plain JSON | `1.5`, `true`, `"hello"` |
+
+Node paths start with `./` from the scene root: `./World/Player` is the `Player` child of `World`. Every scene change names its scene with `scenePath`, such as `res://main.tscn`; the scene does not need to be the open editor tab. Three or more scene edits: one `summer_run_script` with `scenePath`.
+
 ---
 
 ### add_node

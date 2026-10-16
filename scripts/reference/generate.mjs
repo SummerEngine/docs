@@ -7,7 +7,6 @@
  *   node scripts/reference/generate.mjs --check   fail if anything on disk differs (CI)
  *
  * Pages:
- *   mcp/tools-reference, mcp/tools/*        Summer Engine MCP tools
  *   api-reference/http/**                  Summer Platform HTTP API (Mintlify OpenAPI pages)
  *   api-reference/gdscript/**              In-game Summer GDScript API
  *   mcp/operations, mcp/operations/*      Summer operations (the 4.0 operation catalog)
@@ -22,7 +21,6 @@ import { dirname, join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { findPublicTextViolation } from "./lib/redact.mjs";
 import { code, fm } from "./lib/mdx.mjs";
-import { MCP_GROUPS, mcpEntries, mcpGroupPath, renderMcpGroupPage, renderMcpIndexPage } from "./render-mcp.mjs";
 import { HTTP_BASE, httpNav, httpOperations, renderHttpOperationPage, renderHttpOverview } from "./render-http.mjs";
 import { GD_BASE, gdPages, renderGdClassPage, renderGdOverviewExtras } from "./render-gdscript.mjs";
 import { OPS_AREAS, OPS_BASE, OPS_LEGACY_PAGE, opsAreaPath, opsByArea, renderOpsAreaPage, renderOpsIndexPage, renderOpsLegacyPage } from "./render-ops.mjs";
@@ -31,6 +29,8 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, "..", "..");
 const SOURCES = join(HERE, "sources");
 const CHECK = process.argv.includes("--check");
+// mcp/tools held the 3.x MCP tool pages; they redirect to the 3.x tool names page now, and
+// keeping the directory owned removes any page left there.
 const OWNED_DIRS = ["mcp/tools", OPS_BASE, HTTP_BASE, GD_BASE];
 const OWNED_GROUPS = ["Overview", "Operations", "MCP tools", "HTTP API", "GDScript API"];
 const LANDING = "api-reference/overview";
@@ -42,20 +42,13 @@ const readJson = (p) => JSON.parse(readFileSync(p, "utf8"));
 const pages = new Map();
 const put = (path, content) => pages.set(`${path}.mdx`, content.endsWith("\n") ? content : content + "\n");
 
-// MCP
-const mcpSrc = readJson(join(SOURCES, "mcp-tools.json"));
-const entries = mcpEntries(mcpSrc);
-put("mcp/tools-reference", renderMcpIndexPage(entries, mcpSrc));
-for (const g of MCP_GROUPS) put(mcpGroupPath(g.id), renderMcpGroupPage(g, entries, mcpSrc));
-
 // Operations
 const opsSrc = readJson(join(SOURCES, "operations.json"));
 const byArea = opsByArea(opsSrc);
-const mcpByName = new Map(entries.map((e) => [e.name, e]));
 const opsCount = new Set([...opsSrc.operations, ...opsSrc.localOperations].map((op) => op.name)).size;
 put(OPS_BASE, renderOpsIndexPage(opsSrc, byArea));
 put(OPS_LEGACY_PAGE, renderOpsLegacyPage(opsSrc, byArea));
-for (const a of OPS_AREAS) put(opsAreaPath(a.id), renderOpsAreaPage(a, opsSrc, byArea, mcpByName));
+for (const a of OPS_AREAS) put(opsAreaPath(a.id), renderOpsAreaPage(a, opsSrc, byArea));
 
 // HTTP
 const httpManifest = readJson(join(SOURCES, "http-api.json"));
@@ -86,7 +79,7 @@ put(
     "---",
     'title: "Technical reference"',
     'sidebarTitle: "Overview"',
-    `description: ${fm("Generated reference for Summer: every operation your agent can run, every MCP tool, the public Summer Platform HTTP API and the in-game Summer GDScript API. Built from the source code, never written by hand.")}`,
+    `description: ${fm("Generated reference for Summer: every operation your agent can run, the public Summer Platform HTTP API and the in-game Summer GDScript API. Built from the source code, never written by hand.")}`,
     'icon: "book-marked"',
     "generated: true",
     "generator: scripts/reference",
@@ -96,12 +89,9 @@ put(
     "",
     "The guides explain how to make and ship a game. This reference lists every operation, tool, endpoint and method, with exact names and inputs. It is generated from Summer's source code, and a docs check fails when a page no longer matches its source.",
     "",
-    "<CardGroup cols={2}>",
+    "<CardGroup cols={3}>",
     `  <Card title="Operations" icon="list-tree" href="/${OPS_BASE}">`,
     `    ${opsCount} operations your agent runs through MCP or the ${code("summer")} CLI: assets, plans, the store, prices, analytics and the engine.`,
-    "  </Card>",
-    `  <Card title="MCP tools" icon="wrench" href="/mcp/tools-reference">`,
-    `    ${entries.length} tools your agent can call: build, create assets, run and test, publish, grow.`,
     "  </Card>",
     `  <Card title="HTTP API" icon="globe" href="/${HTTP_BASE}/overview">`,
     `    ${ops.length} operations on ${httpManifest.server.replace(/^https:\/\//, "")}: creator management, analytics, store and account.`,
@@ -116,8 +106,6 @@ put(
     "| Reference | Source of truth | Version |",
     "|---|---|---|",
     `| Operations | ${code(opsSrc.sources.cloud.path)} in publicsummerengine${opsSrc.sources.local ? ` and ${code(opsSrc.sources.local.path)} in the ${code("summer-engine")} npm package` : ""} | ${code(opsSrc.sources.cloud.commit.slice(0, 10))}${opsSrc.sources.local ? `, ${code(opsSrc.sources.local.version)}` : ""} |`,
-    `| MCP tools (local) | ${code("summer-engine")} npm package: its MCP server's tool list, ${code("library/tools/*/resource.yaml")}, ${code("registry/generated/index.json")} | ${code(mcpSrc.sources.local.version)} |`,
-    `| MCP tools (hosted) | Hosted Summer Engine MCP, ${code("src/lib/mcp/hosted")} in publicsummerengine | ${code(mcpSrc.sources.hosted.commit.slice(0, 10))} |`,
     `| HTTP API | ${httpManifest.apis.map((a) => code(a.spec)).join(", ")} in summer-platform | ${code(httpManifest.commit.slice(0, 10))} |`,
     `| GDScript API | ${gdSrc.paths.map(code).join(", ")} in SummerEngine | ${code(gdSrc.commit.slice(0, 10))} |`,
     "",
@@ -148,7 +136,6 @@ function referenceGroups() {
   return [
     { group: "Overview", pages: [LANDING, "reference/compatibility"] },
     { group: "Operations", pages: [OPS_BASE, ...OPS_AREAS.map((a) => opsAreaPath(a.id)), OPS_LEGACY_PAGE] },
-    { group: "MCP tools", pages: ["mcp/tools-reference", ...MCP_GROUPS.map((g) => mcpGroupPath(g.id))] },
     { group: "HTTP API", pages: [`${HTTP_BASE}/overview`, ...httpNav(httpManifest, ops)] },
     gdNav(),
   ];
@@ -210,7 +197,7 @@ if (!CHECK && navStale) {
   execFileSync(process.execPath, [join(ROOT, "scripts/check-routes.mjs"), "--write"], { stdio: "inherit" });
 }
 
-const counts = `${opsCount} operations on ${OPS_AREAS.length + 2} pages, ${entries.length} MCP tools on ${MCP_GROUPS.length + 1} pages, ${ops.length} HTTP operations, ${gp.size} GDScript pages, ${pages.size} pages in all`;
+const counts = `${opsCount} operations on ${OPS_AREAS.length + 2} pages, ${ops.length} HTTP operations, ${gp.size} GDScript pages, ${pages.size} pages in all`;
 if (problems.length) {
   console.error(`reference: FAIL\n  ${problems.join("\n  ")}`);
   process.exit(1);

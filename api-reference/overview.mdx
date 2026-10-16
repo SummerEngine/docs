@@ -1,7 +1,7 @@
 ---
 title: "Technical reference"
 sidebarTitle: "Overview"
-description: "Generated reference for Summer: every operation your agent can run, every MCP tool, the public Summer Platform HTTP API and the in-game Summer GDScript API. Built from the source code, never written by hand."
+description: "Generated reference for Summer: every operation your agent can run, the public Summer Platform HTTP API and the in-game Summer GDScript API. Built from the source code, never written by hand."
 icon: "book-marked"
 generated: true
 generator: scripts/reference
@@ -11,12 +11,9 @@ generator: scripts/reference
 
 The guides explain how to make and ship a game. This reference lists every operation, tool, endpoint and method, with exact names and inputs. It is generated from Summer's source code, and a docs check fails when a page no longer matches its source.
 
-<CardGroup cols={2}>
+<CardGroup cols={3}>
   <Card title="Operations" icon="list-tree" href="/mcp/operations">
     320 operations your agent runs through MCP or the `summer` CLI: assets, plans, the store, prices, analytics and the engine.
-  </Card>
-  <Card title="MCP tools" icon="wrench" href="/mcp/tools-reference">
-    189 tools your agent can call: build, create assets, run and test, publish, grow.
   </Card>
   <Card title="HTTP API" icon="globe" href="/api-reference/http/overview">
     65 operations on api.summer.games: creator management, analytics, store and account.
@@ -31,8 +28,6 @@ The guides explain how to make and ship a game. This reference lists every opera
 | Reference | Source of truth | Version |
 |---|---|---|
 | Operations | `src/lib/ops/public-catalog.json` in publicsummerengine and `dist/core/ops/catalog.js` in the `summer-engine` npm package | `0d85f61e2b`, `4.0.0` |
-| MCP tools (local) | `summer-engine` npm package: its MCP server's tool list, `library/tools/*/resource.yaml`, `registry/generated/index.json` | `3.4.1` |
-| MCP tools (hosted) | Hosted Summer Engine MCP, `src/lib/mcp/hosted` in publicsummerengine | `cfcdc04b75` |
 | HTTP API | `api/management/openapi.yaml`, `api/analytics/openapi.yaml`, `api/player/openapi.yaml` in summer-platform | `ff4f240996` |
 | GDScript API | `modules/1summer_engine/doc_classes/*.xml`, `modules/summer_sdk_core/doc_classes/*.xml`, `modules/summer_multiplayer/doc_classes/SummerMultiplayerService.xml` in SummerEngine | `2c223081cd` |
 

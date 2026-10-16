@@ -79,7 +79,6 @@
   "mcp/cli": "CLI",
   "mcp/cli-reference": "CLI reference",
   "mcp/cloud-cli": "Cloud CLI",
-  "mcp/tools-reference": "Tools",
   "mcp/building-a-game": "Build with MCP",
   "mcp/skills": "Skills",
   "quickstarts/existing-godot": "Existing project",
