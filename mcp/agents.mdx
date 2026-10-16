@@ -167,7 +167,7 @@ Id: `windsurf`. Also accepted: `devin`, `devin-desktop`, `devindesktop`.
 
 | | |
 |---|---|
-| MCP config (user) | `~/.codeium/windsurf/mcp_config.json` · Windows `%USERPROFILE%\.codeium\windsurf\mcp_config.json` |
+| MCP config (user) | `~/.config/devin/mcp_config.json` (or `$XDG_CONFIG_HOME/devin/mcp_config.json`) · Windows `%APPDATA%\devin\mcp_config.json` |
 | MCP config (project) | none; a `--scope project` request writes the user file with a warning |
 | Skills (user) | `~/.agents/skills` — the shared agentskills.io folder |
 | Skills (project) | `.agents/skills` |
@@ -179,7 +179,7 @@ Devin's docs say `mcp_config.json` configures the Cascade agent. For the Devin a
 
 What `summer setup` writes (paste this if you configure by hand):
 
-```json ~/.codeium/windsurf/mcp_config.json
+```json ~/.config/devin/mcp_config.json
 {
   "mcpServers": {
     "summer-engine": {

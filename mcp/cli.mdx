@@ -17,6 +17,14 @@ brew install summerengine/tap/summer   # Homebrew
 npm install -g summer-engine           # npm, Node 20+
 ```
 
+Want your agent to use Summer from its shell, with no MCP server? Install the skills only:
+
+```bash
+npx -y summer-engine@latest setup <agent> --cli --yes
+```
+
+Then `summer ops search "<words>"` finds any operation, signed in or not, and `summer <area> <action>` runs it. See [Operations from the shell](/mcp/cli-reference#operations-from-the-shell).
+
 ## Install the Engine
 
 ```bash
