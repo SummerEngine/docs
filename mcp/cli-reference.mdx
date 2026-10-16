@@ -35,13 +35,16 @@ Swap `claude-code` for any id on [Every Supported Agent](/mcp/agents).
 Configure Summer Engine for an AI agent and run diagnostics in one step. This is the recommended onboarding command. It writes the MCP server config for the agent, installs the whole skill library where that agent reads skills, and prints a doctor report. Every agent and the files it writes: [Every Supported Agent](/mcp/agents).
 
 ```bash
-summer setup <agent> [--yes] [--scope user|project] [--force] [--recommended] [--stable-only] [--channel <tag>]
+summer setup <agent> [--yes] [--cli] [--allow-rules] [--scope user|project] [--force] [--recommended] [--stable-only] [--channel <tag>]
 ```
 
 | Argument / Option | Description |
 |-------------------|-------------|
 | `<agent>` | Agent to configure: `claude-code`, `claude-desktop`, `codex`, `cursor`, `windsurf`, `antigravity`, `cline`, `cline-cli`, `kilo-code`, `github-copilot`, `vscode-copilot`, `visual-studio`, `copilot-jetbrains`, `opencode`, `zed`, `kiro`, `goose`, `hermes`, `trae`, `qwen-code`, `kimi-code`, `crush`, `amp`, `factory`, `junie`, `warp`, `rovo-dev`, `qoder`, `grok-build`, `mistral-vibe`, `lm-studio`. Legacy, still accepted: `gemini`, `roo-code`. Aliases such as `claude`, `devin`, `agy`, `copilot`, `droid` resolve too |
 | `--yes` | Apply the practical setup steps (including skill install) without prompting |
+| `--cli` | CLI only: install the skills and no MCP server. The agent runs `summer` commands in its shell. `--no-mcp` does the same |
+| `--allow-rules` | With `--cli`, for Claude Code and Codex: let the agent run read-only `summer` commands, and dry runs of spends, without asking. Prints every rule; writes them only with `--yes`. Run it only when the person asks |
+| `--remove-allow-rules` | Remove the rules `--allow-rules` added, and nothing else |
 | `--scope <scope>` | Config scope: `user` (default) or `project` |
 | `--dry-run` | Show planned changes without writing files |
 | `--print` | Print the MCP config snippet instead of writing files |
@@ -58,6 +61,7 @@ npx -y summer-engine@latest setup claude-code --yes
 npx -y summer-engine@latest setup cursor --yes --scope project
 npx -y summer-engine@latest setup zed --print             # See the config without writing
 npx -y summer-engine@latest setup goose --yes             # YAML config, written in place
+npx -y summer-engine@latest setup codex --cli --yes       # Skills only, no MCP server
 ```
 
 ---
@@ -397,12 +401,12 @@ summer <area> <action> [--<field> <value> ...] [--input '<json>'] [--dry-run] [-
 - `--json`: print the answer envelope only. See [How Summer answers](/api-reference/mcp).
 - **Exit code:** `0` for any ok answer (`done`, `running`, `needs_approval`, `dry_run`), `1` for an error.
 
-Cloud operations need `summer login`. Engine and local operations run on your computer and need Summer Engine open; they have no `--dry-run`.
+Cloud operations run after `summer login`. Engine and local operations run on your computer and need Summer Engine open; `--dry-run` checks their input without it.
 
 | Command | What it does |
 |---|---|
 | `summer whoami` | Who is signed in, the agent app, plan and credits |
-| `summer ops search <words...>` | Find operations from the job in plain words (`--area`, `--limit`, `--json`) |
+| `summer ops search <words...>` | Find operations from the job in plain words (`--area`, `--limit`, `--json`). Works signed out: cloud operations show "(needs sign-in)" |
 | `summer ops describe <op>` | One operation with its exact input |
 
 **Examples:**

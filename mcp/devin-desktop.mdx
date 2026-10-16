@@ -23,18 +23,15 @@ This guide covers the configuration. Setup takes about a minute.
 
 ## Configuration
 
-Devin Desktop uses the same MCP config format as Cursor. The config file location may vary by version; common locations include:
-
-- **Project-level:** `.cursor/mcp.json` or `.windsurf/mcp.json` in your project root
-- **User-level:** `~/.cursor/mcp.json` or `~/.windsurf/mcp.json`
+Devin Desktop reads MCP servers from `~/.config/devin/mcp_config.json` (or `$XDG_CONFIG_HOME/devin/mcp_config.json`; on Windows `%APPDATA%\devin\mcp_config.json`). The file uses the same `mcpServers` format as Cursor. There is no project-level file. Older Windsurf versions read `~/.codeium/windsurf/mcp_config.json`.
 
 <Note>
-**Check Devin Desktop docs.** MCP config paths can change between versions. If the paths above don't work, check Devin Desktop's documentation or the in-app MCP settings for the correct config file location.
+Devin's docs say `mcp_config.json` configures the Cascade agent. For the Devin agent, add the same command in the app's MCP settings.
 </Note>
 
 ### Step 1: Create or Edit the Config File
 
-Create the MCP config file in your project root or user config directory. If the file already exists (e.g., for other MCP servers), add Summer Engine to the existing `mcpServers` object.
+Create `~/.config/devin/mcp_config.json`. If the file already exists (for example, for other MCP servers), add Summer Engine to the existing `mcpServers` object.
 
 ### Step 2: Add Summer Engine
 

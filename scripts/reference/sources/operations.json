@@ -3,14 +3,15 @@
   "generatedBy": "scripts/reference/sync.mjs --ops",
   "sources": {
     "cloud": {
-      "repository": "SummerEngine/publicsummerengine",
-      "path": "src/lib/ops/public-catalog.json",
-      "commit": "0d85f61e2baff273a3b5d7074530d44428e9d54e"
+      "package": "summer-engine",
+      "repository": "SummerEngine/summer",
+      "version": "4.2.0",
+      "path": "registry/operations/public-catalog.json"
     },
     "local": {
       "package": "summer-engine",
       "repository": "SummerEngine/summer",
-      "version": "4.0.0",
+      "version": "4.2.0",
       "path": "dist/core/ops/catalog.js"
     }
   },
@@ -13320,10 +13321,11 @@
         "type": "object",
         "properties": {
           "limit": {
+            "description": "Games per page, at most 50 (a bigger number gives 50).",
             "default": 20,
             "type": "integer",
             "minimum": 1,
-            "maximum": 50
+            "maximum": 9007199254740991
           },
           "cursor": {
             "description": "nextCursor from the previous page.",
@@ -28034,7 +28036,7 @@
                   "type": "object",
                   "properties": {
                     "assetId": {
-                      "description": "One of your Summer assets (summer_list_my_assets, summer_generate_image).",
+                      "description": "One of your Summer assets (assets.search with scope mine, assets.generate_image).",
                       "type": "string",
                       "minLength": 1
                     }
@@ -28245,7 +28247,7 @@
                     "type": "object",
                     "properties": {
                       "assetId": {
-                        "description": "One of your Summer audio assets, MP3 or M4A (summer_list_my_assets, summer_generate_audio music).",
+                        "description": "One of your Summer audio assets, MP3 or M4A (assets.search with scope mine, assets.generate_audio music).",
                         "type": "string",
                         "minLength": 1
                       }
@@ -28371,7 +28373,7 @@
                     "type": "object",
                     "properties": {
                       "assetId": {
-                        "description": "One of your Summer video assets (summer_list_my_assets, summer_generate_video).",
+                        "description": "One of your Summer video assets (assets.search with scope mine, assets.generate_video).",
                         "type": "string",
                         "minLength": 1
                       }
@@ -32958,7 +32960,7 @@
     },
     {
       "name": "docs.read",
-      "title": "Read",
+      "title": "Read a Summer doc",
       "summary": "Load one library entry by id — a skill's body and metadata, a tool's call recipe, a template's pin, a reference's text — ending in the feedback footer.",
       "effect": "read",
       "approval": "none",
@@ -33001,7 +33003,7 @@
     },
     {
       "name": "docs.search",
-      "title": "Search",
+      "title": "Search Summer docs",
       "summary": "Search the Summer library by describing the task in plain words — ranked entries of every kind, with the id to load next via summer_read_library.",
       "effect": "read",
       "approval": "none",
@@ -37930,7 +37932,7 @@
     },
     {
       "name": "studio.open",
-      "title": "Open",
+      "title": "Open a Studio page",
       "summary": "Open the exact summerengine.com page or editor surface by intent name — billing, my games, an MCP guide, a scene, a node, a dock — or print the URL/op.",
       "effect": "read",
       "approval": "none",
