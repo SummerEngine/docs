@@ -1,0 +1,181 @@
+---
+title: "Summer Router GDScript reference"
+sidebarTitle: "GDScript"
+description: "What to write in game code for Summer Router: Summer.client.router, the SummerRouterCharacter node, tools as a Dictionary of Callables, results, signals, errors and fallbacks."
+icon: "code"
+---
+
+<Warning>
+**Early access.** These calls run when the Summer Engine release with `Summer.client.router` ships. Names follow the Summer Router contract. If the engine's class reference shows a different signature, the class reference is right.
+</Warning>
+
+The game sends a character id and the player's input. Summer holds the instructions, model and voice. Every call returns a result with `ok`, `error` (a stable tag), `fix` and `usage`. Every error leaves the game running.
+
+## Check first
+
+```gdscript
+var status := Summer.client.router.status()   # {available, reason}
+if not status.available:
+	_use_fallback()
+```
+
+`available` is `false` in the editor without a Summer host, in exports outside Summer, and on old engines. The reason is a tag from [Errors](/router/errors).
+
+## A talking character: SummerRouterCharacter
+
+The node runs the whole voice flow: the mic primer, push to talk, text mode, playback and tools.
+
+| Property | Type | Use |
+| --- | --- | --- |
+| `character_id` | `String` | The id of a pushed character (`ai/characters/<id>.json`). |
+| `mode` | `String` | `"voice"` or `"text"`. A voice character starts in text mode until the player allows the mic. |
+| `tools` | `Dictionary` | Tool name to `Callable`. See [Tools](#tools). |
+
+| Signal | Arguments |
+| --- | --- |
+| `npc_text` | `text: String, final: bool` |
+| `player_text` | `text: String, final: bool` |
+| `mode_changed` | `mode: String, reason: StringName` |
+| `access_changed` | `access: StringName` (mic state) |
+| `ended` | `reason: StringName` |
+
+| Method | Use |
+| --- | --- |
+| `say(text)` | Send typed text. Works in every mode. |
+| `push_to_talk(down)` | Call from an input handler. The first press runs Summer's mic primer. |
+| `add_context(text)` | Tell the character what just happened in the game. |
+| `end()` | End the conversation. |
+
+```gdscript
+extends Node3D
+## The north gate. The guard opens it when the player says the password.
+
+@onready var guard: SummerRouterCharacter = $Guard   # character_id = "guard"
+@onready var gate: Node3D = $Gate
+@onready var chat_box: LineEdit = $HUD/ChatBox
+@onready var talk_button: Button = $HUD/TalkButton
+
+func _ready() -> void:
+	guard.tools = {"open_gate": _on_open_gate}
+	guard.npc_text.connect(_on_npc_text)
+	guard.ended.connect(_on_ended)
+	talk_button.button_down.connect(func(): guard.push_to_talk(true))
+	talk_button.button_up.connect(func(): guard.push_to_talk(false))
+	chat_box.text_submitted.connect(_on_text_submitted)
+	if not Summer.client.router.status().available:
+		_use_fallback()
+
+func _on_open_gate(_args: Dictionary) -> Dictionary:
+	if gate.is_open:
+		return {"ok": false, "reason": "already open"}
+	gate.open()
+	return {"ok": true}
+
+func _on_text_submitted(text: String) -> void:
+	if text.strip_edges().is_empty():
+		return
+	guard.say(text)
+	chat_box.clear()
+
+func _on_npc_text(text: String, _final: bool) -> void:
+	$HUD/Subtitle.text = text
+
+func _on_ended(reason: StringName) -> void:
+	if reason in [&"limit_reached", &"credits", &"provider_error", &"moderation"]:
+		_use_fallback()
+
+func _use_fallback() -> void:
+	$HUD/PasswordPrompt.visible = true
+```
+
+## Tools
+
+A character's client tools run in your game, on the player's device. Declare them in the character file (`tools[]`) and register a handler for each one in GDScript: a `Dictionary` of tool name to `Callable`. The `Callable` gets the arguments as a `Dictionary` and returns a `Dictionary` that the character reads.
+
+```gdscript
+guard.tools = {"open_gate": _on_open_gate, "give_key": _on_give_key}
+```
+
+These shapes all count as handlers for `router.check` and `router.push`:
+
+```gdscript
+guard.tools = {"open_gate": _on_open_gate}          # a SummerRouterCharacter node
+session.tools = {open_gate = _on_open_gate}         # a session from talk()
+tools = {"open_gate": _on_open_gate}                # in a script that extends SummerRouterCharacter
+guard.tools["open_gate"] = _on_open_gate
+guard.tools.merge({"open_gate": _on_open_gate})
+const HANDLERS := {"open_gate": _on_open_gate}      # then: guard.tools = HANDLERS
+guard.tool("open_gate", _on_open_gate)              # also session.tool(...)
+Summer.client.router.talk("guard", {"mode": "voice", "tools": {"open_gate": _on_open_gate}})
+Summer.client.router.reply("guard", "open up", {"tools": {"open_gate": _on_open_gate}})
+```
+
+`router.check` and `router.push` fail with `tool_unhandled` when a client tool in a character file has no handler in any `.gd` file of the project. That stops the silent failure where the model calls a tool and nothing answers.
+
+Rules for handlers:
+
+- Check game state and clamp values. The model can be talked into calling any tool with any arguments.
+- A handler gets the arguments `Dictionary` (a handler with no parameters also works) and may `await`.
+- It returns any JSON value; `null` sends `{"ok": true}`. A `Dictionary` with an `"error"` key sends a tool error, and the character goes on.
+- Return fast. A text-turn handler that does not answer in 30 s sends `{"error": "timeout"}`.
+- A tool that changes shared state in a multiplayer game belongs on the authority. `runs_on: "authority"` is on the roadmap; until then keep client tools to effects the player's own client may make.
+
+## Your own session
+
+```gdscript
+var s := await Summer.client.router.talk("guard", {
+	"mode": "voice",
+	"variables": {"player_name": player_name},
+	"context": "The player stands at the north gate.",
+})
+if not s.ok:
+	_use_fallback()
+	return
+s.tools = {"open_gate": _on_open_gate}
+s.npc_text.connect(_on_npc_text)
+s.player_text.connect(_on_player_text)
+s.mode_changed.connect(_on_mode_changed)
+s.ended.connect(_on_ended)
+s.say("hello")
+s.push_to_talk(true)          # from an input handler only
+s.add_context("The player picked up the key.")
+s.end()
+```
+
+Options: `mode` (`"voice"` or `"text"`), `variables` (only names the file declares, and only when `variables` is in `overridable`), `context`, `overrides` (only fields in `overridable`).
+
+## One-shot calls
+
+```gdscript
+var r := await Summer.client.router.reply("guard", "hello")   # one text turn
+if r.ok:
+	$HUD/Subtitle.text = r.text
+
+var a := await Summer.client.router.speak("Welcome, traveller!", {"character": "narrator"})
+if a.ok:
+	$Narrator.stream = a.audio    # an AudioStream
+	$Narrator.play()
+
+var t := await Summer.client.router.transcribe(clip)            # AudioStream to text
+var img := await Summer.client.router.generate("image", {"prompt": "a mossy stone gate", "size": "1024x1024"})
+```
+
+- `speak` takes a character (its pinned voice), never a raw provider voice id.
+- For tools in a one-shot turn, pass them in the options: `reply("guard", "open up", {"tools": {"open_gate": _on_open_gate}})`. A session or the node keeps its tools for the whole conversation.
+
+## Results
+
+| Field | Meaning |
+| --- | --- |
+| `ok` | `true` when the call worked. |
+| `error` | A stable tag, for example `limit_reached`. See [Errors](/router/errors). |
+| `fix` | One line that says what to do. |
+| `usage` | Units for this call (tokens, characters, seconds or images). Never a price. |
+
+## Fallbacks
+
+Write the fallback first. It is the game when AI is not there: your own lines, a password prompt, buttons. Use it on `unavailable`, `router_disabled`, `limit_reached`, `credits_required`, `age_restricted` and `not_signed_in` for the rest of the session, and on `provider_unavailable`, `rate_limited` and `moderated` for one line. Never retry in a loop.
+
+## The microphone
+
+Never ask for the mic yourself. See [Microphone permissions](/router/permissions).

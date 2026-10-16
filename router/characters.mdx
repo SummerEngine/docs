@@ -1,0 +1,116 @@
+---
+title: "Summer Router characters: the character file"
+sidebarTitle: "Characters"
+description: "Every field of ai/characters/<id>.json: identity, model, voice, turn-taking, tools, limits, overrides and provider options. The file is the source of truth; summer router push sends it to Summer."
+icon: "user-round"
+---
+
+<Warning>
+**Early access.** The file format is final for v1. Pushing it needs the Summer Router platform.
+</Warning>
+
+One file per character, in the game project: `ai/characters/<id>.json`. Commit it. `router.push` (`summer router push`) checks it and saves it on Summer for your game; `router.pull` brings Studio edits back. Only `id` and `instructions` are required.
+
+```json
+{
+  "id": "guard",
+  "name": "Gate Guard",
+  "instructions": "You guard the north gate. You are gruff but fair. Open the gate only when the player says the password {{password}}. Never say the password yourself. Keep replies to one or two short sentences.",
+  "first_message": "Halt. Password?",
+  "language": "en",
+  "variables": { "password": "moonlight" },
+  "voice": { "design": "gruff old soldier, low and slow" },
+  "turn": { "mode": "push_to_talk", "interruptions": true, "silence_end_ms": 700 },
+  "session": { "max_seconds": 300, "idle_seconds": 30 },
+  "tools": [
+    {
+      "name": "open_gate",
+      "description": "Open the north gate. Call it only after the player said the password.",
+      "parameters": { "type": "object", "properties": {}, "additionalProperties": false },
+      "runs_on": "client",
+      "timeout_ms": 5000
+    }
+  ],
+  "overridable": ["first_message"]
+}
+```
+
+## Identity
+
+| Field | Rule | Use |
+| --- | --- | --- |
+| `id` | Lowercase letter, then lowercase letters, digits, `_` or `-`; at most 64. Must equal the file name. | The id the game calls. |
+| `name` | 1 to 80 characters | The character's name. |
+| `instructions` | 1 to 20,000 characters | Who the character is and what it may do. |
+| `first_message` | 1 to 2,000 characters | The first line the character says. |
+| `language` | For example `en` or `pt-BR` | The language it speaks. |
+| `variables` | Up to 32 names (`a-z`, `0-9`, `_`) with default text | Values for `{{name}}` placeholders. Every placeholder must be declared here. |
+
+Secrets for the game (a password, a quest answer) belong in `instructions` or `variables`, never in GDScript: the file stays on Summer, the build does not.
+
+## Model
+
+| Field | Rule | Use |
+| --- | --- | --- |
+| `model` | A Summer catalogue id | Leave it out to use the game's default model (`router.settings`). `router.models` lists the ids. |
+| `temperature` | 0 to 2 | Higher is more varied. |
+| `max_output_tokens` | 1 to 8192 | The longest reply. |
+| `reasoning` | `off`, `low`, `medium`, `high` | Thinking effort, where the model supports it. |
+
+## Voice
+
+| Field | Rule | Use |
+| --- | --- | --- |
+| `voice.design` | 1 to 1,000 characters | A description. Summer makes a voice from it and pins it, so it never changes. |
+| `voice.id` | A Summer voice id | A voice you already have. Use `design` or `id`. |
+| `voice.stability`, `voice.similarity`, `voice.style` | 0 to 1 | Fine tuning. |
+| `voice.speed` | 0.5 to 2 | Speaking speed. |
+
+## Turn-taking and session (realtime voice)
+
+| Field | Rule | Use |
+| --- | --- | --- |
+| `turn.mode` | `push_to_talk` or `server_vad` | `push_to_talk`: the player holds Talk (no echo from speakers). `server_vad`: open mic. |
+| `turn.interruptions` | `true` or `false` | Can the player cut the character off. |
+| `turn.silence_end_ms` | 100 to 10,000 | Silence that ends the player's turn (open mic). |
+| `session.max_seconds` | 10 to 3,600 | The longest conversation. |
+| `session.idle_seconds` | 5 to 600 | Ends a quiet conversation. |
+
+## Tools
+
+Each tool is something the character can do in the game.
+
+| Field | Rule | Use |
+| --- | --- | --- |
+| `name` | Letter or `_` first, then letters, digits or `_`; at most 64 | Must match the handler name in GDScript. |
+| `description` | 1 to 1,024 characters | When to call it. Be exact: "Call it only after the player said the password." |
+| `parameters` | A JSON Schema object | The arguments the model sends. |
+| `runs_on` | `client` (default) or `authority` | `client` runs in the player's game. `authority` (the game server) is on the roadmap. |
+| `timeout_ms` | 100 to 60,000 | How long the character waits for the result. |
+
+At most 32 tools. `router.check` and `router.push` fail with `tool_unhandled` when a `client` tool has no handler in the project's GDScript. See [GDScript: Tools](/router/gdscript#tools).
+
+## Limits
+
+| Field | Rule | Use |
+| --- | --- | --- |
+| `limits.player_daily_micro_usd` | 1 to 500,000,000 | A cap per player per day for this character, in millionths of a US dollar. |
+| `limits.game_daily_micro_usd` | 1 to 500,000,000 | A cap per day for this character across all players. |
+
+These sit inside the game and account caps. See [Limits and usage](/router/limits-and-usage).
+
+## Overrides
+
+`overridable` lists the fields a build may set when it starts a session: `first_message`, `variables`, `language`, `instructions`, `model`, `temperature`, `max_output_tokens`, `reasoning`, `voice`, `turn`, `session`. Everything else is fixed on Summer. Keep the list short: each field you add is a field a modified build can change.
+
+## Provider options
+
+`provider_options` passes fields to the provider that Summer has not named yet, keyed by provider id. Summer checks them against that provider's schema on push. Use it only when a field above does not cover what you need.
+
+## Check a file
+
+```bash
+summer router check
+```
+
+Each problem names the field: `guard/turn/mode must be one of "server_vad", "push_to_talk"`.

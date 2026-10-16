@@ -1,0 +1,407 @@
+# Summer Engine
+
+> The AI game engine for people and agents. Build real 2D and 3D games with Claude Code, Codex, Cursor or Summer Agent, publish on Summer Games or Steam, and earn.
+
+## Agent instructions
+
+Summer Engine is the game engine built for AI: any coding agent builds a full multiplayer game and publishes it.
+
+- Every page is Markdown: add `.md` to its URL (for example https://docs.summerengine.com/router/quickstart.md), or send `Accept: text/markdown`.
+- Hosted MCP (OAuth, no install): https://mcp.summerengine.com/mcp
+- Local MCP and CLI: the `summer-engine` npm package (Node 20 or later). Set up an agent: `npx -y summer-engine@latest setup claude-code --yes` (or `codex`, `cursor`, and others). The CLI is `summer`; without a global install, run `npx -y summer-engine@latest <command>`.
+- Skills: `setup` installs them. One skill: `npx -y summer-engine@latest skills install <name>`.
+- Sign in: `summer login`. With no terminal (an agent) it prints JSON `{browser_url, verification_code, next_step}`: show browser_url to the person, then run `summer login --complete`. CI: set `SUMMER_TOKEN`.
+- Summer Router (AI characters, speech, transcription and images at runtime; early access): `npx -y summer-engine@latest router setup --yes`, then https://docs.summerengine.com/router/quickstart.md. Game code calls `Summer.client.router` (the engine reaches `/v1/games/{gameId}/router/...` through the Summer host). Character files live in `ai/characters/<id>.json`; the operations router.add_character, router.check, router.push and router.pull work on them (`summer router <action>`, or `summer_call` in MCP), and router.push and router.pull reach `/v1/management/games/{gameId}/router/...`. The cloud ones (router.models, router.list_characters, router.save_character, router.test_character, router.settings, router.set_settings, router.usage, ...) run on the hosted server: find them with `summer_search`, run them with `summer_call`.
+- Every Summer operation (`area.action`) answers `{ok, status, result}` or `{ok: false, error: {code, message, next}}`; `summer <area> <action> --json` prints only that, exit 0 or 1. A step for a person is one URL (`browser_url`, or `error.next.url`); show it.
+- Never put a provider key, a model name or a prompt in a game build.
+
+## Docs
+
+- [The AI Game Engine](https://docs.summerengine.com/index.md): The AI game engine for people and agents. Build real 2D and 3D games with Claude Code, Codex, Cursor or Summer Agent, publish on Summer Games or Steam, and earn.
+- [Install Summer Engine](https://docs.summerengine.com/essentials/installation.md): Download Summer Engine for Mac or Windows in a minute, or let your AI agent install it with one command.
+- [Make your first game](https://docs.summerengine.com/quickstarts/fresh-project.md): Describe the game you want. Your AI agent or Summer Agent builds it in Summer Engine, and you play it right away.
+- [Make a multiplayer game](https://docs.summerengine.com/quickstarts/multiplayer-game.md): Summer runs the servers, matchmaking, parties, saves, leaderboards and store for your game. Describe what you want, and your agent builds it.
+- [How do I publish my game on Summer?](https://docs.summerengine.com/publishing/summer-games.md): Export your game, make its art and store page, upload the build and submit. Do it yourself in Studio, or let your AI agent do every step through the Summer Engine MCP and approve it with one click.
+- [What do I need ready to publish?](https://docs.summerengine.com/publishing/what-you-need.md): A checklist before you publish on Summer Games: a Summer account, a build that exports, store text, store art per store, a price choice, and analytics events if you want them.
+- [Can my AI agent publish my game for me?](https://docs.summerengine.com/publishing/agent-publishing.md): Yes. Claude, Codex or ChatGPT can make your store page and art, export and upload the build, and submit it through the Summer Engine MCP. You click Approve publishing once.
+- [What does it cost to publish on Summer?](https://docs.summerengine.com/publishing/cost.md): Publishing on Summer Games is free. Players can tip you. Set a price and Summer takes 30% of each sale. Games built in Summer can also sell items for Sparks.
+- [Connect your agent to publish](https://docs.summerengine.com/publishing/connect-your-agent.md): Connect Claude Code, Codex, Claude or ChatGPT to the Summer Engine MCP. On your computer, the summer-engine npm MCP and one summer login; in the browser, the hosted MCP at mcp.summerengine.com.
+- [Export your game for Summer Games](https://docs.summerengine.com/publishing/export.md): Which file the Summer Games store takes for iPhone, Android, Mac, Windows and the web; how summer_export_game makes it; export templates from the Summer CDN; file names, icons and signing.
+- [Store art: every slot, size and rule](https://docs.summerengine.com/publishing/store-art.md): The art for the Summer Games desktop and mobile stores: key art, icon, screenshots, capsules, the mobile tall cover and the trailer. Sizes, shapes, text rules, focal points, the 20-image budget, and why each one matters.
+- [Make store art with your agent](https://docs.summerengine.com/publishing/generate-store-art.md): Your agent checks My assets, makes missing art with Summer's image generation through the Summer Engine MCP, crops it to each store slot itself, uploads it, and puts it in the slot.
+- [Store page text for the desktop and mobile stores](https://docs.summerengine.com/publishing/store-text.md): Title, tagline, desktop and mobile descriptions, tags and age rating for a Summer Games store page. Limits, how to write each one, and how Same as desktop works.
+- [Release readiness checklist](https://docs.summerengine.com/publishing/release-readiness.md): Checks to run before you publish or promote a version of your Summer game, so players can actually play it: the server starts its server scene, online join works, progress is saved, players can get back to the title, your game was exported with a released Summer editor, every file it reads is in the pack, the Summer Games apps run its Summer version, and players keep playing while signed in. Each check comes from a real release that failed.
+- [Upload your build and submit](https://docs.summerengine.com/publishing/upload-and-submit.md): Upload a store bundle, web build or download with summer_publish_build, wait for Summer's checks, make a preview link, and submit with summer_store_submit for the owner's approval.
+- [Approve publishing: the one step only you do](https://docs.summerengine.com/publishing/owner-approval.md): When your agent submits your game, it waits for you. Open the approval link in Studio, check the page, art, build and price, and click Approve publishing. Summer reviews it, and it goes live when the review passes.
+- [Analytics: wire events into your game and read them in Grow](https://docs.summerengine.com/publishing/analytics.md): What Summer counts for every published game, how to send custom events before you export, where they work, and how to read the numbers in Studio Grow or through your agent.
+- [Publishing troubleshooting](https://docs.summerengine.com/publishing/summer-games-troubleshooting.md): Fixes for the errors you meet when publishing on Summer Games through Studio or MCP: sign-in, export, templates, upload, art shape, checklist, approval and analytics.
+- [Agent checklist: publish a Summer game end to end](https://docs.summerengine.com/publishing/agent-checklist.md): One ordered checklist an AI agent follows from a built game to a submitted Summer Games store page, through the Summer MCP. It stops at the owner's approval link.
+- [Publishing tools reference](https://docs.summerengine.com/publishing/mcp-tools.md): Every Summer MCP tool used to publish a game: projects, assets, store page, art, build upload, web builds and downloads, submit, Grow, export and templates. Inputs and an example for each.
+- [How do I make a game with Summer Agent?](https://docs.summerengine.com/quickstarts/ai-game-dev.md): Describe your game in plain words. Summer Agent, the AI built into Summer Engine, builds the scenes, code and assets, and you play it.
+- [How do I make a web game with AI?](https://docs.summerengine.com/quickstarts/web-game.md): Create a browser-playable game with AI assistance. Export to HTML5/WebAssembly for itch.io, your website, or anywhere.
+- [How do I make a PC game with AI?](https://docs.summerengine.com/quickstarts/pc-game.md): Build and export a Windows game with AI assistance. From idea to playable .exe in minutes.
+- [How do I make a Mac game with AI?](https://docs.summerengine.com/quickstarts/mac-game.md): Build and export a macOS game with AI assistance. Supports Intel and Apple Silicon.
+- [How do I make an iOS game with AI?](https://docs.summerengine.com/quickstarts/ios-game.md): Build and export an iPhone or iPad game with AI assistance. Publish to the App Store.
+- [How do I make an Android game with AI?](https://docs.summerengine.com/quickstarts/android-game.md): Build and export an Android game with AI assistance. Publish to Google Play or other stores.
+- [How do I make a console game with AI?](https://docs.summerengine.com/quickstarts/console-game.md): Build a Nintendo Switch, PlayStation, or Xbox game with AI assistance. Console export requires platform approval.
+- [How do I make a PlayStation game with AI?](https://docs.summerengine.com/quickstarts/playstation-game.md): Build and export a PlayStation 4 or PlayStation 5 game with AI assistance. Requires PlayStation Partners approval.
+- [Authentication](https://docs.summerengine.com/essentials/authentication.md): Create your Summer account and sign in your agent. There is no API key: your agent signs in with your Summer account in the browser.
+- [Account & Billing](https://docs.summerengine.com/essentials/account-billing.md): Manage your Summer account, subscription, billing, and spend limits
+- [Pricing](https://docs.summerengine.com/essentials/pricing.md): Summer Engine plans, included AI usage, free local MCP workflows, and what happens when you hit your AI usage limit
+- [Your First AI Chat](https://docs.summerengine.com/essentials/first-chat.md): Learn how to use Summer Engine's AI to build game elements through conversation
+- [Frequently Asked Questions](https://docs.summerengine.com/essentials/faq.md): Answers to common questions about Summer. Browse by topic or search.
+- [Auto](https://docs.summerengine.com/auto-mode/auto.md): Balanced quality and speed for everyday tasks
+- [MAX](https://docs.summerengine.com/auto-mode/premium.md): The most capable models, for the most complex tasks
+- [Models](https://docs.summerengine.com/auto-mode/models.md): How model choice works: Auto, MAX, or a specific model you pick
+- [Design Mode. Draw on your game to build it](https://docs.summerengine.com/ai-tools/design-mode.md): Click nodes or draw on your 2D and 3D viewport to tell Summer what to change. Design Mode and Fullscreen Iteration Mode keep you in the scene while the same chat runs underneath.
+- [AI Operations](https://docs.summerengine.com/ai-tools/operations.md): What Summer Engine's AI can do in your project
+- [How Summer's AI Agents Build Your Game](https://docs.summerengine.com/ai-tools/subagents.md): Summer Engine builds games with a team of AI agents. One agent plans and talks to you, specialist agents do the hands-on work, and you stay in charge of all of it. Here is how the team works and how to get the most out of it.
+- [Skills. Teach Summer Your Way of Building](https://docs.summerengine.com/ai-tools/skills.md): Skills are short guides that make Summer better at building your game. Summer ships a library of them, and you can write your own for a single project or all of them. Trigger any skill with a slash command right from the chat.
+- [Memory. How Summer Remembers Your Project](https://docs.summerengine.com/ai-tools/memory.md): Summer remembers the decisions you make about your game and carries them across every chat, so you never have to re-explain your art style, your mechanics, or the way you like things done.
+- [Project Intelligence](https://docs.summerengine.com/ai-tools/rag-search.md): How Summer Engine understands and indexes your entire project
+- [MCP Asset Search](https://docs.summerengine.com/ai-tools/mcp-asset-search.md): Search and import 25,000+ game assets from your IDE using AI-powered hybrid search
+- [Summer Studio](https://docs.summerengine.com/art-system/overview.md): Create, share, and discover game assets with AI-powered generation
+- [AI Asset Generation](https://docs.summerengine.com/art-system/ai-generation.md): Create, upload, organize, and import game assets (AI-generated or your own) directly into your games
+- [Summer Studio](https://docs.summerengine.com/art-system/gallery.md): Browse, search, and discover game assets created by the Summer community
+- [Asset Collections](https://docs.summerengine.com/art-system/collections.md): Organize and manage your favorite game assets with collections
+- [Asset Licensing Guide](https://docs.summerengine.com/art-system/licensing.md): Understanding licensing options for game assets in Summer
+- [Summer Apps](https://docs.summerengine.com/apps/overview.md): Ask any agent for a tool your team is missing, and it builds a real app inside Summer Studio: shared with your team, live on your assets and game data.
+- [Build your first Summer App](https://docs.summerengine.com/apps/build-your-first-app.md): Ask your agent for a team tool and watch it build, publish, check and open a Summer App in your Studio tab, then change it by asking again.
+- [Build a Summer App with your agent](https://docs.summerengine.com/apps/build-with-your-agent.md): How an agent builds a Summer App that works on the first try: connect the Summer Engine MCP, follow the 7-step loop, avoid the three mistakes that break apps, and look at every version with summer_app_screenshot.
+- [Agents and Summer Apps](https://docs.summerengine.com/apps/agents.md): Summer Apps are built for agents: an app's shared data is its API, apps give agents new tools, and agents build, see and change every app through the summer_app MCP tools.
+- [Summer Apps SDK reference](https://docs.summerengine.com/apps/sdk.md): window.summer inside a Summer App: app, data, assets, generate, ai, agent, page, engine, team, projects, grow and choices, with the permission each call needs and what it returns. Exact TypeScript types at /summer-sdk/v1.d.ts.
+- [Summer App manifest](https://docs.summerengine.com/apps/manifest.md): summer.app.json: an app's name, purpose, permissions, engine files, data collections, agent events, agent tools, surface, dock and plugin. Sent with every summer_app_publish.
+- [Summer Apps design kit](https://docs.summerengine.com/apps/design-kit.md): The Summer UI kit for apps: tokens, Geist, summer-* components that follow Studio light and dark, the layout format, and the rules that make an agent-built tool look crafted.
+- [Summer Apps, Summer Engine and docks](https://docs.summerengine.com/apps/engine-and-docks.md): How a Summer App reads and changes your open project in Summer Engine, which operations it may use, and how to dock an app next to your scene.
+- [Summer Apps security](https://docs.summerengine.com/apps/security.md): What a Summer App can and cannot do: a separate sandboxed site, no cookies or network, declared permissions, calls that run as the person, engine limits, spending limits and switches.
+- [Economy balance sheet: a Summer App for game teams](https://docs.summerengine.com/apps/game-teams/economy-balance-sheet.md): A shared sheet of every currency source and sink per hour of play, with net income against your target per currency. Manifest, seed data, agent edits and the look check.
+- [Item and quest database: a Summer App for game teams](https://docs.summerengine.com/apps/game-teams/item-and-quest-database.md): One shared database of your game's items and quests, with search, filters, edit dialogs and a reference check. Manifest, seed data, agent edits and the look check.
+- [Weapon balance table: a Summer App for game teams](https://docs.summerengine.com/apps/game-teams/weapon-balance-table.md): A shared table of every weapon with damage, attack speed and DPS, a chart that flags weapons over the DPS budget, and in-place edits. Manifest, seed data, agent edits and the look check.
+- [Loot table editor: a Summer App for game teams](https://docs.summerengine.com/apps/game-teams/loot-table-editor.md): A shared editor for your loot tables: weights per drop, the real chance per roll and per kill, and a tool that sets a drop to an exact chance. Manifest, seed data, agent edits and the look check.
+- [Level progress tracker: a Summer App for game teams](https://docs.summerengine.com/apps/game-teams/level-progress-tracker.md): A shared board of every level from blockout to done, with owners, blockers and playtest scores, and a stand-up report for your agent. Manifest, seed data, agent edits and the look check.
+- [How do I migrate from Unity to Summer Engine?](https://docs.summerengine.com/quickstarts/unity-migration.md): Rebuild your Unity project in Summer Engine with AI assistance. Use AI to research your project, plan the migration, and rebuild.
+- [How do I migrate from Unreal to Summer Engine?](https://docs.summerengine.com/quickstarts/unreal-migration.md): Rebuild your Unreal project in Summer Engine with AI assistance. Use AI to research your project, make a plan, and rebuild.
+- [Headless Scripting](https://docs.summerengine.com/automation/headless.md): Run Summer from a shell with no window: bake navmeshes, generate collision and LODs, author resources, import assets, and export builds from a plain GDScript file.
+- [Authoring Project Data](https://docs.summerengine.com/automation/authoring.md): Writing project files directly instead of clicking through the editor: where user:// really lives, how feature-tag overrides hide from get_setting, which translation formats load without an import pass, and the point at which hand-writing a .tscn stops working.
+- [Troubleshooting](https://docs.summerengine.com/desktop/troubleshooting.md): Solutions to common Summer Engine issues
+
+## Build your game
+
+- [Make your game multiplayer](https://docs.summerengine.com/build/multiplayer.md): How a Summer multiplayer game fits together: one project, a server that owns the rules, and Summer running it for every match and world.
+- [Make a game like Counter-Strike](https://docs.summerengine.com/build/games-like/tactical-shooter.md): The Summer pieces behind a competitive team shooter like Counter-Strike or Valorant: 5v5 matchmaking, instant movement, fair hits and ranked play.
+- [Make a game like League of Legends](https://docs.summerengine.com/build/games-like/moba.md): The Summer pieces behind a team battle arena like League of Legends or Dota 2: ranked 5v5 with an accept prompt, parties, a server-run map and ratings.
+- [Make a game like Minecraft](https://docs.summerengine.com/build/games-like/survival-sandbox.md): The Summer pieces behind a shared survival or sandbox world like a Minecraft server, Valheim or Rust: a persistent World that saves, sleeps and wakes, plus player saves and chat.
+- [Make a game like Deep Rock Galactic](https://docs.summerengine.com/build/games-like/co-op.md): The Summer pieces behind a squad co-op game like Deep Rock Galactic or Left 4 Dead: parties, quick play to fill the squad, a server-run mission and progress that carries over.
+- [Make a party game like Among Us](https://docs.summerengine.com/build/games-like/party-games.md): The Summer pieces behind a party game like Among Us or a Fall Guys-style round game: quick play for up to 16 players, parties, secret roles, rounds and a wins board.
+- [Make a game like Hearthstone](https://docs.summerengine.com/build/games-like/card-games.md): The Summer pieces behind a card or turn-based game like Hearthstone or chess.com: rated 1v1 matchmaking, hidden hands, server-kept turns and ratings.
+- [Make a single-player or mobile game](https://docs.summerengine.com/build/games-like/single-player.md): The Summer pieces behind a single-player or mobile game: the player's Summer account, items that follow them, a Sparks shop, analytics and publishing, with no server to run.
+- [Match players into games](https://docs.summerengine.com/build/matchmaking.md): Put players in a queue and start a match when there are enough of them. Covers quick play, ranked, fixed teams and an accept-the-match prompt.
+- [Let friends play together](https://docs.summerengine.com/build/parties.md): Friends form a party in Summer, pick a mode together, and the leader brings everyone into the same match.
+- [Keep a world running between sessions](https://docs.summerengine.com/build/persistent-worlds.md): Give players a place they come back to: a base, a farm or a realm that is saved, sleeps while nobody plays, and wakes up just as they left it.
+- [Make movement feel instant](https://docs.summerengine.com/build/movement.md): Each player moves their own character with no delay, the server checks every move, and everyone else sees smooth motion.
+- [Make hits fair](https://docs.summerengine.com/build/hit-detection.md): Shots, swings and abilities are checked against exactly what the attacking player saw on their screen, so a hit that looked like a hit counts.
+- [Share the game world](https://docs.summerengine.com/build/shared-state.md): Scores, doors, pickups, private hands of cards and one-off effects: the server owns every fact, players ask it for changes, and everyone sees the same game.
+- [Save player progress](https://docs.summerengine.com/build/player-progress.md): Remember each player's coins, unlocks, level and settings, and bring them back in every match, on any server and any device.
+- [Rank players and show leaderboards](https://docs.summerengine.com/build/leaderboards.md): Give players a skill rating that moves with every match, or a score board for anything your game counts, each with a public top 50.
+- [End a match and show results](https://docs.summerengine.com/build/match-results.md): Your server decides who won, Summer records the result once, every player sees their own outcome and rating change, and the match closes.
+- [Show friends and messages](https://docs.summerengine.com/build/friends.md): Show which friends are online or playing your game, open Summer's friends, profile and chat screens over your game, and send direct messages.
+- [Add text chat](https://docs.summerengine.com/build/chat.md): Give everyone in a match or world a shared chat. Summer filters messages, applies blocks and rate limits; your game only draws the chat box.
+- [Summer Router: AI characters and generation in your game](https://docs.summerengine.com/router/overview.md): Summer Router lets a Summer game use frontier AI while it runs: talking characters with text and realtime voice that call tools in your game, speech, transcription and images. No keys in the build.
+- [Quickstart for agents: add a voice NPC with Summer Router](https://docs.summerengine.com/router/quickstart.md): Paste one prompt into Claude Code or Codex and get a guard NPC who talks with the player and opens a gate when the player says the password. The only human steps are one sign-in and one click.
+- [Summer Router GDScript reference](https://docs.summerengine.com/router/gdscript.md): What to write in game code for Summer Router: Summer.client.router, the SummerRouterCharacter node, tools as a Dictionary of Callables, results, signals, errors and fallbacks.
+- [Summer Router operations: the summer router CLI and MCP reference](https://docs.summerengine.com/router/cli.md): Every Summer Router operation an agent runs: router.setup, router.add_character, router.check, router.push, router.pull and router.doctor on the project, plus the cloud operations. Shell, MCP, inputs, answers and the agent sign-in.
+- [Summer Router characters: the character file](https://docs.summerengine.com/router/characters.md): Every field of ai/characters/<id>.json: identity, model, voice, turn-taking, tools, limits, overrides and provider options. The file is the source of truth; summer router push sends it to Summer.
+- [Summer Router limits and usage](https://docs.summerengine.com/router/limits-and-usage.md): How Summer Router usage is billed, the caps that are on by default, who can change them, and how to read usage from Studio and the CLI.
+- [Microphone permissions for Summer Router voice](https://docs.summerengine.com/router/permissions.md): Summer asks for the microphone, never your game, and only when the player taps Talk. The rules, the states your game shows, the text fallback, and how to test every case.
+- [Summer Router errors and fixes](https://docs.summerengine.com/router/errors.md): Every Summer Router error tag, what it means, what the game does and how to fix it: errors in game code (Summer.client.router) and errors from the summer router CLI.
+- [Summer Router character reply: one text turn](https://docs.summerengine.com/router/character-reply.md): A text turn with a Summer Router character, tools allowed. Summer keeps the conversation history; the game sends the player's text and gets the reply and any tool calls.
+- [Summer Router character voice: realtime voice conversations](https://docs.summerengine.com/router/character-voice.md): A realtime voice conversation with a Summer Router character: the player talks, the character answers out loud and calls tools in the game. Push to talk or open mic, with a text fallback.
+- [Summer Router speech: text to speech in a character's voice](https://docs.summerengine.com/router/speech.md): Turn text into speech in a Summer Router character's pinned voice, or voice a reply the player just got. The game never sends a provider voice id.
+- [Summer Router transcribe: audio clip to text](https://docs.summerengine.com/router/transcribe.md): Turn a short audio clip into text with Summer Router, for example a spoken answer the game then checks. The microphone rules still apply.
+- [Summer Router image: generate an image at runtime](https://docs.summerengine.com/router/image.md): Make an image from a prompt while the game runs with Summer Router, with an optional reference image. Sizes, inputs and the result.
+- [Sell items for Sparks](https://docs.summerengine.com/build/store.md): Sell skins, items and upgrades for Sparks, Summer's currency. Summer handles the payment; your game shows the shop and unlocks what players own.
+- [Let players wear cosmetics](https://docs.summerengine.com/build/cosmetics.md): Let players equip skins, hats and other looks they own, checked by your server and shown to every player in the match.
+- [Charge for your game and accept tips](https://docs.summerengine.com/build/paid-games.md): Publish free with tips, set a one-time price, or sell items for Sparks. Plus featured items on your game's page.
+- [Choose server size and player count](https://docs.summerengine.com/build/server-size.md): Pick how much computing power each World's server gets and how many players a World can hold, from a small turn-based game to a big shared world.
+- [Run commands in a live World](https://docs.summerengine.com/build/console-commands.md): Type a command into a running World from your creator dashboard, such as an announcement or a live event, and see the game's reply.
+- [See what players do](https://docs.summerengine.com/build/analytics.md): Record the moments that matter in your game, from your players' games and your server, and see them in your game's Analytics tab.
+- [Publish your game](https://docs.summerengine.com/build/publish.md): Publish on summer.games by hand in the editor and Summer Studio: export one file, make your store page, upload and submit for review. With an AI agent, start at /publishing/summer-games and its agent checklist.
+
+## Grow
+
+- [What is Summer Grow?](https://docs.summerengine.com/grow/overview.md): Summer Grow is where you publish your game on Summer Games and then run it: numbers, earnings, prices, promotions, featured placement, A/B tests and your team. Every page works by hand or through your AI agent.
+- [Publish your game from Summer Studio](https://docs.summerengine.com/grow/publish.md): Publish a game on Summer Games from Studio: name it and pick its platforms, fill the desktop and mobile store pages, upload a web export for browser play or downloads for Mac, Windows and Linux, then submit for review and go live.
+- [Enter the Summer Games Jam](https://docs.summerengine.com/grow/game-jam.md): The Summer Games Jam is a weekly game jam: build a game in a week, upload it in Studio, and it shows on the jam page on summer.games. How to enter, what your entry shows, and where the rules are.
+- [Read your game's numbers in Grow Analytics](https://docs.summerengine.com/grow/analytics.md): Grow Analytics shows one game on Summer Games day by day: store page views, launches, play sessions, play time, campaign links and the custom events your game sends. How to read it and how to tag your links.
+- [Earnings and payouts in Grow](https://docs.summerengine.com/grow/earnings.md): What your games earn on Summer Games: paid copies in US dollars and items sold for Sparks, by game. How to connect Stripe to sell paid games, and where payouts stand.
+- [Run a promotion: sales, discounts and prices by country](https://docs.summerengine.com/grow/promotions.md): Put a paid game on sale with a discount and dates, set your own price per country, and apply for a promotion slot on Summer Games run with the Summer team.
+- [Paid growth: ads, email outreach and creator introductions](https://docs.summerengine.com/grow/paid-growth.md): Apply for paid growth run by the Summer team: ads that link to your summer.games page, emails to players who like games like yours, or introductions to streamers, video makers and other creators.
+- [Get featured on Summer Games](https://docs.summerengine.com/grow/featured-placement.md): See how ready each store page is to be featured on Summer Games, fix what is missing, and apply for a featured place: the home hero, New and noteworthy, a seasonal collection or a genre shelf.
+- [A/B test your store page](https://docs.summerengine.com/grow/ab-tests.md): Show visitors two to four versions of your store page on Summer Games, with different art, text or language, and see which one more of them buy and play. Or apply for a test run with the Summer team.
+- [Build your own Grow dashboards](https://docs.summerengine.com/grow/dashboards.md): Make boards of the numbers you check every day: store page views, launches, play sessions and play time for all your games or one, as lines, bars or a single number.
+- [Alerts: flag a drop in your game's numbers](https://docs.summerengine.com/grow/alerts.md): Set rules that flag a day when play sessions or store page views drop, or launches per store page view fall, and see which days fired in the last 28 days.
+- [Community: wishlists, follows and comments](https://docs.summerengine.com/grow/community.md): See how many players wishlist and follow each of your games on Summer Games, and the likes and comments they leave.
+- [Live ops: plan updates, events and sales](https://docs.summerengine.com/grow/live-ops.md): One calendar for your games: release dates from your store pages, and the updates, events, sales and maintenance you plan.
+- [Use the agent for Grow](https://docs.summerengine.com/grow/use-the-agent.md): The Studio assistant and the Summer Engine MCP can do Grow for you: read your numbers, open any Grow page, fill in forms, set prices, run A/B tests, invite your team and apply for promotions, ads and featured places. You press publish, upload and pay yourself.
+
+## MCP
+
+- [Summer MCPs](https://docs.summerengine.com/mcp/summer-mcps.md): Summer has two public MCP servers. Summer Engine lets an AI agent build games. Summer Games lets a player use their Summer account from Claude or ChatGPT: friends, messages, game invites, rivals and in-chat cards.
+- [MCP: Build Games with AI](https://docs.summerengine.com/mcp/overview.md): How to make games with AI: Cursor, Claude Code, Devin Desktop, Antigravity, Codex, Gemini, GitHub Copilot, OpenCode, VS Code, Zed. Summer Engine MCP, CLI, and API. 50+ tools.
+- [MCP Setup](https://docs.summerengine.com/mcp/setup.md): Connect any AI coding agent to Summer Engine with one command: Cursor, Claude Code, Codex, Devin Desktop, Antigravity, Zed, Copilot, OpenCode, Kiro, Goose and 20 more. What summer setup writes and where.
+- [Play with Friends from Claude or ChatGPT](https://docs.summerengine.com/mcp/summer-games.md): Connect the Summer Games MCP to Claude or ChatGPT. Ask who of your friends is online, text them, invite them to a game, and hear when they join. Rivals, in-chat cards and desktop navigation too.
+- [Summer Games MCP Tools](https://docs.summerengine.com/mcp/summer-games-tools.md): Every tool on the Summer Games MCP at mcp.summer.games: what it does, the permission it needs, and an example prompt. Friends, messages, parties, rivals, inbox, settings, desktop navigation, events and in-chat cards.
+- [Summer Games MCP for Game Developers](https://docs.summerengine.com/mcp/summer-games-developers.md): Players can gather friends for your game from Claude or ChatGPT, compare with rivals in your rankings, and open your store page. What that means for your Summer game, and how to make it easy for an AI app to find.
+- [Every Supported Agent](https://docs.summerengine.com/mcp/agents.md): The full list of AI coding agents and IDEs summer setup can configure for Summer Engine, with the exact MCP config file, file shape, and skills folder each one uses.
+- [Build Games in Cursor with Summer Engine MCP](https://docs.summerengine.com/mcp/cursor.md): Connect Summer Engine's MCP server to Cursor in under a minute and build games with AI inside your editor. One-click or manual configuration.
+- [Build Games in Claude Code with Summer Engine MCP](https://docs.summerengine.com/mcp/claude-code.md): Connect Summer Engine's MCP server to Claude Code and build games with Claude's coding assistant driving your engine directly.
+- [Build Games in Devin Desktop with Summer Engine MCP](https://docs.summerengine.com/mcp/devin-desktop.md): Connect Summer Engine's MCP server to Devin Desktop (formerly Windsurf) and build games with Devin Local controlling your engine.
+- [Build Games in Antigravity with Summer Engine MCP](https://docs.summerengine.com/mcp/antigravity.md): Connect Summer Engine's MCP server to Antigravity and build games with Google's AI-powered IDE driving your engine.
+- [Build Games in Codex with Summer Engine MCP](https://docs.summerengine.com/mcp/codex.md): Connect Summer Engine's MCP server to Codex and build games with OpenAI's AI coding assistant driving your engine.
+- [Build Games in Gemini CLI with Summer Engine MCP](https://docs.summerengine.com/mcp/gemini.md): Connect Summer Engine's MCP server to Gemini CLI and build games with Google's AI driving your engine. One-command setup.
+- [Build Games in GitHub Copilot CLI with Summer Engine MCP](https://docs.summerengine.com/mcp/github-copilot.md): Connect Summer Engine's MCP server to GitHub Copilot CLI and build games with Copilot driving your engine. One-command setup.
+- [Build Games in OpenCode with Summer Engine MCP](https://docs.summerengine.com/mcp/opencode.md): Connect Summer Engine's MCP server to OpenCode and build games with the open-source terminal agent driving your engine. One-command setup.
+- [Make Games for Free with Local LLMs](https://docs.summerengine.com/mcp/local-models.md): Run a free local model with Ollama, LM Studio, or Goose and drive Summer Engine through MCP. No AI subscription — your GPU does the thinking.
+- [Build Summer Games in VS Code](https://docs.summerengine.com/mcp/vscode.md): Connect Summer Engine's MCP server to VS Code or GitHub Copilot and build a Summer game from Microsoft's editor and Copilot's AI agent.
+- [Build Games in Zed with Summer Engine MCP](https://docs.summerengine.com/mcp/zed.md): Connect Summer Engine's MCP server to Zed and build games with AI inside the fast, AI-powered editor.
+- [CLI Quick Start](https://docs.summerengine.com/mcp/cli.md): Install Summer Engine, create projects, run the engine, and connect your IDE. Claude Code, Cursor, and Devin Desktop use the MCP to control Summer Engine.
+- [CLI Reference](https://docs.summerengine.com/mcp/cli-reference.md): Complete reference for the Summer Engine CLI: setup, doctor, install, login, run, create, plan, memory, skills, and the MCP server.
+- [Building a Game with MCP](https://docs.summerengine.com/mcp/building-a-game.md): Step-by-step guide for AI agents: how to build a complete game using Summer Engine's MCP tools.
+- [Skills](https://docs.summerengine.com/mcp/skills.md): The Summer Engine skill library: 94 best-practice guides for AI agents building games, grouped by domain, with where each agent reads them and how to install and update them.
+
+## Reference
+
+- [Technical reference](https://docs.summerengine.com/api-reference/overview.md): Generated reference for Summer: every MCP tool, the public Summer Platform HTTP API and the in-game Summer GDScript API. Built from the source code, never written by hand.
+- [Compatibility & upstream](https://docs.summerengine.com/reference/compatibility.md): Generated Summer Engine product-release and upstream compatibility facts from the pinned engine contract.
+- [MCP tools reference](https://docs.summerengine.com/mcp/tools-reference.md): Every Summer Engine MCP tool, generated from the tool definitions: what it does, what it needs (engine or sign-in), its inputs as JSON schema, its output and an example call.
+- [MCP tools: build](https://docs.summerengine.com/mcp/tools/build.md): Build tools of the Summer Engine MCP. Scenes, nodes, scripts, project files, the planning board and Summer Studio. For each tool: what it does, what it needs, inputs, output and an example.
+- [MCP tools: create assets](https://docs.summerengine.com/mcp/tools/create-assets.md): Create assets tools of the Summer Engine MCP. Generate and find images, 3D models, audio, video and motion, then import them into the project. For each tool: what it does, what it needs, inputs, output and an example.
+- [MCP tools: run and test](https://docs.summerengine.com/mcp/tools/run-and-test.md): Run and test tools of the Summer Engine MCP. Play the game, drive input, read the runtime, take screenshots and read errors. For each tool: what it does, what it needs, inputs, output and an example.
+- [MCP tools: publish](https://docs.summerengine.com/mcp/tools/publish.md): Publish tools of the Summer Engine MCP. Export, upload builds, write the store page and ask the owner to publish. For each tool: what it does, what it needs, inputs, output and an example.
+- [MCP tools: grow](https://docs.summerengine.com/mcp/tools/grow.md): Grow tools of the Summer Engine MCP. See how your published game is doing. For each tool: what it does, what it needs, inputs, output and an example.
+- [Summer Platform HTTP API](https://docs.summerengine.com/api-reference/http/overview.md): The public Summer Platform HTTP API: creator management, analytics reads, the Summer Games store and account basics. Base URL, sign-in and every operation, generated from the platform's OpenAPI specs.
+- [Begin a Build's client pack](https://docs.summerengine.com/api-reference/http/management/begin-client-package-upload.md): Requires builds.write for the Game and a ready Build.
+- [Read a Build pack and its checks](https://docs.summerengine.com/api-reference/http/management/get-client-package-upload.md): Requires builds.read.
+- [Recover a Game's publications and exported client pack checks](https://docs.summerengine.com/api-reference/http/management/list-build-publications.md): Requires builds.read for the Game.
+- [Begin a Build from an exported game or from project source](https://docs.summerengine.com/api-reference/http/management/create-build-publication.md): Requires builds.write for the Game.
+- [Read a publication, its progress and its exported client pack checks](https://docs.summerengine.com/api-reference/http/management/get-build-publication.md): Requires builds.read.
+- [Open the publication's upload](https://docs.summerengine.com/api-reference/http/management/begin-build-publication-upload.md): With source.uploadId, returns sourceId and uploadRequired false; call source-complete to queue durable copy and inspection.
+- [Grant writes for an exported game's upload parts](https://docs.summerengine.com/api-reference/http/management/sign-build-publication-parts.md): Requires builds.write while the exported game's upload is open.
+- [Seal the upload and accept it](https://docs.summerengine.com/api-reference/http/management/complete-build-publication-source.md): For a platform-upload source, validates the archived build configuration, referenced World definitions and known tier IDs before queuing.
+- [Approve the preview Build](https://docs.summerengine.com/api-reference/http/management/publish-build-publication.md): Requires builds.write and an approved Game.
+- [List creator game tags](https://docs.summerengine.com/api-reference/http/management/list-creator-game-tags.md): Curated Game tag IDs, aliases and retained legacy identities.
+- [List release drafts](https://docs.summerengine.com/api-reference/http/management/list-release-drafts.md): Authorized environment history.
+- [Create release draft](https://docs.summerengine.com/api-reference/http/management/create-release-draft.md): Snapshot the published platform assignments and environment revision.
+- [Get release draft](https://docs.summerengine.com/api-reference/http/management/get-release-draft.md): GET /v1/management/games/{gameId}/environments/{envId}/release-drafts/{draftId}
+- [Publish coordinated release](https://docs.summerengine.com/api-reference/http/management/publish-coordinated-release.md): Deploy the named ready draft targets; omit targets to select every configured target.
+- [List game builds](https://docs.summerengine.com/api-reference/http/management/list-game-builds.md): Lists immutable Builds, including preview Builds, with optional platform filtering before pagination.
+- [Get game build](https://docs.summerengine.com/api-reference/http/management/get-game-build.md): Reads one exact Build.
+- [List creator games](https://docs.summerengine.com/api-reference/http/management/list-creator-games.md): GET /v1/management/games
+- [Create creator game](https://docs.summerengine.com/api-reference/http/management/create-creator-game.md): Atomically creates a Game, its owner membership, draft listing and configured hosting environment attachments.
+- [Get creator game](https://docs.summerengine.com/api-reference/http/management/get-creator-game.md): GET /v1/management/games/{gameId}
+- [List game revisions](https://docs.summerengine.com/api-reference/http/management/list-game-revisions.md): GET /v1/management/games/{gameId}/revisions
+- [Fork game revision](https://docs.summerengine.com/api-reference/http/management/fork-game-revision.md): POST /v1/management/games/{gameId}/revisions
+- [Get game approval](https://docs.summerengine.com/api-reference/http/management/get-game-approval.md): Returns reusable Game listing approval independently of the current revision.
+- [Get game revision](https://docs.summerengine.com/api-reference/http/management/get-game-revision.md): GET /v1/management/games/{gameId}/revisions/{revisionId}
+- [Patch game revision](https://docs.summerengine.com/api-reference/http/management/patch-game-revision.md): PATCH /v1/management/games/{gameId}/revisions/{revisionId}
+- [Preview game revision](https://docs.summerengine.com/api-reference/http/management/preview-game-revision.md): GET /v1/management/games/{gameId}/revisions/{revisionId}/preview
+- [List game revision preview links](https://docs.summerengine.com/api-reference/http/management/list-game-revision-preview-links.md): The revision's 50 newest share links, without their tokens.
+- [Create game revision preview link](https://docs.summerengine.com/api-reference/http/management/create-game-revision-preview-link.md): Mint a private share link for this revision's store page.
+- [Get game revision verification](https://docs.summerengine.com/api-reference/http/management/get-game-revision-verification.md): GET /v1/management/games/{gameId}/revisions/{revisionId}/verification
+- [Submit game revision](https://docs.summerengine.com/api-reference/http/management/submit-game-revision.md): A person's own submit sends the revision to review; it is the owner's approval.
+- [List owner approvals](https://docs.summerengine.com/api-reference/http/management/list-owner-approvals.md): The Game's 20 newest agent publish requests, newest first.
+- [Get owner approval](https://docs.summerengine.com/api-reference/http/management/get-owner-approval.md): One agent publish request.
+- [Cancel owner approval](https://docs.summerengine.com/api-reference/http/management/cancel-owner-approval.md): Withdraw a waiting request (the owner or the agent).
+- [Publish game revision](https://docs.summerengine.com/api-reference/http/management/publish-game-revision.md): With If-Match, saves publication intent for the exact listing revision.
+- [Get game store interest](https://docs.summerengine.com/api-reference/http/management/get-game-store-interest.md): How many players wishlist and follow the Game on the store in this environment.
+- [Get game price](https://docs.summerengine.com/api-reference/http/management/get-game-price.md): The Game's price and the offer players see now.
+- [Get storefront live](https://docs.summerengine.com/api-reference/http/management/get-storefront-live.md): The creator's mirror of the player storefront: the live game revision and every live item with its frozen per-zone Sparks amounts, read from the same active-publication views players are served.
+- [Begin media upload](https://docs.summerengine.com/api-reference/http/management/begin-media-upload.md): POST /v1/management/media-assets:begin-upload
+- [Get media asset](https://docs.summerengine.com/api-reference/http/management/get-media-asset.md): GET /v1/management/media-assets/{assetId}
+- [Complete media upload](https://docs.summerengine.com/api-reference/http/management/complete-media-upload.md): POST /v1/management/media-assets/{assetId}:complete
+- [Preview media asset](https://docs.summerengine.com/api-reference/http/management/preview-media-asset.md): GET /v1/management/media-assets/{assetId}/preview
+- [Read built-in Game activity for the last whole UTC days](https://docs.summerengine.com/api-reference/http/analytics/get-game-activity-overview.md): Store page views, launches, play sessions and play time for the last `days` UTC days, today included.
+- [Discover observed event and property names](https://docs.summerengine.com/api-reference/http/analytics/get-analytics-catalog.md): Discover observed event and property names
+- [Player MCP authorization server metadata (RFC 8414)](https://docs.summerengine.com/api-reference/http/player/get-o-auth-authorization-server-metadata.md): Public clients only, authorization code with S256 PKCE, rotating refresh tokens.
+- [Register a player MCP client (RFC 7591)](https://docs.summerengine.com/api-reference/http/player/register-o-auth-client.md): Unauthenticated dynamic client registration for public clients.
+- [Exchange a code or refresh token for a player MCP access token](https://docs.summerengine.com/api-reference/http/player/exchange-o-auth-token.md): application/x-www-form-urlencoded, no client authentication.
+- [Get player profile](https://docs.summerengine.com/api-reference/http/player/get-player-profile.md): Own active player profile.
+- [Update player profile](https://docs.summerengine.com/api-reference/http/player/update-player-profile.md): Edit only the display name using the current version.
+- [Get player preferences](https://docs.summerengine.com/api-reference/http/player/get-player-preferences.md): Own player account presentation preferences.
+- [Replace player preferences](https://docs.summerengine.com/api-reference/http/player/replace-player-preferences.md): Replace both preferences using the version returned by GET.
+- [Browse games](https://docs.summerengine.com/api-reference/http/player/browse-games.md): Public published Games only.
+- [Get published game](https://docs.summerengine.com/api-reference/http/player/get-published-game.md): Public published Game resolved by durable ID or current registry slug, with current available featured Items in the configured display zone.
+- [Get published game image](https://docs.summerengine.com/api-reference/http/player/get-published-game-image.md): Public image bytes for the currently active Game publication.
+- [Get published game image variant](https://docs.summerengine.com/api-reference/http/player/get-published-game-image-variant.md): A generated aspect-preserving image variant for the currently active Game publication.
+- [Get published item image](https://docs.summerengine.com/api-reference/http/player/get-published-item-image.md): Public image bytes for the currently active Item publication.
+- [Get published item image variant](https://docs.summerengine.com/api-reference/http/player/get-published-item-image-variant.md): A generated aspect-preserving image variant for the currently active Item publication.
+- [Get published game model](https://docs.summerengine.com/api-reference/http/player/get-published-game-model.md): Public model bytes for the currently active Game publication.
+- [Get published item model](https://docs.summerengine.com/api-reference/http/player/get-published-item-model.md): Public model bytes for the currently active Item publication.
+- [List game updates](https://docs.summerengine.com/api-reference/http/player/list-game-updates.md): Anonymous activation history for a currently published Game, newest first and shared across platforms.
+- [Get game update](https://docs.summerengine.com/api-reference/http/player/get-game-update.md): Full public update addressed by stable activation ID, not release ID.
+- [List published store items](https://docs.summerengine.com/api-reference/http/player/list-published-store-items.md): Public bounded catalog of currently published Items across Games.
+- [List published game items](https://docs.summerengine.com/api-reference/http/player/list-published-game-items.md): Public currently published Items with an active parent Game and an offer in the configured display zone.
+- [Get published item](https://docs.summerengine.com/api-reference/http/player/get-published-item.md): Public currently published Items with an active parent Game and an offer in the configured display zone.
+- [List game tags](https://docs.summerengine.com/api-reference/http/player/list-game-tags.md): Public published catalog metadata.
+- [List featured games](https://docs.summerengine.com/api-reference/http/player/list-featured-games.md): Public published catalog metadata.
+- [Read the collected lifetime Play total for a public Game](https://docs.summerengine.com/api-reference/http/player/read-public-play-total.md): Missing or unavailable projection is explicit; total is null, never a fabricated zero.
+- [In-game Summer API (GDScript)](https://docs.summerengine.com/api-reference/gdscript/overview.md): The Summer singleton your game code calls: Summer.client for the player's game (analytics, store, friends, party, chat, matchmaking, leaderboards, player data) and Summer.authority for your server (match results, world saves, ratings). Generated from the engine's class reference.
+- [Summer.client](https://docs.summerengine.com/api-reference/gdscript/client.md): Role-scoped client SDK root.
+- [Summer.client.channels](https://docs.summerengine.com/api-reference/gdscript/client/channels.md): Player chat channels bound to the current admitted World.
+- [Summer.client.analytics](https://docs.summerengine.com/api-reference/gdscript/client/analytics.md): Captures creator game events through the private Player Host.
+- [Summer.client.context](https://docs.summerengine.com/api-reference/gdscript/client/context.md): Immutable client projection context.
+- [Summer.client.friends](https://docs.summerengine.com/api-reference/gdscript/client/friends.md): The player's Summer friends as this Game may see them.
+- [Summer.client.items](https://docs.summerengine.com/api-reference/gdscript/client/items.md): Read-only revisioned inventory projection for the current player.
+- [Summer.client.matchmaking](https://docs.summerengine.com/api-reference/gdscript/client/matchmaking.md): Hosted placement availability.
+- [Summer.client.messages](https://docs.summerengine.com/api-reference/gdscript/client/messages.md): The player's Summer direct messages, behind the player's per-Game consent.
+- [Summer.client.party](https://docs.summerengine.com/api-reference/gdscript/client/party.md): The player's Summer party as this Game sees it.
+- [Summer.client.player_data](https://docs.summerengine.com/api-reference/gdscript/client/player-data.md): Read-only view of this player's own public player data.
+- [Summer.client.ratings](https://docs.summerengine.com/api-reference/gdscript/client/ratings.md): This player's own match results and committed account ratings.
+- [Summer.client.rankings](https://docs.summerengine.com/api-reference/gdscript/client/rankings.md): This player's Game-scoped ranking scores.
+- [Summer.client.store](https://docs.summerengine.com/api-reference/gdscript/client/store.md): Browse the current Game store and request trusted checkout.
+- [Summer.authority](https://docs.summerengine.com/api-reference/gdscript/authority.md): Role-scoped authoritative SDK root.
+- [Summer.authority.analytics](https://docs.summerengine.com/api-reference/gdscript/authority/analytics.md): Captures creator events through the private Supervisor.
+- [Summer.authority.context](https://docs.summerengine.com/api-reference/gdscript/authority/context.md): Immutable authority projection context.
+- [Summer.authority.items](https://docs.summerengine.com/api-reference/gdscript/authority/items.md): Authority items facade for verified-Session projections.
+- [Summer.authority.match](https://docs.summerengine.com/api-reference/gdscript/authority/match.md): Typed authoritative Match operations.
+- [Summer.authority.player_data](https://docs.summerengine.com/api-reference/gdscript/authority/player-data.md): Authority-written, per-player private game data.
+- [Summer.authority.ratings](https://docs.summerengine.com/api-reference/gdscript/authority/ratings.md): Authority read of each player's queue rating.
+- [Summer.authority.rankings](https://docs.summerengine.com/api-reference/gdscript/authority/rankings.md): Trusted reads and versioned writes for Game-scoped rankings.
+- [Summer.authority.world](https://docs.summerengine.com/api-reference/gdscript/authority/world.md): Typed authoritative World lifecycle operations.
+- [Summer.multiplayer](https://docs.summerengine.com/api-reference/gdscript/multiplayer.md): Operation-based Summer World and Session service.
+- [SummerAuthorityComponent](https://docs.summerengine.com/api-reference/gdscript/types/authority-component.md): Immutable authority component identity and role.
+- [SummerAuthorityInventoryOperation](https://docs.summerengine.com/api-reference/gdscript/types/authority-inventory-operation.md): One allowlisted authority inventory read for one verified Session.
+- [SummerAuthorityLeaseStatus](https://docs.summerengine.com/api-reference/gdscript/types/authority-lease-status.md): Read-only projection of authority lease health.
+- [SummerAuthorityRuntime](https://docs.summerengine.com/api-reference/gdscript/types/authority-runtime.md): Immutable authority runtime, epoch, component, and lease projection.
+- [SummerAvailability](https://docs.summerengine.com/api-reference/gdscript/types/availability.md): Immutable truthful multiplayer capability report.
+- [SummerBuildIdentity](https://docs.summerengine.com/api-reference/gdscript/types/build-identity.md): Immutable Build and compatibility identity selected by Summer.
+- [SummerCapabilityGrant](https://docs.summerengine.com/api-reference/gdscript/types/capability-grant.md): Immutable negotiated Summer capability and version.
+- [SummerChannelMessage](https://docs.summerengine.com/api-reference/gdscript/types/channel-message.md): An authorized World channel message.
+- [SummerChannelMessagePage](https://docs.summerengine.com/api-reference/gdscript/types/channel-message-page.md): A bounded page of authorized World channel messages.
+- [SummerChannelMessagesOperation](https://docs.summerengine.com/api-reference/gdscript/types/channel-messages-operation.md): A typed asynchronous World channel operation.
+- [SummerChannelReceipt](https://docs.summerengine.com/api-reference/gdscript/types/channel-receipt.md): Immutable acceptance receipt for a World channel message.
+- [SummerChannelSendOperation](https://docs.summerengine.com/api-reference/gdscript/types/channel-send-operation.md): A typed asynchronous World channel operation.
+- [SummerCheckoutLine](https://docs.summerengine.com/api-reference/gdscript/types/checkout-line.md): One caller-selected offer and quantity for trusted checkout.
+- [SummerCheckoutOperation](https://docs.summerengine.com/api-reference/gdscript/types/checkout-operation.md): Observes one trusted checkout through its durable outcome.
+- [SummerCheckoutReceipt](https://docs.summerengine.com/api-reference/gdscript/types/checkout-receipt.md): Immutable authoritative receipt for an atomic checkout.
+- [SummerCheckoutReceiptItem](https://docs.summerengine.com/api-reference/gdscript/types/checkout-receipt-item.md): Immutable ownership targets from one purchased offer.
+- [SummerCheckoutStatus](https://docs.summerengine.com/api-reference/gdscript/types/checkout-status.md): Immutable versioned trusted checkout state.
+- [SummerConversation](https://docs.summerengine.com/api-reference/gdscript/types/conversation.md): The player's direct-message conversation with one other player.
+- [SummerConversationsOperation](https://docs.summerengine.com/api-reference/gdscript/types/conversations-operation.md): One page of the player's direct-message conversations.
+- [SummerDirectMessage](https://docs.summerengine.com/api-reference/gdscript/types/direct-message.md): One accepted Summer direct message.
+- [SummerDirectMessageSendOperation](https://docs.summerengine.com/api-reference/gdscript/types/direct-message-send-operation.md): One direct message sent through `SummerClientMessages.send`.
+- [SummerDirectMessagesOperation](https://docs.summerengine.com/api-reference/gdscript/types/direct-messages-operation.md): One page of a direct-message conversation.
+- [SummerExecutionContext](https://docs.summerengine.com/api-reference/gdscript/types/execution-context.md): Immutable base identity and capability context.
+- [SummerExecutionDescriptor](https://docs.summerengine.com/api-reference/gdscript/types/execution-descriptor.md): Immutable role, topology, artifact profile, and capabilities selected before execution.
+- [SummerFriend](https://docs.summerengine.com/api-reference/gdscript/types/friend.md): One of the player's Summer friends, as this Game may see them.
+- [SummerGameIdentity](https://docs.summerengine.com/api-reference/gdscript/types/game-identity.md): Immutable Game identity selected by Summer.
+- [SummerInventoryChange](https://docs.summerengine.com/api-reference/gdscript/types/inventory-change.md): One immutable inventory projection change.
+- [SummerInventoryItem](https://docs.summerengine.com/api-reference/gdscript/types/inventory-item.md): One immutable revisioned platform item projection.
+- [SummerInventoryRefreshOperation](https://docs.summerengine.com/api-reference/gdscript/types/inventory-refresh-operation.md): One engine-owned inventory projection refresh.
+- [SummerItemMedia](https://docs.summerengine.com/api-reference/gdscript/types/item-media.md): Immutable presentation media for an owned item.
+- [SummerItemRights](https://docs.summerengine.com/api-reference/gdscript/types/item-rights.md): Immutable platform-owned item rights projection.
+- [SummerJoinOperation](https://docs.summerengine.com/api-reference/gdscript/types/join-operation.md): The one operation every way into a World returns.
+- [SummerJoinProgress](https://docs.summerengine.com/api-reference/gdscript/types/join-progress.md): Immutable sanitized join progress, identical for every placement provider.
+- [SummerJoinTarget](https://docs.summerengine.com/api-reference/gdscript/types/join-target.md): Which placement provider brings this player into a World.
+- [SummerLeaderboardEntry](https://docs.summerengine.com/api-reference/gdscript/types/leaderboard-entry.md): One ranked player on a queue's leaderboard.
+- [SummerLeaderboardOperation](https://docs.summerengine.com/api-reference/gdscript/types/leaderboard-operation.md): Reads a rated queue's top-50 leaderboard.
+- [SummerMatch](https://docs.summerengine.com/api-reference/gdscript/types/match.md): Immutable Match identity and verified participant roster.
+- [SummerMatchConclusionOperation](https://docs.summerengine.com/api-reference/gdscript/types/match-conclusion-operation.md): Typed operation that commits a match and returns its settlement.
+- [SummerMatchDeliveryCompletionOperation](https://docs.summerengine.com/api-reference/gdscript/types/match-delivery-completion-operation.md): Typed completion of one persistent World's Match delivery phase.
+- [SummerMatchResult](https://docs.summerengine.com/api-reference/gdscript/types/match-result.md): This player's own view of one concluded Match.
+- [SummerMatchSettlement](https://docs.summerengine.com/api-reference/gdscript/types/match-settlement.md): Immutable, complete server-visible match settlement.
+- [SummerMatchmakingProposal](https://docs.summerengine.com/api-reference/gdscript/types/matchmaking-proposal.md): Opaque handle for one pending matchmaking proposal that requires an explicit decision.
+- [SummerMatchmakingRequest](https://docs.summerengine.com/api-reference/gdscript/types/matchmaking-request.md): Bounded creator preferences for hosted matchmaking.
+- [SummerOperation](https://docs.summerengine.com/api-reference/gdscript/types/operation.md): Single-terminal asynchronous operation for the Summer runtime.
+- [SummerParticipant](https://docs.summerengine.com/api-reference/gdscript/types/participant.md): Verified Session role, outcome eligibility and team in one Match.
+- [SummerPartyMember](https://docs.summerengine.com/api-reference/gdscript/types/party-member.md): One member of the player's Summer party, as this Game sees them.
+- [SummerPlayer](https://docs.summerengine.com/api-reference/gdscript/types/player.md): Immutable sanitized Player projection.
+- [SummerPlayerDataCommitOperation](https://docs.summerengine.com/api-reference/gdscript/types/player-data-commit-operation.md): Writes one slot of a player's data.
+- [SummerPlayerDataLoadOperation](https://docs.summerengine.com/api-reference/gdscript/types/player-data-load-operation.md): Reads a player's data.
+- [SummerPlayerDataRecord](https://docs.summerengine.com/api-reference/gdscript/types/player-data-record.md): One slot of one player's data.
+- [SummerPlayerSettlement](https://docs.summerengine.com/api-reference/gdscript/types/player-settlement.md): Immutable settlement projection for one verified participant Session.
+- [SummerRankingLeaderboardOperation](https://docs.summerengine.com/api-reference/gdscript/types/ranking-leaderboard-operation.md): The first 50 public rows of a Game-scoped ranking.
+- [SummerRankingOperation](https://docs.summerengine.com/api-reference/gdscript/types/ranking-operation.md): One player's Game-scoped ranking score after a successful read or write.
+- [SummerRankingStandingOperation](https://docs.summerengine.com/api-reference/gdscript/types/ranking-standing-operation.md): The caller's full place in a Game-scoped ranking.
+- [SummerRatingChange](https://docs.summerengine.com/api-reference/gdscript/types/rating-change.md): Immutable before-and-after rating projection.
+- [SummerRatingLoadOperation](https://docs.summerengine.com/api-reference/gdscript/types/rating-load-operation.md): Reads one player's queue rating for the authority.
+- [SummerRatingSnapshot](https://docs.summerengine.com/api-reference/gdscript/types/rating-snapshot.md): Immutable committed rating state.
+- [SummerResult](https://docs.summerengine.com/api-reference/gdscript/types/result.md): Immutable structured result returned by Summer runtime operations.
+- [SummerServiceError](https://docs.summerengine.com/api-reference/gdscript/types/service-error.md): Immutable versioned failure identity shared by Summer services.
+- [SummerSession](https://docs.summerengine.com/api-reference/gdscript/types/session.md): Immutable Player association with a Summer World.
+- [SummerShutdownNotice](https://docs.summerengine.com/api-reference/gdscript/types/shutdown-notice.md): Immutable platform advance notice for a World shutdown.
+- [SummerStandingOperation](https://docs.summerengine.com/api-reference/gdscript/types/standing-operation.md): Reads the caller's own place in a rated queue.
+- [SummerStoreItem](https://docs.summerengine.com/api-reference/gdscript/types/store-item.md): Immutable item listed in the current Game store.
+- [SummerStoreItemsOperation](https://docs.summerengine.com/api-reference/gdscript/types/store-items-operation.md): Resolves one page of the current Game store.
+- [SummerStoreMedia](https://docs.summerengine.com/api-reference/gdscript/types/store-media.md): Immutable expiring storefront media.
+- [SummerStorePrice](https://docs.summerengine.com/api-reference/gdscript/types/store-price.md): Immutable display price from the platform.
+- [SummerWorld](https://docs.summerengine.com/api-reference/gdscript/types/world.md): Immutable projection of the active Summer World.
+- [SummerWorldChannel](https://docs.summerengine.com/api-reference/gdscript/types/world-channel.md): An admitted participant's private handle to a World channel.
+- [SummerWorldChannelOpenOperation](https://docs.summerengine.com/api-reference/gdscript/types/world-channel-open-operation.md): A typed asynchronous World channel operation.
+- [SummerWorldDefinitionIdentity](https://docs.summerengine.com/api-reference/gdscript/types/world-definition-identity.md): Immutable selected WorldDefinition projection.
+- [SummerWorldLoadOperation](https://docs.summerengine.com/api-reference/gdscript/types/world-load-operation.md): Loads the current World save through its trusted owner.
+- [SummerWorldSave](https://docs.summerengine.com/api-reference/gdscript/types/world-save.md): A validated saved World or explicit pristine World.
+- [SummerWorldSaveOperation](https://docs.summerengine.com/api-reference/gdscript/types/world-save-operation.md): Commits one coherent game-defined save.
+- [SummerWorldSaveReceipt](https://docs.summerengine.com/api-reference/gdscript/types/world-save-receipt.md): Immutable accepted save revision.
+- [I have an existing project. How do I add Summer Engine?](https://docs.summerengine.com/quickstarts/existing-godot.md): Bring an existing project to Summer Engine: test a committed copy first, check your plugins and exports, then build on it with AI.
+- [Move an Existing Project to Summer Engine](https://docs.summerengine.com/migration/godot.md): Move an existing project to Summer Engine: test a committed copy, check what imports cleanly, then build on it with AI and add multiplayer.
+- [Extending Summer](https://docs.summerengine.com/extending/overview.md): Summer is an extensible engine. Three ways to add capability: GDScript editor plugins, native GDExtension libraries, and engine modules — what each one can reach, and which to pick.
+- [Editor Plugins](https://docs.summerengine.com/extending/editor-plugins.md): Write a @tool EditorPlugin in Summer to get full EditorInterface: force reimports of agent-written files, bake occluders, save scenes from code, register autoloads. Templates, the three ways to enable a plugin, and the traps.
+- [GDExtension](https://docs.summerengine.com/extending/gdextension.md): Build native extensions against Summer's current Godot 4.7.2 base, and distinguish current guidance from historical 4.6.1 measurements.
+- [Custom Modules](https://docs.summerengine.com/extending/modules.md): How Summer's internal C++ module is built, why external developers cannot add one, and what to use instead. Includes the init-level and TOOLS_ENABLED discipline that decides whether a class survives into an exported game.
+- [Plugin Library](https://docs.summerengine.com/extending/plugin-library.md): A curated list of community addons that fit Summer's current compatibility rules, plus a reusable test for judging any plugin yourself.
+- [MCP API Reference](https://docs.summerengine.com/api-reference/mcp.md): Summer Engine MCP API. Connect Cursor, Claude Code, Devin Desktop. Tools for scene, debug, project, assets, and generation.
+
+## Guides
+
+- [Working with Context](https://docs.summerengine.com/guides/working-with-context.md): How to provide effective context to Summer Engine's AI for better results
+- [Large Codebases](https://docs.summerengine.com/guides/large-codebases.md): Strategies for working effectively with large projects in Summer Engine
+- [Working with Documentation](https://docs.summerengine.com/guides/working-with-documentation.md): Leverage documentation effectively in Summer Engine through external sources and internal context
+- [Web Development with Summer Engine](https://docs.summerengine.com/guides/web-development.md): Using Summer Engine for web game development and browser-based projects
+- [Connect Your Project to GitHub](https://docs.summerengine.com/guides/github-from-changes-dock.md): Create a GitHub repository, connect it to your Summer project from the Changes dock workflow, and safely commit, push, and sync changes.
+- [Publishing outside Summer Games](https://docs.summerengine.com/publishing/overview.md): Your own Mac and Windows builds for stores outside Summer Games. To publish on Summer Games, start at /publishing/summer-games instead.
+- [macOS Export Guide](https://docs.summerengine.com/publishing/macos-export.md): Step-by-step guide to exporting your game for Mac computers
+- [Windows Export Guide](https://docs.summerengine.com/publishing/windows-export.md): Step-by-step guide to exporting your game for Windows PCs
+- [Testing Exported Builds](https://docs.summerengine.com/publishing/local-testing.md): How to test your exported game locally before releasing to players
+- [Publishing to Steam](https://docs.summerengine.com/publishing/steam.md): Complete guide to releasing your game on Steam with Summer Engine
+- [Publishing to itch.io](https://docs.summerengine.com/publishing/itch-io.md): Quick and easy indie game publishing with no approval process
+- [Console Publishing](https://docs.summerengine.com/publishing/consoles.md): Guide to releasing your game on Nintendo Switch, PlayStation, and Xbox
+- [Export Troubleshooting](https://docs.summerengine.com/publishing/troubleshooting.md): Solutions to common export and publishing problems
+
+## Knowledge Base
+
+- [What is Summer Engine?](https://docs.summerengine.com/knowledge-base/what-is-summer.md): Summer Engine is the AI game engine for people and agents. Build real 2D and 3D games, publish them anywhere, then track, grow and earn from them.
+- [What makes Summer Engine different from using ChatGPT?](https://docs.summerengine.com/knowledge-base/summer-vs-chatgpt.md): Unified experience, accountable operations, a team of specialist agents, and project intelligence. AI directly modifies your game.
+- [Is Summer for beginners or professionals?](https://docs.summerengine.com/knowledge-base/beginners-or-professionals.md): Summer is for everyone. Vibe coders and professional developers alike.
+- [Has Summer been used for production games?](https://docs.summerengine.com/knowledge-base/production-games.md): Yes. We shipped Don't Pray on Steam in 2.5 months. It's a commercial product.
+- [What's the learning curve?](https://docs.summerengine.com/knowledge-base/learning-curve.md): Gentle to advanced. Vibe coding has near-zero curve. Master the engine with AI as your tutor.
+- [Can I make AAA games with Summer?](https://docs.summerengine.com/knowledge-base/aaa-games.md): Summer is a full engine for full games. Agents do the heavy lifting, so a small team can build what used to take a big studio.
+- [Product Source & Platform Status](https://docs.summerengine.com/knowledge-base/source-status.md): The canonical status for Summer Engine source access and live, scaffolded, or planned Summercraft platform capabilities.
+- [How does Summer compare to other AI game tools?](https://docs.summerengine.com/knowledge-base/summer-vs-other-tools.md): Summer is a full game engine, not an AI addon. Deeper integration, better context, safer operations.
+- [Is Summer Engine compatible with my existing project?](https://docs.summerengine.com/knowledge-base/godot-compatibility.md): Summer Engine opens projects in the standard scene, script and resource formats. Commit a copy first, then check your plugins and exports.
+- [What if I have an existing project?](https://docs.summerengine.com/knowledge-base/godot-projects.md): Bring an existing project to Summer Engine: commit a copy, check the first import, then build on it with AI and add multiplayer.
+- [Which AI models does Summer use?](https://docs.summerengine.com/knowledge-base/ai-models.md): Summer routes across many providers. The model selector is the live list; asset generation picks its own backends.
+- [How good are AI-generated assets?](https://docs.summerengine.com/knowledge-base/ai-asset-quality.md): Summer makes 3D models, characters, textures, sprites and audio for your game. Where it shines, and when to bring in your own art.
+- [Can I make a game with just AI, no coding?](https://docs.summerengine.com/knowledge-base/ai-game-dev.md): Yes. Describe what you want and Summer Engine writes the code. AI game dev and vibe coding for games.
+- [How do specialist agents work?](https://docs.summerengine.com/knowledge-base/specialist-agents.md): Summer keeps a fixed team of expert agents. The main agent picks them for you, and they run inside your chat.
+- [How does project intelligence work?](https://docs.summerengine.com/knowledge-base/project-intelligence.md): AI indexes and understands your entire codebase, scenes, assets, and relationships automatically.
+- [What are the limitations of AI operations?](https://docs.summerengine.com/knowledge-base/ai-operations-limitations.md): AI changes go through safe APIs. Some tasks still require manual work. Learn what works well and what doesn't.
+- [Does Summer support multiplayer games?](https://docs.summerengine.com/knowledge-base/multiplayer.md): Yes. Summer runs a server for every match and world, plus matchmaking, parties, saves, leaderboards and a store. You build the game; Summer runs it online.
+- [Can I use my own assets?](https://docs.summerengine.com/knowledge-base/custom-assets.md): Yes. Import your own 2D art, 3D models, and audio. AI generation is optional.
+- [Can I use Summer Engine for web games?](https://docs.summerengine.com/knowledge-base/web-games.md): Yes. Export to HTML5/WebAssembly. Deploy to itch.io, your website, or any static host.
+- [How does Unity or Unreal migration work?](https://docs.summerengine.com/knowledge-base/unity-unreal-migration.md): Use AI to research your project, create a plan, then rebuild in Summer Engine. Fresh projects: easy. Large projects: more planning.
+- [Is my code safe?](https://docs.summerengine.com/knowledge-base/privacy-and-code-safety.md): Privacy Mode is a Pro feature. When enabled, we guarantee that code data is never stored by our model providers or used for training.
+- [Is Summer free?](https://docs.summerengine.com/knowledge-base/pricing.md): Free to download and try. Free tier with core AI features. Premium features available through subscription.
+- [How do I get support?](https://docs.summerengine.com/knowledge-base/support.md): Founders respond personally. Email, Discord, and more.
+- [How do I get started with no game dev experience?](https://docs.summerengine.com/knowledge-base/no-experience.md): Download Summer Engine, create a project, describe what you want. No coding required. AI does the rest.
+- [How do I publish to Steam?](https://docs.summerengine.com/knowledge-base/publish-steam.md): Export your game, then submit to Steam. $100 Steam Direct fee, 1-3 day approval. Full guide inside.
+- [How do I export to mobile (iOS and Android)?](https://docs.summerengine.com/knowledge-base/export-mobile.md): Enable ETC2 ASTC texture format, create mobile export preset, configure signing. iOS requires Mac and Apple Developer account.
+
+## Changelog
+
+- [Changelog](https://docs.summerengine.com/changelog/overview.md): What's new in Summer Engine. Release notes and updates.
+
+## Security
+
+- [Security Overview](https://docs.summerengine.com/security/overview.md): How Summer Engine protects your code and data
+- [Privacy Mode](https://docs.summerengine.com/security/privacy-mode.md): Zero data retention with our model providers, available on all paid plans

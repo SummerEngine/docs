@@ -1,0 +1,69 @@
+---
+title: "Microphone permissions for Summer Router voice"
+sidebarTitle: "Microphone permissions"
+description: "Summer asks for the microphone, never your game, and only when the player taps Talk. The rules, the states your game shows, the text fallback, and how to test every case."
+icon: "mic"
+---
+
+<Warning>
+**Early access.** `Summer.client.mic` and gated capture ship with the Summer Engine release that carries Summer Router voice.
+</Warning>
+
+Every operating system shows its microphone prompt once. A player who says no can only undo it in system Settings, and most never do. A badly timed ask kills voice for that player for good. So Summer owns the ask.
+
+## The rules
+
+1. **Never ask at launch.** Not in `_ready()`, not from a timer, a level load or the end of a cutscene. The first ask comes from the player's tap on a talk or mic control.
+2. **Summer's one-line primer comes first.** When an Apple system alert follows (iPhone, iPad, Mac), the primer has one button, Continue. Elsewhere it has Use mic and Type instead.
+3. **A no falls back to text.** The game keeps running and the character still speaks. No dialog, no message.
+4. **Never send the player to Settings.** Summer offers Settings only when the player taps Talk again while the system blocks the mic.
+5. **Never call OS permission APIs.** No `OS.request_permission()`, no `getUserMedia` through `JavaScriptBridge`, no "allow the mic?" dialog of your own.
+6. **Declare the microphone.** Add `microphone` to the game's store listing features. Without it the mic stays off on summer.games and in the Summer Games apps.
+7. **Realtime voice needs a confirmed adult.** Other players get text (`age_restricted`).
+
+## What your game writes
+
+The `SummerRouterCharacter` node runs the whole flow. Your code connects a talk button and a text box:
+
+```gdscript
+func _ready() -> void:
+	_show_mic(Summer.client.mic.get_access())        # read the state; never ask here
+	Summer.client.mic.access_changed.connect(_show_mic)
+	talk_button.button_down.connect(func(): guard.push_to_talk(true))   # the first press may show the primer
+	talk_button.button_up.connect(func(): guard.push_to_talk(false))
+	chat_box.text_submitted.connect(_on_text_submitted)                # works in every state
+
+func _show_mic(access: StringName) -> void:
+	talk_button.visible = access != &"undeclared" and access != &"unavailable"
+	talk_button.modulate.a = 1.0 if access in [&"granted", &"not_requested"] else 0.6
+```
+
+For raw audio (voice commands, a level meter), call `await Summer.client.mic.request_access()` from a button's pressed signal, and play an `AudioStreamMicrophone` only after it returns `ok`.
+
+## The states
+
+| `Summer.client.mic.get_access()` | Your UI | What Summer does on a talk tap |
+| --- | --- | --- |
+| `granted` | Normal talk button | Starts listening |
+| `not_requested` | Normal talk button | Shows the primer, then the system prompt if needed |
+| `declined` | Mic-off talk button and the text box | Shows a one-tap "Use mic" card |
+| `blocked` | Mic-off talk button and the text box | Shows the Settings card (only on this later tap) |
+| `undeclared` | Hide voice | Nothing: declare the microphone |
+| `unavailable` | Hide voice, keep text | Nothing (no mic, busy, or no Summer host) |
+
+`request_access()` called outside a player's input returns `mic_needs_player_action` and shows nothing. The engine refuses microphone capture until the access is `granted`.
+
+## The text path
+
+- Every line the player can say has a typed or button equivalent.
+- Never lock progress, rewards or content behind the microphone. App stores reject that.
+- After a no, the character still answers out loud.
+
+## Test it
+
+1. `grep -rn "request_permission\|getUserMedia" --include=*.gd .` finds nothing.
+2. Run the game for a minute without pressing Talk: no microphone prompt, no capture.
+3. On a real device: fresh install, play without Talk (no prompt); press Talk (primer, then the system prompt); say no (text, no dialog); press Talk again (the Settings card).
+4. Test with speakers on, not only headphones. If the character hears itself, use `turn.mode: push_to_talk` in the character file.
+
+The full guide for agents is the `voice-and-mic-permissions` skill (`summer skills install voice-and-mic-permissions`, or `summer router setup`).

@@ -1,0 +1,38 @@
+---
+title: "Summer Router character voice: realtime voice conversations"
+sidebarTitle: "Character voice"
+description: "A realtime voice conversation with a Summer Router character: the player talks, the character answers out loud and calls tools in the game. Push to talk or open mic, with a text fallback."
+icon: "audio-lines"
+---
+
+<Warning>
+**Early access.** Realtime voice is the last part of Summer Router to ship. Until it does, `talk(..., {"mode": "voice"})` runs in text mode.
+</Warning>
+
+```gdscript
+var s := await Summer.client.router.talk("guard", {"mode": "voice"})
+s.tools = {"open_gate": _on_open_gate}
+s.npc_text.connect(_on_npc_text)
+talk_button.button_down.connect(func(): s.push_to_talk(true))
+talk_button.button_up.connect(func(): s.push_to_talk(false))
+```
+
+Or put a `SummerRouterCharacter` node in the scene with `mode = "voice"`; it runs the whole flow. See [GDScript](/router/gdscript).
+
+## How a voice session runs
+
+1. The session starts in text mode. The character can already speak.
+2. The player taps Talk. If the mic is not allowed yet, Summer shows its primer and the system prompt. See [Microphone permissions](/router/permissions).
+3. With the mic allowed, the session switches to voice (`mode_changed`). The player's speech streams to Summer; the character's voice plays back.
+4. Tool calls run your handlers on the player's device; the result goes back to the character.
+5. The session ends on `end()`, `session.max_seconds`, `session.idle_seconds`, a cap, or the player leaving. `ended` carries the reason.
+
+## End reasons
+
+`game_closed`, `player_left`, `max_seconds`, `idle`, `limit_reached`, `credits`, `moderation`, `provider_error`, `server_shutdown`. Use the fallback on `limit_reached`, `credits`, `moderation` and `provider_error`.
+
+## Rules
+
+- Realtime voice needs a confirmed adult (`age_restricted` for others; they get text).
+- Turn-taking comes from the character file: `turn.mode` `push_to_talk` (no echo from speakers) or `server_vad` (open mic). See [Characters](/router/characters).
+- Before the session ends, Summer may send `limit_warning` with the seconds left.

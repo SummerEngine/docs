@@ -1,0 +1,164 @@
+---
+title: "Summer Router errors and fixes"
+sidebarTitle: "Errors"
+description: "Every Summer Router error tag, what it means, what the game does and how to fix it: errors in game code (Summer.client.router) and errors from the summer router CLI."
+icon: "triangle-alert"
+---
+
+<Warning>
+**Early access.** The tags are final for v1. Game calls return them when the Summer Router platform and engine release ship.
+</Warning>
+
+Every error carries a stable tag (`error` in GDScript, `error.code` in JSON), a one-line `fix`, a `docs_url` to the section below, and a `request_id` for support. Branch on the tag, never on the message. AI is always optional: no error stops the game.
+
+## Errors in the game
+
+### unavailable
+
+No Summer host (the editor without a host, an export outside Summer) or an engine without Summer Router.
+**Game does:** the fallback for the session.
+**Fix:** keep the fallback. Run the game through Summer (summer.games or the Summer Games apps) to use Summer Router.
+
+### not_signed_in
+
+The player is not signed in to Summer.
+**Game does:** the fallback. Summer asks the player to sign in.
+**Fix:** none in the game.
+
+### mic_denied
+
+The player said no to the microphone, in Summer's primer or in the system prompt. `scope` says which: `game`, `app`, `device`, `policy` or `dismissed`.
+**Game does:** text mode. The character still speaks.
+**Fix:** never send the player to Settings. See [Microphone permissions](/router/permissions).
+
+### mic_needs_player_action
+
+`request_access()` was called outside a player's input (from `_ready()`, a timer, a cutscene).
+**Fix:** call it from the talk button's pressed signal.
+
+### age_restricted
+
+Realtime voice needs a confirmed adult. Children and players with no declared age get this.
+**Game does:** text mode or the fallback for this player.
+
+### character_not_found
+
+The game asked for a character id that is not pushed for this game.
+**Fix:** `summer router push`, then call it by its id.
+
+### tool_unhandled
+
+The character called a client tool that has no handler in the session's `tools`.
+**Fix:** add the handler: `guard.tools = {"open_gate": _on_open_gate}`. `summer router push` catches this before it ships.
+
+### limit_reached
+
+A cap is used up. `scope` names it (`player_day`, `game_day`, `game_month`, `account_month`, `character_player_day`, `character_game_day`) and `resets_at` says when it resets. Players never see the amount.
+**Game does:** the fallback until `resets_at`. Never retry in a loop.
+**Fix:** the owner raises the cap in Studio (the Router tab of the game's store page). See [Limits and usage](/router/limits-and-usage).
+
+### credits_required
+
+The owner's Summer account needs credits. The error has a `studioUrl`.
+**Game does:** the fallback.
+**Fix:** the owner adds credits in Studio.
+
+### router_disabled
+
+The owner turned Summer Router off for this game.
+**Game does:** the fallback for the session.
+**Fix:** the owner turns it on in Studio (the Router tab of the game's store page).
+
+### provider_unavailable
+
+The AI provider failed or timed out.
+**Game does:** the fallback for this line. Retry later.
+
+### moderated
+
+The provider's safety filter blocked the turn.
+**Game does:** show your own line.
+
+### invalid_input
+
+The input does not match the kind's schema (for example an audio clip that is too large).
+**Fix:** a bug in the call. Read the message and fix the input.
+
+### rate_limited
+
+Too many calls too fast. The answer has `Retry-After`.
+**Game does:** wait, then retry once.
+
+## Errors from the router operations
+
+Every `router.*` operation answers a failure as `{"ok": false, "error": {"code", "message", "next"?, "details": {"was", ...}}}`. `code` is the Summer error code (`invalid_input`, `forbidden`, `conflict`, `not_signed_in`, `over_limit`, ...); `details.was` is the Summer Router tag: one of the headings on this page. A cloud operation adds `details.fix` and `details.docsUrl`; a local one (`router.add_character`, `router.check`, `router.push`, `router.pull`) has the fix in `details.tool.recovery`. When a person must act, `error.next` holds the link.
+
+### not_signed_in (operations)
+
+Code `not_signed_in`. This computer is not signed in.
+**Fix:** run `summer login`. An agent shows `browser_url` to the person, then runs `summer login --complete`.
+
+### tool_unhandled (operations)
+
+Code `invalid_input`. `router.check` (or `router.push`) found a client tool with no handler in any `.gd` file of the project. `details.tool.details.handler_snippet` holds the GDScript to add.
+**Fix:** register the tool on the character or session. See [GDScript: Tools](/router/gdscript#tools).
+
+### invalid_character
+
+Code `invalid_input`. A character file does not match the schema. `details.tool.details` lists each field and rule.
+**Fix:** fix each field, then run `router.check` again.
+
+### studio_changed
+
+Code `conflict`. Summer has a newer version of a character than this project last pushed or pulled (someone edited it in Studio). Nothing was overwritten.
+**Fix:** `router.pull` to take Summer's version, or `router.push` with `force` to keep yours.
+
+### local_changes
+
+Code `conflict`. `router.pull` kept a local file that has edits you never pushed.
+**Fix:** push them, or `router.pull` with `force` to take Summer's version.
+
+### owner_action_required
+
+Code `forbidden`. Only the game's owner can do this: change a character of a live game, the caps or the switch. `router.push` asks for the person's approval through `router.save_character` first; this error means that call failed too. `error.next.url` is the Router tab of the game's store page in Studio.
+**Fix:** retry `router.push`, or show the Studio link to the owner; they save it there.
+
+### character_exists
+
+Code `conflict`. `router.add_character` found the file already.
+**Fix:** edit the file, or pass `force` to replace it with the template.
+
+### game_id_missing
+
+Code `invalid_input`. The operation needs the game on Summer.
+**Fix:** pass `gameId`, set `SUMMER_GAME_ID`, or add `gameId` to `summer.build.json`.
+
+### not_a_project
+
+Code `invalid_input`. No `project.godot` at or above the folder.
+**Fix:** run in the project folder, or pass `project`.
+
+### expectation_failed
+
+Code `conflict`. `router.test_character` with `expectTools` did not see a tool called. `details.missingTools` names it; `details.turns` shows what the character said.
+**Fix:** make the tool description say exactly when to call it and the instructions say to call it instead of describing it. Push, then test again.
+
+### test_unavailable
+
+Code `unavailable`. The test route is not open in this Summer environment yet. Nothing was run or billed.
+**Fix:** retry after the platform release; use `router.check` and a play test meanwhile.
+
+### already_configured
+
+`router.set_settings` or `router.set_account_limit` asked for what is already set. Nothing was asked of the person.
+**Fix:** none.
+
+### version_conflict
+
+Code `conflict`. The character changed on Summer between the read and the write.
+**Fix:** run the operation again.
+
+### unavailable (operations)
+
+Code `unavailable` or `not_found`. Summer Router is not on in this Summer environment yet, or the route is not served yet.
+**Fix:** retry after the platform release; `router.doctor` shows what answers.

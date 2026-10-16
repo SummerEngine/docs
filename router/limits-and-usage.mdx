@@ -1,0 +1,46 @@
+---
+title: "Summer Router limits and usage"
+sidebarTitle: "Limits and usage"
+description: "How Summer Router usage is billed, the caps that are on by default, who can change them, and how to read usage from Studio and the CLI."
+icon: "gauge"
+---
+
+<Warning>
+**Early access.** Caps and usage reads arrive with the Summer Router platform.
+</Warning>
+
+Usage is billed from your Summer account; spend is visible in Studio. There is no separate account and no key to manage. Players never pay.
+
+## Caps
+
+Summer enforces hard caps before any call reaches a provider. They are on by default.
+
+| Cap | Window | Who sets it |
+| --- | --- | --- |
+| Per player per day | Calendar day (UTC) | The game's owner |
+| Per game per day | Calendar day (UTC) | The game's owner |
+| Per game per month | Calendar month (UTC) | The game's owner |
+| Per account per month | Calendar month (UTC), across all your games | You |
+| Per character per player per day, per character per day | Calendar day (UTC) | The character file (`limits`) |
+
+When a cap is reached, calls in that scope fail with `limit_reached`, with the `scope` and `resets_at`. Players never see the amount. The game uses its fallback until the reset.
+
+## Read and change caps
+
+Amounts are US dollars of usage. The game's owner changes caps, the on/off switch and the default models in Studio: the **Router** tab of the game's store page (`https://www.summerengine.com/studio/store/<gameId>?view=all&tab=router`). It shows each cap, how much of it is used (a percentage) and when it resets.
+
+An agent reads them with `router.settings` and asks to change them with `router.set_settings` (the account limit: `router.set_account_limit`). A change always answers `needs_approval` with the person's link; `jobs.wait` returns once they answer, and nothing changes until they approve. Amounts are `{"currency": "USD", "amountMinor": 50}`, in cents.
+
+## Turn it off
+
+The switch on the Router tab, or `router.set_settings` with `enabled` false (the person approves). The next call gets `router_disabled` and the game uses its fallback.
+
+## Usage
+
+- Studio shows calls and units per day and per kind, and each cap's use.
+- An agent reads the same numbers with `router.usage` (`days` 1 to 90).
+- Every call result in GDScript carries `usage`: tokens, characters, seconds or images. Never a price.
+
+## Credits
+
+When your Summer account needs credits, calls fail with `credits_required` and a link to Studio. Add credits there; the next call works.
