@@ -297,7 +297,7 @@ summer mcp [--profile <profile>] [--toolsets <list>] [--project <path>] [--insta
 | `--project <path>` | Bind engine tools to the editor running this project |
 | `--instance <id>` | Bind engine tools to one exact Summer Engine instance |
 
-**What it does:** Starts the MCP server on stdio. Your IDE or agent invokes this automatically when it loads the MCP config you wrote with `summer setup`, so you rarely run it by hand. Engine tools keep their names (`summer_add_node`, `summer_run_script`, `summer_play`, `summer_screenshot`). Cloud work goes through a short list of direct tools plus `summer_search` (find an operation) and `summer_call` (run it); after `summer login` the server carries every cloud operation. See the [Tools Reference](/mcp/tools-reference) and the [Operations reference](/mcp/operations).
+**What it does:** Starts the MCP server on stdio. Your IDE or agent invokes this automatically when it loads the MCP config you wrote with `summer setup`, so you rarely run it by hand. Engine tools keep their names (`summer_add_node`, `summer_run_script`, `summer_play`, `summer_screenshot`). Cloud work goes through a short list of direct tools plus `summer_search` (find an operation) and `summer_call` (run it); after `summer login` the server carries every cloud operation. See the [Operations reference](/mcp/operations).
 
 There is also a lower-level `summer mcp setup <agent>` subcommand that writes only the MCP config (no skills, no diagnostics). Prefer the top-level `summer setup <agent>` for onboarding.
 
@@ -468,9 +468,9 @@ to `6550` when that file is absent.
     Connect Cursor, Claude Code, and more
   </Card>
   <Card
-    title="Tools Reference"
+    title="Operations reference"
     icon="wrench"
-    href="/mcp/tools-reference"
+    href="/mcp/operations"
   >
     Every MCP tool with parameters
   </Card>

@@ -5,11 +5,10 @@ name: reference-drift
 # the other side: that the pinned inputs still match their sources. It fails
 # when a source moved, so someone runs `npm run sync:reference` and opens a PR.
 #
-# Without the optional SUMMER_REFERENCE_TOKEN secret (read access to
-# SummerEngine/summer-platform and SummerEngine/SummerEngine) only the npm
-# MCP tools are checked; the hosted tool list always needs `summer login` and
-# is refreshed by hand (sync.mjs --mcp --pse <checkout>). The operation catalog
-# is checked when the token can also read SummerEngine/PublicSummerEngine.
+# It needs the optional SUMMER_REFERENCE_TOKEN secret (read access to
+# SummerEngine/summer-platform and SummerEngine/SummerEngine); without it nothing
+# is checked. The operation catalog is checked when the token can also read
+# SummerEngine/PublicSummerEngine.
 
 on:
   schedule:
@@ -25,9 +24,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "20"
-
-      - name: npm MCP tools (summer-engine@latest)
-        run: node scripts/reference/sync.mjs --mcp --no-hosted --work "$RUNNER_TEMP/reference"
 
       - name: Platform and engine sources
         env:

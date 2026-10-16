@@ -116,11 +116,12 @@ Generated pages publish to their existing frozen URLs rather than to a new
 |---|---|
 | `/ai-tools/operations` | The engine's unified operation registry |
 | `/mcp/operations`, `/mcp/operations/*` | The Summer operation catalog: publicsummerengine `src/lib/ops/public-catalog.json` and the engine and local operations of the `summer-engine` npm package (`scripts/reference`) |
-| `/mcp/tools-reference`, `/mcp/tools/*` | The MCP tools' own definitions: the `summer-engine` npm package and the hosted MCP (`scripts/reference`) |
 | `/mcp/cli-reference` | The CLI's command definitions |
 | `/api-reference/http/*` | summer-platform `api/*/openapi.yaml`, filtered to public operations (`scripts/reference`) |
 | `/api-reference/gdscript/*` | The engine's class reference XML for the `Summer` singleton (`scripts/reference`) |
-| `/api-reference/overview` | The three references above (`scripts/reference`) |
+| `/api-reference/overview` | The references above (`scripts/reference`) |
+
+The 3.x MCP tool pages (`/mcp/tools-reference`, `/mcp/tools/*`) were retired at Summer 4.0: they redirect to `/mcp/operations` and `/mcp/operations/legacy-names`, where every 3.x tool name has its own anchor.
 
 `scripts/reference/generate.mjs --check` runs in `npm run check` and fails when a page
 under `scripts/reference` no longer matches its pinned inputs. `scripts/reference/sync.mjs`

@@ -6,10 +6,27 @@
 //    later ship dist/core/ops/catalog.js). An older package has none; then
 //    the page lists their names and links to their MCP tool.
 
-import { existsSync } from "node:fs";
+import { execFileSync } from "node:child_process";
+import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { pathToFileURL } from "node:url";
 import { redactDeep } from "./redact.mjs";
+
+/** Install an npm spec of summer-engine into <work>/npm; returns its dir, version and integrity. */
+export function installNpmPackage(work, spec) {
+  const dir = join(work, "npm");
+  execFileSync("mkdir", ["-p", dir]);
+  if (!existsSync(join(dir, "package.json"))) {
+    execFileSync("sh", ["-c", `echo '{"private":true}' > package.json`], { cwd: dir });
+  }
+  execFileSync("npm", ["install", "--ignore-scripts", "--no-audit", "--no-fund", "--silent", spec], {
+    cwd: dir,
+    stdio: ["ignore", "inherit", "inherit"],
+  });
+  const lock = JSON.parse(readFileSync(join(dir, "package-lock.json"), "utf8"));
+  const entry = lock.packages["node_modules/summer-engine"];
+  return { dir, version: entry.version, integrity: entry.integrity };
+}
 
 export const PUBLIC_CATALOG_PATH = "src/lib/ops/public-catalog.json";
 

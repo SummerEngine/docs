@@ -412,17 +412,6 @@
             ]
           },
           {
-            "group": "MCP tools",
-            "pages": [
-              "mcp/tools-reference",
-              "mcp/tools/build",
-              "mcp/tools/create-assets",
-              "mcp/tools/run-and-test",
-              "mcp/tools/publish",
-              "mcp/tools/grow"
-            ]
-          },
-          {
             "group": "HTTP API",
             "pages": [
               "api-reference/http/overview",
@@ -856,7 +845,7 @@
     },
     {
       "source": "/ai-tools/tools-reference",
-      "destination": "/mcp/tools-reference"
+      "destination": "/mcp/operations"
     },
     {
       "source": "/ai-tools/building-a-game",
@@ -1045,6 +1034,30 @@
     {
       "source": "/agent-setup/prompt",
       "destination": "/build/multiplayer"
+    },
+    {
+      "source": "/mcp/tools-reference",
+      "destination": "/mcp/operations"
+    },
+    {
+      "source": "/mcp/tools/build",
+      "destination": "/mcp/operations/legacy-names"
+    },
+    {
+      "source": "/mcp/tools/create-assets",
+      "destination": "/mcp/operations/legacy-names"
+    },
+    {
+      "source": "/mcp/tools/run-and-test",
+      "destination": "/mcp/operations/legacy-names"
+    },
+    {
+      "source": "/mcp/tools/publish",
+      "destination": "/mcp/operations/legacy-names"
+    },
+    {
+      "source": "/mcp/tools/grow",
+      "destination": "/mcp/operations/legacy-names"
     }
   ]
 }
