@@ -1,7 +1,7 @@
 ---
 title: "Agents and Summer Apps"
 sidebarTitle: "Agents and apps"
-description: "Summer Apps are built for agents: an app's shared data is its API, apps give agents new tools, and agents build, see and change every app through the summer_app MCP tools."
+description: "Summer Apps are built for agents: an app's shared data is its API, apps give agents new tools, and agents build, see and change every app through the apps operations of the Summer Engine MCP."
 icon: "bot"
 ---
 
@@ -15,9 +15,9 @@ Everything a person sees in a Summer App, an agent can read and use. To build on
 
 ## Data is the API
 
-An app keeps its shared data in **collections** of JSON records. Your agent reads and writes them with `summer_app_data`, with no app open. Every write is one revision, and everyone with the app open sees it live.
+An app keeps its shared data in **collections** of JSON records. Your agent reads them with `apps.read_data` and writes them with `apps.write_data`, with no app open. Every write is one revision, and everyone with the app open sees it live.
 
-Read (no `ops`):
+`apps.read_data`:
 
 ```json
 { "appId": "<app id>", "collection": "items" }
@@ -25,7 +25,7 @@ Read (no `ops`):
 
 The answer is `{ revision, records, next, collections, declaredCollections }`. Leave out `collection` to read every collection. `limit` is 1 to 500 (default 200); pass `next` as `after` for the next page. Removed records are not returned. `declaredCollections` is the record shape the app declares in its [manifest](/apps/manifest) (`collections`). That is how an agent asked to "add a note" knows what a note looks like.
 
-Write (one revision, applied in order):
+`apps.write_data` (one revision, applied in order):
 
 ```json
 {
@@ -61,21 +61,21 @@ summer.agent.tool("nerf_item", async ({ id, percent }, { agent }) => {
 });
 ```
 
-`agent` is the name of the agent that called. Data writes made while the handler runs are recorded with `actor.kind: "agent"` and `via: "agent-tool"`. Return JSON under 100 KB; a throw becomes `tool_failed`.
+`agent` is the name of the agent that called. Data writes made while the handler runs are recorded with `actor.kind: "agent"` and `via: "agent-tool"`. Return JSON under 100 KB; a throw becomes the error `unavailable` with the tool's message.
 
-Your agent lists the tools with `summer_app_tools` (`{ appId, version, tools, collections }`) and runs one with `summer_app_call`:
+Your agent lists the tools with `apps.tools` (`{ appId, version, tools, collections }`) and runs one with `apps.call`:
 
 ```json
 { "appId": "<app id>", "tool": "nerf_item", "input": { "id": "bow", "percent": 10 } }
 ```
 
-The answer is `{ ok: true, result, seq }`. The call runs inside the app open in the person's Studio tab, with their rights, and waits up to 60 seconds. If the app is not open, the answer is `app_not_open`: use `summer_app_data`, or ask the person to open the app.
+The answer is `{ ok: true, result, seq }`. The call runs inside the app open in the person's Studio tab, with their rights, and waits up to 60 seconds. If the app is not open, the answer is the error `conflict`: its `next` says to ask the person to open the app, or use `apps.read_data`.
 
 Use data for plain reads and edits. Use a tool for logic that lives in the app.
 
 ## Events: the app talks back
 
-An app sends events to your agent with `summer.agent.send(name, payload)`, for example when the person presses "Send to agent". Your agent waits for them with `summer_app_events`:
+An app sends events to your agent with `summer.agent.send(name, payload)`, for example when the person presses "Send to agent". Your agent waits for them with `apps.events`:
 
 ```json
 { "appId": "<app id>", "after": 0, "timeoutSeconds": 50 }
@@ -92,30 +92,32 @@ The answer is `{ events, cursor, timedOut }`. Each event is `{ seq, kind, actorI
 
 ## The page an agent can use
 
-An app declares its inputs and buttons with `summer.page.declare` (see the [SDK reference](/apps/sdk)). While the app is open, `summer_app_page` reads them (no `fill`, no `press`), fills fields (`"fill": [{ "field": "<id>", "value": 12 }]`) and presses a button (`"press": "<action id>"`). Buttons marked `critical` (delete, publish, pay, send) are pressed only by the person. If the app is not open, the answer is `app_not_open`.
+An app declares its inputs and buttons with `summer.page.declare` (see the [SDK reference](/apps/sdk)). While the app is open, `apps.page` reads them, and `apps.use_page` fills fields (`"fill": [{ "field": "<id>", "value": 12 }]`) and presses a button (`"press": "<action id>"`). Buttons marked `critical` (delete, publish, pay, send) are pressed only by the person. If the app is not open, the answer is the error `conflict`.
 
-## The MCP tools
+## The operations
 
-The hosted Summer Engine MCP (`https://mcp.summerengine.com/mcp`) and the `summer-engine` npm package have the same `summer_app_*` tools, except `summer_app_dock`, which is only in the npm package and comes with the next Summer Engine update.
+On the hosted Summer Engine MCP (`https://mcp.summerengine.com/mcp`), your agent runs them with `summer_call`: `{"op": "apps.create", "input": {...}}`. `summer_search "summer app"` lists them with their inputs. The `summer-engine` npm package also has two local ones: `apps.publish_folder` (publish a local folder) and `apps.dock`. Every input and answer: [Summer Apps operations](/mcp/operations/apps).
 
-| Tool | Does |
+| Operation | Does |
 |---|---|
-| `summer_app_guide` | The build guide, as Markdown. `section`: `overview` (default), `examples`, `sdk`, `manifest`, `kit`, `design`, `layout`, `types` (the SDK's TypeScript types) or `all` (every section except `types`, about 100 KB). Read `overview` first, then what the app needs. |
-| `summer_app_list` | The apps in the person's workspaces. `workspaceId` and `q` (search) are optional. |
-| `summer_app_create` | A new scratch app: `{ name, purpose, format, workspaceId?, folder? }`. `format` is `code` (default) or `layout`. Returns `{ app, studio, url }`; the app id is `app.id`. The person's Studio tab opens it. `studio.reason: "no_tab"`: no tab was open; give the person `/studio/apps/<appId>`. |
-| `summer_app_publish` | A new version: `{ appId, files or layout, manifest, note?, idempotencyKey? }`. Files are `[{ path, content, encoding }]` (`utf8` or `base64`). The npm package also takes `dir`, a local folder. The answer can carry `warnings`: SDK calls whose permission the manifest lacks, and undeclared `agentEvents` or `agentTools`. Fix them and publish again. |
-| `summer_app_update` | Renames an app or changes its purpose, folder or status: `{ appId, name?, purpose?, status?, folder? }`. `status` is `scratch`, `kept` (the team keeps it) or `archived`. Archive the throwaway apps you made when the person is done with them. `folder: null` takes an app out of its folder. |
-| `summer_app_get` | `{ app, version, files, data, url }`: the manifest, the current files and a summary of the data. Read it before you change an app. |
-| `summer_app_screenshot` | Renders the published app headless and read-only, with the person's data. Returns the picture plus console lines, errors, refused calls, `connected` and `rendered`, and the declared fields, buttons and agent tools. `{ appId, width?, height?, theme?, fullPage?, version?, params?, steps? }`. `steps` (up to 5) click a selector, press a declared action or wait before the capture. The npm package also takes `out`, a local path for the PNG. See [Build with your agent](/apps/build-with-your-agent). |
-| `summer_app_events` | Waits for what the app sends, errors, feedback and tool calls. |
-| `summer_app_page` | Reads or uses the fields and buttons an open app declared. |
-| `summer_app_data` | Reads or writes the app's shared data. |
-| `summer_app_tools` | The app's agent tools and data collections. |
-| `summer_app_call` | Runs an agent tool in the open app. |
-| `summer_app_report_gap` | Tells Summer about a capability an app needed and the SDK lacks: `{ capability, detail?, method?, appId? }`. |
-| `summer_app_dock` | npm package only. Docks an app in the running Summer Engine editor. Coming with the next Summer Engine update; see [Engine and docks](/apps/engine-and-docks). |
+| `apps.guide` | The build guide, as Markdown. `section`: `overview` (default), `examples`, `sdk`, `manifest`, `kit`, `design`, `layout`, `types` (the SDK's TypeScript types) or `all` (every section except `types`, about 100 KB). Read `overview` first, then what the app needs. |
+| `apps.list` | The apps in the person's workspaces. `workspaceId` and `q` (search) are optional. |
+| `apps.create` | A new scratch app: `{ name, purpose, format, workspaceId?, folder? }`. `format` is `code` (default) or `layout`. Returns `{ app, studio, url }`; the app id is `app.id`. The person's Studio tab opens it. `studio.reason: "no_tab"`: no tab was open; give the person `/studio/apps/<appId>`. |
+| `apps.publish` | A new version: `{ appId, files or layout, manifest, note?, idempotencyKey? }`. Files are `[{ path, content, encoding }]` (`utf8` or `base64`). The answer can carry `warnings`: SDK calls whose permission the manifest lacks, and undeclared `agentEvents` or `agentTools`. Fix them and publish again. With the npm package, `apps.publish_folder` publishes a local folder. |
+| `apps.update` | Renames an app or changes its purpose, folder or status: `{ appId, name?, purpose?, status?, folder? }`. `status` is `scratch`, `kept` (the team keeps it) or `archived`. Archive the throwaway apps you made when the person is done with them. `folder: null` takes an app out of its folder. |
+| `apps.get` | `{ app, version, files, data, url }`: the manifest, the current files and a summary of the data. Read it before you change an app. |
+| `apps.screenshot` | Renders the published app headless and read-only, with the person's data. Returns the picture plus console lines, errors, refused calls, `connected` and `rendered`, and the declared fields, buttons and agent tools. `{ appId, width?, height?, theme?, fullPage?, version?, params?, steps? }`. `steps` (up to 5) click a selector, press a declared action or wait before the capture. See [Build with your agent](/apps/build-with-your-agent). |
+| `apps.events` | Waits for what the app sends, errors, feedback and tool calls. |
+| `apps.page`, `apps.use_page` | Read, or fill and press, the fields and buttons an open app declared. |
+| `apps.read_data`, `apps.write_data` | Read or write the app's shared data. |
+| `apps.tools` | The app's agent tools and data collections. |
+| `apps.call` | Runs an agent tool in the open app. |
+| `apps.report_gap` | Tells Summer about a capability an app needed and the SDK lacks: `{ capability, detail?, method?, appId? }`. |
+| `apps.add_starter`, `apps.duplicate` | Add one of Summer's starter apps to a team, or copy an app. |
+| `apps.delete`, `apps.rollback` | Delete an app (asks the person first), or make an older version the live one (asks the app's owner). |
+| `apps.dock` | npm package only. Docks an app in the running Summer Engine editor. Coming with the next Summer Engine update; see [Engine and docks](/apps/engine-and-docks). |
 
-All of them except `summer_app_call` (which can run a tool that generates) are free.
+3.x names (`summer_app_*`) still work through `summer_call`. All of these except `apps.call` (which can run a tool that generates) are free.
 
 ## Skills
 

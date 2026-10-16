@@ -65,7 +65,7 @@ The owner or an admin of the game can apply.
 
 ## With your agent
 
-Ask "put my game 25% off next week" or "set my price in Germany". The Studio assistant reads your prices, sets prices by country, and opens the game's Get paid step for discounts. For a promotion slot it sends the application for you. From another agent, use `summer_grow_prices` and `summer_grow_apply` on the Summer Engine MCP. See [Use the agent](/grow/use-the-agent).
+Ask "put my game 25% off next week" or "set my price in Germany". The Studio assistant reads your prices, sets prices by country, and opens the game's Get paid step for discounts. For a promotion slot it sends the application for you. From another agent: `summer_pricing_get` reads prices; `pricing.set_base`, `pricing.set_country`, `pricing.clear_country`, `pricing.schedule_discount` and `pricing.clear_discount` change them (run them with `summer_call`). For now a change asks you first: Summer Games still asks. Soon, with **Prices and live changes** on in [Agent permissions](/mcp/permissions) (the default), it happens at once. Changes show in **Studio > Settings > Agent activity**, where **Undo** sets them back. `marketing.apply` with `service: "promotion"` sends a slot application; it asks you first, because it contacts the Summer team. See [Use the agent](/grow/use-the-agent).
 
 ---
 

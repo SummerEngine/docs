@@ -1,7 +1,7 @@
 ---
 title: "Build a Summer App with your agent"
 sidebarTitle: "Build with your agent"
-description: "How an agent builds a Summer App that works on the first try: connect the Summer Engine MCP, follow the 7-step loop, avoid the three mistakes that break apps, and look at every version with summer_app_screenshot."
+description: "How an agent builds a Summer App that works on the first try: connect the Summer Engine MCP, follow the 7-step loop, avoid the three mistakes that break apps, and look at every version with apps.screenshot."
 icon: "workflow"
 ---
 
@@ -13,7 +13,7 @@ This page is for the agent and for the person who drives it. It has the build lo
 
 ## Connect your agent
 
-The `summer_app_*` tools are in the Summer Engine MCP. Use one of the two forms. Or describe the app to Summer in Studio chat: **Build a new app** in **Studio > Apps** and **Edit with agent** on an app page open it.
+The `apps.*` operations are in the Summer Engine MCP. Your agent runs each with `summer_call`: `{"op": "apps.create", "input": {...}}`. `summer_search "summer app"` lists them with their inputs. Every input: [Summer Apps operations](/mcp/operations/apps). Use one of the two forms. Or describe the app to Summer in Studio chat: **Build a new app** in **Studio > Apps** and **Edit with agent** on an app page open it.
 
 <Tabs>
   <Tab title="Any agent (hosted)">
@@ -31,7 +31,7 @@ The `summer_app_*` tools are in the Summer Engine MCP. Use one of the two forms.
 
     `setup` adds the MCP (`npx -y summer-engine@latest mcp`) to your agent and installs the Summer skills, `summer-apps` and `summer-apps-design` among them. `login` signs you in to your Summer account in the browser. Restart your agent. Other agents: [MCP setup](/mcp/setup).
 
-    The npm package adds `dir` to `summer_app_publish`: publish a local folder. Its `summer_app_dock` docks an app in Summer Engine; that comes with the next Summer Engine update.
+    The npm package adds two local operations: `apps.publish_folder` publishes a local folder, and `apps.dock` docks an app in Summer Engine (that comes with the next Summer Engine update).
   </Tab>
 </Tabs>
 
@@ -39,29 +39,29 @@ The `summer_app_*` tools are in the Summer Engine MCP. Use one of the two forms.
 
 <Steps>
   <Step title="Read the guide">
-    `summer_app_guide` returns Markdown. Without a `section` it returns `overview`: when to build an app, layout or code, the loop and the rules. Read it first. Then read what the app needs: `examples` starts with a complete working app; `sdk`, `manifest` and `kit` have every call, field and component; `design` has the look; `layout` the layout format; `types` the SDK's TypeScript types. `all` returns every section except `types` at once, about 100 KB. Load the `summer-apps` and `summer-apps-design` skills when you have them.
+    `apps.guide` returns Markdown. Without a `section` it returns `overview`: when to build an app, layout or code, the loop and the rules. Read it first. Then read what the app needs: `examples` starts with a complete working app; `sdk`, `manifest` and `kit` have every call, field and component; `design` has the look; `layout` the layout format; `types` the SDK's TypeScript types. `all` returns every section except `types` at once, about 100 KB. Load the `summer-apps` and `summer-apps-design` skills when you have them.
   </Step>
   <Step title="Create the app">
-    `summer_app_create { name, purpose, format }`. `format` is `code` (default) or `layout`. The app id is `app.id` in the answer. The person's open Studio tab moves to the new app. If the answer has `studio.reason: "no_tab"`, no Studio tab was open: give the person the link `/studio/apps/<appId>`.
+    `apps.create { name, purpose, format }`. `format` is `code` (default) or `layout`. The app id is `app.id` in the answer. The person's open Studio tab moves to the new app. If the answer has `studio.reason: "no_tab"`, no Studio tab was open: give the person the link `/studio/apps/<appId>`.
   </Step>
   <Step title="Write and publish">
-    Write `index.html` and `app.js` (and CSS if you need it), then `summer_app_publish { appId, files, manifest, note }`. With the npm package, pass `dir` instead of `files`. Each publish is a new, immutable version. A publish error names the file or the rule: fix it and publish again. A publish that goes through can still answer `warnings`: SDK calls whose permission the manifest lacks, and `summer.agent.send` events or `summer.agent.tool` tools the manifest does not declare. Those fail when the app runs. Fix the warnings and publish again.
+    Write `index.html` and `app.js` (and CSS if you need it), then `apps.publish { appId, files, manifest, note }`. With the npm package, `apps.publish_folder` publishes a local folder instead. Each publish is a new, immutable version. A publish error names the file or the rule: fix it and publish again. A publish that goes through can still answer `warnings`: SDK calls whose permission the manifest lacks, and `summer.agent.send` events or `summer.agent.tool` tools the manifest does not declare. Those fail when the app runs. Fix the warnings and publish again.
   </Step>
   <Step title="Seed data">
-    If the app should start with content, write it with `summer_app_data` and `"as": "seed"`. Seed rows belong to the team and show no author.
+    If the app should start with content, write it with `apps.write_data` and `"as": "seed"`. Seed rows belong to the team and show no author.
   </Step>
   <Step title="Look at it">
-    `summer_app_screenshot { appId }`, then again with `width: 390` (a phone) and `theme: "dark"`. To see a dialog or a second state, add `steps`. Fix every error, console line and refused call it reports, publish, and look again. Repeat until it is clean.
+    `apps.screenshot { appId }`, then again with `width: 390` (a phone) and `theme: "dark"`. To see a dialog or a second state, add `steps`. Fix every error, console line and refused call it reports, publish, and look again. Repeat until it is clean.
   </Step>
   <Step title="Listen">
-    `summer_app_events { appId, after, timeoutSeconds }` waits up to 50 seconds for what the app sends (`summer.agent.send`), errors (uncaught ones and `console.error` lines) and the team's feedback. Pass the returned `cursor` as `after` next time.
+    `apps.events { appId, after, timeoutSeconds }` waits up to 50 seconds for what the app sends (`summer.agent.send`), errors (uncaught ones and `console.error` lines) and the team's feedback. Pass the returned `cursor` as `after` next time.
   </Step>
   <Step title="Change it, keep it or archive it">
-    To change the app, `summer_app_get { appId }` returns the current files and manifest. Edit them and publish again. To change only data, use `summer_app_data`; no publish needed. When the team keeps the app, `summer_app_update { appId, status: "kept" }`. Archive throwaway apps when you are done: `summer_app_update { appId, status: "archived" }`.
+    To change the app, `apps.get { appId }` returns the current files and manifest. Edit them and publish again. To change only data, use `apps.write_data`; no publish needed. When the team keeps the app, `apps.update { appId, status: "kept" }`. Archive throwaway apps when you are done: `apps.update { appId, status: "archived" }`.
   </Step>
 </Steps>
 
-Before step 2, check whether Summer already does the job: the asset library's collections and groups, Pick one and sound choices, Grow dashboards, Team. If it does, use that. If an app needs something the SDK lacks, report it with `summer_app_report_gap`.
+Before step 2, check whether Summer already does the job: the asset library's collections and groups, Pick one and sound choices, Grow dashboards, Team. If it does, use that. If an app needs something the SDK lacks, report it with `apps.report_gap`.
 
 ## Three things that break apps
 
@@ -81,7 +81,7 @@ Also: the app runs in a sandbox with no cookies, no `localStorage` and no networ
 
 ## Catch mistakes before you publish
 
-Save the SDK types from `/summer-sdk/v1.d.ts` (or `summer_app_guide` section `types`) as `summer-sdk.d.ts` in the folder above your app folder, and start `app.js` with:
+Save the SDK types from `/summer-sdk/v1.d.ts` (or `apps.guide` section `types`) as `summer-sdk.d.ts` in the folder above your app folder, and start `app.js` with:
 
 ```js
 // @ts-check
@@ -90,7 +90,7 @@ Save the SDK types from `/summer-sdk/v1.d.ts` (or `summer_app_guide` section `ty
 
 Your editor, or `tsc --checkJs --noEmit`, now reports a wrong method name, a missing argument or a wrong result field. Keep the `.d.ts` file out of the app folder: `.ts` is not an app file type, so a publish with it fails.
 
-## Look at it: summer_app_screenshot
+## Look at it: apps.screenshot
 
 Summer renders the published app headless, as the person and with their data, and returns the PNG plus a report.
 
@@ -126,34 +126,34 @@ To see the edit dialog of an app whose table rows open one, click the first row 
 
 For a button the app declared with `summer.page.declare`, `{ "press": "<action id>" }` works the same way.
 
-The screenshot is read-only. Reads run as the person (data, assets, team, projects, Grow, choices, engine status). Writes, paid calls and other engine calls are refused with `invalid`; events and notices are recorded, not delivered. They all work in Studio. To see data in a screenshot, seed it first with `summer_app_data`. A screenshot before the first publish fails with `not_found`.
+The screenshot is read-only. Reads run as the person (data, assets, team, projects, Grow, choices, engine status). Writes, paid calls and other engine calls are refused with `invalid`; events and notices are recorded, not delivered. They all work in Studio. To see data in a screenshot, seed it first with `apps.write_data`. A screenshot before the first publish fails with `not_found`.
 
-The SDK also reports an app's `console.error` lines to `summer_app_events` as `error` events, so errors the app catches and logs reach you after the person uses it.
+The SDK also reports an app's `console.error` lines to `apps.events` as `error` events, so errors the app catches and logs reach you after the person uses it.
 
 ## Prompts that work
 
 <Prompt description="**Build a team tool.** Your agent builds, publishes, seeds and checks a Summer App.">
 Build us a Summer App: [the tool, its data and the one action that finishes the job].
-Read summer_app_guide first and follow the summer-apps and summer-apps-design skills.
-Declare every data collection in the manifest. Seed starter data with summer_app_data
-"as": "seed". Then check it with summer_app_screenshot at the default width, at width 390
+Read the apps.guide operation first and follow the summer-apps and summer-apps-design
+skills. Declare every data collection in the manifest. Seed starter data with
+apps.write_data "as": "seed". Then check it with apps.screenshot at the default width, at width 390
 and with theme dark, fix everything the report shows, and send me the app link.
 </Prompt>
 
 <Prompt description="**Change an app.** Your agent edits the files and publishes a new version.">
-In our [app name] app, [the change]. Read the current files with summer_app_get, publish
-a new version with a short note, then check it with summer_app_screenshot.
+In our [app name] app, [the change]. Read the current files with apps.get, publish
+a new version with a short note, then check it with apps.screenshot.
 </Prompt>
 
 <Prompt description="**Edit the data.** Your agent changes records; everyone with the app open sees it live.">
 In our [app name] app, [the data change, for example "lower the bow's damage by 10%"].
-Read the records with summer_app_data, write the change with ifRevision, and tell me
+Read the records with apps.read_data, write the change with apps.write_data and ifRevision, and tell me
 the old and new values.
 </Prompt>
 
 <Prompt description="**Fix what the team reports.** Your agent reads errors and feedback and fixes the app.">
-Read the errors and feedback for our [app name] app with summer_app_events, fix the
-causes, publish, and check the result with summer_app_screenshot.
+Read the errors and feedback for our [app name] app with apps.events, fix the
+causes, publish, and check the result with apps.screenshot.
 </Prompt>
 
 Worked examples: [Apps for game teams](/apps/game-teams/weapon-balance-table).
