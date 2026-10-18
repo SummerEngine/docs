@@ -51,4 +51,4 @@ Documentation changes are deployed automatically after pushing to the main branc
 
 ### Resources
 - [Summer documentation](https://docs.summerengine.com)
-- [Summer community](https://discord.gg/yUpgtxnZky)
+- [Summer community](https://discord.gg/summerengine)

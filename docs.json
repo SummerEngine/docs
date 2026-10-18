@@ -46,7 +46,7 @@
     },
     {
       "name": "Discord",
-      "url": "https://discord.gg/yUpgtxnZky"
+      "url": "https://discord.gg/summerengine"
     }
   ],
   "navigation": {
@@ -195,7 +195,7 @@
         ]
       },
       {
-        "tab": "Build your game",
+        "tab": "Multiplayer games",
         "icon": "hammer",
         "groups": [
           {
@@ -766,7 +766,7 @@
       "anchors": [
         {
           "anchor": "Community",
-          "href": "https://discord.gg/yUpgtxnZky",
+          "href": "https://discord.gg/summerengine",
           "icon": "discord"
         },
         {
@@ -776,7 +776,7 @@
         },
         {
           "anchor": "Support",
-          "href": "mailto:founders@summerengine.com",
+          "href": "https://docs.summerengine.com/knowledge-base/support",
           "icon": "mail"
         }
       ]
@@ -786,7 +786,7 @@
     "links": [
       {
         "label": "Support",
-        "href": "mailto:founders@summerengine.com"
+        "href": "https://discord.gg/summerengine"
       }
     ],
     "primary": {
@@ -811,7 +811,7 @@
     "socials": {
       "x": "https://x.com/SummerEngineCom",
       "github": "https://github.com/SummerEngine",
-      "discord": "https://discord.gg/yUpgtxnZky"
+      "discord": "https://discord.gg/summerengine"
     }
   },
   "redirects": [
