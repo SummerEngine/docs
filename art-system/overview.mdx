@@ -1,169 +1,71 @@
 ---
-title: "Summer Studio"
-description: "Create, share, and discover game assets with AI-powered generation"
+title: "Game Assets in Summer Studio: Create, Find and Import"
+sidebarTitle: "Overview"
+description: "Summer Studio makes game assets with AI (image, video, audio, 3D), keeps them in My Assets, and Summer Engine imports any of them into your game."
 icon: "palette"
 "og:image": "https://docs.summerengine.com/images/og/art-system-overview.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/art-system-overview.jpg"
 ---
 
-## What is Summer Studio?
+Summer Studio is the web app at [summerengine.com/studio](https://www.summerengine.com/studio).
+For assets, it does three jobs:
 
-Summer Studio is a comprehensive platform for creating, sharing, and discovering game assets - both AI-generated and human-crafted. We believe the future of game development includes both human creativity and AI assistance working together, not replacing each other.
+- **Create** images, video, audio and 3D models with AI models.
+- **Keep** what you make and upload in **My Assets**, sorted into folders.
+- **Find** free assets in the [Asset Store](https://www.summerengine.com/asset-store).
 
-**Our Philosophy**: AI assets are a tool, like Photoshop or Blender. They can help developers prototype faster and create placeholder assets, but they will never replace the unique vision, style, and intentionality that human artists bring to games. We're transparent about what's AI-generated and what's human-made, because both have their place in game development.
-
-Whether you need sprites, textures, UI elements, or concept art, you can create them in Studio (2D, 3D, Audio, Video tabs), upload and organize your own assets, or browse community-created assets, then have Summer import any asset directly into your games on command.
-
-## Key Features
+Then ask Summer Engine, the game engine built for AI, to put any of these assets
+into your game. It imports the file into your project and, for a 3D model, can
+place it in the scene.
 
 <CardGroup cols={2}>
-  <Card
-    title="AI Asset Generation"
-    icon="wand-sparkles"
-    href="/art-system/ai-generation"
-  >
-    Create, upload, organize assets in Studio. Summer Engine imports any asset into your games on command
+  <Card title="Generate assets" icon="wand-sparkles" href="/art-system/ai-generation">
+    Image, video, audio and 3D generation, and how to write good prompts.
   </Card>
-  <Card
-    title="Human Artist Gallery"
-    icon="palette"
-    href="/art-system/gallery"
-  >
-    Browse and support thousands of assets created by real human artists in our community
+  <Card title="Asset Store" icon="image" href="/art-system/gallery">
+    Browse and search free game assets, then import them.
   </Card>
-  <Card
-    title="Transparent Labeling"
-    icon="tag"
-    href="/art-system/gallery"
-  >
-    Every asset is clearly marked as "AI-Generated" or "Human-Created" - no confusion
+  <Card title="Folders" icon="folder" href="/art-system/collections">
+    Sort My Assets into folders, one per project or per idea.
   </Card>
-  <Card
-    title="Artist-Friendly Licensing"
-    icon="scale"
-    href="/art-system/licensing"
-  >
-    Fair licensing that protects human artists while enabling AI-assisted prototyping
+  <Card title="Licenses" icon="scale" href="/art-system/licensing">
+    What each asset license lets you do.
   </Card>
 </CardGroup>
 
-## Asset Types Supported
+## What you can make
 
-### 2D Assets
-- **Sprites**: Character sprites, animations, UI elements
-- **Textures**: Seamless textures, materials, backgrounds
-- **UI Graphics**: Buttons, icons, panels, HUD elements
-- **Concept Art**: Character designs, environment concepts
+| Kind | Examples |
+| --- | --- |
+| **Image** | Key art, character sheets, item icons, sprites, store capsules, concept art |
+| **Video** | Clips from words or from an image, trailers and short game ads |
+| **Audio** | Speech, sound effects, music, and speech-to-text |
+| **3D** | Models from words, one picture or several views, with optional rigging and animation |
+| **Effects** | Game VFX that the agent builds in your scene, and tools that turn one image into game-ready assets |
 
-### 3D Assets
-- **Models**: Characters, props, environment pieces
-- **Textures**: PBR materials, normal maps, diffuse textures
-- **Archives**: Multi-file asset packages
+Each generation uses credits from your balance. The generator shows the cost
+before you start. See [Pricing](/essentials/pricing) for plans.
 
-### Supported Formats
+## Getting assets into your game
 
-**Images**: PNG, JPEG, WebP, GIF, SVG  
-**3D Models**: OBJ, GLTF/GLB, FBX, Blend, DAE  
-**Textures**: TGA, HDR  
-**Archives**: ZIP, RAR (for multi-file assets)
+In the engine chat, ask for what you need, for example "add the knight model I made
+in Studio to the main scene" or "find a wooden crate and put it next to the door".
+Summer searches your assets and the Asset Store, imports the file and wires it up.
 
-<Info>
-**File Size Limit**: Up to 500MB per asset to support high-quality game development needs.
-</Info>
+Agents that use the Summer MCP do the same with the `engine.import_asset` and
+`engine.import_asset_by_id` operations. See
+[MCP asset search](/ai-tools/mcp-asset-search).
 
-## Getting Started
+## Uploading your own assets
 
-<Steps>
-  <Step title="Access Studio">
-    In Summer, open Studio to create assets (2D, 3D, Audio, Video), manage My Assets, or browse the Store
-  </Step>
-  <Step title="Browse Assets">
-    Explore the community gallery using filters, search, and categories
-  </Step>
-  <Step title="Create Your First Asset">
-    Use Studio's Create tabs (2D, 3D, Audio, Video) to generate or upload assets
-  </Step>
-  <Step title="Build Collections">
-    Save your favorite assets to collections for easy organization
-  </Step>
-</Steps>
+You can upload your own images (PNG, JPEG, WebP or GIF) and 3D models (GLB, up to
+500 MB) to My Assets. Uploads are private by default.
 
-## Art Styles Available
+## Who can see your assets
 
-When generating AI assets, choose from these optimized styles:
+- **Free plan**: assets you generate are public in the Asset Store.
+- **Paid plans**: you choose public or private per asset, and you can set a default
+  in your settings. Assets that are private stay private if you later cancel.
 
-<Columns cols={3}>
-  <Card title="Realistic" icon="camera">
-    Photorealistic renders and detailed artwork
-  </Card>
-  <Card title="Cartoon" icon="smile">
-    Stylized, family-friendly cartoon aesthetics
-  </Card>
-  <Card title="Anime" icon="sparkles">
-    Japanese animation-inspired character art
-  </Card>
-  <Card title="Pixel Art" icon="grid-3x3">
-    Retro pixel-perfect sprites and textures
-  </Card>
-  <Card title="Low-Poly" icon="box">
-    Minimalist 3D-style with flat colors
-  </Card>
-  <Card title="Fantasy" icon="sparkles">
-    Magical, medieval, and fantastical themes
-  </Card>
-</Columns>
-
-## Supporting the Dev Community
-
-### Transparency First
-- **Clear Labeling**: Every asset shows "AI-Generated" or "Human-Created" prominently
-- **Creation Method**: See exactly how each asset was made
-- **Artist Attribution**: Human artists get full credit and recognition
-- **AI Disclosure**: AI-generated content is never hidden or misrepresented
-
-### Artist Support
-- **Fair Compensation**: Revenue sharing for commercial licenses on human-created assets
-- **Portfolio Building**: Artists can showcase their work and build their reputation
-- **Community Recognition**: Highlighting exceptional human creativity and craftsmanship
-- **Anti-Theft Protection**: Tools to report unauthorized use of human artwork
-
-### Ethical AI Use
-- **Prototyping Focus**: AI tools positioned as prototyping aids, not final art solutions
-- **Style Respect**: AI generation avoids mimicking specific living artists' styles
-- **Education**: Resources on when to use AI vs. hiring human artists
-- **Transition Support**: Help developers move from AI prototypes to human-created final art
-
-## Integration with Summer
-
-Assets from Summer Studio integrate seamlessly with Summer Engine's game development workflow:
-
-- **Direct Import**: Import assets directly into your Summer projects
-- **AI Context**: Summer Engine's AI understands your asset choices for better suggestions
-- **Project Organization**: Assets are automatically organized in your project structure
-- **Version Control**: Asset changes are tracked with your project history
-
-## Next Steps
-
-<CardGroup cols={2}>
-  <Card
-    title="Start Creating"
-    icon="plus"
-    href="/art-system/ai-generation"
-  >
-    Generate your first AI-powered game asset
-  </Card>
-  <Card
-    title="Explore Gallery"
-    icon="compass"
-    href="/art-system/gallery"
-  >
-    Browse the community asset library
-  </Card>
-  <Card
-    title="Browse 25K+ Free Assets"
-    icon="search"
-    href="https://summerengine.com/asset-store"
-  >
-    Search the full asset store on summerengine.com
-  </Card>
-</CardGroup>
+Every asset page shows how it was made: **Handmade**, or **Made with** and the
+model name for AI-generated assets.

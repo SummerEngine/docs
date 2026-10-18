@@ -1,6 +1,6 @@
 ---
-title: "Build Summer Games in VS Code"
-description: "Connect Summer Engine's MCP server to VS Code or GitHub Copilot and build a Summer game from Microsoft's editor and Copilot's AI agent."
+title: "Build Games in VS Code and GitHub Copilot with Summer Engine MCP"
+description: "Connect Summer Engine's MCP server to VS Code and GitHub Copilot agent mode with one command or .vscode/mcp.json, then build, run and debug games from Copilot Chat."
 icon: "square-code"
 "og:image": "https://docs.summerengine.com/images/og/mcp-vscode.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/mcp-vscode.jpg"
@@ -15,7 +15,7 @@ VS Code and GitHub Copilot's coding agent support MCP (Model Context Protocol). 
 This guide covers both **VS Code** (with Copilot or other AI extensions) and **GitHub Copilot's agent mode**—they use the same MCP configuration.
 
 <Tip>
-**Fastest path.** `npx -y summer-engine@latest setup vscode-copilot --yes` writes the config below into `VS Code's user mcp.json`, installs the skill library to `~/.agents/skills`, and runs `summer doctor`. The steps that follow are the manual version of the same thing.
+**Fastest path.** `npx -y summer-engine@latest setup vscode-copilot --yes` writes the config below into VS Code's user `mcp.json`, installs the skill library to `~/.agents/skills`, and runs `summer doctor`. The steps that follow are the manual version of the same thing.
 </Tip>
 
 ## Prerequisites
@@ -68,8 +68,12 @@ Create `.vscode/mcp.json` in your project root, or open the user config via **MC
 </CodeGroup>
 
 <Tip>
-**Alternative:** Use **MCP: Add Server** from the Command Palette for a guided setup. Choose "Standard I/O" and enter `npx` as the command with `summer-engine mcp` as arguments.
+**Alternative:** Use **MCP: Add Server** from the Command Palette for a guided setup. Choose "Standard I/O" and enter `npx -y summer-engine@latest mcp` as the command.
 </Tip>
+
+<Note>
+**Tool limit.** Copilot in VS Code sends at most 128 tools per request. `summer setup vscode-copilot` therefore writes the `engine` tool profile (engine, generation and store tools) into the entry as `"env": { "SUMMER_PROFILE": "engine" }`. Everything else stays reachable through `summer_search` and `summer_call`. Pass `--profile full` to list every tool.
+</Note>
 
 ### Step 3: Restart VS Code
 
@@ -85,12 +89,12 @@ If the node appears in Summer Engine, the setup is working.
 
 ## Cloud work only: connect by URL
 
-For assets, plans, the store, publishing and Grow, with nothing to install, add the hosted Summer server to `.vscode/mcp.json` in your project, then sign in when VS Code asks:
+For assets, plans, the store, publishing and Grow, with nothing to install, add the hosted Summer server with [Add to VS Code](https://vscode.dev/redirect/mcp/install?name=summer-cloud&config=%7B%22type%22%3A%22http%22%2C%22url%22%3A%22https%3A%2F%2Fmcp.summerengine.com%2Fmcp%22%7D), or add it to `.vscode/mcp.json` in your project, then sign in when VS Code asks:
 
 ```json .vscode/mcp.json
 {
   "servers": {
-    "summer": {
+    "summer-cloud": {
       "type": "http",
       "url": "https://mcp.summerengine.com/mcp"
     }
@@ -120,7 +124,7 @@ Once configured, the AI can use Summer Engine's tools when you ask for game-rela
 
 Start Summer Engine and open your project. The MCP server connects to the engine's local API on port 6550. The engine writes a token to `~/.summer/api-token` when it starts.
 
-Every Summer error names its code and one next step (`next`). `not_signed_in`: run `npx -y summer-engine login`. `no_credits`: add credits at `https://www.summerengine.com/studio/credits`. All codes: [How Summer answers](/api-reference/mcp#errors).
+Every Summer error names its code and one next step (`next`). `not_signed_in`: run `npx -y summer-engine@latest login`. `no_credits`: add credits at `https://www.summerengine.com/studio/credits`. All codes: [How Summer answers](/api-reference/mcp#errors).
 
 ### MCP server not appearing
 

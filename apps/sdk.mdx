@@ -1,15 +1,9 @@
 ---
-title: "Summer Apps SDK reference"
+title: "Summer Apps SDK reference: window.summer"
 sidebarTitle: "SDK reference"
-description: "window.summer inside a Summer App: app, data, assets, generate, ai, agent, page, engine, team, projects, grow and choices, with the permission each call needs and what it returns. Exact TypeScript types at /summer-sdk/v1.d.ts."
+description: "Every window.summer call in a Summer App: data, assets, generate, ai, agent, page, engine, team, projects, grow and choices, with permissions, results and types."
 icon: "code"
 ---
-
-<Warning>
-**Draft.** Summer Apps is in a closed test. This page goes live after the end-to-end test on production.
-</Warning>
-
-{/* TODO before publishing: run each namespace once in a real app on production. */}
 
 ## Load it
 
@@ -27,11 +21,11 @@ Other paths do not work. Module scripts run in order, so `app.js` runs after the
 const info = await summer.ready; // { app, viewer: { userId, name }, permissions, params, theme, restored? }
 ```
 
-`summer.ready` resolves only inside Summer Studio. An app runs in a sandboxed frame (`allow-scripts allow-forms allow-popups allow-modals allow-downloads`, never `allow-same-origin`): no cookies, no `localStorage`, no network. Opening `index.html` on its own never connects. There is no offline host; do not mock the SDK. To see an app, publish it and call `summer_app_screenshot` (see [Build an app with your agent](/apps/build-with-your-agent)).
+`summer.ready` resolves only inside Summer Studio. An app runs in a sandboxed frame (`allow-scripts allow-forms allow-popups allow-modals allow-downloads`, never `allow-same-origin`): no cookies, no `localStorage`, no network. Opening `index.html` on its own never connects. There is no offline host; do not mock the SDK. To see an app, publish it and call `apps.screenshot` (see [Build an app with your agent](/apps/build-with-your-agent)).
 
 ## Exact types
 
-The SDK's exact TypeScript types are at `/summer-sdk/v1.d.ts` on the app host, and in `summer_app_guide` section `types`. Save the file as `summer-sdk.d.ts` outside the app folder (for example one folder up) and start `app.js` with:
+The SDK's exact TypeScript types are at `/summer-sdk/v1.d.ts` on the app host, and in `apps.guide` section `types`. Save the file as `summer-sdk.d.ts` outside the app folder (for example one folder up) and start `app.js` with:
 
 ```js
 // @ts-check
@@ -64,7 +58,7 @@ Your editor, or `tsc --checkJs --noEmit`, then reports a wrong method, a missing
 
 ## data (`data`)
 
-Shared data is collections of JSON records. Everyone in the team sees changes live, and agents read and write the same records with `summer_app_data`.
+Shared data is collections of JSON records. Everyone in the team sees changes live, and agents read and write the same records with `apps.read_data` and `apps.write_data`.
 
 ```js
 const items = summer.data.collection("items");
@@ -103,11 +97,11 @@ A record's `revision` is the app's data revision at the record's last write: one
 
 **Who changed it.** `actor` is the last writer. `createdBy` has the same shape, is who created the record and does not change on later edits. Take a "by agent" label from `createdBy.kind === "agent"`. `kind: "agent"` marks:
 
-- writes an agent made with `summer_app_data`,
-- writes your code made while it ran an agent tool for `summer_app_call` (`via: "agent-tool"`),
-- writes the `run()` of a declared button made after an agent pressed it with `summer_app_page` (`via: "agent-page"`). Return the promise from `run()`.
+- writes an agent made with `apps.write_data`,
+- writes your code made while it ran an agent tool for `apps.call` (`via: "agent-tool"`),
+- writes the `run()` of a declared button made after an agent pressed it with `apps.use_page` (`via: "agent-page"`). Return the promise from `run()`.
 
-`kind: "seed"` is starter data that an agent wrote for the team (`summer_app_data` with `"as": "seed"`). Show no author for it. `userId` is the account the write ran as: the same id as `ready.viewer.userId`.
+`kind: "seed"` is starter data that an agent wrote for the team (`apps.write_data` with `"as": "seed"`). Show no author for it. `userId` is the account the write ran as: the same id as `ready.viewer.userId`.
 
 Limits: a record is JSON up to 64 KB, 10,000 records per collection, 50 collections per app. Record ids: letters, digits and `_ . : -`, max 128 characters.
 
@@ -140,10 +134,10 @@ These calls spend the credits of the person using the app, like the rest of Summ
 
 | Call | Returns |
 |---|---|
-| `summer.agent.send(name, payload)` | `{ seq }`. `name` must be in the manifest's `agentEvents`. Agents read it with `summer_app_events`. |
-| `summer.agent.tool(name, async (input, { agent }) => result)` | A stop function with `.registered`, a promise that rejects when the manifest does not declare `name`. `name` must be in the manifest's `agentTools`. `summer_app_call` runs the handler; return JSON under 100 KB; a throw becomes `tool_failed`. See [Agents and apps](/apps/agents). |
+| `summer.agent.send(name, payload)` | `{ seq }`. `name` must be in the manifest's `agentEvents`. Agents read it with `apps.events`. |
+| `summer.agent.tool(name, async (input, { agent }) => result)` | A stop function with `.registered`, a promise that rejects when the manifest does not declare `name`. `name` must be in the manifest's `agentTools`. `apps.call` runs the handler; return JSON under 100 KB. In the app a throw is `tool_failed`; the agent's `apps.call` answers `unavailable` with your message. See [Agents and apps](/apps/agents). |
 | `summer.agent.onMessage((notice) => ...)` | A stop function. `notice` is `{ seq, kind }` (`agent`, `error`, `feedback` or `tool`): a new entry in the app's event log. |
-| `summer.page.declare({ fields, actions })` | `null`. Tells Studio which inputs and buttons the app has, so the person's agent can read and use them with `summer_app_page`. Call it again when values change. |
+| `summer.page.declare({ fields, actions })` | `null`. Tells Studio which inputs and buttons the app has, so the person's agent can read them with `apps.page` and use them with `apps.use_page`. Call it again when values change. |
 
 `page.declare` takes at most 40 fields and 40 actions:
 

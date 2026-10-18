@@ -1,6 +1,7 @@
 ---
-title: "Export Troubleshooting"
-description: "Solutions to common export and publishing problems"
+title: "Summer Engine export errors and fixes"
+sidebarTitle: "Export Troubleshooting"
+description: "Fixes for common Summer Engine export problems: export templates, texture formats, bundle IDs, crashes, security warnings, Steam and itch.io uploads."
 icon: "wrench"
 "og:image": "https://docs.summerengine.com/images/og/publishing-troubleshooting.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/publishing-troubleshooting.jpg"
@@ -10,18 +11,16 @@ icon: "wrench"
 
 ### "No export template found at the expected path"
 
-**What it means**: Summer Engine can't find the runtime files needed to create standalone games.
+**What it means**: Summer Engine can't find the runtime files it needs to build a standalone game for that platform.
 
-**Solution**: This **shouldn't happen** with Summer Engine - templates are included by default.
+**What you already have**: the Mac app of Summer Engine comes with the Mac template, and the Windows app with the Windows templates. Web, Linux, Android and iOS builds need templates from Summer's download server.
 
-**If you see this**:
-1. Check: **Editor → Manage Export Templates**
-2. Should show templates installed for version `4.6`
-3. **If missing**: Contact support@summerengine.com - this indicates an installation issue
+**Solution**:
+1. Ask your agent to run `summer_export_templates` with `action: "list"`, then `action: "install"` and the missing platforms.
+2. Do not use the editor's own template download: it fetches stock templates, not Summer's.
+3. Templates are on the download server from Summer Engine 0.7.1. On 0.7.0, update Summer Engine.
 
-<Warning>
-  Summer Engine **includes export templates** in the download. If they're missing, something went wrong with your Summer Engine installation.
-</Warning>
+Where templates go and how to check them: [Export templates](/publishing/export#export-templates). Still missing? Email [support@summerengine.com](mailto:support@summerengine.com).
 
 ---
 
@@ -114,7 +113,7 @@ icon: "wrench"
 **If taking longer**:
 - Check disk space (need 2-3x game size free)
 - Close other resource-heavy apps
-- First export is slower (building pak files) - subsequent exports faster
+- The first export is slower (it imports every asset); later exports are faster
 
 ### Export Crashes Summer Engine
 
@@ -148,9 +147,9 @@ icon: "wrench"
   <Accordion title="Windows: 'VCRUNTIME140.dll not found'">
     **Cause**: Missing Visual C++ Runtime
     
-    **Solution**: Most PCs have this. If not, download from [Microsoft](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist)
-    
-    Summer Engine exports **should** include this automatically - contact support if issue persists.
+    **Solution**: Most PCs have it. If not, the player installs the latest supported Visual C++ Redistributable from [Microsoft](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist).
+
+    If it happens on many PCs, tell us on [Discord](https://discord.gg/summerengine).
   </Accordion>
 
   <Accordion title="macOS: 'App is damaged and can't be opened'">
@@ -185,23 +184,23 @@ icon: "wrench"
 ### Graphics Issues in Exported Game
 
 **Black screen or missing textures**:
-- ✅ Check texture compression is enabled for target platform
-- ✅ Verify shaders work in editor before exporting
-- ✅ Test on GPU different from your dev machine
-- ✅ Check minimum macOS/Windows version in export settings
+- Check texture compression is enabled for the target platform
+- Verify shaders work in the editor before exporting
+- Test on a GPU different from your dev machine
+- Check the minimum macOS/Windows version in export settings
 
 **Low FPS after export**:
-- Export in **Release** mode, not Debug
+- Export a release build: turn off **Export With Debug** in the export dialog
 - Check **Project Settings → Rendering → Quality** - lower settings if needed
 - Profile in editor first (Debug → Profiler) to find bottlenecks
 
 ### Audio Issues in Exported Game
 
 **No sound or crackling**:
-- ✅ Test audio works in editor first
-- ✅ Check audio format (Ogg Vorbis recommended, not WAV)
-- ✅ Verify user's PC has audio drivers installed
-- ✅ Test with both speakers and headphones
+- Test that audio works in the editor first
+- Check the audio format (Ogg Vorbis is smaller than WAV for music)
+- Verify the player's PC has working audio drivers
+- Test with both speakers and headphones
 
 ---
 
@@ -220,9 +219,9 @@ icon: "wrench"
 3. Dialog appears with **Open** button
 4. Click **Open** - app launches
 
-**Permanent fix**: Code sign your app (requires Apple Developer account - $99/year)
+**Permanent fix**: Code sign and notarize your app (requires an Apple Developer account)
 
-**Alternative**: Publish on Steam - Steam handles signing for you
+**Alternative**: Publish on Steam: games Steam installs do not get this warning
 
 ### Windows: SmartScreen Warning
 
@@ -233,9 +232,9 @@ icon: "wrench"
 1. Click **More info**
 2. Click **Run anyway**
 
-**Permanent fix**: Code sign with EV certificate ($400/year)
+**Permanent fix**: Code sign your `.exe`. See [Windows export: code signing](/publishing/windows-export#code-signing-optional).
 
-**Alternative**: Publish on Steam or itch.io - users expect this from indie games
+**Alternative**: Publish on Steam, where games do not show this warning, or on itch.io, where players can click through it
 
 <Info>
   **Don't worry about these warnings for itch.io releases!** Indie game players are used to clicking through them. Steam removes them automatically.
@@ -250,7 +249,7 @@ icon: "wrench"
 **Check these**:
 - Using WAV audio instead of Ogg Vorbis? (WAV is 10x larger)
 - Uncompressed textures? (Enable S3TC/ETC2 compression)
-- Debug symbols included? (Export as Release, not Debug)
+- Debug build? (Turn off **Export With Debug**)
 - Unused assets in project? (Clean up before export)
 
 **Compression comparison**:
@@ -275,16 +274,16 @@ icon: "wrench"
 ### Game Runs Slowly in Exported Build
 
 **Check**:
-1. Are you exporting in **Debug** mode? (Huge performance impact)
-   - Solution: Export as **Release**
+1. Did you export a **debug** build? (It is slower)
+   - Solution: Turn off **Export With Debug** in the export dialog
 2. Is V-Sync enabled? (Limits to 60 FPS)
    - Project Settings → Rendering → V-Sync
 3. Profile in editor first
    - Debug → Profiler → Find bottlenecks before exporting
 
-**Debug vs Release performance**:
-- Debug mode: 30-50% slower (includes debug symbols, checks)
-- Release mode: Full speed optimization
+**Debug vs release**:
+- Debug build: extra checks and debug output, so it runs slower
+- Release build: full speed
 
 ### Game Crashes After Running for a While
 
@@ -294,9 +293,9 @@ icon: "wrench"
 - Resource loading issues
 
 **Debugging**:
-1. Enable console output (Windows: Export Console Wrapper = On)
+1. Export a debug build with console output (Windows: **Export Console Wrapper** = **Debug Only**, and run the `.console.exe`)
 2. Run exported game and watch for error messages
-3. Fix issues in Summer Engine code, re-export
+3. Fix the issues in your project, then export again
 
 ---
 
@@ -333,11 +332,9 @@ Not just `MyGame.app` - must point to binary **inside** the bundle!
 
 ### Upload Fails
 
-**File size limits**:
-- Free account: 1 GB per file
-- Paid account ($10/month): 2 GB per file
+**File size limits**: itch.io limits the size of each uploaded file. Large games upload with itch.io's `butler` tool.
 
-**Solution**: Compress your build or split into multiple files if over limit
+**Solution**: Compress your build, or upload it with `butler`.
 
 ### Web Game Doesn't Load
 
@@ -360,8 +357,8 @@ Not just `MyGame.app` - must point to binary **inside** the bundle!
     Persistent export issues or bugs
   </Card>
 
-  <Card title="Godot Documentation" icon="book" href="https://docs.godotengine.org/en/stable/tutorials/export/">
-    Advanced export topics (fully compatible with Summer)
+  <Card title="Export for Summer Games" icon="book" href="/publishing/export">
+    Store bundles, web builds and export templates
   </Card>
 
   <Card title="Back to Export Guides" icon="arrow-left" href="/publishing/overview">

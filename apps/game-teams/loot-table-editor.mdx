@@ -1,13 +1,9 @@
 ---
 title: "Loot table editor: a Summer App for game teams"
 sidebarTitle: "Loot table editor"
-description: "A shared editor for your loot tables: weights per drop, the real chance per roll and per kill, and a tool that sets a drop to an exact chance. Manifest, seed data, agent edits and the look check."
+description: "A Summer App for game teams: loot weights, the real drop chance per roll and per kill, and an agent tool that sets a drop to an exact chance."
 icon: "dice-5"
 ---
-
-<Warning>
-**Draft.** Summer Apps is in a closed test. This page goes live after the end-to-end test on production.
-</Warning>
 
 ## What your team gets
 
@@ -23,9 +19,9 @@ Build us a Summer App called "Loot tables": pick a loot table from a menu, then 
 every drop with weight, quantity, rarity, chance per roll (weight / total weight) and
 chance per kill (1 - (1 - chance per roll) ^ rolls). Weights are editable in place with
 a save bar, and a pie chart shows the table. Give agents a set_chance tool that sets one
-drop to an exact chance per roll. Seed it with our loot tables using summer_app_data with
+drop to an exact chance per roll. Seed it with our loot tables using apps.write_data with
 "as": "seed". Follow the summer-apps and summer-apps-design skills, then check it with
-summer_app_screenshot (default, width 390, theme dark) and fix what it reports.
+apps.screenshot (default, width 390, theme dark) and fix what it reports.
 </Prompt>
 
 ## The manifest
@@ -75,6 +71,8 @@ summer_app_screenshot (default, width 390, theme dark) and fix what it reports.
 
 ## Seed the data
 
+One `apps.write_data` call writes every starter row in one revision. `"as": "seed"` marks the rows as the team's, with no author.
+
 ```json
 {
   "appId": "<app id>",
@@ -97,13 +95,13 @@ Each table's weights add up to 100 here, so a weight is the chance per roll in p
 
 ## An agent edit: "halve the Moonfang chance from wolves"
 
-Read the drops:
+Read the drops with `apps.read_data`:
 
 ```json
 { "appId": "<app id>", "collection": "drops" }
 ```
 
-In the answer, `wolf-moonfang` has `"weight": 1` and a `revision`, here `1`. Halve the weight:
+In the answer, `wolf-moonfang` has `"weight": 1` and a `revision`, here `1`. Halve the weight with `apps.write_data`:
 
 ```json
 {
@@ -114,16 +112,16 @@ In the answer, `wolf-moonfang` has `"weight": 1` and a `revision`, here `1`. Hal
 }
 ```
 
-The Moonfang chance per wolf goes from 1% to about 0.5% (0.5 of 99.5). A `conflict` means someone changed the drop: read again and retry. For an exact chance, call the app's tool while the person has it open: `summer_app_call` with `{ "tool": "set_chance", "input": { "drop": "chest-staff", "percent": 2 } }`.
+The Moonfang chance per wolf goes from 1% to about 0.5% (0.5 of 99.5). A `conflict` means someone changed the drop: read again and retry. For an exact chance, call the app's tool while the person has it open: `apps.call` with `{ "tool": "set_chance", "input": { "drop": "chest-staff", "percent": 2 } }`.
 
 ## Check the look
 
 After every publish:
 
-- `summer_app_screenshot { "appId": "<app id>" }`
-- `summer_app_screenshot { "appId": "<app id>", "width": 390 }`
-- `summer_app_screenshot { "appId": "<app id>", "theme": "dark" }`
-- `summer_app_screenshot { "appId": "<app id>", "params": { "table": "boss-chest" } }` if the app opens a table from launch params.
+- `apps.screenshot { "appId": "<app id>" }`
+- `apps.screenshot { "appId": "<app id>", "width": 390 }`
+- `apps.screenshot { "appId": "<app id>", "theme": "dark" }`
+- `apps.screenshot { "appId": "<app id>", "params": { "table": "boss-chest" } }` if the app opens a table from launch params.
 
 Check the chances by hand once: a wolf drops Wolf Pelt 60% per kill, and the boss chest (3 rolls) drops the Ember Staff 48.8% per open.
 

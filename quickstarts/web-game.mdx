@@ -1,70 +1,61 @@
 ---
 title: "How do I make a web game with AI?"
-description: "Create a browser-playable game with AI assistance. Export to HTML5/WebAssembly for itch.io, your website, or anywhere."
+description: "Build a browser game with AI in Summer Engine, export a web build with summer_export_game, and publish it to play on summer.games, itch.io or your own site."
 icon: "globe"
 "og:image": "https://docs.summerengine.com/images/og/quickstarts-web-game.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/quickstarts-web-game.jpg"
 ---
 
-## Build a Web Game with Summer Engine
+## Make a web game with Summer Engine
 
-Summer Engine excels at web-based game development. Build your game with AI assistance, then export to HTML5/WebAssembly for browser play. No separate web framework needed.
+Summer Engine is the game engine built for AI. Build your game with Summer Agent or your own coding agent, export a web build, and players play it in the browser: on [summer.games](https://summer.games), itch.io or your own site.
 
-## Step 1: Build Your Game
+## Step 1: Build your game
 
 <Steps>
   <Step title="Download Summer Engine">
-    Visit [summerengine.com](https://summerengine.com) and download for Mac or Windows
+    Download it from [summerengine.com/download](https://summerengine.com/download) for Mac (Apple silicon) or Windows. See [Install Summer Engine](/essentials/installation).
   </Step>
   <Step title="Create a project">
-    New Project → Give it a name → Create & Open
+    Start a new project and give it a name.
   </Step>
   <Step title="Describe your web game">
-    Tell Summer Engine what you want. Examples: "Create a browser game where you catch falling objects" or "Make a simple clicker game with a counter"
+    For example: "Create a browser game where you catch falling objects" or "Make a clicker game with a counter".
   </Step>
 </Steps>
 
-## Step 2: Configure for Web Export
+## Step 2: Export a web build
 
-When you're ready to export, Summer Engine can help:
+Ask your agent to run `summer_export_game` with `targets: ["web"]`. It builds on Summer's WebGPU web template, with threads off, for projects on the **Forward+** or **Mobile** renderer. You get a `.zip` with `index.html` at its root. It does not export **Compatibility** projects: switch the renderer to Forward+ or Mobile first.
 
-- **"Configure my project for HTML5 export"**
-- **"Set up the export template with proper threading settings"**
-- **"Optimize asset loading for web browsers"**
-- **"Add a loading screen with progress indication"**
+If the web template is missing, install it with `summer_export_templates` (`"action": "install", "platforms": ["web"]`). Do not use the editor's own template download: it fetches stock templates, not Summer's. See [Export your game](/publishing/export).
 
-## Step 3: Export and Deploy
+## Step 3: Publish
 
-<Steps>
-  <Step title="Create web export preset">
-    Project → Export → Add → Web
-  </Step>
-  <Step title="Export">
-    Export your game. You get HTML + JavaScript + WebAssembly files ready for deployment
-  </Step>
-  <Step title="Deploy">
-    Upload to itch.io, Netlify, GitHub Pages, or any static host. Your game runs in the browser
-  </Step>
-</Steps>
+- **Summer Games**: in Summer Studio, upload the `.zip` in the **Web** box. Players get a Play button on your game's page. Up to 500 MB, 2,000 files and 200 MB per file. See [Publish your game](/grow/publish#web-exports).
+- **itch.io or your own site**: upload the contents of the `.zip` to any static host.
 
-## Web-Specific AI Prompts
+## Prompts for web games
 
-- **"Add touch controls for mobile browsers"**
-- **"Implement responsive UI scaling for different screen sizes"**
-- **"Add fallbacks for browsers that don't support WebAssembly"**
-- **"Create a web-compatible save system using localStorage"**
+- "Add touch controls for mobile browsers"
+- "Scale the UI for different screen sizes"
+- "Save progress between visits"
+- "Add a loading screen with a progress bar"
 
-## Next Steps
+## Next steps
 
 <CardGroup cols={2}>
+  <Card title="Publish your game" icon="upload" href="/grow/publish">
+    Play in the browser on summer.games
+  </Card>
   <Card title="Web Development Guide" icon="globe" href="/guides/web-development">
-    Deep dive: browser compatibility, performance, deployment
+    Browser compatibility, performance, deployment
   </Card>
   <Card title="Publishing to itch.io" icon="gamepad" href="/publishing/itch-io">
     Quick indie publishing with no approval process
   </Card>
-  <Card title="Publishing Overview" icon="upload" href="/publishing/overview">
-    All export options and platforms
+  <Card title="Export your game" icon="package" href="/publishing/export">
+    Every export format and template
   </Card>
 </CardGroup>
 

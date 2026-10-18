@@ -1,6 +1,7 @@
 ---
-title: "macOS Export Guide"
-description: "Step-by-step guide to exporting your game for Mac computers"
+title: "Export a Summer Engine game for macOS"
+sidebarTitle: "macOS Export Guide"
+description: "Step by step: export your Summer Engine game as a Mac app for Intel and Apple Silicon, fix bundle ID and texture errors, and sign it for direct downloads."
 icon: "apple"
 "og:image": "https://docs.summerengine.com/images/og/publishing-macos-export.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/publishing-macos-export.jpg"
@@ -38,7 +39,7 @@ Do these 3 steps first:
 
 ### Enable ETC2 ASTC Texture Compression
 
-Apple Silicon Macs (M1, M2, M3 chips) require ETC2/ASTC texture format.
+Apple Silicon Macs (M-series chips) need the ETC2/ASTC texture format.
 
 <Steps>
   <Step title="Open Project Settings">
@@ -52,7 +53,6 @@ Apple Silicon Macs (M1, M2, M3 chips) require ETC2/ASTC texture format.
   <Step title="Enable ETC2 ASTC">
     Toggle **Import ETC2 ASTC** to **On**
     
-    {/* Screenshot pending -- shows the ETC2 ASTC toggle in Project Settings > Rendering > Textures */}
   </Step>
 
   <Step title="Wait for Reimport">
@@ -131,8 +131,8 @@ Apple Silicon Macs (M1, M2, M3 chips) require ETC2/ASTC texture format.
 
 **Binary Format**:
 - **Architecture**: 
-  - `universal` ✅ **Recommended** - Works on both Intel and Apple Silicon Macs
-  - `arm64` - Apple Silicon only (M1/M2/M3) - smaller file size
+  - `universal` (**recommended**) - Works on both Intel and Apple Silicon Macs
+  - `arm64` - Apple Silicon only - smaller file size
   - `x86_64` - Intel Macs only (legacy, not recommended)
 
 <Info>
@@ -153,7 +153,7 @@ Apple Silicon Macs (M1, M2, M3 chips) require ETC2/ASTC texture format.
   <Step title="Click Export Project">
     Bottom right button: **Export Project...**
     
-    Summer will create your standalone Mac app!
+    Summer creates your standalone Mac app.
   </Step>
 
   <Step title="Wait for Export">
@@ -162,8 +162,8 @@ Apple Silicon Macs (M1, M2, M3 chips) require ETC2/ASTC texture format.
     You'll see a progress bar. **Don't close Summer** during export.
   </Step>
 
-  <Step title="Export Complete!">
-    Your game is now a standalone `.app` file ready to distribute!
+  <Step title="Export complete">
+    Your game is now a standalone `.app`. Zip it before you upload it anywhere.
   </Step>
 </Steps>
 
@@ -189,12 +189,14 @@ Apple Silicon Macs (M1, M2, M3 chips) require ETC2/ASTC texture format.
 </Warning>
 
 What to test:
-- ✅ Game launches without errors
-- ✅ Graphics render correctly
-- ✅ Audio plays properly
-- ✅ Controls respond (keyboard, mouse, gamepad)
-- ✅ Save/load works
-- ✅ Game can be quit normally
+- Game launches without errors
+- Graphics render correctly
+- Audio plays properly
+- Controls respond (keyboard, mouse, gamepad)
+- Save/load works
+- Game can be quit normally
+
+More checks: [Testing exported builds](/publishing/local-testing).
 
 **Found a bug?** Fix it in Summer Engine, then re-export. Exported games don't update automatically.
 
@@ -206,10 +208,10 @@ Code signing prevents "unidentified developer" warnings on macOS. **Do you need 
 
 | Publishing To | Code Signing Required? | Notes |
 |---------------|----------------------|-------|
-| **Steam** | ❌ No | Steam handles signing for you automatically |
-| **itch.io** | ❌ No | Indie game players expect unsigned games |
-| **Direct download** (your website) | ✅ **Yes, highly recommended** | Without it, users see scary warnings |
-| **Mac App Store** | ✅ **Required** | Cannot publish without Apple Developer account |
+| **Steam** | Usually not | Games that Steam installs do not get Gatekeeper's download warning. Signing and notarizing is still good practice. |
+| **itch.io** | Not required | Players see a warning and open the app with right-click → **Open** |
+| **Direct download** (your website) | **Yes, highly recommended** | Without it, players see security warnings |
+| **Mac App Store** | **Required** | Needs an Apple Developer account |
 
 ### How to Code Sign (Advanced)
 
@@ -223,8 +225,8 @@ If you need code signing for direct distribution:
 **In Summer Engine**:
 1. Export settings → **Codesign → Codesign**: Select **Xcode codesign**
 2. **Codesign → Identity**: Enter your Developer ID certificate name
-3. **Notarization → Notarization**: Select **altool** or **notarytool**
-4. Provide Apple ID and app-specific password
+3. **Notarization → Notarization**: Select **Xcode notarytool**
+4. Provide your Apple ID, an app-specific password and your Team ID (or an App Store Connect API key)
 
 <Info>
   This is **advanced** and only needed for direct downloads. If you're publishing to Steam or itch.io first, skip code signing entirely.
@@ -236,9 +238,9 @@ If you need code signing for direct distribution:
 
 ### "No export template found"
 
-**This shouldn't happen** with Summer Engine! Templates are included.
+The Mac app of Summer Engine comes with the Mac export template. If the editor cannot find it, install it from Summer's download server with your agent (`summer_export_templates` with `action: "install"` and `platforms: ["macos"]`). Do not use the editor's own template download: it fetches stock templates, not Summer's. See [Export templates](/publishing/export#export-templates).
 
-**If you see this**: Something went wrong with your installation. Ask in [Discord](https://discord.gg/summerengine), or email [support@summerengine.com](mailto:support@summerengine.com).
+Still missing? Ask in [Discord](https://discord.gg/summerengine), or email [support@summerengine.com](mailto:support@summerengine.com) or [founders@summerengine.com](mailto:founders@summerengine.com).
 
 ### "Cannot export for universal or arm64 if ETC2 ASTC is disabled"
 
@@ -259,9 +261,9 @@ If you need code signing for direct distribution:
 
 **To reduce size**:
 - Compress audio as Ogg Vorbis (not WAV)
-- Use appropriate texture compression (you already enabled this!)
+- Use appropriate texture compression (you already enabled this)
 - Remove unused assets from your project
-- Enable **Embed PCK** to avoid separate `.pck` file
+- Choose `arm64` instead of `universal` only if you do not need Intel Macs
 
 ---
 

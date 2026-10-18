@@ -1,6 +1,6 @@
 ---
 title: "Build Games in Claude Code with Summer Engine MCP"
-description: "Connect Summer Engine's MCP server to Claude Code and build games with Claude's coding assistant driving your engine directly."
+description: "Connect Summer Engine to Claude Code with one command or the Summer plugin, then build, play and debug your game from Claude Code. Hosted MCP for cloud work too."
 icon: "message-square"
 "og:image": "https://docs.summerengine.com/images/og/mcp-claude-code.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/mcp-claude-code.jpg"
@@ -10,13 +10,13 @@ icon: "message-square"
 
 ## Summer Engine in Claude Code
 
-Claude Code (Claude for developers) supports MCP servers. With Summer Engine's integration, Claude can modify your game scenes, add nodes, import assets, run the game, and debug, all from the same conversation where you're writing code.
+Summer is the game engine built for AI. Claude Code, Anthropic's coding agent, supports MCP servers. With Summer Engine's integration, Claude can modify your game scenes, add nodes, import assets, run the game, and debug, all from the same conversation where you're writing code.
 
 This guide covers the configuration steps. The setup takes about a minute.
 
 ## Prerequisites
 
-- **Claude Code**: The desktop app or IDE integration
+- **Claude Code**: the CLI, the desktop app or an IDE extension
 - **Node.js 20+**: For running the MCP server
 - **Summer Engine**: Open with your project, for engine work only
 - **Sign in once**: `npx -y summer-engine@latest login`. One browser sign-in also connects the store, publishing and Grow tools
@@ -31,7 +31,19 @@ npx -y summer-engine@latest setup claude-code --yes
 
 This writes the `summer-engine` server into `~/.claude.json` (Claude Code's user-level MCP config), installs the skill library to `~/.claude/skills/`, and runs `summer doctor`. Add `--scope project` to write `.mcp.json` in the project root and `.claude/skills/` instead, so the setup travels with the game.
 
-### Option 2: Manual configuration
+It also adds the Summer Games MCP (`summer-games`), so Claude can see your friends, start parties and send messages as you. To sign in, run `/mcp` and choose `summer-games`. `--no-games` skips it.
+
+### Option 2: The Summer plugin
+
+In Claude Code, type:
+
+```text
+/plugin install summer --marketplace summerengine/summer
+```
+
+Then type `/summer:start`. It signs you in and gets a first game playing: from a template that already plays, or from a plan with concept art Summer draws for your idea. The plugin brings Summer's skills and two MCP servers: `summer-engine` (the local server, needs Node) and `summer-cloud` (the hosted server; sign in once with `/mcp`). Use the plugin or `summer setup claude-code`, not both: they install the same skills.
+
+### Option 3: Manual configuration
 
 #### Step 1: Locate the Config File
 
@@ -93,7 +105,7 @@ If Claude says it doesn't have access to Summer Engine tools, run `/mcp` to see 
 For assets, plans, the store, publishing and Grow, with nothing to install, add the hosted Summer server:
 
 ```bash
-claude mcp add --transport http summer https://mcp.summerengine.com/mcp
+claude mcp add --transport http summer-cloud https://mcp.summerengine.com/mcp
 ```
 
 Then run `/mcp` in Claude Code and sign in to your Summer account. Engine tools (scenes, scripts, play, screenshots) need the local server above. After `summer login`, the local server also runs the cloud tools, so use one of the two.
@@ -120,7 +132,7 @@ Claude will use the MCP tools when your requests involve game development. You c
 
 The MCP server couldn't connect to the engine. Start Summer Engine, open your project, and try again. The engine runs a local API on port 6550; the MCP server discovers it via `~/.summer/api-token`.
 
-Every Summer error names its code and one next step (`next`). `not_signed_in`: run `npx -y summer-engine login`. `no_credits`: add credits at `https://www.summerengine.com/studio/credits`. All codes: [How Summer answers](/api-reference/mcp#errors).
+Every Summer error names its code and one next step (`next`). `not_signed_in`: run `npx -y summer-engine@latest login`. `no_credits`: add credits at `https://www.summerengine.com/studio/credits`. All codes: [How Summer answers](/api-reference/mcp#errors).
 
 ### Config not loading
 

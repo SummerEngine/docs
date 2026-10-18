@@ -1,15 +1,15 @@
 ---
 title: "Can my AI agent publish my game for me?"
 sidebarTitle: "Can my agent do it?"
-description: "Yes. Claude Code, Codex, Claude or ChatGPT with the full Summer Engine MCP can make your store page and art, export and upload the build, and publish it. Six switches in Agent permissions say what it may do without asking. Summer reviews every game before it goes live."
+description: "Yes. Claude Code, Codex, Claude or ChatGPT on the Summer MCP can make your store page, upload the build and publish on Summer Games. You approve with one link."
 icon: "bot"
 "og:image": "https://docs.summerengine.com/images/og/publishing-agent-publishing.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/publishing-agent-publishing.jpg"
 ---
 
-**Yes.** Your AI agent can do every step, from the finished game to a published store page. Six switches in **Studio > Settings > [Agent permissions](/mcp/permissions)** say what it may do without asking. **Publish** is on by default, but for now Summer Games still asks the game's owner to approve an agent's publish. Summer reviews every game, and it goes live when the review passes.
+**Yes.** Your AI agent can do every step, from the finished game to a published store page. Six switches in **Studio > Settings > [Agent permissions](/mcp/permissions)** say what it may do without asking.
 
-Summer Games may still ask the game's owner to approve a publish; then the answer is `needs_approval` with the owner's approval link. Your agent gives you the link, and you click **Approve publishing**.
+**Publish** is on by default, but for now Summer Games still asks the game's owner to approve every agent publish: the answer is `needs_approval` with the owner's approval link. Your agent gives you the link, and you click **Approve publishing**. Then Summer reviews the game, and it goes live when the review passes.
 
 <img className="block dark:hidden" src="/images/guide-art/publishing/journey-light.svg" alt="Your agent does five steps: export, art, store page, upload and submit. You click Approve publishing. Summer reviews it, then it is live on summer.games." />
 <img className="hidden dark:block" src="/images/guide-art/publishing/journey-dark.svg" alt="Your agent does five steps: export, art, store page, upload and submit. You click Approve publishing. Summer reviews it, then it is live on summer.games." />
@@ -45,7 +45,7 @@ Summer Games may still ask the game's owner to approve a publish; then the answe
 | **Approve** when your agent asks | It asks when a switch in Agent permissions is off, or when Summer Games asks the owner. You see exactly what will change. Your agent cannot approve for you. |
 | **Set up payouts** for a paid game | Your payout account is yours. |
 
-There is no second click: once Summer's review passes, the game goes live.
+There is no second click for you: once Summer's review passes, the store page goes live. For a store bundle (the Summer Games apps), your agent then runs `store.release`, which releases only the build you approved. Web builds and downloads need no release.
 
 ## Ask your agent
 

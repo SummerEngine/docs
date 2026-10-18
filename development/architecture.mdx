@@ -1,140 +1,92 @@
 ---
-title: "Summer Engine Architecture"
-description: "Technical overview of how Summer Engine works"
+title: "Summer Engine Architecture Overview"
+sidebarTitle: "Architecture"
+description: "How Summer Engine fits together: the desktop editor, its local API, the summer-engine MCP server and CLI, the hosted MCP, and Summer Studio."
 icon: "network"
 ---
 
-## System Overview
-
-Summer Engine is built as a hybrid desktop application with cloud-enhanced AI capabilities.
+Summer Engine is the game engine built for AI. It has a few parts that work together: a desktop
+editor on your computer, a local API inside that editor, the `summer-engine` npm package for AI
+agents, a hosted MCP server, and Summer Studio on the web.
 
 ```mermaid
 graph TB
-    A[Summer Engine Desktop App] --> B[Local Project Manager]
-    A --> C[AI Chat Interface]
-    A --> D[Scene Editor]
-    
-    C --> E[Cloud AI Service]
-    E --> F[Code Generation]
-    E --> G[Project Analysis]
-    
-    B --> H[Local File System]
-    B --> I[Version Control]
-    
-    D --> J[Rendering Engine]
-    D --> K[Physics Engine]
+    A[Your AI agent] -->|local MCP or summer CLI| B[summer-engine package]
+    A -->|hosted MCP| C[mcp.summerengine.com]
+    B -->|127.0.0.1 local API| D[Summer Engine editor]
+    B -->|cloud operations| E[Summer API]
+    C --> E
+    D -->|in-editor chat| E
+    F[Summer Studio web app] --> E
+    E --> G[Summer Games store]
 ```
 
-## Core Components
+## The desktop editor
 
-### Desktop Application
-- **Framework**: Professional game engine stack for native performance
-- **UI**: Custom editor interface with dockable panels
-- **Platform**: Cross-platform (Windows, macOS, Linux)
+Summer Engine is a fork of Godot 4. Projects use the normal Godot project format, and you write
+game code in GDScript or C#. The app bundles its own .NET SDK, so C# needs no separate install.
+Summer adds its own modules to the editor:
 
-### AI Integration
-- **Cloud Indexing**: Project indexing runs server-side; source chunks and embeddings are stored to power code search
-- **Cloud Processing**: AI operations run against hosted model providers
-- **Privacy Mode**: Available on paid plans to stop your code being used to train models. See [Privacy Mode](/security/privacy-mode)
+- **The chat panel.** The in-editor AI chat, shown in an embedded web view.
+- **The local API server.** A server on `127.0.0.1` that lets the `summer-engine` package read and
+  edit the open project. Each request needs a token.
+- **Sign-in and telemetry.** The editor signs in with your Summer account and sends product
+  analytics events.
 
-### Project Management
-- **File Watching**: Real-time monitoring of project changes
-- **Version Control**: Git integration with automatic commits
-- **Backup System**: Automatic project backups before AI changes
+These classes are editor-only. A game you export does not contain them. See
+[GDExtension](/extending/gdextension) for the list.
 
-## AI Pipeline
+### How agents find a running editor
 
-<Steps>
-  <Step title="Input Processing">
-    User message is parsed and analyzed for intent
-  </Step>
-  <Step title="Context Gathering">
-    Relevant project files and structure are identified
-  </Step>
-  <Step title="Plan Generation">
-    AI creates a step-by-step plan for the requested changes
-  </Step>
-  <Step title="Code Generation">
-    Specific code and scene modifications are generated
-  </Step>
-  <Step title="Validation">
-    Changes are validated against project constraints
-  </Step>
-  <Step title="Application">
-    Changes are applied through the editor's APIs
-  </Step>
-</Steps>
+The interactive editor writes its port to `~/.summer/api-port` and its token to
+`~/.summer/api-token`. Each running editor also registers itself under `~/.summer/instances/`, keyed
+by project, so a client can pick the right one when several projects are open. Headless, import and
+export runs do not take over the global pointer. See
+[Headless Scripting](/automation/headless#what-does-not-work).
 
-## Security Model
+## The summer-engine package
 
-### Data Privacy
-- **Encrypted**: Encrypted in transit and at rest
-- **Code Storage**: Indexed source chunks and embeddings are stored to power project intelligence. See [Security Overview](/security/overview) for the full subprocessor list
-- **Telemetry**: Product analytics record events and their properties, not your source files
-- **Privacy Mode**: Controls whether your code is used to train models. Off by default; see [Privacy Mode](/security/privacy-mode)
+The `summer-engine` npm package holds three things:
 
-### Safe Operations
-- **Undo System**: All changes integrate with editor undo
-- **Validation**: AI changes are validated before application
-- **Sandboxing**: AI operations run in isolated contexts
-- **User Approval**: Complex changes require explicit confirmation
+| Part | What it does |
+|---|---|
+| MCP server (`summer mcp`) | Drives the running editor: build scenes, write scripts, play the game, take screenshots, read errors. After `summer login` it also runs the cloud operations. |
+| CLI (`summer`) | Installs the engine, signs you in, sets up your agent, creates projects and publishes games. |
+| Skills | Game-dev guides your agent loads. |
 
-## Performance Optimizations
+Install it with `brew install summerengine/tap/summer` or `npm install -g summer-engine`, then run
+`npx -y summer-engine@latest setup <agent> --yes`. See [MCP setup](/mcp/setup) and the
+[CLI reference](/mcp/cli-reference).
 
-### Local Processing
-```
-Project Indexing (Local)
-├── AST Parsing → Symbol Tables
-├── Dependency Analysis → Call Graphs  
-├── Pattern Recognition → Style Guides
-└── Caching → Fast Retrieval
-```
+## The hosted MCP server
 
-### Cloud Efficiency
-- **Request Batching**: Multiple operations combined
-- **Smart Caching**: Frequently used patterns cached
-- **Edge Computing**: Servers close to users
-- **Load Balancing**: Automatic scaling
+`https://mcp.summerengine.com/mcp` runs the cloud operations with nothing to install: assets,
+plans, the store, publishing, prices and analytics. It has no engine tools. For engine work, use
+the local server. See [Summer MCPs](/mcp/summer-mcps).
 
-## Extensibility
+## Summer Studio and Summer Games
 
-Summer Engine supports the standard plugin system from its underlying engine:
+[Summer Studio](https://www.summerengine.com/studio) is the web app for your account, credits,
+asset generation, store pages and publishing. Published games go to the
+[Summer Games](https://summer.games) store, where players find and play them.
 
-- **Editor plugins**: Custom panels, inspectors, and tools
-- **GDScript addons**: Third-party libraries and tools
-- **MCP integration**: Connect external AI tools via the Model Context Protocol
+## Extending the editor
 
-Most Godot plugins work in Summer Engine without changes. See [Godot Compatibility](/knowledge-base/godot-compatibility) for details.
+Summer keeps Godot's extension points:
 
-## Development
+- [Editor plugins](/extending/editor-plugins): custom panels, inspectors and tools
+- [GDExtension](/extending/gdextension): native code loaded at runtime
+- [Engine modules](/extending/modules): C++ compiled into the engine
 
-Summer Engine is built with a modular architecture designed for performance and maintainability.
+Many Godot plugins load in Summer, but test each one on a committed copy of your
+project first. See [Godot compatibility](/knowledge-base/godot-compatibility).
 
-### Getting Started
+## Security and privacy
 
-Download Summer Engine from [summerengine.com/download](https://summerengine.com/download) or install via CLI:
+See the [Security overview](/security/overview) for how Summer handles your data, and
+[Privacy Mode](/security/privacy-mode) for model training controls.
 
-```bash
-npx summer-engine install
-```
+## Requirements and plans
 
-See the [CLI Reference](/mcp/cli-reference) for all commands.
-
-## Technical Specifications
-
-### System Requirements
-- **Minimum RAM**: 4GB (8GB recommended)
-- **Graphics**: OpenGL 3.3+ or Vulkan 1.0+
-- **Storage**: 2GB available space
-- **Network**: Required for AI features
-
-### Performance Targets
-- **Startup Time**: < 3 seconds
-- **Project Load**: < 5 seconds for typical projects
-- **AI Response**: < 10 seconds for simple operations
-- **Memory Usage**: < 1GB for editor + small project
-
-### Usage Limits
-- **Hobby (Free)**: Limited hosted agent use and AI asset creations; local MCP stays free
-- **Pro**: Extended hosted AI usage; local MCP stays free
-- See [Pricing](/essentials/pricing) for full details
+- System requirements: [Installation](/essentials/installation#system-requirements)
+- Plans and usage limits: [Pricing](/essentials/pricing)

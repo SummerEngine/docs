@@ -1,15 +1,9 @@
 ---
-title: "Summer Apps design kit"
+title: "Summer Apps design kit: UI components and rules"
 sidebarTitle: "Design kit"
-description: "The Summer UI kit for apps: tokens, Geist, summer-* components that follow Studio light and dark, the layout format, and the rules that make an agent-built tool look crafted."
+description: "The Summer Apps UI kit: design tokens, Geist, summer-* components that follow Summer Studio light and dark, the JSON layout format, and the design rules."
 icon: "palette"
 ---
-
-<Warning>
-**Draft.** Summer Apps is in a closed test. This page goes live after the end-to-end test on production.
-</Warning>
-
-{/* TODO before publishing: add screenshots of a real app in light and dark. */}
 
 Apps should look like Summer: calm, precise studio instruments around colourful game content. The kit and the `summer-apps-design` skill carry the rules, so agents get them right without being told.
 
@@ -21,7 +15,7 @@ Apps should look like Summer: calm, precise studio instruments around colourful 
 
 It adds the Summer design tokens (CSS variables `--se-*`), the Geist font and every `<summer-*>` component, and follows Studio's light or dark theme. The stylesheet alone is `/summer-ui/v1/ui.css`. `summerUI.toast(text)` shows a toast in the app.
 
-The full catalog, with every attribute, property, method, event and a copyable example per component, is `summer_app_guide` section `kit`, and `/summer-ui/v1/catalog.json` on the app host. Copy its examples instead of inventing markup.
+The full catalog, with every attribute, property, method, event and a copyable example per component, is `apps.guide` section `kit`, and `/summer-ui/v1/catalog.json` on the app host. Copy its examples instead of inventing markup.
 
 ## Components
 
@@ -62,9 +56,9 @@ The full catalog, with every attribute, property, method, event and a copyable e
 - No frame around the whole app, no cards inside cards, no badge on every row, no native audio, video, select or range controls.
 - Design the loading, empty and error states.
 - When a teammate or an agent changes something, flash that row briefly instead of showing a toast.
-- Check light and dark, at phone and desktop widths. `summer_app_screenshot` with `width: 390` and `theme: "dark"` shows both.
+- Check light and dark, at phone and desktop widths. `apps.screenshot` with `width: 390` and `theme: "dark"` shows both.
 
-The full rules are in the `summer-apps-design` skill and in `summer_app_guide` (section `design`).
+The full rules are in the `summer-apps-design` skill and in `apps.guide` (section `design`).
 
 ## Layout apps
 
@@ -89,8 +83,8 @@ Node types: page, stack, grid, tabs, card, form, heading, text, notice, stat, ta
 
 Button and form actions:
 
-- `{ "type": "send", "name": "sound.picked" }`: an event your agent reads with `summer_app_events`. Its payload holds `values`, every input's current value by `id`.
+- `{ "type": "send", "name": "sound.picked" }`: an event your agent reads with `apps.events`. Its payload holds `values`, every input's current value by `id`.
 - `{ "type": "open", "path": "/studio/..." }`: moves the Studio tab.
 - `{ "type": "generate", "method": "generate.image", "args": { "prompt": { "$input": "prompt" } } }`: a paid generation for the person using the app.
 
-`summer_app_guide` (section `layout`) has every prop.
+`apps.guide` (section `layout`) has every prop.

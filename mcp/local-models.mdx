@@ -1,6 +1,7 @@
 ---
-title: "Make Games for Free with Local LLMs"
-description: "Run a free local model with Ollama, LM Studio, or Goose and drive Summer Engine through MCP. No AI subscription — your GPU does the thinking."
+title: "Make Games for Free with Local LLMs and Summer Engine"
+sidebarTitle: "Local Models"
+description: "Drive Summer Engine with a free local model through MCP: LM Studio, OpenCode with Ollama, or Goose. Hardware, model picks, context settings, and what uses credits."
 icon: "microchip"
 "og:image": "https://docs.summerengine.com/images/og/mcp-local-models.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/mcp-local-models.jpg"
@@ -8,7 +9,7 @@ icon: "microchip"
 
 ## Summer Engine with Local Models
 
-You don't need an AI subscription to build games in Summer Engine. Any local model that handles tool calling can drive the engine through MCP: add nodes, set properties, search and import assets, run the game, and debug. Engine control and asset search are free; cloud generation (3D models, images, audio) uses credits.
+Summer Engine is the game engine built for AI, and you don't need an AI subscription to use it. Any local model that handles tool calling can drive the engine through MCP: add nodes, set properties, search and import assets, run the game, and debug. Engine control and asset search are free; cloud generation (3D models, images, audio) uses credits.
 
 This page covers the three setups that actually work in 2026.
 
@@ -60,7 +61,7 @@ The same Ollama backend works with **Kilo Code** in VS Code (`npx -y summer-engi
 
 Goose is an open-source agent that treats MCP servers as extensions.
 
-1. Run `goose configure` → **Add Extension** → **Command-line Extension**, command: `npx -y summer-engine@latest mcp`
+1. Run `npx -y summer-engine@latest setup goose --yes` (it writes the extension into `~/.config/goose/config.yaml`), or run `goose configure` → **Add Extension** → **Command-line Extension**, command: `npx -y summer-engine@latest mcp`
 2. Run `goose configure` → **Configure Providers** → **Ollama**, host `localhost:11434`
 3. Pick a model with native tool calling — Goose's toolshim mode for non-tool-calling models is slower and less reliable.
 
@@ -89,7 +90,11 @@ Tool calling is the hard part for local models. Use Q4_K_M quantization or bette
 | | |
 |---|---|
 | Engine control (scenes, nodes, scripts, play, debug) | **Free** |
-| Asset library search (25k+ assets) | **Free**, rate-limited |
+| Asset library search (more than 130,000 assets) | **Free**, rate-limited |
 | Cloud generation (3D, image, audio, video) | Credits |
 
-Sign in once with `npx summer-engine login` — the account is the rate-limit key, not a paywall.
+Sign in once with `npx -y summer-engine@latest login`: the account is the rate-limit key, not a paywall.
+
+---
+
+Need help? Ask in [Discord](https://discord.gg/summerengine) first. That is where you get the fastest reply and support. For concrete help, email [support@summerengine.com](mailto:support@summerengine.com) or [founders@summerengine.com](mailto:founders@summerengine.com).

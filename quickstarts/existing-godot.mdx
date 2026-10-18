@@ -1,6 +1,6 @@
 ---
-title: "I have an existing project. How do I add Summer Engine?"
-description: "Bring an existing project to Summer Engine: test a committed copy first, check your plugins and exports, then build on it with AI."
+title: "How do I open my existing project in Summer Engine?"
+description: "Open an existing project in Summer Engine: commit it first, open it, check plugins and exports on your Summer Engine version, then build on it with Summer Agent."
 icon: "folder"
 "og:image": "https://docs.summerengine.com/images/og/quickstarts-existing-godot.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/quickstarts-existing-godot.jpg"
@@ -8,18 +8,19 @@ icon: "folder"
 
 ## Use Summer Engine with Your Existing Project
 
-Summer Engine uses familiar upstream-derived project formats, but its minimum and recommended
-project compatibility ranges remain unmeasured. Work from a committed copy, open it in
-Summer Engine, and treat the first import as a compatibility evaluation.
+Summer Engine is the game engine built for AI. It opens projects in the same formats as its
+upstream base: GDScript, text scenes and resources. Summer does not state a minimum project
+version yet, so commit your project first, open it in Summer Engine, and treat the first
+import as a test.
 
 ## Step 1: Download and Install Summer Engine
 
 <Steps>
   <Step title="Download Summer Engine">
-    Visit [summerengine.com](https://summerengine.com) and download for Mac or Windows
+    Download it from [summerengine.com/download](https://summerengine.com/download) for Mac (Apple silicon) or Windows.
   </Step>
   <Step title="Create your account">
-    Open Summer Engine, click "Sign in", and create an account (Google, GitHub, or email)
+    Open Summer Engine, click "Sign in", and create an account with Google, GitHub or email.
   </Step>
 </Steps>
 
@@ -27,10 +28,10 @@ Summer Engine, and treat the first import as a compatibility evaluation.
 
 <Steps>
   <Step title="Open your project">
-    **File → Open Project** (or use the Project Manager), then browse to your project folder and select the project file
+    In the Project Manager, choose **Import**, browse to your project folder and select its `project.godot` file.
   </Step>
   <Step title="Wait for indexing">
-    Summer Engine automatically indexes your project (30 seconds to 2 minutes depending on size). The AI learns your scenes, scripts, and assets
+    Summer Engine indexes your project, so Summer Agent can search your scenes, scripts and assets. Larger projects take longer.
   </Step>
   <Step title="Start chatting">
     Describe what you want to change. Try: "Add a health bar to my player" or "Optimize this scene for mobile"
@@ -39,17 +40,18 @@ Summer Engine, and treat the first import as a compatibility evaluation.
 
 ## What to expect
 
-- **GDScript, text scenes, resources, and assets** use familiar formats.
-- **Third-party libraries and plugins** need explicit testing when they are native,
-  editor-integrated, or version-pinned.
-- **Imports and exports** should be verified on the target Summer Engine release.
-- **Team workflows** should pin compatible editor versions and review generated diffs.
+- **GDScript, text scenes, resources and assets** open as they are.
+- **Plugins and libraries** need a test when they are native, editor plugins, or pinned
+  to one engine version.
+- **Imports and exports**: check them on the Summer Engine version you ship with.
+- **Teams**: everyone uses the same Summer Engine version, and you review the changes
+  the first open makes.
 
 ## Zero Lock-in
 
-Your project files stay in documented formats. Commit before the first open so imports and
-configuration changes are reviewable. See
-[Compatibility & upstream](/reference/compatibility) for current measured facts.
+Your project files stay in open, documented formats. Commit before the first open so you can
+review the import and settings changes. See
+[Compatibility & upstream](/reference/compatibility) for the current upstream base and what is measured.
 
 ## Next Steps
 

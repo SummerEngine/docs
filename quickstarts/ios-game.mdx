@@ -1,62 +1,59 @@
 ---
 title: "How do I make an iOS game with AI?"
-description: "Build and export an iPhone or iPad game with AI assistance. Publish to the App Store."
+description: "Build an iPhone game with AI in Summer Engine, export it with summer_export_game, and publish it to the Summer Games app for iPhone from Summer Studio."
 icon: "smartphone"
 "og:image": "https://docs.summerengine.com/images/og/quickstarts-ios-game.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/quickstarts-ios-game.jpg"
 ---
 
-## Make an iOS Game with Summer Engine
+## Make an iPhone game with Summer Engine
 
-Build your game with AI assistance, then export for iPhone and iPad. Summer Engine supports iOS export with full touch and mobile features.
+Summer Engine is the game engine built for AI. Build your game with Summer Agent or your own coding agent, then publish it to the Summer Games app on iPhone. Players there run your game inside the app, so you need no export template.
 
-## Step 1: Build Your Game
+## Step 1: Build your game
 
 <Steps>
   <Step title="Download Summer Engine">
-    Visit [summerengine.com](https://summerengine.com) and download (Mac required for iOS export)
+    Download it from [summerengine.com/download](https://summerengine.com/download) for Mac (Apple silicon) or Windows. See [Install Summer Engine](/essentials/installation).
   </Step>
   <Step title="Create a project">
-    New Project → Build your game with AI. Describe what you want
+    Start a new project and describe the game you want.
   </Step>
-  <Step title="Add mobile features">
-    Ask Summer Engine: "Add touch controls for mobile", "Implement responsive UI for different screen sizes", "Add support for device orientation"
+  <Step title="Make it work on a phone">
+    Ask for it: "Add touch controls", "Make the UI fit phone screens", "Lock the game to portrait".
   </Step>
 </Steps>
 
-## Step 2: Enable Texture Compression
+## Step 2: Turn on mobile textures
 
-Enable ETC2 ASTC (required for iOS):
+iPhone needs ETC2/ASTC textures. In **Project → Project Settings → Rendering → Textures → VRAM Compression**, turn on **Import ETC2 ASTC** and wait for the reimport.
 
-1. **Project → Project Settings**
-2. **Rendering → Textures → VRAM Compression**
-3. **Enable "Import ETC2 ASTC"**
-4. Wait for reimport (1-5 minutes)
-
-## Step 3: Export for iOS
+## Step 3: Export and publish
 
 <Steps>
-  <Step title="Create export preset">
-    Project → Export → Add → iOS
+  <Step title="Export a Summer Engine export">
+    Ask your agent to export with `summer_export_game` and `targets: ["ios"]`, or open **Project → Export**, pick the **summer.games** preset and click **Export Project**. You get one `.zip`. See [Export your game](/publishing/export).
   </Step>
-  <Step title="Configure">
-    Set your bundle identifier and provisioning profile (requires Apple Developer account)
+  <Step title="Make the store page">
+    In Summer Studio, pick **iPhone** as a target. It opens the **Mobile store**: text, art and a phone preview. See [Publish your game](/grow/publish).
   </Step>
-  <Step title="Export">
-    Export for iOS. You get an Xcode project or IPA for App Store submission
+  <Step title="Upload and submit">
+    Upload the export in **Check and submit**, then submit for review. After approval, players find your game in the Summer Games app on iPhone.
   </Step>
 </Steps>
 
-<Info>iOS export requires an Apple Developer account ($99/year) and a Mac. See the [Publishing Overview](/publishing/overview) for platform requirements.</Info>
+## Your own App Store release
 
-## Next Steps
+Summer Engine has iPhone export from its upstream base, but Summer's export template download (`summer_export_templates`) has web, Mac and Windows templates today, not iPhone. Summer Games does not take `.ipa` files. If you need your own App Store listing, ask on [Discord](https://discord.gg/summerengine) before you plan around it.
+
+## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Publishing Overview" icon="upload" href="/publishing/overview">
-    Platform requirements and export options
+  <Card title="Export your game" icon="package" href="/publishing/export">
+    Store bundles, texture formats and the export tool
   </Card>
-  <Card title="Console Publishing" icon="gamepad-2" href="/publishing/consoles">
-    Console export (Switch, PlayStation, Xbox)
+  <Card title="Publish your game" icon="upload" href="/grow/publish">
+    Store pages, builds, review and going live
   </Card>
 </CardGroup>
 

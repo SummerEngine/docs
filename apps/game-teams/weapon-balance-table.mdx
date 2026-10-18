@@ -1,13 +1,9 @@
 ---
 title: "Weapon balance table: a Summer App for game teams"
 sidebarTitle: "Weapon balance table"
-description: "A shared table of every weapon with damage, attack speed and DPS, a chart that flags weapons over the DPS budget, and in-place edits. Manifest, seed data, agent edits and the look check."
+description: "A Summer App for game teams: every weapon's damage, attack speed and DPS in one shared table, with a DPS budget chart, in-place edits and agent nerfs."
 icon: "swords"
 ---
-
-<Warning>
-**Draft.** Summer Apps is in a closed test. This page goes live after the end-to-end test on production.
-</Warning>
 
 ## What your team gets
 
@@ -23,8 +19,8 @@ attacks per second, DPS (damage x attacks per second), range, price and tier. Da
 speed and price are editable in place with a save bar. A DPS bar chart flags weapons
 over the DPS budget (60, stored in the app's data) with a budget line. Keep all data in
 the app's shared data. Give agents a nerf_weapon tool. Seed it with our weapons (or
-five sample weapons) using summer_app_data with "as": "seed". Follow the summer-apps and
-summer-apps-design skills, then check it with summer_app_screenshot (default, width 390,
+five sample weapons) using apps.write_data with "as": "seed". Follow the summer-apps and
+summer-apps-design skills, then check it with apps.screenshot (default, width 390,
 theme dark) and fix what it reports.
 </Prompt>
 
@@ -75,7 +71,7 @@ With the next Summer Engine update, the app can also write `res://data/weapons.j
 
 ## Seed the data
 
-One `summer_app_data` call writes every starter row in one revision. `"as": "seed"` marks the rows as the team's, with no author.
+One `apps.write_data` call writes every starter row in one revision. `"as": "seed"` marks the rows as the team's, with no author.
 
 ```json
 {
@@ -96,13 +92,13 @@ One `summer_app_data` call writes every starter row in one revision. `"as": "see
 
 ## An agent edit: "nerf the bow by 10%"
 
-Read the bow first, to get its damage and its revision:
+Read the weapons with `apps.read_data`, to get the bow's damage and its revision:
 
 ```json
 { "appId": "<app id>", "collection": "weapons" }
 ```
 
-In the answer, the bow record has `"damage": 40` and a `revision`, here `1`. Write 10% less damage, only if nobody changed the bow since the read:
+In the answer, the bow record has `"damage": 40` and a `revision`, here `1`. Write 10% less damage with `apps.write_data`, only if nobody changed the bow since the read:
 
 ```json
 {
@@ -113,15 +109,15 @@ In the answer, the bow record has `"damage": 40` and a `revision`, here `1`. Wri
 }
 ```
 
-The bow's DPS goes from 48 to 43.2. A `conflict` means someone changed it: read again and retry. When the person has the app open, `summer_app_call` with `{ "tool": "nerf_weapon", "input": { "id": "bow", "percent": 10 } }` does the same through the app's own formula.
+The bow's DPS goes from 48 to 43.2. A `conflict` means someone changed it: read again and retry. When the person has the app open, `apps.call` with `{ "tool": "nerf_weapon", "input": { "id": "bow", "percent": 10 } }` does the same through the app's own formula.
 
 ## Check the look
 
 After every publish:
 
-- `summer_app_screenshot { "appId": "<app id>" }`
-- `summer_app_screenshot { "appId": "<app id>", "width": 390 }`: on a phone, secondary columns hide and the table stays readable.
-- `summer_app_screenshot { "appId": "<app id>", "theme": "dark" }`
+- `apps.screenshot { "appId": "<app id>" }`
+- `apps.screenshot { "appId": "<app id>", "width": 390 }`: on a phone, secondary columns hide and the table stays readable.
+- `apps.screenshot { "appId": "<app id>", "theme": "dark" }`
 
 Fix every entry in `errors` and `console`, and every refused call that is not a write. The screenshot is read-only, so saves are refused there; they work in Studio.
 

@@ -1,6 +1,7 @@
 ---
-title: "AI Operations"
-description: "What Summer Engine's AI can do in your project"
+title: "What Summer Engine's AI Can Do in Your Project"
+sidebarTitle: "AI Operations"
+description: "What the Summer Engine agent does in your project: write GDScript, edit scenes, make and import assets, change project settings, and check its own work."
 icon: "bot"
 "og:image": "https://docs.summerengine.com/images/og/ai-tools-operations.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/ai-tools-operations.jpg"
@@ -32,9 +33,9 @@ There is no 3D specialist and no audio specialist. Ask for realistic forest ligh
 
 ### How specialists work
 
-Specialists are not separate conversation threads. They run inside the same conversation as tools the main agent calls, and they do not persist between chats.
+Specialists run inside your conversation, as tools the main agent calls. They do not persist between chats.
 
-You can watch one work live in your chat as its own clean thread. When it finishes, it folds a short summary back into the main chat and the details stay tucked away if you ever want to look. See [Subagents](/ai-tools/subagents) for the full picture.
+You can watch one work live in your chat, shown as its own collapsible thread. When it finishes, it folds a short summary back into the main chat and the details stay tucked away if you ever want to look. See [How Summer's AI agents build your game](/ai-tools/subagents) for the full picture.
 
 ### What Summer Engine Can Build For You
 
@@ -62,7 +63,7 @@ Sound design that's tailored to your game's atmosphere:
 - Background music that matches your game's mood
 - Sound effects for specific game actions
 - Ambient audio loops for different environments
-- Voice acting prompts for professional recording
+- Character voices and voice lines
 
 **Documentation That Helps**
 Summer Engine creates living documentation that stays current:
@@ -78,9 +79,6 @@ Think of Summer Engine as having instant access to a vast game development libra
 
 **Built-in Engine Expertise**
 Summer Engine knows the engine inside and out. When you ask "How do I create a third-person camera that follows the player smoothly?", Summer Engine doesn't guess. It knows the exact Camera3D setup, the right script structure, and the physics considerations.
-
-**Real-Time Research**
-Summer Engine can search current tutorials, documentation, and community resources while you work. Need to implement a specific shader effect? Summer Engine finds the latest examples and adapts them to your project.
 
 **Learning From Your Code**
 Summer Engine analyzes your existing code patterns and suggests improvements. If you have a consistent way of handling player input, Summer Engine learns that pattern and applies it to new features.
@@ -111,7 +109,7 @@ Summer Engine knows how your project is organized. It understands:
 When Summer Engine generates an asset for you (like a texture or sound), it automatically places it in the right folder and connects it to your scenes. No manual importing required.
 
 **AI Asset Import**
-Summer Engine imports assets from Summer Studio directly into your project. Describe what you need (a low-poly tree, a wooden crate, footsteps on gravel) and Summer Engine searches the store, picks a match, downloads it, and runs the import pipeline. The asset appears in your project and is ready to place in your scene. No copy-paste, no manual download, no wondering where the file went.
+Summer Engine imports assets from the Summer asset library and your Summer Studio assets directly into your project. Describe what you need (a low-poly tree, a wooden crate, footsteps on gravel) and Summer Engine searches the library, picks a match, downloads it, and runs the import pipeline. The asset appears in your project and is ready to place in your scene. No copy-paste, no manual download, no wondering where the file went.
 
 For scenes that need many assets at once (a village, a forest, a city block), Summer Engine supports bulk import. It plans the full set, downloads and imports everything in one batch, runs a single filesystem scan, and tells you when it is done. One wait instead of many. Your computer may lag briefly during large imports, but you get a heads-up first. The assets are there when Summer Engine needs them, and it can start placing them in your scene right away.
 
@@ -181,8 +179,7 @@ Unlike free-form file editing, Summer Engine uses specific operations that ensur
     **How it works**:
     - AI finds the signal and target method
     - Creates the connection in the editor
-    - Generates method stubs if needed
-    - Opens external editor for code editing
+    - Writes the handler method in the script if it is missing
   </Accordion>
   
   <Accordion icon="download" title="Import Assets">
@@ -194,7 +191,7 @@ Unlike free-form file editing, Summer Engine uses specific operations that ensur
     - "Build a village: houses, trees, fences, and props"
     
     **How it works**:
-    - AI searches Summer Studio (25k+ assets) by semantic and keyword
+    - AI searches the Summer asset library (more than 130,000 assets) and your own assets by meaning and keyword
     - Single asset: downloads, writes, runs import, ready to place
     - Bulk: imports many assets in one batch, one scan, then places them in your scene
     - Summer Engine tells you before large imports that the computer may lag briefly
@@ -225,14 +222,14 @@ AI can also modify project-level settings:
   </Accordion>
   
   <Accordion icon="code" title="Script Operations">
-    **What it does**: Attaches scripts and opens editors
+    **What it does**: Writes, edits and attaches scripts
     
     **Example prompts**:
     - "Attach a script to the Player node"
-    - "Open the player script in my editor"
     - "Create a new script for the UI manager"
+    - "Add a double jump to the player script"
     
-    **Note**: For substantial code editing, Summer Engine opens your external editor (VS Code, Cursor, etc.)
+    **Note**: The agent writes and edits GDScript itself, then checks that it compiles.
   </Accordion>
 </AccordionGroup>
 
@@ -269,9 +266,9 @@ Before making changes, AI can read your project structure:
 
 ## Tools, search & execution
 
-### Shell commands require approval
+### Shell commands and approvals
 
-**All shell commands require your approval before they run.** The agent can suggest commands (e.g. run tests, install dependencies, run scripts), but nothing executes until you explicitly approve it. This keeps your system safe and gives you full control over what runs.
+The **permission mode** in the composer decides what runs without asking. Read-only commands run on their own. In Manual, Accept edits and Auto approve (the default), Summer asks you before any command that changes something and before destructive actions. Bypass permissions runs most commands without asking; catastrophic commands and project recovery still ask. See [You approve anything risky](/ai-tools/subagents#you-approve-anything-risky).
 
 ### Grep search
 
@@ -295,13 +292,9 @@ If a scene cannot load, Summer returns the concrete reason, such as a missing or
 
 The main agent and subagents can work concurrently without a routine whole-project writer lock. Exact project, file, and scene targets keep work scoped. The engine orders operations that must run on its main thread, while content receipts prevent stale same-file overwrites.
 
-### Infrastructure (Vercel)
+### Specialists
 
-Search and AI infrastructure runs on **Vercel**. Where applicable, services are hosted in the EU for privacy and low latency. This is already implemented and in use.
-
-### Subagents
-
-The agent can **spawn subagents**: specialized background assistants that run in their own context. Summer Engine uses them automatically to rapidly research your codebase (the **Explore** agent) or execute complex multi-step tasks (the **General Purpose** agent) in parallel. You can watch subagents work live in the chat via an interleaved transcript of their thoughts and tool usage, keeping the main conversation clean while they handle the heavy lifting. See [Subagents](/ai-tools/subagents) for how they work and when to use them.
+The main agent hands research, building, asset work and checks to the specialists described at the top of this page, often several at once. See [How Summer's AI agents build your game](/ai-tools/subagents).
 
 ## Safety & Limitations
 
@@ -322,7 +315,7 @@ The agent can **spawn subagents**: specialized background assistants that run in
 
 <AccordionGroup>
   <Accordion icon="eye" title="Review changes">
-    Always check what the AI plans to do before confirming operations. The change review panel shows exactly what will be modified.
+    Check what the AI plans to do before you approve it. Pick a stricter permission mode when you want to approve each edit.
   </Accordion>
   
   <Accordion icon="save" title="Save regularly">
@@ -345,8 +338,8 @@ The agent can **spawn subagents**: specialized background assistants that run in
     Understand how AI reads and indexes your project
   </Card>
   
-  <Card title="Subagents" icon="git-branch" href="/ai-tools/subagents">
-    Parallel and specialized AI assistants
+  <Card title="AI agent team" icon="git-branch" href="/ai-tools/subagents">
+    The specialists that build your game, and how to steer them
   </Card>
   
   <Card title="Troubleshooting" icon="wrench" href="/desktop/troubleshooting">

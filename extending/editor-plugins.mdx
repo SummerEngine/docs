@@ -1,6 +1,7 @@
 ---
-title: "Editor Plugins"
-description: "Write a @tool EditorPlugin in Summer to get full EditorInterface: force reimports of agent-written files, bake occluders, save scenes from code, register autoloads. Templates, the three ways to enable a plugin, and the traps."
+title: "Summer Engine Editor Plugins: EditorPlugin and EditorInterface"
+sidebarTitle: "Editor Plugins"
+description: "Write a @tool EditorPlugin in Summer Engine to reach EditorInterface: force reimports, bake occluders, save scenes from code, register autoloads, and verify it loaded."
 icon: "plug"
 "og:image": "https://docs.summerengine.com/images/og/extending-editor-plugins.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/extending-editor-plugins.jpg"
@@ -113,7 +114,8 @@ entry so the cache is built, then add the section. That works every time.
 
 ### Route B — the `EnableEditorPlugin` operation
 
-This is the path Summer's own AI takes when you ask it to enable a plugin. It takes one
+This is the path Summer's own AI takes when you ask it to enable a plugin. Through the MCP it
+is the `engine.enable_plugin` operation (tool `summer_enable_plugin`). It takes one
 argument, `pluginPath`. A bare name normalises — `summer_demo` becomes
 `res://addons/summer_demo/plugin.cfg` — and a full `res://` path passes through
 unchanged.
@@ -421,31 +423,19 @@ becomes instantiable and `EditorInterface.save_scene()` persists nodes the scrip
 The script's loop replaces the editor's `SceneTree` but is still a `SceneTree`, so
 `EditorNode` is constructed as usual.
 
-<Warning>
-**`--headless --editor` hijacks your running editor's connection. Do not run it against
-a project a user has open.**
+<Note>
+**Run headless editor jobs against a scratch project, not one a user has open.**
 
-Adding `--editor` starts Summer's local API server, which overwrites `~/.summer/api-port`
-and **regenerates `~/.summer/api-token`**. Those two files are how the CLI, the MCP
-server and Summer's own orchestrator find your running editor.
+`--headless --editor` starts Summer's local API server on its own port. Older builds also
+overwrote `~/.summer/api-port` and `~/.summer/api-token`, the files the CLI and the MCP server
+use to find your running editor, and broke that connection. Current builds treat a headless
+editor as a batch instance and leave those files alone. See
+[Headless Scripting](/automation/headless#what-does-not-work) for the details and the
+`--summer-no-api` flag.
 
-Measured on **macOS, Summer 0.5.55**: throwaway headless editors took ports 6550, 6551
-and 6552 across successive runs and rewrote both files while the user's real editor was
-running. On exit, the port file points at a dead port, so nothing can find the real
-editor any more.
-
-Windows ships under a different version number and was not tested — a higher number
-there does not mean a later build than the one measured. A future build may suppress
-this for batch-mode instances; assume it does not unless your version's
-[changelog](/changelog/overview) says so.
-
-**Plain `--headless -s script.gd`, with no `--editor`, never starts the local API server
-and is completely safe.** If you do not need editor context, do not ask for it — see
-[Headless Scripting](/automation/headless).
-
-If you must run an editor-headless job, run it against a scratch project, and expect to
-restart the user's editor afterwards to republish a valid port and token.
-</Warning>
+**Plain `--headless -s script.gd`, with no `--editor`, never starts the local API server.** If
+you do not need editor context, do not ask for it.
+</Note>
 
 ## For AI agents
 
@@ -498,9 +488,8 @@ The four that will burn you silently:
 1. **`ok: true` does not mean loaded.** Verify every enable.
 2. **The enabled list is replaced, not merged.** Read it first or you will disable the
    user's plugins.
-3. **`--headless --editor` rewrites `~/.summer/api-port` and `~/.summer/api-token`**, and
-   breaks the connection to a running editor. Use plain `--headless` unless you truly
-   need editor context.
+3. **`--headless --editor` is a second editor.** Run it against a scratch project, and use
+   plain `--headless` unless you truly need editor context.
 4. **A broken plugin does not crash anything.** It produces an editor that quietly
    ignores you.
 

@@ -1,45 +1,54 @@
 ---
-title: "API Reference"
-description: "Summer Engine's API: MCP tools, CLI, and integrations"
+title: "Summer Engine API Authentication: MCP, CLI and HTTP Sign-In"
+sidebarTitle: "Authentication"
+description: "How agents and scripts sign in to Summer Engine: OAuth on the hosted MCP, summer login for the CLI and local MCP, SUMMER_TOKEN, and the local engine token."
 ---
 
 {/* Do not reintroduce a hardcoded MCP tool count here. The tool list grows every release and a baked-in number has already gone stale twice. */}
 
-## Use the MCP API
+Summer is the game engine built for AI. Every Summer API uses your Summer account. You never paste an API key: you sign in once in the browser, and the tool keeps the token.
 
-Summer Engine's primary API is the **MCP (Model Context Protocol)** integration. It exposes tools that let any MCP-compatible AI tool control the engine: add nodes, set properties, import assets, run the game, and debug. This is the same API used by the built-in chat, Cursor, Claude Code, Devin Desktop, and other IDEs.
+## Which sign-in each API uses
+
+| API | How it signs in |
+|---|---|
+| Hosted MCP (`https://mcp.summerengine.com/mcp`) | OAuth. Your agent opens the Summer sign-in page once. Sign in and choose **Allow**. |
+| `summer` CLI and the local MCP (`summer mcp`) | `summer login` opens your browser once. It signs in your Summer account, then the store, publishing and Grow tools. |
+| Engine tools (scenes, scripts, play) | No sign-in. Summer Engine writes a local token to `~/.summer/api-token` when it starts, and the local MCP reads it. |
+| [HTTP API](/api-reference/http/overview) (`api.summer.games`) | A bearer token from the same OAuth sign-in: `summer login --store`, or the Summer connector in an AI app. |
+
+## Files and variables
+
+| Path or variable | What it holds |
+|---|---|
+| `~/.summer/auth-token` | Your Summer account token, from `summer login` |
+| `~/.summer/oauth-token`, `~/.summer/oauth-client` | The store sign-in, from `summer login`. It renews itself. |
+| `~/.summer/api-token` | The local engine token. The engine writes it on every start. |
+| `SUMMER_TOKEN` | A Summer account token for scripts and CI. It wins over `~/.summer/auth-token`. `summer logout` does not clear it. |
+
+`summer whoami` shows who is signed in. `summer logout` removes the saved tokens.
+
+## When sign-in is missing
+
+An operation that needs a sign-in answers with the error code `not_signed_in` and one next step. On the hosted MCP, your agent opens the sign-in page again. Locally, run `npx -y summer-engine@latest login`. All codes: [How Summer answers](/api-reference/mcp#errors).
+
+## More
 
 <CardGroup cols={2}>
-  <Card
-    title="MCP Setup"
-    icon="plug"
-    href="/mcp/setup"
-  >
-    Connect your IDE to Summer Engine via MCP
+  <Card title="How Summer answers" icon="plug" href="/api-reference/mcp">
+    Answer statuses, error codes, dryRun, idempotencyKey and jobs
   </Card>
-  <Card
-    title="Operations reference"
-    icon="wrench"
-    href="/mcp/operations"
-  >
-    Every operation with its inputs and an example
+  <Card title="MCP setup" icon="settings" href="/mcp/setup">
+    Connect your agent: one URL for cloud work, one command for engine work
   </Card>
-  <Card
-    title="CLI Reference"
-    icon="terminal"
-    href="/mcp/cli-reference"
-  >
-    Install, login, create, and run via the command line
+  <Card title="CLI reference" icon="terminal" href="/mcp/cli-reference">
+    summer login, whoami, logout and every other command
   </Card>
-  <Card
-    title="Building a Game"
-    icon="gamepad-2"
-    href="/mcp/building-a-game"
-  >
-    Step-by-step guide for AI agents building games
+  <Card title="Agent permissions" icon="shield-check" href="/mcp/permissions">
+    What a signed-in agent may do without asking
   </Card>
 </CardGroup>
 
-## REST API
+---
 
-If you need programmatic access beyond MCP (e.g., for custom integrations or automation), ask in [Discord](https://discord.gg/summerengine) or email [support@summerengine.com](mailto:support@summerengine.com) to discuss your use case.
+Need help? Ask in [Discord](https://discord.gg/summerengine) first. That is where you get the fastest reply and support. For concrete help, email [support@summerengine.com](mailto:support@summerengine.com) or [founders@summerengine.com](mailto:founders@summerengine.com).

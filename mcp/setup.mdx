@@ -1,6 +1,7 @@
 ---
-title: "MCP Setup"
-description: "Connect any agent to Summer. Cloud work: add https://mcp.summerengine.com/mcp and sign in once, nothing to install. Engine work: one command sets up the local server for Cursor, Claude Code, Codex, Devin Desktop, Antigravity, Zed, Copilot and 20 more."
+title: "Summer Engine MCP Setup for Any AI Agent"
+sidebarTitle: "MCP Setup"
+description: "Connect any agent to Summer Engine: add mcp.summerengine.com/mcp for cloud work, or run one setup command for engine work in Claude Code, Codex, Cursor and 28 more."
 icon: "settings"
 "og:image": "https://docs.summerengine.com/images/og/mcp-setup.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/mcp-setup.jpg"
@@ -19,7 +20,7 @@ Summer is the game engine built for AI. Any agent builds, tests and publishes a 
 | Sign in | Once, in the browser, when your agent connects | Once: `npx -y summer-engine@latest login` |
 | Install | Nothing | Node.js 20+ and Summer Engine |
 
-**Cloud work.** Add `https://mcp.summerengine.com/mcp` to your agent. Your agent opens the Summer sign-in page once. Sign in to your Summer account and choose **Allow**. Nothing to install. Claude Code: `claude mcp add --transport http summer https://mcp.summerengine.com/mcp`, then run `/mcp` and sign in. Claude and ChatGPT: see [Summer in ChatGPT and Claude](/mcp/chatgpt-and-claude).
+**Cloud work.** Add `https://mcp.summerengine.com/mcp` to your agent. Your agent opens the Summer sign-in page once. Sign in to your Summer account and choose **Allow**. Nothing to install. Claude Code: `claude mcp add --transport http summer-cloud https://mcp.summerengine.com/mcp`, then run `/mcp` and sign in. Codex: `codex mcp add summer-cloud --url https://mcp.summerengine.com/mcp`, then `codex mcp login summer-cloud`. Claude and ChatGPT: see [Summer in ChatGPT and Claude](/mcp/chatgpt-and-claude).
 
 **Engine work.** Run the setup command below, then `npx -y summer-engine@latest login` once. After sign-in, the local server also runs the cloud operations, so your agent needs one server.
 
@@ -39,6 +40,10 @@ Replace `<agent>` with the id from the table below (`cursor`, `claude-code`, `co
 1. **Writes the MCP server entry** into the agent's own config file, in that agent's file shape. Existing servers in the file are kept.
 2. **Installs the Summer skill library** where that agent reads skills (see [Skills](/mcp/skills)). Most agents share one folder, `~/.agents/skills`, so one setup covers several agents.
 3. **Runs `summer doctor`** so you see immediately whether Node, the engine and the login are in place.
+
+For most agents, setup also adds the **Summer Games MCP** (`summer-games`, `https://mcp.summer.games/mcp`) so your agent can see your friends, start parties and send messages as you. It prints the one sign-in step for your agent. `--no-games` skips it. See [Summer MCPs](/mcp/summer-mcps).
+
+Options worth knowing: `--cli` installs the skills and no MCP server, so the agent runs `summer` commands in its shell. `--assets-only` sets up only the asset tools and skills, with no engine. `--profile engine` lists fewer tools, for agents with a tool limit; VS Code Copilot gets it by default. Every option: [summer setup](/mcp/cli-reference#summer-setup).
 
 Add `--scope project` to write project-level files that travel with the game, `--print` to see the config without writing, `--dry-run` to see the plan. Re-run with `--force` after upgrading Summer to refresh the skills.
 
@@ -72,28 +77,28 @@ Every id `summer setup` accepts, with the file it writes and where the skills la
 | [Cursor](/mcp/cursor) | `cursor` | `~/.cursor/mcp.json` / `.cursor/mcp.json` (project) | `~/.agents/skills` (shared) / `.agents/skills` |
 | [Devin Desktop (formerly Windsurf)](/mcp/devin-desktop) | `windsurf` | `~/.config/devin/mcp_config.json` (Windows `%APPDATA%\devin\mcp_config.json`) | `~/.agents/skills` (shared) / `.agents/skills` |
 | [Antigravity](/mcp/antigravity) | `antigravity` | `~/.gemini/config/mcp_config.json` / `.agents/mcp_config.json` (project) | `~/.gemini/config/skills` / `.agents/skills` |
-| [Cline (VS Code)](/mcp/agents#cline) | `cline` | `~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json` | `~/.cline/skills` / `.cline/skills` |
+| [Cline (VS Code)](/mcp/agents#cline-vs-code) | `cline` | `~/Library/Application Support/Code/User/globalStorage/saoudrizwan.claude-dev/settings/cline_mcp_settings.json` | `~/.cline/skills` / `.cline/skills` |
 | [Cline CLI](/mcp/agents#cline-cli) | `cline-cli` | `~/.cline/data/settings/cline_mcp_settings.json` | `~/.cline/skills` / `.cline/skills` |
 | [Kilo Code](/mcp/agents#kilo-code) | `kilo-code` | `~/.config/kilo/kilo.json` / `kilo.json` (project) | `~/.kilo/skills` / `.kilo/skills` |
 | [GitHub Copilot CLI](/mcp/github-copilot) | `github-copilot` | `~/.copilot/mcp-config.json` / `.mcp.json` (project) | `~/.copilot/skills` / `.github/skills` |
 | [GitHub Copilot in VS Code](/mcp/vscode) | `vscode-copilot` | `~/Library/Application Support/Code/User/mcp.json` / `.vscode/mcp.json` (project) | `~/.agents/skills` (shared) / `.agents/skills` |
-| [GitHub Copilot in Visual Studio](/mcp/agents#visual-studio) | `visual-studio` | `~/.mcp.json` / `.mcp.json` (project) | none (MCP only) |
-| [GitHub Copilot in JetBrains IDEs](/mcp/agents#copilot-jetbrains) | `copilot-jetbrains` | `~/.config/github-copilot/intellij/mcp.json` | none (MCP only) |
+| [GitHub Copilot in Visual Studio](/mcp/agents#github-copilot-in-visual-studio) | `visual-studio` | `~/.mcp.json` / `.mcp.json` (project) | none (MCP only) |
+| [GitHub Copilot in JetBrains IDEs](/mcp/agents#github-copilot-in-jetbrains-ides) | `copilot-jetbrains` | `~/.config/github-copilot/intellij/mcp.json` | none (MCP only) |
 | [OpenCode](/mcp/opencode) | `opencode` | `~/.config/opencode/opencode.json` / `opencode.json` (project) | `~/.agents/skills` (shared) / `.agents/skills` |
 | [Zed](/mcp/zed) | `zed` | `~/.config/zed/settings.json` | `~/.agents/skills` (shared) / `.agents/skills` |
 | [Kiro](/mcp/agents#kiro) | `kiro` | `~/.kiro/settings/mcp.json` / `.kiro/settings/mcp.json` (project) | `~/.kiro/skills` / `.kiro/skills` |
 | [Goose](/mcp/local-models) | `goose` | `~/.config/goose/config.yaml` | `~/.config/agents/skills` / `.agents/skills` |
-| [Hermes Agent](/mcp/agents#hermes) | `hermes` | `~/.hermes/config.yaml` | `~/.hermes/skills` / `.agents/skills` |
+| [Hermes Agent](/mcp/agents#hermes-agent) | `hermes` | `~/.hermes/config.yaml` | `~/.hermes/skills` / `.agents/skills` |
 | [Trae](/mcp/agents#trae) | `trae` | `.trae/mcp.json` (project) | none (MCP only) |
 | [Qwen Code](/mcp/agents#qwen-code) | `qwen-code` | `~/.qwen/settings.json` / `.qwen/settings.json` (project) | `~/.qwen/skills` / `.qwen/skills` |
-| [Kimi Code CLI](/mcp/agents#kimi-code) | `kimi-code` | `~/.kimi-code/mcp.json` / `.kimi-code/mcp.json` (project) | `~/.agents/skills` (shared) / `.agents/skills` |
+| [Kimi Code CLI](/mcp/agents#kimi-code-cli) | `kimi-code` | `~/.kimi-code/mcp.json` / `.kimi-code/mcp.json` (project) | `~/.agents/skills` (shared) / `.agents/skills` |
 | [Crush](/mcp/agents#crush) | `crush` | `~/.config/crush/crushrc` / `.crushrc` (project) | `~/.agents/skills` (shared) / `.agents/skills` |
 | [Amp](/mcp/agents#amp) | `amp` | `~/.config/amp/settings.json` | `~/.agents/skills` (shared) / `.agents/skills` |
-| [Factory Droid](/mcp/agents#factory) | `factory` | `~/.factory/mcp.json` / `.factory/mcp.json` (project) | `~/.agents/skills` (shared) / `.agents/skills` |
+| [Factory Droid](/mcp/agents#factory-droid) | `factory` | `~/.factory/mcp.json` / `.factory/mcp.json` (project) | `~/.agents/skills` (shared) / `.agents/skills` |
 | [Junie](/mcp/agents#junie) | `junie` | `~/.junie/mcp/mcp.json` / `.junie/mcp/mcp.json` (project) | none (MCP only) |
 | [Warp](/mcp/agents#warp) | `warp` | `~/.warp/.mcp.json` / `.warp/.mcp.json` (project) | `~/.agents/skills` (shared) / `.agents/skills` |
-| [Rovo Dev CLI](/mcp/agents#rovo-dev) | `rovo-dev` | `~/.rovodev/mcp.json` | `~/.agents/skills` (shared) / `.agents/skills` |
-| [Qoder CLI](/mcp/agents#qoder) | `qoder` | `~/.qoder/settings.json` / `.mcp.json` (project) | `~/.qoder/skills` / `.qoder/skills` |
+| [Rovo Dev CLI](/mcp/agents#rovo-dev-cli) | `rovo-dev` | `~/.rovodev/mcp.json` | `~/.agents/skills` (shared) / `.agents/skills` |
+| [Qoder CLI](/mcp/agents#qoder-cli) | `qoder` | `~/.qoder/settings.json` / `.mcp.json` (project) | `~/.qoder/skills` / `.qoder/skills` |
 | [Grok Build](/mcp/agents#grok-build) | `grok-build` | `~/.grok/config.toml` / `.grok/config.toml` (project) | `~/.agents/skills` (shared) / `.agents/skills` |
 | [Mistral Vibe](/mcp/agents#mistral-vibe) | `mistral-vibe` | `~/.vibe/config.toml` / `.vibe/config.toml` (project) | `~/.vibe/skills` / `.agents/skills` |
 | [LM Studio](/mcp/local-models) | `lm-studio` | `~/.lmstudio/mcp.json` | none (MCP only) |
@@ -208,7 +213,7 @@ Your agent gets tools in these categories:
 | **Asset Library** | Search the public library and your assets, then import |
 | **Generation** | Generate images, 3D models, audio, video, and motion clips, and slice sprite sheets. Long work returns a job: `summer_jobs_wait` waits up to 50 seconds per call |
 | **Plans and projects** | Read and change a game's plan and its saved direction, and list your Summer projects |
-| **Navigation** | Open the right page on summerengine.com or the right surface in the editor for the user (`summer_open`) |
+| **Navigation** | Open the right page on summerengine.com or the right surface in the editor for the user (`studio.open` through `summer_call`) |
 | **Publishing** | Export the game, upload builds, edit the store page and ask the owner to publish |
 | **Grow** | Prices and sales, analytics, A/B tests, game members and growth applications |
 | **Team and Studio** | Your team, and pages in Summer Studio |

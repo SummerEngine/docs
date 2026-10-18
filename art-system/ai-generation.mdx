@@ -1,221 +1,105 @@
 ---
-title: "AI Asset Generation"
-description: "Create, upload, organize, and import game assets (AI-generated or your own) directly into your games"
+title: "AI Asset Generation for Games in Summer Studio"
+sidebarTitle: "Generate Assets"
+description: "Generate game images, video, audio and 3D models in Summer Studio, write prompts that work, and have Summer Engine import the results into your game."
 icon: "wand-sparkles"
 "og:image": "https://docs.summerengine.com/images/og/art-system-ai-generation.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/art-system-ai-generation.jpg"
 ---
 
-## AI Assets for Game Development
+Summer Studio generates game assets with AI models. Everything you make lands in
+**My Assets**, and Summer Engine can import any of it into your game on command.
 
-Summer Engine's **Studio** lets you create assets, upload and organize your own existing ones, and have Summer Engine import any asset directly into your games on command. AI asset generation is designed for **game development**: getting your game playable and testable quickly.
+## Where to generate
 
-**Realistic Expectations:**
-- AI assets work best for simple, clear concepts
-- Complex or stylized assets may need refinement
-- Perfect for placeholders and iteration
-- Not suitable for polished, commercial releases
+- **The Create pages**: [summerengine.com/create](https://www.summerengine.com/create/image)
+  has a tab for each kind: Image, Video, Audio, 3D and Effects. Pick a model, write
+  a prompt, and press Generate.
+- **The Studio chat**: describe what you need, for example "a low-poly wooden
+  barrel" or "turn my last picture into a 3D model". The agent picks the tool.
+- **The engine chat or any MCP agent**: ask for the asset while you build, and the
+  agent generates and imports it in one step.
 
-**What AI Assets Do Well:**
-- Basic character sprites and animations
-- Simple environment backgrounds
-- UI elements and buttons
-- Concept exploration and mood boards
+Each generation uses credits from your balance. The Generate button shows the cost
+before you start.
 
-**What Needs Human Artists:**
-- Complex character designs with personality
-- Detailed environment art
-- Brand-consistent visual style
-- High-quality promotional materials
+## What each tab does
 
-## Getting Started
+| Tab | What you can do |
+| --- | --- |
+| **Image** | Generate from words, guide it with reference images on models that accept them, pick an aspect ratio and a style preset |
+| **Video** | Text to video, image to video, and reference to video, plus tools such as trailers and short game ads |
+| **Audio** | Text to speech, sound effects, music, and speech-to-text |
+| **3D** | Text to 3D, image to 3D, and several views to 3D; standard or low-poly meshes on models that support it |
+| **Effects** | Game VFX the agent builds as real particle effects in your scene, and tools that turn one image into game-ready assets |
 
-<Steps>
-  <Step title="Open Studio">
-    In Summer, go to Studio and use the Create tabs: 2D, 3D, Audio, or Video
-  </Step>
-  <Step title="Choose Your Style">
-    Select from preset styles like Realistic, Cartoon, Anime, Pixel Art, Low-Poly, or Fantasy
-  </Step>
-  <Step title="Write Your Prompt">
-    Describe what you want to create in natural language
-  </Step>
-  <Step title="Generate and Refine">
-    Click Generate and iterate until you get the perfect result
-  </Step>
-</Steps>
+The model list on each tab is live. Models are added and retired often.
 
-## Writing Effective Prompts
+## Style presets
 
-### Basic Structure
-Start with the main subject, then add details about style, mood, and composition:
+On the Image tab, a style preset adds a consistent look to your prompt. Examples
+include Cel-shaded, Anime, Pixel Art, Retro 16-bit, Low Poly, Voxel, Claymation,
+Hand-painted, Dark Fantasy, Cyberpunk and Isometric. Pick **No style preset** to
+use your prompt as written.
+
+The one-click starters (Key art, Character sheet, Item icons, Store capsule,
+Environment, Pixel hero) fill in a prompt, an aspect ratio and a style for you.
+They never generate on their own.
+
+## Improve a prompt
+
+Press **Improve** to rewrite a short prompt into a detailed one before you generate.
+It works for images, 3D concepts and animation clips.
+
+## After you generate
+
+In Studio, or by asking the agent, you can:
+
+- Edit an image with a plain instruction, keeping its style.
+- Remove the background.
+- For 3D models: auto-rig a humanoid, add animation clips, or retexture the mesh.
+- Change the title, description and tags.
+- Make the asset public in the Asset Store, or keep it private (paid plans).
+
+## Writing prompts that work
+
+Start with the subject, then add style, mood and framing:
 
 ```
-[Subject] + [Style] + [Mood/Lighting] + [Composition]
+[Subject] + [Style] + [Mood or lighting] + [Framing]
 ```
 
-### Examples
-
-**Character Sprites**
 ```
-A brave knight in silver armor, cartoon style, bright cheerful lighting, facing forward for game sprite
+A brave knight in silver armor, cartoon style, bright lighting, facing forward, plain background
 ```
 
-**Environment Textures**
 ```
-Seamless stone brick texture, medieval fantasy style, weathered and moss-covered, tileable pattern
-```
-
-**UI Elements**
-```
-Wooden game button with gold trim, fantasy RPG style, glowing hover effect, ornate carved details
+Seamless stone brick texture, medieval fantasy, weathered and moss-covered, tileable
 ```
 
-**Concept Art**
 ```
-Mystical forest clearing, anime style, soft magical lighting, ancient ruins in background
+Wooden game button with gold trim, fantasy RPG style, ornate carved details
 ```
 
-## Style Presets
+Tips:
 
-Each style is optimized for different game genres and aesthetics:
+- **Sprites**: say the pose and direction ("facing right, idle pose") and ask for
+  a plain background, then use Remove background.
+- **Textures**: say "seamless" or "tileable", and name the surface.
+- **UI**: name the element and its states ("normal, hover and pressed").
+- **3D**: describe one object with a clear silhouette and a flat base. For best
+  results, make a clean picture first, then use image to 3D.
+- **Unwanted things**: say what you do not want: "no text", "no logos", "plain
+  background".
+- **Consistency**: reuse a prompt that worked and change one detail at a time.
 
-### Realistic
-- **Best for**: Modern games, simulators, realistic environments
-- **Characteristics**: Photorealistic rendering, detailed textures, natural lighting
-- **Example**: "Realistic brick wall texture with subtle wear and weathering"
-
-### Cartoon
-- **Best for**: Family games, mobile games, casual titles
-- **Characteristics**: Bright colors, simplified shapes, friendly appearance
-- **Example**: "Cartoon treasure chest with golden coins spilling out"
-
-### Anime
-- **Best for**: JRPGs, visual novels, character-focused games
-- **Characteristics**: Stylized proportions, vibrant colors, expressive features
-- **Example**: "Anime-style magical girl character with flowing blue hair"
-
-### Pixel Art
-- **Best for**: Retro games, indie titles, 2D platformers
-- **Characteristics**: Sharp pixels, limited color palettes, nostalgic feel
-- **Example**: "16-bit pixel art sword with glowing enchantment effect"
-
-### Low-Poly
-- **Best for**: Mobile games, minimalist aesthetics, performance-focused titles
-- **Characteristics**: Flat colors, geometric shapes, clean edges
-- **Example**: "Low-poly mountain landscape with simple geometric trees"
-
-### Fantasy
-- **Best for**: RPGs, adventure games, medieval settings
-- **Characteristics**: Magical elements, medieval themes, rich details
-- **Example**: "Fantasy spell book with glowing runes and leather binding"
-
-## Advanced Features
-
-### Prompt Enhancement
-Summer Engine can automatically improve your prompts using AI:
-
-<Tip>
-**Original**: "A sword"  
-**Enhanced**: "A gleaming medieval longsword with ornate crossguard, leather-wrapped grip, and polished steel blade reflecting light, fantasy RPG style"
-</Tip>
-
-### Reference Images
-Upload reference images to guide the style and composition:
-- **Style Reference**: Match the artistic style of an existing image
-- **Composition Reference**: Use the layout and structure as a guide
-- **Color Reference**: Extract color palettes from reference images
-
-### Regeneration Options
-- **Regenerate**: Create a completely new version with the same prompt
-- **Refine**: Make subtle adjustments to the current result
-- **Variations**: Generate multiple versions to choose from
-
-## Asset Metadata
-
-When creating assets, provide detailed information for better discoverability:
-
-### Required Information
-- **Title**: Clear, descriptive name for your asset
-- **Asset Type**: 2D Image, Texture, Sprite, UI Element, etc.
-- **Tags**: Keywords that help others find your asset
-
-### Optional Details
-- **Description**: Detailed explanation of the asset and its intended use
-- **License**: How others can use your asset (Free, Commercial, Attribution, Contact)
-- **Visibility**: Public (visible to all) or Private (only visible to you)
-
-## Best Practices
-
-### For Game Sprites
-- Specify the intended use: "for 2D platformer game"
-- Include pose/direction: "facing right, idle pose"
-- Mention transparency needs: "on transparent background"
-
-### For Textures
-- Always specify "seamless" or "tileable" for repeating textures
-- Include resolution hints: "high resolution", "detailed"
-- Mention intended surface: "for stone walls", "metal armor texture"
-
-### For UI Elements
-- Specify the UI context: "game menu button", "health bar design"
-- Include state variations: "normal, hover, and pressed states"
-- Mention size considerations: "scalable vector style"
-
-### For Concept Art
-- Set the scene: "wide landscape shot", "character portrait"
-- Include mood descriptors: "mysterious", "heroic", "peaceful"
-- Specify viewing angle: "from below", "bird's eye view"
-
-## Common Issues and Solutions
-
-### Blurry or Low-Quality Results
-- Add "high quality", "detailed", or "sharp" to your prompt
-- Try regenerating with a more specific style preset
-- Use reference images for better guidance
-
-### Wrong Style or Aesthetic
-- Be more specific about the art style you want
-- Try different style presets
-- Include negative prompts: "not cartoon style" or "avoid realistic rendering"
-
-### Unwanted Elements
-- Be specific about what you don't want: "no text", "no people", "clean background"
-- Use composition terms: "centered", "isolated object", "simple background"
-
-### Inconsistent Results
-- Save successful prompts for reuse
-- Use reference images for consistency
-- Create variations of working prompts rather than starting over
-
-## Integration with Projects
-
-Assets (whether AI-generated, uploaded, or from the Store) flow directly into your games:
-
-1. **Direct Import**: Ask Summer to add any asset to your game; it places it in the right folder and wires it up
-2. **My Assets Library**: Create, upload, and organize your assets in Studio; Summer Engine can import any of them on command
-3. **Prototype Workflow**: Perfect for rapid prototyping and testing gameplay mechanics
-4. **Transition Planning**: Summer Engine can help you identify which AI assets to replace with human-created assets later
-
-<Info>
-**Pro Tip**: Use AI assets to get your game playable quickly, then gradually replace key assets with human-created work as you approach release. This hybrid approach lets you validate your game concept without upfront art costs.
-</Info>
-
-## Next Steps
+## Next steps
 
 <CardGroup cols={2}>
-  <Card
-    title="Browse Community Assets"
-    icon="image"
-    href="/art-system/gallery"
-  >
-    Explore what others have created for inspiration
+  <Card title="Asset Store" icon="image" href="/art-system/gallery">
+    Find free assets before you generate new ones.
   </Card>
-  <Card
-    title="Organize with Collections"
-    icon="folder"
-    href="/art-system/collections"
-  >
-    Save your favorite assets for easy access
+  <Card title="Folders" icon="folder" href="/art-system/collections">
+    Keep each project's assets together.
   </Card>
 </CardGroup>

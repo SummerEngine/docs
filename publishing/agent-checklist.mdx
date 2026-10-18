@@ -1,7 +1,7 @@
 ---
-title: "Agent checklist: publish a Summer game end to end"
+title: "Agent checklist: publish a game on Summer Games end to end"
 sidebarTitle: "Agent checklist"
-description: "One ordered checklist an AI agent follows from a built game to a published Summer Games store page, through the Summer MCP operations. It hands the owner any approval link."
+description: "The ordered checklist an AI agent follows to publish a game on Summer Games with Summer MCP operations, from export to store page, upload and owner approval."
 icon: "clipboard-check"
 "og:image": "https://docs.summerengine.com/images/og/publishing-agent-checklist.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/publishing-agent-checklist.jpg"
@@ -12,10 +12,6 @@ For AI agents. Follow it from top to bottom. Each step names the operation and w
 Operations with their own tool are named `summer_<area>_<action>` (`summer_games_list`). Run any other operation with `summer_call`: `{"op": "games.create", "input": {...}}`. Every input: [Operations](/mcp/operations).
 
 Read `status` on every answer. `done`: it happened. `running`: wait with `summer_jobs_wait`. `needs_approval`: give the owner `approval.url`, then `summer_jobs_wait` with `job.id`. **Never** say the game is live until `summer_store_status` says so.
-
-<Note>
-In the version of Summer made for Claude's connector directory (`https://mcp.summerengine.com/directory`), the tools keep their 3.x names (`summer_store_list_games`, `summer_store_submit`, `summer_build_release`) and there is no art generation: use My assets or upload the owner's art. The version made for ChatGPT (`https://mcp.summerengine.com/chatgpt`) cannot publish. Use the full server, `https://mcp.summerengine.com/mcp`.
-</Note>
 
 <Note>
 In the version of Summer made for Claude's connector directory (`https://mcp.summerengine.com/directory`), the tools keep their 3.x names (`summer_store_list_games`, `summer_store_submit`, `summer_build_release`) and there is no art generation: use My assets or upload the owner's art. The version made for ChatGPT (`https://mcp.summerengine.com/chatgpt`) cannot publish. Use the full server, `https://mcp.summerengine.com/mcp`.
@@ -105,14 +101,15 @@ For each empty required slot of each store the game is on:
 ## 9. Publish
 
 - [ ] `summer_store_publish` with `gameId`, the price the owner asked for as `price: {"currency": "USD", "amountMinor": 499}` (`amountMinor: 0` is free; leave `price` out to keep the current one), a short `note` and a new `idempotencyKey`.
+- [ ] `needs_approval` (for now every agent publish, even when **Publish** is on in [Agent permissions](/mcp/permissions)): give the owner `approval.url` and say: "Open this link and approve it. Summer reviews it next." Then `summer_jobs_wait` with `job.id` until the job ends.
 - [ ] `done`: Summer's review runs next.
-- [ ] `needs_approval`: give the owner `approval.url` and say: "Open this link and approve it. Summer reviews it next." Then `summer_jobs_wait` with `job.id` until the job ends. For now Summer Games asks the owner even when **Publish** is on in [Agent permissions](/mcp/permissions).
 
 ## After the publish
 
 - [ ] `summer_store_status` shows the review and its feedback.
-- [ ] Summer staff review the page. When the review passes, the game goes live. No second click.
-- [ ] If the store bundle that passed review is not yet what players get, `store.release` with `gameId` and a new `idempotencyKey` releases exactly that build. Wait with `summer_jobs_wait`.
+- [ ] Summer staff review the page. When the review passes, the store page goes live; the owner clicks nothing more.
+- [ ] Store bundle: once the review passed, `store.release` with `gameId` and a new `idempotencyKey` releases exactly the build the owner approved. Wait with `summer_jobs_wait`. Web builds and downloads need no release.
+- [ ] If `summer_store_status` says the review needs changes, fix every point in its feedback and publish again with a new `idempotencyKey`. Never say the game is live before Summer approves it.
 - [ ] If the job ends `stale`, read the store page again and publish again with a new `idempotencyKey`.
 - [ ] Later: `analytics.overview` with `days: 28` for the numbers.
 

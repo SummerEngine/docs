@@ -1,7 +1,7 @@
 ---
-title: "Make movement feel instant"
+title: "Make multiplayer movement feel instant"
 sidebarTitle: "Movement"
-description: "Each player moves their own character with no delay, the server checks every move, and everyone else sees smooth motion."
+description: "In a Summer Engine multiplayer game each player moves their own character with no input delay, the server checks every move, and others glide smoothly."
 icon: "move"
 "og:image": "https://docs.summerengine.com/images/og/build-movement.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/build-movement.jpg"
@@ -115,6 +115,10 @@ also run it with added delay, jitter and packet loss. A good run looks like
 this: your own character never stutters or snaps back while moving normally,
 and the others glide smoothly in every window. See
 [Make a multiplayer game on Summer Games](/build/multiplayer#testing-it-on-your-machine).
+
+## Technical reference
+
+Engine classes, in the editor's class reference (**Help > Search Help**): `SummerNetworkStateStream`, `SummerNetworkStateGroup`, `SummerNetworkEntity`, `SummerNetworkSpawner`.
 
 ---
 

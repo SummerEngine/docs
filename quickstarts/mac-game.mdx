@@ -1,62 +1,62 @@
 ---
 title: "How do I make a Mac game with AI?"
-description: "Build and export a macOS game with AI assistance. Supports Intel and Apple Silicon."
+description: "Build a Mac game with AI in Summer Engine and export a universal app for Intel and Apple silicon Macs, for Summer Games, Steam, itch.io or your own site."
 icon: "apple"
 "og:image": "https://docs.summerengine.com/images/og/quickstarts-mac-game.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/quickstarts-mac-game.jpg"
 ---
 
-## Make a Mac Game with Summer Engine
+## Make a Mac game with Summer Engine
 
-Build your game with AI assistance, then export for macOS. Summer Engine supports both Intel and Apple Silicon Macs.
+Summer Engine is the game engine built for AI. Build your game with Summer Agent or your own coding agent, then export a Mac app. The export is a universal app: it runs on Intel and Apple silicon Macs. The Summer Engine editor itself runs on Apple silicon Macs and Windows.
 
-## Step 1: Build Your Game
+## Step 1: Build your game
 
 <Steps>
   <Step title="Download Summer Engine">
-    Visit [summerengine.com](https://summerengine.com) and download for Mac
+    Download it from [summerengine.com/download](https://summerengine.com/download). See [Install Summer Engine](/essentials/installation).
   </Step>
   <Step title="Create a project">
-    New Project → Create your game with AI. Describe what you want in natural language
+    Start a new project and describe the game you want in plain words.
   </Step>
   <Step title="Iterate with AI">
-    Refine through conversation. "Add a settings menu", "Optimize for Retina displays"
+    Refine it in conversation: "Add a settings menu", "Add a fullscreen toggle".
   </Step>
 </Steps>
 
-## Step 2: Enable Texture Compression
+## Step 2: Turn on texture formats
 
-Before exporting, enable ETC2/ASTC (required for Apple Silicon):
-
-1. **Project → Project Settings**
-2. **Rendering → Textures → VRAM Compression**
-3. **Enable "Import ETC2 ASTC"**
-4. Wait for reimport (1-5 minutes)
+In **Project → Project Settings → Rendering → Textures → VRAM Compression**, turn on **Import ETC2 ASTC** (Apple silicon) and **Import S3TC BPTC** (Intel). A universal app needs both. Wait for the reimport.
 
 ## Step 3: Export for macOS
 
-<Steps>
-  <Step title="Create export preset">
-    Project → Export → Add → macOS (Runnable)
-  </Step>
-  <Step title="Set bundle identifier">
-    Replace `com.example.game` with your unique ID (e.g. `com.yourstudio.yourgame`)
-  </Step>
-  <Step title="Export">
-    Click Export. You get a .app bundle ready for distribution
-  </Step>
-</Steps>
+<Tabs>
+  <Tab title="With your agent">
+    Ask your agent to run `summer_export_game` with `targets: ["macos"]` and `format: "download"`. You get `<name>-macos-universal.zip`: a `.app` in a `.zip`, ad hoc signed. See [Export your game](/publishing/export).
+  </Tab>
+  <Tab title="In the editor">
+    Open **Project → Export → Add → macOS**, set the **bundle identifier** to your own ID (for example `com.yourstudio.yourgame`), and click **Export Project**. You get a `.app`.
+  </Tab>
+</Tabs>
 
-<Tip>Releasing on both Mac and Windows? Enable both ETC2 ASTC and S3TC BPTC texture formats at once to avoid reimporting twice.</Tip>
+The Mac app of Summer Engine comes with the Mac export template. On Windows, get it with `summer_export_templates` (`"action": "install", "platforms": ["macos"]`).
 
-## Next Steps
+## Step 4: Publish
+
+- **Summer Games**: zip the `.app` and upload it in the **macOS** box in Summer Studio. See [Publish your game](/grow/publish).
+- **Steam or itch.io**: sign and notarize the app first. See [macOS export](/publishing/macos-export).
+
+## Next steps
 
 <CardGroup cols={2}>
   <Card title="macOS Export Guide" icon="apple" href="/publishing/macos-export">
-    Full guide: code signing, notarization, Steam
+    Code signing, notarization, Steam
+  </Card>
+  <Card title="Publish your game" icon="upload" href="/grow/publish">
+    Put it on Summer Games
   </Card>
   <Card title="Publish to Steam" icon="steam" href="/publishing/steam">
-    Release on Steam (Mac + Windows)
+    Release on Steam (Mac and Windows)
   </Card>
   <Card title="Publish to itch.io" icon="gamepad" href="/publishing/itch-io">
     Quick indie publishing

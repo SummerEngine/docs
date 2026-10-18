@@ -1,19 +1,15 @@
 ---
-title: "Build a Summer App with your agent"
+title: "Build a Summer App with your agent: the build loop"
 sidebarTitle: "Build with your agent"
-description: "How an agent builds a Summer App that works on the first try: connect the Summer Engine MCP, follow the 7-step loop, avoid the three mistakes that break apps, and look at every version with apps.screenshot."
+description: "How an agent builds a Summer App that works the first time: connect the Summer MCP, follow the build loop, avoid three common mistakes, and check it with apps.screenshot."
 icon: "workflow"
 ---
-
-<Warning>
-**Draft.** Summer Apps is in a closed test. This page goes live after the end-to-end test on production.
-</Warning>
 
 This page is for the agent and for the person who drives it. It has the build loop, the three mistakes that break apps, and prompts that work.
 
 ## Connect your agent
 
-The `apps.*` operations are in the Summer Engine MCP. Your agent runs each with `summer_call`: `{"op": "apps.create", "input": {...}}`. `summer_search "summer app"` lists them with their inputs. Every input: [Summer Apps operations](/mcp/operations/apps). Use one of the two forms. Or describe the app to Summer in Studio chat: **Build a new app** in **Studio > Apps** and **Edit with agent** on an app page open it.
+The `apps.*` operations are in the Summer Engine MCP. Your agent runs each with `summer_call`: `{"op": "apps.create", "input": {...}}`. `summer_search "summer app"` lists them with their inputs. Every input: [Summer Apps operations](/mcp/operations/apps). Connect your agent in one of the two ways below. Or describe the app to Summer in Studio chat: **Build a new app** in **Studio > Apps** and **Edit with agent** on an app page open it.
 
 <Tabs>
   <Tab title="Any agent (hosted)">
@@ -31,7 +27,7 @@ The `apps.*` operations are in the Summer Engine MCP. Your agent runs each with 
 
     `setup` adds the MCP (`npx -y summer-engine@latest mcp`) to your agent and installs the Summer skills, `summer-apps` and `summer-apps-design` among them. `login` signs you in to your Summer account in the browser. Restart your agent. Other agents: [MCP setup](/mcp/setup).
 
-    The npm package adds two local operations: `apps.publish_folder` publishes a local folder, and `apps.dock` docks an app in Summer Engine (that comes with the next Summer Engine update).
+    The npm package adds two local operations: `apps.publish_folder` publishes a local folder, and `apps.dock` docks an app in Summer Engine (that comes with the next Summer Engine update). You can also install the `summer` CLI with `brew install summerengine/tap/summer` or `npm install -g summer-engine`.
   </Tab>
 </Tabs>
 
@@ -39,13 +35,13 @@ The `apps.*` operations are in the Summer Engine MCP. Your agent runs each with 
 
 <Steps>
   <Step title="Read the guide">
-    `apps.guide` returns Markdown. Without a `section` it returns `overview`: when to build an app, layout or code, the loop and the rules. Read it first. Then read what the app needs: `examples` starts with a complete working app; `sdk`, `manifest` and `kit` have every call, field and component; `design` has the look; `layout` the layout format; `types` the SDK's TypeScript types. `all` returns every section except `types` at once, about 100 KB. Load the `summer-apps` and `summer-apps-design` skills when you have them.
+    `apps.guide` returns Markdown. Without a `section` it returns `overview`: when to build an app, layout or code, the loop and the rules. Read it first. Then read what the app needs: `examples` starts with a complete working app; `sdk`, `manifest` and `kit` have every call, field and component; `design` has the look; `layout` the layout format; `types` the SDK's TypeScript types. `all` returns every section except `types` at once, about 100,000 characters: raise `maxCharacters` (default 24,000) or the answer is cut and says `truncated`. Load the `summer-apps` and `summer-apps-design` skills when you have them.
   </Step>
   <Step title="Create the app">
-    `apps.create { name, purpose, format }`. `format` is `code` (default) or `layout`. The app id is `app.id` in the answer. The person's open Studio tab moves to the new app. If the answer has `studio.reason: "no_tab"`, no Studio tab was open: give the person the link `/studio/apps/<appId>`.
+    `apps.create { name, purpose, format }`. `format` is `code` (default) or `layout`. The answer has the new `appId`. The person's open Studio tab moves to the new app. If the answer has `studio.reason: "no_tab"`, no Studio tab was open: give the person the link `/studio/apps/<appId>`.
   </Step>
   <Step title="Write and publish">
-    Write `index.html` and `app.js` (and CSS if you need it), then `apps.publish { appId, files, manifest, note }`. With the npm package, `apps.publish_folder` publishes a local folder instead. Each publish is a new, immutable version. A publish error names the file or the rule: fix it and publish again. A publish that goes through can still answer `warnings`: SDK calls whose permission the manifest lacks, and `summer.agent.send` events or `summer.agent.tool` tools the manifest does not declare. Those fail when the app runs. Fix the warnings and publish again.
+    Write `index.html` and `app.js` (and CSS if you need it), then `apps.publish { appId, files, manifest, note }`. With the npm package, `apps.publish_folder` publishes a local folder instead. Each publish is a new, immutable version. A publish error names the file or the rule: fix it and publish again. A publish that goes through can still answer `checks`: SDK calls whose permission the manifest lacks, and `summer.agent.send` events or `summer.agent.tool` tools the manifest does not declare. Those fail when the app runs. Fix them and publish again.
   </Step>
   <Step title="Seed data">
     If the app should start with content, write it with `apps.write_data` and `"as": "seed"`. Seed rows belong to the team and show no author.
@@ -92,7 +88,7 @@ Your editor, or `tsc --checkJs --noEmit`, now reports a wrong method name, a mis
 
 ## Look at it: apps.screenshot
 
-Summer renders the published app headless, as the person and with their data, and returns the PNG plus a report.
+Summer renders the published app headless, as the person and with their data, and returns the picture (`image`) plus a `report`.
 
 | Argument | Default | |
 |---|---|---|
@@ -103,9 +99,8 @@ Summer renders the published app headless, as the person and with their data, an
 | `fullPage` | `false` | The whole scroll height, up to 4,000 px. |
 | `params` | | Launch params, as in `/studio/apps/<appId>?key=value`. |
 | `steps` | | Up to 5 steps, run in order before the capture: `{ "click": "<css selector>" }`, `{ "press": "<declared action id>" }` or `{ "wait": <ms> }` (up to 3,000). In a selector, `>>>` reaches inside kit components: `"summer-table >>> tbody tr"`. Writes that a step causes are refused, as always. |
-| `out` | | npm package only: also save the PNG to this local path. |
 
-The report:
+The `report`:
 
 | Field | Tells you |
 |---|---|

@@ -1,6 +1,7 @@
 ---
-title: "Make your first game"
-description: "Describe the game you want. Your AI agent or Summer Agent builds it in Summer Engine, and you play it right away."
+title: "Make your first game with Summer Engine"
+sidebarTitle: "Make your first game"
+description: "Download Summer Engine, start an empty project and describe the game you want. Summer Agent or your own AI agent builds it, and you play it in the editor."
 icon: "rocket"
 "og:image": "https://docs.summerengine.com/images/og/quickstarts-fresh-project.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/quickstarts-fresh-project.jpg"
@@ -8,7 +9,7 @@ icon: "rocket"
 
 ## Make a Summer game
 
-Start with an empty Summer Engine project and describe what you want to play. Your agent
+Summer Engine is the game engine built for AI. Start with an empty project and describe what you want to play. Your agent
 builds it and you play it in the editor. When you want players online, the next guide adds the
 **Summer SDK** for multiplayer, and then you publish.
 
@@ -19,74 +20,72 @@ Download Summer Engine for free.
 <AccordionGroup>
   <Accordion icon="download" title="Get Summer Engine for free">
     **For Mac users:**
-    - Visit [summerengine.com](https://summerengine.com) and click "Download for Mac"
+    - Visit [summerengine.com/download](https://summerengine.com/download) and click **Download for macOS** (Apple silicon Macs)
     - Drag Summer Engine to your Applications folder
-    - Double-click to open (Mac might ask for permission - that's normal!)
+    - Double-click to open. macOS may ask for permission; that is normal.
 
     **For Windows users:**
-    - Visit [summerengine.com](https://summerengine.com) and click "Download for Windows"  
-    - Run the installer (Windows might ask for permission - click "Yes")
-    - Summer Engine will be ready to go!
+    - Visit [summerengine.com/download](https://summerengine.com/download) and click **Download for Windows**
+    - Run the installer. If Windows asks for permission, click **Yes**.
 
-    <Tip>Summer Engine is completely free to download and try. No credit card required!</Tip>
+    <Tip>Summer Engine is free to download and try. No credit card required.</Tip>
+
+    Using your own coding agent? `npx -y summer-engine@latest install` installs Summer Engine from the command line. See [Install Summer Engine](/essentials/installation).
   </Accordion>
   <Accordion icon="user" title="Create your account">
-    1. **Open Summer Engine** → You'll see a clean, friendly interface
-    2. **Click "Sign in"** → This opens your web browser  
-    3. **Create account** → Use Google, GitHub, or email - whatever you prefer
-    4. **Back to Summer Engine** → The app will automatically log you in
+    1. **Open Summer Engine.**
+    2. **Click "Sign in".** This opens your web browser.
+    3. **Create an account** with Google, GitHub or email.
+    4. **Go back to Summer Engine.** The app signs you in.
 
-    <Tip>We use your browser for security - Summer Engine never sees your password!</Tip>
+    <Tip>You sign in in your browser, so Summer Engine never sees your password.</Tip>
   </Accordion>
 </AccordionGroup>
 
 ## Step 2: Build Your First Summer Game
 
-This is where the magic happens. Let's create something awesome!
-
 <AccordionGroup>
   <Accordion icon="plus" title="Start a new Summer game">
-    1. **Click "New Project"** → Give it a fun name like "My Amazing Game"
-    2. **Choose a location** → Anywhere on your computer is fine
-    3. **Click "Create & Open"** → Summer Engine opens with a chat window on the right
-    4. **Watch Summer Engine think** → It's learning about your new project (takes a few seconds)
+    1. **Create a new project** in the Project Manager and give it a name.
+    2. **Choose a location** on your computer.
+    3. **Click "Create".** Summer Engine opens with the chat panel.
+    4. **Wait a few seconds** while Summer Agent reads your new project.
 
-    <Tip>The chat window is where you'll talk to Summer Engine. Think of it as your creative partner!</Tip>
+    <Tip>You talk to Summer Agent in the chat panel.</Tip>
   </Accordion>
   <Accordion icon="message-square" title="Have your first conversation">
-    Ready to see Summer Engine in action? Try typing these:
+    Try typing these:
 
     **"Create a player character that I can move around"**
-    - Summer Engine creates a character for you
+    - Summer Agent creates a character
     - Adds movement controls (arrow keys or WASD)
-    - You can immediately test it by pressing the play button!
+    - Press the play button to test it
 
     **"Add some platforms to jump on"**
-    - Summer Engine creates platforms in your game world
+    - Summer Agent creates platforms in your game world
     - Sets up physics so your character can land on them
 
     **"Make the camera follow my player"**
-    - Summer Engine adds a smooth camera that tracks your character
-    - Now your game feels professional!
+    - Summer Agent adds a smooth camera that follows your character
 
-    <Tip>Don't worry about being precise - Summer Engine understands natural language. Just describe what you want!</Tip>
+    <Tip>You do not need to be precise. Describe what you want in plain words.</Tip>
   </Accordion>
 </AccordionGroup>
 
 ## Understanding the Interface
 
-Summer Engine combines a familiar game editor with AI superpowers.
+Summer Engine is a full game editor with Summer Agent built in.
 
 <AccordionGroup>
   <Accordion icon="layout" title="Chat panel (right side)">
-    - **Multiple chat tabs** → Different conversations for different features
-    - **Change review** → See exactly what AI wants to change before applying
-    - **Sources** → AI shows which files it's reading from your project
+    - **Multiple chat tabs**: a conversation per feature
+    - **Change review**: see what Summer Agent wants to change before it applies it
+    - **Sources**: the files Summer Agent reads from your project
   </Accordion>
   <Accordion icon="git-branch" title="Built-in Git integration">
-    - **Changes panel** → Your real repository, with changed, staged, and conflicted files grouped
-    - **Stage, commit, push** → Per file, from the panel or by asking the AI
-    - **AI can run git for you** → Status, diff, stage, commit, branch, fetch, pull, push. It writes the commit message when it commits
+    - **Changes panel**: your real repository, with changed, staged and conflicted files grouped
+    - **Stage, commit, push**: per file, from the panel or by asking Summer Agent
+    - **Summer Agent can run git for you**: status, diff, stage, commit, branch, fetch, pull, push. It writes the commit message when it commits
   </Accordion>
 </AccordionGroup>
 

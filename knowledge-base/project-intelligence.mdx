@@ -1,6 +1,6 @@
 ---
 title: "How does project intelligence work?"
-description: "AI indexes and understands your entire codebase, scenes, assets, and relationships automatically."
+description: "Summer Engine indexes your scripts, scenes and assets so its AI agent finds the right files before it answers or edits. How indexing works and where it runs."
 icon: "question"
 "og:image": "https://docs.summerengine.com/images/og/knowledge-base-project-intelligence.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/knowledge-base-project-intelligence.jpg"
@@ -42,7 +42,7 @@ When you open a project, Summer Engine scans all files (scripts, scenes, resourc
 
 Project intelligence is a server-side feature. When files change, Summer chunks them, computes embeddings, and stores those chunks together with their file paths so search and context selection can run over them. When you ask Summer to generate or modify code, the relevant context is sent to AI providers.
 
-Privacy Mode, available on paid plans, stops your code being used to train models. See [Privacy Mode](/security/privacy-mode) and the full subprocessor list in [Security Overview](/security/overview).
+For how prompts and code may be used for training, see [Is my code safe?](/knowledge-base/privacy-and-code-safety). The full subprocessor list is in [Security Overview](/security/overview).
 
 ## Large Projects
 

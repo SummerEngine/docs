@@ -1,18 +1,23 @@
 ---
-title: "What if I have an existing project?"
-description: "Bring an existing project to Summer Engine: commit a copy, check the first import, then build on it with AI and add multiplayer."
+title: "Can I open my existing project in Summer Engine?"
+sidebarTitle: "What if I have an existing project?"
+description: "Yes. Commit a copy, open your project in Summer Engine and review the first import. GDScript and text scenes carry over; test plugins and extensions."
 icon: "question"
 "og:image": "https://docs.summerengine.com/images/og/knowledge-base-godot-projects.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/knowledge-base-godot-projects.jpg"
 ---
 
-Open a committed copy in Summer Engine and review the first import. GDScript, text scenes,
-resources, and assets use familiar formats; native extensions, editor plugins, and
-version-sensitive imports still need compatibility testing. The generated
-[compatibility reference](/reference/compatibility) is the source of truth.
+**Yes. Open a committed copy and check the first import.** Summer Engine reads the standard project, scene, script and resource formats. Compatibility ranges are not fully measured yet, so check the result before you build on it.
+
+- **Commit first.** The first open can reimport assets and update project settings. Review those changes in Git.
+- **What carries over**: GDScript, `.tscn` scenes, `.tres` resources and your assets.
+- **What to test**: native extensions, editor plugins and addons pinned to another engine version.
+- **Then build on it with AI**: your agent reads the project and keeps building. You can also add multiplayer with the Summer SDK.
+
+The generated [compatibility reference](/reference/compatibility) is the source of truth for the current upstream base and measured claims. For the full checklist, see [Is Summer Engine compatible with my existing project?](/knowledge-base/godot-compatibility).
 
 ## Related
 
 <Card title="Quickstart: Existing Project" icon="folder" href="/quickstarts/existing-godot">
-  Open your project in Summer
+  Open your project in Summer Engine
 </Card>

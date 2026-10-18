@@ -1,7 +1,7 @@
 ---
-title: "Publishing operations"
+title: "Summer MCP operations for publishing on Summer Games"
 sidebarTitle: "Publishing operations"
-description: "Which Summer operation does each publishing job: find the game, store page, art, upload, publish, release, prices, analytics and team. Each links to its inputs and an example in the operations reference."
+description: "Which Summer MCP operation does each Summer Games publishing job: find the game, store page, art, upload, publish, release, prices, analytics and team."
 icon: "wrench"
 "og:image": "https://docs.summerengine.com/images/og/publishing-mcp-tools.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/publishing-mcp-tools.jpg"
@@ -39,6 +39,7 @@ A Summer project and its game on Summer Games are separate records.
 | Remove the trailer (asks first: Delete for good) | [`store.remove_trailer`](/mcp/operations/store#remove_trailer) |
 | Set the sound loop of the page | [`store.set_sound`](/mcp/operations/store#set_sound) |
 | Make a private preview link | [`store.preview_link`](/mcp/operations/store#preview_link) |
+| Item bundles and timed sales for the Sparks item shop (saved on the draft; live after publish) | `store.set_bundles`, `store.set_sales` |
 
 Text rules: [Store page text](/publishing/store-text). Slot sizes: [Store art](/publishing/store-art).
 
@@ -74,10 +75,10 @@ Step by step: [Upload and publish](/publishing/upload-and-submit).
 | Publish the draft with a build and a price (needs an `idempotencyKey`) | [`store.publish`](/mcp/operations/store#publish) (`summer_store_publish`) |
 | Wait for a job or an approval | [`jobs.wait`](/mcp/operations/jobs#wait) (`summer_jobs_wait`) |
 | Withdraw a publish request that still waits | [`store.cancel_publish`](/mcp/operations/store#cancel_publish) |
-| Release the build that passed review (needs an `idempotencyKey`) | [`store.release`](/mcp/operations/store#release) |
+| Release the approved store bundle to players once Summer's review passed (needs an `idempotencyKey`; web builds and downloads need none) | [`store.release`](/mcp/operations/store#release) |
 | Write the release notes players read | [`store.update_release_notes`](/mcp/operations/store#update_release_notes) |
 
-If an answer is `needs_approval`, give the owner `approval.url` and wait with `summer_jobs_wait`. See [Approvals](/publishing/owner-approval).
+`store.publish` answers `needs_approval`: give the owner `approval.url` and wait with `summer_jobs_wait`. Any other answer `needs_approval` works the same way. See [Approvals](/publishing/owner-approval).
 
 ## After launch
 

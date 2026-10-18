@@ -1,13 +1,9 @@
 ---
 title: "Economy balance sheet: a Summer App for game teams"
 sidebarTitle: "Economy balance sheet"
-description: "A shared sheet of every currency source and sink per hour of play, with net income against your target per currency. Manifest, seed data, agent edits and the look check."
+description: "A Summer App for game teams: every currency source and sink per hour of play, net income against your target, with manifest, seed data and agent edits."
 icon: "coins"
 ---
-
-<Warning>
-**Draft.** Summer Apps is in a closed test. This page goes live after the end-to-end test on production.
-</Warning>
 
 ## What your team gets
 
@@ -23,9 +19,9 @@ Build us a Summer App called "Economy": one sheet per currency (switch with a se
 control) listing every source and sink as an amount per hour of play. Show sources,
 sinks and net per hour against the currency's target net, a bar chart of every flow
 with sinks highlighted in red, and make amounts editable in place with a save bar. Give agents a
-scale_flows tool. Seed it with our gold and gem flows using summer_app_data with
+scale_flows tool. Seed it with our gold and gem flows using apps.write_data with
 "as": "seed". Follow the summer-apps and summer-apps-design skills, then check it with
-summer_app_screenshot (default, width 390, theme dark) and fix what it reports.
+apps.screenshot (default, width 390, theme dark) and fix what it reports.
 </Prompt>
 
 ## The manifest
@@ -74,6 +70,8 @@ summer_app_screenshot (default, width 390, theme dark) and fix what it reports.
 
 ## Seed the data
 
+One `apps.write_data` call writes every starter row in one revision. `"as": "seed"` marks the rows as the team's, with no author.
+
 ```json
 {
   "appId": "<app id>",
@@ -97,13 +95,13 @@ Gold now nets 650 per hour against a target of 800. Gems net 4 against 5.
 
 ## An agent edit: "cut quest gold by 10%"
 
-Read the flows:
+Read the flows with `apps.read_data`:
 
 ```json
 { "appId": "<app id>", "collection": "flows" }
 ```
 
-In the answer, `quest-gold` has `"amountPerHour": 1200` and a `revision`, here `1`. Write the change:
+In the answer, `quest-gold` has `"amountPerHour": 1200` and a `revision`, here `1`. Write the change with `apps.write_data`:
 
 ```json
 {
@@ -114,16 +112,16 @@ In the answer, `quest-gold` has `"amountPerHour": 1200` and a `revision`, here `
 }
 ```
 
-Gold net per hour drops from 650 to 530. A `conflict` means someone changed the flow: read again and retry. For "make every gold sink 15% bigger", call the app's tool while the person has it open: `summer_app_call` with `{ "tool": "scale_flows", "input": { "currency": "gold", "kind": "sink", "percent": 15 } }`.
+Gold net per hour drops from 650 to 530. A `conflict` means someone changed the flow: read again and retry. For "make every gold sink 15% bigger", call the app's tool while the person has it open: `apps.call` with `{ "tool": "scale_flows", "input": { "currency": "gold", "kind": "sink", "percent": 15 } }`.
 
 ## Check the look
 
 After every publish:
 
-- `summer_app_screenshot { "appId": "<app id>" }`
-- `summer_app_screenshot { "appId": "<app id>", "width": 390 }`
-- `summer_app_screenshot { "appId": "<app id>", "theme": "dark" }`
-- `summer_app_screenshot { "appId": "<app id>", "params": { "currency": "gems" } }` if the app reads the currency from launch params.
+- `apps.screenshot { "appId": "<app id>" }`
+- `apps.screenshot { "appId": "<app id>", "width": 390 }`
+- `apps.screenshot { "appId": "<app id>", "theme": "dark" }`
+- `apps.screenshot { "appId": "<app id>", "params": { "currency": "gems" } }` if the app reads the currency from launch params.
 
 The net per hour must be right for each currency, and the chart must show sinks in red. Fix every entry in `errors` and `console`.
 
