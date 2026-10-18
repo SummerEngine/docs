@@ -1,5 +1,6 @@
 ---
 title: "Move an Existing Project to Summer Engine"
+sidebarTitle: "Move an Existing Project"
 description: "Move an existing project to Summer Engine: test a committed copy, check what imports cleanly, then build on it with AI and add multiplayer."
 icon: "arrow-right"
 "og:image": "https://docs.summerengine.com/images/og/migration-godot.jpg"
@@ -8,7 +9,7 @@ icon: "arrow-right"
 
 ## Move to Summer Engine
 
-Summer Engine is the product you install and use. Its current upstream technical base is
+Summer Engine is the game engine built for AI. Its current upstream technical base is
 Godot Engine 4.7.2, and Summer follows upstream continuously. That lineage preserves familiar
 project formats and editing concepts, but it is not the Summer Engine product version and
 does not change the identity of your Summer game.
@@ -17,7 +18,7 @@ Check the generated [compatibility reference](/reference/compatibility) before m
 It distinguishes measured facts from project-compatibility claims that have not yet been
 measured.
 
-## Profile Migration
+## Coming From Godot
 
 If you are coming from Godot Engine, the node, scene, resource, and GDScript concepts are
 familiar. Summer Engine adds its own AI workflow and product surfaces, so verify plugins,
@@ -69,18 +70,20 @@ Summer Engine adds its own AI-native workflow to the familiar technical foundati
 
 ### AI Chat Panel
 
-- **Location**: Docked on the right side of the editor
-- **Purpose**: Natural language interface to modify your project
-- **Integration**: Directly connected to the editor's APIs
+The editor has a chat panel docked beside the scene view. You describe a change in plain
+words, and the AI edits the project through the editor's own APIs.
 
 ### Enhanced Workflow
 
 Instead of manually clicking through menus:
 
-1. **Describe what you want** - "Add a player character with movement"
-2. **Review the plan** - Summer Engine shows you what it will change
-3. **Apply or modify** - Accept changes or ask for adjustments
-4. **Undo if needed** - All AI changes use the standard undo system
+1. **Describe what you want**: "Add a player character with movement"
+2. **Watch it build**: the AI edits scenes and scripts in the open project
+3. **Check the result**: play the game, or ask for adjustments
+4. **Roll back if needed**: commit often, and see every changed file in the Changes dock. See [Connect to GitHub](/guides/github-from-changes-dock)
+
+You can also drive the editor from your own AI agent through the
+[Summer MCP server and CLI](/mcp/overview).
 
 ## Project Compatibility
 
@@ -88,20 +91,17 @@ To try an existing Godot Engine project in Summer Engine:
 
 <AccordionGroup>
   <Accordion icon="folder-open" title="Opening Godot projects">
-    1. **File → Open Project** (or use Project Manager)
-    2. **Browse to the existing project folder**
-    3. **Select project.godot file**
-    4. **Click "Open"**
-    
-    Summer Engine will automatically index your project files for AI understanding.
+    1. **Commit the project** to version control, or work on a copy
+    2. **Open the Project Manager** and choose **Import**
+    3. **Select the project's `project.godot` file**
+    4. **Open the project** and let the first import pass finish
   </Accordion>
   
-  <Accordion icon="sync" title="Project indexing">
-    When you first open a project, Summer Engine:
-    - Scans all scripts, scenes, and assets
-    - Builds an understanding of your project structure  
-    - Enables AI to provide contextual help
-    - Takes 30 seconds to 2 minutes depending on project size
+  <Accordion icon="sync" title="The first open">
+    The first open imports every asset into the `.godot/` folder, so it takes longer than
+    later opens. Review the changes it makes to `.import` files before you commit them. The
+    AI reads your scripts and scenes as it works, so you do not need to explain the project
+    structure first.
   </Accordion>
 </AccordionGroup>
 

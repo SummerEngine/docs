@@ -1,6 +1,7 @@
 ---
-title: "Authoring Project Data"
-description: "Writing project files directly instead of clicking through the editor: where user:// really lives, how feature-tag overrides hide from get_setting, which translation formats load without an import pass, and the point at which hand-writing a .tscn stops working."
+title: "Authoring Summer Engine Project Files From Scripts"
+sidebarTitle: "Authoring Project Data"
+description: "Write Summer Engine project files without the editor: where user:// lives, feature-tag overrides, translation formats, saving scenes, and hand-written .tscn limits."
 icon: "file-pen"
 "og:image": "https://docs.summerengine.com/images/og/automation-authoring.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/automation-authoring.jpg"
@@ -261,9 +262,9 @@ TranslationServer.set_locale("en")
 ```
 </Warning>
 
-The `.csv` route is the only one here that needs the import pass. Running it is not free and
-not always safe — see [importing assets](/automation/headless#importing-assets) for the
-`--import` hazard, which matters if an editor is open. **Writing a `.po` avoids the question
+The `.csv` route is the only one here that needs the import pass. Running it is not free, and
+you should not run it against a project that is open in the editor. See
+[importing assets](/automation/headless#importing-assets). **Writing a `.po` avoids the question
 entirely**, which is the main reason to prefer it.
 
 ## Saving scenes from a script

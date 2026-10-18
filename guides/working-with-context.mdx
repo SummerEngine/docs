@@ -1,6 +1,7 @@
 ---
-title: "Working with Context"
-description: "How to provide effective context to Summer Engine's AI for better results"
+title: "Give Summer Engine's AI the right context"
+sidebarTitle: "Working with context"
+description: "How to give the Summer Engine agent the right context: @ file and folder mentions, error text, project rules, Memory, and prompts that get accurate changes."
 icon: "brain"
 "og:image": "https://docs.summerengine.com/images/og/guides-working-with-context.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/guides-working-with-context.jpg"
@@ -29,13 +30,14 @@ Summer Engine automatically gathers context from your current file, project stru
 
 ### The @ Symbol
 
-The most direct way to provide context is using the `@` symbol in Summer Engine's chat:
+The most direct way to provide context is the `@` symbol in the Summer Engine chat. Type `@` and pick a file or folder from your project. Recent files show first, and you can type to search.
 
-| Symbol | Example | Use Case | Best For |
-|--------|---------|----------|----------|
-| `@file` | `@player.gd` | Reference specific files | When you know exactly which file is relevant |
-| `@folder` | `@scripts/` | Include entire folders | When multiple related files are needed |
-| `@function` | `@move_player()` | Reference specific functions | When discussing particular code elements |
+| Mention | Example | Best for |
+|--------|---------|----------|
+| File | `@player.gd` | You know exactly which script or scene is relevant |
+| Folder | `@scripts/` | Several related files matter |
+
+To point at one function, mention its file and name the function in your message, for example "the `move_player()` function in @player.gd".
 
 **Example:**
 ```
@@ -65,11 +67,11 @@ Summer Engine maintains context throughout your conversation:
 
 Instead of vague requests, provide clear, specific instructions:
 
-❌ **Vague**: "Make this better"  
-✅ **Specific**: "Optimize this function to reduce memory usage and add error handling"
+**Vague:** "Make this better"  
+**Specific:** "Optimize this function to reduce memory usage and add error handling"
 
-❌ **Vague**: "Fix the player"  
-✅ **Specific**: "Fix the player movement so it doesn't clip through walls when jumping"
+**Vague:** "Fix the player"  
+**Specific:** "Fix the player movement so it doesn't clip through walls when jumping"
 
 ### Provide Relevant State Information
 
@@ -173,7 +175,7 @@ Reference concepts from other projects or frameworks:
 
 ```
 I want to implement a state machine for my player character
-Similar to how Unity's Animator Controller works
+Each state (idle, run, jump, fall) is its own node with enter and exit methods
 Apply this to @player.gd's current movement system
 Keep the existing input handling in @input_manager.gd
 ```
@@ -182,20 +184,28 @@ Keep the existing input handling in @input_manager.gd
 
 ### Too Much Irrelevant Context
 
-❌ Including entire large files when only a small section is relevant  
-✅ Point to specific functions or sections: "Look at the jump logic in @player.gd lines 50-80"
+**Avoid:** Including entire large files when only a small section is relevant  
+**Instead:** Point to specific functions or sections: "Look at the jump logic in @player.gd lines 50-80"
 
 ### Too Little Context
 
-❌ "This doesn't work" without showing what "this" is  
-✅ "The enemy pathfinding in @enemy.gd isn't working - enemies get stuck on corners"
+**Avoid:** "This doesn't work" without showing what "this" is  
+**Instead:** "The enemy pathfinding in @enemy.gd isn't working - enemies get stuck on corners"
 
 ### Outdated Context
 
-❌ Referencing old code that's been changed  
-✅ Always reference current file states and recent changes
+**Avoid:** Referencing old code that's been changed  
+**Instead:** Always reference current file states and recent changes
 
 ## Integration with Summer Engine's Features
+
+### Project rules
+
+Rules files tell the agent your conventions in every chat: `AGENTS.md` and `.summerrules` at the project root, and rule files in `.summer/rules/`. See [Rules for consistency](/guides/large-codebases#rules-for-consistency).
+
+### Memory
+
+[Memory](/ai-tools/memory) keeps the decisions you make about your game across chats, so you do not repeat them.
 
 ### Project Intelligence
 
@@ -215,7 +225,7 @@ When using [AI Operations](/ai-tools/operations), context helps Summer Engine:
 
 - **Context is crucial**: The quality of Summer Engine's responses directly correlates with the context you provide
 - **Be specific**: Clear intent and relevant state information lead to better results
-- **Use @ symbols**: Explicitly reference files, folders, and functions when relevant
+- **Use @ mentions**: Reference the files and folders that matter
 - **Provide examples**: Show Summer Engine what you want by referencing existing code that works
 - **Break down complexity**: Large requests work better when split into focused pieces
 - **Maintain conversation context**: Build on previous requests in the same chat for continuity

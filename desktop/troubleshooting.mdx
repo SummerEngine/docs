@@ -1,112 +1,90 @@
 ---
-title: "Troubleshooting"
-description: "Solutions to common Summer Engine issues"
+title: "Summer Engine Desktop Troubleshooting"
+sidebarTitle: "Troubleshooting"
+description: "Fix common Summer Engine desktop problems: the app will not start, AI chat stalls, agent sign-in fails, changes do not apply, and where to find logs."
 icon: "wrench"
 "og:image": "https://docs.summerengine.com/images/og/desktop-troubleshooting.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/desktop-troubleshooting.jpg"
 ---
 
-## Installation Issues
+## The app will not start
 
-### Summer Engine won't start
-**Symptoms**: Application crashes on launch or shows error dialog
+**Symptoms**: Summer Engine crashes on launch or shows an error dialog.
 
-**Solutions**:
-- Update your graphics drivers
-- Run as administrator (Windows) or with sudo (Linux)
-- Check system requirements are met
-- Disable antivirus temporarily during installation
+- Check that your computer meets the [system requirements](/essentials/installation#system-requirements). Summer runs on Windows and macOS.
+- Update your graphics drivers (Windows).
+- Install the latest Microsoft Visual C++ Redistributable if Windows reports a missing DLL.
+- If antivirus software quarantined a file, allow Summer Engine and reinstall.
+- On macOS, move Summer to the Applications folder before you open it.
 
-### Missing dependencies
-**Symptoms**: "DLL not found" or library errors
+Summer bundles its own .NET SDK, so you do not need to install .NET to use C#.
 
-**Solutions**:
-- Install Visual C++ Redistributables (Windows)
-- Update to latest macOS version (macOS)
-- Install required packages: `sudo apt install libgl1-mesa-dev` (Ubuntu)
+## AI chat issues
 
-## AI Chat Issues
+### The AI does not respond
 
-### AI not responding
-**Symptoms**: Chat shows "Thinking..." indefinitely
+**Symptoms**: The chat keeps working and never answers.
 
-**Solutions**:
-- Check internet connection
-- Verify account authentication
-- Restart Summer Engine
-- Check your credits in Studio > Billing. Add credits at [summerengine.com/studio/credits](https://www.summerengine.com/studio/credits), or turn on auto top-up
+- Check your internet connection.
+- Sign out and sign in again.
+- Restart Summer Engine.
+- Check your credits in Studio. Add credits at [summerengine.com/studio/credits](https://www.summerengine.com/studio/credits), or turn on auto top-up.
 
-### Poor AI responses
-**Symptoms**: AI doesn't understand requests or makes wrong changes
+### The AI makes the wrong change
 
-**Solutions**:
-- Be more specific in your requests
-- Provide context: "In the player script, make the jump higher"
-- Break complex requests into smaller parts
-- Check if project indexing is complete
+**Symptoms**: The AI misunderstands the request or edits the wrong thing.
 
-## Performance Issues
+- Be specific: "In the player script, make the jump higher."
+- Split a big request into smaller steps.
+- Name the scene, node or file you mean.
 
-### Slow project loading
-**Symptoms**: Long delays when opening projects
+See [Working with context](/guides/working-with-context) for more.
 
-**Solutions**:
-- Close other resource-intensive applications
-- Exclude project from antivirus scanning
-- Use SSD storage for better performance
-- Clear Summer Engine's cache: `~/.summer/cache/`
+## Project issues
 
-### High memory usage
-**Symptoms**: System becomes sluggish with Summer Engine open
+### Changes do not apply
 
-**Solutions**:
-- Close unused projects
-- Reduce viewport quality in settings
-- Limit concurrent AI operations
-- Increase system RAM if possible
+**Symptoms**: The AI says it made a change, but nothing happened.
 
-## Project Issues
-
-### Changes not applying
-**Symptoms**: AI says it made changes but nothing happened
-
-**Solutions**:
-- Check if files are read-only
-- Ensure you have write permissions
-- Look for errors in the output panel
-- Try manual undo/redo to refresh
+- Check that the files are not read-only and that you have write permission to the project folder.
+- Look for errors in the Output panel.
+- If the AI wrote a new asset file, wait for the editor to import it, or focus the editor window to start a rescan.
 
 ### Lost work
-**Symptoms**: Recent changes disappeared
 
-**Solutions**:
-- Check version control history
-- Look in `~/.summer/backups/` folder
-- Use Summer Engine's built-in recovery tool
-- Enable auto-save in preferences
+**Symptoms**: Recent changes disappeared.
 
-## Authentication Problems
+- Check your version control history. See [GitHub from the Changes dock](/guides/github-from-changes-dock).
+- Use **Edit > Undo** in the editor for changes made in this session.
 
-### Can't sign in
-**Symptoms**: Login fails with valid credentials
+### Slow project loading
 
-**Solutions**:
-- Reset password on website
-- Clear stored credentials in Summer Engine
-- Check firewall isn't blocking Summer Engine
-- Try signing in through browser first
+**Symptoms**: Long delays when you open a project.
 
-### Agent sign-in issues
-**Symptoms**: Your agent's Summer tools say you are not signed in
+- The first open of a project imports every asset. Later opens are faster.
+- Keep the project on a local SSD, not a network or synced folder.
+- Exclude the project folder from antivirus scanning.
+- Do not delete the `.godot/` folder in your project. It holds the imported assets, and deleting it forces a full re-import.
 
-**Solutions**:
-- On your computer: run `npx -y summer-engine@latest login --force`
-- Hosted MCP: remove `https://mcp.summerengine.com/mcp` from your agent, add it again and sign in
-- Summer has no API key. Your agent signs in with your Summer account in the browser
+## Sign-in problems
 
-## Getting Help
+### You cannot sign in to the app
 
-If these solutions don't work:
+- Reset your password on [summerengine.com](https://www.summerengine.com).
+- Check that a firewall does not block Summer Engine.
+- Sign in on the website first, then try the app again.
+
+### Your agent says you are not signed in
+
+**Symptoms**: Your agent's Summer tools say you are not signed in.
+
+- On your computer: run `npx -y summer-engine@latest login --force`.
+- Hosted MCP: remove `https://mcp.summerengine.com/mcp` from your agent, add it again and sign in.
+- Summer has no API key. Your agent signs in with your Summer account in the browser.
+
+## Getting help
+
+If these steps do not fix the problem, ask on Discord first, or email us.
 
 <CardGroup cols={2}>
   <Card
@@ -125,17 +103,17 @@ If these solutions don't work:
   </Card>
 </CardGroup>
 
-## Bug Reports
+## Bug reports
 
-When reporting bugs, include:
+When you report a bug, include:
 
-- Summer Engine version
-- Operating system
+- Your Summer Engine version
+- Your operating system
 - Steps to reproduce
 - Error messages or logs
-- Project details (if relevant)
+- Project details, if relevant
 
-**Log locations**:
-- Windows: `%APPDATA%/Summer/logs/`
-- macOS: `~/Library/Application Support/Summer/logs/`
-- Linux: `~/.local/share/Summer/logs/`
+**Log locations**: Summer writes a `godot.log` file per project. The folder name is `Godot`, not `Summer`, and `<project>` is `config/name` from `project.godot`.
+
+- Windows: `%APPDATA%\Godot\app_userdata\<project>\logs\`
+- macOS: `~/Library/Application Support/Godot/app_userdata/<project>/logs/`

@@ -1,6 +1,7 @@
 ---
-title: "Connect Your Project to GitHub"
-description: "Create a GitHub repository, connect it to your Summer project from the Changes dock workflow, and safely commit, push, and sync changes."
+title: "Connect your Summer Engine project to GitHub"
+sidebarTitle: "Connect to GitHub"
+description: "Back up a Summer Engine project on GitHub: create an empty repository, have the agent connect it, then commit, push and sync from the Changes dock."
 icon: "git-branch"
 "og:image": "https://docs.summerengine.com/images/og/guides-github-from-changes-dock.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/guides-github-from-changes-dock.jpg"
@@ -8,7 +9,7 @@ icon: "git-branch"
 
 ## Overview
 
-Summer can commit locally right away, but most users should connect their project to GitHub early. That gives you backups, a shared source of truth, and a safer workflow when you start committing often.
+Summer Engine can commit locally right away, but most users should connect their project to GitHub early. That gives you backups, a shared source of truth, and a safer workflow when you start committing often.
 
 Git is great for code, but large binary assets (3D models, textures, audio) strain it. For big assets, use [Git LFS](https://git-lfs.com) in the same repository.
 
@@ -86,16 +87,13 @@ Summer should then help with the setup steps for the current project.
 
 Once the remote is connected, open the `Changes` dock.
 
-You should now see a GitHub-backed workflow instead of a local-only state.
-
-Useful things to look for:
+Things to look for:
 
 - Your branch name
-- Sync state when the branch is ahead or behind
-- Commit and push behavior tied to the remote repository
-- Graph history that reflects normal user-facing Git history
+- A **Sync Changes** button when your branch is ahead of or behind GitHub
+- Graph history of your commits
 
-If Summer still shows that commits stay local until you publish, the remote is not connected yet.
+If the main button still says **Publish to GitHub**, no remote is connected yet. Click it for the same three steps as this page.
 
 ## Step 5: Commit And Push
 
@@ -128,12 +126,12 @@ Typical behaviors:
 
 ## Understanding Sync
 
-If Summer shows arrows such as `2↑` or `1↓`, that means your branch and the remote are out of sync.
+If the **Sync Changes** button shows arrows such as `2↑` or `1↓`, that means your branch and the remote are out of sync.
 
 - `↑` means your local branch has commits that are not on the remote yet
 - `↓` means the remote has commits that are not on your machine yet
 
-The sync action helps bring those states back together.
+Click **Sync Changes** to fetch, pull the commits you are missing, then push yours.
 
 ## Best Practice
 
@@ -147,9 +145,9 @@ For a smooth workflow:
 
 ## Troubleshooting
 
-### Summer still says commits are local only
+### The Changes dock still shows Publish to GitHub
 
-That usually means no remote is attached yet. Copy the repository URL again and ask Summer to connect the current project to GitHub.
+That means no remote is attached yet. Copy the repository URL again and ask Summer to connect the current project to GitHub.
 
 ### I already created a README on GitHub
 

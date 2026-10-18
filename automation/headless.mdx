@@ -1,6 +1,7 @@
 ---
-title: "Headless Scripting"
-description: "Run Summer from a shell with no window: bake navmeshes, generate collision and LODs, author resources, import assets, and export builds from a plain GDScript file."
+title: "Headless Scripting: Run Summer Engine From the Command Line"
+sidebarTitle: "Headless Scripting"
+description: "Run Summer Engine with no window from a shell: the GDScript entry point, exit codes, import passes, navmesh and LOD baking, and headless exports."
 icon: "terminal"
 "og:image": "https://docs.summerengine.com/images/og/automation-headless.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/automation-headless.jpg"
@@ -272,16 +273,13 @@ This writes the `.import` file next to your asset and the compiled `.ctex` into
 behaves normally.
 
 <Warning>
-**Never run `--import` against a project whose editor is open.**
+**Do not run `--import` against a project whose editor is open.** Let the open editor import
+the file instead.
 
-`--import` is a full editor boot. It starts the local API server, which takes the machine's
-engine binding and mints a fresh auth token — so a client that believes it is talking to the
-open project can have its writes **land in the project you imported instead**, with no error.
-When the import exits, it leaves the binding pointing at a dead port, and the user's editor
-stays unreachable until something restarts.
-
-See [the binding hazard](#what-does-not-work) below for the full mechanism. Plain
-`--headless -s script.gd` is unaffected and completely safe.
+`--import` is a full editor boot, not a lightweight pass. It starts its own local API server.
+On current builds a headless boot no longer takes the machine's engine binding (see
+[editor context](#what-does-not-work) below), but it is still a second editor working on the
+same project. Plain `--headless -s script.gd` starts no server and is always safe.
 </Warning>
 
 <Note>
@@ -290,8 +288,8 @@ game run) builds the import database. If you have only ever run scripts, the dir
 not exist yet.
 
 `--import` costs roughly 5 seconds even with nothing to do, about 15x a trivial script run.
-It is a **full editor boot** — it loads the editor layout and starts the local API server,
-with the binding consequences described above. Do not run it speculatively.
+It is a **full editor boot**: it loads the editor layout and starts a local API server. Do not
+run it speculatively.
 </Note>
 
 <Warning>
@@ -397,19 +395,21 @@ The resulting artifact genuinely runs, as a real template build with
 `--export-pack` produces a `.pck` instead.
 
 <Warning>
-**Only the macOS template ships with the app.** Windows, Linux, Android and iOS exports all
-fail with "No export template found" until you supply templates yourself.
+**The Mac app ships the macOS template and Summer's web template pair, nothing else.**
+Windows, Linux, Android and iOS exports fail with "No export template found" until you
+install templates. [Export templates](/publishing/export#export-templates) shows how to list
+and install the missing ones with your agent.
 
 Templates are searched for in `Summer.app/Contents/Resources/export_templates/` and then in
-`~/Library/Application Support/Godot/export_templates/` — note **`Godot`**, not `Summer`. A
+`~/Library/Application Support/Godot/export_templates/`. Note **`Godot`**, not `Summer`. A
 `~/Library/Application Support/Summer/export_templates/` directory may exist on your machine;
 the engine never reads it. Putting templates there does nothing.
 </Warning>
 
 <Note>
-Web export is not available on this build at all. Summer ships as a Mono (C#/.NET) build, and
-Godot 4 does not support exporting to Web from a Mono build. This is an architectural
-property of the binary, not a missing template.
+Summer's web template (`web_summer_jspi_release.zip`) is a WebGPU build for projects on the
+Forward+ or Mobile renderer. It is built without C# (.NET) support, so a C# project cannot
+export to the web. See [Export your game](/publishing/export) for the web build format.
 </Note>
 
 Use `export_filter="all_resources"`. The dependency-based `resources` filter exits non-zero
@@ -449,45 +449,27 @@ with no plugin installed:
 Summer --headless --editor --path /path/to/project -s res://tool.gd
 ```
 
-<Warning>
-**`--editor` is not safe to run casually. Plain `--headless` is.**
+<Note>
+**`--editor`, `--import` and `--export-*` boot the editor and start a local API server.**
+Plain `--headless -s script.gd` does not.
 
-On current builds, adding `--editor` starts Summer's local API server, which **overwrites
-`~/.summer/api-port` and regenerates `~/.summer/api-token`**. That pair is how the CLI and
-your agent find a running editor. A headless editor takes the binding for itself, rotates
-the token underneath whatever was already running, and on exit leaves the file pointing at a
-dead port.
+The open editor publishes `~/.summer/api-port` and `~/.summer/api-token`. That pair is how the
+CLI and your agent find a running editor. Older builds let any editor boot overwrite it, so a
+throwaway headless run could take the binding from the real editor. Current builds treat every
+headless, import, export and script run as a batch instance: it serves its own port, but it
+never writes the global pair. It registers under `~/.summer/instances/` instead, marked as not
+owning the global binding.
 
-**This is not only a broken lookup — a client can write into the wrong project.** The
-identity check rejects a request that declares which project it means, but **accepts one
-that does not declare anything**, and applies it to whichever project currently holds the
-binding. There is no error and no warning. Work silently lands in someone else's project.
+Two flags give you more control:
 
-`--import` and `--export-*` do the same thing. They are full editor boots, not lightweight
-passes. Running `--import` on one project was measured rotating the token while another
-project held the binding.
-
-Which invocations are affected, measured:
-
-| Invocation | Takes the binding |
+| Flag | Effect |
 |---|---|
-| `--headless -s script.gd` | **No — safe** |
-| `--headless --editor …` | Yes |
-| `--headless --import` | Yes |
-| `--export-release` / `--export-pack` | Yes |
+| `--summer-no-publish` | Never write the global discovery files, even from a windowed editor |
+| `--summer-no-api` | Start no local API server at all (also `SUMMER_NO_API=1`) |
 
-Plain `-s` headless scripting — the bulk of this page — is unaffected. The hazard is
-specific to the invocations that boot the editor.
-
-If your agent reports the engine as disconnected while it is plainly running, this is the
-first thing to check. Restarting the real editor republishes the binding.
-
-A later build suppresses this for batch-mode instances; until you have confirmed your build
-does, assume it does not.
-
-
-Plain `--headless -s script.gd` never starts that server and has none of these effects.
-</Warning>
+If your agent reports the engine as disconnected while it is plainly running, restart the
+real editor. It republishes the binding.
+</Note>
 
 See [Editor Plugins](/extending/editor-plugins) for the full editor-context story, including
 the enable routes and what `EditorInterface` unlocks.

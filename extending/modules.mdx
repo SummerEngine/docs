@@ -1,6 +1,7 @@
 ---
-title: "Custom Modules"
-description: "How Summer's internal C++ module is built, why external developers cannot add one, and what to use instead. Includes the init-level and TOOLS_ENABLED discipline that decides whether a class survives into an exported game."
+title: "Custom C++ Engine Modules in Summer Engine"
+sidebarTitle: "Custom Modules"
+description: "Why you cannot add a C++ module to Summer Engine, what to use instead, and the init-level and TOOLS_ENABLED rules that decide what ships in an exported game."
 icon: "boxes"
 "og:image": "https://docs.summerengine.com/images/og/extending-modules.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/extending-modules.jpg"
@@ -35,7 +36,7 @@ A module is C++ compiled directly into the engine binary at build time. Unlike a
 
 The trade is straightforward: a module gets unrestricted access to engine internals and zero ABI constraints, and costs you the ability to ship it to anyone who is not also building the engine. GDExtension makes the opposite trade.
 
-Summer's own additions live in one module, `modules/1summer_engine/`. Everything the editor does beyond stock Godot — authentication, the chat panel, the embedded webview, the local tool server that MCP talks to, crash reporting, edit coordination, the updater — is inside it.
+Summer's editor additions live in `modules/1summer_engine/`. Everything the editor does beyond stock Godot (authentication, the chat panel, the embedded webview, the local tool server that MCP talks to, crash reporting, edit coordination, the updater) is inside it. Two more modules, `summer_sdk_core` and `summer_multiplayer`, hold the in-game Summer API and the native multiplayer runtime.
 
 ---
 
@@ -47,7 +48,7 @@ Summer's own additions live in one module, `modules/1summer_engine/`. Everything
 | `SCsub` | The SCons build script — source globs, per-platform link flags, generated headers, conditional defines |
 | `register_types.cpp` / `register_types.h` | Registers classes with `ClassDB` at each initialization level, and tears them down in reverse |
 
-Summer's module then subdivides by concern — `core/`, `auth/`, `gateway/`, `chat/`, `webview/`, `editor/`, `analytics/`, `api/`, `crash/`, `verify/`, `util/`.
+The editor module then subdivides by concern, for example `core/`, `auth/`, `gateway/`, `chat/`, `webview/`, `editor/`, `analytics/`, `api/`, `crash/`, `verify/` and `util/`.
 
 ---
 
@@ -74,7 +75,7 @@ The same shape applies to a GDExtension: `minimum_initialization_level` in your 
 
 Export templates are built without `TOOLS_ENABLED`. Anything inside that guard does not exist in an exported game — not the class, not the symbol.
 
-This is exactly why, of the 8 classes Summer adds to the engine, only `SummerEngineSettings` is available in an exported game. The other seven are registered inside `#ifdef TOOLS_ENABLED` and are editor-only. See [Summer's own native classes](/extending/gdextension#summers-own-native-classes).
+This is exactly why Summer's editor classes, such as `ChatPanel` and `LocalApiServer`, are absent from an exported game: they are registered inside `#ifdef TOOLS_ENABLED`. The in-game Summer API classes are registered outside that guard, so they ship. See [Summer's own native classes](/extending/gdextension#summers-own-native-classes).
 
 Get the guard wrong and you do not get a runtime error, you get a link error in the export template build — which is the good outcome. The bad outcome is next.
 

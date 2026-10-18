@@ -1,6 +1,7 @@
 ---
-title: "GDExtension"
-description: "Build native extensions against Summer's current Godot 4.7.2 base, and distinguish current guidance from historical 4.6.1 measurements."
+title: "GDExtension in Summer Engine: Native C++ and Rust Extensions"
+sidebarTitle: "GDExtension"
+description: "Build and load GDExtension native libraries in Summer Engine against its Godot 4.7.2 base: API dumps, the .gdextension format, signing and export limits."
 icon: "puzzle"
 "og:image": "https://docs.summerengine.com/images/og/extending-gdextension.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/extending-gdextension.jpg"
@@ -206,11 +207,11 @@ scons platform=macos target=template_debug custom_api_file=/tmp/extension_api.js
 ```
 
 <Warning>
-**This recipe is assembled from verified facts but was not executed end to end.** Step 1 is verified — the dump command works and writes a 6.8 MB `extension_api.json` whose header reads `version_major: 4, version_minor: 6, version_patch: 1`. The `custom_api_file` option is verified to exist in godot-cpp. **The SCons build itself was not run.** godot-cpp `master` targets 4.7 and may reference engine symbols that do not exist in 4.6.1 even when pointed at a 4.6.1 API file. If it fails, that is the likely cause. Report what you hit; do not assume this page is right about the outcome.
+**This recipe is assembled from verified facts but was not executed end to end.** Step 1 is verified on the current app: the dump command writes a 7.6 MB `extension_api.json` whose header reads `version_major: 4, version_minor: 7, version_patch: 2`. The `custom_api_file` option is verified to exist in godot-cpp. **The SCons build itself was not run.** If it fails, report what you hit; do not assume this page is right about the outcome.
 </Warning>
 
 <Note>
-The dumped `extension_api.json` carries `version_full_name: "Summer Engine v4.6.1.stable.mono.custom_build"`, so it is not byte-identical to an upstream 4.6.1 dump even though the ABI contract is. The version string is cosmetic; the function table is what binds.
+The dumped `extension_api.json` carries `version_full_name: "Summer Engine v4.7.2.stable.mono.custom_build"` and includes Summer's own classes, so it is not byte-identical to an upstream 4.7.2 dump. The version string is cosmetic; the function table is what binds.
 </Note>
 
 ---
@@ -294,7 +295,7 @@ requiring a fresh load/export test until the compatibility contract records new 
 | macOS editor | Historical proof only | An unsigned third-party dylib loaded on 4.6.1; revalidate on 4.7.2 |
 | macOS export | Unmeasured on 4.7.2 | See signing caveats below |
 | Windows / Linux export | Unmeasured on 4.7.2 | Test with the exact current templates |
-| Web export | **No current support claim** | See below |
+| Web export | **Not supported** | Summer's web template is built without dynamic linking. See below |
 
 ### macOS exports and library validation
 
@@ -310,14 +311,14 @@ Signing with `rcodesign` is unsupported when a dynamic library is embedded; the 
 
 ### Web exports
 
-Web GDExtension support requires the engine to be built with WebAssembly dynamic linking. In `platform/web/detect.py`, `dlink_enabled` defaults to `False`, and only that flag switches the build to `-sMAIN_MODULE=1` / `-sSIDE_MODULE=2`. Summer ships no web export template, so a web export uses official Godot templates, which are not built with dlink.
+Web GDExtension support requires the engine to be built with WebAssembly dynamic linking. In `platform/web/detect.py`, `dlink_enabled` defaults to `False`, and only that flag switches the build to `-sMAIN_MODULE=1` / `-sSIDE_MODULE=2`. Summer's own web template (`web_summer_jspi_release.zip`, the WebGPU build) is built with `dlink_enabled=no`, and its build rejects dynamic linking outright.
 
-**Conclusion: do not plan on GDExtension in a web export.** Inferred from source; we have not run a web export to confirm the failure mode.
+**Conclusion: do not plan on GDExtension in a web export.** Read from the template build script; we have not run a web export to confirm the failure mode.
 
 ### Export templates on other platforms
 
-Summer 0.5.65 bundles freshly built macOS templates for the 4.7.2 base. Do not substitute
-templates from an older release. For every other target, verify the exact installed template
+The Summer Mac app bundles macOS templates and Summer's web template pair for the 4.7.2 base.
+Do not substitute templates from an older release. For every other target, verify the exact installed template
 and run an exported-build smoke test; no cross-template GDExtension range is currently claimed.
 
 ---
@@ -338,7 +339,7 @@ release and still verify that the plugin enables and runs in Summer. See [Editor
 
 <Card title="Precompiled GDExtension binaries" icon="circle-alert">
 **Version-locked.** Require an advertised Godot 4.7 range, a matching platform binary, and an
-actual load/export test in Summer 0.5.65.
+actual load/export test in your installed Summer version.
 </Card>
 
 <Card title="Platform check first" icon="monitor">
@@ -385,14 +386,20 @@ Hot reload of a `reloadable` extension is enabled in the editor. It is off every
 
 ## Summer's own native classes
 
-The live API dump contains 1032 classes; 8 are Summer's:
+An API dump from the shipped Summer app (4.7.2 base, October 2026) lists 1,249 classes. About
+200 of them are Summer's, in two groups:
 
-| Class | Availability |
-|---|---|
-| `SummerEngineSettings` | `RefCounted`, `api_type: core`, 15 methods. The only one registered outside `#ifdef TOOLS_ENABLED`, so the only one present in an exported game |
-| `AuthManager`, `SummerEngineGateway`, `ChatPanel`, `WebViewControl`, `PostHogClient`, `LocalApiServer`, `MutationLease` | Editor-only |
+| Group | Examples | Availability |
+|---|---|---|
+| The in-game Summer API | `SummerRuntime` (the `Summer` singleton), `SummerClient`, `SummerPlayer`, `SummerOperation`, `SummerNetwork*`, `SummerMultiplayerPeer` | Registered at the scene level with no editor guard, so they exist in exported games. This is how your game reaches Summer's multiplayer and services. See the [in-game Summer API](/api-reference/gdscript/overview) |
+| Editor surfaces | `ChatPanel`, `WebViewControl`, `LocalApiServer`, `MutationLease`, `SummerEngineGateway` | Editor-only, registered inside `#ifdef TOOLS_ENABLED` |
 
-These exist to run the editor's own AI surfaces — authentication, the chat panel, the embedded webview, telemetry, the local tool server, edit coordination. They are documented here so you are not surprised to find them in an API dump. **There is no reason to call them from a game.** Relying on any of them makes your project unopenable in stock Godot for no benefit.
+`SummerEngineSettings` is also registered outside the editor guard.
+
+The editor classes run the editor's own AI surfaces: the chat panel, the embedded web view, the
+local tool server and edit coordination. **There is no reason to call them from a game.** Using
+any Summer class makes your project unopenable in stock Godot, so use the in-game API only where
+you need Summer's services.
 
 ---
 

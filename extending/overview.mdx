@@ -1,19 +1,19 @@
 ---
-title: "Extending Summer"
-description: "Summer is an extensible engine. Three ways to add capability: GDScript editor plugins, native GDExtension libraries, and engine modules — what each one can reach, and which to pick."
+title: "Extending Summer Engine: Plugins, GDExtension and Modules"
+sidebarTitle: "Extending Summer"
+description: "Three ways to extend Summer Engine: GDScript editor plugins, native GDExtension libraries and engine modules. What each one can reach, and which to pick."
 icon: "blocks"
 "og:image": "https://docs.summerengine.com/images/og/extending-overview.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/extending-overview.jpg"
 ---
 
-Summer Engine is the product. Its current upstream technical base is Godot Engine
-4.7.2-stable. Summer follows upstream continuously; 4.7.2 is a compatibility fact, not the
-Summer Engine product version. Runtime and project compatibility ranges for this new base
-remain unmeasured, so treat native extensions as version-sensitive until the exact binary is
-loaded and exported successfully.
+Summer Engine, the game engine built for AI, has three ways to add capability. They differ in
+what they can reach, what they cost to build, and whether you can use them at all.
 
-There are three of them. They differ in what they can reach, what they cost to build,
-and whether you can use them at all.
+Summer's current upstream technical base is Godot Engine 4.7.2-stable. That is a compatibility
+fact, not the Summer Engine product version. Runtime and project compatibility ranges for this
+base remain unmeasured, so treat native extensions as version-sensitive until the exact binary
+is loaded and exported successfully.
 
 | You want to | Use | Language | Needs a compiler | Available to you |
 |---|---|---|---|---|
@@ -39,13 +39,12 @@ scene from code, registering an autoload — none of those are available to a pl
 script, and all of them are available from inside an editor plugin.
 
 It also works without a window. `Summer --headless --editor` boots the editor, loads
-enabled plugins, and gives you a live `EditorInterface` from a shell — with one sharp
-hazard around your running editor that the deep page documents in full.
+enabled plugins, and gives you a live `EditorInterface` from a shell.
 
 <Card title="Editor plugins" icon="plug" href="/extending/editor-plugins">
 Templates, the three ways to enable a plugin and why they behave differently, what
 `EditorInterface` actually unlocks, the verification step you must not skip, and the
-headless-editor hazard
+headless editor
 </Card>
 
 ## GDExtension
