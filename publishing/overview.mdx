@@ -1,7 +1,7 @@
 ---
-title: "Publishing outside Summer Games"
+title: "Export and publish a Summer Engine game outside Summer Games"
 sidebarTitle: "Publishing Overview"
-description: "Your own Mac and Windows builds for stores outside Summer Games. To publish on Summer Games, start at /publishing/summer-games instead."
+description: "Export your Summer Engine game as Mac, Windows, Linux or web builds and release it on Steam, itch.io or your own site, outside Summer Games."
 icon: "rocket"
 "og:image": "https://docs.summerengine.com/images/og/publishing-overview.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/publishing-overview.jpg"
@@ -11,184 +11,159 @@ icon: "rocket"
   **Publishing on Summer Games?** This page is about other stores. You upload a game to Summer Games in one place: [summerengine.com/studio/upload](https://www.summerengine.com/studio/upload). For every step, by hand or with your AI agent, start at [How do I publish my game on Summer?](/publishing/summer-games). Agents: follow the [Agent checklist](/publishing/agent-checklist).
 </Note>
 
-## Welcome to Publishing Your Game!
-
-This guide will walk you through **exporting and publishing** your Summer Engine game. We've made it as straightforward as possible, with step-by-step instructions for each platform and distribution method.
+Summer Engine is the game engine built for AI. You can also export your game as your own builds and release them on other stores or your own website. This section shows how, step by step for each platform and store.
 
 <Note>
-  New to game publishing? Start with **macOS** or **Windows** export, then publish to **itch.io** for your first release. It's the easiest path to getting your game in players' hands.
+  New to game publishing? Start with the **macOS** or **Windows** export, then publish to **itch.io** for your first release. It is the shortest path to players.
 </Note>
 
-## Choose Your Path
+## Choose your path
 
 <CardGroup cols={2}>
   <Card title="Export for macOS" icon="apple" href="/publishing/macos-export">
-    Build games for Mac computers (Intel & Apple Silicon)
+    Build games for Mac computers (Intel and Apple Silicon)
   </Card>
 
   <Card title="Export for Windows" icon="windows" href="/publishing/windows-export">
-    Build games for Windows PCs (the largest gaming market)
+    Build games for Windows PCs
   </Card>
 
   <Card title="Publish to Steam" icon="steam" href="/publishing/steam">
-    Release on the world's largest PC gaming platform
+    Release on the largest PC game store
   </Card>
 
   <Card title="Publish to itch.io" icon="gamepad" href="/publishing/itch-io">
-    Quick indie game releases with no approval process
+    Quick indie releases with no approval process
   </Card>
 </CardGroup>
 
-## Supported Platforms
+## Platforms
 
-### Desktop (Most Common)
-- ✅ **Windows** - Largest PC gaming market
-- ✅ **macOS** - Growing market, especially with Apple Silicon
-- ✅ **Linux** - Includes Steam Deck support
+| Platform | Notes |
+|---|---|
+| **Windows** | The largest PC gaming market. See [Windows export](/publishing/windows-export). |
+| **macOS** | Intel and Apple Silicon. See [macOS export](/publishing/macos-export). |
+| **Linux** | Also runs on Steam Deck. |
+| **Web** | Plays in the browser, for example on itch.io or your own site. |
+| **Android and iOS** | Store releases need each store's own developer account and signing. On Summer Games, the Summer Games apps run your game with no account of your own: see [Export your game](/publishing/export). |
+| **Consoles** | Summer has no console export of its own. See [Console publishing](/publishing/consoles). |
 
-### Mobile
-- ✅ **Android** - Google Play Store + third-party stores
-- ✅ **iOS** - App Store (requires Apple Developer account)
+Web, Linux, Android and iOS builds need export templates. See [Export templates](/publishing/export#export-templates).
 
-### Web
-- ✅ **HTML5/WebAssembly** - Play in browser (itch.io, Newgrounds, your website)
+## Before you start
 
-### Consoles
-- **Nintendo Switch, PlayStation, Xbox** - [See console publishing guide](/publishing/consoles)
+### 1. Turn on texture compression (once per project)
 
-## Before You Start
-
-### 1. First-Time Setup (5 minutes)
-
-You need to enable **texture compression** for your target platforms. This is a **one-time** setup per project.
+Turn on the texture formats for your target platforms. You do this once per project.
 
 **Go to**: Project → Project Settings → Rendering → Textures → VRAM Compression
 
-**Enable these formats based on where you're releasing**:
-
-| Publishing To | Enable This Format | Why |
-|---------------|-------------------|-----|
-| **Mac, iOS, Android** | Import ETC2 ASTC | Apple Silicon & mobile devices use this |
-| **Windows, Linux** | Import S3TC BPTC | PC graphics cards use this |
-| **Both** | Enable BOTH formats | Most common - covers all desktop platforms |
+| Publishing to | Turn on | Why |
+|---|---|---|
+| **Mac, iOS, Android** | Import ETC2 ASTC | Apple Silicon and mobile GPUs use this format |
+| **Windows, Linux** | Import S3TC BPTC | PC graphics cards use this format |
+| **Mac and Windows** | Both formats | The common setup for desktop releases |
 
 <Tip>
-  **Releasing on Steam to both Mac and Windows?** Enable both ETC2 ASTC and S3TC BPTC. This is the most common setup for indie games.
+  **Releasing on Steam for both Mac and Windows?** Turn on both ETC2 ASTC and S3TC BPTC at the same time, so Summer reimports your textures only once.
 </Tip>
 
-**What happens when you enable these?**
-- Summer will reimport all your textures (takes 1-5 minutes depending on project size)
-- Project size increases slightly (~30-50% larger on disk)
-- Your game will run on those platforms without texture errors
+**What happens when you turn them on?**
+- Summer reimports your textures (1-5 minutes, depending on project size).
+- The imported files take more disk space, because each texture is stored in each format.
+- Your game runs on those platforms without texture errors.
 
-**Why aren't these enabled by default?**
-- Not every game needs every platform (web-only games don't need either format)
-- Faster initial project setup for prototyping
-- Developer chooses based on target audience
+### 2. Test your game first
 
-### 2. Test Your Game First!
+Before you export, make sure your game works in the editor:
+- Play through your game from start to finish.
+- Test every major feature.
+- Fix any errors in the Output panel.
 
-Before exporting, make sure your game works properly in the editor:
-- Run through your game start-to-finish
-- Test all major features
-- Fix any errors in the Output console
+Export does not fix bugs. It packages your game as it is.
 
-**Export doesn't fix bugs** - it packages your game as-is.
-
-## Typical Publishing Workflow
-
-Here's the recommended order for releasing your first game:
+## Typical publishing workflow
 
 <Steps>
-  <Step title="Enable Texture Formats">
-    Set up ETC2 ASTC and/or S3TC BPTC based on target platforms (one-time setup)
+  <Step title="Turn on texture formats">
+    ETC2 ASTC and/or S3TC BPTC, for your target platforms (once per project)
   </Step>
 
-  <Step title="Export for Your Platform">
+  <Step title="Export for your platform">
     Follow the guide for [macOS](/publishing/macos-export) or [Windows](/publishing/windows-export)
   </Step>
 
-  <Step title="Test the Exported Build">
-    Run your exported game on a **different computer** (not your dev machine) to catch issues
+  <Step title="Test the exported build">
+    Run it on a **different computer**, not your dev machine. See [Testing exported builds](/publishing/local-testing).
   </Step>
 
-  <Step title="Publish to itch.io (Easiest)">
-    [Upload to itch.io](/publishing/itch-io) - no approval process, instant publishing
+  <Step title="Publish to itch.io">
+    [Upload to itch.io](/publishing/itch-io): no approval process, live in minutes
   </Step>
 
-  <Step title="Publish to Steam (Optional)">
-    [Submit to Steam](/publishing/steam) - larger audience, more complex setup
+  <Step title="Publish to Steam (optional)">
+    [Submit to Steam](/publishing/steam): a larger audience, with more setup
   </Step>
 </Steps>
 
-## Quick Reference: What You Need for Each Platform
+## What each store asks of you
 
-### itch.io (Recommended First Release)
-- ✅ No approval process
-- ✅ No fees or revenue share (optional tip jar)
-- ✅ Upload and publish in minutes
-- ✅ Perfect for playtesting and indie releases
-- ❌ Smaller audience than Steam
+### itch.io
+- No approval process. Upload and publish in minutes.
+- You choose itch.io's share of each sale (open revenue sharing: 10% by default, 0% allowed).
+- Good for playtests, game jams and web games.
+- A smaller audience than Steam.
 
 ### Steam
-- ✅ Largest PC gaming audience
-- ✅ Built-in achievements, cloud saves, workshop
-- ❌ Requires $100 Steam Direct fee (one-time per game)
-- ❌ Approval process (usually 1-3 days)
-- ❌ 30% revenue share
+- The largest PC gaming audience, with achievements, cloud saves and Workshop.
+- A Steam Direct fee per game, returned after your game earns enough.
+- Valve reviews your store page and build before release.
+- Valve takes 30% of sales, less above high revenue thresholds.
 
-### Direct Download (Your Website)
-- ✅ 100% of revenue
-- ✅ Full control over distribution
-- ❌ Requires code signing to avoid security warnings
-- ❌ No built-in update system
-- ❌ Need to handle payments yourself
+### Direct download (your website)
+- You keep the revenue, minus your payment provider's fees.
+- You control distribution.
+- Code signing avoids security warnings.
+- You build your own update and payment flow.
 
-## Common Questions
+## Common questions
 
 <AccordionGroup>
   <Accordion title="Do I need export templates?">
-    **No!** Summer Engine **includes export templates** in the download. 
-    
-    You should be able to export immediately after enabling texture compression formats.
-    
-    If you see "missing templates" errors, contact support - this shouldn't happen.
+    **Sometimes.** The Mac app of Summer Engine comes with the Mac template, and the Windows app with the Windows templates. Web, Linux, Android and iOS builds need templates from Summer's download server.
+
+    Your agent installs them with `summer_export_templates`. Do not use the editor's own template download: it fetches stock templates, not Summer's. See [Export templates](/publishing/export#export-templates).
   </Accordion>
 
   <Accordion title="Can I export to multiple platforms from one project?">
-    **Yes!** Enable both ETC2 ASTC and S3TC BPTC, then create export presets for each platform.
-    
-    Export Mac, Windows, and Linux builds from the same project. Most Steam games do this.
+    **Yes.** Turn on both ETC2 ASTC and S3TC BPTC, then make one export preset per platform.
+
+    You can export Mac, Windows and Linux builds from the same project.
   </Accordion>
 
   <Accordion title="Do I need to code sign my game?">
-    **Depends on where you're releasing**:
-    
-    - **Steam**: No - Steam handles signing for you
-    - **itch.io**: No - players expect indie games unsigned
-    - **Direct download Mac**: Yes - or users get "unidentified developer" warnings
-    - **Direct download Windows**: Optional - prevents "unknown publisher" warnings
+    **It depends on where you release:**
+
+    - **Steam**: usually not. Games that Steam installs do not get the download warning. Signing is still good practice.
+    - **itch.io**: not required. Players see a security warning they can click through.
+    - **Direct download, Mac**: yes, or players see "unidentified developer" warnings.
+    - **Direct download, Windows**: recommended, or players see "unknown publisher" warnings.
   </Accordion>
 
   <Accordion title="How big will my exported game be?">
-    Typical sizes:
-    - Small 2D game: 50-150 MB
-    - Medium 3D game: 200-500 MB
-    - Large 3D game: 500 MB - 2 GB
-    
-    Summer Engine runtime is ~60MB. The rest is your assets (textures, audio, 3D models).
+    It depends mostly on your assets: textures, audio and 3D models. A small 2D game is often under 150 MB. A 3D game with many textures can reach several GB.
   </Accordion>
 
   <Accordion title="Can I export for consoles (Switch, PlayStation, Xbox)?">
-    Console export requires official developer agreements with platform holders. See our [Console Publishing Guide](/publishing/consoles) for details and recommended porting partners.
+    Not directly. Summer has no console export of its own. Console versions need approval from the platform holder, its SDK and dev kits, and certification. See the [Console publishing guide](/publishing/consoles).
   </Accordion>
 </AccordionGroup>
 
-## Getting Help
+## Getting help
 
 <CardGroup cols={3}>
   <Card title="Discord Community" icon="discord" href="https://discord.gg/summerengine">
-    Ask in `#game-dev` - friendly community ready to help!
+    Ask in `#game-dev` first, for the fastest reply
   </Card>
 
   <Card title="X / Twitter" icon="x-twitter" href="https://x.com/SummerEngineCom">
@@ -196,13 +171,13 @@ Here's the recommended order for releasing your first game:
   </Card>
 
   <Card title="Email Support" icon="envelope" href="mailto:support@summerengine.com">
-    Technical export issues or publishing questions
+    support@summerengine.com or founders@summerengine.com
   </Card>
 </CardGroup>
 
 ---
 
-## Next Steps
+## Next steps
 
 Ready to export? Pick your platform:
 
@@ -223,4 +198,3 @@ Ready to export? Pick your platform:
     Quick indie game publishing
   </Card>
 </CardGroup>
-

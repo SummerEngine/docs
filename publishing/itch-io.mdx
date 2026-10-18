@@ -1,6 +1,7 @@
 ---
-title: "Publishing to itch.io"
-description: "Quick and easy indie game publishing with no approval process"
+title: "Publish a Summer Engine game on itch.io"
+sidebarTitle: "Publishing to itch.io"
+description: "Publish your Summer Engine game on itch.io: upload Mac, Windows and web builds, set up the game page, choose pricing and revenue share, and push updates."
 icon: "gamepad"
 "og:image": "https://docs.summerengine.com/images/og/publishing-itch-io.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/publishing-itch-io.jpg"
@@ -10,12 +11,12 @@ icon: "gamepad"
 
 itch.io is the **friendliest platform for indie game developers**:
 
-- ✅ **No approval process** - publish immediately
-- ✅ **No fees** - 0% revenue share (optional tip jar for itch.io)
-- ✅ **Upload in minutes** - drag and drop your game files
-- ✅ **Perfect for game jams** - instant hosting
-- ✅ **Great community** - supportive indie game players
-- ✅ **Flexible pricing** - free, paid, pay-what-you-want, or donations
+- **No approval process** - publish immediately
+- **You choose the revenue share** - itch.io's share is 10% by default, and you can set it anywhere from 0% to 100%
+- **Upload in minutes** - drag and drop your game files
+- **Good for game jams** - instant hosting
+- **Indie community** - players who like trying new games
+- **Flexible pricing** - free, paid, pay-what-you-want, or donations
 
 **Best for**: First-time releases, game jams, early feedback, web games
 
@@ -81,7 +82,7 @@ itch.io is the **friendliest platform for indie game developers**:
 
   <Step title="Configure Platform">
     After upload, checkboxes appear:
-    - ✅ Check **Windows**
+    - Check **Windows**
     - Set **This file will be played**: In the app (not browser)
     - **Architecture**: 64-bit (if using x86_64)
   </Step>
@@ -109,7 +110,7 @@ itch.io is the **friendliest platform for indie game developers**:
   </Step>
 
   <Step title="Configure Platform">
-    - ✅ Check **macOS**
+    - Check **macOS**
     - Set **This file will be played**: In the app
     - **Architecture**: Universal (if you exported universal)
   </Step>
@@ -175,8 +176,6 @@ Clear naming helps players pick the right version.
 - Visual style: pixel-art, 3d, hand-drawn, etc.
 - Features: multiplayer, controller-support, co-op, etc.
 
-**Engine**: Select **Godot** from dropdown (Summer Engine exports standard project format)
-
 ### Media
 
 **Cover Image**: 630x500px (shown in browse listings)
@@ -220,7 +219,7 @@ Clear naming helps players pick the right version.
 
 ## Web Games on itch.io (HTML5 Export)
 
-Summer Engine can export **HTML5/WebAssembly** games that run in browser!
+Summer Engine can export **HTML5/WebAssembly** games that run in the browser. A web export needs the web export template: see [Export templates](/publishing/export#export-templates).
 
 ### Exporting for Web
 
@@ -230,16 +229,16 @@ Summer Engine can export **HTML5/WebAssembly** games that run in browser!
   </Step>
 
   <Step title="Configure Web Settings">
-    - **Export Type**: HTML
-    - **Texture Format**: Works with any (no special compression needed)
+    - **Variant → Thread Support**: Off, unless your game needs threads (then turn on itch.io's SharedArrayBuffer option below)
+    - **VRAM Texture Compression**: **For Desktop** (S3TC BPTC); add **For Mobile** (ETC2 ASTC) if players use phone browsers
   </Step>
 
-  <Step title="Export as HTML">
-    Export to a folder containing:
+  <Step title="Export">
+    Export `index.html` to an empty folder. The folder then contains:
     - `index.html`
-    - `MyGame.wasm`
-    - `MyGame.pck`
-    - Other web assets
+    - `index.wasm`
+    - `index.pck`
+    - `index.js` and other web files
   </Step>
 
   <Step title="Zip the Folder">
@@ -255,7 +254,7 @@ Summer Engine can export **HTML5/WebAssembly** games that run in browser!
   </Step>
 
   <Step title="Configure as HTML">
-    - ✅ Check **This file will be played in the browser**
+    - Check **This file will be played in the browser**
     - Select `index.html` as the main file
   </Step>
 
@@ -263,6 +262,7 @@ Summer Engine can export **HTML5/WebAssembly** games that run in browser!
     - **Viewport dimensions**: Match your game resolution (e.g., 1280x720)
     - **Orientation**: Landscape (most games) or Portrait (mobile-style)
     - **Fullscreen button**: Enable for better experience
+    - **SharedArrayBuffer support**: Enable only if you exported with thread support
   </Step>
 
   <Step title="Test in Browser">
@@ -283,11 +283,11 @@ Summer Engine can export **HTML5/WebAssembly** games that run in browser!
 | Feature | itch.io | Steam |
 |---------|---------|-------|
 | **Setup Time** | 15 minutes | 2-3 hours |
-| **Approval** | None | 1-3 days |
-| **Upfront Cost** | $0 | $100 per game |
-| **Revenue Share** | 0% (optional tip) | 30% to Valve |
-| **Audience Size** | Smaller, indie-focused | 120M+ users |
-| **Web Games** | ✅ Native support | ❌ Not supported |
+| **Approval** | None | Store page and build review, a few business days |
+| **Upfront Cost** | $0 | $100 per game (returned after $1,000 in revenue) |
+| **Revenue Share** | You choose (10% by default) | 30% to Valve |
+| **Audience Size** | Smaller, indie-focused | The largest PC store |
+| **Web Games** | Supported | Not supported |
 | **Best For** | Quick releases, jams, web games | Professional releases, large audience |
 
 <Tip>
@@ -317,7 +317,7 @@ Summer Engine can export **HTML5/WebAssembly** games that run in browser!
   </Step>
 
   <Step title="Delete Old Version">
-    Click ❌ next to old file to remove it
+    Delete the old file from the upload list
     
     **Or** keep both (lets players download old versions)
   </Step>
@@ -370,7 +370,7 @@ A fast-paced platformer where you play as a robot escaping a factory.
 - Music: Composer Name
 - Art: Artist Name
 
-Built with Summer Engine ❤️
+Built with Summer Engine
 ```
 
 ---
@@ -378,10 +378,9 @@ Built with Summer Engine ❤️
 ## Pricing Strategies for itch.io
 
 ### Pay What You Want ($0 minimum)
-- **Gets most downloads** (free)
-- Some players pay generously ($5-$20 for great games)
-- Builds audience for future paid games
-- **Average**: ~10-20% of players pay something
+- **Gets the most downloads** (free)
+- Some players pay anyway
+- Builds an audience for future paid games
 
 ### Fixed Price
 - **Sets clear value** ($3-$15 typical for indie)
@@ -442,7 +441,7 @@ Built with Summer Engine ❤️
 </CardGroup>
 
 <Tip>
-  **Pro tip**: Use itch.io as your **alpha/beta testing ground**, then polish and release on **Steam** for wider release. Many successful indie devs do this!
+  **Tip**: Use itch.io as your **alpha and beta testing ground**, then polish and release on **Steam** and [Summer Games](/publishing/summer-games) for a wider release.
 </Tip>
 
 **Need help with itch.io?** Ask in [Discord](https://discord.gg/summerengine) first for the fastest reply. For concrete help, email [support@summerengine.com](mailto:support@summerengine.com) or [founders@summerengine.com](mailto:founders@summerengine.com).

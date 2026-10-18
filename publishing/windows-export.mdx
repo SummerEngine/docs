@@ -1,6 +1,7 @@
 ---
-title: "Windows Export Guide"
-description: "Step-by-step guide to exporting your game for Windows PCs"
+title: "Export a Summer Engine game for Windows"
+sidebarTitle: "Windows Export Guide"
+description: "Step by step: export your Summer Engine game as a Windows .exe, pick the right preset settings, test it on a clean PC and sign it for direct downloads."
 icon: "windows"
 "og:image": "https://docs.summerengine.com/images/og/publishing-windows-export.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/publishing-windows-export.jpg"
@@ -13,7 +14,7 @@ Windows is the **largest PC gaming market**. This guide walks you through creati
 **Time to complete**: 10-15 minutes (first time)
 
 <Info>
-  Good news: Windows export is simpler than macOS! No bundle identifiers or code signing complexities (unless you want them).
+  Windows export is simpler than macOS: no bundle identifier, and code signing is optional.
 </Info>
 
 ## Prerequisites
@@ -69,13 +70,13 @@ Windows graphics cards use S3TC/BPTC texture compression.
 ### Recommended Settings
 
 **Binary Format**:
-- **Architecture**: `x86_64` ✅ (64-bit, modern Windows)
+- **Architecture**: `x86_64` (recommended: 64-bit, modern Windows)
   - Don't use `x86_32` (32-bit) unless you have a specific reason
   - 64-bit supports more RAM and is standard for games
 
 **Embed PCK**:
-- **On** ✅ - Creates single `.exe` file (easier distribution)
-- **Off** - Creates `.exe` + `.pck` file (slightly faster loading)
+- **On** (recommended) - Creates a single `.exe` file (easier distribution)
+- **Off** - Creates an `.exe` and a `.pck` file that must stay together
 
 <Info>
   **For Steam and itch.io**: Use **Embed PCK: On** for single-file distribution. Players prefer downloading one file.
@@ -83,7 +84,7 @@ Windows graphics cards use S3TC/BPTC texture compression.
 
 **Debug Settings**:
 - **Export Console Wrapper**: 
-  - **Debug Only** ✅ - Recommended for testing (shows console output in test builds)
+  - **Debug Only** (recommended) - Adds a console version of the `.exe` to debug builds, so you can read their output
   - **No** - For final release
   - **Debug and Release** - If you want console output in released game
 
@@ -92,7 +93,7 @@ Windows graphics cards use S3TC/BPTC texture compression.
 - **Company Name**: Your studio name
 - **Product Name**: Your game's name  
 - **File Description**: Brief game description
-- **Copyright**: Copyright text (e.g., "© 2024 Your Studio")
+- **Copyright**: Copyright text (e.g., "© 2026 Your Studio")
 
 ---
 
@@ -113,8 +114,8 @@ Windows graphics cards use S3TC/BPTC texture compression.
     Takes 30 seconds to 2 minutes. Progress bar shows status.
   </Step>
 
-  <Step title="Done!">
-    Your Windows game is ready!
+  <Step title="Done">
+    Your Windows game is ready to test.
   </Step>
 </Steps>
 
@@ -137,10 +138,10 @@ Windows graphics cards use S3TC/BPTC texture compression.
 
 ### Test on a Different Windows PC
 
-**Critical for catching issues!** Test on:
-- ✅ A friend's PC
-- ✅ A clean Windows install (virtual machine works)
-- ✅ Windows 10 AND Windows 11 (if possible)
+**This catches most distribution problems.** Test on:
+- A friend's PC
+- A clean Windows install (a virtual machine works)
+- Windows 10 and Windows 11, if you can
 
 **What to verify**:
 - Game launches without errors
@@ -158,27 +159,27 @@ Code signing removes the Windows Defender SmartScreen warning. **Do you need it?
 
 | Publishing To | Code Signing Recommended? |
 |---------------|--------------------------|
-| **Steam** | ❌ No - Steam handles it |
-| **itch.io** | ❌ No - Players expect unsigned indie games |
-| **Direct download** | ✅ Yes - Improves trust, prevents warnings |
+| **Steam** | No - games Steam installs do not show SmartScreen |
+| **itch.io** | Optional - players can click through the warning |
+| **Direct download** | Yes - improves trust and reduces warnings |
 
 ### How to Code Sign (Advanced)
 
 **Requirements**:
-- EV Code Signing Certificate (~$400/year from DigiCert, Sectigo, etc.)
-- `signtool.exe` (included with Windows SDK)
+- A code signing certificate from a certificate authority, or a cloud signing service. New certificates keep their private key on a hardware token or a cloud key vault, not in a file.
+- `signtool.exe` (included with the Windows SDK)
 
 **Process**:
 1. Export your game as `.exe`
-2. Sign the exe with `signtool`:
+2. Sign the exe with `signtool`, using your certificate provider's instructions. With a certificate in your Windows certificate store, it looks like this:
    ```powershell
-   signtool sign /f "YourCert.pfx" /p "password" /tr http://timestamp.digicert.com /td sha256 /fd sha256 MyGame.exe
+   signtool sign /a /tr http://timestamp.digicert.com /td sha256 /fd sha256 MyGame.exe
    ```
 3. Distribute the signed exe
 
 <Warning>
-  Code signing is **expensive** ($400/year minimum). Only worth it if you're doing **direct downloads** (not Steam/itch.io).
-  
+  Code signing costs money every year. It is only worth it for **direct downloads**, not for Steam or itch.io.
+
   For your first game release, **skip code signing** and use Steam or itch.io instead.
 </Warning>
 
@@ -197,13 +198,13 @@ Summer Engine can export Windows games in different formats:
 ### Executable + Data Pack
 - **Export as**: `MyGame.exe`
 - **Embed PCK**: Off
-- **Best for**: Faster loading times (minor difference)
+- **Best for**: very large games, or tools that patch the pack separately
 - **Players get**: `MyGame.exe` + `MyGame.pck` (must keep both files together)
 
-### ZIP Archive
-- **Export as**: `MyGame.zip`
-- **Best for**: Manual distribution
-- **Contains**: All game files in compressed archive
+### ZIP for upload
+- **Make it**: export the `.exe` (and `.pck`), then zip the folder yourself as `MyGame-Windows.zip`
+- **Best for**: itch.io and your own website
+- **Contains**: every file players need, in one download
 
 <Tip>
   **For most games**: Use single executable with Embed PCK enabled. It's the most user-friendly option.
@@ -215,26 +216,26 @@ Summer Engine can export Windows games in different formats:
 
 ### "VCRUNTIME140.dll not found"
 
-**Cause**: Missing Visual C++ Runtime on user's PC.
+**Cause**: The player's PC is missing the Microsoft Visual C++ Runtime.
 
 **Solution**:
-- Most Windows PCs already have this
-- For clean installs, users can download from [Microsoft](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist)
-- Summer Engine exports include these by default
+- Most Windows PCs already have it
+- On a clean install, the player installs the latest supported Visual C++ Redistributable from [Microsoft](https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist)
+- If it happens on many PCs, tell us on [Discord](https://discord.gg/summerengine)
 
 ### Graphics Not Working
 
 **Possible causes**:
 - Outdated GPU drivers
-- Missing DirectX 11 (Windows 7/8)
-- Integrated Intel GPU (may need settings adjustment)
+- A GPU without the graphics API your renderer needs: Forward+ and Mobile need Vulkan or Direct3D 12, Compatibility needs OpenGL 3.3
+- An older integrated GPU (try the Compatibility renderer or lower settings)
 
 **Solution**: Have users update GPU drivers from manufacturer website.
 
 ### Game Runs Slowly on Windows
 
 **Check**:
-- Are you running in Debug mode? Export as **Release** for final version
+- Did you export a debug build? Turn off **Export With Debug** in the export dialog for the final version
 - Is the user's PC below minimum specs?
 - Profile performance in editor first (Debug → Profiler)
 
@@ -247,12 +248,10 @@ Summer Engine can export Windows games in different formats:
 - Medium 3D: 220-450 MB
 - Large 3D: 600 MB - 2 GB
 
-**Summer Engine runtime on Windows**: ~70MB
-
 **To reduce size**:
 1. **Compress audio**: Use Ogg Vorbis instead of WAV
-2. **Optimize textures**: Ensure S3TC BPTC is enabled (you did this!)
-3. **Remove debug symbols**: Export as Release, not Debug
+2. **Optimize textures**: Ensure S3TC BPTC is enabled
+3. **Export a release build**: turn off **Export With Debug**
 4. **Strip unused resources**: Clean unused assets from project before export
 
 ---

@@ -1,7 +1,7 @@
 ---
-title: "Approvals: when your agent asks you first"
+title: "Approve what your AI agent asks: publishing and approval links"
 sidebarTitle: "Approvals"
-description: "When a switch in Agent permissions is off, or a change always asks, your agent gives you an approval link and a card shows in Studio. Nothing changes until you approve. For now Summer Games also asks a game's owner to approve an agent's publish."
+description: "How Summer approval links work: when your AI agent must ask first, how to approve publishing a game on Summer Games, and what each approval state means."
 icon: "badge-check"
 "og:image": "https://docs.summerengine.com/images/og/publishing-owner-approval.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/publishing-owner-approval.jpg"
@@ -33,7 +33,7 @@ A request for your own yes expires after 24 hours. A request for a game owner's 
 
 ## Approve publishing
 
-Summer Games may still ask the game's owner to approve a publish; then the answer is `needs_approval` with the owner's approval link. Summer Games records exactly that version and waits for the owner.
+For now every agent publish asks the game's owner: the answer is `needs_approval` with the owner's approval link. Summer Games records exactly that version and waits for the owner.
 
 <img className="block dark:hidden" src="/images/guide-art/publishing/approval-light.svg" alt="The agent submits. The version waits for you exactly as submitted. You click Approve publishing, Summer reviews it, then it goes live. Not now cancels it and publishes nothing. If the page changes after the agent asked, the request is stale and the agent submits again." />
 <img className="hidden dark:block" src="/images/guide-art/publishing/approval-dark.svg" alt="The agent submits. The version waits for you exactly as submitted. You click Approve publishing, Summer reviews it, then it goes live. Not now cancels it and publishes nothing. If the page changes after the agent asked, the request is stale and the agent submits again." />
@@ -54,7 +54,7 @@ When you approve:
 
 1. The price is set as you. A price needs payouts set up; without them nothing is submitted, and the page tells you.
 2. The page goes to Summer for review.
-3. When the review passes, the game goes live. There is no second click.
+3. When the review passes, the store page goes live. There is no second click. For a store bundle, your agent then releases the build you approved with `store.release`.
 
 ## When you publish yourself
 
@@ -79,10 +79,10 @@ Summer checks every agent call. A change Summer Games does not take from an agen
 
 ## For agents
 
-- After `summer_store_publish`, read `status`. `done`: the publish went through, and Summer's review runs next. `needs_approval`: give the owner `approval.url`, then call `summer_jobs_wait` with `job.id` until it is `done`, `cancelled` or `stale`. Do not say the game is live.
+- After `summer_store_publish`, read `status`. `needs_approval` (for now every agent publish): give the owner `approval.url`, then call `summer_jobs_wait` with `job.id` until it is `done`, `cancelled` or `stale`. `done`: Summer's review runs next. Do not say the game is live.
 - `summer_store_status` shows the request, the review and its feedback.
 - If the job ends `stale`, read the store page again with `summer_store_get_listing` and publish again with a new `idempotencyKey`.
-- After the review passes, the page goes live. If the build that passed review is not yet what players get, `store.release` (with an `idempotencyKey`) releases exactly that build.
+- After the review passes, the page goes live. For a store bundle, `store.release` (with an `idempotencyKey`) releases exactly the build the owner approved. Web builds and downloads need no release.
 
 ## Ask your agent
 

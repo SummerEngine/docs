@@ -1,7 +1,7 @@
 ---
-title: "Make store art with your agent"
+title: "Make Summer Games store art with your AI agent"
 sidebarTitle: "Make store art"
-description: "Your agent checks My assets, makes missing art with Summer's image generation through the Summer Engine MCP, crops it to each store slot itself, uploads it, and puts it in the slot."
+description: "Your AI agent checks My assets, makes missing store art with the Summer MCP, crops it to each Summer Games slot, uploads it and puts it in the slot."
 icon: "wand-sparkles"
 "og:image": "https://docs.summerengine.com/images/og/publishing-generate-store-art.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/publishing-generate-store-art.jpg"
@@ -11,8 +11,8 @@ Your agent can fill every art slot on your store page. It uses your own art firs
 
 The version of Summer made for Claude's connector directory cannot generate art. There, your agent uses your own art and My assets. The full server, `https://mcp.summerengine.com/mcp`, does everything on this page.
 
-<img className="block dark:hidden" src="/images/guide-art/publishing/crop-light.svg" alt="Four steps: generate a picture with summer_generate_image, crop it to the slot's shape around the focal point, upload it with summer_upload_image, and put it in the slot with summer_store_set_art." />
-<img className="hidden dark:block" src="/images/guide-art/publishing/crop-dark.svg" alt="Four steps: generate a picture with summer_generate_image, crop it to the slot's shape around the focal point, upload it with summer_upload_image, and put it in the slot with summer_store_set_art." />
+<img className="block dark:hidden" src="/images/guide-art/publishing/crop-light.svg" alt="Four steps: generate a picture with assets.generate_image, crop it to the slot's shape around the focal point, upload it with assets.upload_begin and assets.upload_complete, and put it in the slot with store.set_art." />
+<img className="hidden dark:block" src="/images/guide-art/publishing/crop-dark.svg" alt="Four steps: generate a picture with assets.generate_image, crop it to the slot's shape around the focal point, upload it with assets.upload_begin and assets.upload_complete, and put it in the slot with store.set_art." />
 
 ## The order
 
@@ -56,8 +56,8 @@ Ask the generator for the slot's own shape. Do not make one landscape picture an
 
 Key art needs at least 1920×1080 and the tall cover at least 1080×1920. Many models return 1024×1024 by default, which is too small.
 
-- Ask for the slot's shape: pass `aspectRatio` (`"16:9"`, `"9:16"`, `"1:1"`) to `summer_assets_generate_image`, and `width` and `height` where the model takes them.
-- Check what came back: the result gives the real width and height and the model that made the picture. If the size is below the slot's minimum, do not stretch it.
+- Ask for the slot's shape and size: pass `aspectRatio` (`"16:9"`, `"9:16"`, `"1:1"`) to `summer_assets_generate_image`, with `width` and `height` set to the slot's minimum (for example `1920` and `1080`). Leave `model` out: Summer then picks a model that reaches that size.
+- Check what came back: the result gives the real width and height. If the size is below the slot's minimum, do not stretch it.
 - Or generate a large square and crop it. A 2048×2048 picture (for example from `seedream-5-pro`) crops to 2048×1152 for key art and 1152×2048 for the tall cover, both above the minimum.
 
 **Screenshots are never generated.** They are real gameplay:
@@ -90,12 +90,12 @@ def crop_to_slot(path, out, ratio_w, ratio_h, min_w, min_h, focus_x=0.5, focus_y
         cw, ch = w, round(w / target)
     left = min(max(round(focus_x * w - cw / 2), 0), w - cw)
     top = min(max(round(focus_y * h - ch / 2), 0), h - ch)
+    if cw < min_w or ch < min_h:      # never stretch: make a larger picture
+        raise ValueError(f"crop {cw}x{ch} is below the slot minimum {min_w}x{min_h}")
     img = img.crop((left, top, left + cw, top + ch))
-    if cw < min_w or ch < min_h:
-        img = img.resize((max(min_w, cw), max(min_h, ch)), Image.LANCZOS)
     img.save(out, quality=92)
 
-crop_to_slot("key-art.png", "tall-cover.jpg", 9, 16, 1080, 1920, focus_x=0.45)
+crop_to_slot("square-2048.png", "tall-cover.jpg", 9, 16, 1080, 1920, focus_x=0.45)
 ```
 
 Each slot's shape must match within 2%.

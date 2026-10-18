@@ -1,6 +1,7 @@
 ---
-title: "Publishing to Steam"
-description: "Complete guide to releasing your game on Steam with Summer Engine"
+title: "Publish a Summer Engine game on Steam"
+sidebarTitle: "Publishing to Steam"
+description: "Release your Summer Engine game on Steam: Steamworks setup, depots and SteamPipe uploads, launch options, beta branches, Steamworks features and revenue split."
 icon: "steam"
 "og:image": "https://docs.summerengine.com/images/og/publishing-steam.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/publishing-steam.jpg"
@@ -8,12 +9,12 @@ icon: "steam"
 
 ## Overview
 
-Steam is the **largest PC gaming platform** with 120+ million active users. This guide walks you through uploading your Summer Engine game to Steam.
+Steam is the **largest PC game store**. This guide walks you through uploading your Summer Engine game to Steam.
 
 **Prerequisites**:
 - Exported game builds for your target platforms ([macOS](/publishing/macos-export), [Windows](/publishing/windows-export))
 - Steamworks developer account
-- $100 Steam Direct fee (one-time per game)
+- The Steam Direct fee ($100 per game, returned once the game earns $1,000)
 
 ---
 
@@ -31,7 +32,7 @@ Steam is the **largest PC gaming platform** with 120+ million active users. This
   </Step>
 
   <Step title="Pay Steam Direct Fee">
-    $100 per game (one-time, recouped after $1,000 in sales)
+    $100 per game, paid once
   </Step>
 
   <Step title="Create App">
@@ -42,7 +43,7 @@ Steam is the **largest PC gaming platform** with 120+ million active users. This
 </Steps>
 
 <Info>
-  The Steam Direct fee is **refundable** after your game makes $1,000 in sales. It's Valve's anti-spam measure.
+  Valve returns the Steam Direct fee once your game earns $1,000 in adjusted gross revenue. The fee keeps spam off the store.
 </Info>
 
 ### 2. Configure Your Steam Store Page
@@ -155,17 +156,17 @@ Each depot is uploaded separately but players download the right one automatical
 
 ## Steam Features Integration (Optional)
 
-Summer Engine supports Steamworks integration for advanced features:
+Summer Engine has no built-in Steamworks support. You can add it with a community plugin.
 
 ### GodotSteam Plugin
 
 [GodotSteam](https://godotsteam.com/) is a community plugin that adds:
-- ✅ Achievements
-- ✅ Leaderboards  
-- ✅ Steam Cloud saves
-- ✅ Steam Input (controller support)
-- ✅ Steam Overlay
-- ✅ Multiplayer matchmaking
+- Achievements
+- Leaderboards
+- Steam Cloud saves
+- Steam Input (controller support)
+- Steam Overlay
+- Lobbies and matchmaking
 
 **How to add**:
 1. Download GodotSteam from [godotsteam.com](https://godotsteam.com/)
@@ -187,9 +188,8 @@ Summer Engine supports Steamworks integration for advanced features:
 
 ### Windows Build Settings
 
-**Binary Format → Embed PCK**: ✅ **On**
-- Creates single `.exe` file (easier for Steam)
-- Slightly slower loading than separate `.pck` (negligible for most games)
+**Binary Format → Embed PCK**: **On**
+- Creates a single `.exe` file (simpler depots)
 
 **Debug → Export Console Wrapper**:
 - **Debug Only** - For testing (console window shows debug output)
@@ -199,7 +199,7 @@ Summer Engine supports Steamworks integration for advanced features:
 
 ### macOS Build Settings
 
-**Binary Format → Architecture**: `universal` ✅
+**Binary Format → Architecture**: `universal` (recommended)
 - Supports both Intel and Apple Silicon Macs
 - Slightly larger file size but maximum compatibility
 
@@ -215,10 +215,10 @@ Summer Engine supports Steamworks integration for advanced features:
 - Steam Deck uses this architecture
 - **Export → Texture Format**: Use S3TC BPTC (same as Windows)
 
-**Steam Deck Optimization**:
-- Test UI at 1280x800 resolution (Steam Deck native)
-- Support controllers (Steam Input handles this)
-- Optimize for ~3-4 hours battery life
+**Steam Deck checks**:
+- Test your UI at 1280x800 (the Steam Deck screen)
+- Support controllers (Steam Input maps the Deck's controls)
+- Keep text large enough to read on a 7-inch screen
 
 ---
 
@@ -388,16 +388,15 @@ Players love games that get updates! Here's how:
 ## Steam Distribution Fees
 
 **Revenue Split**:
-- Steam takes **30%** of all sales
-- You receive **70%** of revenue
+- Valve takes **30%** of sales, and less on revenue above $10 million (25%) and $50 million (20%)
+- You receive the rest, after refunds, chargebacks and taxes
 
 **Example**:
 - Game price: $20
-- Player buys game: $20 to Steam
-- You receive: $14 (after 30% cut)
-- After recouping $100 Steam Direct fee: All profit is yours
+- You receive about $14 per sale, before taxes and refunds
+- Valve returns the $100 Steam Direct fee once the game earns $1,000
 
-**Payment Schedule**: Monthly via direct deposit or wire transfer
+**Payment Schedule**: Monthly, by bank transfer
 
 ---
 
@@ -405,11 +404,11 @@ Players love games that get updates! Here's how:
 
 <CardGroup cols={2}>
   <Card title="Publish to itch.io Too" icon="gamepad" href="/publishing/itch-io">
-    Cross-platform indie game hosting (no revenue share!)
+    Indie game hosting where you choose the revenue share
   </Card>
 
-  <Card title="Add More Platforms" icon="globe" href="/publishing/overview">
-    Export for Linux, mobile, or web
+  <Card title="Publish on Summer Games" icon="globe" href="/publishing/summer-games">
+    Players on iPhone, Android, Mac, Windows and the web
   </Card>
 
   <Card title="Troubleshooting" icon="wrench" href="/publishing/troubleshooting">
@@ -422,7 +421,7 @@ Players love games that get updates! Here's how:
 </CardGroup>
 
 <Tip>
-  **Pro tip**: Release on both Steam **and** itch.io. Different audiences, both valuable. itch.io players are supportive of indie devs and give great feedback!
+  **Tip**: Release on Steam, itch.io and Summer Games. Each reaches different players.
 </Tip>
 
 **Need help with Steam?** Ask in [Discord](https://discord.gg/summerengine) first for the fastest reply. For concrete help, email [support@summerengine.com](mailto:support@summerengine.com) or [founders@summerengine.com](mailto:founders@summerengine.com).

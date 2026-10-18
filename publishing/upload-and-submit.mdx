@@ -1,7 +1,7 @@
 ---
 title: "Upload your build and publish"
 sidebarTitle: "Upload and publish"
-description: "Upload a store bundle, web build or download (store.upload_file from your disk, or store.upload_begin, upload_sign_parts and upload_complete), wait for Summer's checks with store.status, make a preview link, and publish with store.publish."
+description: "Upload a store bundle, web build or download to Summer Games with the Summer MCP, wait for the checks, preview the page and publish it with store.publish."
 icon: "upload"
 "og:image": "https://docs.summerengine.com/images/og/publishing-upload-and-submit.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/publishing-upload-and-submit.jpg"
@@ -87,18 +87,21 @@ A private link to the saved page on summer.games. It is hidden from search, and 
 | `note` | A short note: what changed and why. |
 | `idempotencyKey` | Required. A new key for each new publish; the same key only to retry it. |
 
-It checks the publish checklist first. Then:
+It checks the publish checklist first. Then it asks the owner: for now every agent publish answers `needs_approval` with the owner's approval link, even when **Publish** is on in [Agent permissions](/mcp/permissions).
 
+- `needs_approval`: give the owner `approval.url`, then wait with `summer_jobs_wait` and `job.id`. Nothing is published until they approve.
 - `done`: it went to Summer's review.
-- `needs_approval`: give the person `approval.url`, then wait with `summer_jobs_wait` and `job.id`. Nothing is published until they approve. This happens when **Publish** is off in [Agent permissions](/mcp/permissions), and for now on every agent publish: Summer Games still asks the game's owner, and the answer is `needs_approval` with the owner's approval link.
 
 To withdraw a request that still waits: `store.cancel_publish` with `gameId` and the `approvalId`.
 
 ## What happens next
 
-1. If an approval link came back, the owner opens it and approves. See [Approvals](/publishing/owner-approval).
-2. Summer staff review the page.
-3. When the review passes, the game goes live. No second click.
+1. The owner opens the approval link and approves. See [Approvals](/publishing/owner-approval).
+2. Summer staff review the page. `summer_store_status` shows the review and its feedback.
+3. When the review passes, the store page goes live. The owner clicks nothing more.
+4. A store bundle then goes to players with [`store.release`](/mcp/operations/store#release) (`gameId` and a new `idempotencyKey`). It releases only the build the owner approved, and answers a job: wait with `summer_jobs_wait`. Web builds and downloads need no release.
+
+If the review asks for changes, fix every point in its feedback, then publish again with a new `idempotencyKey`.
 
 ## Updates
 
