@@ -1,44 +1,56 @@
 ---
-title: "Privacy Mode and Zero Data Retention in Summer Engine"
-sidebarTitle: "Privacy Mode"
-description: "Summer Engine does not offer a Privacy Mode setting or zero data retention with AI model providers today. What happens to your prompts and code instead."
+title: "Privacy Mode"
+description: "Zero data retention with our model providers, available on all paid plans"
 icon: "shield-check"
 "og:image": "https://docs.summerengine.com/images/og/security-privacy-mode.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/security-privacy-mode.jpg"
 ---
 
-## Current status
+## What Privacy Mode Does
 
-Privacy Mode is not available in Summer Engine today. There is no Privacy Mode
-setting in your account, on any plan, and Summer does not turn on zero data
-retention with its AI model providers.
+**When enabled, we guarantee that code data is never stored by our model providers or used for training.** Privacy Mode is included on all paid plans.
 
-If an older page or answer says Privacy Mode is "included on all paid plans" or
-can be turned on in account settings, that is out of date.
+When Privacy Mode is on:
 
-## What happens to your prompts and code
+- **Zero data retention** with our model providers for prompts and code snippets you send during chats.
+- **No training-data use.** We do not use your prompts, generated outputs, or code snippets to train our models, and we do not permit third parties to use them for training.
+- **Same Summer Engine.** Privacy Mode does not change which models you can pick or how the engine works. It changes how your data is handled.
 
-When you chat with Summer, the prompt you write and any code or project context
-attached to it go to the provider that runs the model you picked, or the model
-[Auto](/auto-mode/auto) picked for you. The provider processes it to generate the
-reply. Each provider's own retention terms apply.
+<Info>
+Privacy Mode is a paid-plan feature. The Free plan does not include Privacy Mode.
+</Info>
 
-The [Privacy Policy](https://www.summerengine.com/privacy#prompts-and-code) is the
-legal text for how Summer stores and uses prompts and code. The
-[subprocessors list](https://www.summerengine.com/legal/subprocessors) names every
-provider that can receive this data.
+## What Happens When Privacy Mode Is Off
 
-For what leaves your computer and where it goes, see the
-[Security Overview](/security/overview).
+Privacy Mode is **off by default** for all accounts.
 
-## If you work on sensitive code
+When Privacy Mode is not enabled, we may use and store prompts, editor actions, code snippets, and other code data and actions to improve our AI features and train our models. Free accounts do not have access to Privacy Mode and operate in this mode by default.
 
-- Keep secrets out of your project files and out of chat. API keys, passwords and
-  tokens do not belong in prompts.
-- Use Git, so you can review every change before you keep it. See
-  [Connect your project to GitHub](/guides/github-from-changes-dock).
-- Content you send as feedback or in a bug report may be read by the Summer team
-  to fix the problem.
+For the full legal text, see our [Privacy Policy](https://summerengine.com/privacy), specifically the section "How we use your prompts and code".
+
+## How to Enable Privacy Mode
+
+Privacy Mode is available in your account settings on any paid plan. Once enabled, it applies to all chats and operations sent from your account from that point forward.
+
+## Who Sees Your Code
+
+Even with Privacy Mode enabled, prompts and code snippets you send are transmitted to our model providers in order to generate responses. Privacy Mode controls **retention and training** by those providers and by us — it does not prevent the content from being processed in real time to answer you.
+
+For a full list of subprocessors and infrastructure that may see code data, see our [Security Overview](/security/overview).
+
+## Frequently Asked Questions
+
+**Is Privacy Mode on by default?**
+No. Privacy Mode is off by default for all accounts. Pro users can enable it in account settings.
+
+**Is Privacy Mode available on the Free plan?**
+No. Privacy Mode is included on all paid plans. The Free plan does not include Privacy Mode.
+
+**Does Privacy Mode change which AI models I can use?**
+No. Privacy Mode changes how your data is handled, not which models are available.
+
+**What about content I share as Feedback or in a bug report?**
+Content you explicitly share with us as Feedback or in a bug report may be reviewed and used to improve Summer Engine, regardless of Privacy Mode. See our [Privacy Policy](https://summerengine.com/privacy) for details.
 
 ## Questions?
 
