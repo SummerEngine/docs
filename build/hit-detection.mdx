@@ -1,7 +1,7 @@
 ---
-title: "Make hits fair"
+title: "Make hits fair with lag-compensated hit detection"
 sidebarTitle: "Hit detection"
-description: "Shots, swings and abilities are checked against exactly what the attacking player saw on their screen, so a hit that looked like a hit counts."
+description: "Summer Engine checks shots, swings and abilities against what the attacking player saw on screen, so a hit that looked like a hit counts and walls still block."
 icon: "crosshair"
 "og:image": "https://docs.summerengine.com/images/og/build-hit-detection.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/build-hit-detection.jpg"
@@ -131,6 +131,10 @@ can add delay, jitter and packet loss to every window. Shoot at a moving
 player with a delay of around 100 ms: the hit should count when your
 crosshair was on them. See
 [Make a multiplayer game on Summer Games](/build/multiplayer#testing-it-on-your-machine).
+
+## Technical reference
+
+Engine classes, in the editor's class reference (**Help > Search Help**): `SummerNetworkHitHistory3D`, `SummerNetworkHistoricalView3D`, `SummerNetworkHitbox3D`, `SummerNetworkHitWall3D`.
 
 ---
 

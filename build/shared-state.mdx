@@ -1,7 +1,7 @@
 ---
-title: "Share the game world"
+title: "Share game state between players"
 sidebarTitle: "Shared game state"
-description: "Scores, doors, pickups, private hands of cards and one-off effects: the server owns every fact, players ask it for changes, and everyone sees the same game."
+description: "In a Summer Engine multiplayer game the server owns scores, doors, pickups and private hands of cards. Players send requests, and everyone sees the same game."
 icon: "share-2"
 "og:image": "https://docs.summerengine.com/images/og/build-shared-state.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/build-shared-state.jpg"
@@ -158,6 +158,10 @@ in their owner's window, and that two players trying the same thing at once
 get one clear answer each. Then run it again with added delay and packet
 loss. See
 [Make a multiplayer game on Summer Games](/build/multiplayer#testing-it-on-your-machine).
+
+## Technical reference
+
+Engine classes, in the editor's class reference (**Help > Search Help**): `SummerNetworkStateGroup`, `SummerNetworkField`, `SummerNetworkCommandRequest`, `SummerNetworkOccurrenceStream`.
 
 ---
 
