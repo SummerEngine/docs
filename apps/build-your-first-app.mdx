@@ -1,19 +1,13 @@
 ---
-title: "Build your first Summer App"
+title: "Build your first Summer App with an AI agent"
 sidebarTitle: "Build your first app"
-description: "Ask your agent for a team tool and watch it build, publish, check and open a Summer App in your Studio tab, then change it by asking again."
+description: "Walkthrough: ask your agent for a team tool, and it builds, publishes, checks and opens a Summer App in your Summer Studio tab. Then change it by asking again."
 icon: "hammer"
 ---
 
-<Warning>
-**Draft.** Summer Apps is in a closed test. This page goes live after the end-to-end test on production.
-</Warning>
-
-{/* TODO before publishing: run this walkthrough end to end on production with Claude Code and the summer-engine MCP; update each step to what happens (the Studio notice, timings). */}
-
 ## First: does Summer already do it?
 
-An app is something your team has to keep. Your agent first checks whether Summer already does the job: Studio features (the asset library with collections and groups, Pick one and sound choices, Grow dashboards, Team) and the Summer MCP tools. If Summer does it, the agent uses that and tells you where it is. It builds an app only when the need is real and missing, or as a Scratch throwaway that it calls a throwaway and archives with `summer_app_update` when you are done with it. When something is missing, it reports it to Summer with `summer_app_report_gap`.
+An app is something your team has to keep. Your agent first checks whether Summer already does the job: Studio features (the asset library with collections and groups, Pick one and sound choices, Grow dashboards, Team) and the Summer MCP tools. If Summer does it, the agent uses that and tells you where it is. It builds an app only when the need is real and missing, or as a Scratch throwaway that it calls a throwaway and archives with `apps.update` when you are done with it. When something is missing, it reports it to Summer with `apps.report_gap`.
 
 | You ask | Your agent |
 |---|---|
@@ -26,7 +20,7 @@ An app is something your team has to keep. Your agent first checks whether Summe
 You need:
 
 - A Summer account, signed in to Summer Studio in your browser or in Summer Engine.
-- An agent with the Summer Engine MCP: the hosted MCP at `https://mcp.summerengine.com/mcp` (nothing to install), or the `summer-engine` npm MCP if the agent also edits your project. See [Connect your agent](/apps/build-with-your-agent#connect-your-agent).
+- An agent with the Summer MCP: the hosted MCP at `https://mcp.summerengine.com/mcp` (nothing to install), or the `summer-engine` npm package (4.x) if the agent also edits your project. See [Connect your agent](/apps/build-with-your-agent#connect-your-agent).
 - Or no agent of your own: describe the tool to Summer in Studio chat. **Build a new app** in **Studio > Apps** opens it.
 
 ## 1. Ask for the tool
@@ -36,8 +30,8 @@ Open Summer Studio, then ask your agent (or paste the same text into Studio chat
 <Prompt description="**Loot table.** A shared table of your items with DPS, kept in Summer.">
 Build us a Summer App called "Loot table": our items with damage, speed and DPS,
 kept in the app's shared data, and a DPS chart that flags items over 60. Seed it with
-our items using summer_app_data. Read summer_app_guide first, follow the summer-apps
-and summer-apps-design skills, and check the app with summer_app_screenshot (also at
+our items using apps.write_data. Read apps.guide first, follow the summer-apps
+and summer-apps-design skills, and check the app with apps.screenshot (also at
 width 390 and in dark theme) before you tell me it is done.
 </Prompt>
 
@@ -45,37 +39,37 @@ width 390 and in dark theme) before you tell me it is done.
 
 <Steps>
   <Step title="Reads the guide">
-    `summer_app_guide` returns the build loop, the SDK, the manifest, the UI kit, the design rules and worked examples.
+    `apps.guide` returns the build loop, the SDK, the manifest, the UI kit, the design rules and worked examples.
   </Step>
   <Step title="Creates the app">
-    `summer_app_create` makes a Scratch app in your workspace. Your open Studio tab moves to it with the notice "Your agent built Loot table".
+    `apps.create` makes a Scratch app in your workspace. Your open Studio tab moves to it with the notice "Your agent built Loot table".
   </Step>
   <Step title="Writes the files">
     An `index.html`, its JavaScript, and a manifest that declares what the app may do. Here: shared data (`data`), with an `items` collection.
   </Step>
   <Step title="Publishes">
-    `summer_app_publish` uploads the files as version 1. Your tab shows the files arriving, then starts the app.
+    `apps.publish` uploads the files as version 1. Your tab shows the files arriving, then starts the app.
   </Step>
   <Step title="Seeds the data">
-    `summer_app_data` writes your items into the app's `items` collection, as the team's starter data.
+    `apps.write_data` writes your items into the app's `items` collection, as the team's starter data.
   </Step>
   <Step title="Looks at it">
-    `summer_app_screenshot` renders the app with your data and reports errors. The agent fixes them and publishes again until the app is clean in light, dark and at phone width.
+    `apps.screenshot` renders the app with your data and reports errors. The agent fixes them and publishes again until the app is clean in light, dark and at phone width.
   </Step>
   <Step title="Listens">
-    `summer_app_events` waits for what you do in the app and for errors, so the agent can react.
+    `apps.events` waits for what you do in the app and for errors, so the agent can react.
   </Step>
 </Steps>
 
 ## 3. Use it with your team
 
 - Everyone in the workspace can open it from **Studio > Apps**. Edits show up for everyone, live.
-- Choose **Keep** in the app's menu, so it does not expire with the Scratch apps. Your agent can do it too: `summer_app_update` with `status: "kept"`.
+- Choose **Keep** in the app's menu, so it does not expire with the Scratch apps. Your agent can do it too: `apps.update` with `status: "kept"`.
 - Choose **Pin to sidebar** to keep it one click away.
 
 ## 4. Change it
 
-Ask again, or choose **Edit with agent** on the app page to change it in Studio chat. Your agent reads the current files with `summer_app_get`, changes them and publishes version 2. The open app reloads on the new version. **Versions** on the app page lists every version; **Make live** goes back to one.
+Ask again, or choose **Edit with agent** on the app page to change it in Studio chat. Your agent reads the current files with `apps.get`, changes them and publishes version 2. The open app reloads on the new version. **Versions** on the app page lists every version; **Make live** goes back to one.
 
 <Prompt description="**Change an app.** Your agent edits the app and publishes a new version.">
 In our Loot table app, add a column for price and sort by DPS by default.
@@ -95,8 +89,9 @@ More in [Agents and apps](/apps/agents).
 
 | You see | Do |
 |---|---|
-| `summer_search` finds no `apps` operations, or a call answers `forbidden` | Summer Apps is not open for your account yet. |
+| `summer_search` finds no `apps` operations | Your `summer-engine` package is older than 4.0. Run `npx -y summer-engine@latest setup <agent> --yes` again, or use the hosted MCP. |
+| `forbidden` | A team owner or admin turned off Summer Apps for the team or this app, or the manifest lacks a permission. |
 | `not_found` | The app is in a workspace you are not in. |
 | A publish error names a file or a key | Ask the agent to fix it and publish again. |
-| `permission_missing` | The manifest lacks a permission. Ask the agent to add it and publish again. |
-| The app shows an error | The agent reads it with `summer_app_events` (kind `error`) or `summer_app_screenshot`. Ask it to fix the app. |
+| `permission_missing` in the app, or in `apps.screenshot` | The manifest lacks a permission. Ask the agent to add it and publish again. |
+| The app shows an error | The agent reads it with `apps.events` (kind `error`) or `apps.screenshot`. Ask it to fix the app. |

@@ -1,29 +1,61 @@
 ---
-title: "Summer Apps security"
+title: "Summer Apps security: sandbox, permissions and spending limits"
 sidebarTitle: "Security"
-description: "What a Summer App can and cannot do: a separate sandboxed site, no cookies or network, declared permissions, calls that run as the person, engine limits, spending limits and switches."
+description: "How Summer Studio keeps agent-built Summer Apps safe: a separate sandboxed site, no cookies or network, declared permissions, team-only access and spending limits."
 icon: "shield"
 ---
 
-<Warning>
-**Draft.** Summer Apps is in a closed test. This page goes live after the end-to-end test on production.
-</Warning>
+Agents write app code, so Summer does not trust it. Safety comes from how apps run, not from pop-ups. Every control below is enforced by Summer's servers or the browser, not by the app's own code.
 
-{/* TODO before publishing: confirm each control on production (frame headers, cookie isolation, non-member access, spend cap). */}
-
-Agents write app code, so Summer does not trust it. Safety comes from how apps run, not from pop-ups.
+## At a glance
 
 | Risk | What Summer does |
 |---|---|
-| An app tries to act as you on summerengine.com | App code is served only from `apps.summerengine.app`, a different site, inside a sandbox (`allow-scripts allow-forms allow-popups allow-modals allow-downloads`, never `allow-same-origin`) with no cookies, no storage and no access to Summer's pages. It can only ask the Studio page that hosts it, over one private channel. |
-| An app sends your data somewhere | Apps have no network access. A team admin can allow specific domains for their team's apps. |
+| An app tries to act as you on summerengine.com | App code is served only from `apps.summerengine.app`, a different site from Summer Studio, inside a sandbox with no cookies, no storage and no access to Summer's pages. It can only ask the Studio page that hosts it, over one private channel. |
+| An app sends your data somewhere | Apps have no network access. A team owner or admin can allow specific HTTPS domains for the team's apps (up to 20). |
 | An app does more than it says | Every call is checked against the permissions in its [manifest](/apps/manifest), twice: in Studio and on Summer's servers. |
-| An app reads another team's data | Every call runs as the person using the app, with their team membership. People outside the team get "not found". |
-| An app damages your project (engine access comes with the next Summer Engine update) | Only an allowlist of editor operations, only declared files, no scripts or shell, no deletes. Enforced by Summer and inside Summer Engine. |
-| An app spends your credits | Paid calls are charged to the person using the app and shown in the app's cost meter. Members have a daily spending limit per app that owners and admins can change. |
-| A bad app is shared in a team | Apps are shared only inside a team. Owners and admins can turn off one app or all apps for the team. |
+| An app reads another team's data | Every call runs as the person using the app, with their team membership. People outside the team get `not_found`. |
+| An app damages your project (engine access comes with the next Summer Engine update) | Only an allowlist of editor operations, only declared files, no scripts or shell, no deletes. Enforced by Summer and again inside Summer Engine. See [Engine and docks](/apps/engine-and-docks). |
+| An app spends your credits | Paid calls are charged to the person using the app and shown on the app page. Members have a daily spending limit per app; owners and admins have none and can change it. |
+| A bad app is shared in a team | Apps are shared only inside a team. Owners and admins can turn off one app or every app for the team. |
 | Someone frames an app elsewhere | App pages can only be shown inside Summer Studio. |
-| An agent's look at an app changes something | `summer_app_screenshot` renders the app read-only: writes and paid calls are refused, events and notices are not delivered. |
-| An app's files are changed | Every published version is immutable, and every file is checked against its recorded hash when it is served. |
+| An agent's look at an app changes something | `apps.screenshot` renders the app read-only: writes and paid calls are refused, events and notices are not delivered. |
+| An app's files are changed | Every published version is immutable, and every file is checked against its recorded SHA-256 hash when it is served. |
+| An agent presses a dangerous button | Buttons an app marks `critical` (delete, publish, pay, send) are pressed only by a person, never by an agent through `apps.use_page`. |
 
-Buttons inside an app that delete, publish, pay or send are pressed only by a person, never by an agent through `summer_app_page`.
+## The sandbox
+
+- **A separate site.** App files come only from `apps.summerengine.app`. Summer refuses to serve apps from a host that shares cookies with Summer Studio, so an app can never read your Summer session.
+- **A sandboxed frame.** Studio loads the app in a frame with `sandbox="allow-scripts allow-forms allow-popups allow-modals allow-downloads"`, never `allow-same-origin`. Every app response carries the same sandbox in its Content-Security-Policy, so the page has no cookies or storage even when someone opens its URL directly.
+- **A short-lived grant.** The frame URL holds a signed grant for one app version and one person. It expires after 10 minutes, and Studio renews it while the app is open. A URL without a valid grant gets nothing.
+- **A strict Content-Security-Policy.** Scripts, styles and fonts load only from the app host. Images and media load only from the app host and Summer's asset storage. `connect-src` is `'none'` unless the team allows domains. Forms cannot post anywhere, and `frame-ancestors` names only Summer Studio.
+- **No device access.** Camera, microphone, location, payments, USB, serial, HID and Bluetooth are turned off for every app. Responses send no referrer.
+
+## What an app can reach
+
+An app reaches Summer only through the SDK (`window.summer`), and only for what its manifest declares. The list of permissions and the calls each one opens is in the [manifest](/apps/manifest#permissions) and the [SDK reference](/apps/sdk).
+
+- People see an app's permissions on the app page under **This app can**.
+- A call the manifest does not allow fails with `permission_missing`. Summer checks this in the Studio page and again on the server.
+- A publish whose code calls something the manifest lacks goes through with `checks`, so the agent fixes the manifest before anyone uses the app.
+- `team.members()` never returns email addresses.
+- Calls are rate limited per person and app: 600 a minute, and 60 paid calls a minute.
+
+## Money
+
+- Paid calls (generations and `ai.complete`) spend the credits of the person using the app, never the app maker's.
+- Members have a daily spending limit per app. A call over it fails with `spend_cap_reached`. Owners and admins have no limit and can change the members' limit.
+- `summer.app.viewer()` returns what the person spent in the app today and their limit, so an app can show it.
+
+## Agents
+
+- Agents use the same rules as people: every `apps.*` operation runs as the signed-in person, with their team membership.
+- `apps.delete` asks the person to confirm, and `apps.rollback` and `apps.update_starter` ask the app's owner. Nothing changes until they approve.
+- Your agent permissions in Summer Studio decide which other operations an agent may run without asking. See [Agent permissions](/mcp/permissions).
+
+## Switches
+
+- Owners and admins can turn off one app, or Summer Apps for the whole team. A turned-off app answers `app_disabled` (agents see `forbidden`) and its files are no longer served.
+- Summer can turn Summer Apps off for everyone at once in an emergency.
+
+Found a security problem in Summer Apps? Tell us on [Discord](https://discord.gg/summerengine) or at support@summerengine.com. For something sensitive, write to founders@summerengine.com.

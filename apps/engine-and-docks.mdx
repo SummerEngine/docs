@@ -1,15 +1,15 @@
 ---
-title: "Summer Apps, Summer Engine and docks"
+title: "Summer Apps in Summer Engine: project access, docks and plugins"
 sidebarTitle: "Engine and docks"
-description: "How a Summer App reads and changes your open project in Summer Engine, which operations it may use, and how to dock an app next to your scene."
+description: "How a Summer App reads and changes your open Summer Engine project, which editor operations it may use, and how to dock it or pair it with an editor plugin."
 icon: "plug"
 ---
 
 <Note>
-**Coming with the next Summer Engine update.** Nothing on this page works yet: editor docks, apps that read or write your game files, the `summer.engine.*` calls, `summer_app_dock` and paired plugins all need that release. Until then, keep an app's data in Summer with `summer.data` collections.
+**Coming with the next Summer Engine update.** Nothing on this page works yet: editor docks, apps that read or write your game files, the `summer.engine.*` calls, the `apps.dock` operation and paired plugins all need that release. Until then, keep an app's data in Summer with `summer.data` collections.
 </Note>
 
-{/* TODO before publishing: verify on that release: engine calls from an app in the Studio tab and in a browser, docking with summer_app_dock, and a plugin message round trip. Document the plugin side (SummerApps.send, message_received, summer_app_id in plugin.cfg) once verified. */}
+{/* TODO when the Summer Engine release with app support ships: run engine calls from an app in the Studio tab and in a browser, docking with apps.dock, and a plugin message round trip. Remove the Note above then. */}
 
 ## How an app reaches your engine
 
@@ -43,14 +43,26 @@ Never allowed from an app: running scripts, editor scripts or shell commands; de
 
 ## Docks
 
-An app can dock as an editor panel (left, right or bottom). Docks stay in your editor layout per project. Ask your agent. It uses `summer_app_dock` from the `summer-engine` npm package:
+An app can dock as an editor panel (left, right or bottom). Docks stay in your editor layout per project. Ask your agent. It runs the `apps.dock` operation from the `summer-engine` npm package (its npm MCP tool is `summer_app_dock`):
 
 ```json
 { "action": "open", "appId": "<app id>", "slot": "bottom" }
 ```
 
-`slot` is `left`, `right` (default) or `bottom`. `summer_app_dock` also closes a dock (`"action": "close"`) and lists docks (`"action": "list"`). On engine builds without app docks it answers `engine_lacks_op`; open the app in the Studio tab instead. On the app page, **Dock in editor** does the same in the desktop app.
+`slot` is `left`, `right` (default) or `bottom`. `apps.dock` also closes a dock (`"action": "close"`) and lists docks (`"action": "list"`). On engine builds without app docks it answers `engine_lacks_op`; open the app in the Studio tab instead. On the app page, **Dock in editor** does the same in the desktop app.
 
 ## Plugins
 
-An agent can build an editor plugin (`res://addons/<name>/`) together with an app. Declare it as `"plugin": { "name": "<name>" }` in the manifest. The app and the plugin message each other through the engine: `summer.engine.plugin.send(message)` and `summer.engine.plugin.onMessage(fn)` in the app. The npm package's `summer_enable_plugin` turns the plugin on in the open project and reports the result.
+An agent can build an editor plugin (`res://addons/<name>/`) together with an app. Declare it as `"plugin": { "name": "<name>" }` in the manifest; the app may then also read and write the plugin's folder. The npm package's `engine.enable_plugin` operation (the `summer_enable_plugin` tool) turns the plugin on in the open project and reports the result.
+
+The app and the plugin message each other through the engine, inside Summer Engine only:
+
+- **In the app:** `summer.engine.plugin.send(message)` and `summer.engine.plugin.onMessage(fn)`.
+- **In the plugin:** bind it to the app with `summer_app_id="<app id>"` in the `[plugin]` section of its `plugin.cfg`. While the plugin is enabled, the `SummerApps` editor singleton receives and sends:
+
+```gdscript
+SummerApps.message_received.connect(func(app_id, message): print(app_id, message))
+SummerApps.send("<app id>", {"kind": "rows-changed"})  # OK, ERR_UNAVAILABLE or ERR_UNAUTHORIZED
+```
+
+`send` delivers only to the app the plugin is bound to, at most 64 KB of JSON, from the main thread. `SummerApps` exists only in the editor; exported games do not have it.

@@ -1,13 +1,9 @@
 ---
 title: "Item and quest database: a Summer App for game teams"
 sidebarTitle: "Item and quest database"
-description: "One shared database of your game's items and quests, with search, filters, edit dialogs and a reference check. Manifest, seed data, agent edits and the look check."
+description: "A Summer App for game teams: one shared database of items and quests with search, edit dialogs and a reference check, plus manifest, seed data and agent edits."
 icon: "database"
 ---
-
-<Warning>
-**Draft.** Summer Apps is in a closed test. This page goes live after the end-to-end test on production.
-</Warning>
 
 ## What your team gets
 
@@ -24,8 +20,8 @@ price, description) and Quests (title, giver, region, minimum level, status draf
 review / done, reward gold, reward items, steps). Search and a status filter above each
 table, click a row to edit it in a dialog, and flag quests whose reward items do not
 exist. Keep all data in the app's shared data. Give agents a check_references tool. Seed it with our items and
-quests using summer_app_data with "as": "seed". Follow the summer-apps and
-summer-apps-design skills, then check it with summer_app_screenshot (default, width 390,
+quests using apps.write_data with "as": "seed". Follow the summer-apps and
+summer-apps-design skills, then check it with apps.screenshot (default, width 390,
 theme dark) and fix what it reports.
 </Prompt>
 
@@ -74,6 +70,8 @@ theme dark) and fix what it reports.
 
 ## Seed the data
 
+One `apps.write_data` call writes every starter row in one revision. `"as": "seed"` marks the rows as the team's, with no author.
+
 ```json
 {
   "appId": "<app id>",
@@ -93,13 +91,13 @@ The second quest rewards `rope`, which is not an item. The app flags it, and `ch
 
 ## An agent edit: "make the Iron Sword cost 120 gold"
 
-Read the items:
+Read the items with `apps.read_data`:
 
 ```json
 { "appId": "<app id>", "collection": "items" }
 ```
 
-In the answer, `iron-sword` has `"price": 100` and a `revision`, here `1`. Write the change, and add the missing rope item in the same revision. `"ifRevision": 0` adds the rope only if no record `rope` exists yet:
+In the answer, `iron-sword` has `"price": 100` and a `revision`, here `1`. Write the change with `apps.write_data`, and add the missing rope item in the same revision. `"ifRevision": 0` adds the rope only if no record `rope` exists yet:
 
 ```json
 {
@@ -117,11 +115,11 @@ A `conflict` means a record changed or already exists: read again and retry. The
 
 After every publish:
 
-- `summer_app_screenshot { "appId": "<app id>" }`
-- `summer_app_screenshot { "appId": "<app id>", "width": 390 }`: badge columns fold under the name, rows stack only if they still do not fit.
-- `summer_app_screenshot { "appId": "<app id>", "theme": "dark" }`
-- `summer_app_screenshot { "appId": "<app id>", "steps": [{ "click": "summer-table >>> tbody tr" }] }`: clicks the first item, so the capture shows the edit dialog with the item's values.
-- `summer_app_screenshot { "appId": "<app id>", "params": { "tab": "quests" } }` if the app opens a tab from launch params.
+- `apps.screenshot { "appId": "<app id>" }`
+- `apps.screenshot { "appId": "<app id>", "width": 390 }`: badge columns fold under the name, rows stack only if they still do not fit.
+- `apps.screenshot { "appId": "<app id>", "theme": "dark" }`
+- `apps.screenshot { "appId": "<app id>", "steps": [{ "click": "summer-table >>> tbody tr" }] }`: clicks the first item, so the capture shows the edit dialog with the item's values.
+- `apps.screenshot { "appId": "<app id>", "params": { "tab": "quests" } }` if the app opens a tab from launch params.
 
 Without `steps`, the screenshot shows the first tab and no open dialog. Check that `declared.actions` lists **Add item** and **Add quest**.
 
