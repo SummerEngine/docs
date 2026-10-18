@@ -1,60 +1,59 @@
 ---
 title: "How do I make an Android game with AI?"
-description: "Build and export an Android game with AI assistance. Publish to Google Play or other stores."
+description: "Build an Android game with AI in Summer Engine, export it with summer_export_game, and publish it to the Summer Games app for Android from Summer Studio."
 icon: "smartphone"
 "og:image": "https://docs.summerengine.com/images/og/quickstarts-android-game.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/quickstarts-android-game.jpg"
 ---
 
-## Make an Android Game with Summer Engine
+## Make an Android game with Summer Engine
 
-Build your game with AI assistance, then export for Android. Summer Engine supports Android export with touch controls and mobile optimization.
+Summer Engine is the game engine built for AI. Build your game with Summer Agent or your own coding agent, then publish it to the Summer Games app on Android. Players there run your game inside the app, so you need no export template (Android needs Summer Engine 0.7.1 or later).
 
-## Step 1: Build Your Game
+## Step 1: Build your game
 
 <Steps>
   <Step title="Download Summer Engine">
-    Visit [summerengine.com](https://summerengine.com) and download for Mac or Windows
+    Download it from [summerengine.com/download](https://summerengine.com/download) for Mac (Apple silicon) or Windows. See [Install Summer Engine](/essentials/installation).
   </Step>
   <Step title="Create a project">
-    New Project → Build your game with AI. Describe what you want
+    Start a new project and describe the game you want.
   </Step>
-  <Step title="Add mobile features">
-    Ask Summer Engine: "Add touch controls", "Implement responsive UI for phones and tablets", "Optimize for mobile performance"
+  <Step title="Make it work on a phone">
+    Ask for it: "Add touch controls", "Make the UI fit phones and tablets", "Keep it smooth on mid-range phones".
   </Step>
 </Steps>
 
-## Step 2: Enable Texture Compression
+## Step 2: Turn on mobile textures
 
-Enable ETC2 ASTC (used by Android devices):
+Android needs ETC2/ASTC textures. In **Project → Project Settings → Rendering → Textures → VRAM Compression**, turn on **Import ETC2 ASTC** and wait for the reimport.
 
-1. **Project → Project Settings**
-2. **Rendering → Textures → VRAM Compression**
-3. **Enable "Import ETC2 ASTC"**
-4. Wait for reimport (1-5 minutes)
-
-## Step 3: Export for Android
+## Step 3: Export and publish
 
 <Steps>
-  <Step title="Create export preset">
-    Project → Export → Add → Android
+  <Step title="Export a Summer Engine export">
+    Ask your agent to export with `summer_export_game` and `targets: ["android"]`, or open **Project → Export**, pick the **summer.games** preset and click **Export Project**. You get one `.zip`. See [Export your game](/publishing/export).
   </Step>
-  <Step title="Configure">
-    Set your package name and signing keys (required for Google Play)
+  <Step title="Make the store page">
+    In Summer Studio, pick **Android** as a target. It opens the **Mobile store**: text, art and a phone preview. See [Publish your game](/grow/publish).
   </Step>
-  <Step title="Export">
-    Export for Android. You get an APK or AAB for Play Store submission
+  <Step title="Upload and submit">
+    Upload the export in **Check and submit**, then submit for review. After approval, players find your game in the Summer Games app on Android.
   </Step>
 </Steps>
 
-## Next Steps
+## Your own Google Play release
+
+Summer Engine has Android export from its upstream base, but Summer's export template download (`summer_export_templates`) has web, Mac and Windows templates today, not Android. Summer Games does not take `.apk` files. If you need your own Google Play listing, ask on [Discord](https://discord.gg/summerengine) before you plan around it.
+
+## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Publishing Overview" icon="upload" href="/publishing/overview">
-    All platforms: Android, iOS, PC, consoles
+  <Card title="Export your game" icon="package" href="/publishing/export">
+    Store bundles, texture formats and the export tool
   </Card>
-  <Card title="Local Testing" icon="play" href="/publishing/local-testing">
-    Test your exported build before release
+  <Card title="Publish your game" icon="upload" href="/grow/publish">
+    Store pages, builds, review and going live
   </Card>
 </CardGroup>
 

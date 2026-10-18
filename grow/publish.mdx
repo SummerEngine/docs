@@ -1,7 +1,7 @@
 ---
 title: "Publish your game from Summer Studio"
 sidebarTitle: "Publish your game"
-description: "Publish a game on Summer Games from Studio: name it and pick its platforms, fill the desktop and mobile store pages, upload a web export for browser play or downloads for Mac, Windows and Linux, then submit for review and go live."
+description: "Publish your game on Summer Games from Summer Studio: choose how you earn, fill the desktop and mobile store pages, upload builds, submit for review, go live."
 icon: "upload"
 ---
 
@@ -18,13 +18,16 @@ Start at [summerengine.com/studio/upload](https://www.summerengine.com/studio/up
 Studio walks you through one step at a time. You can go back to any step.
 
 <Steps>
+  <Step title="How you earn">
+    **Free to play + Sparks** (anyone plays for free; you earn from the Sparks players spend in your game) or a **Paid game** (players buy it once). This decides what the **Get paid** step asks for. What Summer takes is on [What does it cost to publish?](/publishing/cost).
+  </Step>
   <Step title="Game and targets">
     Give your game a **title** (up to 60 characters) and choose its **targets**: Web, macOS, Windows, Linux, iPhone and Android. Targets decide which store pages you fill next:
 
     - **Web, macOS, Windows or Linux** open the **Desktop store**: summer.games and the Summer Games desktop app.
     - **iPhone or Android** open the **Mobile store**: the Summer Games apps for iPhone and Android.
 
-    You can add a **build file** here too, or later. If a jam is open, you can enter it here: see [Summer Games Jam](/grow/game-jam). Click **Save and continue**. This makes a private draft of your store page. It does not submit anything.
+    A build is optional here; your builds, one per platform, go in **Check and submit**. If a jam is open, you can enter it here: see [Summer Games Jam](/grow/game-jam). Click **Save and continue**. This makes a private draft of your store page. It does not submit anything.
   </Step>
   <Step title="Desktop store">
     The text and art for summer.games and the desktop app, with a live preview next to the form: a tagline (up to 80 characters), a description (120-300 characters), 3-8 tags, key art, 4-8 screenshots and an icon. A trailer and capsule art are optional. See [Store page text](/publishing/store-text) and [Store art](/publishing/store-art).
@@ -33,10 +36,10 @@ Studio walks you through one step at a time. You can go back to any step.
     The same for the phone apps, with a phone preview: a shorter description (120-170 characters), key art, 3-8 screenshots and an icon. **Same as desktop** copies your desktop text once; **Use desktop icon** reuses the icon.
   </Step>
   <Step title="Get paid">
-    Choose free or paid. A paid game needs a price and a connected Stripe account; free games work without one. See [Earnings & payouts](/grow/earnings).
+    For a paid game: set your price, then connect Stripe so players can buy it. For a free game with Sparks, this step is **Join the Creator Program** and shows what the program pays and when; you do not need it to publish. See [Earnings & payouts](/grow/earnings).
   </Step>
   <Step title="Check and submit">
-    The **Before launch** checklist shows what is still needed to go live and what makes the page shine. Each row links to its fix. When nothing required is left, click **Submit for review**.
+    Add a build for each platform (see [Your build](#your-build-browser-play-or-downloads) below). The **Before launch** checklist shows what is still needed to go live and what makes the page shine. Each row links to its fix. When nothing required is left, click **Submit for review**.
   </Step>
   <Step title="Live">
     Where your game is on its way to players: in review, approved, or live.
@@ -47,14 +50,17 @@ The full dashboard of a game (**Full dashboard** on its page, in **Your games**)
 
 ## Your build: browser play or downloads
 
+In **Check and submit**, Studio asks **What are you uploading?**: **A Summer Engine export** (one file with every platform, made with Summer) or **A zip for each platform** (Web, Windows, macOS and Linux, each in its own box).
+
 | Players get | Upload | Rules |
 |---|---|---|
-| **Play in the browser** on summer.games | A **web export**, zipped, under **Play in the browser** on the game's page | `index.html` at the root of the zip, not in a folder. Up to 500 MB, 2,000 files and 200 MB per file. See [web exports](#web-exports) below. |
-| **A download** for Mac, Windows or Linux | One file per platform | Up to 40 GB in Studio. |
-| **The Summer Games apps** on iPhone and Android | A Summer export from the editor | Checked by Summer for each platform. See [Export your game](/publishing/export). |
+| **Play in the browser** on summer.games | A **web export** as a `.zip`, in the **Web** box | `index.html` at the root of the zip, not in a folder. Up to 500 MB, 2,000 files and 200 MB per file. See [web exports](#web-exports) below. |
+| **A download** for Windows, macOS or Linux | The exported folder (the `.app` for macOS) as a `.zip`, or a `.tar.gz` for macOS and Linux, in that platform's box | Up to 20 GB. It becomes that platform's download on your store page. |
+| **The Summer Games apps** on iPhone and Android | A **Summer Engine export** from the editor | Checked in Studio and made ready for each platform. See [Export your game](/publishing/export). |
 
-- A **Summer export** is checked in Studio and made ready for each platform. It asks for a version, such as `v1.0.0`.
-- **Any other build** (`.zip`, `.exe`, `.dmg`, `.apk` or `.ipa`) stays private, and Summer staff check it during review.
+- A **Summer Engine export** asks for a version, such as `v1.0.0`.
+- A lone `.exe` or `.dmg` (up to 40 GB) is kept privately for Summer staff to look at during review. It is not offered as a download.
+- Studio does not take iPhone and Android app files (`.ipa`, `.apk`) or macOS installers (`.pkg`). Phone players get a Summer Engine export.
 - Without a web export, players download your game instead of playing it in the browser.
 - Games that use C# (.NET) need a download per platform; they do not run in the browser or the Summer Games apps.
 

@@ -1,60 +1,62 @@
 ---
 title: "How do I make a PC game with AI?"
-description: "Build and export a Windows game with AI assistance. From idea to playable .exe in minutes."
+description: "Build a Windows PC game with AI in Summer Engine, export a 64-bit .exe with summer_export_game or the editor, and publish it on Summer Games, Steam or itch.io."
 icon: "monitor"
 "og:image": "https://docs.summerengine.com/images/og/quickstarts-pc-game.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/quickstarts-pc-game.jpg"
 ---
 
-## Make a PC (Windows) Game with Summer Engine
+## Make a Windows PC game with Summer Engine
 
-Build your game with AI assistance, then export for Windows, the largest PC gaming market. Summer Engine includes everything you need.
+Summer Engine is the game engine built for AI. Build your game with Summer Agent or your own coding agent, then export a Windows `.exe`.
 
-## Step 1: Build Your Game
+## Step 1: Build your game
 
 <Steps>
   <Step title="Download Summer Engine">
-    Visit [summerengine.com](https://summerengine.com) and download for Mac or Windows
+    Download it from [summerengine.com/download](https://summerengine.com/download) for Windows or Mac (Apple silicon). See [Install Summer Engine](/essentials/installation).
   </Step>
   <Step title="Create a project">
-    New Project → Create your game with AI. Describe what you want: "Create a 2D platformer" or "Build a top-down shooter"
+    Start a new project and describe what you want: "Create a 2D platformer" or "Build a top-down shooter".
   </Step>
   <Step title="Iterate with AI">
-    Refine your game through conversation. "Add a health system", "Make the enemies smarter", "Add a pause menu"
+    Refine it in conversation: "Add a health system", "Make the enemies smarter", "Add a pause menu".
   </Step>
 </Steps>
 
-## Step 2: Enable Texture Compression
+## Step 2: Turn on PC textures
 
-Before exporting, enable S3TC/BPTC (one-time per project):
-
-1. **Project → Project Settings**
-2. **Rendering → Textures → VRAM Compression**
-3. **Enable "Import S3TC BPTC"**
-4. Wait for reimport (1-5 minutes)
+In **Project → Project Settings → Rendering → Textures → VRAM Compression**, turn on **Import S3TC BPTC** and wait for the reimport. You do this once per project.
 
 ## Step 3: Export for Windows
 
-<Steps>
-  <Step title="Create export preset">
-    Project → Export → Add → Windows Desktop
-  </Step>
-  <Step title="Configure">
-    Use 64-bit (x86_64). Embed PCK for single .exe file
-  </Step>
-  <Step title="Export">
-    Click Export and choose a folder. You get a standalone .exe
-  </Step>
-</Steps>
+<Tabs>
+  <Tab title="With your agent">
+    Ask your agent to run `summer_export_game` with `targets: ["windows"]` and `format: "download"`. You get `<name>-windows-x64.zip`: an `.exe` with the game inside. See [Export your game](/publishing/export).
+  </Tab>
+  <Tab title="In the editor">
+    Open **Project → Export → Add → Windows Desktop**, use 64-bit (x86_64), turn on **Embed PCK** for a single `.exe`, and click **Export Project**.
+  </Tab>
+</Tabs>
 
-## Next Steps
+The Windows app of Summer Engine comes with the Windows export templates. On a Mac, get them with `summer_export_templates` (`"action": "install", "platforms": ["windows"]`).
+
+## Step 4: Publish
+
+- **Summer Games**: zip the exported folder and upload it in the **Windows** box in Summer Studio. See [Publish your game](/grow/publish).
+- **Steam or itch.io**: see [Windows export](/publishing/windows-export) for code signing and store setup.
+
+## Next steps
 
 <CardGroup cols={2}>
   <Card title="Windows Export Guide" icon="monitor" href="/publishing/windows-export">
-    Full step-by-step with code signing, Steam, and more
+    Step by step, with code signing and Steam
+  </Card>
+  <Card title="Publish your game" icon="upload" href="/grow/publish">
+    Put it on Summer Games
   </Card>
   <Card title="Publish to Steam" icon="steam" href="/publishing/steam">
-    Release on the world's largest PC gaming platform
+    Release on the largest PC gaming store
   </Card>
   <Card title="Publish to itch.io" icon="gamepad" href="/publishing/itch-io">
     Quick indie publishing, no approval needed
