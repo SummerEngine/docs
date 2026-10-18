@@ -1,0 +1,53 @@
+name: skills-sync
+
+# The skill pages (/skills/*, the catalog on /mcp/skills and the Skills tab) are
+# rendered from the skill library in SummerEngine/summer (library/skills), read
+# from summer-engine@latest on npm: the copy `summer skills install` gives people.
+# This job pulls the latest library, regenerates the pages, runs the docs checks
+# and pushes the result to main, where Mintlify deploys it. Nothing to do when
+# the library has not changed.
+
+on:
+  schedule:
+    - cron: "41 * * * *"
+  workflow_dispatch:
+  repository_dispatch:
+    types: [skills-updated]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: skills-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Pull the skill library from summer-engine@latest
+        run: node scripts/skills/sync.mjs --work "$RUNNER_TEMP/skills"
+
+      - name: Check and publish
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "Skill pages already match summer-engine@latest."
+            exit 0
+          fi
+          git status --short | head -50
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          version=$(node -p 'require("./scripts/skills/sources/skills.json").source.version')
+          git add -A
+          git commit -q -m "Skills: sync the skill pages from summer-engine $version"
+          npm run check
+          git push origin HEAD:main

@@ -118,6 +118,9 @@ for (const file of publicFiles) {
     errors.push(`cannot scan public capability route: ${file}`);
     continue;
   }
+  // Skill pages mirror the skill library word for word (scripts/skills): agent
+  // guidance owned by SummerEngine/summer, not capability claims made by the docs.
+  if (/^generator: scripts\/skills$/m.test(raw)) continue;
 
   if (raw.includes(policy.canonicalFrontmatter)) canonicalMarkers++;
   const ownsPlatformStatus =

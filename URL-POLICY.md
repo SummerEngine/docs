@@ -97,6 +97,7 @@ These top-level paths are canonical. They do not move.
 | `/automation/*` | Driving the engine from a script or a shell, headless |
 | `/extending/*` | Extending the engine: plugins, GDExtension, modules |
 | `/build/*` | Behaviour guides: how to get each feature into a game, and the "Make a game like…" genre pages |
+| `/skills/*` | One page per skill in the Summer skill library, generated (see below) |
 
 Some namespace names do not match their sidebar label — `/auto-mode/*` is labelled
 "Models", `/art-system/*` is labelled "Summer Studio", `/ai-tools/*` is labelled
@@ -120,6 +121,7 @@ Generated pages publish to their existing frozen URLs rather than to a new
 | `/api-reference/http/*` | summer-platform `api/*/openapi.yaml`, filtered to public operations (`scripts/reference`) |
 | `/api-reference/gdscript/*` | The engine's class reference XML for the `Summer` singleton (`scripts/reference`) |
 | `/api-reference/overview` | The references above (`scripts/reference`) |
+| `/skills/*`, the catalog block on `/mcp/skills`, the Skills tab | The skill library in SummerEngine/summer (`library/skills`), read from the `summer-engine` npm package (`scripts/skills`) |
 
 The 3.x MCP tool pages (`/mcp/tools-reference`, `/mcp/tools/*`) were retired at Summer 4.0: they redirect to `/mcp/operations` and `/mcp/operations/legacy-names`, where every 3.x tool name has its own anchor.
 
@@ -128,6 +130,12 @@ under `scripts/reference` no longer matches its pinned inputs. `scripts/referenc
 refreshes those inputs from the sources; the `reference-drift` workflow flags when they fall behind.
 Generated reference URLs come from stable identifiers (tool group, operationId, class name);
 when one disappears from its source, its page goes and needs a redirect like any other page.
+
+The skill pages follow the same pattern. `scripts/skills/sources/skills.json` pins the
+library; `scripts/skills/generate.mjs --check` runs in `npm run check`; the `skills-sync`
+workflow runs `scripts/skills/sync.mjs` every hour, and when summer-engine@latest ships a
+changed library it regenerates the pages, runs the checks and pushes to main. A skill that
+leaves the library gets a redirect to `/mcp/skills`.
 
 If a generated page is wrong, fix the source. Never the page.
 

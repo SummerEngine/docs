@@ -132,7 +132,6 @@
               "ai-tools/design-mode",
               "ai-tools/operations",
               "ai-tools/subagents",
-              "ai-tools/skills",
               "ai-tools/memory",
               "ai-tools/rag-search",
               "ai-tools/mcp-asset-search"
@@ -364,8 +363,452 @@
           {
             "group": "Reference",
             "pages": [
-              "mcp/building-a-game",
-              "mcp/skills"
+              "mcp/building-a-game"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Skills",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": [
+              "mcp/skills",
+              "ai-tools/skills"
+            ]
+          },
+          {
+            "group": "2D art",
+            "pages": [
+              "skills/character-portrait",
+              "skills/concept-art",
+              "skills/create-asset-sheet",
+              "skills/instantiate-asset-pack",
+              "skills/pixel-art",
+              "skills/skybox-panorama",
+              "skills/sprite-sheet",
+              "skills/tileable-texture",
+              "skills/ui-graphics",
+              "skills/use-widget-asset"
+            ]
+          },
+          {
+            "group": "3D models",
+            "pages": [
+              "skills/character-model",
+              "skills/environment-kit",
+              "skills/fabricating-assets",
+              "skills/organic-model",
+              "skills/prop-model",
+              "skills/vehicle-model"
+            ]
+          },
+          {
+            "group": "Agent workflow",
+            "pages": [
+              "skills/bounded-engine-runs",
+              {
+                "group": "brainstorming",
+                "pages": [
+                  "skills/brainstorming",
+                  "skills/brainstorming/spec-document-reviewer-prompt"
+                ]
+              },
+              "skills/debugging-game-feel",
+              "skills/diagnosing-perf-regressions",
+              "skills/dispatching-parallel-agents",
+              "skills/gameskill",
+              "skills/godogen-visual-proof-game-generation",
+              "skills/headless-scripting",
+              {
+                "group": "investigating-bugs",
+                "pages": [
+                  "skills/investigating-bugs",
+                  "skills/investigating-bugs/condition-based-waiting",
+                  "skills/investigating-bugs/defense-in-depth",
+                  "skills/investigating-bugs/root-cause-tracing"
+                ]
+              },
+              "skills/playtesting-a-feature",
+              "skills/running-in-the-cloud",
+              "skills/skill-create",
+              "skills/skill-improve",
+              "skills/skill-test",
+              "skills/summer-cli",
+              "skills/using-summer",
+              "skills/verification-before-completion",
+              {
+                "group": "writing-plans",
+                "pages": [
+                  "skills/writing-plans",
+                  "skills/writing-plans/plan-document-reviewer-prompt"
+                ]
+              },
+              {
+                "group": "writing-skills",
+                "pages": [
+                  "skills/writing-skills",
+                  "skills/writing-skills/testing-skills-with-subagents"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "AI and NPCs",
+            "pages": [
+              "skills/ai-characters-in-games",
+              "skills/design-npc"
+            ]
+          },
+          {
+            "group": "Animation",
+            "pages": [
+              "skills/animation-tree",
+              "skills/character-animation-wiring",
+              "skills/facial-and-lipsync",
+              "skills/generate-motion",
+              "skills/procedural-animation",
+              "skills/retarget",
+              {
+                "group": "text-to-motion",
+                "pages": [
+                  "skills/text-to-motion",
+                  "skills/text-to-motion/prompts-and-controls",
+                  "skills/text-to-motion/rigging-for-text-motion"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Asset pipeline",
+            "pages": [
+              "skills/asset-strategy",
+              "skills/lumera-single-image-scene-reconstruction",
+              "skills/skintokens-auto-rigging",
+              "skills/summer-assets"
+            ]
+          },
+          {
+            "group": "Audio",
+            "pages": [
+              "skills/adaptive-music",
+              "skills/ambient-bed",
+              "skills/audio-direction",
+              "skills/music-track",
+              "skills/sound-effect",
+              "skills/voice-line"
+            ]
+          },
+          {
+            "group": "Character controllers",
+            "pages": [
+              {
+                "group": "character-movement",
+                "pages": [
+                  "skills/character-movement",
+                  "skills/character-movement/references/default-third-person-controller",
+                  "skills/character-movement/references/default-third-person-verification-probe",
+                  "skills/character-movement/references/movement-3d",
+                  "skills/character-movement/references/platformer-feel"
+                ]
+              },
+              "skills/fps-controller"
+            ]
+          },
+          {
+            "group": "Publishing and growth",
+            "pages": [
+              "skills/grow-analytics",
+              "skills/publish-your-game",
+              "skills/store-art",
+              "skills/store-listing"
+            ]
+          },
+          {
+            "group": "Debugging",
+            "pages": [
+              "skills/debug"
+            ]
+          },
+          {
+            "group": "Deployment",
+            "pages": [
+              "skills/export-and-ship",
+              "skills/release-readiness",
+              "skills/remote-deploy"
+            ]
+          },
+          {
+            "group": "Editor",
+            "pages": [
+              "skills/driving-the-editor-ui"
+            ]
+          },
+          {
+            "group": "Gameplay",
+            "pages": [
+              "skills/auto-fire-targeting",
+              "skills/celeste-momentum-platforming",
+              {
+                "group": "combat-basics",
+                "pages": [
+                  "skills/combat-basics",
+                  "skills/combat-basics/references/projectiles-and-aoe"
+                ]
+              },
+              "skills/design-mechanic",
+              "skills/in-game-purchases",
+              "skills/web-and-touch-input"
+            ]
+          },
+          {
+            "group": "Level design",
+            "pages": [
+              {
+                "group": "concept-to-level",
+                "pages": [
+                  "skills/concept-to-level",
+                  "skills/concept-to-level/references/technical-rules"
+                ]
+              },
+              "skills/design-level",
+              "skills/scene-to-level"
+            ]
+          },
+          {
+            "group": "Multiplayer",
+            "pages": [
+              "skills/multiplayer",
+              {
+                "group": "multiplayer-movement",
+                "pages": [
+                  "skills/multiplayer-movement",
+                  "skills/multiplayer-movement/files"
+                ]
+              },
+              {
+                "group": "multiplayer-project",
+                "pages": [
+                  "skills/multiplayer-project",
+                  "skills/multiplayer-project/files"
+                ]
+              },
+              {
+                "group": "multiplayer-publish",
+                "pages": [
+                  "skills/multiplayer-publish",
+                  "skills/multiplayer-publish/export-errors"
+                ]
+              },
+              {
+                "group": "multiplayer-state",
+                "pages": [
+                  "skills/multiplayer-state",
+                  "skills/multiplayer-state/files"
+                ]
+              },
+              "skills/multiplayer-testing",
+              "skills/summer-analytics",
+              "skills/summer-friends",
+              "skills/summer-leaderboards",
+              "skills/summer-match-results",
+              "skills/summer-matchmaking",
+              "skills/summer-parties",
+              "skills/summer-player-data",
+              "skills/summer-store",
+              "skills/summer-world-chat",
+              "skills/summer-world-saves"
+            ]
+          },
+          {
+            "group": "Navigation",
+            "pages": [
+              "skills/navigate-summer"
+            ]
+          },
+          {
+            "group": "Performance",
+            "pages": [
+              "skills/tune-performance"
+            ]
+          },
+          {
+            "group": "Rendering and lighting",
+            "pages": [
+              "skills/3d-lighting",
+              "skills/art-direction",
+              "skills/compatibility-renderer-traps",
+              "skills/psx-retro-rendering",
+              "skills/realtime-wet-surfaces",
+              "skills/web-compatibility-look"
+            ]
+          },
+          {
+            "group": "Runtime",
+            "pages": [
+              "skills/agent-playtesting"
+            ]
+          },
+          {
+            "group": "Scenes and project",
+            "pages": [
+              "skills/brainstorm-game",
+              "skills/browse-templates",
+              "skills/camera-rigs",
+              {
+                "group": "make-game",
+                "pages": [
+                  "skills/make-game",
+                  "skills/make-game/references/2d-platformer-polish",
+                  "skills/make-game/references/2d-platformer",
+                  "skills/make-game/references/2d-rpg-content",
+                  "skills/make-game/references/2d-rpg",
+                  "skills/make-game/references/2d-survivors-progression",
+                  "skills/make-game/references/2d-survivors",
+                  "skills/make-game/references/3d-fps-systems",
+                  "skills/make-game/references/3d-fps",
+                  "skills/make-game/references/3d-horror-systems",
+                  "skills/make-game/references/3d-horror",
+                  "skills/make-game/references/3d-third-person-systems",
+                  "skills/make-game/references/3d-third-person"
+                ]
+              },
+              "skills/new-project",
+              "skills/play",
+              "skills/scene-composition",
+              "skills/scene-hierarchy-design",
+              {
+                "group": "scene-scripting",
+                "pages": [
+                  "skills/scene-scripting",
+                  "skills/scene-scripting/references/ctx-api",
+                  "skills/scene-scripting/references/recipes-2d-ui",
+                  "skills/scene-scripting/references/recipes-3d"
+                ]
+              },
+              {
+                "group": "spatial-placement",
+                "pages": [
+                  "skills/spatial-placement",
+                  "skills/spatial-placement/references/kit-placement-tools"
+                ]
+              },
+              "skills/verifying-scenes",
+              {
+                "group": "world-building-3d",
+                "pages": [
+                  "skills/world-building-3d",
+                  "skills/world-building-3d/references/spatial-tools"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Scripting",
+            "pages": [
+              {
+                "group": "gdscript-patterns",
+                "pages": [
+                  "skills/gdscript-patterns",
+                  "skills/gdscript-patterns/reference"
+                ]
+              },
+              "skills/save-load"
+            ]
+          },
+          {
+            "group": "Tools",
+            "pages": [
+              {
+                "group": "summer-apps",
+                "pages": [
+                  "skills/summer-apps",
+                  "skills/summer-apps/manifest",
+                  "skills/summer-apps/minimal-app",
+                  "skills/summer-apps/sdk-reference"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "UI",
+            "pages": [
+              "skills/summer-apps-design",
+              "skills/ui-basics"
+            ]
+          },
+          {
+            "group": "Visual effects",
+            "pages": [
+              "skills/game-feel",
+              {
+                "group": "vfx-dissolve",
+                "pages": [
+                  "skills/vfx-dissolve",
+                  "skills/vfx-dissolve/building-blocks/noise-3d-fbm"
+                ]
+              },
+              {
+                "group": "vfx-fire",
+                "pages": [
+                  "skills/vfx-fire",
+                  "skills/vfx-fire/building-blocks/additive-billboard-particles",
+                  "skills/vfx-fire/building-blocks/noise-3d-fbm"
+                ]
+              },
+              {
+                "group": "vfx-hit-spark",
+                "pages": [
+                  "skills/vfx-hit-spark",
+                  "skills/vfx-hit-spark/building-blocks/additive-billboard-particles"
+                ]
+              },
+              {
+                "group": "vfx-lightning",
+                "pages": [
+                  "skills/vfx-lightning",
+                  "skills/vfx-lightning/building-blocks/additive-billboard-particles",
+                  "skills/vfx-lightning/building-blocks/trauma-shake-snippet"
+                ]
+              },
+              {
+                "group": "vfx-magic-glow",
+                "pages": [
+                  "skills/vfx-magic-glow",
+                  "skills/vfx-magic-glow/building-blocks/additive-billboard-particles"
+                ]
+              },
+              {
+                "group": "vfx-muzzle-flash",
+                "pages": [
+                  "skills/vfx-muzzle-flash",
+                  "skills/vfx-muzzle-flash/building-blocks/additive-billboard-particles",
+                  "skills/vfx-muzzle-flash/building-blocks/trauma-shake-snippet"
+                ]
+              },
+              {
+                "group": "vfx-smoke",
+                "pages": [
+                  "skills/vfx-smoke",
+                  "skills/vfx-smoke/building-blocks/noise-3d-fbm"
+                ]
+              },
+              {
+                "group": "vfx-water-ripple",
+                "pages": [
+                  "skills/vfx-water-ripple",
+                  "skills/vfx-water-ripple/building-blocks/additive-billboard-particles"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Video",
+            "pages": [
+              "skills/animated-loop",
+              "skills/cinematic-cutscene",
+              "skills/trailer-shot"
             ]
           }
         ]

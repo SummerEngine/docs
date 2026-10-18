@@ -161,6 +161,9 @@ for (let index = 0; index < exceptions.length; index++) {
 for (const absolute of walkMdx(ROOT)) {
   const file = relative(ROOT, absolute).split(sep).join("/");
   const raw = readFileSync(absolute, "utf8");
+  // Skill pages mirror the skill library word for word (scripts/skills); their
+  // text is agent guidance owned by SummerEngine/summer, not docs prose.
+  if (/^generator: scripts\/skills$/m.test(raw)) continue;
   const lines = proseLines(raw);
 
   for (const metadata of frontmatterMetadata(raw)) {
