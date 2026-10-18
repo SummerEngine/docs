@@ -1,156 +1,60 @@
 ---
-title: "Project Intelligence"
-description: "How Summer Engine understands and indexes your entire project"
+title: "Project Intelligence: How Summer Engine Indexes Your Project"
+sidebarTitle: "Project Intelligence"
+description: "Summer Engine indexes your project's scripts, scenes and text files so the agent finds the right code fast. What it indexes, what it skips, and how it stays current."
 icon: "lightbulb"
 "og:image": "https://docs.summerengine.com/images/og/ai-tools-rag-search.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/ai-tools-rag-search.jpg"
 ---
 
-## How It Works
+Summer Engine is the game engine built for AI. Before the agent changes your game, it needs to know what is in it. Summer gives it that knowledge in three ways: a search index of your files, a short map of your project, and direct reads of your scenes and scripts.
 
-Summer Engine automatically analyzes and indexes your project to understand:
+## The search index
 
-- **Code structure** - Classes, functions, variables, and their relationships
-- **Scene hierarchy** - Node trees, components, and connections
-- **Asset relationships** - Textures, models, sounds, and where they're used
-- **Project patterns** - Your coding style, naming conventions, and architecture
+When you open a project, Summer indexes it so the agent can search by meaning, not only by exact words. Ask "make the player faster" and the agent finds the script that moves the player, even if it is called `hero_controller.gd`.
 
-## Automatic Indexing
+| What | How it is indexed |
+|---|---|
+| Scripts, scenes, resources and other text files | Full content, split into chunks |
+| Models, textures, audio, video and fonts | By path and file details only, so the agent can find them by name |
+| `.git/`, `.godot/`, `.import/`, `node_modules/` | Skipped |
+| Import files, archives, executables, temp files | Skipped |
 
-When you open a project, Summer Engine:
+**It stays current.** Summer remembers a fingerprint of each file and re-indexes only the files that changed. When the agent writes a file, that file is re-indexed right away.
 
-<Steps>
-  <Step title="Scans all files">
-    Analyzes scripts, scenes, resources, and project settings
-  </Step>
-  <Step title="Builds knowledge graph">
-    Creates connections between different parts of your project
-  </Step>
-  <Step title="Understands context">
-    Learns your patterns and project-specific logic
-  </Step>
-  <Step title="Stays updated">
-    Continuously updates as you make changes
-  </Step>
-</Steps>
+## The project map
 
-## What Summer Engine Knows
+Summer also keeps a short map of the project: the scripts that matter, their `class_name`, and where each main system lives (player, camera, combat, enemies, UI, saving, networking and more). The agent reads it at the start of a chat, so it knows where to look before it searches.
 
-### Code Understanding
-```gdscript
-# Summer Engine knows this is a player controller
-extends CharacterBody3D
-class_name Player
+## Direct reads
 
-@export var speed: float = 5.0
-@export var jump_velocity: float = 4.5
+For exact answers, the agent reads your project directly:
 
-func _physics_process(delta):
-    # Summer Engine understands this handles movement
-    handle_movement(delta)
-```
+- **Text search** (`grep`) for symbols, signals and patterns across every script.
+- **File reads** for the exact lines it is about to change.
+- **The scene tree** of a scene, with node paths, types and properties.
 
-When you ask "make the player faster", Summer Engine knows:
-- Which script controls the player
-- That `speed` is the relevant variable
-- How to modify it safely
+It reads what it changes before it changes it. File edits are refused when a file changed after the agent read it, so the agent reads again instead of overwriting newer work.
 
-### Scene Relationships
-```
-Main Scene
-├── Player (CharacterBody3D)
-│   ├── MeshInstance3D
-│   └── CollisionShape3D
-├── Environment
-└── UI
-    ├── HealthBar
-    └── Score
-```
+## What a new chat knows
 
-Summer Engine understands these connections and can:
-- Add UI elements that reference the player
-- Create enemies that target the player node
-- Modify scenes while preserving relationships
+Each new chat starts with the index, the project map and your [project memory](/ai-tools/memory). It does not include your other chats. To bring something from an earlier conversation, mention the files or say what you decided. Decisions you want kept for good belong in memory.
 
-## Smart Suggestions
+## Privacy
 
-Based on project analysis, Summer Engine can suggest:
+Indexing runs on Summer's servers. Your file chunks and their search data are stored so search can run over them. Privacy Mode, on paid plans, stops your code being used to train models. See [Security Overview](/security/overview).
+
+## Related
 
 <CardGroup cols={2}>
-  <Card title="Performance Improvements" icon="gauge">
-    "I noticed you're using get_node() in _process. Let me cache those references."
+  <Card title="AI Operations" icon="bot" href="/ai-tools/operations">
+    What the agent can do inside your project
   </Card>
-  <Card title="Best Practices" icon="lightbulb">
-    "This signal connection could be done in the editor instead of code."
-  </Card>
-  <Card title="Bug Prevention" icon="shield">
-    "Adding null checks here would prevent crashes when nodes are freed."
-  </Card>
-  <Card title="Architecture Patterns" icon="network">
-    "Consider using a state machine for this enemy behavior."
+  <Card title="Memory" icon="brain" href="/ai-tools/memory">
+    How Summer remembers your decisions across chats
   </Card>
 </CardGroup>
 
-## Per-Project Indexing & Caching
+---
 
-Summer Engine uses **per-project indexing** with **intelligent caching**, similar to how Cursor indexes a repo. Each project has its own isolated search index. When you open a project, Summer Engine scans and indexes your codebase, then uses RAG (Retrieval-Augmented Generation) to find relevant context when you ask questions.
-
-**Smart caching** means Summer Engine remembers what it learned between sessions *within that project*. The index persists so you don't start from scratch every time you open Summer Engine.
-
-<Info>
-**New chats start fresh**: Each new chat does not automatically include a summary of your other chats. If you want context from a previous conversation, you need to inject it (for example, by referencing specific files or summarizing what you discussed).
-</Info>
-
-## Privacy & Performance
-
-<Info>
-**How your code is stored**: Indexing runs server-side. Source chunks and their embeddings are stored so search can run over them. Privacy Mode, available on paid plans, stops your code being used to train models. See [Security Overview](/security/overview).
-</Info>
-
-<Info>
-**Incremental Updates**: Only changed files are re-analyzed, keeping things fast.
-</Info>
-
-## Customizing Intelligence
-
-You can guide Summer Engine's understanding:
-
-### Project Comments
-```gdscript
-# SUMMER: This is the main game manager singleton
-extends Node
-
-# SUMMER: Handle player spawning and respawning
-func spawn_player():
-    pass
-```
-
-### Ignore Patterns
-Create a `.summerignore` file:
-```
-# Don't analyze generated files
-.import/
-builds/
-temp/
-
-# Skip third-party code
-addons/third_party/
-```
-
-## Working with Large Projects
-
-For projects with thousands of files:
-
-- **Prioritization**: Summer Engine focuses on recently modified files
-- **Selective indexing**: You can specify which folders are most important
-- **Background processing**: Analysis happens without blocking your work
-
-## Next Steps
-
-<Card
-  title="AI Operations"
-  icon="bot"
-  href="/ai-tools/operations"
->
-  See how project intelligence powers Summer Engine's AI operations
-</Card>
+Need help? Ask in [Discord](https://discord.gg/summerengine) first. That is where you get the fastest reply and support. For concrete help, email [support@summerengine.com](mailto:support@summerengine.com) or [founders@summerengine.com](mailto:founders@summerengine.com).

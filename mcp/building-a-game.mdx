@@ -1,6 +1,7 @@
 ---
-title: "Building a Game with MCP"
-description: "Step-by-step guide for AI agents: how to build a complete game using Summer Engine's MCP tools."
+title: "Building a Game with Summer Engine MCP: Agent Playbook"
+sidebarTitle: "Building a Game"
+description: "Playbook for AI agents building a game with Summer Engine MCP tools: read the scene, batch edits in one script, import assets, play quietly and check errors."
 icon: "gamepad-2"
 "og:image": "https://docs.summerengine.com/images/og/mcp-building-a-game.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/mcp-building-a-game.jpg"
@@ -10,13 +11,13 @@ icon: "gamepad-2"
 
 This page is a playbook for building games with Summer Engine's MCP tools. Follow it when the user asks you to create or modify a game. The tools execute operations in the engine: scenes, nodes, properties, imports, and debugging. So you can build real games from natural language requests.
 
-**Prerequisites:** Summer Engine must be running with a project open. If the engine is not running, a tool answers with the error code `engine_not_running` and one next step: open the project in Summer Engine (or run `npx summer-engine run <project-path>`), then retry the same call.
+Summer Engine is the game engine built for AI. **Prerequisites:** Summer Engine must be running with a project open. If the engine is not running, a tool answers with the error code `engine_not_running` and one next step: open the project in Summer Engine (or run `npx summer-engine run <project-path>`), then retry the same call.
 
 ---
 
 ## Skills (Best-Practice Guides)
 
-Skills contain patterns for scene structure, GDScript, and tool usage. `npx -y summer-engine@latest setup <agent> --yes` installs the whole library where your agent reads skills. To add one: `npx -y summer-engine skills install <name> --agent <agent>`.
+Skills contain patterns for scene structure, GDScript, and tool usage. `npx -y summer-engine@latest setup <agent> --yes` installs the whole library where your agent reads skills. To add one: `npx -y summer-engine@latest skills install <name> --agent <agent>`.
 
 | Task | Skill |
 |------|-------|
@@ -34,7 +35,7 @@ Read a skill at `~/.agents/skills/<name>/SKILL.md` (Cursor, Codex and most agent
 
 ### 0. Look It Up First
 
-Search Summer's docs and skills before you build: `summer_docs_search`, then `summer_docs_read` on the best hit. For work outside the engine (assets, plans, the store, prices, analytics), call `summer_search` with the job in plain words, then `summer_call` with the `op` and `input` it returns. Long work, such as a 3D model, answers with a job: call `summer_jobs_wait` until it is done. See [How Summer answers](/api-reference/mcp).
+For a new task, plan first: `summer_call` with `{"op": "docs.plan", "input": {"goal": "<the user's goal>"}}` returns the skills, tools and checks to use. For a vague "make a game", use the `brainstorm-game` skill: it writes `.summer/GameSoul.md`, which the other skills read. Search Summer's docs and skills before you build: `summer_docs_search`, then `summer_docs_read` on the best hit. For work outside the engine (assets, plans, the store, prices, analytics), call `summer_search` with the job in plain words, then `summer_call` with the `op` and `input` it returns. Long work, such as a 3D model, answers with a job: call `summer_jobs_wait` until it is done. See [How Summer answers](/api-reference/mcp).
 
 ### 1. Identify the Exact Scene
 
@@ -159,35 +160,37 @@ Use `summer_import_from_url_batch` with an array of `{url, path}`. One scan afte
 ### Run and Inspect
 
 <Warning>
-**`summer_play` opens a real window on the user's screen and takes focus.** If you are an
-agent working while someone else is using their machine, this interrupts them.
+**Running the game costs time.** `summer_play` plays quietly by default: the game runs embedded
+in the editor, and the editor keeps its tab and focus, so the user keeps working. Pass
+`focus: true` only when the user is watching and asked to see it. For a parallel run nobody
+sees, pass `mode: "offscreen"` with a named `instance`.
 
-Prefer the checks that need no window:
+Prefer the checks that need no running game:
 
 - **`summer_screenshot` with `target="scene"`** renders a scene offscreen without touching
   the visible tab or starting the game. Use this for "does it look right".
 - **`summer_get_diagnostics`** answers "is anything broken" without running anything.
 
-Reach for `summer_play` when you genuinely need the game running — real physics, real input,
-real runtime state — not as a default way of looking at your work.
+Reach for `summer_play` when you genuinely need the game running (real physics, real input,
+real runtime state), not as a default way of looking at your work.
 </Warning>
 
 When you do need it running:
 
 1. `summer_play`. Start the game.
-2. Wait a moment for the game to load.
-3. `summer_screenshot`. Capture what the player sees (base64 image).
+2. `summer_is_running`. Confirm the game is up.
+3. `summer_screenshot(target="game")`. Capture what the player sees.
 4. `summer_get_diagnostics`. Check for runtime errors.
 5. `summer_stop`. Stop before making scene changes.
 
 <Note>
 **One screenshot proves less than you think.** A still frame shows that something rendered,
 not that the game works. Booting the game after every change is expensive and mostly tells
-you nothing new — a check that catches the failure you were actually worried about is worth
+you nothing new. A check that catches the failure you were actually worried about is worth
 more than a screenshot taken out of habit.
 
 For behaviour rather than appearance, a `RunVerification` op through `summer_batch` runs a GDScript probe against the
-live game and can assert over time — node state, counts, group membership, property values —
+live game and can assert over time (node state, counts, group membership, property values)
 rather than leaving you to squint at a frame.
 </Note>
 
@@ -256,8 +259,8 @@ When two edits touch the same file, file writes use content receipts. A stale ov
 | Wire up button | `summer_connect_signal` with `scenePath` |
 | Check errors | `summer_get_diagnostics` |
 | Wait for long work (3D, video) | `summer_jobs_wait` with the job id |
-| See how a scene looks | `summer_screenshot(target="scene", scenePath=...)` — offscreen, no window |
-| Run game | `summer_play` → `summer_screenshot(target="game")` → `summer_stop` — opens a window |
+| See how a scene looks | `summer_screenshot(target="scene", scenePath=...)` (offscreen, no game run) |
+| Run game | `summer_play` → `summer_screenshot(target="game")` → `summer_stop` (plays quietly in the editor) |
 | Standalone save/save-as | `summer_save_scene(scenePath=...)` |
 
 ---

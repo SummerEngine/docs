@@ -1,6 +1,7 @@
 ---
-title: "CLI Reference"
-description: "Complete reference for the Summer Engine CLI: setup, doctor, install, login, run, create, plan, memory, skills, tool, config, events, debug, the MCP server, and any Summer operation from the shell with summer <area> <action>."
+title: "summer CLI Reference: Every Command and Option"
+sidebarTitle: "CLI Reference"
+description: "Every summer CLI command in the summer-engine package: setup, doctor, install, login, run, create, mcp, skills, tool, and any Summer operation from the shell."
 icon: "terminal"
 "og:image": "https://docs.summerengine.com/images/og/mcp-cli-reference.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/mcp-cli-reference.jpg"
@@ -32,10 +33,10 @@ Swap `claude-code` for any id on [Every Supported Agent](/mcp/agents).
 
 ### summer setup
 
-Configure Summer Engine for an AI agent and run diagnostics in one step. This is the recommended onboarding command. It writes the MCP server config for the agent, installs the whole skill library where that agent reads skills, and prints a doctor report. Every agent and the files it writes: [Every Supported Agent](/mcp/agents).
+Configure Summer Engine for an AI agent and run diagnostics in one step. This is the recommended onboarding command. It writes the MCP server config for the agent, installs the whole skill library where that agent reads skills, and prints a doctor report. For most agents it also adds the Summer Games MCP (`summer-games`: friends, parties and messages as you), which you sign in to once on summer.games. Every agent and the files it writes: [Every Supported Agent](/mcp/agents).
 
 ```bash
-summer setup <agent> [--yes] [--cli] [--allow-rules] [--scope user|project] [--force] [--recommended] [--stable-only] [--channel <tag>]
+summer setup <agent> [--yes] [--cli] [--assets-only] [--profile <p>] [--no-games] [--scope user|project] [--force] [--recommended] [--stable-only] [--channel <tag>]
 ```
 
 | Argument / Option | Description |
@@ -45,6 +46,10 @@ summer setup <agent> [--yes] [--cli] [--allow-rules] [--scope user|project] [--f
 | `--cli` | CLI only: install the skills and no MCP server. The agent runs `summer` commands in its shell. `--no-mcp` does the same |
 | `--allow-rules` | With `--cli`, for Claude Code and Codex: let the agent run read-only `summer` commands, and dry runs of spends, without asking. Prints every rule; writes them only with `--yes`. Run it only when the person asks |
 | `--remove-allow-rules` | Remove the rules `--allow-rules` added, and nothing else |
+| `--assets-only` | Set up for making assets without Summer Engine: the `assets` tool profile, only the asset skills, and no Summer Games |
+| `--profile <profile>` | Tool profile written into the MCP entry: `full` (every tool, the default), `engine` (engine, generation and the store; the default for `vscode-copilot`, whose tool limit is 128) or `assets` |
+| `--no-games` | Do not add the Summer Games MCP |
+| `--no-project-files` | Inside a Summer project, do not add the Summer instructions to its `AGENTS.md` and `CLAUDE.md` |
 | `--scope <scope>` | Config scope: `user` (default) or `project` |
 | `--dry-run` | Show planned changes without writing files |
 | `--print` | Print the MCP config snippet instead of writing files |
@@ -87,16 +92,17 @@ Run this first whenever something is not working. Each check reports either OK o
 Download and install Summer Engine to your system.
 
 ```bash
-summer install [--path <dir>]
+summer install [--path <dir>] [--yes]
 ```
 
 | Option | Description |
 |--------|-------------|
-| `--path <dir>` | Custom install directory (macOS default is `/Applications/Summer.app`) |
+| `--path <dir>` | Custom install directory (on macOS the engine goes in `<dir>/Summer.app`; the default is `/Applications/Summer.app`). `summer` remembers it, so later commands find this engine |
+| `--yes` | Replace an already-installed engine without asking |
 
-**Platforms:** macOS and Windows. Linux users download manually from [summerengine.com](https://www.summerengine.com/download).
+**Platforms:** macOS, Windows and Linux (x86_64). On Linux the engine binary goes under `~/.summer/engine/`; there is no app bundle. Other systems: [summerengine.com/download](https://www.summerengine.com/download).
 
-**What it does:** Fetches the latest release, downloads the installer, and installs the app. On macOS it mounts the DMG and copies `Summer.app` to Applications. On Windows it runs the installer. After install, run `summer login`, then `summer run`.
+**What it does:** Prints the download URL and size, downloads the latest release (about 1 GB, including Git and other runtime tools), and installs it. It never replaces an installed engine without your yes: the same version exits as up to date, and a different one needs `--yes` or a confirmation. After install, run `summer login`, then `summer run`.
 
 ---
 
@@ -126,7 +132,7 @@ Clear your saved auth tokens.
 summer logout
 ```
 
-Removes `~/.summer/auth-token` and cached user info. Does not affect the engine's local API token. Run `summer login` again to re-authenticate.
+Removes `~/.summer/auth-token`, the store sign-in (`~/.summer/oauth-token`) and cached user info. Does not affect the engine's local API token or a `SUMMER_TOKEN` variable. Run `summer login` again to sign in.
 
 ---
 
@@ -147,38 +153,45 @@ Reports whether you are logged in (and with which email), whether the engine is 
 Launch Summer Engine, optionally opening a project.
 
 ```bash
-summer run [path]
+summer run [path] [--no-project] [--background | --focus] [--bin <executable>]
 ```
 
-| Argument | Description |
+| Argument / Option | Description |
 |----------|-------------|
-| `path` | Path to a project directory (must contain `project.godot`). Optional. |
+| `path` | Path to a project directory (must contain `project.godot`) |
+| `--no-project` | Launch the editor's project manager without a project. Required when you give no path |
+| `--background` | Launch without taking focus. The default when an agent runs it (no terminal) |
+| `--focus` | Launch and bring the editor to the front. The default when a person runs it in a terminal |
+| `--bin <executable>` | Launch an engine build that is not installed (env `SUMMER_BIN`). On macOS, the executable inside the bundle, such as `Summer.app/Contents/MacOS/Summer` |
 
-**What it does:** Finds the Summer Engine binary, spawns it with `--editor`, and optionally passes `--path <projectPath>`. Waits for the local API to respond (up to 20 seconds). If the engine is already running, it reports the current state and exits.
+**What it does:** Finds the Summer Engine binary and launches it with your project. Waits for the local API to respond (up to 20 seconds). If the engine is already running with that project, it reports the version and port and exits. If it is running with another project, it refuses to start a second editor: close or switch the open project first.
 
 **Examples:**
 
 ```bash
-summer run                    # Launch engine (no project)
 summer run my-game            # Launch and open my-game/
 summer run ./projects/racer   # Launch and open a relative path
+summer run --no-project       # Launch the project manager only
 ```
 
 ---
 
 ### summer open
 
-Open a project in Summer Engine.
+Open a project in Summer Engine, or open a Summer page or editor surface by name.
 
 ```bash
-summer open <path>
+summer open <path | target> [--print] [--list] [--json]
 ```
 
-| Argument | Description |
+| Argument / Option | Description |
 |----------|-------------|
-| `path` | Path to a project directory (must contain `project.godot`) |
+| `path` | A project directory (contains `project.godot`) |
+| `target` | A destination: a summerengine.com page such as `billing`, `my-games` or `mcp-guide`, an editor surface such as `scene`, `node`, `script` or `inspector`, a phrase, or a `res://` path |
+| `--print` | Resolve only: print the URL or editor action, open nothing |
+| `--list` | List every destination |
 
-**What it does:** Resolves the path and checks for `project.godot`. If the engine is not running, it launches with that project. If the engine is already running, it prints the path and a note: to switch projects, close the current one in the engine first or run `summer run <path>`.
+**What it does:** For a project directory: if the engine is not running, it launches with that project. If the engine is already running, it prints a note: to switch projects, close the current one in the engine first, or run `summer run <path>`. For a destination: it opens the page in your browser or the surface in the editor. `--web`, `--editor`, `--path`, `--node`, `--scene` and `--param` narrow the target; `summer open --help` lists them.
 
 ---
 
@@ -192,7 +205,7 @@ summer create <template> [name]
 
 | Argument | Description |
 |----------|-------------|
-| `template` | Built-in slug (`empty`, `3d-basic`) or any community template slug |
+| `template` | A template slug from `summer list templates` (built-in `empty` or `3d-basic`, or a pinned library template) |
 | `name` | Project directory name (defaults to the template slug) |
 
 **Built-in templates** work offline:
@@ -202,14 +215,14 @@ summer create <template> [name]
 | `empty` | Empty 3D project with a root Node3D |
 | `3d-basic` | 3D scene with Camera3D, DirectionalLight3D, floor mesh, and sky |
 
-Community templates clone from `github.com/SummerEngine/template-*`. Run `summer list templates` to browse them. Pass `--keep-git` to keep the upstream `.git` directory after cloning (default is to detach so you start fresh).
+Library templates (platformers, FPS, racing, roguelikes, multiplayer starters and more) are pinned to one reviewed commit. `summer create` fetches exactly that commit, checks its tree digest, refuses on a mismatch, and records the pin in the project's `.summer/project.json`. Run `summer list templates` to browse them. Pass `--keep-git` to keep the fetched `.git` directory, detached at the pinned commit (the default removes it so you start fresh).
 
 **Examples:**
 
 ```bash
 summer create 3d-basic my-game     # Built-in template
 summer create empty                # Built-in template
-summer list templates              # Browse community templates
+summer list templates              # Browse every template
 ```
 
 ---
@@ -226,7 +239,7 @@ summer list <what>
 |----------|-------------|
 | `what` | `templates` or `projects` |
 
-- **templates:** Shows the built-in templates plus community templates from `github.com/SummerEngine`.
+- **templates:** Shows the built-in templates and the pinned library templates.
 - **projects:** Scans the current directory for subdirectories containing `project.godot`.
 
 ---
@@ -293,13 +306,14 @@ summer memory show .summer/memory/casting/voices.md
 Start the MCP server for AI tool integration.
 
 ```bash
-summer mcp [--profile <profile>] [--toolsets <list>] [--project <path>] [--instance <id>]
+summer mcp [--profile <profile>] [--toolsets <list>] [--surface v4|v3] [--project <path>] [--instance <id>]
 ```
 
 | Option | Description |
 |--------|-------------|
 | `--profile <profile>` | `full` (default), `engine` (engine, generation and the store; for clients with a tool limit) or `assets` (generation and the asset library, no engine). Env: `SUMMER_PROFILE` |
-| `--toolsets <list>` | Comma-separated toolsets to add. `summer mcp --help` lists them. Env: `SUMMER_TOOLSETS` |
+| `--toolsets <list>` | Comma-separated toolsets to add: `core`, `assets`, `tools`, `engine`, `ui`, `ship`, `uploads`, `apps`, `board`, `grow`, `studio`, `cloud`, `other` or `all`. `legacy` also lists every 3.x tool name. Env: `SUMMER_TOOLSETS` |
+| `--surface <surface>` | `v4` (the default: engine tools, `summer_docs_search`, `summer_docs_read`, `summer_search` and `summer_call`) or `v3` (the 3.x tools). Env: `SUMMER_SURFACE` |
 | `--project <path>` | Bind engine tools to the editor running this project |
 | `--instance <id>` | Bind engine tools to one exact Summer Engine instance |
 
@@ -366,10 +380,10 @@ summer config unset <key>
 Print recent engine events, or follow them live.
 
 ```bash
-summer events [--follow] [--kinds <csv>] [--limit <n>] [--json]
+summer events [--follow] [--kinds <csv>] [--since <seq>] [--limit <n>] [--json]
 ```
 
-`--kinds` takes event kinds such as `play.started,script.error`. Output is JSON lines when piped.
+`--kinds` takes event kinds such as `play.started,script.error`. `--since` starts after one sequence number (`0` replays what the engine kept). Output is JSON lines when piped. Needs engine 0.5.66 or newer.
 
 ---
 
@@ -433,7 +447,9 @@ summer store publish --game-id <gameId> --idempotency-key <k> --input '{"price":
 | `SUMMER_TOKEN` | A Summer account token. It wins over `~/.summer/auth-token`; `summer logout` does not clear it. |
 | `SUMMER_PROFILE` | The `summer mcp --profile` default |
 | `SUMMER_TOOLSETS` | The `summer mcp --toolsets` default |
-| `SUMMER_NO_TELEMETRY` | `1` stops signed-in MCP sessions from reporting each tool call to Summer |
+| `SUMMER_SURFACE` | The `summer mcp --surface` default |
+| `SUMMER_BIN` | The `summer run --bin` default: an engine build that is not installed |
+| `SUMMER_NO_TELEMETRY` | `1` turns off the library feedback reports and the signed-in usage lines (one per tool call or command: name, result and duration, never arguments). `DO_NOT_TRACK=1` does the same |
 
 There is no environment variable for the engine port. The CLI reads the port from the
 `~/.summer/api-port` file listed below, which the engine writes on startup, and falls back

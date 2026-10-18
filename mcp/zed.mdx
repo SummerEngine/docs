@@ -1,6 +1,6 @@
 ---
 title: "Build Games in Zed with Summer Engine MCP"
-description: "Connect Summer Engine's MCP server to Zed and build games with AI inside the fast, AI-powered editor."
+description: "Connect Summer Engine's MCP server to Zed's Agent Panel with one command or context_servers in settings.json, then build, run and debug games from Zed."
 icon: "zap"
 "og:image": "https://docs.summerengine.com/images/og/mcp-zed.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/mcp-zed.jpg"
@@ -103,7 +103,7 @@ Once configured, the AI can use Summer Engine's tools when you ask for game-rela
 
 Start Summer Engine and open your project. The MCP server connects to the engine's local API on port 6550. The engine writes a token to `~/.summer/api-token` when it starts.
 
-Every Summer error names its code and one next step (`next`). `not_signed_in`: run `npx -y summer-engine login`. `no_credits`: add credits at `https://www.summerengine.com/studio/credits`. All codes: [How Summer answers](/api-reference/mcp#errors).
+Every Summer error names its code and one next step (`next`). `not_signed_in`: run `npx -y summer-engine@latest login`. `no_credits`: add credits at `https://www.summerengine.com/studio/credits`. All codes: [How Summer answers](/api-reference/mcp#errors).
 
 ### MCP server not appearing or red dot
 

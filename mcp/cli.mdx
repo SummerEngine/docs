@@ -1,6 +1,7 @@
 ---
-title: "CLI Quick Start"
-description: "Install Summer Engine, create projects, run the engine, and connect your IDE. Claude Code, Cursor, and Devin Desktop use the MCP to control Summer Engine."
+title: "summer CLI Quick Start: Install, Sign In, Create and Run"
+sidebarTitle: "CLI Quick Start"
+description: "Get started with the summer CLI: install Summer Engine, sign in, create a project, run it, connect your agent, and run any Summer operation from the shell."
 icon: "terminal"
 "og:image": "https://docs.summerengine.com/images/og/mcp-cli.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/mcp-cli.jpg"
@@ -8,7 +9,7 @@ icon: "terminal"
 
 ## What is the CLI?
 
-The Summer Engine CLI lets you install the engine, create projects, run the engine, and connect your AI IDE (Claude Code, Cursor, Devin Desktop) to Summer Engine. Add the MCP config to your IDE and it will spawn the MCP server. You chat with the AI in your IDE, and the AI uses MCP tools to manipulate scenes, run the game, and debug.
+Summer is the game engine built for AI. The `summer` CLI (npm package `summer-engine`) installs the engine, creates projects, runs the engine, and connects your AI agent (Claude Code, Codex, Cursor, Devin Desktop and [many more](/mcp/agents)) to Summer Engine. Your agent then starts the MCP server itself. You chat with the AI in your IDE, and the AI uses MCP tools to manipulate scenes, run the game, and debug.
 
 Use `npx summer-engine` (no install) or `summer` after you install it:
 
@@ -31,7 +32,7 @@ Then `summer ops search "<words>"` finds any operation, signed in or not, and `s
 npx summer-engine install
 ```
 
-Downloads and installs Summer Engine to your system (macOS: `/Applications/Summer.app`, Windows: default location). No npm global install required.
+Downloads and installs Summer Engine, about 1 GB (macOS: `/Applications/Summer.app`; Windows: the default location; Linux x86_64: `~/.summer/engine/`). It never replaces an installed engine without asking. No npm global install required.
 
 ## Sign In
 
@@ -47,7 +48,7 @@ Opens your browser once. You sign in to your Summer account with Google, GitHub,
 npx summer-engine create 3d-basic my-game
 ```
 
-Creates a new project from a template. Templates: `empty` (minimal 3D) or `3d-basic` (camera, light, floor).
+Creates a new project from a template in the current directory. `empty` (minimal 3D) and `3d-basic` (camera, light, floor) are built in and work offline. `summer list templates` shows the pinned library templates too: platformers, FPS, racing, roguelikes, multiplayer starters and more.
 
 ## Run the Engine
 
@@ -57,7 +58,7 @@ npx summer-engine run my-game
 
 Launches Summer Engine with your project. Engine tools need the engine running with your project. Cloud operations (assets, plans, the store, prices, analytics) do not.
 
-## Start MCP (for Cursor, Claude Code, Devin Desktop)
+## Connect Your Agent
 
 One command writes the MCP config for your agent and installs the Summer skills:
 
@@ -104,8 +105,8 @@ Add `--dry-run` to check a change first, `--wait` to follow a job or an approval
 | `summer whoami` | Who is signed in, plan and credits |
 | `summer logout` | Clear auth tokens |
 | `summer status` | Check engine status, port, auth |
-| `summer run [path]` | Launch engine, optionally with project |
-| `summer open <path>` | Open project in running engine |
+| `summer run <path>` | Launch the engine with a project (`--no-project` for none) |
+| `summer open <path or page>` | Open a project, a summerengine.com page or an editor surface |
 | `summer create <template> [name]` | Create project from template |
 | `summer list templates` | Show available templates |
 | `summer list projects` | Show projects in current directory |

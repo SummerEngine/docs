@@ -1,6 +1,7 @@
 ---
-title: "MCP: Build Games with AI"
-description: "Summer is the game engine built for AI. Connect Claude Code, Codex, Cursor, Claude, ChatGPT or any agent: one URL for cloud work, one command for engine work."
+title: "Summer Engine MCP: Build Games with Any AI Agent"
+sidebarTitle: "MCP: Build Games with AI"
+description: "Summer Engine is the game engine built for AI. Connect Claude Code, Codex, Cursor, ChatGPT or any agent: one URL for cloud work, one command for engine work."
 icon: "plug"
 "og:image": "https://docs.summerengine.com/images/og/mcp-overview.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/mcp-overview.jpg"
@@ -79,7 +80,7 @@ Devin Desktop's AI can use Summer Engine's MCP tools. Configure the MCP server, 
 
 ## How Do I Make Games with Antigravity?
 
-Antigravity's AI can use Summer Engine's MCP tools. Add the config to `.vscode/mcp.json`, open your project in the engine, and build games from Antigravity: add nodes, import assets, run and debug.
+Antigravity's AI can use Summer Engine's MCP tools. Run `npx -y summer-engine@latest setup antigravity --yes` (it writes `~/.gemini/config/mcp_config.json`), open your project in the engine, and build games from Antigravity: add nodes, import assets, run and debug.
 
 <Card
   title="Antigravity Setup"
@@ -149,7 +150,7 @@ Run a model on your own GPU with Ollama, LM Studio, or Goose and connect it thro
 
 ## How Do I Use the Summer Engine CLI?
 
-The CLI lets you install Summer Engine, create projects, run the engine, and connect your IDE. Add the MCP config and your IDE spawns the MCP server. You chat with the AI in your IDE, and the AI uses MCP tools to control Summer Engine.
+The `summer` CLI installs Summer Engine, creates projects, runs the engine, and connects your agent. Your agent then starts the MCP server itself. Prefer no MCP server? `npx -y summer-engine@latest setup <agent> --cli --yes` installs the skills only, and your agent runs Summer as `summer <area> <action>` commands in its shell.
 
 <Card
   title="CLI Quick Start"
@@ -163,7 +164,7 @@ The CLI lets you install Summer Engine, create projects, run the engine, and con
   icon="list"
   href="/mcp/cli-reference"
 >
-  All commands: install, login, create, list, mcp
+  Every command: setup, install, login, run, create, mcp and operations from the shell
 </Card>
 
 ---
@@ -194,9 +195,6 @@ Summer Engine's MCP server exposes its tools over the Model Context Protocol. Th
 Summer Engine gives you:
 
 - **A full MCP toolset**: Scene (AddNode, SetProp, SaveScene, etc.), Debug and Play (Play, Stop, diagnostics, script and debugger errors, and screenshot the viewport or running game), Project (settings, input, import, context), Asset Library (search and import), Generation (image, 3D, audio, video, motion), Plans, Publishing (export, build upload, store page), Prices, Analytics and Team. See [Operations](/mcp/operations).
-- **Evaluate existing projects**: Familiar source formats reduce migration work, but
-  compatibility ranges are not fully measured. Commit first and verify imports, tutorials,
-  plugins, native extensions, and exports against the current Summer Engine release.
 - **CLI + MCP + API**: Install via CLI, control via MCP, same local API under the hood
 - **One workflow**: Whether you use the built-in chat, Cursor, Claude Code, Devin Desktop, Antigravity, Codex, VS Code, Zed, or Claude and ChatGPT (web, desktop, phone), the operations are identical
 
@@ -216,11 +214,13 @@ Summer Engine gives you:
 | Use VS Code or GitHub Copilot with Summer Engine | [VS Code & Copilot setup](/mcp/vscode) |
 | Use Zed with Summer Engine | [Zed setup](/mcp/zed) |
 | Use Claude or ChatGPT in the browser | [Summer in ChatGPT and Claude](/mcp/chatgpt-and-claude) |
+| Play with friends from Claude or ChatGPT | [Summer Games MCP](/mcp/summer-games) |
+| Use another agent (31 supported) | [Every supported agent](/mcp/agents) |
 | Make games for free with a local LLM | [Local models setup](/mcp/local-models) |
 | Use the CLI | [CLI quick start](/mcp/cli) · [CLI reference](/mcp/cli-reference) |
 | Move my project to another machine | [Git and GitHub](/guides/github-from-changes-dock) |
-| See all MCP tools | [Operations reference](/mcp/operations) |
-| See every operation, how Summer answers, and jobs | [Operations](/mcp/operations) |
+| See every operation and its MCP tool | [Operations reference](/mcp/operations) |
+| Read how Summer answers: statuses, errors, jobs | [How Summer answers](/api-reference/mcp) |
 | Build a game with MCP (for AI agents) | [Building a game](/mcp/building-a-game) |
 | MCP setup & prerequisites | [MCP setup](/mcp/setup) |
 

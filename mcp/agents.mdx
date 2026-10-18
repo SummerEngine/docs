@@ -1,6 +1,7 @@
 ---
-title: "Every Supported Agent"
-description: "The full list of AI coding agents and IDEs summer setup can configure for Summer Engine, with the exact MCP config file, file shape, and skills folder each one uses."
+title: "Every AI Coding Agent Summer Engine Supports"
+sidebarTitle: "Every Supported Agent"
+description: "Every AI coding agent and IDE summer setup configures for Summer Engine: the setup id, the MCP config file it writes, the file shape and the skills folder."
 icon: "list"
 "og:image": "https://docs.summerengine.com/images/og/mcp-agents.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/mcp-agents.jpg"
@@ -14,7 +15,7 @@ One command configures any of these agents:
 npx -y summer-engine@latest setup <agent> --yes
 ```
 
-It writes the MCP server entry into the agent's own config file, installs the Summer skill library where that agent reads skills, and runs `summer doctor`. Every path below is what the command writes; paste the snippet yourself if you prefer to edit files by hand. Paths were checked against each product's official documentation on 2026-09-11. Where a vendor's docs are ambiguous, the section says so.
+It writes the MCP server entry into the agent's own config file, installs the Summer skill library where that agent reads skills, and runs `summer doctor`. For every agent whose sign-in summer.games accepts (all except Claude Desktop, Visual Studio, Qoder, Rovo Dev, LM Studio and the legacy ones), it also adds the Summer Games MCP (`summer-games`, `https://mcp.summer.games/mcp`: friends, parties and messages as you) and prints the one sign-in step. `--no-games` skips it. `--cli` installs the skills with no MCP server. Every path below is what the command writes; paste the snippet yourself if you prefer to edit files by hand. Paths were checked against each product's official documentation on 2026-09-11. Where a vendor's docs are ambiguous, the section says so.
 
 **31 active agents.** Agents marked legacy still work but warn on use.
 
@@ -72,7 +73,7 @@ Id: `claude-desktop`. Also accepted: `claude-app`, `claudedesktop`.
 |---|---|
 | MCP config (user) | `~/Library/Application Support/Claude/claude_desktop_config.json` · Linux `~/.config/Claude/claude_desktop_config.json` · Windows `%APPDATA%\Claude\claude_desktop_config.json` |
 | MCP config (project) | none; a `--scope project` request writes the user file with a warning |
-| Skills | none. Claude Desktop has no skills folder. The MCP server ships summer_get_agent_playbook, so the model can pull Summer guidance in-chat. |
+| Skills | none. Claude Desktop has no skills folder. The MCP server ships summer_docs_search and summer_docs_read, so the model can pull Summer guidance in-chat. |
 | After setup | Quit and reopen Claude Desktop; the summer-engine tools appear under the tools menu in a new chat. |
 
 What `summer setup` writes (paste this if you configure by hand):
@@ -421,7 +422,7 @@ Id: `visual-studio`. Also accepted: `vs`, `vs2026`, `visual-studio-2026`, `visua
 |---|---|
 | MCP config (user) | `~/.mcp.json` · Windows `%USERPROFILE%\.mcp.json` |
 | MCP config (project) | `.mcp.json` |
-| Skills | none. Visual Studio's Copilot has no skills folder yet; the MCP server ships summer_get_agent_playbook for in-chat guidance. |
+| Skills | none. Visual Studio's Copilot has no skills folder yet; the MCP server ships summer_docs_search and summer_docs_read for in-chat guidance. |
 | After setup | Restart Visual Studio, open Copilot Chat in Agent mode, and enable summer-engine in the tools picker. |
 
 <Note>
@@ -458,7 +459,7 @@ Id: `copilot-jetbrains`. Also accepted: `jetbrains-copilot`, `intellij-copilot`,
 |---|---|
 | MCP config (user) | `~/.config/github-copilot/intellij/mcp.json` · Windows `%APPDATA%\github-copilot\intellij\mcp.json` |
 | MCP config (project) | none; a `--scope project` request writes the user file with a warning |
-| Skills | none. Copilot in JetBrains documents no skills folder; the MCP server ships summer_get_agent_playbook for in-chat guidance. |
+| Skills | none. Copilot in JetBrains documents no skills folder; the MCP server ships summer_docs_search and summer_docs_read for in-chat guidance. |
 | After setup | Restart the JetBrains IDE and open Copilot Chat in Agent mode; summer-engine shows in the tools list. |
 
 <Note>
@@ -666,7 +667,7 @@ Id: `trae`. Also accepted: `trae-ide`, `bytedance-trae`.
 |---|---|
 | MCP config (user) | none: Trae manages user-level MCP servers in its UI; writing the project file .trae/mcp.json instead. |
 | MCP config (project) | `.trae/mcp.json` |
-| Skills | none. Trae documents no skills folder; the MCP server ships summer_get_agent_playbook for in-chat guidance. |
+| Skills | none. Trae documents no skills folder; the MCP server ships summer_docs_search and summer_docs_read for in-chat guidance. |
 | After setup | Restart Trae and open the MCP settings; summer-engine should show as connected. |
 
 <Note>
@@ -869,7 +870,7 @@ Id: `junie`. Also accepted: `jetbrains-junie`.
 |---|---|
 | MCP config (user) | `~/.junie/mcp/mcp.json` · Windows `%USERPROFILE%\.junie\mcp\mcp.json` |
 | MCP config (project) | `.junie/mcp/mcp.json` |
-| Skills | none. Junie has no skills folder; put project guidance in .junie/guidelines.md. The MCP server ships summer_get_agent_playbook for in-chat guidance. |
+| Skills | none. Junie has no skills folder; put project guidance in .junie/guidelines.md. The MCP server ships summer_docs_search and summer_docs_read for in-chat guidance. |
 | After setup | Restart the JetBrains IDE so Junie reloads its MCP config. |
 
 What `summer setup` writes (paste this if you configure by hand):
@@ -1057,7 +1058,7 @@ Id: `lm-studio`. Also accepted: `lmstudio`, `lm_studio`.
 |---|---|
 | MCP config (user) | `~/.lmstudio/mcp.json` · Windows `%USERPROFILE%\.lmstudio\mcp.json` |
 | MCP config (project) | none; a `--scope project` request writes the user file with a warning |
-| Skills | none. LM Studio has no rules or skills folder. The MCP server ships summer_get_agent_playbook, so the model can pull Summer guidance in-chat. |
+| Skills | none. LM Studio has no rules or skills folder. The MCP server ships summer_docs_search and summer_docs_read, so the model can pull Summer guidance in-chat. |
 | After setup | Open LM Studio, toggle on the summer-engine MCP server in the Program tab, and raise the loaded model's context length to 32k or higher. |
 
 What `summer setup` writes (paste this if you configure by hand):

@@ -1,6 +1,6 @@
 ---
 title: "How Summer's AI Agents Build Your Game"
-description: "Summer Engine builds games with a team of AI agents. One agent plans and talks to you, specialist agents do the hands-on work, and you stay in charge of all of it. Here is how the team works and how to get the most out of it."
+description: "Summer Engine builds with an AI agent team: a main agent plans and talks to you, and specialists research, build, make assets and verify. You stay in charge."
 icon: "users"
 "og:image": "https://docs.summerengine.com/images/og/ai-tools-subagents.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/ai-tools-subagents.jpg"
@@ -25,6 +25,8 @@ Summer keeps a team of specialist agents, each shaped for one kind of work. You 
 Here is the team in plain terms.
 
 **A researcher** reads your project and answers questions about it. When the main agent needs to know how something is wired before it changes anything, this is who it asks. Read only, fast, and cheap.
+
+**A general worker** handles multi-step jobs that read and write files, like scaffolding scripts or applying a change after research.
 
 **A builder** does the hands-on construction. It writes scripts, edits scenes, sets the main scene, binds input actions, and runs compile checks. When you ask for a new game or a feature slice, this is who builds it end to end.
 
@@ -68,9 +70,16 @@ You never have to decide which path applies. Summer makes that call for you, and
 
 ## You approve anything risky
 
-Summer keeps you in control of the actions that matter. Pick a **permission mode** in the composer to set how much runs automatically. Manual approves every edit and generation. Accept edits auto-runs file changes but asks before spending credits. Auto approve (default) runs edits and generation but still blocks destructive actions. Bypass runs everything except hard safety blocks.
+Summer keeps you in control of the actions that matter. Pick a **permission mode** in the composer to set how much runs on its own. Reads always run on their own.
 
-Shell commands, file deletions, and credit-spending generation respect the mode you chose. The building and editing happen freely when you want speed, and the irreversible steps wait for you when you want control.
+| Mode | Runs without asking | Asks you first |
+|---|---|---|
+| **Manual** | Reads | Edits, paid or external tools, commands that change something, destructive actions |
+| **Accept edits** | Reads and project edits | Paid or external tools, commands that change something, destructive actions |
+| **Auto approve** (default) | Reads, project edits, and paid or external tools such as asset generation | Commands that change something, destructive actions |
+| **Bypass permissions** | Most tools, commands and deletions | Project recovery and catastrophic shell commands. Protected project files still refuse unsafe writes. |
+
+Your choice is saved on this device and applies to all your chats. Approvals are not a usage limit: agent and specialist work can use credits in every mode, even when it only reads.
 
 ## Related
 

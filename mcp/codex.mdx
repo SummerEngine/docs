@@ -1,6 +1,6 @@
 ---
 title: "Build Games in Codex with Summer Engine MCP"
-description: "Connect Summer Engine's MCP server to Codex and build games with OpenAI's AI coding assistant driving your engine."
+description: "Connect Summer Engine's MCP server to OpenAI Codex with one command or config.toml, then build, run and debug games from Codex. Hosted MCP for cloud work too."
 icon: "code"
 "og:image": "https://docs.summerengine.com/images/og/mcp-codex.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/mcp-codex.jpg"
@@ -15,7 +15,7 @@ Codex is OpenAI's AI coding assistant that supports MCP (Model Context Protocol)
 This guide covers the configuration. Setup takes about a minute.
 
 <Tip>
-**Fastest path.** `npx -y summer-engine@latest setup codex --yes` writes the config below into `~/.codex/config.toml`, installs the skill library to `~/.agents/skills`, and runs `summer doctor`. The steps that follow are the manual version of the same thing.
+**Fastest path.** `npx -y summer-engine@latest setup codex --yes` writes the config below into `~/.codex/config.toml`, installs the skill library to `~/.agents/skills`, and runs `summer doctor`. It also adds the Summer Games MCP (`summer-games`: friends, parties and messages as you); sign in once with `/mcp login summer-games`. The steps that follow are the manual version of the same thing.
 </Tip>
 
 ## Prerequisites
@@ -85,8 +85,8 @@ If the node appears in Summer Engine, the setup is working.
 For assets, plans, the store, publishing and Grow, with nothing to install, add the hosted Summer server. The second command opens your browser to sign in:
 
 ```bash
-codex mcp add summer --url https://mcp.summerengine.com/mcp
-codex mcp login summer
+codex mcp add summer-cloud --url https://mcp.summerengine.com/mcp
+codex mcp login summer-cloud
 ```
 
 Engine tools (scenes, scripts, play, screenshots) need the local server above. After `summer login`, the local server also runs the cloud tools, so use one of the two.
@@ -111,7 +111,7 @@ Once configured, Codex can use Summer Engine's tools when you ask for game-relat
 
 Start Summer Engine and open your project. The MCP server connects to the engine's local API on port 6550. The engine writes a token to `~/.summer/api-token` when it starts.
 
-Every Summer error names its code and one next step (`next`). `not_signed_in`: run `npx -y summer-engine login`. `no_credits`: add credits at `https://www.summerengine.com/studio/credits`. All codes: [How Summer answers](/api-reference/mcp#errors).
+Every Summer error names its code and one next step (`next`). `not_signed_in`: run `npx -y summer-engine@latest login`. `no_credits`: add credits at `https://www.summerengine.com/studio/credits`. All codes: [How Summer answers](/api-reference/mcp#errors).
 
 ### MCP server not appearing
 

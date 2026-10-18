@@ -1,50 +1,56 @@
 ---
-title: "Chat & AI Integration"
-description: "How to use Summer Engine's AI programmatically via MCP tools"
+title: "Use Summer Engine's AI from Your Own Agent (MCP)"
+sidebarTitle: "Chat and AI integration"
+description: "Summer Engine has no separate chat API. Agents drive the engine and Summer's cloud through the Summer MCP: the hosted server for cloud work, the local server for the engine."
 ---
 
 {/* Do not reintroduce a hardcoded MCP tool count here. The tool list grows every release and a baked-in number has already gone stale twice. */}
 
-## AI Integration via MCP
+Summer is the game engine built for AI. There is no separate chat API. Your own agent talks to Summer through the **Summer MCP** (Model Context Protocol), with the same operations everywhere.
 
-Summer Engine's AI is accessed through the **MCP (Model Context Protocol)** integration. The MCP server exposes tools that let any MCP-compatible AI tool control the engine: add nodes, set properties, import assets, run the game, and debug.
+## Two servers, one set of operations
 
-This is the same interface used by:
-- **Summer Agent** (built-in chat in the editor)
-- **Cursor**, **Claude Code**, **Devin Desktop**, **Antigravity**, **Codex**, **VS Code**, and **Zed** via MCP
-- **Claude** and **ChatGPT** (web, desktop, phone) through the hosted MCP at `https://mcp.summerengine.com/mcp`, for cloud work
+| | Hosted MCP | Local MCP |
+|---|---|---|
+| Address or command | `https://mcp.summerengine.com/mcp` | `npx -y summer-engine@latest setup <agent> --yes` writes `summer mcp` into your agent |
+| Does | Assets, plans, the store, publishing, prices, analytics | The engine: scenes, scripts, play, screenshots, errors. After `summer login`, also every cloud operation |
+| Works in | Claude and ChatGPT (web, desktop and phone), Claude Code, Codex, Cursor and any MCP app with OAuth | Claude Code, Codex, Cursor, Devin Desktop, Antigravity, VS Code, Zed and [many more](/mcp/agents) |
 
-## How It Works
+## How the local server reaches the engine
 
-1. Summer Engine runs a local API server on `localhost:6550` when a project is open
-2. The MCP server (`npx summer-engine mcp`) connects to this local API
-3. Your IDE's AI uses the MCP tools to manipulate the engine
+1. Summer Engine runs a local API on `localhost:6550` while a project is open. If that port is busy, it picks another and writes it to `~/.summer/api-port`.
+2. The engine writes a token to `~/.summer/api-token` on every start. The local MCP reads it. You manage no keys.
+3. Your agent calls a tool, and the change appears in the editor.
 
-No cloud API keys needed for MCP. The engine handles authentication locally via `~/.summer/api-token`.
+Cloud operations need your Summer sign-in. See [Authentication](/api-reference/authentication).
 
-## Example: Add a Node via MCP
+## Example: add a node
 
-When you ask your AI IDE "Add a Camera3D to the scene," the AI calls:
+When you ask your agent "Add a Camera3D to the scene", it calls:
 
 ```
-summer_add_node(parent="./", type="Camera3D", name="MainCamera")
+summer_add_node(scenePath="res://main.tscn", parent="./", type="Camera3D", name="MainCamera")
 ```
 
-The node appears in Summer Engine immediately.
+The node appears in Summer Engine at once. Every call answers in one shape: [How Summer answers](/api-reference/mcp).
 
-## Full Reference
+## Full reference
 
 <CardGroup cols={2}>
-  <Card title="MCP Setup" icon="plug" href="/mcp/setup">
-    Connect your IDE to Summer Engine
+  <Card title="MCP setup" icon="plug" href="/mcp/setup">
+    Connect your agent to Summer Engine
   </Card>
   <Card title="Operations reference" icon="wrench" href="/mcp/operations">
     Every operation with its inputs and an example
   </Card>
-  <Card title="CLI Reference" icon="terminal" href="/mcp/cli-reference">
-    Install, login, create, and run from the command line
+  <Card title="CLI reference" icon="terminal" href="/mcp/cli-reference">
+    Install, sign in, create and run from the command line
   </Card>
-  <Card title="Building a Game" icon="gamepad-2" href="/mcp/building-a-game">
+  <Card title="Building a game" icon="gamepad-2" href="/mcp/building-a-game">
     Step-by-step guide for AI agents
   </Card>
 </CardGroup>
+
+---
+
+Need help? Ask in [Discord](https://discord.gg/summerengine) first. That is where you get the fastest reply and support. For concrete help, email [support@summerengine.com](mailto:support@summerengine.com) or [founders@summerengine.com](mailto:founders@summerengine.com).
