@@ -1,6 +1,6 @@
 ---
 title: "Install Summer Engine"
-description: "Download Summer Engine for Mac or Windows in a minute, or let your AI agent install it with one command."
+description: "Download Summer Engine for Apple-silicon Macs or Windows 10 and newer, or let your AI agent install it with npx -y summer-engine@latest install."
 icon: "download"
 "og:image": "https://docs.summerengine.com/images/og/essentials-installation.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/essentials-installation.jpg"
@@ -8,12 +8,12 @@ icon: "download"
 
 ## System Requirements
 
-Summer runs on Windows and macOS with the following minimum requirements:
+Summer Engine has native installers for macOS and Windows. There is no Linux installer; on Linux (x86_64), `npx -y summer-engine@latest install` places the engine binary under `~/.summer/engine/`, without a desktop app bundle.
 
-- **OS**: Windows 10+ or macOS 10.14+
-- **RAM**: 4GB minimum, 8GB recommended
-- **Storage**: 2GB available space
-- **Graphics**: OpenGL 3.3 support
+- **macOS**: an Apple-silicon Mac (2020 or newer)
+- **Windows**: Windows 10 or newer
+- **RAM**: 8 GB recommended
+- **Storage**: 2 GB free space for the app, plus room for your projects
 
 ## Download Summer Engine
 
@@ -29,7 +29,7 @@ Summer runs on Windows and macOS with the following minimum requirements:
 
 **Cloud work needs nothing installed.** Add `https://mcp.summerengine.com/mcp` to your agent and sign in once. Your agent can then make assets, work on plans, write the store page and publish.
 
-**Engine work (scenes, scripts, play, screenshots)** needs Summer Engine on your computer. If you use Cursor, Claude Code, or any MCP-compatible AI tool, you can install it from the command line:
+**Engine work (scenes, scripts, play, screenshots)** needs Summer Engine on your computer. If you use Claude Code, Codex, Cursor or any other MCP-compatible agent, you can install it from the command line:
 
 ```bash
 npx -y summer-engine@latest install
@@ -44,7 +44,7 @@ npx -y summer-engine@latest login
 npx -y summer-engine@latest run
 ```
 
-For each agent, see [MCP Setup](/mcp/setup).
+Prefer a global `summer` command? Install it with `brew install summerengine/tap/summer` or `npm install -g summer-engine`. For each agent, see [MCP Setup](/mcp/setup).
 
 ## Installation Steps
 
@@ -59,7 +59,7 @@ For each agent, see [MCP Setup](/mcp/setup).
     Open Summer Engine from your applications folder or Start menu.
   </Step>
   <Step title="Create your first project">
-    Click "New Project" and choose a template to get started.
+    Click "New Project", name it and pick a folder, or start from a template.
   </Step>
 </Steps>
 

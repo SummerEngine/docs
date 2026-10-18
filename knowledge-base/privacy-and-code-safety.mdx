@@ -1,47 +1,37 @@
 ---
-title: "Is my code safe?"
-description: "Privacy Mode is a Pro feature. When enabled, we guarantee that code data is never stored by our model providers or used for training."
+title: "Is my code safe with Summer Engine?"
+sidebarTitle: "Is my code safe?"
+description: "How Summer Engine handles your code: encrypted in transit and at rest, never sold, and sent to AI providers only to answer you. The Privacy Policy sets training use."
 icon: "question"
 "og:image": "https://docs.summerengine.com/images/og/knowledge-base-privacy-and-code-safety.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/knowledge-base-privacy-and-code-safety.jpg"
 ---
 
-## Privacy Mode
+**Your project stays yours, and we never sell it.** Your game is plain project files on your computer. Summer reads and sends only what it needs to answer you.
 
-**When Privacy Mode is enabled, we guarantee that code data is never stored by our model providers or used for training.**
+## What is always true
 
-Privacy Mode is included on all paid plans. It is **off by default** for every account, including Pro — you turn it on explicitly in account settings, and from that point forward it applies to all chats and operations sent from your account.
+- **Encryption.** Data is encrypted in transit (TLS 1.3) and at rest (AES-256).
+- **No selling your data.** We do not sell your code, prompts or game projects to third parties.
+- **AI providers see what you send.** When you chat with Summer AI, your prompts and the code snippets in them go to our model providers to generate the answer.
+- **Project search runs on our servers.** To find the right files, Summer stores chunks of your changed files with their paths. See [How does project intelligence work?](/knowledge-base/project-intelligence).
+- **Your own agent, your provider's terms.** When Claude Code, Codex, Cursor or another agent drives Summer Engine through local MCP, that agent's provider handles your prompts under its own terms.
 
-<Info>
-Privacy Mode is a paid-plan feature. The Free plan does not include Privacy Mode.
-</Info>
+## Training use
 
-## What Happens When Privacy Mode Is Off
+The [Privacy Policy](https://summerengine.com/privacy), section "How we use your prompts and code", is the binding text. In short:
 
-Privacy Mode is off by default for all accounts.
-
-When Privacy Mode is not enabled, we may use and store prompts, generated outputs, code snippets, editor actions, and other code data to improve our AI features and train our models. Free accounts do not have access to Privacy Mode and operate in this mode by default.
-
-## What's Always True
-
-- **Encryption.** All data is encrypted in transit (TLS 1.3) and at rest (AES-256).
-- **No selling your data.** We do not sell your code, prompts, or game projects to third parties.
-- **Safety carve-out.** Content flagged for safety or security review may be retained regardless of Privacy Mode.
-- **Feedback carve-out.** Content you explicitly share with us as Feedback or in a bug report may be reviewed and used to improve Summer Engine, regardless of Privacy Mode.
-
-For the full legal text, see our [Privacy Policy](https://summerengine.com/privacy), specifically the section "How we use your prompts and code".
-
-## How to Enable Privacy Mode
-
-Privacy Mode is available in your account settings on any paid plan. Once enabled, it applies to all chats and operations sent from your account from that point forward.
+- On the Free plan, prompts and outputs may be used to improve our models.
+- The policy describes Privacy Mode for paid plans. See [Privacy Mode](/security/privacy-mode).
+- Content flagged for safety or security review, and content you send us as feedback or in a bug report, may be kept and reviewed in every case.
 
 ## Related
 
-<CardGroup cols={1}>
-  <Card title="Privacy Mode" icon="shield" href="/security/privacy-mode">
-    Full privacy documentation
+<CardGroup cols={2}>
+  <Card title="Security overview" icon="shield" href="/security/overview">
+    Infrastructure, subprocessors and how to report a security issue
   </Card>
   <Card title="Privacy Policy" icon="file-text" href="https://summerengine.com/privacy">
-    Legal text on prompts, code, and training-data use
+    Legal text on prompts, code and training-data use
   </Card>
 </CardGroup>

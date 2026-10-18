@@ -1,6 +1,7 @@
 ---
-title: "Frequently Asked Questions"
-description: "Answers to common questions about Summer. Browse by topic or search."
+title: "Summer Engine FAQ"
+sidebarTitle: "FAQ"
+description: "Answers to common Summer Engine questions: what it is, pricing, AI models, multiplayer, existing projects, privacy, publishing to Steam and mobile."
 icon: "circle-question-mark"
 "og:image": "https://docs.summerengine.com/images/og/essentials-faq.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/essentials-faq.jpg"
@@ -15,11 +16,11 @@ Common questions about Summer, organized by topic. Each question links to a deta
 <CardGroup cols={1}>
   <Card title="What is Summer?" href="/knowledge-base/what-is-summer">The game engine built for AI. Any agent builds, tests and publishes a full multiplayer game.</Card>
   <Card title="What makes Summer different from ChatGPT?" href="/knowledge-base/summer-vs-chatgpt">On its own, a chat model gives you text. Connected to Summer, any agent works on your game directly.</Card>
-  <Card title="Is Summer for beginners or professionals?" href="/knowledge-base/beginners-or-professionals">Summer is for everyone. Vibe coders and professional developers alike.</Card>
-  <Card title="Has Summer been used for production games?" href="/knowledge-base/production-games">Yes. We shipped Don't Pray on Steam in 2.5 months. It's a commercial product.</Card>
-  <Card title="What's the learning curve?" href="/knowledge-base/learning-curve">Gentle to advanced. Vibe coding has near-zero curve. Master the engine with AI as your tutor.</Card>
-  <Card title="Can I make AAA games with Summer?" href="/knowledge-base/aaa-games">Summer is designed for indie and mid-scale projects. Sweet spot: 3-12 months for projects that traditionally take 1-7 years.</Card>
-  <Card title="How does Summer compare to other AI game tools?" href="/knowledge-base/summer-vs-other-tools">Summer is a full game engine, not an AI addon. Deeper integration, better context, safer operations.</Card>
+  <Card title="Is Summer for beginners or professionals?" href="/knowledge-base/beginners-or-professionals">Both. Describe a game in plain words, or take full control of a full engine.</Card>
+  <Card title="Has Summer been used for production games?" href="/knowledge-base/production-games">Yes. We built Don't Pray, a live online PvP game on Steam, in 2.5 months.</Card>
+  <Card title="What's the learning curve?" href="/knowledge-base/learning-curve">Minutes to start. Go as deep as you want, with the agent explaining as it builds.</Card>
+  <Card title="Can I make AAA games with Summer?" href="/knowledge-base/aaa-games">A full 2D and 3D engine. Agents do the heavy lifting; scope depends on your team and time.</Card>
+  <Card title="How does Summer compare to other AI game tools?" href="/knowledge-base/summer-vs-other-tools">A full game engine built for AI, not a plugin. Any agent works inside it.</Card>
 </CardGroup>
 
 ## Technical
@@ -27,10 +28,10 @@ Common questions about Summer, organized by topic. Each question links to a deta
 <CardGroup cols={1}>
   <Card title="Is Summer compatible with my existing project?" href="/knowledge-base/godot-compatibility">Summer uses familiar formats, but project compatibility ranges are not fully measured. Commit first and verify imports, plugins, native extensions, and exports.</Card>
   <Card title="What if I have existing projects?" href="/knowledge-base/godot-projects">Open a committed copy in Summer Engine and review the first import. Version-sensitive plugins and native extensions need explicit testing.</Card>
-  <Card title="Which AI models does Summer use?" href="/knowledge-base/ai-models">Claude, GPT-5, Gemini, Meshy, ElevenLabs, and more. Choose your models in settings.</Card>
-  <Card title="How good are AI-generated assets?" href="/knowledge-base/ai-asset-quality">Great for prototyping and indie games. Learn the tradeoffs and when to use human artists.</Card>
+  <Card title="Which AI models does Summer use?" href="/knowledge-base/ai-models">Auto picks the chat model, or choose one yourself. Asset generation uses its own backends.</Card>
+  <Card title="How good are AI-generated assets?" href="/knowledge-base/ai-asset-quality">Strong for props, environments and fast iteration. Plan artist time for hero characters and key art.</Card>
   <Card title="Can I make a game with just AI, no coding?" href="/knowledge-base/ai-game-dev">Yes. Describe what you want and Summer Engine writes the code. AI game dev and vibe coding for games.</Card>
-  <Card title="How do specialist agents work?" href="/knowledge-base/specialist-agents">Expert AI agents for 3D modeling, audio design, and complex systems. Brought in on demand.</Card>
+  <Card title="How do specialist agents work?" href="/knowledge-base/specialist-agents">A fixed team: researcher, builder, asset maker, verifier and advisor. The main agent hands them work.</Card>
   <Card title="How does project intelligence work?" href="/knowledge-base/project-intelligence">AI indexes and understands your entire codebase, scenes, assets, and relationships automatically.</Card>
   <Card title="What are the limitations of AI operations?" href="/knowledge-base/ai-operations-limitations">AI changes go through safe APIs. Some tasks still require manual work. Learn what works well and what doesn't.</Card>
   <Card title="Does Summer support multiplayer?" href="/knowledge-base/multiplayer">Yes. Summer runs a server for every match, plus matchmaking, parties, saves and leaderboards.</Card>
@@ -42,11 +43,11 @@ Common questions about Summer, organized by topic. Each question links to a deta
 ## Account & Support
 
 <CardGroup cols={1}>
-  <Card title="Is my code safe?" href="/knowledge-base/privacy-and-code-safety">Encrypted in transit and at rest. Privacy Mode stops us using your code to train our models, and is available on paid plans. It is off by default.</Card>
-  <Card title="Is Summer free?" href="/knowledge-base/pricing">Free to download and try. Free tier with core AI features. Premium features available through subscription.</Card>
-  <Card title="How do I get support?" href="/knowledge-base/support">Founders respond personally. Email, Discord, and more.</Card>
-  <Card title="How do I get started with no experience?" href="/knowledge-base/no-experience">Download Summer Engine, create a project, describe what you want. No coding required. AI does the rest.</Card>
-  <Card title="How do I publish to Steam?" href="/knowledge-base/publish-steam">Export your game, then submit to Steam. $100 Steam Direct fee, 1-3 day approval. Full guide inside.</Card>
+  <Card title="Is my code safe?" href="/knowledge-base/privacy-and-code-safety">Encrypted in transit and at rest, never sold. The Privacy Policy sets how prompts and code are used.</Card>
+  <Card title="Is Summer free?" href="/knowledge-base/pricing">Yes. The app and local MCP are free. Paid plans from $20/mo raise hosted AI limits.</Card>
+  <Card title="How do I get support?" href="/knowledge-base/support">Ask in Discord first. Email support@summerengine.com for concrete help.</Card>
+  <Card title="How do I get started with no experience?" href="/knowledge-base/no-experience">Install Summer Engine, create a project and describe the game you want. No coding needed.</Card>
+  <Card title="How do I publish to Steam?" href="/knowledge-base/publish-steam">Export a build, pay the $100 Steam Direct fee, set up the store page and submit it for review.</Card>
   <Card title="How do I export to mobile?" href="/knowledge-base/export-mobile">Enable ETC2 ASTC texture format, create mobile export preset, configure signing. iOS requires Mac and Apple Developer account.</Card>
 </CardGroup>
 

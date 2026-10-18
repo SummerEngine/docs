@@ -1,6 +1,6 @@
 ---
 title: "What are the limitations of AI operations?"
-description: "AI changes go through safe APIs. Some tasks still require manual work. Learn what works well and what doesn't."
+description: "What Summer Engine's AI agent does well in your project, what people wrongly expect to be limits, and the real limits that still need manual work."
 icon: "question"
 "og:image": "https://docs.summerengine.com/images/og/knowledge-base-ai-operations-limitations.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/knowledge-base-ai-operations-limitations.jpg"
@@ -36,7 +36,7 @@ Changes go through project-bound tools with explicit targets and exact receipts.
 
 **Limited import settings.** Asset import options are mostly manual for now. You may need to adjust import settings in the editor for some assets.
 
-**Shell commands require approval.** Summer Engine can propose shell commands (run tests, install deps, run scripts), but nothing executes until you approve it. This is by design. You stay in control.
+**Shell commands follow your permission mode.** Safe read-only commands run on their own. Other commands show the reason and ask you, unless your permission mode allows them. Destructive commands ask first unless you choose Bypass, and catastrophic commands ask even in Bypass. Pick the mode in the composer; see [You approve anything risky](/ai-tools/subagents#you-approve-anything-risky) for the four modes.
 
 **A file written to disk is not loadable until it is imported.** Writing `res://raw.png` and then calling `load()` on it fails with `No loader found for resource: res://raw.png`. The editor has to run an import pass before the file becomes a real resource. This is the usual explanation for "the AI wrote my asset but nothing can find it." See [Headless Scripting](/automation/headless) for the import pass and for the resource-authoring route that needs no import at all.
 
@@ -55,7 +55,7 @@ Changes go through project-bound tools with explicit targets and exact receipts.
 
 ## Best Practices
 
-**Review before applying.** The change review panel shows exactly what will be modified. Check it before confirming.
+**Review the changes.** The Changes panel shows what was modified. Pick Manual as your permission mode if you want to approve each change before it runs.
 
 **Trust, then verify receipts.** Scene mutation tools append one final save automatically. If a receipt reports failure, use its exact reason to repair or reread before retrying.
 
