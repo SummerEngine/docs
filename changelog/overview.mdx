@@ -7,6 +7,50 @@ icon: "history"
 "twitter:image": "https://docs.summerengine.com/images/og/changelog-overview.jpg"
 ---
 
+<Update label="4.3" description="October 16, 2026">
+
+## summer-engine 4.3: the CLI reports usage like the MCP server
+
+Released on npm as `summer-engine@4.3.0`.
+
+- **CLI usage lines.** When you are signed in, each `summer` command sends one usage line, like an MCP tool call: the command or operation, success or its error code, the duration and the CLI version. It never sends arguments, paths or project content. Nothing is sent when you are signed out, or when `SUMMER_NO_TELEMETRY` or `DO_NOT_TRACK` is set. `summer login` says what is sent.
+- **Error codes in usage.** A failed MCP tool call reports only its error code, such as `not_signed_in` or `engine_not_running`, never the message.
+- **Multiplayer publishing.** The `multiplayer-publish` skill no longer tells agents to stop before uploading: Builds pages take the `.zip` bundle.
+
+</Update>
+
+<Update label="4.2" description="October 16, 2026">
+
+## summer-engine 4.2: Summer without MCP, and skills that stay current
+
+Released on npm as `summer-engine@4.2.0`. Version 4.1.0 was not published; its changes ship in 4.2.0 and are listed here.
+
+**Use Summer from any agent's shell**
+
+- **`summer setup <agent> --cli`** installs the skills and no MCP server. Your agent runs Summer as `summer <area> <action>` commands. See [summer setup](/mcp/cli-reference#summer-setup).
+- **New `summer-cli` skill.** It teaches your agent to sign in, find and run operations, wait for long jobs, handle approvals and save files from the shell. See [summer-cli](/skills/summer-cli).
+- **Every operation is found without signing in.** `summer ops search` and `summer ops describe` list every cloud operation signed out and mark it "(needs sign-in)".
+- **Search understands plain English.** "publish my game" finds `store.publish`, "how did my game do" finds `analytics.summary`, "lower my price" finds `pricing.set_base`.
+- **`--json` on every read command**, such as `summer status`, `summer skills list` and `summer ops describe`.
+- **Each skill shows the shell command** for every tool and operation it names, in a "From a shell" table.
+- **Install with Homebrew:** `brew install summerengine/tap/summer`.
+
+**Agents stay current**
+
+- **Skills refresh after an upgrade.** The first `summer mcp` start after an upgrade brings the installed Summer skills to the new version. Skills you changed yourself stay as they are.
+- **Every Summer project gets an `AGENTS.md`** with how to work on the game, plus a `CLAUDE.md` that imports it. `summer setup --yes` adds them to an existing project when they are missing, and never overwrites your own.
+- **Ask less on the CLI path.** `summer setup claude-code --cli --allow-rules --yes` lets Claude Code run read-only and dry-run `summer` commands without asking. Codex gets the same rules. Changes, publishing, prices, deletes and messages still ask. `--remove-allow-rules` takes the rules out.
+- **`summer_call` takes `name` as well as `op`.**
+
+**Agents and directories**
+
+- **Devin Desktop (formerly Windsurf):** setup writes the MCP config to `~/.config/devin/mcp_config.json`. See [Devin Desktop](/mcp/devin-desktop).
+- **Gemini CLI extensions include the skills.** See [Gemini CLI](/mcp/gemini).
+- **A Claude plugin** for Anthropic's plugin directory, and new names, icons and descriptions in the MCP Registry and the Codex, Cursor and Claude plugin listings.
+- **Content operations are an area:** `summer content <action>`. The 4.0 `marketing.*` content operations are renamed, and the old names keep working.
+
+</Update>
+
 <Update label="4.0" description="October 15, 2026">
 
 ## Summer 4.0: one URL, one sign-in, every capability an operation
