@@ -15,7 +15,7 @@ generator: scripts/skills
 |---|---|
 | Status | Stable |
 | Domains | Scenes and project, Project |
-| Version | `1.1.0` |
+| Version | `1.2.0` |
 | Engine version | `>=4.6` |
 | Recommended set | Yes, installed by `--recommended` |
 
@@ -65,6 +65,8 @@ Distilled blueprints for common genres live in this skill's `references/` folder
 | First-person shooter | `references/3d-fps.md` | `references/3d-fps-systems.md` | Node3D / CharacterBody3D / Camera3D on Head |
 | Third-person action / 3D platformer | `references/3d-third-person.md` | `references/3d-third-person-systems.md` | Node3D / CharacterBody3D / SpringArm3D |
 | First-person horror | `references/3d-horror.md` | `references/3d-horror-systems.md` | Node3D / CharacterBody3D / Camera3D on Head |
+
+**2D and 2.5D games look painted.** For any 2D or 2.5D request (top-down, RPG, cozy, side-scroller, platformer look), build the world with the `painted-25d-world` skill: a 3D blockout under one fixed orthographic camera, an AI paint-over projected onto the blocks, sprite characters (Node3D / CharacterBody3D / translate-only Camera3D). Use the 2D playbooks above for the core loop, mechanics and build order only, not for the scene tree or art. Do not start a 2D game from a 2D template unless the user asks for that template.
 
 No playbook (racing, sandbox, sim): build fresh through the phases below. The playbooks lean on these system skills — load one when its mechanic comes up: `character-movement`, `camera-rigs`, `combat-basics`, `save-load`, `ui-basics`, `multiplayer-project`.
 
@@ -376,7 +378,7 @@ No Summer MCP tools in this session? Run each one as a command; when `summer --v
 
 - [`audio-direction`](/skills/audio-direction): Define the game's sound (music style, SFX vocabulary, dynamic music) as .summer/audio-bible.md.
 - [`export-and-ship`](/skills/export-and-ship): Prepare a game export: check templates and targets, validate release assets, build after approval.
-- [`release-readiness`](/skills/release-readiness): Before releasing a Summer game version, prove players can play it: server, online join, progress, files.
+- [`release-readiness`](/skills/release-readiness): Prove players can play a Summer release: server, online join, progress, files.
 - [`design-mechanic`](/skills/design-mechanic): Design one mechanic in detail (input, feedback, failure modes, tunables) as a doc plus a script stub.
 - [`tune-performance`](/skills/tune-performance): Profile a slow game, find rendering, physics or script hotspots, and propose fixes with expected gains.
 - [`art-direction`](/skills/art-direction): Define the game's visual style (palette, mood, lighting, post) as an art bible in .summer/art-bible.md.
@@ -388,7 +390,8 @@ No Summer MCP tools in this session? Run each one as a command; when `summer --v
 - [`camera-rigs`](/skills/camera-rigs): Camera rigs: Camera2D follow with limits, first-person head, SpringArm3D third-person, top-down, FOV.
 - [`combat-basics`](/skills/combat-basics): Damage: hitbox and hurtbox Areas, a reusable Health component, damage signals, knockback, projectiles.
 - [`save-load`](/skills/save-load): Save and load game state: user:// paths, JSON progress vs ConfigFile settings, versioned saves, autosave.
+- [`painted-25d-world`](/skills/painted-25d-world): Build a 2D or 2.5D game as a painted world: a 3D blockout under one fixed camera, an AI paint-over projected onto it, sprite characters.
 
 ---
 
-Source: [`library/skills/make-game/SKILL.md`](https://github.com/SummerEngine/summer/blob/main/library/skills/make-game/SKILL.md), rendered from `summer-engine@4.3.0` on npm.
+Source: [`library/skills/make-game/SKILL.md`](https://github.com/SummerEngine/summer/blob/main/library/skills/make-game/SKILL.md), rendered from `summer-engine@4.5.0` on npm.
