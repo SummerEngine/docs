@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=20"
+    "node": ">=22"
   },
   "scripts": {
     "check": "npm run check:compatibility && npm run check:reference && npm run check:skills && npm run check:language && npm run check:capabilities && npm run check:policy-fixtures && npm run check:routes && node scripts/check-docs.mjs",

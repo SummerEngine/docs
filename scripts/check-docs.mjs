@@ -2,7 +2,7 @@
 /**
  * check-docs.mjs — makes URL-POLICY.md enforceable.
  *
- * Zero dependencies. Node 20+. Run: node scripts/check-docs.mjs
+ * Zero dependencies. Node 22+. Run: node scripts/check-docs.mjs
  * Exits 1 if any ERROR is found. Warnings never fail the build.
  *
  * Checks:
