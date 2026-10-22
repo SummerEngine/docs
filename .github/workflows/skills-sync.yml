@@ -32,7 +32,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22.23.4"
 
       - name: Pull the skill library from summer-engine@latest
         run: node scripts/skills/sync.mjs --work "$RUNNER_TEMP/skills"
