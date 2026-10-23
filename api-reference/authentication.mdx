@@ -6,7 +6,7 @@ description: "How agents and scripts sign in to Summer Engine: OAuth on the host
 
 {/* Do not reintroduce a hardcoded MCP tool count here. The tool list grows every release and a baked-in number has already gone stale twice. */}
 
-Summer is the game engine built for AI. Every Summer API uses your Summer account. For the MCP and the CLI you never paste a key: you sign in once in the browser, and the tool keeps the token. The [Summer API](/api/overview) for game assets uses a key with its own spend limit.
+Summer is the game engine built for AI. Every Summer API uses your Summer account. You never paste an API key: you sign in once in the browser, and the tool keeps the token.
 
 ## Which sign-in each API uses
 
@@ -16,7 +16,7 @@ Summer is the game engine built for AI. Every Summer API uses your Summer accoun
 | `summer` CLI and the local MCP (`summer mcp`) | `summer login` opens your browser once. It signs in your Summer account, then the store, publishing and Grow tools. |
 | Engine tools (scenes, scripts, play) | No sign-in. Summer Engine writes a local token to `~/.summer/api-token` when it starts, and the local MCP reads it. |
 | [HTTP API](/api-reference/http/overview) (`api.summer.games`) | A bearer token from the same OAuth sign-in: `summer login --store`, or the Summer connector in an AI app. |
-| [Summer API](/api/overview) (`www.summerengine.com/v1`) | `Authorization: Bearer $SUMMER_API_KEY`. Make a key in **Settings > API keys**, or let your agent ask for one. See [Keys and limits](/api/keys). |
+| [Summer API](/api/overview) (`www.summerengine.com/v1`) | The same OAuth sign-in: `summer login`, then `Authorization: Bearer $(summer token)` (one hour). Each connected app has its own spend limit. See [sign-in and limits](/api/sign-in). |
 
 ## Files and variables
 

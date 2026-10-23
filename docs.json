@@ -305,7 +305,7 @@
           {
             "group": "Use the API",
             "pages": [
-              "api/keys",
+              "api/sign-in",
               "api/jobs",
               "api/errors"
             ]

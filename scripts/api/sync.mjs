@@ -139,6 +139,18 @@ const openapi = opts.openapi ? JSON.parse(readFileSync(opts.openapi, "utf8")) : 
 if (!Array.isArray(models?.models) || !models.models.length) throw new Error("the model list has no models");
 if (openapi?.openapi?.startsWith("3.") !== true) throw new Error("not an OpenAPI 3 document");
 
+// The list must be list prices. A list taken with the Summer API pricing off carries the old asset markup:
+// when most prices moved by the same factor since the pinned list, refuse it.
+{
+  const pinned = JSON.parse(readFileSync(join(SOURCES, "models.json"), "utf8")).models ?? [];
+  const before = new Map(pinned.map((m) => [m.id, Number(m.price?.price)]));
+  const ratios = models.models.map((m) => Number(m.price?.price) / before.get(m.id)).filter((r) => Number.isFinite(r) && r > 0 && Math.abs(r - 1) > 0.001);
+  const factor = ratios.sort((a, b) => a - b)[Math.floor(ratios.length / 2)];
+  if (ratios.length >= models.models.length / 2 && Math.abs(factor - 1.43) < 0.02) {
+    throw new Error(`most prices are ${factor.toFixed(3)} times the pinned list: this list looks marked up (taken with SUMMER_API_ENABLED off). Take it with the Summer API pricing on.`);
+  }
+}
+
 const write = (name, value) => writeFileSync(join(SOURCES, name), JSON.stringify(value, null, 2) + "\n");
 write("models.json", { source: opts.models ? "file" : `${opts.base}/models`, ...models });
 // The spec names the deployment it came from; the docs always point at production.

@@ -18,7 +18,6 @@ Music with stronger vocals, arrangement, and long-form structure.
 | Output | MP3 |
 | Made by | Summer |
 | Commercial use | Yes |
-| Free credits | Yes: welcome credits can pay for it |
 
 ## Best for
 
@@ -35,7 +34,7 @@ No markup: this is the provider's list price, checked 2026-09-24. A failed job c
 
 ## Example call
 
-Needs a Summer API key: see the [quickstart](/api/quickstart). This job comes back done in the same call, with the file ready to download.
+Sign in once with `summer login`; over HTTP, send `Authorization: Bearer $SUMMER_TOKEN` after `export SUMMER_TOKEN=$(summer token)` ([sign-in](/api/sign-in)). This job comes back done in the same call, with the file ready to download.
 
 <CodeGroup>
 
@@ -47,7 +46,7 @@ npx -y summer-engine@latest api run music/music-v2 \
 
 ```bash curl
 curl https://www.summerengine.com/v1/jobs \
-  -H "Authorization: Bearer $SUMMER_API_KEY" \
+  -H "Authorization: Bearer $SUMMER_TOKEN" \
   -H "Content-Type: application/json" \
   -H "Idempotency-Key: $(uuidgen)" \
   -H "Prefer: wait=60" \
@@ -58,7 +57,7 @@ curl https://www.summerengine.com/v1/jobs \
 const res = await fetch("https://www.summerengine.com/v1/jobs", {
   method: "POST",
   headers: {
-    Authorization: `Bearer ${process.env.SUMMER_API_KEY}`,
+    Authorization: `Bearer ${process.env.SUMMER_TOKEN}`,
     "Content-Type": "application/json",
     "Idempotency-Key": crypto.randomUUID(),
     Prefer: "wait=60",
@@ -81,7 +80,7 @@ import os, uuid, requests
 res = requests.post(
     "https://www.summerengine.com/v1/jobs",
     headers={
-        "Authorization": f"Bearer {os.environ['SUMMER_API_KEY']}",
+        "Authorization": f"Bearer {os.environ['SUMMER_TOKEN']}",
         "Idempotency-Key": str(uuid.uuid4()),
         "Prefer": "wait=60",
     },
@@ -106,4 +105,4 @@ Send these fields in `input`. The full JSON Schema is `inputSchema` in [`GET /v1
 
 ## For agents
 
-This page as Markdown: [https://docs.summerengine.com/api/models/music/music-v2.md](https://docs.summerengine.com/api/models/music/music-v2.md). The live record with the JSON Schema: `GET https://www.summerengine.com/v1/models/music/music-v2`, public, no key.
+This page as Markdown: [https://docs.summerengine.com/api/models/music/music-v2.md](https://docs.summerengine.com/api/models/music/music-v2.md). The live record with the JSON Schema: `GET https://www.summerengine.com/v1/models/music/music-v2`, public, no sign-in.

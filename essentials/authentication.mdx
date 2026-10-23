@@ -1,7 +1,7 @@
 ---
 title: "Sign In to Summer Engine and Connect Your Agent"
 sidebarTitle: "Authentication"
-description: "Create a Summer account and sign in to Summer Engine and your AI agent. Your agent signs in with your Summer account in the browser; only the Summer API for game assets uses a key."
+description: "Create a Summer account and sign in to Summer Engine and your AI agent. There is no API key: your agent signs in with your Summer account in the browser."
 icon: "key"
 "og:image": "https://docs.summerengine.com/images/og/essentials-authentication.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/essentials-authentication.jpg"
@@ -25,11 +25,11 @@ Summer Engine needs an account for hosted AI, asset generation, publishing and y
 
 ## Sign in your agent
 
-Your agent signs in with your Summer account in the browser, once. Only the [Summer API](/api/overview), which makes game assets over HTTP, uses a key.
+There is no API key. Your agent signs in with your Summer account in the browser, once.
 
 - **Hosted MCP** (Claude, ChatGPT and any app that adds a remote MCP server): add `https://mcp.summerengine.com/mcp`. The app opens the Summer sign-in page. Sign in and choose **Allow**.
 - **On your computer** (the `summer-engine` MCP and CLI): run `npx -y summer-engine@latest login`. One browser sign-in covers your Summer account and the store, publishing and Grow tools.
-- **Summer API** (any agent or script over HTTP): send `Authorization: Bearer $SUMMER_API_KEY`. Create a key in **Settings > API keys**, or let your agent ask for one and choose **Allow**. See [Keys and limits](/api/keys).
+- **Summer API** (game assets over HTTP): the same `summer login`, then `Authorization: Bearer $(summer token)`. Each connected app has its own spend limit in **Settings > Connected agents & apps**. See [sign-in and limits](/api/sign-in).
 
 See [MCP setup](/mcp/setup) and [Connect your agent](/publishing/connect-your-agent).
 

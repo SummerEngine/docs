@@ -1,21 +1,21 @@
 ---
 title: "Use the Summer API from Claude Code, Codex, Cursor, Hermes and ChatGPT"
 sidebarTitle: "Agents"
-description: "One step per agent: paste one prompt into Claude Code, Codex, Cursor or Hermes, or add one connector URL in ChatGPT or Claude. You approve the key with one click."
+description: "One step per agent: paste one prompt into Claude Code, Codex, Cursor or Hermes, or add one connector URL in ChatGPT or Claude. You sign in once and choose Allow with a spend limit."
 icon: "bot"
 ---
 
-Every agent uses the same API. Coding agents use the `summer` CLI or plain HTTP. Chat apps use the Summer MCP. You approve spending once, with a limit you choose.
+Every agent uses the same API and the same Summer sign-in. Coding agents use the `summer` CLI. Chat apps use the Summer MCP. You sign in once, in the browser, and choose **Allow** with a spend limit.
 
 ## The one step for coding agents
 
 Paste this into **Claude Code, Codex, Cursor, Hermes** or any agent that can run commands:
 
 ```text Prompt for your agent wrap
-Use the Summer API for game assets (docs: https://docs.summerengine.com/llms.txt). Run `npx -y summer-engine@latest login --api-key` and show me the link it prints. Then run `npx -y summer-engine@latest api run 3d/default --input '{"kind":"text-to-3d","prompt":"a stylized treasure chest, game prop"}' --download assets` and tell me where the GLB is.
+Use the Summer API for game assets (docs: https://docs.summerengine.com/llms.txt). Run `npx -y summer-engine@latest login` so I can sign in. Then run `npx -y summer-engine@latest api run 3d/default --input '{"kind":"text-to-3d","prompt":"a stylized treasure chest, game prop"}' --download assets` and tell me where the GLB is.
 ```
 
-The agent shows you a link and a code. You open the link, check the code and choose **Allow**. The key is saved on your computer, and the agent makes its first asset.
+The browser opens the Summer sign-in page. You sign in, pick a spend limit and choose **Allow**. The agent makes its first asset.
 
 | Agent | Paste the prompt into |
 |---|---|
@@ -28,61 +28,22 @@ The agent shows you a link and a code. You open the link, check the code and cho
 ## The summer CLI
 
 ```bash
-npx -y summer-engine@latest login --api-key
+npx -y summer-engine@latest login
 ```
 
-This opens the Summer Allow page. You check the code, set a spend limit and choose **Allow**. The key is saved to `~/.summer/api-key`; a `SUMMER_API_KEY` in the environment takes its place when set. The command never prints the key. Without a terminal it prints JSON lines, so an agent can show you the `approve_url`.
-
-Then every Summer API call is one command:
+One browser sign-in. It renews itself, so the agent never asks again on this computer. Then every Summer API call is one command:
 
 | Command | Does |
 |---|---|
-| `summer api models [id] [--capability 3d]` | Lists models with their input and price. No key needed. |
+| `summer api models [id] [--capability 3d]` | Lists models with their input and price |
 | `summer api estimate <model> --input '<json>'` | The price of one job and a quote that holds it for 15 minutes. Free. |
 | `summer api run <model> --input '<json>' --download [dir]` | Runs the job, follows it and saves each file as `<assetId>.<ext>`. Add `--quote <quoteId>` to cap the charge. |
-| `summer api jobs <id> [--wait] [--download [dir]]` | Reads a job, follows it, or saves its files. |
+| `summer api jobs <id> [--wait] [--download [dir]]` | Reads a job, follows it, or saves its files |
+| `summer token` | Prints a one-hour token for `curl`: `Authorization: Bearer $(summer token)` |
 
 Run them as `npx -y summer-engine@latest api ...`, or as `summer api ...` once the CLI is installed. The output is JSON when piped or with `--json`, and a short summary in a terminal.
 
-The CLI's MCP server has the same calls as tools: `summer_api_key_login`, `summer_api_models`, `summer_api_estimate`, `summer_api_run` and `summer_api_job`.
-
-## Get a key over HTTP
-
-For agents that only make HTTP calls. Three calls, no browser session.
-
-<Steps>
-  <Step title="Ask for a key">
-    ```bash
-    curl -s https://www.summerengine.com/api/api-keys/requests \
-      -H "Content-Type: application/json" \
-      -d '{"client": "Claude Code"}'
-    ```
-
-    Both fields are optional: `client`, the name the person sees (up to 40 letters, digits and spaces), and `limitUsd`, the spend limit to suggest, from 1 to 10000 US dollars (default 5). The person can change the limit on the approval page.
-
-    The answer (`201`) holds `request_id`, `approve_url`, `user_code`, `poll_url`, `poll_token`, `interval` (seconds) and `expires_in` (seconds).
-  </Step>
-  <Step title="Show the person the link">
-    The agent shows `approve_url` and `user_code`. The person opens the link, checks that the page shows the same code, sets the limit and chooses **Allow**.
-  </Step>
-  <Step title="Poll for the key">
-    ```bash
-    curl -s "$POLL_URL" -H "Authorization: Bearer $POLL_TOKEN"
-    ```
-
-    Poll every `interval` seconds:
-
-    | Answer | Meaning |
-    |---|---|
-    | `200` `{"status": "pending"}` | The person has not decided yet. Poll again. |
-    | `200` `{"status": "approved", "key", "key_id", "limit_usd", "expires_at", "env": "SUMMER_API_KEY"}` | Save `key` right away: it comes back only once. |
-    | `200` `{"status": "denied"}` | The person chose Deny. |
-    | `410` `{"status": "expired"}` | The request expired. Start a new one. |
-    | `409` `{"status": "failed"}` | The account holds its maximum number of keys. The person revokes one, then you start again. |
-  </Step>
-</Steps>
-
-An agent key spends up to the limit the person approved and lasts 30 days. The person sees it in **Settings > API keys** and can change its limit or revoke it at any time. See [Keys and limits](/api/keys).
+The CLI's MCP server has the same calls as tools: `summer_api_models`, `summer_api_estimate`, `summer_api_run` and `summer_api_job`.
 
 ## ChatGPT and Claude
 
@@ -94,7 +55,9 @@ https://mcp.summerengine.com/mcp
 
 Then ask in plain words, for example "Make a low-poly pine tree for my game with the Summer API". The agent finds the Summer API operations (`models.list`, `models.estimate`, `models.run`) with `summer_search` and runs them with `summer_call`. Results go to your Summer library. Step by step for each app: [Summer in ChatGPT and Claude](/mcp/chatgpt-and-claude).
 
-Coding agents can add the same server: Claude Code `claude mcp add --transport http summer-cloud https://mcp.summerengine.com/mcp`, Codex `codex mcp add summer-cloud --url https://mcp.summerengine.com/mcp`. It also takes `Authorization: Bearer $SUMMER_API_KEY` instead of a sign-in.
+Coding agents can add the same server: Claude Code `claude mcp add --transport http summer-cloud https://mcp.summerengine.com/mcp`, Codex `codex mcp add summer-cloud --url https://mcp.summerengine.com/mcp`.
+
+Every app you connect shows in [Settings > Connected agents & apps](https://summerengine.com/settings/connected-apps) with its own spend limit and **Revoke**. See [sign-in and limits](/api/sign-in).
 
 ## What agents should always do
 
@@ -102,5 +65,5 @@ Coding agents can add the same server: Claude Code `claude mcp add --transport h
 - Price a big batch first with `summer api estimate` or `POST /v1/estimate`, and tell the person the total.
 - Send a new `Idempotency-Key` for each new job and the same one when retrying it. The CLI does this for you.
 - Save finished files in the project, and keep the asset id to import the asset again.
-- Keep the key out of game code, builds and commits.
-- On `402`, show the person the error message: it links where to add credits or raise the key's limit.
+- Keep tokens out of game code, builds and commits.
+- On `402`, show the person the error message: it links where to top up or raise the app's limit.

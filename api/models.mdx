@@ -16,7 +16,7 @@ This table is generated from [`GET /v1/models`](/api/reference/get-models), the 
 
 <CardGroup cols={2}>
   <Card title="List every model" icon="list" href="/api/reference/get-models">
-    `GET https://www.summerengine.com/v1/models`: ids, input schemas and prices as JSON. Public, no key.
+    `GET https://www.summerengine.com/v1/models`: ids, input schemas and prices as JSON. Public, no sign-in.
   </Card>
   <Card title="Price one exact request" icon="calculator" href="/api/jobs#know-the-price-first">
     `POST /v1/estimate`: the exact amount and a quote that holds it for 15 minutes. Free.
@@ -41,16 +41,16 @@ Send the default id when you have no preference. It runs the model Summer tests 
 
 Textured GLB models from a prompt or a picture. Ask for a rig and animations on the same job. Output: GLB.
 
-| Model | Id | Price | Typical time | Free credits |
-|---|---|---|---|---|
-| [Hunyuan 3D Pro](/api/models/3d/hunyuan-3d) (default) | `3d/hunyuan-3d` | \$0.525 per model | about 5 min | No |
-| [Rodin 2.5 Fast](/api/models/3d/rodin-2-5-fast) | `3d/rodin-2.5-fast` | \$0.10 per model | about 2 min | Yes |
-| [Hunyuan 3D Rapid](/api/models/3d/hunyuan-3d-rapid) | `3d/hunyuan-3d-rapid` | \$0.225 per model | about 3 min | Yes |
-| [Trellis 2](/api/models/3d/trellis-2) | `3d/trellis-2` | \$0.348 per model | about 5 min | No |
-| [Meshy 6](/api/models/3d/meshy-6) | `3d/meshy-6` | \$0.80 per model | about 8 min | No |
-| [Tripo P2](/api/models/3d/tripo-p2) | `3d/tripo-p2` | \$1.10 per model | about 4 min | No |
-| [Meshy 7.1](/api/models/3d/meshy-7-1) | `3d/meshy-7.1` | \$1.20 per model | about 7 min | No |
-| [Hi3D V3.0](/api/models/3d/hi3d-v3) | `3d/hi3d-v3` | \$2.148 per model | about 18 min | No |
+| Model | Id | Price | Typical time |
+|---|---|---|---|
+| [Hunyuan 3D Pro](/api/models/3d/hunyuan-3d) (default) | `3d/hunyuan-3d` | \$0.525 per model | about 5 min |
+| [Rodin 2.5 Fast](/api/models/3d/rodin-2-5-fast) | `3d/rodin-2.5-fast` | \$0.10 per model | about 2 min |
+| [Hunyuan 3D Rapid](/api/models/3d/hunyuan-3d-rapid) | `3d/hunyuan-3d-rapid` | \$0.225 per model | about 3 min |
+| [Trellis 2](/api/models/3d/trellis-2) | `3d/trellis-2` | \$0.348 per model | about 5 min |
+| [Meshy 6](/api/models/3d/meshy-6) | `3d/meshy-6` | \$0.80 per model | about 8 min |
+| [Tripo P2](/api/models/3d/tripo-p2) | `3d/tripo-p2` | \$1.10 per model | about 4 min |
+| [Meshy 7.1](/api/models/3d/meshy-7-1) | `3d/meshy-7.1` | \$1.20 per model | about 7 min |
+| [Hi3D V3.0](/api/models/3d/hi3d-v3) | `3d/hi3d-v3` | \$2.148 per model | about 18 min |
 
 Some options change the price (`kind`, `rig`). Each model page lists them.
 
@@ -58,17 +58,17 @@ Some options change the price (`kind`, `rig`). Each model page lists them.
 
 Concept art, sprites, textures, icons and key art. Optional transparent background. Output: PNG, JPG, WEBP.
 
-| Model | Id | Price | Free credits |
-|---|---|---|---|
-| [Nano Banana 2 Lite](/api/models/image/nano-banana-2) (default) | `image/nano-banana-2` | \$0.0484 per image | Yes |
-| [Grok Imagine 2](/api/models/image/grok-imagine-2) | `image/grok-imagine-2` | \$0.06 per image | Yes |
-| [Muse Image](/api/models/image/muse-image) | `image/muse-image` | \$0.01 per image | No |
-| [Grok Imagine](/api/models/image/grok-imagine) | `image/grok-imagine` | \$0.02 per image | Yes |
-| [Gemini 2.5 Flash](/api/models/image/gemini-flash) | `image/gemini-flash` | \$0.039 per image | Yes |
-| [Nano Banana 1 Lite](/api/models/image/nano-banana-lite) | `image/nano-banana-lite` | \$0.0484 per image | Yes |
-| [GPT Image 2.5](/api/models/image/gpt-image-2-5) | `image/gpt-image-2.5` | \$0.053 per image | No |
-| [Seedream 5.0 Pro](/api/models/image/seedream-5-pro) | `image/seedream-5-pro` | \$0.135 per image | Yes |
-| [GPT Image 2](/api/models/image/gpt-image-2) | `image/gpt-image-2` | \$0.211 per image | No |
+| Model | Id | Price |
+|---|---|---|
+| [Nano Banana 2 Lite](/api/models/image/nano-banana-2) (default) | `image/nano-banana-2` | \$0.0484 per image |
+| [Grok Imagine 2](/api/models/image/grok-imagine-2) | `image/grok-imagine-2` | \$0.06 per image |
+| [Muse Image](/api/models/image/muse-image) | `image/muse-image` | \$0.01 per image |
+| [Grok Imagine](/api/models/image/grok-imagine) | `image/grok-imagine` | \$0.02 per image |
+| [Gemini 2.5 Flash](/api/models/image/gemini-flash) | `image/gemini-flash` | \$0.039 per image |
+| [Nano Banana 1 Lite](/api/models/image/nano-banana-lite) | `image/nano-banana-lite` | \$0.0484 per image |
+| [GPT Image 2.5](/api/models/image/gpt-image-2-5) | `image/gpt-image-2.5` | \$0.053 per image |
+| [Seedream 5.0 Pro](/api/models/image/seedream-5-pro) | `image/seedream-5-pro` | \$0.135 per image |
+| [GPT Image 2](/api/models/image/gpt-image-2) | `image/gpt-image-2` | \$0.211 per image |
 
 Some options change the price (`removeBackground`, `referenceImageUrl`). Each model page lists them.
 
@@ -76,26 +76,26 @@ Some options change the price (`removeBackground`, `referenceImageUrl`). Each mo
 
 Trailer shots, cutscenes and animated key art, from a prompt or a picture. Output: MP4.
 
-| Model | Id | Price | Free credits |
-|---|---|---|---|
-| [Kling 3.0 Standard](/api/models/video/kling-3) (default) | `video/kling-3` | \$0.14 per second | Yes |
-| [Gemini Omni Flash](/api/models/video/gemini-omni-flash) | `video/gemini-omni-flash` | \$0.125 per second | Yes |
-| [Kling 3.0 Pro](/api/models/video/kling-3-pro) | `video/kling-3-pro` | \$0.168 per second | No |
-| [Veo 3.1 Lite](/api/models/video/veo3-1-lite) | `video/veo3.1-lite` | \$0.05 per second | No |
-| [PixVerse V6](/api/models/video/pixverse-v6) | `video/pixverse-v6` | \$0.06 per second | No |
-| [MiniMax H3 Max](/api/models/video/minimax-h3-max) | `video/minimax-h3-max` | \$0.08 per second | No |
-| [Gemini Omni Flash 1.1](/api/models/video/gemini-omni-flash-1-1) | `video/gemini-omni-flash-1.1` | \$0.10 per second | No |
-| [Wan 3.0](/api/models/video/wan-3) | `video/wan-3` | \$0.10 per second | No |
-| [LTX-2.5 Pro](/api/models/video/ltx-2-5-pro) | `video/ltx-2-5-pro` | \$0.12 per second | No |
-| [Grok Imagine Video 1.5](/api/models/video/grok-video-1-5) | `video/grok-video-1.5` | \$0.14 per second | No |
-| [HappyHorse 1.1](/api/models/video/happy-horse-1-1) | `video/happy-horse-1.1` | \$0.14 per second | No |
-| [Veo 3.1 Fast](/api/models/video/veo3-1-fast) | `video/veo3.1-fast` | \$0.15 per second | No |
-| [Vidu Q3 Pro](/api/models/video/vidu-q3) | `video/vidu-q3` | \$0.154 per second | No |
-| [Luma Ray 3.2](/api/models/video/luma-ray-3-2) | `video/luma-ray-3.2` | \$0.20 per second | No |
-| [Seedance 2.0 Fast](/api/models/video/seedance-2-fast) | `video/seedance-2-fast` | \$0.242 per second | No |
-| [Seedance 2.0](/api/models/video/seedance-2) | `video/seedance-2` | \$0.302 per second | No |
-| [Veo 3.1](/api/models/video/veo3-1) | `video/veo3.1` | \$0.40 per second | No |
-| [Seedance 2.5](/api/models/video/seedance-2-5) | `video/seedance-2.5` | \$0.462 per second | No |
+| Model | Id | Price |
+|---|---|---|
+| [Kling 3.0 Standard](/api/models/video/kling-3) (default) | `video/kling-3` | \$0.14 per second |
+| [Gemini Omni Flash](/api/models/video/gemini-omni-flash) | `video/gemini-omni-flash` | \$0.125 per second |
+| [Kling 3.0 Pro](/api/models/video/kling-3-pro) | `video/kling-3-pro` | \$0.168 per second |
+| [Veo 3.1 Lite](/api/models/video/veo3-1-lite) | `video/veo3.1-lite` | \$0.05 per second |
+| [PixVerse V6](/api/models/video/pixverse-v6) | `video/pixverse-v6` | \$0.06 per second |
+| [MiniMax H3 Max](/api/models/video/minimax-h3-max) | `video/minimax-h3-max` | \$0.08 per second |
+| [Gemini Omni Flash 1.1](/api/models/video/gemini-omni-flash-1-1) | `video/gemini-omni-flash-1.1` | \$0.10 per second |
+| [Wan 3.0](/api/models/video/wan-3) | `video/wan-3` | \$0.10 per second |
+| [LTX-2.5 Pro](/api/models/video/ltx-2-5-pro) | `video/ltx-2-5-pro` | \$0.12 per second |
+| [Grok Imagine Video 1.5](/api/models/video/grok-video-1-5) | `video/grok-video-1.5` | \$0.14 per second |
+| [HappyHorse 1.1](/api/models/video/happy-horse-1-1) | `video/happy-horse-1.1` | \$0.14 per second |
+| [Veo 3.1 Fast](/api/models/video/veo3-1-fast) | `video/veo3.1-fast` | \$0.15 per second |
+| [Vidu Q3 Pro](/api/models/video/vidu-q3) | `video/vidu-q3` | \$0.154 per second |
+| [Luma Ray 3.2](/api/models/video/luma-ray-3-2) | `video/luma-ray-3.2` | \$0.20 per second |
+| [Seedance 2.0 Fast](/api/models/video/seedance-2-fast) | `video/seedance-2-fast` | \$0.242 per second |
+| [Seedance 2.0](/api/models/video/seedance-2) | `video/seedance-2` | \$0.302 per second |
+| [Veo 3.1](/api/models/video/veo3-1) | `video/veo3.1` | \$0.40 per second |
+| [Seedance 2.5](/api/models/video/seedance-2-5) | `video/seedance-2.5` | \$0.462 per second |
 
 Some options change the price (`imageUrl`, `resolution`). Each model page lists them.
 
@@ -103,56 +103,55 @@ Some options change the price (`imageUrl`, `resolution`). Each model page lists 
 
 Character lines and narration from text. Output: MP3.
 
-| Model | Id | Price | Typical time | Free credits |
-|---|---|---|---|---|
-| [Expressive v3](/api/models/voice/expressive-v3) (default) | `voice/expressive-v3` | \$0.119 per 1,000 characters | about 5 s | Yes |
-| [Multilingual v2](/api/models/voice/multilingual-v2) | `voice/multilingual-v2` | \$0.119 per 1,000 characters | about 5 s | Yes |
-| [Inworld TTS-1.5 Max](/api/models/voice/inworld-tts-1-5-max) | `voice/inworld-tts-1.5-max` | \$0.01 per 1,000 characters | about 4 s | Yes |
-| [xAI TTS](/api/models/voice/xai-tts-v1) | `voice/xai-tts-v1` | \$0.015 per 1,000 characters | about 4 s | Yes |
-| [Gemini 3.8 Flash Lite TTS](/api/models/voice/gemini-3-8-flash-lite-tts) | `voice/gemini-3.8-flash-lite-tts` | \$0.03 per 1,000 characters | about 4 s | Yes |
-| [Gemini 3.8 Flash TTS](/api/models/voice/gemini-3-8-flash-tts) | `voice/gemini-3.8-flash-tts` | \$0.045 per 1,000 characters | about 7 s | Yes |
-| [Qwen Audio 3.0 TTS](/api/models/voice/qwen-audio-3-tts) | `voice/qwen-audio-3-tts` | \$0.05 per 1,000 characters | about 6 s | Yes |
-| [Flash v2.5](/api/models/voice/flash-v2-5) | `voice/flash-v2.5` | \$0.0595 per 1,000 characters | about 3 s | Yes |
-| [MiniMax Speech 2.8 HD](/api/models/voice/minimax-speech-2-8-hd) | `voice/minimax-speech-2.8-hd` | \$0.10 per 1,000 characters | about 5 s | Yes |
+| Model | Id | Price | Typical time |
+|---|---|---|---|
+| [Expressive v3](/api/models/voice/expressive-v3) (default) | `voice/expressive-v3` | \$0.119 per 1,000 characters | about 5 s |
+| [Multilingual v2](/api/models/voice/multilingual-v2) | `voice/multilingual-v2` | \$0.119 per 1,000 characters | about 5 s |
+| [Inworld TTS-1.5 Max](/api/models/voice/inworld-tts-1-5-max) | `voice/inworld-tts-1.5-max` | \$0.01 per 1,000 characters | about 4 s |
+| [xAI TTS](/api/models/voice/xai-tts-v1) | `voice/xai-tts-v1` | \$0.015 per 1,000 characters | about 4 s |
+| [Gemini 3.8 Flash Lite TTS](/api/models/voice/gemini-3-8-flash-lite-tts) | `voice/gemini-3.8-flash-lite-tts` | \$0.03 per 1,000 characters | about 4 s |
+| [Gemini 3.8 Flash TTS](/api/models/voice/gemini-3-8-flash-tts) | `voice/gemini-3.8-flash-tts` | \$0.045 per 1,000 characters | about 7 s |
+| [Qwen Audio 3.0 TTS](/api/models/voice/qwen-audio-3-tts) | `voice/qwen-audio-3-tts` | \$0.05 per 1,000 characters | about 6 s |
+| [Flash v2.5](/api/models/voice/flash-v2-5) | `voice/flash-v2.5` | \$0.0595 per 1,000 characters | about 3 s |
+| [MiniMax Speech 2.8 HD](/api/models/voice/minimax-speech-2-8-hd) | `voice/minimax-speech-2.8-hd` | \$0.10 per 1,000 characters | about 5 s |
 
 ## Dialogue
 
 Several characters talking, in one file. Output: MP3.
 
-| Model | Id | Price | Typical time | Free credits |
-|---|---|---|---|---|
-| [Expressive v3](/api/models/dialogue/expressive-v3) (default) | `dialogue/expressive-v3` | \$0.119 per 1,000 characters | about 5 s | Yes |
+| Model | Id | Price | Typical time |
+|---|---|---|---|
+| [Expressive v3](/api/models/dialogue/expressive-v3) (default) | `dialogue/expressive-v3` | \$0.119 per 1,000 characters | about 5 s |
 
 ## Sound effects
 
 Hits, footsteps, pickups, UI clicks and loops from a description. Output: MP3.
 
-| Model | Id | Price | Typical time | Free credits |
-|---|---|---|---|---|
-| [Sound Effects v2](/api/models/sound/sfx-v2) (default) | `sound/sfx-v2` | \$0.002 per second | about 3 s | Yes |
-| [Sonilo SFX 1.1](/api/models/sound/sonilo-sfx-1-1) | `sound/sonilo-sfx-1.1` | \$0.0018 per second | about 12 s | Yes |
-| [Stable Audio 3 SFX](/api/models/sound/stable-audio-3-sfx) | `sound/stable-audio-3-sfx` | \$0.0206 per sound | about 3 s | Yes |
+| Model | Id | Price | Typical time |
+|---|---|---|---|
+| [Sound Effects v2](/api/models/sound/sfx-v2) (default) | `sound/sfx-v2` | \$0.002 per second | about 3 s |
+| [Sonilo SFX 1.1](/api/models/sound/sonilo-sfx-1-1) | `sound/sonilo-sfx-1.1` | \$0.0018 per second | about 12 s |
+| [Stable Audio 3 SFX](/api/models/sound/stable-audio-3-sfx) | `sound/stable-audio-3-sfx` | \$0.0206 per sound | about 3 s |
 
 ## Music
 
 Level, menu and combat music from a description. Output: MP3.
 
-| Model | Id | Price | Typical time | Free credits |
-|---|---|---|---|---|
-| [Music v2](/api/models/music/music-v2) (default) | `music/music-v2` | \$0.0025 per second | about 10 s | Yes |
-| [Music v1](/api/models/music/music-v1) | `music/music-v1` | \$0.0025 per second | about 10 s | No |
+| Model | Id | Price | Typical time |
+|---|---|---|---|
+| [Music v2](/api/models/music/music-v2) (default) | `music/music-v2` | \$0.0025 per second | about 10 s |
+| [Music v1](/api/models/music/music-v1) | `music/music-v1` | \$0.0025 per second | about 10 s |
 
 ## How the price works
 
 - **Per unit.** A price is per model, image, clip or sound, or per second or per 1,000 characters. The model page says which input field counts the units.
 - **Rounded here, exact in the API.** This page rounds for reading. The model page shows the exact list price, and the API returns it as a decimal string in US dollars.
 - **Failed jobs are free.** Most jobs are charged when they succeed. A job that is charged when it starts, such as a video, is refunded in full when it fails.
-- **One balance.** Every model draws from your Summer credits. Each key can also have its own spend limit: see [keys and limits](/api/keys).
-- **Welcome credits.** A new account's welcome credits pay for every model marked Free credits: Yes. Bought credits pay for all of them, no plan needed.
+- **One balance.** Every model draws from your paid Summer credits: your plan's credits and your top-ups. Each connected app can also have its own spend limit: see [sign-in and limits](/api/sign-in).
 
 ## The JSON
 
-`GET /v1/models` answers one object. Each model carries its price in the same scheme: `unit` (`call`, `output_second`, `1k_characters`), `price` for one unit as a decimal string in US dollars, `quantityField` (the input field that counts the units), and `modifiers` (input values that replace the price or add to it). `tier` `"free"` means welcome credits can pay for it. `datedId` records which price check a model follows; a job may send it, and it runs the current model. Here is the default 3D model as it is listed, with its `inputSchema` cut to two fields:
+`GET /v1/models` answers one object. Each model carries its price in the same scheme: `unit` (`call`, `output_second`, `1k_characters`), `price` for one unit as a decimal string in US dollars, `quantityField` (the input field that counts the units), and `modifiers` (input values that replace the price or add to it). `datedId` records which price check a model follows; a job may send it, and it runs the current model. Here is the default 3D model as it is listed, with its `inputSchema` cut to two fields:
 
 ```json GET /v1/models
 {

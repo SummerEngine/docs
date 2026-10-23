@@ -1,31 +1,31 @@
 ---
 title: "Summer API quickstart: your first 3D model"
 sidebarTitle: "Quickstart"
-description: "Get a Summer API key with one click, check the price for free, then make a 3D treasure chest and save the GLB. One CLI command, or copy-paste code for curl, TypeScript and Python."
+description: "Sign in once with summer login, check the price for free, then make a 3D treasure chest and save the GLB. One CLI command, or copy-paste code for curl, TypeScript and Python."
 icon: "rocket"
 ---
 
-Three steps: get a key, check the price, make the model. At the end, the GLB of a treasure chest is in your folder and in your Summer library.
+Three steps: sign in, check the price, make the model. At the end, the GLB of a treasure chest is in your folder and in your Summer library.
 
 <Note>
 Using a coding agent? Paste this and it does all three steps: `Use the Summer API for game assets (https://docs.summerengine.com/llms.txt) and make "a stylized treasure chest, game prop" with 3d/default.`
 </Note>
 
 <Steps>
-  <Step title="Get a key">
+  <Step title="Sign in">
     ```bash
-    npx -y summer-engine@latest login --api-key
+    npx -y summer-engine@latest login
     ```
 
-    Summer opens a page with a code. Check the code, set a spend limit and choose **Allow**. The key is saved to `~/.summer/api-key`, where the `summer` CLI finds it.
+    The browser opens the Summer sign-in page. Sign in, pick a monthly spend limit and choose **Allow**. The `summer` CLI keeps the sign-in and renews it, so you do this once per computer.
 
-    For your own code, put the key in the environment:
+    For your own code, take a one-hour token from the same sign-in:
 
     ```bash
-    export SUMMER_API_KEY=$(cat ~/.summer/api-key)
+    export SUMMER_TOKEN=$(npx -y summer-engine@latest token)
     ```
 
-    You can also make a key in [Summer Studio > Settings > API keys](https://summerengine.com/studio?tab=settings&section=api-keys). New accounts start with welcome credits, which pay for every model marked Free credits: Yes. [Add credits](https://summerengine.com/studio/credits) for the rest; no plan needed.
+    Calls are paid from your paid Summer credits: your plan's credits and your [top-ups](https://summerengine.com/studio/credits).
   </Step>
   <Step title="Check the price (free)">
     <CodeGroup>
@@ -43,7 +43,7 @@ Using a coding agent? Paste this and it does all three steps: `Use the Summer AP
 
     </CodeGroup>
 
-    The answer holds `price` in US dollars as a decimal string, `atMost` (`true`: the most it can cost), a `breakdown` and a `quoteId`. Send the `quoteId` with the job (`--quote` on the CLI) and Summer never charges more than the quote. A quote holds for 15 minutes. Estimates are free and need no key.
+    The answer holds `price` in US dollars as a decimal string, `atMost` (`true`: the most it can cost), a `breakdown` and a `quoteId`. Send the `quoteId` with the job (`--quote` on the CLI) and Summer never charges more than the quote. A quote holds for 15 minutes. Estimates are free and need no sign-in.
   </Step>
   <Step title="Make the model and save the GLB">
     One command starts the job, follows it and saves the file. A 3D model takes a few minutes.
@@ -59,7 +59,7 @@ Using a coding agent? Paste this and it does all three steps: `Use the Summer AP
     ```bash curl
     # Needs curl and jq.
     API=https://www.summerengine.com/v1
-    AUTH="Authorization: Bearer $SUMMER_API_KEY"
+    AUTH="Authorization: Bearer $SUMMER_TOKEN"
 
     JOB=$(curl -s $API/jobs -H "$AUTH" -H "Content-Type: application/json" \
       -H "Idempotency-Key: $(uuidgen)" -H "Prefer: wait=60" \
@@ -85,7 +85,7 @@ Using a coding agent? Paste this and it does all three steps: `Use the Summer AP
     import { writeFile } from "node:fs/promises";
 
     const API = "https://www.summerengine.com/v1";
-    const auth = { Authorization: `Bearer ${process.env.SUMMER_API_KEY}` };
+    const auth = { Authorization: `Bearer ${process.env.SUMMER_TOKEN}` };
 
     const res = await fetch(`${API}/jobs`, {
       method: "POST",
@@ -120,7 +120,7 @@ Using a coding agent? Paste this and it does all three steps: `Use the Summer AP
     import os, time, uuid, requests
 
     API = "https://www.summerengine.com/v1"
-    auth = {"Authorization": f"Bearer {os.environ['SUMMER_API_KEY']}"}
+    auth = {"Authorization": f"Bearer {os.environ['SUMMER_TOKEN']}"}
 
     started = requests.post(
         f"{API}/jobs",
@@ -171,8 +171,8 @@ A finished job has `state: "done"` and `result.assets`: each entry has the asset
   <Card title="Models and pricing" icon="tags" href="/api/models">
     Every model, its price and its inputs.
   </Card>
-  <Card title="Keys and limits" icon="key-round" href="/api/keys">
-    Spend limits per key, agent keys, balance.
+  <Card title="Sign-in and limits" icon="key-round" href="/api/sign-in">
+    One sign-in, a spend limit per app, your balance.
   </Card>
   <Card title="Errors" icon="circle-alert" href="/api/errors">
     Every error code and what to do.

@@ -178,7 +178,7 @@ function jobCode(model, input) {
   const curl = [
     "```bash curl",
     `curl ${BASE_URL}/jobs \\`,
-    '  -H "Authorization: Bearer $SUMMER_API_KEY" \\',
+    '  -H "Authorization: Bearer $SUMMER_TOKEN" \\',
     '  -H "Content-Type: application/json" \\',
     '  -H "Idempotency-Key: $(uuidgen)" \\',
     '  -H "Prefer: wait=60" \\',
@@ -197,7 +197,7 @@ function jobCode(model, input) {
     `const res = await fetch("${BASE_URL}/jobs", {`,
     '  method: "POST",',
     "  headers: {",
-    "    Authorization: `Bearer ${process.env.SUMMER_API_KEY}`,",
+    "    Authorization: `Bearer ${process.env.SUMMER_TOKEN}`,",
     '    "Content-Type": "application/json",',
     '    "Idempotency-Key": crypto.randomUUID(),',
     '    Prefer: "wait=60",',
@@ -215,7 +215,7 @@ function jobCode(model, input) {
     "res = requests.post(",
     `    "${BASE_URL}/jobs",`,
     "    headers={",
-    '        "Authorization": f"Bearer {os.environ[\'SUMMER_API_KEY\']}",',
+    '        "Authorization": f"Bearer {os.environ[\'SUMMER_TOKEN\']}",',
     '        "Idempotency-Key": str(uuid.uuid4()),',
     '        "Prefer": "wait=60",',
     "    },",
@@ -313,7 +313,7 @@ function voicesSection(m) {
   return [
     "## Voices",
     "",
-    `${need} These are Summer's curated voices; the live list is ${code("voices")} in ${code(`GET /v1/models/${m.id}`)}. For more, search the public voice library by words, language, gender, age or accent, each with a sample: ${code(`GET /v1/voices?model=${m.id}&search=old+wizard`)} (with your key).`,
+    `${need} These are Summer's curated voices; the live list is ${code("voices")} in ${code(`GET /v1/models/${m.id}`)}. For more, search the public voice library by words, language, gender, age or accent, each with a sample: ${code(`GET /v1/voices?model=${m.id}&search=old+wizard`)} (signed in).`,
     "",
     `<Accordion title=${JSON.stringify(`All ${voices.length} voices`)}>`,
     "",
@@ -339,7 +339,6 @@ function renderModelPage(m) {
     ["Output", m.outputFormats.map((f) => f.toUpperCase()).join(", ")],
     ["Made by", cell(m.vendor)],
     ["Commercial use", m.commercialUse ? "Yes" : "No"],
-    ["Free credits", m.tier === "free" ? "Yes: welcome credits can pay for it" : "No: needs bought credits"],
   ];
   const best = [
     ...(isDefault(m) ? [`The default ${cap.noun}: what ${code(m.aliases[0])} runs today.`] : []),
@@ -367,7 +366,7 @@ function renderModelPage(m) {
     "",
     "## Example call",
     "",
-    `Needs a Summer API key: see the [quickstart](/api/quickstart). ${LONG.has(m.capability) ? `This job takes minutes. The CLI follows it and saves the file. Over HTTP the call answers ${code("running")} with a job id: check ${code("GET /v1/jobs/{id}")} until ${code("state")} is ${code("done")} ([jobs](/api/jobs)); the [quickstart](/api/quickstart) has the full loop.` : `This job comes back done in the same call, with the file ready to download.`}`,
+    `Sign in once with ${code("summer login")}; over HTTP, send ${code("Authorization: Bearer $SUMMER_TOKEN")} after ${code("export SUMMER_TOKEN=$(summer token)")} ([sign-in](/api/sign-in)). ${LONG.has(m.capability) ? `This job takes minutes. The CLI follows it and saves the file. Over HTTP the call answers ${code("running")} with a job id: check ${code("GET /v1/jobs/{id}")} until ${code("state")} is ${code("done")} ([jobs](/api/jobs)); the [quickstart](/api/quickstart) has the full loop.` : `This job comes back done in the same call, with the file ready to download.`}`,
     "",
     jobCode(m.id, input),
     "",
@@ -378,14 +377,14 @@ function renderModelPage(m) {
     ...voicesSection(m),
     "## For agents",
     "",
-    `This page as Markdown: [${DOCS_URL}/${modelPath(m)}.md](${DOCS_URL}/${modelPath(m)}.md). The live record with the JSON Schema: ${code(`GET ${BASE_URL}/models/${m.id}`)}, public, no key.`,
+    `This page as Markdown: [${DOCS_URL}/${modelPath(m)}.md](${DOCS_URL}/${modelPath(m)}.md). The live record with the JSON Schema: ${code(`GET ${BASE_URL}/models/${m.id}`)}, public, no sign-in.`,
     "",
   ].join("\n");
 }
 
 function modelRow(m, timed) {
   const label = `[${cell(m.name)}](/${modelPath(m)})${isDefault(m) ? " (default)" : ""}`;
-  return `| ${label} | ${code(m.id)} | ${priceText(m)} |${timed ? ` ${typicalTime(m) ?? ""} |` : ""} ${m.tier === "free" ? "Yes" : "No"} |`;
+  return `| ${label} | ${code(m.id)} | ${priceText(m)} |${timed ? ` ${typicalTime(m) ?? ""} |` : ""}`;
 }
 const formatsOf = (list) => [...new Set(list.flatMap((m) => m.outputFormats))].map((f) => f.toUpperCase()).join(", ");
 
@@ -421,7 +420,7 @@ function renderModelsPage() {
     "",
     "<CardGroup cols={2}>",
     `  <Card title="List every model" icon="list" href="/api/reference/get-models">`,
-    `    ${code(`GET ${BASE_URL}/models`)}: ids, input schemas and prices as JSON. Public, no key.`,
+    `    ${code(`GET ${BASE_URL}/models`)}: ids, input schemas and prices as JSON. Public, no sign-in.`,
     "  </Card>",
     `  <Card title="Price one exact request" icon="calculator" href="/api/jobs#know-the-price-first">`,
     "    `POST /v1/estimate`: the exact amount and a quote that holds it for 15 minutes. Free.",
@@ -450,8 +449,8 @@ function renderModelsPage() {
       "",
       `${c.blurb} Output: ${formatsOf(list)}.`,
       "",
-      `| Model | Id | Price |${timed ? " Typical time |" : ""} Free credits |`,
-      `|---|---|---|${timed ? "---|" : ""}---|`,
+      `| Model | Id | Price |${timed ? " Typical time |" : ""}`,
+      `|---|---|---|${timed ? "---|" : ""}`,
       ...list.map((m) => modelRow(m, timed)),
     );
     const options = [...new Set(list.flatMap((m) => (m.price.modifiers ?? []).map((r) => r.field)))];
@@ -464,12 +463,11 @@ function renderModelsPage() {
     "- **Per unit.** A price is per model, image, clip or sound, or per second or per 1,000 characters. The model page says which input field counts the units.",
     "- **Rounded here, exact in the API.** This page rounds for reading. The model page shows the exact list price, and the API returns it as a decimal string in US dollars.",
     "- **Failed jobs are free.** Most jobs are charged when they succeed. A job that is charged when it starts, such as a video, is refunded in full when it fails.",
-    "- **One balance.** Every model draws from your Summer credits. Each key can also have its own spend limit: see [keys and limits](/api/keys).",
-    "- **Welcome credits.** A new account's welcome credits pay for every model marked Free credits: Yes. Bought credits pay for all of them, no plan needed.",
+    "- **One balance.** Every model draws from your paid Summer credits: your plan's credits and your top-ups. Each connected app can also have its own spend limit: see [sign-in and limits](/api/sign-in).",
     "",
     "## The JSON",
     "",
-    `${code("GET /v1/models")} answers one object. Each model carries its price in the same scheme: ${code("unit")} (${[...new Set(models.map((m) => m.price.unit))].map(code).join(", ")}), ${code("price")} for one unit as a decimal string in US dollars, ${code("quantityField")} (the input field that counts the units), and ${code("modifiers")} (input values that replace the price or add to it). ${code("tier")} ${code('"free"')} means welcome credits can pay for it. ${code("datedId")} records which price check a model follows; a job may send it, and it runs the current model. Here is the default 3D model as it is listed, with its ${code("inputSchema")} cut to two fields:`,
+    `${code("GET /v1/models")} answers one object. Each model carries its price in the same scheme: ${code("unit")} (${[...new Set(models.map((m) => m.price.unit))].map(code).join(", ")}), ${code("price")} for one unit as a decimal string in US dollars, ${code("quantityField")} (the input field that counts the units), and ${code("modifiers")} (input values that replace the price or add to it). ${code("datedId")} records which price check a model follows; a job may send it, and it runs the current model. Here is the default 3D model as it is listed, with its ${code("inputSchema")} cut to two fields:`,
     "",
     "```json GET /v1/models",
     json(sampleListing(), 2),
@@ -502,14 +500,14 @@ const REFERENCE_TITLES = {
   "GET /webhooks/deliveries": "List webhook deliveries",
   "GET /voices": "Search voices",
   "GET /voices/preview/{token}": "Play a voice sample",
-  "GET /key": "Read your key",
+  "GET /key": "Read the app's limit",
   "GET /balance": "Read your balance",
 };
 // The spec's descriptions are the operations' own, written for every surface; these say it in HTTP words.
 const REFERENCE_DESCRIPTIONS = {
-  "GET /models": "Every Summer API model with its id, input schema, output formats, typical time and price. Public, no key.",
-  "GET /models/{model}": "One model by id, dated id or default alias, with its input schema and price. Public, no key.",
-  "POST /estimate": "The price of one exact job before it runs, what makes it up, and a quote id that holds the price for 15 minutes. Free, no key.",
+  "GET /models": "Every Summer API model with its id, input schema, output formats, typical time and price. Public, no sign-in.",
+  "GET /models/{model}": "One model by id, dated id or default alias, with its input schema and price. Public, no sign-in.",
+  "POST /estimate": "The price of one exact job before it runs, what makes it up, and a quote id that holds the price for 15 minutes. Free, no sign-in.",
   "POST /jobs": "Run one model on its input. The files go to your Summer library. Short jobs come back done; long ones answer running with a job id to follow with GET /v1/jobs/{jobId}. A quoteId caps the charge.",
   "GET /jobs/{jobId}": "Read a job: its state, progress and, when done, result.assets with each file's Summer URL.",
   "GET /jobs/{jobId}/events": "Follow a job as server-sent events: a job event on each change, then done.",
@@ -520,8 +518,8 @@ const REFERENCE_DESCRIPTIONS = {
   "GET /webhooks/deliveries": "Your newest webhook deliveries, each with every attempt.",
   "GET /voices": "Find voices for a voice or dialogue model: Summer's curated voices first, then the public voice library by words, language, gender, age or accent, each with a sample.",
   "GET /voices/preview/{token}": "A voice's short sample, from the previewUrl in GET /v1/voices.",
-  "GET /key": "The calling key's name, kind, limit, what it spent this period and when that resets. Never the key itself.",
-  "GET /balance": "Your credit balance and what this key can spend now.",
+  "GET /key": "The connected app behind this token: its name, spend limit, what it spent this period and when that resets.",
+  "GET /balance": "Your paid credit balance and what this app can spend now.",
 };
 for (const r of reference) {
   const title = REFERENCE_TITLES[`${r.method} ${r.path}`] ?? r.op.summary;
@@ -551,7 +549,7 @@ for (const [path, content] of router.pages) put(path, content);
 
 // ------------------------------------------------------------- navigation
 
-const HAND_WRITTEN = ["api/overview", "api/quickstart", "api/agents", "api/keys", "api/jobs", "api/errors"];
+const HAND_WRITTEN = ["api/overview", "api/quickstart", "api/agents", "api/sign-in", "api/jobs", "api/errors"];
 const REFERENCE_ORDER = ["GET /models", "GET /models/{model}", "POST /estimate", "POST /jobs", "GET /jobs/{jobId}", "GET /jobs/{jobId}/events", "POST /jobs/{jobId}/cancel", "POST /files", "POST /files/complete", "GET /voices", "GET /voices/preview/{token}", "POST /webhooks/secret", "GET /webhooks/deliveries", "GET /key", "GET /balance"];
 const rank = (r) => {
   const i = REFERENCE_ORDER.indexOf(`${r.method} ${r.path}`);
@@ -565,7 +563,7 @@ const tab = {
       group: "Models and pricing",
       pages: [MODELS_PAGE, ...CAPABILITIES.filter((c) => byCapability[c.id].length).map((c) => ({ group: c.title, icon: c.icon, pages: byCapability[c.id].map(modelPath) }))],
     },
-    { group: "Use the API", pages: ["api/keys", "api/jobs", "api/errors"] },
+    { group: "Use the API", pages: ["api/sign-in", "api/jobs", "api/errors"] },
     { group: "API reference", pages: [...reference].sort((a, b) => rank(a) - rank(b) || a.page.localeCompare(b.page)).map((r) => r.page) },
   ],
 };
@@ -626,14 +624,14 @@ function renderLlms() {
     "## Agent instructions",
     "",
     `- Summer API base URL: ${BASE_URL}`,
-    "- Auth: `Authorization: Bearer $SUMMER_API_KEY`. Keys start with `sk-summer-v1-`.",
-    "- Get a key with one click: `npx -y summer-engine@latest login --api-key`. Show the person the link it prints; they choose Allow, and the key is saved to `~/.summer/api-key`.",
+    "- Sign in: `npx -y summer-engine@latest login` opens the browser once; the person signs in to Summer and chooses Allow, with a spend limit. The sign-in renews itself.",
+    "- Auth over HTTP: `Authorization: Bearer <token>`, with a one-hour token from `npx -y summer-engine@latest token`. There are no API keys.",
     "- CLI: `npx -y summer-engine@latest api models|estimate|run|jobs`. `api run <model> --input '<json>' --download <dir>` runs a job, follows it and saves the files. JSON when piped.",
-    `- Without the CLI: \`POST https://www.summerengine.com/api/api-keys/requests\`, show the person \`approve_url\` and \`user_code\`, then poll \`poll_url\` with \`Authorization: Bearer <poll_token>\` until the answer holds \`key\`. Steps: ${DOCS_URL}/api/agents.md`,
-    `- Models and prices: \`GET ${BASE_URL}/models\` (public, no key). Read prices there, never from memory or training data. Defaults per job: ${defaults}.`,
-    `- Exact price of one request: \`POST ${BASE_URL}/estimate\` with the same body as the job (free, no key).`,
+    `- Without the CLI: Summer's sign-in is OAuth 2.1 with PKCE; discovery at https://mcp.summerengine.com/.well-known/oauth-protected-resource. Steps: ${DOCS_URL}/api/sign-in.md`,
+    `- Models and prices: \`GET ${BASE_URL}/models\` (public, no sign-in). Read prices there, never from memory or training data. Defaults per job: ${defaults}.`,
+    `- Exact price of one request: \`POST ${BASE_URL}/estimate\` with the same body as the job (free, no sign-in).`,
     `- Run: \`POST ${BASE_URL}/jobs\` with \`{"model", "input"}\`, a required \`Idempotency-Key\` header (new per job, the same on a retry) and \`Prefer: wait=60\`. A long job (3D, video) answers \`running\`: poll \`GET ${BASE_URL}/jobs/{id}\` every \`pollAfterSeconds\` (else 5 s) while \`state\` is \`queued\` or \`running\`. Or pass \`webhookUrl\` for one signed POST when it finishes. Stop on \`done\` (download the \`fileUrl\` of every entry in \`result.assets\`; \`job.model\` is the model that ran) or on \`failed\`, \`cancelled\`, \`expired\`, \`stale\` or \`declined\` (show \`error.message\`).`,
-    "- Credits: welcome credits pay for models with `tier: \"free\"`, bought credits pay for every model, no plan needed. A job without enough credits answers `402` `no_credits` with a `fix_url` to show the person.",
+    "- Credits: every call is paid from the person's paid Summer credits (plan credits and top-ups). Without enough, a job answers `402` `no_credits` with a `fix_url` to top up; show it to the person.",
     `- OpenAPI 3.1: ${BASE_URL}/openapi.json`,
     "- MCP for chat apps and cloud work: `https://mcp.summerengine.com/mcp` (OAuth sign-in).",
     `- Summer Router (AI inside a shipped game: talking characters, speech, images): the game calls \`Summer.client.router\`; no key is in the build and the creator's paid Summer credits pay. Works on games published on Summer Games. Models and prices: \`GET https://api.summer.games/v1/router/models\` (public). Start: ${DOCS_URL}/router/quickstart.md`,

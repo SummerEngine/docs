@@ -31,7 +31,7 @@ Every error from `/v1` has the same shape:
 | `fix_url` | Where the person fixes it, such as the page to add credits |
 | `doc_url` | This page, at the code's section |
 
-A call that answers an error charges nothing. After `outcome_unknown`, send the same request with the same `Idempotency-Key` to see whether a job started. The [key request calls](/api/agents#get-a-key-over-http) answer with a `status` field instead.
+A call that answers an error charges nothing. After `outcome_unknown`, send the same request with the same `Idempotency-Key` to see whether a job started.
 
 ## Codes
 
@@ -39,13 +39,13 @@ A call that answers an error charges nothing. After `outcome_unknown`, send the 
 |---|---|---|
 | [`invalid_input`](#invalid_input) | 400 | No: fix the request |
 | [`moved`](#moved) | 400 | No: use the new name |
-| [`not_signed_in`](#not_signed_in) | 401 | No: fix the key |
+| [`not_signed_in`](#not_signed_in) | 401 | After signing in |
 | [`no_credits`](#no_credits) | 402 | After credits are added |
 | [`over_limit`](#over_limit) | 402 | After the limit resets or is raised |
 | [`forbidden`](#forbidden) | 403 | No |
 | [`not_found`](#not_found) | 404 | No |
 | [`conflict`](#conflict) | 409 | After a new estimate |
-| [`idempotency_conflict`](#idempotency_conflict) | 409 | With a new key |
+| [`idempotency_conflict`](#idempotency_conflict) | 409 | With a new `Idempotency-Key` |
 | [`in_progress`](#in_progress) | 409 | Yes, the same request |
 | [`unsupported`](#unsupported) | 409 | No |
 | [`rate_limited`](#rate_limited) | 429 | Yes, after `Retry-After` |
@@ -63,19 +63,19 @@ The name you sent was replaced. `message` names the new one.
 
 ### not_signed_in
 
-No key, or the key is wrong, revoked or expired. Send `Authorization: Bearer $SUMMER_API_KEY`. An agent key lasts 30 days: run `summer login --api-key` again for a new one.
+No token, or the token expired or its app was revoked. Run `summer login` once, then send `Authorization: Bearer $(summer token)`; a token lasts one hour. After a revoke, connect the app again.
 
 ### no_credits
 
-The account has too few credits for this job. Nothing ran and nothing was charged. `fix_url` opens the page where the person adds credits; no plan is needed. Check what a key can spend with `GET /v1/balance`.
+The account has too few paid credits for this job. Nothing ran and nothing was charged. `fix_url` opens the page where the person tops up. Check what this app can spend with `GET /v1/balance`.
 
 ### over_limit
 
-The key reached its own spend limit. Nothing ran and nothing was charged. The person raises the limit in **Settings > API keys**, or the limit resets at `resets_at` from `GET /v1/key`.
+The app reached its own spend limit. Nothing ran and nothing was charged. The person raises it in [Settings > Connected agents & apps](https://summerengine.com/settings/connected-apps), or the limit resets at `resets_at` from `GET /v1/key`.
 
 ### forbidden
 
-This key or account may not do this. An agent key can make assets and spend credits only.
+This app or account may not do this.
 
 ### not_found
 

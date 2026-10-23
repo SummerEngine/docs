@@ -121,7 +121,7 @@
     "api/models/sound/stable-audio-3-sfx",
     "api/models/music/music-v2",
     "api/models/music/music-v1",
-    "api/keys",
+    "api/sign-in",
     "api/jobs",
     "api/errors",
     "api/reference/get-models",

@@ -9,7 +9,7 @@ Every model runs the same way: one job with a `model` and an `input`. Short jobs
 
 ## Know the price first
 
-`POST /v1/estimate` takes the same body as a job and prices it: the exact amount, or the most it can cost when `atMost` is `true`. It is free and needs no key. The answer has these fields at the top level, with no wrapper.
+`POST /v1/estimate` takes the same body as a job and prices it: the exact amount, or the most it can cost when `atMost` is `true`. It is free and needs no sign-in. The answer has these fields at the top level, with no wrapper.
 
 ```bash
 curl https://www.summerengine.com/v1/estimate \
@@ -29,7 +29,7 @@ curl https://www.summerengine.com/v1/estimate \
 
 ```bash
 curl https://www.summerengine.com/v1/jobs \
-  -H "Authorization: Bearer $SUMMER_API_KEY" \
+  -H "Authorization: Bearer $SUMMER_TOKEN" \
   -H "Content-Type: application/json" \
   -H "Idempotency-Key: $(uuidgen)" \
   -H "Prefer: wait=60" \
@@ -54,7 +54,7 @@ The job also carries `model`, the model that ran (also when you sent a default i
 ## Follow a job
 
 ```bash
-curl "https://www.summerengine.com/v1/jobs/$JOB_ID" -H "Authorization: Bearer $SUMMER_API_KEY"
+curl "https://www.summerengine.com/v1/jobs/$JOB_ID" -H "Authorization: Bearer $SUMMER_TOKEN"
 ```
 
 Check again after `pollAfterSeconds` when the answer has it, or every 5 seconds. Job ids can hold a colon, such as `gen:...`; send them as they are. With the CLI, `summer api jobs <id> --download` follows the job and saves its files.
@@ -69,7 +69,7 @@ Check again after `pollAfterSeconds` when the answer has it, or every 5 seconds.
 To get changes pushed instead, open the event stream. It sends a `job` event with `{"job": {...}}` each time the job changes, then `done` with `{"state": ...}` when the job reaches any final state, `failed` included. After about 4 minutes it sends `timeout`: open it again, or check the job.
 
 ```bash
-curl -N "https://www.summerengine.com/v1/jobs/$JOB_ID/events" -H "Authorization: Bearer $SUMMER_API_KEY"
+curl -N "https://www.summerengine.com/v1/jobs/$JOB_ID/events" -H "Authorization: Bearer $SUMMER_TOKEN"
 ```
 
 ## Webhooks
@@ -77,7 +77,7 @@ curl -N "https://www.summerengine.com/v1/jobs/$JOB_ID/events" -H "Authorization:
 Pass `webhookUrl` (public `https`) when you start a job, and Summer sends one signed `POST` there when the job finishes. First make a signing secret, once per account:
 
 ```bash
-curl -X POST https://www.summerengine.com/v1/webhooks/secret -H "Authorization: Bearer $SUMMER_API_KEY"
+curl -X POST https://www.summerengine.com/v1/webhooks/secret -H "Authorization: Bearer $SUMMER_TOKEN"
 ```
 
 The answer holds `secret`, shown only this once; keep it as `SUMMER_WEBHOOK_SECRET`. Making a new one stops the old one at once. Then add `"webhookUrl": "https://example.com/summer-hook"` to the `POST /v1/jobs` body; the job answer carries `webhookId`.
@@ -107,7 +107,7 @@ Answer `2xx` to confirm. Summer retries after 1, 5 and 30 minutes, then 1, 2, 4,
 
 Every job has the same `result`: `assets`, one entry per file, each with `assetId`, `fileUrl` and `thumbnailUrl`. An image job with `numImages` above 1 has one entry per image. A job reads `done` once every file is in Summer storage, so every `fileUrl` is ready to download.
 
-Assets made through the API are private: they show in your Summer library only. Each `fileUrl` is on Summer's own storage and downloads without a key, so share a URL only where the file may be seen. Download the file into your project, or keep the asset id: in Summer Engine your agent imports an asset by its id.
+Assets made through the API are private: they show in your Summer library only. Each `fileUrl` is on Summer's own storage and downloads without a sign-in, so share a URL only where the file may be seen. Download the file into your project, or keep the asset id: in Summer Engine your agent imports an asset by its id.
 
 ## Send a picture
 

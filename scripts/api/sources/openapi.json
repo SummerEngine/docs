@@ -20,7 +20,8 @@
       "bearer": {
         "type": "http",
         "scheme": "bearer",
-        "description": "Your Summer API key (sk-summer-v1-...), kept in SUMMER_API_KEY. Make one in Summer: Settings > API keys."
+        "bearerFormat": "JWT",
+        "description": "A Summer sign-in (Supabase OAuth 2.1 access token, one hour): npx -y summer-engine login, then summer token. Each app you sign in spends your paid credits up to the limit you set in Connected apps."
       }
     },
     "schemas": {
@@ -2020,9 +2021,9 @@
     },
     "/key": {
       "get": {
-        "operationId": "read_this_key",
-        "summary": "Read this key",
-        "description": "The calling key: its name, scopes, spend limit, what it spent this period and when that resets. Never the key itself.",
+        "operationId": "read_this_app",
+        "summary": "Read this app",
+        "description": "The signed-in app (your grant to it): its scopes, spend limit, what it spent this period and when that resets.",
         "responses": {
           "200": {
             "description": "The answer.",
@@ -2037,10 +2038,10 @@
                         "id": {
                           "type": "string"
                         },
-                        "name": {
+                        "client_id": {
                           "type": "string"
                         },
-                        "kind": {
+                        "name": {
                           "type": "string"
                         },
                         "scopes": {
@@ -2112,7 +2113,7 @@
       "get": {
         "operationId": "read_the_balance",
         "summary": "Read the balance",
-        "description": "The credits this key spends (its owner's balance) and what the key may still spend now.",
+        "description": "The paid credits this app spends (your plan and bought credits) and what the app may still spend now.",
         "responses": {
           "200": {
             "description": "The answer.",
