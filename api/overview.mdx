@@ -1,0 +1,93 @@
+---
+title: "Summer API: game assets for any agent"
+sidebarTitle: "Overview"
+description: "One API for game assets: 3D models, images, video, voice, sound effects and music from curated models tested for games. One key, game-ready files in your Summer library. No markup on assets. Every model at the provider's list price."
+icon: "sparkles"
+---
+
+Summer is the game engine built for AI. With the **Summer API**, your agent sends one call with one key and gets back a file your game can load: a GLB, a PNG or an audio file, saved to your Summer library.
+
+<Note>
+**No markup on assets. Every model at the provider's list price.** Each price is on the [models page](/api/models). A failed job costs nothing.
+</Note>
+
+<Columns cols={2}>
+  <Frame caption="From the prompt &quot;a stylized treasure chest, game prop&quot;: a textured GLB">
+    <img src="/images/api/chest.png" alt="A stylized wooden treasure chest with gold trim, made by a Summer 3D model" />
+  </Frame>
+  <Frame caption="From a one-paragraph prompt: a frost golem hero as a textured GLB">
+    <img src="/images/api/golem.png" alt="A frost golem character in armour with glowing blue crystals, made by a Summer 3D model" />
+  </Frame>
+</Columns>
+
+## Set up with your agent
+
+Paste this into Claude Code, Codex, Cursor, Hermes or any agent that can run commands. It asks you for one click to approve a key with a spend limit, then makes a test asset.
+
+```text Prompt for your agent wrap
+Use the Summer API for game assets. Read https://docs.summerengine.com/llms.txt, get a Summer API key with the approval link it describes, save it as SUMMER_API_KEY in .env, then make "a stylized treasure chest, game prop" with 3d/default and save the GLB in this project.
+```
+
+In ChatGPT or Claude, add `https://mcp.summerengine.com/mcp` as a connector instead. See [Agents](/api/agents).
+
+## What you can make
+
+<CardGroup cols={3}>
+  <Card title="3D models" icon="box" href="/api/models#3d-models">
+    Props, characters and buildings as textured GLB files, from text or a picture. Add a rig and animations on the same job.
+  </Card>
+  <Card title="Images" icon="image" href="/api/models#images">
+    Concept art, sprites, textures, icons and key art, with an optional transparent background.
+  </Card>
+  <Card title="Video" icon="clapperboard" href="/api/models#video">
+    Trailer shots, cutscenes and animated key art, from text or a picture.
+  </Card>
+  <Card title="Voice and dialogue" icon="mic" href="/api/models#voice">
+    Character lines, narration and conversations between several characters.
+  </Card>
+  <Card title="Sound effects" icon="audio-lines" href="/api/models#sound-effects">
+    Hits, footsteps, pickups, UI clicks and seamless loops.
+  </Card>
+  <Card title="Music" icon="music" href="/api/models#music">
+    Level, menu and combat music from a description.
+  </Card>
+</CardGroup>
+
+## One call
+
+```bash
+curl https://www.summerengine.com/v1/jobs \
+  -H "Authorization: Bearer $SUMMER_API_KEY" \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: $(uuidgen)" \
+  -H "Prefer: wait=60" \
+  -d '{"model": "image/default", "input": {"prompt": "a cozy pixel-art tavern at night"}}'
+```
+
+Images, voice and sound come back in the same call. A 3D model takes a few minutes: the call answers with a job id, and your agent checks it until the file is ready. The [quickstart](/api/quickstart) makes a 3D model end to end.
+
+## Why Summer
+
+- **Curated and tested for games.** A short list of the best model for each job, not hundreds. Each default id, such as `3d/default`, runs the model Summer tests first and moves when a better one passes.
+- **Game-ready output.** 3D models come back as GLB files with textures, and with a rig and animations when you ask. Images can come back with a transparent background. Sound effects can loop.
+- **Files you keep.** Every result is saved to your Summer library with a Summer URL and an asset id. In Summer Engine, your agent imports it by id.
+- **The price before you spend.** `POST /v1/estimate` gives the exact price of a request and a quote that holds it for 15 minutes. It is free and needs no key.
+- **Safe for agents.** Each key has its own spend limit. An agent asks for a key and you approve it with one click. Retries with the same `Idempotency-Key` never charge twice.
+- **One balance, no plan.** Every model draws from your Summer credits. Sign in and add credits; no subscription needed.
+
+## Works with every agent
+
+| How | For | Start |
+|---|---|---|
+| REST with a key | Any agent or program: Claude Code, Codex, Cursor, Hermes, your own scripts | [Quickstart](/api/quickstart) |
+| MCP | ChatGPT, Claude and other chat apps | [Agents](/api/agents#chatgpt-and-claude) |
+| OpenAPI 3.1 | SDK generators and tools | [`/v1/openapi.json`](https://www.summerengine.com/v1/openapi.json) |
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/api/quickstart">
+    Get a key, check the price, make a 3D model and save the GLB. curl, TypeScript and Python.
+  </Card>
+  <Card title="Models and pricing" icon="tags" href="/api/models">
+    Every model with its price, typical time and output format.
+  </Card>
+</CardGroup>

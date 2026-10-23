@@ -1,0 +1,1484 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Summer API",
+    "version": "1",
+    "description": "Curated, tested game-dev models: 3D, images, video, voice, sound and music, into your Summer assets."
+  },
+  "servers": [
+    {
+      "url": "https://www.summerengine.com/v1"
+    }
+  ],
+  "security": [
+    {
+      "bearer": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Your Summer API key (sk-summer-v1-...), kept in SUMMER_API_KEY. Make one in Summer: Settings > API keys."
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "object",
+            "required": [
+              "type",
+              "code",
+              "message",
+              "param",
+              "request_id",
+              "doc_url"
+            ],
+            "properties": {
+              "type": {
+                "type": "string"
+              },
+              "code": {
+                "type": "string",
+                "description": "A stable code: invalid_input, not_signed_in, no_credits, rate_limited, ..."
+              },
+              "message": {
+                "type": "string"
+              },
+              "param": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "The field to fix, such as input.prompt or Idempotency-Key."
+              },
+              "request_id": {
+                "type": "string"
+              },
+              "doc_url": {
+                "type": "string"
+              },
+              "fix_url": {
+                "type": "string",
+                "description": "Where the person fixes it, such as adding credits."
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/models": {
+      "get": {
+        "operationId": "models_list",
+        "summary": "List Summer API models",
+        "description": "List the curated game-dev models of the Summer API: ids, capability, input schema, output formats, typical time and price. Public; no sign-in. Next: models.estimate for one request.",
+        "x-summer-op": "models.list",
+        "security": [],
+        "parameters": [
+          {
+            "name": "capability",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "description": "Only this kind: image, 3d, video, voice, dialogue, sound or music.",
+              "type": "string",
+              "enum": [
+                "image",
+                "3d",
+                "video",
+                "voice",
+                "dialogue",
+                "sound",
+                "music"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Done.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "currency": {
+                      "type": "string",
+                      "const": "USD"
+                    },
+                    "topUpFeePercent": {
+                      "description": "Added to pay-as-you-go credit purchases; model prices carry no other fee.",
+                      "type": "number"
+                    },
+                    "aliases": {
+                      "description": "Each <capability>/default alias and the model id it runs.",
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "models": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "datedId": {
+                            "description": "The same model, dated: shows which price check it follows.",
+                            "type": "string"
+                          },
+                          "capability": {
+                            "type": "string",
+                            "enum": [
+                              "image",
+                              "3d",
+                              "video",
+                              "voice",
+                              "dialogue",
+                              "sound",
+                              "music"
+                            ]
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "vendor": {
+                            "type": "string"
+                          },
+                          "tags": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "aliases": {
+                            "description": "The <capability>/default aliases that run this model.",
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "outputFormats": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "latency": {
+                            "description": "Typical seconds from start to result.",
+                            "anyOf": [
+                              {
+                                "type": "object",
+                                "properties": {
+                                  "p50Seconds": {
+                                    "type": "number"
+                                  },
+                                  "p90Seconds": {
+                                    "anyOf": [
+                                      {
+                                        "type": "number"
+                                      },
+                                      {
+                                        "type": "null"
+                                      }
+                                    ]
+                                  },
+                                  "measured": {
+                                    "type": "boolean"
+                                  }
+                                },
+                                "required": [
+                                  "p50Seconds",
+                                  "p90Seconds",
+                                  "measured"
+                                ],
+                                "additionalProperties": false
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "tier": {
+                            "description": "free: welcome credits may pay for it.",
+                            "type": "string",
+                            "enum": [
+                              "free",
+                              "pro"
+                            ]
+                          },
+                          "commercialUse": {
+                            "type": "boolean"
+                          },
+                          "wellTested": {
+                            "description": "Summer's own surfaces run it by default.",
+                            "type": "boolean"
+                          },
+                          "price": {
+                            "type": "object",
+                            "properties": {
+                              "unit": {
+                                "type": "string",
+                                "enum": [
+                                  "call",
+                                  "output_second",
+                                  "1k_characters",
+                                  "megapixel"
+                                ]
+                              },
+                              "price": {
+                                "description": "For one unit, at the defaults.",
+                                "type": "string",
+                                "pattern": "^\\d+(\\.\\d+)?$"
+                              },
+                              "quantityField": {
+                                "description": "The request field that counts the units (numImages, duration, text). Absent: one unit.",
+                                "type": "string"
+                              },
+                              "minimum": {
+                                "description": "US dollars as a decimal string.",
+                                "type": "string",
+                                "pattern": "^\\d+(\\.\\d+)?$"
+                              },
+                              "estimate": {
+                                "description": "A typical request; models.estimate prices the exact one.",
+                                "type": "boolean",
+                                "const": true
+                              },
+                              "modifiers": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "field": {
+                                      "description": "The request field in input.",
+                                      "type": "string"
+                                    },
+                                    "equals": {
+                                      "anyOf": [
+                                        {
+                                          "type": "string"
+                                        },
+                                        {
+                                          "type": "number"
+                                        },
+                                        {
+                                          "type": "boolean"
+                                        }
+                                      ]
+                                    },
+                                    "set": {
+                                      "description": "Applies when the field is given at all.",
+                                      "type": "boolean",
+                                      "const": true
+                                    },
+                                    "price": {
+                                      "description": "Replaces the unit price.",
+                                      "type": "string",
+                                      "pattern": "^\\d+(\\.\\d+)?$"
+                                    },
+                                    "add": {
+                                      "description": "Adds to the unit price.",
+                                      "type": "string",
+                                      "pattern": "^\\d+(\\.\\d+)?$"
+                                    }
+                                  },
+                                  "required": [
+                                    "field"
+                                  ],
+                                  "additionalProperties": false
+                                }
+                              },
+                              "priceUpdatedAt": {
+                                "description": "When the price was last checked, YYYY-MM-DD.",
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "unit",
+                              "price",
+                              "modifiers",
+                              "priceUpdatedAt"
+                            ],
+                            "additionalProperties": false
+                          },
+                          "inputSchema": {
+                            "description": "JSON Schema of input for models.run and models.estimate.",
+                            "type": "object",
+                            "additionalProperties": {}
+                          },
+                          "voices": {
+                            "description": "Voice and dialogue models: the voiceId values they speak with.",
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "voiceId": {
+                                  "type": "string"
+                                },
+                                "name": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "voiceId",
+                                "name"
+                              ],
+                              "additionalProperties": false
+                            }
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "datedId",
+                          "capability",
+                          "name",
+                          "vendor",
+                          "tags",
+                          "aliases",
+                          "outputFormats",
+                          "latency",
+                          "tier",
+                          "commercialUse",
+                          "wellTested",
+                          "price",
+                          "inputSchema"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "currency",
+                    "topUpFeePercent",
+                    "aliases",
+                    "models"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/models/{model}": {
+      "get": {
+        "operationId": "models_get",
+        "summary": "Read a Summer API model",
+        "description": "Read one Summer API model by id, dated id or alias: its input schema, output formats, typical time and price. Public; no sign-in. Next: models.estimate.",
+        "x-summer-op": "models.get",
+        "security": [],
+        "parameters": [
+          {
+            "name": "model",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Send the id as it is, slash included."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Done.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "alias": {
+                      "description": "The alias asked for; model is what it runs today.",
+                      "type": "string"
+                    },
+                    "model": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "datedId": {
+                          "description": "The same model, dated: shows which price check it follows.",
+                          "type": "string"
+                        },
+                        "capability": {
+                          "type": "string",
+                          "enum": [
+                            "image",
+                            "3d",
+                            "video",
+                            "voice",
+                            "dialogue",
+                            "sound",
+                            "music"
+                          ]
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "vendor": {
+                          "type": "string"
+                        },
+                        "tags": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "aliases": {
+                          "description": "The <capability>/default aliases that run this model.",
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "outputFormats": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "latency": {
+                          "description": "Typical seconds from start to result.",
+                          "anyOf": [
+                            {
+                              "type": "object",
+                              "properties": {
+                                "p50Seconds": {
+                                  "type": "number"
+                                },
+                                "p90Seconds": {
+                                  "anyOf": [
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "measured": {
+                                  "type": "boolean"
+                                }
+                              },
+                              "required": [
+                                "p50Seconds",
+                                "p90Seconds",
+                                "measured"
+                              ],
+                              "additionalProperties": false
+                            },
+                            {
+                              "type": "null"
+                            }
+                          ]
+                        },
+                        "tier": {
+                          "description": "free: welcome credits may pay for it.",
+                          "type": "string",
+                          "enum": [
+                            "free",
+                            "pro"
+                          ]
+                        },
+                        "commercialUse": {
+                          "type": "boolean"
+                        },
+                        "wellTested": {
+                          "description": "Summer's own surfaces run it by default.",
+                          "type": "boolean"
+                        },
+                        "price": {
+                          "type": "object",
+                          "properties": {
+                            "unit": {
+                              "type": "string",
+                              "enum": [
+                                "call",
+                                "output_second",
+                                "1k_characters",
+                                "megapixel"
+                              ]
+                            },
+                            "price": {
+                              "description": "For one unit, at the defaults.",
+                              "type": "string",
+                              "pattern": "^\\d+(\\.\\d+)?$"
+                            },
+                            "quantityField": {
+                              "description": "The request field that counts the units (numImages, duration, text). Absent: one unit.",
+                              "type": "string"
+                            },
+                            "minimum": {
+                              "description": "US dollars as a decimal string.",
+                              "type": "string",
+                              "pattern": "^\\d+(\\.\\d+)?$"
+                            },
+                            "estimate": {
+                              "description": "A typical request; models.estimate prices the exact one.",
+                              "type": "boolean",
+                              "const": true
+                            },
+                            "modifiers": {
+                              "type": "array",
+                              "items": {
+                                "type": "object",
+                                "properties": {
+                                  "field": {
+                                    "description": "The request field in input.",
+                                    "type": "string"
+                                  },
+                                  "equals": {
+                                    "anyOf": [
+                                      {
+                                        "type": "string"
+                                      },
+                                      {
+                                        "type": "number"
+                                      },
+                                      {
+                                        "type": "boolean"
+                                      }
+                                    ]
+                                  },
+                                  "set": {
+                                    "description": "Applies when the field is given at all.",
+                                    "type": "boolean",
+                                    "const": true
+                                  },
+                                  "price": {
+                                    "description": "Replaces the unit price.",
+                                    "type": "string",
+                                    "pattern": "^\\d+(\\.\\d+)?$"
+                                  },
+                                  "add": {
+                                    "description": "Adds to the unit price.",
+                                    "type": "string",
+                                    "pattern": "^\\d+(\\.\\d+)?$"
+                                  }
+                                },
+                                "required": [
+                                  "field"
+                                ],
+                                "additionalProperties": false
+                              }
+                            },
+                            "priceUpdatedAt": {
+                              "description": "When the price was last checked, YYYY-MM-DD.",
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "unit",
+                            "price",
+                            "modifiers",
+                            "priceUpdatedAt"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "inputSchema": {
+                          "description": "JSON Schema of input for models.run and models.estimate.",
+                          "type": "object",
+                          "additionalProperties": {}
+                        },
+                        "voices": {
+                          "description": "Voice and dialogue models: the voiceId values they speak with.",
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "voiceId": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "voiceId",
+                              "name"
+                            ],
+                            "additionalProperties": false
+                          }
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "datedId",
+                        "capability",
+                        "name",
+                        "vendor",
+                        "tags",
+                        "aliases",
+                        "outputFormats",
+                        "latency",
+                        "tier",
+                        "commercialUse",
+                        "wellTested",
+                        "price",
+                        "inputSchema"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "model"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/estimate": {
+      "post": {
+        "operationId": "models_estimate",
+        "summary": "Estimate a Summer API job",
+        "description": "Price one exact job before running it: the USD amount, what makes it up and a quote id that holds the price for 15 minutes. Charges nothing; no sign-in. Next: models.run with the quoteId.",
+        "x-summer-op": "models.estimate",
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "model": {
+                    "description": "A Summer model id from models.list, such as 3d/hunyuan-3d or 3d/default.",
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  },
+                  "input": {
+                    "description": "The model's input, matching its inputSchema.",
+                    "default": {},
+                    "type": "object",
+                    "additionalProperties": {}
+                  }
+                },
+                "required": [
+                  "model"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Done.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "model": {
+                      "type": "string"
+                    },
+                    "currency": {
+                      "type": "string",
+                      "const": "USD"
+                    },
+                    "price": {
+                      "description": "US dollars as a decimal string.",
+                      "type": "string",
+                      "pattern": "^\\d+(\\.\\d+)?$"
+                    },
+                    "atMost": {
+                      "description": "true: Summer decides a step while it runs; the charge can be lower, never higher.",
+                      "type": "boolean"
+                    },
+                    "breakdown": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "item": {
+                            "type": "string"
+                          },
+                          "price": {
+                            "description": "US dollars as a decimal string.",
+                            "type": "string",
+                            "pattern": "^\\d+(\\.\\d+)?$"
+                          }
+                        },
+                        "required": [
+                          "item",
+                          "price"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "quoteId": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    },
+                    "quoteExpiresAt": {
+                      "anyOf": [
+                        {
+                          "type": "string"
+                        },
+                        {
+                          "type": "null"
+                        }
+                      ]
+                    }
+                  },
+                  "required": [
+                    "model",
+                    "currency",
+                    "price",
+                    "atMost",
+                    "breakdown",
+                    "quoteId",
+                    "quoteExpiresAt"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs": {
+      "post": {
+        "operationId": "models_run",
+        "summary": "Run a Summer API job",
+        "description": "Run one Summer API model on its input into the person's Summer assets. Short jobs come back done; long ones answer running with a job id for jobs.wait. Spends their credits; a quoteId caps the charge at its price.",
+        "x-summer-op": "models.run",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "description": "A new key for each new request; the same key returns the first answer."
+          },
+          {
+            "name": "Prefer",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "examples": [
+                "wait=60"
+              ]
+            },
+            "description": "wait=<seconds, at most 60>: answer with the finished job when it finishes in time."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "model": {
+                    "description": "A Summer model id from models.list, such as 3d/hunyuan-3d or 3d/default.",
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  },
+                  "input": {
+                    "description": "The model's input, matching its inputSchema.",
+                    "default": {},
+                    "type": "object",
+                    "additionalProperties": {}
+                  },
+                  "quoteId": {
+                    "description": "From models.estimate: refuse to charge more than it quoted.",
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 600
+                  }
+                },
+                "required": [
+                  "model"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Done.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "job": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "description": "Follow it with jobs.get or jobs.wait.",
+                          "type": "string"
+                        },
+                        "state": {
+                          "type": "string",
+                          "enum": [
+                            "queued",
+                            "running",
+                            "awaiting_approval",
+                            "done",
+                            "failed",
+                            "cancelled",
+                            "declined",
+                            "expired",
+                            "stale"
+                          ]
+                        },
+                        "model": {
+                          "type": "string"
+                        },
+                        "estimatedPrice": {
+                          "description": "US dollars as a decimal string.",
+                          "type": "string",
+                          "pattern": "^\\d+(\\.\\d+)?$"
+                        },
+                        "price": {
+                          "description": "What the job charged, once known.",
+                          "type": "string",
+                          "pattern": "^\\d+(\\.\\d+)?$"
+                        },
+                        "result": {
+                          "description": "The finished work: asset ids and Summer file URLs.",
+                          "type": "object",
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "state",
+                        "model",
+                        "estimatedPrice"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "job"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "Still running: follow job.id with GET /v1/jobs/{jobId}.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "job": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "description": "Follow it with jobs.get or jobs.wait.",
+                          "type": "string"
+                        },
+                        "state": {
+                          "type": "string",
+                          "enum": [
+                            "queued",
+                            "running",
+                            "awaiting_approval",
+                            "done",
+                            "failed",
+                            "cancelled",
+                            "declined",
+                            "expired",
+                            "stale"
+                          ]
+                        },
+                        "model": {
+                          "type": "string"
+                        },
+                        "estimatedPrice": {
+                          "description": "US dollars as a decimal string.",
+                          "type": "string",
+                          "pattern": "^\\d+(\\.\\d+)?$"
+                        },
+                        "price": {
+                          "description": "What the job charged, once known.",
+                          "type": "string",
+                          "pattern": "^\\d+(\\.\\d+)?$"
+                        },
+                        "result": {
+                          "description": "The finished work: asset ids and Summer file URLs.",
+                          "type": "object",
+                          "additionalProperties": {}
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "state",
+                        "model",
+                        "estimatedPrice"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "job"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/{jobId}": {
+      "get": {
+        "operationId": "jobs_get",
+        "summary": "Check a job",
+        "description": "Read one job once: its state (queued, running, awaiting_approval, done, failed...), progress and, when done, its result. Next: jobs.wait to wait for it.",
+        "x-summer-op": "jobs.get",
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Done.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "job": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "kind": {
+                          "type": "string"
+                        },
+                        "state": {
+                          "type": "string",
+                          "enum": [
+                            "queued",
+                            "running",
+                            "awaiting_approval",
+                            "done",
+                            "failed",
+                            "cancelled",
+                            "declined",
+                            "expired",
+                            "stale"
+                          ]
+                        },
+                        "progress": {
+                          "type": "number"
+                        },
+                        "result": {
+                          "description": "The finished work: asset ids and URLs, or the approved change.",
+                          "type": "object",
+                          "additionalProperties": {}
+                        },
+                        "error": {
+                          "type": "object",
+                          "properties": {
+                            "code": {
+                              "type": "string"
+                            },
+                            "message": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "code",
+                            "message"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "pollAfterSeconds": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "kind",
+                        "state"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "job"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/{jobId}/events": {
+      "get": {
+        "operationId": "jobs_get_events",
+        "summary": "Check a job",
+        "description": "Follow a job as server-sent events: one `job` event per change, until it finishes.",
+        "x-summer-op": "jobs.get",
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Server-sent events: job, then done, error or timeout.",
+            "content": {
+              "text/event-stream": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/{jobId}/cancel": {
+      "post": {
+        "operationId": "jobs_cancel",
+        "summary": "Cancel a job",
+        "description": "Stop one of the person's jobs that has not finished: a plan agent request, a cloud build, or a publish request still waiting for the owner (its link stops working). Work already saved stays. Returns the job. Next: jobs.list.",
+        "x-summer-op": "jobs.cancel",
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "description": "A new key for each new request; the same key returns the first answer."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Done.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "job": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "kind": {
+                          "type": "string"
+                        },
+                        "state": {
+                          "type": "string",
+                          "enum": [
+                            "queued",
+                            "running",
+                            "awaiting_approval",
+                            "done",
+                            "failed",
+                            "cancelled",
+                            "declined",
+                            "expired",
+                            "stale"
+                          ]
+                        },
+                        "progress": {
+                          "type": "number"
+                        },
+                        "result": {
+                          "description": "The finished work: asset ids and URLs, or the approved change.",
+                          "type": "object",
+                          "additionalProperties": {}
+                        },
+                        "error": {
+                          "type": "object",
+                          "properties": {
+                            "code": {
+                              "type": "string"
+                            },
+                            "message": {
+                              "type": "string"
+                            }
+                          },
+                          "required": [
+                            "code",
+                            "message"
+                          ],
+                          "additionalProperties": false
+                        },
+                        "message": {
+                          "type": "string"
+                        },
+                        "pollAfterSeconds": {
+                          "type": "number"
+                        }
+                      },
+                      "required": [
+                        "id",
+                        "kind",
+                        "state"
+                      ],
+                      "additionalProperties": false
+                    }
+                  },
+                  "required": [
+                    "job"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/files": {
+      "post": {
+        "operationId": "assets_upload_begin",
+        "summary": "Start an image upload",
+        "description": "Start an image upload (PNG, JPEG or WebP): POST every field plus the file to uploadUrl, then POST /v1/files/complete with the upload's answer.",
+        "x-summer-op": "assets.upload_begin",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "description": "A new key for each new request; the same key returns the first answer."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Done.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "uploadUrl": {
+                      "type": "string"
+                    },
+                    "method": {
+                      "type": "string",
+                      "const": "POST"
+                    },
+                    "fields": {
+                      "description": "Send each as a multipart form field, then the file as \"file\".",
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      }
+                    },
+                    "expiresAt": {
+                      "type": "string"
+                    },
+                    "example": {
+                      "description": "The same upload as one curl command (replace the file path).",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "uploadUrl",
+                    "method",
+                    "fields",
+                    "expiresAt",
+                    "example"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/files/complete": {
+      "post": {
+        "operationId": "assets_upload_complete",
+        "summary": "Finish an image upload",
+        "description": "Finish an upload from assets.upload_begin: checks it is the upload Summer signed for this person, reads the image and saves it as their private asset. Returns the asset id and size. Free. Next: assets.get.",
+        "x-summer-op": "assets.upload_complete",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "description": "A new key for each new request; the same key returns the first answer."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "publicId": {
+                    "description": "public_id from the upload's answer.",
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 300
+                  },
+                  "version": {
+                    "description": "version from the upload's answer.",
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "maximum": 9007199254740991
+                  },
+                  "uploadSignature": {
+                    "description": "signature from the upload's answer (not the one in fields).",
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 128
+                  },
+                  "format": {
+                    "type": "string",
+                    "enum": [
+                      "png",
+                      "jpg",
+                      "jpeg",
+                      "webp"
+                    ]
+                  },
+                  "title": {
+                    "default": "Uploaded image",
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 200
+                  }
+                },
+                "required": [
+                  "publicId",
+                  "version",
+                  "uploadSignature",
+                  "format"
+                ],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Done.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "assetId": {
+                      "type": "string"
+                    },
+                    "fileUrl": {
+                      "type": "string"
+                    },
+                    "width": {
+                      "type": "number"
+                    },
+                    "height": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "assetId",
+                    "fileUrl",
+                    "width",
+                    "height"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/openapi.json": {
+      "get": {
+        "operationId": "openapi",
+        "summary": "This document",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "OpenAPI 3.1.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

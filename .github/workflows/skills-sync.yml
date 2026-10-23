@@ -37,6 +37,10 @@ jobs:
       - name: Pull the skill library from summer-engine@latest
         run: node scripts/skills/sync.mjs --work "$RUNNER_TEMP/skills"
 
+      # llms.txt lists every page in the navigation; new skill pages go in it too.
+      - name: Regenerate llms.txt
+        run: node scripts/api/generate.mjs
+
       - name: Check and publish
         run: |
           if [ -z "$(git status --porcelain)" ]; then

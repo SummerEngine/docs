@@ -1,0 +1,159 @@
+---
+title: "Summer API quickstart: your first 3D model"
+sidebarTitle: "Quickstart"
+description: "Get a Summer API key, check the price for free, then make a 3D treasure chest and save the GLB. Copy-paste code for curl, TypeScript and Python."
+icon: "rocket"
+---
+
+Three steps: get a key, check the price, make the model. At the end, `chest.glb` is in your folder and in your Summer library.
+
+<Note>
+Using a coding agent? Paste this and it does all three steps for you: `Use the Summer API for game assets. Read https://docs.summerengine.com/llms.txt and follow it to make "a stylized treasure chest, game prop" with 3d/default.`
+</Note>
+
+<Steps>
+  <Step title="Get a key">
+    Open [Summer Studio > Settings > API keys](https://summerengine.com/studio?tab=settings&section=api-keys), choose **Create key**, give it a name and a spend limit, and copy the key. Summer shows it once.
+
+    Put it in your environment or in a `.env` file:
+
+    ```bash .env
+    SUMMER_API_KEY=sk-summer-v1-...
+    ```
+
+    An agent can also ask for a key itself: you get one link, check the code and choose **Allow**. See [Agents](/api/agents#get-a-key-from-your-agent).
+
+    `3d/default` needs bought credits: add them at [Summer Studio > Credits](https://summerengine.com/studio/credits), no plan needed. With only a new account's welcome credits, use a model marked Free credits: Yes on the [models page](/api/models#3d-models) instead.
+  </Step>
+  <Step title="Check the price (free)">
+    `POST /v1/estimate` takes the same body as the job and answers with the exact price. It charges nothing and needs no key.
+
+    ```bash
+    curl https://www.summerengine.com/v1/estimate \
+      -H "Content-Type: application/json" \
+      -d '{"model": "3d/default", "input": {"kind": "text-to-3d", "prompt": "a stylized treasure chest, game prop"}}'
+    ```
+
+    The answer holds `price` in US dollars as a decimal string, a `breakdown`, and a `quoteId`. Send the `quoteId` with the job and Summer never charges more than it quoted. The quote holds for 15 minutes.
+  </Step>
+  <Step title="Make the model and save the GLB">
+    This starts the job, waits for it and downloads the file. A 3D model takes a few minutes.
+
+    <CodeGroup>
+
+    ```bash curl
+    # Needs curl and jq.
+    API=https://www.summerengine.com/v1
+    AUTH="Authorization: Bearer $SUMMER_API_KEY"
+
+    JOB=$(curl -s $API/jobs -H "$AUTH" -H "Content-Type: application/json" \
+      -H "Idempotency-Key: $(uuidgen)" -H "Prefer: wait=60" \
+      -d '{"model": "3d/default", "input": {"kind": "text-to-3d", "prompt": "a stylized treasure chest, game prop"}}')
+    echo "$JOB" | jq -e .job > /dev/null || { echo "$JOB"; exit 1; }
+    ID=$(echo "$JOB" | jq -r .job.id)
+
+    while true; do
+      JOB=$(curl -s "$API/jobs/$ID" -H "$AUTH")
+      STATE=$(echo "$JOB" | jq -r .job.state)
+      [ "$STATE" = queued ] || [ "$STATE" = running ] || break
+      sleep "$(echo "$JOB" | jq -r '.job.pollAfterSeconds // 5')"
+    done
+    [ "$STATE" = done ] || { echo "$JOB"; exit 1; }
+
+    URL=$(echo "$JOB" | jq -r '(.job.result.assets[0] // .job.result.asset // .job.result).fileUrl')
+    curl -sL "$URL" -o chest.glb && echo "Saved chest.glb"
+    ```
+
+    ```ts TypeScript
+    // make-chest.ts. Run with Node 22: npx tsx make-chest.ts
+    import { writeFile } from "node:fs/promises";
+
+    const API = "https://www.summerengine.com/v1";
+    const auth = { Authorization: `Bearer ${process.env.SUMMER_API_KEY}` };
+
+    const res = await fetch(`${API}/jobs`, {
+      method: "POST",
+      headers: { ...auth, "Content-Type": "application/json", "Idempotency-Key": crypto.randomUUID(), Prefer: "wait=60" },
+      body: JSON.stringify({
+        model: "3d/default",
+        input: { kind: "text-to-3d", prompt: "a stylized treasure chest, game prop" },
+      }),
+    });
+    const started = await res.json();
+    if (started.error) throw new Error(`${started.error.code}: ${started.error.message}`);
+    let job = started.job;
+    console.log(`Job ${job.id}, estimated ${job.estimatedPrice} USD`);
+
+    while (job.state === "queued" || job.state === "running") {
+      await new Promise((done) => setTimeout(done, (job.pollAfterSeconds ?? 5) * 1000));
+      job = (await (await fetch(`${API}/jobs/${encodeURIComponent(job.id)}`, { headers: auth })).json()).job;
+    }
+    if (job.state !== "done") throw new Error(`The job ended ${job.state}: ${job.error?.message ?? ""}`);
+
+    const asset = job.result.assets?.[0] ?? job.result.asset ?? job.result;
+    const file = await fetch(asset.fileUrl);
+    await writeFile("chest.glb", Buffer.from(await file.arrayBuffer()));
+    console.log(`Saved chest.glb (Summer asset ${asset.assetId})`);
+    ```
+
+    ```python Python
+    # make_chest.py. Needs: pip install requests
+    import os, time, uuid, requests
+
+    API = "https://www.summerengine.com/v1"
+    auth = {"Authorization": f"Bearer {os.environ['SUMMER_API_KEY']}"}
+
+    started = requests.post(
+        f"{API}/jobs",
+        headers={**auth, "Idempotency-Key": str(uuid.uuid4()), "Prefer": "wait=60"},
+        json={
+            "model": "3d/default",
+            "input": {"kind": "text-to-3d", "prompt": "a stylized treasure chest, game prop"},
+        },
+    ).json()
+    if "error" in started:
+        raise SystemExit(f"{started['error']['code']}: {started['error']['message']}")
+    job = started["job"]
+    print(f"Job {job['id']}, estimated {job['estimatedPrice']} USD")
+
+    while job["state"] in ("queued", "running"):
+        time.sleep(job.get("pollAfterSeconds", 5))
+        job = requests.get(f"{API}/jobs/{job['id']}", headers=auth).json()["job"]
+    if job["state"] != "done":
+        raise SystemExit(f"The job ended {job['state']}: {job.get('error')}")
+
+    result = job["result"]
+    asset = result["assets"][0] if "assets" in result else result.get("asset", result)
+    with open("chest.glb", "wb") as f:
+        f.write(requests.get(asset["fileUrl"]).content)
+    print(f"Saved chest.glb (Summer asset {asset['assetId']})")
+    ```
+
+    </CodeGroup>
+  </Step>
+</Steps>
+
+{/* TODO(summer-api): run these three scripts against production once SUMMER_API_ENABLED and the keys flag are on (lane F proof test), and paste one real finished job answer here. */}
+
+## What you get back
+
+A finished job has `state: "done"` and a `result` with the asset id in your Summer library and a Summer file URL. Short jobs, such as an image or a voice line, already come back done from `POST /v1/jobs`, because `Prefer: wait=60` holds the answer for up to 60 seconds. Long jobs answer `running`: check `GET /v1/jobs/{id}` until they finish. See [Jobs](/api/jobs).
+
+## Make it yours
+
+- **Rig and animate it.** On a character, add `"rig": true` and `"animationNames": ["Idle", "Walk", "Run"]`. The model page shows what the rig adds to the price.
+- **Start from a picture.** Send `"kind": "image-to-3d"` and an `imageUrl`.
+- **Pick another model.** Swap `3d/default` for any id on the [models page](/api/models).
+- **Use it in Summer Engine.** Your agent imports the asset by its id from your Summer library, or you drop the GLB into your project.
+
+<CardGroup cols={3}>
+  <Card title="Models and pricing" icon="tags" href="/api/models">
+    Every model, its price and its inputs.
+  </Card>
+  <Card title="Keys and limits" icon="key-round" href="/api/keys">
+    Spend limits per key, agent keys, balance.
+  </Card>
+  <Card title="Errors" icon="circle-alert" href="/api/errors">
+    Every error code and what to do.
+  </Card>
+</CardGroup>

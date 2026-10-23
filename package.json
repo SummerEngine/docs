@@ -6,7 +6,8 @@
     "node": ">=22"
   },
   "scripts": {
-    "check": "npm run check:compatibility && npm run check:reference && npm run check:skills && npm run check:language && npm run check:capabilities && npm run check:policy-fixtures && npm run check:routes && node scripts/check-docs.mjs",
+    "check": "npm run check:compatibility && npm run check:reference && npm run check:skills && npm run check:api && npm run check:language && npm run check:capabilities && npm run check:policy-fixtures && npm run check:routes && node scripts/check-docs.mjs",
+    "check:api": "node scripts/api/generate.mjs --check",
     "check:capabilities": "node scripts/check-capabilities.mjs",
     "check:policy-fixtures": "node scripts/check-policy-fixtures.mjs",
     "check:compatibility": "node scripts/sync-engine-compatibility.mjs --check",
@@ -15,10 +16,12 @@
     "check:reference": "node scripts/reference/generate.mjs --check",
     "check:routes": "node scripts/check-routes.mjs",
     "check:skills": "node scripts/skills/generate.mjs --check",
+    "generate:api": "node scripts/api/generate.mjs",
     "generate:compatibility": "node scripts/sync-engine-compatibility.mjs",
     "generate:reference": "node scripts/reference/generate.mjs",
     "generate:routes": "node scripts/check-routes.mjs --write",
     "generate:skills": "node scripts/skills/generate.mjs",
+    "sync:api": "node scripts/api/sync.mjs",
     "sync:reference": "node scripts/reference/sync.mjs",
     "sync:skills": "node scripts/skills/sync.mjs"
   }
