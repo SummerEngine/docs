@@ -1,16 +1,14 @@
 ---
 title: "Summer Router in single-player and multiplayer games"
 sidebarTitle: "Server and client"
-description: "The player's game calls Summer.client.router in every game. In a multiplayer game, the server checks a reply with Summer.authority.router before it changes the shared world."
+description: "Single-player games call Summer.client.router from the player's game. Multiplayer games call Summer.authority.router from the server, for one player's session, and send the result to the players."
 icon: "server"
 ---
-
-Every Summer Router call comes from the player's game, through the signed-in player. That is what makes per-player caps work: each call counts toward that player's caps and your game's caps.
 
 | Game | Who calls | What counts |
 |---|---|---|
 | Single-player | The player's game: `Summer.client.router` | The player's caps and the game's caps |
-| Multiplayer | The player's game: `Summer.client.router`. The server checks the reply with `Summer.authority.router` before it acts. | The player's caps and the game's caps |
+| Multiplayer | Your server: `Summer.authority.router`, for one player's session | The game's caps and call rate |
 
 ## Single-player games
 
@@ -20,11 +18,36 @@ The game calls the router and uses the answer directly:
 var r: SummerRouterResult = await Summer.client.router.reply("guard", line, {
     "tools": {"open_gate": func(_args): $Gate.open(); return {"opened": true}},
 })
+$Subtitle.text = r.text if r.ok else "The guard ignores you."
 ```
 
 ## Multiplayer games
 
-In a multiplayer game the server owns the shared world. A player talks to the guard on their own game. When the guard agrees to open the gate for everyone, the player's game sends the reply's `exchange_id` to the server, and the server checks it with Summer before it opens the gate:
+In a multiplayer game the server owns the shared world, so the server talks to the character. Each call names the session of the player it is for:
+
+```gdscript server.gd
+func _on_player_asked(session: SummerSession, line: String) -> void:
+    var r: SummerRouterResult = await Summer.authority.router.reply(session, "guard", line)
+    $GuardSubtitle.text = r.text if r.ok else r.message
+    if r.ok and r.tool_calls.any(func(call): return call.name == "open_gate"):
+        $Gate.open()
+```
+
+The server has the same calls as the client, each with the session first:
+
+| Call | Result |
+|---|---|
+| `reply(session, character, text, options)` | `text`, `tool_calls`, `exchange_id`, `conversation_id`. Options as on the client, without `tools`: the server reads `tool_calls` and acts, or answers them with `tool_results` on the next call. |
+| `speak(session, text, {"character": id})` | `data` and `mime_type` to send to the players, and `audio` to play on the server |
+| `generate(session, "image", {"prompt": ..., "size": ...})` | `data` and `mime_type`, plus `image` and `texture` |
+
+On a refusal, `r.message` is a plain line for the players, such as "AI limit reached for this game today". Show it, and the game goes on.
+
+Server calls run on worlds hosted on Summer Games. In the local emulator every call answers `unavailable`, so keep the offline line.
+
+## When a player's game talks to a character
+
+A player's game can also talk to a character itself, with `Summer.client.router`, and tell the server what happened, for example "the guard agreed to open the gate". Before the server acts on it, it checks the exchange:
 
 ```gdscript server.gd
 func _on_guard_agreed(session: SummerSession, exchange_id: String) -> void:
@@ -34,11 +57,3 @@ func _on_guard_agreed(session: SummerSession, exchange_id: String) -> void:
 ```
 
 `verify_exchange` returns the reply and the tool calls exactly as the player saw them. It answers only for an exchange of that session's player, in this game, from the last hour. Anything else answers `invalid_input` with reason `not_found`: do not act on it.
-
-On the player's game, let the tool handler ask instead of act: return `{"asked": true}` from `open_gate`, then send `r.exchange_id` to the server in your game's own message. The server opens the gate for everyone once the check passes.
-
-## Rules of thumb
-
-- Let each player's game make its own calls. Never relay one player's call through another player.
-- Before the server changes shared state because of a reply, check the exchange.
-- Keep an offline line for every character, so a refusal or a slow network never blocks the game.

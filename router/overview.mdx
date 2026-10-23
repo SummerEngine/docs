@@ -58,7 +58,7 @@ Summer Router is built into Summer Engine. Games call it through `Summer.client.
 
 ## Who calls
 
-In a single-player game, the player's game calls `Summer.client.router`. In a multiplayer game too: the player's game calls, and your server checks the result before it changes the shared world. See [server and client](/router/server-and-client).
+Single-player games call `Summer.client.router` from the player's game; those calls count toward the player's caps and the game's. Multiplayer games call `Summer.authority.router` from your server, for one player's session, and send the result to everyone; those calls count toward the game's caps. See [server and client](/router/server-and-client).
 
 <CardGroup cols={2}>
   <Card title="Quickstart" icon="rocket" href="/router/quickstart">

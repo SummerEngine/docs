@@ -243,7 +243,7 @@
 
 - [Summer Router: AI inside your game, with no keys in the build](https://docs.summerengine.com/router/overview.md): Summer Router lets a shipped game use frontier AI while people play: characters that talk and use your game's tools, lines in a character's voice, and images. No key in the build, caps on by default, paid from your Summer credits.
 - [Summer Router quickstart: add a talking character to your game](https://docs.summerengine.com/router/quickstart.md): Add a guard the player can talk to, who opens the gate when convinced: make the character in Summer Studio, add one node to your scene, and play it on Summer Games.
-- [Summer Router in single-player and multiplayer games](https://docs.summerengine.com/router/server-and-client.md): The player's game calls Summer.client.router in every game. In a multiplayer game, the server checks a reply with Summer.authority.router before it changes the shared world.
+- [Summer Router in single-player and multiplayer games](https://docs.summerengine.com/router/server-and-client.md): Single-player games call Summer.client.router from the player's game. Multiplayer games call Summer.authority.router from the server, for one player's session, and send the result to the players.
 
 ### Capabilities
 

@@ -104,7 +104,8 @@ Slow down and retry after Retry-After seconds.
 |---|---|---|
 | `ok` | every result | `true` when the call worked |
 | `error`, `fix`, `docs_url` | a refusal | The tag, one line on what to do, and this page at the tag |
-| `retryable` | a refusal | `true` when the same call can work later |
+| `message` | a refusal | A plain line to show the players, such as "AI limit reached for this game today" |
+| `retryable`, `retry_after` | a refusal | `true` when the same call can work later; for `rate_limited`, the seconds to wait |
 | `scope`, `resets_at` | `limit_reached` | The cap that was reached, and when it resets |
 | `reason` | some refusals | A finer reason, such as `not_found` from `verify_exchange` |
 | `request_id` | every result | Send it to Summer support |

@@ -33,4 +33,6 @@ A cap counts the cost of finished calls plus the most each running call can cost
 
 The call answers `limit_reached` with the cap's `scope` and `resets_at`, and the game shows its offline line. The player never sees an amount. You see the cap hit in Studio usage, with the place to raise it.
 
-Over a rate limit the call answers `rate_limited` (HTTP `429` with `Retry-After`), and the result has `retryable` set: wait a few seconds, then try again.
+Over a rate limit the call answers `rate_limited` (HTTP `429` with `Retry-After`). The result's `retry_after` says how many seconds to wait; until then the SDK answers `rate_limited` without asking Summer.
+
+Calls from the player's game count toward that player's caps and the game's. Calls from your server in a multiplayer game count toward the game's caps and call rate.
