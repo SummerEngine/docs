@@ -25,7 +25,7 @@ Summer is the game engine built for AI. With the **Summer API**, your agent send
 Paste this into Claude Code, Codex, Cursor, Hermes or any agent that can run commands. It asks you for one click to approve a key with a spend limit, then makes a test asset.
 
 ```text Prompt for your agent wrap
-Use the Summer API for game assets. Read https://docs.summerengine.com/llms.txt, get a Summer API key with the approval link it describes, save it as SUMMER_API_KEY in .env, then make "a stylized treasure chest, game prop" with 3d/default and save the GLB in this project.
+Use the Summer API for game assets. Read https://docs.summerengine.com/llms.txt, get a Summer API key with the approval link it describes, save it as SUMMER_API_KEY in .env, then make "a stylized treasure chest, game prop" with 3d/default (on a new account with only welcome credits, use a 3D model with tier "free") and save the GLB in this project.
 ```
 
 In ChatGPT or Claude, add `https://mcp.summerengine.com/mcp` as a connector instead. See [Agents](/api/agents).
@@ -64,7 +64,7 @@ curl https://www.summerengine.com/v1/jobs \
   -d '{"model": "image/default", "input": {"prompt": "a cozy pixel-art tavern at night"}}'
 ```
 
-Images, voice and sound come back in the same call. A 3D model takes a few minutes: the call answers with a job id, and your agent checks it until the file is ready. The [quickstart](/api/quickstart) makes a 3D model end to end.
+Images, voice and sound usually come back in the same call. A 3D model takes a few minutes: the call answers with a job id, and your agent checks it until the file is ready. The [quickstart](/api/quickstart) makes a 3D model end to end.
 
 ## Why Summer
 

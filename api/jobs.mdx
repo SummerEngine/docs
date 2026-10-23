@@ -9,7 +9,7 @@ Every model runs the same way: one job with a `model` and an `input`. Short jobs
 
 ## Know the price first
 
-`POST /v1/estimate` takes the same body as a job and prices it exactly. It is free and needs no key.
+`POST /v1/estimate` takes the same body as a job and prices it: the exact amount, or the most it can cost when `atMost` is `true`. It is free and needs no key. The answer has these fields at the top level, with no wrapper.
 
 ```bash
 curl https://www.summerengine.com/v1/estimate \
@@ -42,14 +42,14 @@ curl https://www.summerengine.com/v1/jobs \
 | `input` | Yes | The model's input. Each model page lists its fields; `inputSchema` in `GET /v1/models/{id}` has the JSON Schema. |
 | `quoteId` | No | From `POST /v1/estimate`. If the price went up since the quote, the job does not start and nothing is charged. |
 | `Idempotency-Key` header | Yes | A new value for each new job, such as a UUID. Send the same value to retry the same job: you get the first answer, and nothing is charged twice. |
-| `Prefer: wait=N` header | No | Hold the answer up to `N` seconds (at most 60) and return the finished job if it finishes in time |
+| `Prefer: wait=N` header | No | Hold the answer up to `N` seconds and return the finished job if it finishes in time. Values over 60 count as 60, so give your HTTP client a timeout above 60 seconds. |
 
 The answer is `{"job": {...}}`:
 
 - `201` with `state: "done"`: the job finished. `result` holds the work.
 - `202` with `state: "running"`: still working. Follow `job.id`.
 
-The job also carries `model` and `estimatedPrice`, and `price` once Summer knows what it charged.
+The job also carries `model`, the model that ran (also when you sent a default id such as `3d/default`, so you can run the same model again), `estimatedPrice`, and `price` once Summer knows what it charged.
 
 ## Follow a job
 
@@ -66,7 +66,7 @@ Check again after `pollAfterSeconds` when the answer has it, or every 5 seconds.
 | `failed` | It did not work. `error.code` and `error.message` say why. Nothing is charged. |
 | `cancelled`, `expired`, `stale`, `declined` | It stopped without a result. Start a new job. |
 
-To get changes pushed instead, open the event stream. It sends a `job` event each time the job changes, then `done`. After about 4 minutes it sends `timeout`: open it again, or check the job.
+To get changes pushed instead, open the event stream. It sends a `job` event with `{"job": {...}}` each time the job changes, then `done` with `{"state": ...}` when the job reaches any final state, `failed` included. After about 4 minutes it sends `timeout`: open it again, or check the job.
 
 ```bash
 curl -N "https://www.summerengine.com/v1/jobs/$JOB_ID/events" -H "Authorization: Bearer $SUMMER_API_KEY"
@@ -88,9 +88,9 @@ A finished job's `result` holds Summer file URLs and the ids of the assets in yo
 | Voice, dialogue, sound, music | `asset`: `assetId`, `fileUrl`, `thumbnailUrl` and `durationSeconds` |
 | 3D model, video | `assetId`, `fileUrl` and `thumbnailUrl` of the asset it made |
 
-To read any of them, take `result.assets[0]`, else `result.asset`, else `result` itself.
+To read any of them: take every entry of `result.assets`; if there is none, take `result.asset`; if there is none, take `result` itself.
 
-Every URL is on Summer's own storage. Download the file into your project, or keep the asset id: in Summer Engine your agent imports an asset by its id.
+Every URL is on Summer's own storage and downloads without a key. Download the file into your project, or keep the asset id: in Summer Engine your agent imports an asset by its id.
 
 {/* TODO(summer-api): before launch, decide and document asset visibility for API outputs (today a free account's generated assets are public; PLAN.md section 6). */}
 

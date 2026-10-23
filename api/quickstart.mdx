@@ -15,18 +15,20 @@ Using a coding agent? Paste this and it does all three steps for you: `Use the S
   <Step title="Get a key">
     Open [Summer Studio > Settings > API keys](https://summerengine.com/studio?tab=settings&section=api-keys), choose **Create key**, give it a name and a spend limit, and copy the key. Summer shows it once.
 
-    Put it in your environment or in a `.env` file:
+    Put it in your shell. The scripts below read it from there:
 
-    ```bash .env
-    SUMMER_API_KEY=sk-summer-v1-...
+    ```bash
+    export SUMMER_API_KEY=sk-summer-v1-...
     ```
+
+    In a project, keep it in a `.env` file that your app loads and that is in `.gitignore`.
 
     An agent can also ask for a key itself: you get one link, check the code and choose **Allow**. See [Agents](/api/agents#get-a-key-from-your-agent).
 
     `3d/default` needs bought credits: add them at [Summer Studio > Credits](https://summerengine.com/studio/credits), no plan needed. With only a new account's welcome credits, use a model marked Free credits: Yes on the [models page](/api/models#3d-models) instead.
   </Step>
   <Step title="Check the price (free)">
-    `POST /v1/estimate` takes the same body as the job and answers with the exact price. It charges nothing and needs no key.
+    `POST /v1/estimate` takes the same body as the job and answers with its price. It charges nothing and needs no key.
 
     ```bash
     curl https://www.summerengine.com/v1/estimate \
@@ -34,7 +36,7 @@ Using a coding agent? Paste this and it does all three steps for you: `Use the S
       -d '{"model": "3d/default", "input": {"kind": "text-to-3d", "prompt": "a stylized treasure chest, game prop"}}'
     ```
 
-    The answer holds `price` in US dollars as a decimal string, a `breakdown`, and a `quoteId`. Send the `quoteId` with the job and Summer never charges more than it quoted. The quote holds for 15 minutes.
+    The answer holds `price` in US dollars as a decimal string, `atMost` (`true`: the most it can cost), a `breakdown`, and a `quoteId`. Add `"quoteId"` next to `"model"` in the job body and Summer never charges more than it quoted. The quote holds for 15 minutes.
   </Step>
   <Step title="Make the model and save the GLB">
     This starts the job, waits for it and downloads the file. A 3D model takes a few minutes.
@@ -61,7 +63,7 @@ Using a coding agent? Paste this and it does all three steps for you: `Use the S
     [ "$STATE" = done ] || { echo "$JOB"; exit 1; }
 
     URL=$(echo "$JOB" | jq -r '(.job.result.assets[0] // .job.result.asset // .job.result).fileUrl')
-    curl -sL "$URL" -o chest.glb && echo "Saved chest.glb"
+    curl -fsL "$URL" -o chest.glb && echo "Saved chest.glb"
     ```
 
     ```ts TypeScript
@@ -86,12 +88,13 @@ Using a coding agent? Paste this and it does all three steps for you: `Use the S
 
     while (job.state === "queued" || job.state === "running") {
       await new Promise((done) => setTimeout(done, (job.pollAfterSeconds ?? 5) * 1000));
-      job = (await (await fetch(`${API}/jobs/${encodeURIComponent(job.id)}`, { headers: auth })).json()).job;
+      job = (await (await fetch(`${API}/jobs/${job.id}`, { headers: auth })).json()).job;
     }
     if (job.state !== "done") throw new Error(`The job ended ${job.state}: ${job.error?.message ?? ""}`);
 
     const asset = job.result.assets?.[0] ?? job.result.asset ?? job.result;
     const file = await fetch(asset.fileUrl);
+    if (!file.ok) throw new Error(`Download failed: ${file.status}`);
     await writeFile("chest.glb", Buffer.from(await file.arrayBuffer()));
     console.log(`Saved chest.glb (Summer asset ${asset.assetId})`);
     ```
@@ -123,9 +126,11 @@ Using a coding agent? Paste this and it does all three steps for you: `Use the S
         raise SystemExit(f"The job ended {job['state']}: {job.get('error')}")
 
     result = job["result"]
-    asset = result["assets"][0] if "assets" in result else result.get("asset", result)
+    asset = (result.get("assets") or [result.get("asset") or result])[0]
+    file = requests.get(asset["fileUrl"])
+    file.raise_for_status()
     with open("chest.glb", "wb") as f:
-        f.write(requests.get(asset["fileUrl"]).content)
+        f.write(file.content)
     print(f"Saved chest.glb (Summer asset {asset['assetId']})")
     ```
 

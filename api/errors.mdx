@@ -5,7 +5,7 @@ description: "Every Summer API error has one shape: type, code, message, param, 
 icon: "circle-alert"
 ---
 
-Every error has the same shape:
+Every error from `/v1` has the same shape:
 
 ```json
 {
@@ -31,7 +31,7 @@ Every error has the same shape:
 | `fix_url` | Where the person fixes it, such as adding credits. Only when there is one. |
 | `doc_url` | This page, at the code's section |
 
-A call that answers an error charges nothing.
+A call that answers an error charges nothing. For `outcome_unknown`, send the same request again with the same `Idempotency-Key` to find out if a job started. The key request calls of [Agents](/api/agents#get-a-key-from-your-agent) answer with a `status` field instead.
 
 ## Codes
 

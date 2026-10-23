@@ -9,7 +9,7 @@
 - Get a key without a browser session: `POST https://www.summerengine.com/api/api-keys/requests`, show the person `approve_url` and `user_code`, they choose Allow, then poll `poll_url` with `Authorization: Bearer <poll_token>` until the answer holds `key`. Steps: https://docs.summerengine.com/api/agents.md
 - Models and prices: `GET https://www.summerengine.com/v1/models` (public, no key). Read prices there, never from memory or training data. Defaults per job: `3d/default`, `image/default`, `video/default`, `voice/default`, `dialogue/default`, `sound/default`, `music/default`.
 - Exact price of one request: `POST https://www.summerengine.com/v1/estimate` with the same body as the job (free, no key).
-- Run: `POST https://www.summerengine.com/v1/jobs` with `{"model", "input"}`, a required `Idempotency-Key` header (new per job, the same on a retry) and `Prefer: wait=60`. A long job (3D, video) answers `running`: poll `GET https://www.summerengine.com/v1/jobs/{id}` every `pollAfterSeconds` (else 5 s) while `state` is `queued` or `running`. Stop on `done` (download the `fileUrl` of `result.assets[0]`, else `result.asset`, else `result`) or on `failed`, `cancelled`, `expired`, `stale` or `declined` (show `error.message`).
+- Run: `POST https://www.summerengine.com/v1/jobs` with `{"model", "input"}`, a required `Idempotency-Key` header (new per job, the same on a retry) and `Prefer: wait=60`. A long job (3D, video) answers `running`: poll `GET https://www.summerengine.com/v1/jobs/{id}` every `pollAfterSeconds` (else 5 s) while `state` is `queued` or `running`. Stop on `done` (download the `fileUrl` of every entry in `result.assets`, else of `result.asset`, else of `result`; `job.model` is the model that ran) or on `failed`, `cancelled`, `expired`, `stale` or `declined` (show `error.message`).
 - Free credits: a new account's welcome credits pay only for models with `tier: "free"`. Other models need bought credits; without them a job answers `402` `no_credits` with a `fix_url` to show the person.
 - OpenAPI 3.1: https://www.summerengine.com/v1/openapi.json
 - MCP for chat apps and cloud work: `https://mcp.summerengine.com/mcp` (OAuth sign-in).
@@ -64,7 +64,7 @@
 
 ### Essentials
 
-- [Sign In to Summer Engine and Connect Your Agent](https://docs.summerengine.com/essentials/authentication.md): Create a Summer account and sign in to Summer Engine and your AI agent. There is no API key: your agent signs in with your Summer account in the browser.
+- [Sign In to Summer Engine and Connect Your Agent](https://docs.summerengine.com/essentials/authentication.md): Create a Summer account and sign in to Summer Engine and your AI agent. Your agent signs in with your Summer account in the browser; only the Summer API for game assets uses a key.
 - [Summer Engine Account and Billing](https://docs.summerengine.com/essentials/account-billing.md): Manage your Summer Engine plan, invoices, credits, auto top-up and on-demand spend limits from Billing in Summer Studio, with Stripe for payments.
 - [Summer Engine Pricing and Plans](https://docs.summerengine.com/essentials/pricing.md): Summer Engine plans: Free, Pro $20/mo, Pro+ $60/mo and Ultra $200/mo. The desktop app and local MCP stay free; paid plans raise hosted AI limits.
 - [Your First AI Chat in Summer Engine](https://docs.summerengine.com/essentials/first-chat.md): Use Summer Agent, the chat inside Summer Engine, to add objects, change properties and write scripts by describing what you want in plain words.
@@ -141,13 +141,13 @@
 
 #### 3D models
 
-- [Hunyuan 3D Pro](https://docs.summerengine.com/api/models/3d/hunyuan-3d.md): Hunyuan 3D Pro on the Summer API: $0.573 per model, about 5 min, GLB saved to your Summer library. Model id 3d/hunyuan-3d.
-- [Rodin 2.5 Fast](https://docs.summerengine.com/api/models/3d/rodin-2-5-fast.md): Rodin 2.5 Fast on the Summer API: $0.148 per model, about 2 min, GLB saved to your Summer library. Model id 3d/rodin-2.5-fast.
-- [Hunyuan 3D Rapid](https://docs.summerengine.com/api/models/3d/hunyuan-3d-rapid.md): Hunyuan 3D Rapid on the Summer API: $0.273 per model, about 3 min, GLB saved to your Summer library. Model id 3d/hunyuan-3d-rapid.
+- [Hunyuan 3D Pro](https://docs.summerengine.com/api/models/3d/hunyuan-3d.md): Hunyuan 3D Pro on the Summer API: $0.525 per model, about 5 min, GLB saved to your Summer library. Model id 3d/hunyuan-3d.
+- [Rodin 2.5 Fast](https://docs.summerengine.com/api/models/3d/rodin-2-5-fast.md): Rodin 2.5 Fast on the Summer API: $0.10 per model, about 2 min, GLB saved to your Summer library. Model id 3d/rodin-2.5-fast.
+- [Hunyuan 3D Rapid](https://docs.summerengine.com/api/models/3d/hunyuan-3d-rapid.md): Hunyuan 3D Rapid on the Summer API: $0.225 per model, about 3 min, GLB saved to your Summer library. Model id 3d/hunyuan-3d-rapid.
 - [Trellis 2](https://docs.summerengine.com/api/models/3d/trellis-2.md): Trellis 2 on the Summer API: $0.348 per model, about 5 min, GLB saved to your Summer library. Model id 3d/trellis-2.
-- [Meshy 6](https://docs.summerengine.com/api/models/3d/meshy-6.md): Meshy 6 on the Summer API: $0.848 per model, about 8 min, GLB saved to your Summer library. Model id 3d/meshy-6.
-- [Tripo P2](https://docs.summerengine.com/api/models/3d/tripo-p2.md): Tripo P2 on the Summer API: $1.148 per model, about 4 min, GLB saved to your Summer library. Model id 3d/tripo-p2.
-- [Meshy 7.1](https://docs.summerengine.com/api/models/3d/meshy-7-1.md): Meshy 7.1 on the Summer API: $1.248 per model, about 7 min, GLB saved to your Summer library. Model id 3d/meshy-7.1.
+- [Meshy 6](https://docs.summerengine.com/api/models/3d/meshy-6.md): Meshy 6 on the Summer API: $0.80 per model, about 8 min, GLB saved to your Summer library. Model id 3d/meshy-6.
+- [Tripo P2](https://docs.summerengine.com/api/models/3d/tripo-p2.md): Tripo P2 on the Summer API: $1.10 per model, about 4 min, GLB saved to your Summer library. Model id 3d/tripo-p2.
+- [Meshy 7.1](https://docs.summerengine.com/api/models/3d/meshy-7-1.md): Meshy 7.1 on the Summer API: $1.20 per model, about 7 min, GLB saved to your Summer library. Model id 3d/meshy-7.1.
 - [Hi3D V3.0](https://docs.summerengine.com/api/models/3d/hi3d-v3.md): Hi3D V3.0 on the Summer API: $2.148 per model, about 18 min, GLB saved to your Summer library. Model id 3d/hi3d-v3.
 
 #### Images

@@ -29,7 +29,7 @@ Send the default id when you have no preference. It runs the model Summer tests 
 
 | I need | Model id | Runs today | Price |
 |---|---|---|---|
-| Textured GLB models from a prompt or a picture | `3d/default` | [Hunyuan 3D Pro](/api/models/3d/hunyuan-3d) | $0.573 per model |
+| Textured GLB models from a prompt or a picture | `3d/default` | [Hunyuan 3D Pro](/api/models/3d/hunyuan-3d) | $0.525 per model |
 | Concept art, sprites, textures, icons and key art | `image/default` | [Nano Banana 2 Lite](/api/models/image/nano-banana-2) | $0.0484 per image |
 | Trailer shots, cutscenes and animated key art, from a prompt or a picture | `video/default` | [Kling 3.0 Standard](/api/models/video/kling-3) | $0.14 per second |
 | Character lines and narration from text | `voice/default` | [Eleven v3](/api/models/voice/eleven-v3) | $0.119 per 1,000 characters |
@@ -43,16 +43,16 @@ Textured GLB models from a prompt or a picture. Ask for a rig and animations on 
 
 | Model | Id | Price | Typical time | Free credits |
 |---|---|---|---|---|
-| [Hunyuan 3D Pro](/api/models/3d/hunyuan-3d) (default) | `3d/hunyuan-3d` | $0.573 per model | about 5 min | No |
-| [Rodin 2.5 Fast](/api/models/3d/rodin-2-5-fast) | `3d/rodin-2.5-fast` | $0.148 per model | about 2 min | Yes |
-| [Hunyuan 3D Rapid](/api/models/3d/hunyuan-3d-rapid) | `3d/hunyuan-3d-rapid` | $0.273 per model | about 3 min | Yes |
+| [Hunyuan 3D Pro](/api/models/3d/hunyuan-3d) (default) | `3d/hunyuan-3d` | $0.525 per model | about 5 min | No |
+| [Rodin 2.5 Fast](/api/models/3d/rodin-2-5-fast) | `3d/rodin-2.5-fast` | $0.10 per model | about 2 min | Yes |
+| [Hunyuan 3D Rapid](/api/models/3d/hunyuan-3d-rapid) | `3d/hunyuan-3d-rapid` | $0.225 per model | about 3 min | Yes |
 | [Trellis 2](/api/models/3d/trellis-2) | `3d/trellis-2` | $0.348 per model | about 5 min | No |
-| [Meshy 6](/api/models/3d/meshy-6) | `3d/meshy-6` | $0.848 per model | about 8 min | No |
-| [Tripo P2](/api/models/3d/tripo-p2) | `3d/tripo-p2` | $1.148 per model | about 4 min | No |
-| [Meshy 7.1](/api/models/3d/meshy-7-1) | `3d/meshy-7.1` | $1.248 per model | about 7 min | No |
+| [Meshy 6](/api/models/3d/meshy-6) | `3d/meshy-6` | $0.80 per model | about 8 min | No |
+| [Tripo P2](/api/models/3d/tripo-p2) | `3d/tripo-p2` | $1.10 per model | about 4 min | No |
+| [Meshy 7.1](/api/models/3d/meshy-7-1) | `3d/meshy-7.1` | $1.20 per model | about 7 min | No |
 | [Hi3D V3.0](/api/models/3d/hi3d-v3) | `3d/hi3d-v3` | $2.148 per model | about 18 min | No |
 
-Some options change the price (`referencePreparation`, `kind`, `rig`). Each model page lists them.
+Some options change the price (`kind`, `rig`). Each model page lists them.
 
 ## Images
 
@@ -149,3 +149,80 @@ Level, menu and combat music from a description. Output: MP3.
 - **Failed jobs are free.** Most jobs are charged when they succeed. A job that is charged when it starts, such as a video, is refunded in full when it fails.
 - **One balance.** Every model draws from your Summer credits. Each key can also have its own spend limit: see [keys and limits](/api/keys).
 - **Free credits.** A new account's welcome credits pay only for models marked Free credits: Yes. The others need bought credits; without them a job answers `402` with `no_credits`.
+
+## The JSON
+
+`GET /v1/models` answers one object. Each model carries its price in the same scheme: `unit` (`call`, `output_second`, `1k_characters`), `price` for one unit as a decimal string in US dollars, `quantityField` (the input field that counts the units), and `modifiers` (input values that replace the price or add to it). `tier` `"free"` means welcome credits can pay for it. Here is the default 3D model as it is listed, with its `inputSchema` cut to two fields:
+
+```json GET /v1/models
+{
+  "currency": "USD",
+  "aliases": {
+    "image/default": "image/nano-banana-2",
+    "3d/default": "3d/hunyuan-3d"
+  },
+  "models": [
+    {
+      "id": "3d/hunyuan-3d",
+      "datedId": "3d/hunyuan-3d-20260924",
+      "capability": "3d",
+      "name": "Hunyuan 3D Pro",
+      "vendor": "Tencent",
+      "tags": [
+        "text-to-3d",
+        "image-to-3d"
+      ],
+      "aliases": [
+        "3d/default"
+      ],
+      "outputFormats": [
+        "glb"
+      ],
+      "latency": {
+        "p50Seconds": 300,
+        "p90Seconds": 450,
+        "measured": false
+      },
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": true,
+      "price": {
+        "unit": "call",
+        "price": "0.525",
+        "modifiers": [
+          {
+            "field": "kind",
+            "equals": "image-to-3d",
+            "add": "0.048375"
+          },
+          {
+            "field": "rig",
+            "equals": true,
+            "add": "1.075"
+          }
+        ],
+        "priceUpdatedAt": "2026-09-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "default": "text-to-3d",
+            "type": "string",
+            "enum": [
+              "text-to-3d",
+              "image-to-3d"
+            ]
+          },
+          "prompt": {
+            "description": "text-to-3d: what to model.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 600
+          }
+        }
+      }
+    }
+  ]
+}
+```

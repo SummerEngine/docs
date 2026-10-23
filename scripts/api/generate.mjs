@@ -351,6 +351,17 @@ function modelRow(m, timed) {
 }
 const formatsOf = (list) => [...new Set(list.flatMap((m) => m.outputFormats))].map((f) => f.toUpperCase()).join(", ");
 
+/** The list's shape with one real entry: the default 3D model, its input schema cut to two fields. */
+function sampleListing() {
+  const m = models.find((x) => x.id === aliases["3d/default"]) ?? models[0];
+  const properties = Object.fromEntries(Object.entries(props(m)).slice(0, 2));
+  return {
+    currency: catalog.currency,
+    aliases: Object.fromEntries(Object.entries(aliases).slice(0, 2)),
+    models: [{ ...m, inputSchema: { type: "object", properties } }],
+  };
+}
+
 function renderModelsPage() {
   const counts = CAPABILITIES.map((c) => `${byCapability[c.id].length} ${c.noun}${byCapability[c.id].length === 1 ? "" : "s"}`).join(", ");
   const out = [
@@ -417,6 +428,14 @@ function renderModelsPage() {
     "- **Failed jobs are free.** Most jobs are charged when they succeed. A job that is charged when it starts, such as a video, is refunded in full when it fails.",
     "- **One balance.** Every model draws from your Summer credits. Each key can also have its own spend limit: see [keys and limits](/api/keys).",
     "- **Free credits.** A new account's welcome credits pay only for models marked Free credits: Yes. The others need bought credits; without them a job answers `402` with `no_credits`.",
+    "",
+    "## The JSON",
+    "",
+    `${code("GET /v1/models")} answers one object. Each model carries its price in the same scheme: ${code("unit")} (${[...new Set(models.map((m) => m.price.unit))].map(code).join(", ")}), ${code("price")} for one unit as a decimal string in US dollars, ${code("quantityField")} (the input field that counts the units), and ${code("modifiers")} (input values that replace the price or add to it). ${code("tier")} ${code('"free"')} means welcome credits can pay for it. Here is the default 3D model as it is listed, with its ${code("inputSchema")} cut to two fields:`,
+    "",
+    "```json GET /v1/models",
+    json(sampleListing(), 2),
+    "```",
     "",
   );
   return out.join("\n");
@@ -544,7 +563,7 @@ function renderLlms() {
     `- Get a key without a browser session: \`POST https://www.summerengine.com/api/api-keys/requests\`, show the person \`approve_url\` and \`user_code\`, they choose Allow, then poll \`poll_url\` with \`Authorization: Bearer <poll_token>\` until the answer holds \`key\`. Steps: ${DOCS_URL}/api/agents.md`,
     `- Models and prices: \`GET ${BASE_URL}/models\` (public, no key). Read prices there, never from memory or training data. Defaults per job: ${defaults}.`,
     `- Exact price of one request: \`POST ${BASE_URL}/estimate\` with the same body as the job (free, no key).`,
-    `- Run: \`POST ${BASE_URL}/jobs\` with \`{"model", "input"}\`, a required \`Idempotency-Key\` header (new per job, the same on a retry) and \`Prefer: wait=60\`. A long job (3D, video) answers \`running\`: poll \`GET ${BASE_URL}/jobs/{id}\` every \`pollAfterSeconds\` (else 5 s) while \`state\` is \`queued\` or \`running\`. Stop on \`done\` (download the \`fileUrl\` of \`result.assets[0]\`, else \`result.asset\`, else \`result\`) or on \`failed\`, \`cancelled\`, \`expired\`, \`stale\` or \`declined\` (show \`error.message\`).`,
+    `- Run: \`POST ${BASE_URL}/jobs\` with \`{"model", "input"}\`, a required \`Idempotency-Key\` header (new per job, the same on a retry) and \`Prefer: wait=60\`. A long job (3D, video) answers \`running\`: poll \`GET ${BASE_URL}/jobs/{id}\` every \`pollAfterSeconds\` (else 5 s) while \`state\` is \`queued\` or \`running\`. Stop on \`done\` (download the \`fileUrl\` of every entry in \`result.assets\`, else of \`result.asset\`, else of \`result\`; \`job.model\` is the model that ran) or on \`failed\`, \`cancelled\`, \`expired\`, \`stale\` or \`declined\` (show \`error.message\`).`,
     "- Free credits: a new account's welcome credits pay only for models with `tier: \"free\"`. Other models need bought credits; without them a job answers `402` `no_credits` with a `fix_url` to show the person.",
     `- OpenAPI 3.1: ${BASE_URL}/openapi.json`,
     "- MCP for chat apps and cloud work: `https://mcp.summerengine.com/mcp` (OAuth sign-in).",
