@@ -327,6 +327,37 @@
         ]
       },
       {
+        "tab": "Summer Router",
+        "groups": [
+          {
+            "group": "Start here",
+            "pages": [
+              "router/overview",
+              "router/quickstart",
+              "router/server-and-client"
+            ]
+          },
+          {
+            "group": "Capabilities",
+            "pages": [
+              "router/capabilities",
+              "router/character-reply",
+              "router/character-voice",
+              "router/speech",
+              "router/transcribe",
+              "router/image"
+            ]
+          },
+          {
+            "group": "Run your game",
+            "pages": [
+              "router/limits",
+              "router/errors"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "Multiplayer games",
         "icon": "hammer",
         "groups": [

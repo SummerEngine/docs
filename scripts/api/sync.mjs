@@ -7,6 +7,8 @@
  *   node scripts/api/sync.mjs --base <url>             another deployment, e.g. a preview: https://<host>/v1
  *   node scripts/api/sync.mjs --models <file> --openapi <file>   saved answers of the two calls
  *   ... --pse <publicsummerengine checkout>            also refresh model-notes.json from config/models/model-pages.json
+ *   ... --router <summer-platform checkout or ref dir>  also refresh the Summer Router registry and default caps:
+ *       contracts/summer-router/registry.json and the summer.router_policy row of its migration
  *
  * Source of truth: the Summer API itself. GET /v1/models is the one model list
  * with prices (the same numbers POST /v1/estimate quotes and a job charges);
@@ -18,7 +20,7 @@
  */
 
 import { execFileSync } from "node:child_process";
-import { readFileSync, writeFileSync } from "node:fs";
+import { readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -38,6 +40,7 @@ function parseArgs(argv) {
     else if (a === "--models") opts.models = resolve(next());
     else if (a === "--openapi") opts.openapi = resolve(next());
     else if (a === "--pse") opts.pse = resolve(next());
+    else if (a === "--router") opts.router = resolve(next());
     else throw new Error(`unknown argument ${a}`);
   }
   if (Boolean(opts.models) !== Boolean(opts.openapi)) throw new Error("--models and --openapi go together");
@@ -86,6 +89,36 @@ function modelNotes(pse, models) {
   return { source: { repo: "SummerEngine/PublicSummerEngine", path: "config/models/model-pages.json", commit }, notes };
 }
 
+/** The default caps and their ceilings, read from the migration that writes summer.router_policy. */
+function routerPolicy(sql) {
+  const table = sql.match(/CREATE TABLE summer\.router_policy \(([\s\S]*?)\n\);/)?.[1];
+  const insert = sql.match(/INSERT INTO summer\.router_policy \(([^)]*)\)\s*VALUES \(([^)]*)\)/);
+  if (!table || !insert) throw new Error("no summer.router_policy table and row in the migration");
+  const columns = insert[1].split(",").map((c) => c.trim());
+  const values = insert[2].split(",").map((v) => v.trim());
+  const policy = Object.fromEntries(columns.map((c, i) => [c, /^\d+$/.test(values[i]) ? Number(values[i]) : values[i]]));
+  const ceilings = Object.fromEntries([...table.matchAll(/^\s*(\w+) \w+ NOT NULL CHECK \(\1 BETWEEN 1 AND (\d+)\)/gm)].map((m) => [m[1], Number(m[2])]));
+  delete policy.singleton;
+  delete policy.charging;
+  return { ...policy, ceilings };
+}
+
+function readRouter(dir) {
+  const migrations = join(dir, "db/postgres/platform/migrations");
+  const file = readdirSync(migrations).filter((f) => f.endsWith("_summer_router.sql")).sort().at(-1);
+  if (!file) throw new Error(`no *_summer_router.sql in ${migrations}`);
+  // The docs need the kinds, errors and limit keys. Which providers serve a kind, and the provider
+  // options of the character schema, are Summer's business: the pinned copy leaves them out.
+  const registry = JSON.parse(readFileSync(join(dir, "contracts/summer-router/registry.json"), "utf8"));
+  delete registry.providers;
+  delete registry.schemas;
+  for (const kind of registry.kinds) delete kind.providers;
+  return {
+    registry,
+    policy: { source: `db/postgres/platform/migrations/${file}`, ...routerPolicy(readFileSync(join(migrations, file), "utf8")) },
+  };
+}
+
 const opts = parseArgs(process.argv.slice(2));
 const models = unwrap(opts.models ? JSON.parse(readFileSync(opts.models, "utf8")) : await getJson(`${opts.base}/models`));
 const openapi = opts.openapi ? JSON.parse(readFileSync(opts.openapi, "utf8")) : await getJson(`${opts.base}/openapi.json`);
@@ -97,5 +130,10 @@ write("models.json", { source: opts.models ? "file" : `${opts.base}/models`, ...
 // The spec names the deployment it came from; the docs always point at production.
 write("openapi.json", { ...openapi, servers: [{ url: DEFAULT_BASE }] });
 if (opts.pse) write("model-notes.json", modelNotes(opts.pse, models.models));
+if (opts.router) {
+  const { registry, policy } = readRouter(opts.router);
+  write("router-registry.json", registry);
+  write("router-policy.json", policy);
+}
 
 execFileSync(process.execPath, [join(HERE, "generate.mjs")], { stdio: "inherit" });

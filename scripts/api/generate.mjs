@@ -26,6 +26,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync
 import { dirname, join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { cell, code, escapeProse, fm } from "../reference/lib/mdx.mjs";
+import { ROUTER_HAND_WRITTEN, ROUTER_TAB, routerPages } from "./router.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, "..", "..");
@@ -526,6 +527,10 @@ for (const r of reference) {
 put(MODELS_PAGE, renderModelsPage());
 for (const m of models) put(modelPath(m), renderModelPage(m));
 
+// Summer Router: its own tab, from the pinned registry and default caps.
+const router = routerPages(readJson(join(SOURCES, "router-registry.json")), readJson(join(SOURCES, "router-policy.json")));
+for (const [path, content] of router.pages) put(path, content);
+
 // ------------------------------------------------------------- navigation
 
 const HAND_WRITTEN = ["api/overview", "api/quickstart", "api/agents", "api/keys", "api/jobs", "api/errors"];
@@ -550,9 +555,9 @@ const tab = {
 const docsJsonPath = join(ROOT, "docs.json");
 const docsJsonRaw = readFileSync(docsJsonPath, "utf8");
 const docs = JSON.parse(docsJsonRaw);
-const tabs = docs.navigation.tabs.filter((t) => t.tab !== TAB);
+const tabs = docs.navigation.tabs.filter((t) => t.tab !== TAB && t.tab !== ROUTER_TAB);
 const at = docs.navigation.tabs.findIndex((t) => t.tab === TAB);
-tabs.splice(at < 0 ? 1 : at, 0, tab);
+tabs.splice(at < 0 ? 1 : at, 0, tab, router.nav);
 docs.navigation.tabs = tabs;
 const docsJsonNext = JSON.stringify(docs, null, 2) + "\n";
 
@@ -613,6 +618,7 @@ function renderLlms() {
     "- Credits: welcome credits pay for models with `tier: \"free\"`, bought credits pay for every model, no plan needed. A job without enough credits answers `402` `no_credits` with a `fix_url` to show the person.",
     `- OpenAPI 3.1: ${BASE_URL}/openapi.json`,
     "- MCP for chat apps and cloud work: `https://mcp.summerengine.com/mcp` (OAuth sign-in).",
+    `- Summer Router (AI inside a shipped game: talking characters, speech, images): the game calls \`Summer.client.router\`; no key is in the build and the creator's Summer credits pay. Works on games published on Summer Games. Start: ${DOCS_URL}/router/quickstart.md`,
     "- CLI and local MCP for engine work: `npx -y summer-engine@latest setup <agent> --yes`.",
     "- Every page is also Markdown: add `.md` to its URL. Everything in one file: https://docs.summerengine.com/llms-full.txt",
     `- Quickstart: ${DOCS_URL}/api/quickstart.md. Models and pricing: ${DOCS_URL}/api/models.md. Errors: ${DOCS_URL}/api/errors.md`,
@@ -655,9 +661,9 @@ const MONEY = /.{0,40}(?:~\s*)?\$\s?\d.{0,40}/;
 // Words that never appear on a Summer API page: Summer keeps margins, deals and provider costs private.
 const PRIVATE = /.{0,40}\b(?:margins?|provider[ _]costs?|provider_price|summer_fee|top-up fee|mark-?ups?)\b.{0,40}/i;
 const PROMISE = /No markup(?: on assets)?[:.]?/g;
-const handWritten = walk(join(ROOT, "api")).filter((p) => !pages.has(p));
+const handWritten = [...walk(join(ROOT, "api")), ...walk(join(ROOT, "router"))].filter((p) => !pages.has(p));
 for (const p of handWritten) {
-  if (!HAND_WRITTEN.includes(p)) problems.push(`${p}.mdx: a page under api/ that this generator does not own and the Summer API tab does not list`);
+  if (![...HAND_WRITTEN, ...ROUTER_HAND_WRITTEN].includes(p)) problems.push(`${p}.mdx: a page under api/ or router/ that this generator does not own and no tab lists`);
   const raw = readFileSync(join(ROOT, `${p}.mdx`), "utf8").replace(/```[\s\S]*?```/g, (block) => block.replace(/\$\(|\$\{|\$[A-Z_]+/g, ""));
   const money = raw.match(MONEY);
   if (money) problems.push(`${p}.mdx: a typed price (prices come only from GET /v1/models): …${money[0]}…`);
@@ -676,6 +682,12 @@ const OTHERS = /.{0,40}(?:\bfal(?:\.ai)?\b|\bReplicate\b|\bOpenRouter\b).{0,40}/
 for (const p of [...handWritten, ...pages.keys()]) {
   const hit = (pages.get(p) ?? readFileSync(join(ROOT, `${p}.mdx`), "utf8")).match(OTHERS);
   if (hit) problems.push(`${p}.mdx: names another provider: …${hit[0]}…`);
+}
+// Summer Router pages name no provider and no model maker at all: the creator picks models in Studio.
+const ROUTER_OTHERS = /.{0,40}\b(?:Vercel|ElevenLabs|OpenAI|Anthropic|Gemini|Google|Meshy|Gateway)\b.{0,40}/;
+for (const p of [...handWritten, ...pages.keys()].filter((p) => p.startsWith("router/"))) {
+  const hit = (pages.get(p) ?? readFileSync(join(ROOT, `${p}.mdx`), "utf8")).match(ROUTER_OTHERS);
+  if (hit) problems.push(`${p}.mdx: names a provider: …${hit[0]}…`);
 }
 for (const m of models) {
   const p = m.price;
@@ -698,7 +710,7 @@ for (const [path, content] of pages) {
     }
   }
 }
-const owned = [...walk(join(ROOT, MODELS_DIR)), ...walk(join(ROOT, REFERENCE_DIR))];
+const owned = [...walk(join(ROOT, MODELS_DIR)), ...walk(join(ROOT, REFERENCE_DIR)), ...walk(join(ROOT, "router")).filter((p) => !ROUTER_HAND_WRITTEN.includes(p))];
 const extra = owned.filter((p) => !pages.has(p));
 if (!CHECK) extra.forEach((p) => rmSync(join(ROOT, `${p}.mdx`)));
 const llmsPath = join(ROOT, "llms.txt");

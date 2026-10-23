@@ -15,6 +15,7 @@
 - Credits: welcome credits pay for models with `tier: "free"`, bought credits pay for every model, no plan needed. A job without enough credits answers `402` `no_credits` with a `fix_url` to show the person.
 - OpenAPI 3.1: https://www.summerengine.com/v1/openapi.json
 - MCP for chat apps and cloud work: `https://mcp.summerengine.com/mcp` (OAuth sign-in).
+- Summer Router (AI inside a shipped game: talking characters, speech, images): the game calls `Summer.client.router`; no key is in the build and the creator's Summer credits pay. Works on games published on Summer Games. Start: https://docs.summerengine.com/router/quickstart.md
 - CLI and local MCP for engine work: `npx -y summer-engine@latest setup <agent> --yes`.
 - Every page is also Markdown: add `.md` to its URL. Everything in one file: https://docs.summerengine.com/llms-full.txt
 - Quickstart: https://docs.summerengine.com/api/quickstart.md. Models and pricing: https://docs.summerengine.com/api/models.md. Errors: https://docs.summerengine.com/api/errors.md
@@ -229,6 +230,28 @@
 - [Cancel a job](https://docs.summerengine.com/api/reference/post-jobs-jobid-cancel.md): Stop a job that has not finished.
 - [Start a file upload](https://docs.summerengine.com/api/reference/post-files.md): Start a picture upload (PNG, JPEG or WebP): POST every field plus the file to uploadUrl, then call POST /v1/files/complete.
 - [Finish a file upload](https://docs.summerengine.com/api/reference/post-files-complete.md): Finish a picture upload. The picture becomes a private asset in your Summer library, with a fileUrl to send as imageUrl.
+
+## Summer Router
+
+### Start here
+
+- [Summer Router: AI inside your game, with no keys in the build](https://docs.summerengine.com/router/overview.md): Summer Router lets a shipped game use frontier AI while people play: characters that talk and use your game's tools, lines in a character's voice, and images. No key in the build, caps on by default, paid from your Summer credits.
+- [Summer Router quickstart: add a talking character to your game](https://docs.summerengine.com/router/quickstart.md): Add a guard the player can talk to, who opens the gate when convinced: make the character in Summer Studio, add one node to your scene, and play it on Summer Games.
+- [Summer Router in single-player and multiplayer games](https://docs.summerengine.com/router/server-and-client.md): The player's game calls Summer.client.router in every game. In a multiplayer game, the server checks a reply with Summer.authority.router before it changes the shared world.
+
+### Capabilities
+
+- [Summer Router capabilities](https://docs.summerengine.com/router/capabilities.md): What a game can do with Summer Router at runtime: character reply, speech, image. Metered per call from the creator's Summer credits.
+- [Summer Router: character reply](https://docs.summerengine.com/router/character-reply.md): A character answers the player in text, remembers the conversation and calls your game's tools. Call it from your game with Summer.client.router.reply(character: String, text: String, options: Dictionary = {}).
+- [Summer Router: character voice session](https://docs.summerengine.com/router/character-voice.md): A live voice conversation with a character, with interruptions and tool calls. Call it from your game with Summer.client.router.talk(character: String, options: Dictionary = {"mode": "voice"}).
+- [Summer Router: speech](https://docs.summerengine.com/router/speech.md): A line spoken in a character's voice. Call it from your game with Summer.client.router.speak(text: String, options: Dictionary = {"character": ""}).
+- [Summer Router: transcribe](https://docs.summerengine.com/router/transcribe.md): What the player said, as text. Call it from your game with Summer.client.router.transcribe(clip: AudioStream, options: Dictionary = {}).
+- [Summer Router: image](https://docs.summerengine.com/router/image.md): An image made while the player plays, from a prompt and an optional reference picture. Call it from your game with Summer.client.router.generate("image", {"prompt": prompt, "size": "1024x1024"}).
+
+### Run your game
+
+- [Summer Router limits and caps](https://docs.summerengine.com/router/limits.md): Every game starts with spend caps and rate limits: $0.50 per player per day, $10 per game per day, 20 calls a minute per player. Change them per game in Studio.
+- [Summer Router errors](https://docs.summerengine.com/router/errors.md): Every Summer Router refusal has one stable tag, a one-line fix and a docs link, and the game keeps running. Each tag, its status and what to do.
 
 ## Multiplayer games
 

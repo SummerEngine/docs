@@ -1,0 +1,44 @@
+---
+title: "Summer Router in single-player and multiplayer games"
+sidebarTitle: "Server and client"
+description: "The player's game calls Summer.client.router in every game. In a multiplayer game, the server checks a reply with Summer.authority.router before it changes the shared world."
+icon: "server"
+---
+
+Every Summer Router call comes from the player's game, through the signed-in player. That is what makes per-player caps work: each call counts toward that player's caps and your game's caps.
+
+| Game | Who calls | What counts |
+|---|---|---|
+| Single-player | The player's game: `Summer.client.router` | The player's caps and the game's caps |
+| Multiplayer | The player's game: `Summer.client.router`. The server checks the reply with `Summer.authority.router` before it acts. | The player's caps and the game's caps |
+
+## Single-player games
+
+The game calls the router and uses the answer directly:
+
+```gdscript
+var r: SummerRouterResult = await Summer.client.router.reply("guard", line, {
+    "tools": {"open_gate": func(_args): $Gate.open(); return {"opened": true}},
+})
+```
+
+## Multiplayer games
+
+In a multiplayer game the server owns the shared world. A player talks to the guard on their own game. When the guard agrees to open the gate for everyone, the player's game sends the reply's `exchange_id` to the server, and the server checks it with Summer before it opens the gate:
+
+```gdscript server.gd
+func _on_guard_agreed(session: SummerSession, exchange_id: String) -> void:
+    var r: SummerRouterResult = await Summer.authority.router.verify_exchange(session, exchange_id)
+    if r.ok and r.tool_calls.any(func(call): return call.name == "open_gate"):
+        $Gate.open()
+```
+
+`verify_exchange` returns the reply and the tool calls exactly as the player saw them. It answers only for an exchange of that session's player, in this game, from the last hour. Anything else answers `invalid_input` with reason `not_found`: treat the relayed message as forged and do nothing.
+
+On the player's game, send the id from the result: `r.exchange_id`.
+
+## Rules of thumb
+
+- Let each player's game make its own calls. Never relay one player's call through another player.
+- Before the server changes shared state because of a reply, check the exchange.
+- Keep an offline line for every character, so a refusal or a slow network never blocks the game.

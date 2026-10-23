@@ -2,7 +2,7 @@
   "source": {
     "repo": "SummerEngine/PublicSummerEngine",
     "path": "config/models/model-pages.json",
-    "commit": "9407b7fecef785665c8970b01364e706bbea07af"
+    "commit": "fbbf67933df9db93d05f9ad9b06245f0e6de92c3"
   },
   "notes": {
     "image/grok-imagine-2": {
@@ -30,15 +30,6 @@
         "Posters, title cards, and signage with legible in-world text.",
         "Structured layouts such as item sheets, character lineups, and UI mockups.",
         "Localized marketing art with text in the target language."
-      ]
-    },
-    "image/nano-banana-lite": {
-      "slug": "nano-banana-lite",
-      "tagline": "Fast 1K generation and reference editing for asset iteration.",
-      "gameUses": [
-        "Rapid iteration on an asset idea before picking a direction.",
-        "Small edits to an existing image, such as swapping a color or adding a prop.",
-        "Batches of cheap drafts for a mood board."
       ]
     },
     "image/grok-imagine": {

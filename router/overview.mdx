@@ -1,0 +1,68 @@
+---
+title: "Summer Router: AI inside your game, with no keys in the build"
+sidebarTitle: "Overview"
+description: "Summer Router lets a shipped game use frontier AI while people play: characters that talk and use your game's tools, lines in a character's voice, and images. No key in the build, caps on by default, paid from your Summer credits."
+icon: "sparkles"
+---
+
+Summer is the game engine built for AI. **Summer Router** puts AI inside the game itself, while people play: a guard who argues with the player and opens the gate when convinced, a narrator who reads the player's name, a portrait painted for the player's character. Your game names a character and sends what the player said. Summer does the rest.
+
+<Note>
+**Early preview.** Summer Router works on games published on Summer Games. Coming soon for all platforms and storefronts.
+</Note>
+
+## How it works
+
+<Steps>
+  <Step title="Your game calls one line">
+    `Summer.client.router.reply("guard", "Let me in.")` names a character you made in Summer Studio and sends the player's words.
+  </Step>
+  <Step title="The Summer app adds who is playing">
+    The game runs in the Summer app on the player's computer, phone or browser. The app knows the signed-in player and the game, so every call belongs to one real player.
+  </Step>
+  <Step title="Summer Router runs the character">
+    Summer checks your caps, adds the character's instructions, runs the model you chose, and runs the safety checks.
+  </Step>
+  <Step title="The answer comes back to the game">
+    The game gets the reply, the tool calls the character made, or the voice line or image. Summer meters the call from your Summer credits.
+  </Step>
+</Steps>
+
+**Nothing secret is in your build.** Keys, instructions, model choice and caps stay on Summer. A player who opens your game's files finds a character id and nothing to steal.
+
+## What your game can do
+
+<CardGroup cols={3}>
+  <Card title="Talking characters" icon="message-circle" href="/router/character-reply">
+    Characters that answer in text, remember the conversation and call your game's tools: open the gate, give the item, start the quest.
+  </Card>
+  <Card title="Voice lines" icon="mic" href="/router/speech">
+    Any line spoken in a character's voice, made when the game needs it.
+  </Card>
+  <Card title="Images" icon="image" href="/router/image">
+    Images made while the player plays, from a prompt and an optional reference picture.
+  </Card>
+</CardGroup>
+
+Transcription of the player's voice and realtime voice conversations are coming soon.
+
+## Built to be safe to ship
+
+- **Caps on from day one.** Every game starts with spend caps per player, per game and per account, and rate limits per player and per game. You raise them when your game grows. See [limits and caps](/router/limits).
+- **Real players only.** Every call comes from a signed-in player in the Summer app, so per-player caps hold and a script cannot drain your credits.
+- **Your credits, your control.** Calls are paid from your Summer credits, the same balance as the Summer API. Studio shows usage by day and capability, and how much of each cap is used.
+- **Player privacy.** Summer logs each call without the player's words. Players can report a reply, and Summer keeps it as evidence.
+- **The game never breaks.** Every refusal has a stable error tag and a one-line fix, and the game shows its own offline line. See [errors](/router/errors).
+
+## Who calls
+
+In a single-player game, the player's game calls `Summer.client.router`. In a multiplayer game too: the player's game calls, and your server checks the result before it changes the shared world. See [server and client](/router/server-and-client).
+
+<CardGroup cols={2}>
+  <Card title="Quickstart" icon="rocket" href="/router/quickstart">
+    Add a talking guard to your game in minutes.
+  </Card>
+  <Card title="Capabilities" icon="layers" href="/router/capabilities">
+    Every call your game can make, and how it is metered.
+  </Card>
+</CardGroup>

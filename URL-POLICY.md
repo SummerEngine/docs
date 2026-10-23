@@ -89,6 +89,7 @@ These top-level paths are canonical. They do not move.
 | `/mcp/*` | MCP server, CLI, per-harness setup |
 | `/api-reference/*` | Summer SDK and public APIs |
 | `/api/*` | The Summer API (game assets over HTTP): guides, models and pricing, its API reference |
+| `/router/*` | Summer Router (AI inside a shipped game): guides, capabilities, limits and errors. `/router/errors#<tag>` is the `docs_url` every Router error carries. |
 | `/guides/*` | Task-oriented how-to |
 | `/publishing/*` | Export and ship |
 | `/grow/*` | Summer Grow in Studio: publish, analytics, earnings, promotions and growth tools |
@@ -122,6 +123,7 @@ Generated pages publish to their existing frozen URLs rather than to a new
 | `/api-reference/http/*` | summer-platform `api/*/openapi.yaml`, filtered to public operations (`scripts/reference`) |
 | `/api-reference/gdscript/*` | The engine's class reference XML for the `Summer` singleton (`scripts/reference`) |
 | `/api-reference/overview` | The references above (`scripts/reference`) |
+| `/router/capabilities`, `/router/<kind>`, `/router/limits`, `/router/errors` | summer-platform `contracts/summer-router/registry.json` and the default caps in its `summer.router_policy` migration (`scripts/api`) |
 | `/api/models`, `/api/models/*`, `/api/reference/*`, `/llms.txt` | The Summer API's own answers, `GET /v1/models` and `GET /v1/openapi.json` (`scripts/api`). Prices on these pages come only from there; `scripts/api/generate.mjs --check` fails on a price typed anywhere else under `/api`. |
 | `/skills/*`, the catalog block on `/mcp/skills`, the Skills tab | The skill library in SummerEngine/summer (`library/skills`), read from the `summer-engine` npm package (`scripts/skills`) |
 
