@@ -24,7 +24,15 @@ const KIND_COPY = {
       "})",
       '$Subtitle.text = r.text if r.ok else "The guard ignores you."',
     ],
-    after: "The result has `text`, the `tool_calls` the character made, `exchange_id` and `conversation_id`. Pass the `conversation_id` on the next call to go on with the same conversation. For a whole conversation in one node, use **SummerRouterCharacter** (see the [quickstart](/router/quickstart)).",
+    after: [
+      "The result has `text`, the `tool_calls` the character made, `exchange_id` and `conversation_id`. Pass the `conversation_id` on the next call, and Summer keeps the history of that conversation.",
+      "",
+      "**Tools.** Declare each tool on the character in Studio, with the same name as in `tools`. When the character calls one, the SDK runs your handler with the arguments as a `Dictionary`, sends what it returns back to the character, and the character goes on, for up to 8 rounds in one call. Return any JSON value; return `{\"error\": \"...\"}` to tell the character it failed. A handler that takes longer than 30 seconds sends a timeout to the character.",
+      "",
+      "**Options.** `variables` fill the character's `{{variables}}`, such as the player's name. `context` tells the character what just happened in the game. `overrides` set the fields you marked overridable on the character, such as its first message.",
+      "",
+      "For a whole conversation in one node, use **SummerRouterCharacter** (see the [quickstart](/router/quickstart)).",
+    ].join("\n"),
   },
   "character.voice": {
     icon: "audio-lines",
@@ -41,7 +49,7 @@ const KIND_COPY = {
       "    $Voice.stream = r.audio",
       "    $Voice.play()",
     ],
-    after: "The voice is the one you set on the character in Studio. To voice a reply the player just got, pass an empty text and `{\"exchange_id\": id}`.",
+    after: "The voice is the one you set on the character in Studio; `audio` is ready for an `AudioStreamPlayer`. To voice a reply the player just got, pass an empty text and `{\"exchange_id\": id}`: the SDK then sends the exchange instead of text.",
   },
   transcribe: {
     icon: "captions",
@@ -57,7 +65,7 @@ const KIND_COPY = {
       "if r.ok:",
       "    $Flower.texture = r.texture",
     ],
-    after: "Sizes: `512x512`, `1024x1024`, `1024x1536` or `1536x1024`. Add `reference` (an `Image` or `Texture2D`) to start from a picture. The model is the image model you set for the game.",
+    after: "Sizes: `512x512`, `1024x1024`, `1024x1536` or `1536x1024`. Add `reference` (an `Image`, a `Texture2D`, or PNG, JPEG or WebP bytes up to 4 MiB) to start from a picture; the SDK sends it as `reference_image`. The result has `texture`, `image` and the raw `data`. The model is the image model you set for the game.",
   },
 };
 const UNIT = { token: "per token in and out", second: "per second of audio", character: "per character spoken", image: "per image" };
@@ -92,13 +100,22 @@ function inputRows(kind) {
   const required = new Set(kind.inputs?.required ?? []);
   return Object.entries(props)
     .filter(([name]) => name !== "request_id")
-    .map(([name, s]) => `| ${code(name)}${required.has(name) ? " (required)" : ""} | ${cell(typeOf(s)).replace(/\\`/g, "`")} | ${name === "character" ? "The id of a character you made in Studio" : cell([s.description, limits(s)].filter(Boolean).join(". ")) || "Any"} |`);
+    .map(([name, s]) => `| ${code(name)}${required.has(name) ? " (required)" : ""} | ${cell(typeOf(s)).replace(/\\`/g, "`")} | ${name === "character" ? "The id of a character you made in Studio" : cell([s.description, limits(s)].filter(Boolean).join(". ")) || (s.enum ? "One of these" : "Any")} |`);
 }
 
 export function routerPages(registry, policy) {
   const pages = new Map();
   const put = (path, content) => pages.set(path, content.endsWith("\n") ? content : content + "\n");
   const kinds = registry.kinds;
+  // The registry's fix lines also name CLI steps; the docs say them in Studio's words.
+  const FIX = {
+    unavailable: "Keep the offline line. Summer Router runs in the Summer app for games on Summer Games: in the editor and in other builds every call answers this.",
+    character_not_found: "Make the character on the game's Summer Router tab in Studio, then call it by its id.",
+    router_disabled: "Turn Summer Router back on for this game on its Summer Router tab in Studio.",
+    limit_reached: "Show the offline line until `resets_at`, or raise the cap on the game's Summer Router tab in Studio.",
+    not_signed_in: "Only signed-in Summer players can use Summer Router. Ask the player to sign in to Summer, then try again.",
+  };
+  const RETRY = { limit_reached: "After `resets_at`", rate_limited: "After `Retry-After`" };
   const limitTitle = Object.fromEntries(registry.limit_keys.map((l) => [l.id, l.title.toLowerCase()]));
   const source = `the Summer Router registry (version ${registry.version})`;
 
@@ -192,7 +209,7 @@ export function routerPages(registry, policy) {
       "",
       banner(`${source} and the default Summer Router policy`),
       "",
-      "Every game starts with caps on, so no player and no script can run up your bill. Raise or lower them per game on the game's **Summer Router** tab in Studio (your game's page in Grow), or ask your agent: it uses the `router.set_settings` operation, and you approve the change.",
+      "Every game starts with caps on, so no single player and no script can run up your bill. Raise or lower them per game on the game's **Summer Router** tab in Studio, or ask your agent: it uses the `router.set_settings` operation, and you approve the change. Caps reset at midnight UTC and on the first of each month (UTC).",
       "",
       "## Spend caps",
       "",
@@ -203,7 +220,7 @@ export function routerPages(registry, policy) {
         return `| ${label} | ${value} | ${max ? usd(max) : "the default"} |`;
       }),
       "",
-      "A cap counts the cost of finished calls plus the most each running call can cost, so parallel calls never go past it. Each character can also have its own caps per player and per game.",
+      "A cap counts the cost of finished calls plus the most each running call can cost, so parallel calls never go past it. Each character can also have its own daily caps per player and per game, set on the character.",
       "",
       "## Rate limits",
       "",
@@ -214,7 +231,9 @@ export function routerPages(registry, policy) {
       "",
       "## When a cap is reached",
       "",
-      "The call answers `limit_reached` with the cap's `scope` and `resets_at`, and the game shows its offline line. The player never sees an amount. You see the cap hit in Studio usage, with the place to raise it. Over a rate limit the call answers `rate_limited` (HTTP `429` with `Retry-After` in seconds): wait that long and try again.",
+      "The call answers `limit_reached` with the cap's `scope` and `resets_at`, and the game shows its offline line. The player never sees an amount. You see the cap hit in Studio usage, with the place to raise it.",
+      "",
+      "Over a rate limit the call answers `rate_limited` (HTTP `429` with `Retry-After`), and the result has `retryable` set: wait a few seconds, then try again.",
       "",
     ].join("\n"),
   );
@@ -247,9 +266,23 @@ export function routerPages(registry, policy) {
       "",
       "| Tag | Status | Retry |",
       "|---|---|---|",
-      ...registry.errors.map((e) => `| [${code(e.tag)}](#${e.tag}) | ${e.http_status || "in the game"} | ${e.retryable ? "Yes" : "No"} |`),
+      ...registry.errors.map((e) => `| [${code(e.tag)}](#${e.tag}) | ${e.http_status || "in the game"} | ${RETRY[e.tag] ?? (e.retryable ? "Yes" : "No")} |`),
       "",
-      ...registry.errors.flatMap((e) => [`### ${e.tag}`, "", escapeProse(e.fix), ""]),
+      ...registry.errors.flatMap((e) => [`### ${e.tag}`, "", escapeProse(FIX[e.tag] ?? e.fix), ""]),
+      "## What a result carries",
+      "",
+      "| Field | On | Meaning |",
+      "|---|---|---|",
+      "| `ok` | every result | `true` when the call worked |",
+      "| `error`, `fix`, `docs_url` | a refusal | The tag, one line on what to do, and this page at the tag |",
+      "| `retryable` | a refusal | `true` when the same call can work later |",
+      "| `scope`, `resets_at` | `limit_reached` | The cap that was reached, and when it resets |",
+      "| `reason` | some refusals | A finer reason, such as `not_found` from `verify_exchange` |",
+      "| `request_id` | every result | Send it to Summer support |",
+      "| `text`, `tool_calls`, `exchange_id`, `conversation_id` | a character reply | The answer, the tools it called, and the ids to verify or go on |",
+      "| `audio` | speech | The voice line, ready to play |",
+      "| `texture`, `image`, `data` | an image | The picture as a texture, an image and raw bytes |",
+      "",
     ].join("\n"),
   );
 

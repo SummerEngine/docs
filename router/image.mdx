@@ -26,7 +26,7 @@ if r.ok:
     $Flower.texture = r.texture
 ```
 
-Sizes: `512x512`, `1024x1024`, `1024x1536` or `1536x1024`. Add `reference` (an `Image` or `Texture2D`) to start from a picture. The model is the image model you set for the game.
+Sizes: `512x512`, `1024x1024`, `1024x1536` or `1536x1024`. Add `reference` (an `Image`, a `Texture2D`, or PNG, JPEG or WebP bytes up to 4 MiB) to start from a picture; the SDK sends it as `reference_image`. The result has `texture`, `image` and the raw `data`. The model is the image model you set for the game.
 
 ## Input limits
 
@@ -35,7 +35,7 @@ The SDK builds the request from the call's arguments and options. Summer checks 
 | Field | Type | Limits |
 |---|---|---|
 | `prompt` (required) | string | 1 to 4000 characters |
-| `size` | `512x512`, `1024x1024`, `1024x1536`, `1536x1024` | Any |
+| `size` | `512x512`, `1024x1024`, `1024x1536`, `1536x1024` | One of these |
 | `reference_image` | object | Any |
 
 ## Errors

@@ -27,7 +27,13 @@ var r: SummerRouterResult = await Summer.client.router.reply("guard", "Let me in
 $Subtitle.text = r.text if r.ok else "The guard ignores you."
 ```
 
-The result has `text`, the `tool_calls` the character made, `exchange_id` and `conversation_id`. Pass the `conversation_id` on the next call to go on with the same conversation. For a whole conversation in one node, use **SummerRouterCharacter** (see the [quickstart](/router/quickstart)).
+The result has `text`, the `tool_calls` the character made, `exchange_id` and `conversation_id`. Pass the `conversation_id` on the next call, and Summer keeps the history of that conversation.
+
+**Tools.** Declare each tool on the character in Studio, with the same name as in `tools`. When the character calls one, the SDK runs your handler with the arguments as a `Dictionary`, sends what it returns back to the character, and the character goes on, for up to 8 rounds in one call. Return any JSON value; return `{"error": "..."}` to tell the character it failed. A handler that takes longer than 30 seconds sends a timeout to the character.
+
+**Options.** `variables` fill the character's `{{variables}}`, such as the player's name. `context` tells the character what just happened in the game. `overrides` set the fields you marked overridable on the character, such as its first message.
+
+For a whole conversation in one node, use **SummerRouterCharacter** (see the [quickstart](/router/quickstart)).
 
 ## Input limits
 

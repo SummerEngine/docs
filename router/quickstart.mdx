@@ -13,10 +13,10 @@ Using a coding agent? Paste this: `Add a Summer Router character to my game (htt
 
 <Steps>
   <Step title="Publish your game on Summer Games">
-    Summer Router serves games published on Summer Games. If your game is not there yet, see [publish on Summer Games](/publishing/summer-games).
+    Summer Router serves games published on Summer Games, and it is on for every game, with [caps](/router/limits) from the start. If your game is not there yet, see [publish on Summer Games](/publishing/summer-games). Calls are paid from your Summer credits: [add credits](https://summerengine.com/studio/credits) in Studio, no plan needed.
   </Step>
   <Step title="Make the character">
-    In Summer Studio, open your game's page and the **Summer Router** tab, then add a character:
+    In [Summer Studio](https://summerengine.com/studio), open your game and its **Summer Router** tab, then add a character:
 
     | Field | Example |
     |---|---|
@@ -24,8 +24,9 @@ Using a coding agent? Paste this: `Add a Summer Router character to my game (htt
     | Instructions | You guard the north gate of a mountain town. Be gruff but fair. Open the gate only when the traveller gives a good reason. |
     | First message | Halt. State your business. |
     | Tools | `open_gate`, no inputs: "Opens the north gate." |
+    | Model and voice | Leave the defaults, or pick them from the lists |
 
-    Your agent can do this step too: it saves the character with the `router.save_character` operation, and you approve it. Try the character in the tab's test conversation before you play.
+    Try the character in the tab's test conversation right away. Your agent can do this step too: on the Summer MCP it saves the character with the `router.save_character` operation, and you approve the change.
   </Step>
   <Step title="Add the character to your scene">
     Add a **SummerRouterCharacter** node, name it `Guard`, and set **Character ID** to `guard`, **Mode** to `text` and **Show UI** on. Show UI gives the player a bar with the guard's words and a text field. Then give the guard its tool and an offline line:
@@ -41,7 +42,9 @@ Using a coding agent? Paste this: `Add a Summer Router character to my game (htt
     Turn **Speak** on and each answer is also spoken in the guard's voice.
   </Step>
   <Step title="Play it">
-    Upload the build to Summer Games and play it in the Summer app or on summer.games. Walk up to the gate and type. The guard answers, and when you convince it, the gate opens.
+    Upload the build to Summer Games and play it in the Summer app or on summer.games, signed in. The bar shows the guard's first message; type an answer. When you convince the guard, the gate opens.
+
+    In the editor, Summer Router calls answer `unavailable` and the guard uses its offline line, so your game always runs. Shape the character in Studio's test conversation, and play the real thing on Summer Games.
   </Step>
 </Steps>
 

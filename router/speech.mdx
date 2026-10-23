@@ -27,7 +27,7 @@ if r.ok:
     $Voice.play()
 ```
 
-The voice is the one you set on the character in Studio. To voice a reply the player just got, pass an empty text and `{"exchange_id": id}`.
+The voice is the one you set on the character in Studio; `audio` is ready for an `AudioStreamPlayer`. To voice a reply the player just got, pass an empty text and `{"exchange_id": id}`: the SDK then sends the exchange instead of text.
 
 ## Input limits
 

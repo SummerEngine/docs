@@ -29,22 +29,22 @@ else:
 | [`character_not_found`](#character_not_found) | 404 | No |
 | [`tool_unhandled`](#tool_unhandled) | in the game | No |
 | [`mic_needs_player_action`](#mic_needs_player_action) | in the game | No |
-| [`limit_reached`](#limit_reached) | 429 | Yes |
+| [`limit_reached`](#limit_reached) | 429 | After `resets_at` |
 | [`credits_required`](#credits_required) | 402 | No |
 | [`router_disabled`](#router_disabled) | 403 | No |
 | [`age_restricted`](#age_restricted) | 403 | No |
 | [`provider_unavailable`](#provider_unavailable) | 502 | Yes |
 | [`moderated`](#moderated) | 422 | No |
 | [`invalid_input`](#invalid_input) | 400 | No |
-| [`rate_limited`](#rate_limited) | 429 | Yes |
+| [`rate_limited`](#rate_limited) | 429 | After `Retry-After` |
 
 ### unavailable
 
-Keep the offline fallback. Summer Router needs the Summer Player Host and a configured gateway.
+Keep the offline line. Summer Router runs in the Summer app for games on Summer Games: in the editor and in other builds every call answers this.
 
 ### not_signed_in
 
-Ask the player to sign in to Summer, then try again.
+Only signed-in Summer players can use Summer Router. Ask the player to sign in to Summer, then try again.
 
 ### not_on_summer_games
 
@@ -56,7 +56,7 @@ Fall back to text. Do not send the player to Settings.
 
 ### character_not_found
 
-Push the character with `summer router push`, then call it by its id.
+Make the character on the game's Summer Router tab in Studio, then call it by its id.
 
 ### tool_unhandled
 
@@ -68,7 +68,7 @@ Call request_access() from the talk button's pressed signal, not from \_ready(),
 
 ### limit_reached
 
-Wait until resets_at, or raise the cap in Studio or with `summer router limits set`.
+Show the offline line until `resets_at`, or raise the cap on the game's Summer Router tab in Studio.
 
 ### credits_required
 
@@ -76,7 +76,7 @@ The game's owner adds credits in Studio.
 
 ### router_disabled
 
-Turn on Summer Router for this game in Studio or with `summer router limits set`.
+Turn Summer Router back on for this game on its Summer Router tab in Studio.
 
 ### age_restricted
 
@@ -97,3 +97,17 @@ Send inputs that match the kind's schema in the registry.
 ### rate_limited
 
 Slow down and retry after Retry-After seconds.
+
+## What a result carries
+
+| Field | On | Meaning |
+|---|---|---|
+| `ok` | every result | `true` when the call worked |
+| `error`, `fix`, `docs_url` | a refusal | The tag, one line on what to do, and this page at the tag |
+| `retryable` | a refusal | `true` when the same call can work later |
+| `scope`, `resets_at` | `limit_reached` | The cap that was reached, and when it resets |
+| `reason` | some refusals | A finer reason, such as `not_found` from `verify_exchange` |
+| `request_id` | every result | Send it to Summer support |
+| `text`, `tool_calls`, `exchange_id`, `conversation_id` | a character reply | The answer, the tools it called, and the ids to verify or go on |
+| `audio` | speech | The voice line, ready to play |
+| `texture`, `image`, `data` | an image | The picture as a texture, an image and raw bytes |

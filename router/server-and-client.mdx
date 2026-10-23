@@ -33,9 +33,9 @@ func _on_guard_agreed(session: SummerSession, exchange_id: String) -> void:
         $Gate.open()
 ```
 
-`verify_exchange` returns the reply and the tool calls exactly as the player saw them. It answers only for an exchange of that session's player, in this game, from the last hour. Anything else answers `invalid_input` with reason `not_found`: treat the relayed message as forged and do nothing.
+`verify_exchange` returns the reply and the tool calls exactly as the player saw them. It answers only for an exchange of that session's player, in this game, from the last hour. Anything else answers `invalid_input` with reason `not_found`: do not act on it.
 
-On the player's game, send the id from the result: `r.exchange_id`.
+On the player's game, let the tool handler ask instead of act: return `{"asked": true}` from `open_gate`, then send `r.exchange_id` to the server in your game's own message. The server opens the gate for everyone once the check passes.
 
 ## Rules of thumb
 
