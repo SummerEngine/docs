@@ -143,6 +143,7 @@
     "router/quickstart",
     "router/server-and-client",
     "router/capabilities",
+    "router/models",
     "router/character-reply",
     "router/character-voice",
     "router/speech",

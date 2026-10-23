@@ -138,7 +138,7 @@ function renderRouterModels(list, kinds) {
     "",
     escapeProse(list.billing),
     "",
-    "This page is generated from `GET /v1/router/models` on the Summer Games API, public and with no key: the same list Summer Router meters calls with. Pick the default text and image model per game, and a model per character, on the game's **Summer Router** tab in Studio.",
+    "This page is generated from `GET https://api.summer.games/v1/router/models`, public and with no key: the same list Summer Router meters calls with. Pick the default text and image model per game, and a model per character, on the game's **Summer Router** tab in Studio.",
     "",
   ];
   for (const kind of kinds) {

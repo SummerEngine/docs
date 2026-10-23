@@ -15,7 +15,7 @@
 - Credits: welcome credits pay for models with `tier: "free"`, bought credits pay for every model, no plan needed. A job without enough credits answers `402` `no_credits` with a `fix_url` to show the person.
 - OpenAPI 3.1: https://www.summerengine.com/v1/openapi.json
 - MCP for chat apps and cloud work: `https://mcp.summerengine.com/mcp` (OAuth sign-in).
-- Summer Router (AI inside a shipped game: talking characters, speech, images): the game calls `Summer.client.router`; no key is in the build and the creator's Summer credits pay. Works on games published on Summer Games. Start: https://docs.summerengine.com/router/quickstart.md
+- Summer Router (AI inside a shipped game: talking characters, speech, images): the game calls `Summer.client.router`; no key is in the build and the creator's paid Summer credits pay. Works on games published on Summer Games. Models and prices: `GET https://api.summer.games/v1/router/models` (public). Start: https://docs.summerengine.com/router/quickstart.md
 - CLI and local MCP for engine work: `npx -y summer-engine@latest setup <agent> --yes`.
 - Every page is also Markdown: add `.md` to its URL. Everything in one file: https://docs.summerengine.com/llms-full.txt
 - Quickstart: https://docs.summerengine.com/api/quickstart.md. Models and pricing: https://docs.summerengine.com/api/models.md. Errors: https://docs.summerengine.com/api/errors.md
@@ -248,6 +248,7 @@
 ### Capabilities
 
 - [Summer Router capabilities](https://docs.summerengine.com/router/capabilities.md): What a game can do with Summer Router at runtime: character reply, speech, image. Metered per call from the creator's Summer credits.
+- [Summer Router models and prices](https://docs.summerengine.com/router/models.md): Every model a game can use through Summer Router, with its price per unit. Usage is billed at the provider's cost from the game owner's paid Summer credits.
 - [Summer Router: character reply](https://docs.summerengine.com/router/character-reply.md): A character answers the player in text, remembers the conversation and calls your game's tools. Call it from your game with Summer.client.router.reply(character: String, text: String, options: Dictionary = {}).
 - [Summer Router: character voice session](https://docs.summerengine.com/router/character-voice.md): A live voice conversation with a character, with interruptions and tool calls. Call it from your game with Summer.client.router.talk(character: String, options: Dictionary = {"mode": "voice"}).
 - [Summer Router: speech](https://docs.summerengine.com/router/speech.md): A line spoken in a character's voice. Call it from your game with Summer.client.router.speak(text: String, options: Dictionary = {"character": ""}).

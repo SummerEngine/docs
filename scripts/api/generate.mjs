@@ -631,7 +631,7 @@ function renderLlms() {
     "- Credits: welcome credits pay for models with `tier: \"free\"`, bought credits pay for every model, no plan needed. A job without enough credits answers `402` `no_credits` with a `fix_url` to show the person.",
     `- OpenAPI 3.1: ${BASE_URL}/openapi.json`,
     "- MCP for chat apps and cloud work: `https://mcp.summerengine.com/mcp` (OAuth sign-in).",
-    `- Summer Router (AI inside a shipped game: talking characters, speech, images): the game calls \`Summer.client.router\`; no key is in the build and the creator's Summer credits pay. Works on games published on Summer Games. Start: ${DOCS_URL}/router/quickstart.md`,
+    `- Summer Router (AI inside a shipped game: talking characters, speech, images): the game calls \`Summer.client.router\`; no key is in the build and the creator's paid Summer credits pay. Works on games published on Summer Games. Models and prices: \`GET https://api.summer.games/v1/router/models\` (public). Start: ${DOCS_URL}/router/quickstart.md`,
     "- CLI and local MCP for engine work: `npx -y summer-engine@latest setup <agent> --yes`.",
     "- Every page is also Markdown: add `.md` to its URL. Everything in one file: https://docs.summerengine.com/llms-full.txt",
     `- Quickstart: ${DOCS_URL}/api/quickstart.md. Models and pricing: ${DOCS_URL}/api/models.md. Errors: ${DOCS_URL}/api/errors.md`,

@@ -347,6 +347,7 @@
             "group": "Capabilities",
             "pages": [
               "router/capabilities",
+              "router/models",
               "router/character-reply",
               "router/character-voice",
               "router/speech",
