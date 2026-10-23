@@ -31,7 +31,7 @@ Every error from `/v1` has the same shape:
 | `fix_url` | Where the person fixes it, such as the page to add credits |
 | `doc_url` | This page, at the code's section |
 
-A call that answers an error charges nothing, with one exception: after `outcome_unknown` a job may have started. Send the same request again with the same `Idempotency-Key` to find out. The key request calls of [Agents](/api/agents#get-a-key-from-your-agent) answer with a `status` field instead.
+A call that answers an error charges nothing. After `outcome_unknown`, send the same request with the same `Idempotency-Key` to see whether a job started. The [key request calls](/api/agents#get-a-key-over-http) answer with a `status` field instead.
 
 ## Codes
 
@@ -63,7 +63,7 @@ The name you sent was replaced. `message` names the new one.
 
 ### not_signed_in
 
-No key, or the key is wrong, revoked or expired. Send `Authorization: Bearer $SUMMER_API_KEY`. An agent key expires after 30 days: ask for a new one ([how](/api/agents#get-a-key-from-your-agent)).
+No key, or the key is wrong, revoked or expired. Send `Authorization: Bearer $SUMMER_API_KEY`. An agent key lasts 30 days: run `summer login --api-key` again for a new one.
 
 ### no_credits
 

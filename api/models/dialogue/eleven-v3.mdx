@@ -116,7 +116,7 @@ Send these fields in `input`. The full JSON Schema is `inputSchema` in [`GET /v1
 
 ## Voices
 
-Each line in `inputs` needs a `voiceId` from this list. A `voiceId` that is not here answers `400` with the allowed list. The live list is `voices` in `GET /v1/models/dialogue/eleven_v3`.
+Each line in `inputs` needs a `voiceId` from this list. These are Summer's curated voices; the live list is `voices` in `GET /v1/models/dialogue/eleven_v3`. For more, search the public voice library by words, language, gender, age or accent, each with a sample: `GET /v1/voices?model=dialogue/eleven_v3&search=old+wizard` (with your key).
 
 <Accordion title="All 21 voices">
 

@@ -27,7 +27,7 @@ This table is generated from [`GET /v1/models`](/api/reference/get-models), the 
 
 Send the default id when you have no preference. It runs the model Summer tests first for that job, and it moves when a better one passes.
 
-| I need | Model id | Runs today | Price |
+| I need | Model id | Runs | Price |
 |---|---|---|---|
 | Textured GLB models from a prompt or a picture | `3d/default` | [Hunyuan 3D Pro](/api/models/3d/hunyuan-3d) | $0.525 per model |
 | Concept art, sprites, textures, icons and key art | `image/default` | [Nano Banana 2 Lite](/api/models/image/nano-banana-2) | $0.0484 per image |
@@ -148,7 +148,7 @@ Level, menu and combat music from a description. Output: MP3.
 - **Rounded here, exact in the API.** This page rounds for reading. The model page shows the exact list price, and the API returns it as a decimal string in US dollars.
 - **Failed jobs are free.** Most jobs are charged when they succeed. A job that is charged when it starts, such as a video, is refunded in full when it fails.
 - **One balance.** Every model draws from your Summer credits. Each key can also have its own spend limit: see [keys and limits](/api/keys).
-- **Free credits.** A new account's welcome credits pay only for models marked Free credits: Yes. The others need bought credits; without them a job answers `402` with `no_credits`.
+- **Welcome credits.** A new account's welcome credits pay for every model marked Free credits: Yes. Bought credits pay for all of them, no plan needed.
 
 ## The JSON
 

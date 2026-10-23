@@ -1,7 +1,7 @@
 ---
-title: "Summer API jobs: estimate, run, wait and download"
-sidebarTitle: "Jobs and files"
-description: "How a Summer API job works: price it with POST /v1/estimate, start it with POST /v1/jobs, wait with Prefer: wait or follow it with GET /v1/jobs/{id} or server-sent events, then download the result. Upload input pictures with POST /v1/files."
+title: "Summer API jobs: estimate, run, follow, webhooks and download"
+sidebarTitle: "Jobs and webhooks"
+description: "How a Summer API job works: price it with POST /v1/estimate, start it with POST /v1/jobs, wait with Prefer: wait, follow it with GET /v1/jobs/{id}, server-sent events or a signed webhook, then download the result. Upload input pictures with POST /v1/files."
 icon: "workflow"
 ---
 
@@ -57,7 +57,7 @@ The job also carries `model`, the model that ran (also when you sent a default i
 curl "https://www.summerengine.com/v1/jobs/$JOB_ID" -H "Authorization: Bearer $SUMMER_API_KEY"
 ```
 
-Check again after `pollAfterSeconds` when the answer has it, or every 5 seconds. Job ids can hold a colon, such as `gen:...`; send them as they are.
+Check again after `pollAfterSeconds` when the answer has it, or every 5 seconds. Job ids can hold a colon, such as `gen:...`; send them as they are. With the CLI, `summer api jobs <id> --download` follows the job and saves its files.
 
 | `state` | Meaning |
 |---|---|
@@ -72,13 +72,42 @@ To get changes pushed instead, open the event stream. It sends a `job` event wit
 curl -N "https://www.summerengine.com/v1/jobs/$JOB_ID/events" -H "Authorization: Bearer $SUMMER_API_KEY"
 ```
 
-## The result
+## Webhooks
 
-A finished job's `result` holds Summer file URLs and the ids of the assets in your Summer library.
+Pass `webhookUrl` (public `https`) when you start a job, and Summer sends one signed `POST` there when the job finishes. First make a signing secret, once per account:
+
+```bash
+curl -X POST https://www.summerengine.com/v1/webhooks/secret -H "Authorization: Bearer $SUMMER_API_KEY"
+```
+
+The answer holds `secret`, shown only this once; keep it as `SUMMER_WEBHOOK_SECRET`. Making a new one stops the old one at once. Then add `"webhookUrl": "https://example.com/summer-hook"` to the `POST /v1/jobs` body; the job answer carries `webhookId`.
+
+The `POST` body has the job's final facts:
+
+```json
+{"type": "job.finished", "jobId": "gen:...", "model": "3d/hunyuan-3d", "status": "done", "createdAt": "...", "completedAt": "..."}
+```
+
+Then `GET /v1/jobs/{jobId}` for the files. Each `POST` carries `Summer-Signature: t=<unix seconds>,v1=<hex>`, where `v1` is the HMAC-SHA256 of `t`, a dot and the raw body, keyed with your secret. Check it before you trust the body:
+
+```ts
+import { createHmac, timingSafeEqual } from "node:crypto";
+
+function verify(rawBody: string, header: string, secret: string): boolean {
+  const parts = Object.fromEntries(header.split(",").map((p) => p.split("=")));
+  const expected = createHmac("sha256", secret).update(`${parts.t}.${rawBody}`).digest("hex");
+  const fresh = Math.abs(Date.now() / 1000 - Number(parts.t)) < 300;
+  return fresh && expected.length === parts.v1?.length && timingSafeEqual(Buffer.from(expected), Buffer.from(parts.v1));
+}
+```
+
+Answer `2xx` to confirm. Summer retries after 1, 5 and 30 minutes, then 1, 2, 4, 8 and 24 hours; answer `410` to stop. `Summer-Webhook-Id` is the same on every retry, so you can drop repeats. `GET /v1/webhooks/deliveries` lists your newest deliveries with every attempt.
+
+## The result
 
 Every job has the same `result`: `assets`, one entry per file, each with `assetId`, `fileUrl` and `thumbnailUrl`. An image job with `numImages` above 1 has one entry per image. A job reads `done` once every file is in Summer storage, so every `fileUrl` is ready to download.
 
-Every URL is on Summer's own storage and downloads without a key. Download the file into your project, or keep the asset id: in Summer Engine your agent imports an asset by its id.
+Assets made through the API are private: they show in your Summer library only. Each `fileUrl` is on Summer's own storage and downloads without a key, so share a URL only where the file may be seen. Download the file into your project, or keep the asset id: in Summer Engine your agent imports an asset by its id.
 
 ## Send a picture
 

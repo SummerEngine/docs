@@ -38,7 +38,7 @@ const KIND_COPY = {
     icon: "audio-lines",
     what: "A live voice conversation with a character, with interruptions and tool calls.",
     example: ['var s: SummerRouterSession = await Summer.client.router.talk("guard", {"mode": "voice"})'],
-    after: "Until realtime voice opens, a voice session talks in text turns and speaks each reply in the character's voice.",
+    after: "A voice session talks in text turns and speaks each reply in the character's voice.",
   },
   speech: {
     icon: "mic",
@@ -109,6 +109,7 @@ export function routerPages(registry, policy) {
   const kinds = registry.kinds;
   // The registry's fix lines also name CLI steps; the docs say them in Studio's words.
   const FIX = {
+    not_on_summer_games: "Summer Router works on games published on Summer Games. Publish the game there; coming soon for all platforms and storefronts. Keep the offline line.",
     unavailable: "Keep the offline line. Summer Router runs in the Summer app for games on Summer Games: in the editor and in other builds every call answers this.",
     character_not_found: "Make the character on the game's Summer Router tab in Studio, then call it by its id.",
     router_disabled: "Turn Summer Router back on for this game on its Summer Router tab in Studio.",
@@ -137,7 +138,6 @@ export function routerPages(registry, policy) {
         "",
         banner(`${source}, kind ${kind.id}`),
         "",
-        ...(served(kind) ? [] : ["<Note>Coming soon.</Note>", ""]),
         escapeProse(copy.what),
         "",
         "| | |",

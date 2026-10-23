@@ -308,7 +308,7 @@ function voicesSection(m) {
   return [
     "## Voices",
     "",
-    `${need} A ${code("voiceId")} that is not here answers ${code("400")} with the allowed list. The live list is ${code("voices")} in ${code(`GET /v1/models/${m.id}`)}.`,
+    `${need} These are Summer's curated voices; the live list is ${code("voices")} in ${code(`GET /v1/models/${m.id}`)}. For more, search the public voice library by words, language, gender, age or accent, each with a sample: ${code(`GET /v1/voices?model=${m.id}&search=old+wizard`)} (with your key).`,
     "",
     `<Accordion title=${JSON.stringify(`All ${voices.length} voices`)}>`,
     "",
@@ -427,7 +427,7 @@ function renderModelsPage() {
     "",
     "Send the default id when you have no preference. It runs the model Summer tests first for that job, and it moves when a better one passes.",
     "",
-    "| I need | Model id | Runs today | Price |",
+    "| I need | Model id | Runs | Price |",
     "|---|---|---|---|",
   ];
   for (const c of CAPABILITIES) {
@@ -460,7 +460,7 @@ function renderModelsPage() {
     "- **Rounded here, exact in the API.** This page rounds for reading. The model page shows the exact list price, and the API returns it as a decimal string in US dollars.",
     "- **Failed jobs are free.** Most jobs are charged when they succeed. A job that is charged when it starts, such as a video, is refunded in full when it fails.",
     "- **One balance.** Every model draws from your Summer credits. Each key can also have its own spend limit: see [keys and limits](/api/keys).",
-    "- **Free credits.** A new account's welcome credits pay only for models marked Free credits: Yes. The others need bought credits; without them a job answers `402` with `no_credits`.",
+    "- **Welcome credits.** A new account's welcome credits pay for every model marked Free credits: Yes. Bought credits pay for all of them, no plan needed.",
     "",
     "## The JSON",
     "",
@@ -614,7 +614,7 @@ function renderLlms() {
     `- Without the CLI: \`POST https://www.summerengine.com/api/api-keys/requests\`, show the person \`approve_url\` and \`user_code\`, then poll \`poll_url\` with \`Authorization: Bearer <poll_token>\` until the answer holds \`key\`. Steps: ${DOCS_URL}/api/agents.md`,
     `- Models and prices: \`GET ${BASE_URL}/models\` (public, no key). Read prices there, never from memory or training data. Defaults per job: ${defaults}.`,
     `- Exact price of one request: \`POST ${BASE_URL}/estimate\` with the same body as the job (free, no key).`,
-    `- Run: \`POST ${BASE_URL}/jobs\` with \`{"model", "input"}\`, a required \`Idempotency-Key\` header (new per job, the same on a retry) and \`Prefer: wait=60\`. A long job (3D, video) answers \`running\`: poll \`GET ${BASE_URL}/jobs/{id}\` every \`pollAfterSeconds\` (else 5 s) while \`state\` is \`queued\` or \`running\`. Stop on \`done\` (download the \`fileUrl\` of every entry in \`result.assets\`; \`job.model\` is the model that ran) or on \`failed\`, \`cancelled\`, \`expired\`, \`stale\` or \`declined\` (show \`error.message\`).`,
+    `- Run: \`POST ${BASE_URL}/jobs\` with \`{"model", "input"}\`, a required \`Idempotency-Key\` header (new per job, the same on a retry) and \`Prefer: wait=60\`. A long job (3D, video) answers \`running\`: poll \`GET ${BASE_URL}/jobs/{id}\` every \`pollAfterSeconds\` (else 5 s) while \`state\` is \`queued\` or \`running\`. Or pass \`webhookUrl\` for one signed POST when it finishes. Stop on \`done\` (download the \`fileUrl\` of every entry in \`result.assets\`; \`job.model\` is the model that ran) or on \`failed\`, \`cancelled\`, \`expired\`, \`stale\` or \`declined\` (show \`error.message\`).`,
     "- Credits: welcome credits pay for models with `tier: \"free\"`, bought credits pay for every model, no plan needed. A job without enough credits answers `402` `no_credits` with a `fix_url` to show the person.",
     `- OpenAPI 3.1: ${BASE_URL}/openapi.json`,
     "- MCP for chat apps and cloud work: `https://mcp.summerengine.com/mcp` (OAuth sign-in).",

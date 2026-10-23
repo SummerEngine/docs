@@ -106,7 +106,7 @@ Send these fields in `input`. The full JSON Schema is `inputSchema` in [`GET /v1
 
 ## Voices
 
-`voiceId` is optional: without it the model uses its default voice. A `voiceId` that is not here answers `400` with the allowed list. The live list is `voices` in `GET /v1/models/voice/gemini-3.8-flash-lite-tts`.
+`voiceId` is optional: without it the model uses its default voice. These are Summer's curated voices; the live list is `voices` in `GET /v1/models/voice/gemini-3.8-flash-lite-tts`. For more, search the public voice library by words, language, gender, age or accent, each with a sample: `GET /v1/voices?model=voice/gemini-3.8-flash-lite-tts&search=old+wizard` (with your key).
 
 <Accordion title="All 30 voices">
 
