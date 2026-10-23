@@ -540,7 +540,8 @@ put(MODELS_PAGE, renderModelsPage());
 for (const m of models) put(modelPath(m), renderModelPage(m));
 
 // Summer Router: its own tab, from the pinned registry and default caps.
-const router = routerPages(readJson(join(SOURCES, "router-registry.json")), readJson(join(SOURCES, "router-policy.json")));
+const routerModelsPath = join(SOURCES, "router-models.json");
+const router = routerPages(readJson(join(SOURCES, "router-registry.json")), readJson(join(SOURCES, "router-policy.json")), existsSync(routerModelsPath) ? readJson(routerModelsPath) : null);
 for (const [path, content] of router.pages) put(path, content);
 
 // ------------------------------------------------------------- navigation

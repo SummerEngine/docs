@@ -9,6 +9,8 @@
  *   ... --pse <publicsummerengine checkout>            also refresh model-notes.json from config/models/model-pages.json
  *   ... --router <summer-platform checkout or ref dir>  also refresh the Summer Router registry and default caps:
  *       contracts/summer-router/registry.json and the summer.router_policy row of its migration
+ *   ... --router-models <file or url>                   the Summer Router price list, GET /v1/router/models
+ *       (production: https://api.summer.games/v1/router/models)
  *
  * Source of truth: the Summer API itself. GET /v1/models is the one model list
  * with prices (the same numbers POST /v1/estimate quotes and a job charges);
@@ -41,6 +43,7 @@ function parseArgs(argv) {
     else if (a === "--openapi") opts.openapi = resolve(next());
     else if (a === "--pse") opts.pse = resolve(next());
     else if (a === "--router") opts.router = resolve(next());
+    else if (a === "--router-models") opts.routerModels = next();
     else throw new Error(`unknown argument ${a}`);
   }
   if (Boolean(opts.models) !== Boolean(opts.openapi)) throw new Error("--models and --openapi go together");
@@ -145,6 +148,11 @@ if (opts.router) {
   const { registry, policy } = readRouter(opts.router);
   write("router-registry.json", registry);
   write("router-policy.json", policy);
+}
+if (opts.routerModels) {
+  const list = /^https?:/.test(opts.routerModels) ? await getJson(opts.routerModels) : JSON.parse(readFileSync(resolve(opts.routerModels), "utf8"));
+  if (!Array.isArray(list?.models) || !list.models.length) throw new Error("the Router price list has no models");
+  write("router-models.json", list);
 }
 
 execFileSync(process.execPath, [join(HERE, "generate.mjs")], { stdio: "inherit" });

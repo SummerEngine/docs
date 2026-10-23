@@ -103,7 +103,58 @@ function inputRows(kind) {
     .map(([name, s]) => `| ${code(name)}${required.has(name) ? " (required)" : ""} | ${cell(typeOf(s)).replace(/\\`/g, "`")} | ${name === "character" ? "The id of a character you made in Studio" : cell([s.description, limits(s)].filter(Boolean).join(". ")) || (s.enum ? "One of these" : "Any")} |`);
 }
 
-export function routerPages(registry, policy) {
+const PRICE_UNIT = {
+  input_tokens: ["input token", "input tokens"],
+  output_tokens: ["output token", "output tokens"],
+  characters: ["character", "characters"],
+  audio_seconds: ["second of audio", "seconds of audio"],
+  images: ["image", "images"],
+  session_seconds: ["second of session", "seconds of session"],
+};
+
+/** "$0.15 per 1M input tokens" from {unit, per, usd}. */
+function priceLine(price) {
+  const [one, many] = PRICE_UNIT[price.unit] ?? [price.unit, price.unit];
+  const per = price.per === 1 ? one : `${price.per >= 1_000_000 && price.per % 1_000_000 === 0 ? `${price.per / 1_000_000}M` : price.per.toLocaleString("en-US")} ${many}`;
+  if (!/^\d+(\.\d+)?$/.test(price.usd)) throw new Error(`router price ${JSON.stringify(price.usd)} is not a USD decimal string`);
+  return `$${price.usd} per ${per}`;
+}
+
+/** The Models and prices page, from the public price list (GET /v1/router/models). */
+function renderRouterModels(list, kinds) {
+  const kindTitle = Object.fromEntries(kinds.map((k) => [k.id, k.title]));
+  const out = [
+    "---",
+    'title: "Summer Router models and prices"',
+    'sidebarTitle: "Models and prices"',
+    `description: ${fm(`Every model a game can use through Summer Router, with its price per unit. ${list.billing}`)}`,
+    'icon: "tags"',
+    'mode: "wide"',
+    "generated: true",
+    "generator: scripts/api",
+    "---",
+    "",
+    banner("GET /v1/router/models"),
+    "",
+    escapeProse(list.billing),
+    "",
+    "This page is generated from `GET /v1/router/models` on the Summer Games API, public and with no key: the same list Summer Router meters calls with. Pick the default text and image model per game, and a model per character, on the game's **Summer Router** tab in Studio.",
+    "",
+  ];
+  for (const kind of kinds) {
+    const rows = list.models.filter((m) => m.capability === kind.id);
+    if (!rows.length) continue;
+    out.push(`## ${kind.title}`, "", "| Model | Id | Price | Status |", "|---|---|---|---|");
+    for (const m of [...rows].sort((a, b) => Number(b.default) - Number(a.default) || a.display_name.localeCompare(b.display_name))) {
+      out.push(`| ${cell(m.display_name)}${m.default ? " (default)" : ""} | ${code(m.id)} | ${m.prices.map(priceLine).join("<br />")} | ${m.status === "available" ? "Available" : "Coming soon"} |`);
+    }
+    out.push("");
+  }
+  void kindTitle;
+  return out.join("\n");
+}
+
+export function routerPages(registry, policy, list = null) {
   const pages = new Map();
   const put = (path, content) => pages.set(path, content.endsWith("\n") ? content : content + "\n");
   const kinds = registry.kinds;
@@ -182,7 +233,7 @@ export function routerPages(registry, policy) {
       "",
       "## Models",
       "",
-      "You choose the default text model and image model for each game, and a model per character, on the game's Summer Router tab in Studio. Your agent reads the list with the `router.models` operation. Usage in Studio shows calls and units by capability, and how much of each cap is used.",
+      `You choose the default text model and image model for each game, and a model per character, on the game's Summer Router tab in Studio.${list ? " Every model and its price: [models and prices](/router/models)." : ""} Usage in Studio shows calls and units by capability, and how much of each cap is used.`,
       "",
     ].join("\n"),
   );
@@ -228,6 +279,8 @@ export function routerPages(registry, policy) {
       "|---|---|---|",
       `| Calls a minute per player | ${policy.default_player_calls_per_minute} | ${ceiling("player_calls_per_minute")} |`,
       `| Calls a minute per game | ${policy.default_game_calls_per_minute.toLocaleString("en-US")} | ${ceiling("game_calls_per_minute").toLocaleString("en-US")} |`,
+      "",
+      `Test turns from Studio and your agent while you build count toward their own cap: ${usd(policy.developer_day_micro_usd)} per developer per day.`,
       "",
       "## When a cap is reached",
       "",
@@ -289,11 +342,13 @@ export function routerPages(registry, policy) {
     ].join("\n"),
   );
 
+  if (list) put("router/models", renderRouterModels(list, kinds));
+
   const nav = {
     tab: ROUTER_TAB,
     groups: [
       { group: "Start here", pages: ["router/overview", "router/quickstart", "router/server-and-client"] },
-      { group: "Capabilities", pages: ["router/capabilities", ...kinds.map(kindPath)] },
+      { group: "Capabilities", pages: ["router/capabilities", ...(list ? ["router/models"] : []), ...kinds.map(kindPath)] },
       { group: "Run your game", pages: ["router/limits", "router/errors"] },
     ],
   };
