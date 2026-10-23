@@ -493,6 +493,12 @@ const REFERENCE_TITLES = {
   "POST /jobs/{jobId}/cancel": "Cancel a job",
   "POST /files": "Start a file upload",
   "POST /files/complete": "Finish a file upload",
+  "POST /webhooks/secret": "Make a webhook secret",
+  "GET /webhooks/deliveries": "List webhook deliveries",
+  "GET /voices": "Search voices",
+  "GET /voices/preview/{token}": "Play a voice sample",
+  "GET /key": "Read your key",
+  "GET /balance": "Read your balance",
 };
 // The spec's descriptions are the operations' own, written for every surface; these say it in HTTP words.
 const REFERENCE_DESCRIPTIONS = {
@@ -505,6 +511,12 @@ const REFERENCE_DESCRIPTIONS = {
   "POST /jobs/{jobId}/cancel": "Stop a job that has not finished.",
   "POST /files": "Start a picture upload (PNG, JPEG or WebP): POST every field plus the file to uploadUrl, then call POST /v1/files/complete.",
   "POST /files/complete": "Finish a picture upload. The picture becomes a private asset in your Summer library, with a fileUrl to send as imageUrl.",
+  "POST /webhooks/secret": "Make your webhook signing secret, shown once. A new one stops the old one at once.",
+  "GET /webhooks/deliveries": "Your newest webhook deliveries, each with every attempt.",
+  "GET /voices": "Find voices for a voice or dialogue model: Summer's curated voices first, then the public voice library by words, language, gender, age or accent, each with a sample.",
+  "GET /voices/preview/{token}": "A voice's short sample, from the previewUrl in GET /v1/voices.",
+  "GET /key": "The calling key's name, kind, limit, what it spent this period and when that resets. Never the key itself.",
+  "GET /balance": "Your credit balance and what this key can spend now.",
 };
 for (const r of reference) {
   const title = REFERENCE_TITLES[`${r.method} ${r.path}`] ?? r.op.summary;
@@ -534,7 +546,7 @@ for (const [path, content] of router.pages) put(path, content);
 // ------------------------------------------------------------- navigation
 
 const HAND_WRITTEN = ["api/overview", "api/quickstart", "api/agents", "api/keys", "api/jobs", "api/errors"];
-const REFERENCE_ORDER = ["GET /models", "GET /models/{model}", "POST /estimate", "POST /jobs", "GET /jobs/{jobId}", "GET /jobs/{jobId}/events", "POST /jobs/{jobId}/cancel", "POST /files", "POST /files/complete"];
+const REFERENCE_ORDER = ["GET /models", "GET /models/{model}", "POST /estimate", "POST /jobs", "GET /jobs/{jobId}", "GET /jobs/{jobId}/events", "POST /jobs/{jobId}/cancel", "POST /files", "POST /files/complete", "GET /voices", "GET /voices/preview/{token}", "POST /webhooks/secret", "GET /webhooks/deliveries", "GET /key", "GET /balance"];
 const rank = (r) => {
   const i = REFERENCE_ORDER.indexOf(`${r.method} ${r.path}`);
   return i < 0 ? REFERENCE_ORDER.length : i;

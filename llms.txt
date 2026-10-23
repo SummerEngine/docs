@@ -160,7 +160,7 @@
 - [Muse Image](https://docs.summerengine.com/api/models/image/muse-image.md): Muse Image on the Summer API: $0.01 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/muse-image.
 - [Grok Imagine](https://docs.summerengine.com/api/models/image/grok-imagine.md): Grok Imagine on the Summer API: $0.02 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/grok-imagine.
 - [Gemini 2.5 Flash](https://docs.summerengine.com/api/models/image/gemini-flash.md): Gemini 2.5 Flash on the Summer API: $0.039 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/gemini-flash.
-- [Nano Banana Lite](https://docs.summerengine.com/api/models/image/nano-banana-lite.md): Nano Banana Lite on the Summer API: $0.0484 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/nano-banana-lite.
+- [Nano Banana 1 Lite](https://docs.summerengine.com/api/models/image/nano-banana-lite.md): Nano Banana 1 Lite on the Summer API: $0.0484 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/nano-banana-lite.
 - [GPT Image 2.5](https://docs.summerengine.com/api/models/image/gpt-image-2-5.md): GPT Image 2.5 on the Summer API: $0.053 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/gpt-image-2.5.
 - [Seedream 5.0 Pro](https://docs.summerengine.com/api/models/image/seedream-5-pro.md): Seedream 5.0 Pro on the Summer API: $0.135 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/seedream-5-pro.
 - [GPT Image 2](https://docs.summerengine.com/api/models/image/gpt-image-2.md): GPT Image 2 on the Summer API: $0.211 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/gpt-image-2.
@@ -188,30 +188,30 @@
 
 #### Voice
 
-- [Eleven v3](https://docs.summerengine.com/api/models/voice/eleven-v3.md): Eleven v3 on the Summer API: $0.119 per 1,000 characters, about 5 s, MP3 saved to your Summer library. Model id voice/eleven_v3.
-- [Eleven Multilingual V2](https://docs.summerengine.com/api/models/voice/eleven-multilingual-v2.md): Eleven Multilingual V2 on the Summer API: $0.119 per 1,000 characters, about 5 s, MP3 saved to your Summer library. Model id voice/eleven_multilingual_v2.
+- [Expressive v3](https://docs.summerengine.com/api/models/voice/expressive-v3.md): Expressive v3 on the Summer API: $0.119 per 1,000 characters, about 5 s, MP3 saved to your Summer library. Model id voice/expressive-v3.
+- [Multilingual v2](https://docs.summerengine.com/api/models/voice/multilingual-v2.md): Multilingual v2 on the Summer API: $0.119 per 1,000 characters, about 5 s, MP3 saved to your Summer library. Model id voice/multilingual-v2.
 - [Inworld TTS-1.5 Max](https://docs.summerengine.com/api/models/voice/inworld-tts-1-5-max.md): Inworld TTS-1.5 Max on the Summer API: $0.01 per 1,000 characters, about 4 s, MP3 saved to your Summer library. Model id voice/inworld-tts-1.5-max.
 - [xAI TTS](https://docs.summerengine.com/api/models/voice/xai-tts-v1.md): xAI TTS on the Summer API: $0.015 per 1,000 characters, about 4 s, MP3 saved to your Summer library. Model id voice/xai-tts-v1.
 - [Gemini 3.8 Flash Lite TTS](https://docs.summerengine.com/api/models/voice/gemini-3-8-flash-lite-tts.md): Gemini 3.8 Flash Lite TTS on the Summer API: $0.03 per 1,000 characters, about 4 s, MP3 saved to your Summer library. Model id voice/gemini-3.8-flash-lite-tts.
 - [Gemini 3.8 Flash TTS](https://docs.summerengine.com/api/models/voice/gemini-3-8-flash-tts.md): Gemini 3.8 Flash TTS on the Summer API: $0.045 per 1,000 characters, about 7 s, MP3 saved to your Summer library. Model id voice/gemini-3.8-flash-tts.
 - [Qwen Audio 3.0 TTS](https://docs.summerengine.com/api/models/voice/qwen-audio-3-tts.md): Qwen Audio 3.0 TTS on the Summer API: $0.05 per 1,000 characters, about 6 s, MP3 saved to your Summer library. Model id voice/qwen-audio-3-tts.
-- [Eleven Flash v2.5](https://docs.summerengine.com/api/models/voice/eleven-flash-v2-5.md): Eleven Flash v2.5 on the Summer API: $0.0595 per 1,000 characters, about 3 s, MP3 saved to your Summer library. Model id voice/eleven_flash_v2_5.
+- [Flash v2.5](https://docs.summerengine.com/api/models/voice/flash-v2-5.md): Flash v2.5 on the Summer API: $0.0595 per 1,000 characters, about 3 s, MP3 saved to your Summer library. Model id voice/flash-v2.5.
 - [MiniMax Speech 2.8 HD](https://docs.summerengine.com/api/models/voice/minimax-speech-2-8-hd.md): MiniMax Speech 2.8 HD on the Summer API: $0.10 per 1,000 characters, about 5 s, MP3 saved to your Summer library. Model id voice/minimax-speech-2.8-hd.
 
 #### Dialogue
 
-- [Eleven v3](https://docs.summerengine.com/api/models/dialogue/eleven-v3.md): Eleven v3 on the Summer API: $0.119 per 1,000 characters, about 5 s, MP3 saved to your Summer library. Model id dialogue/eleven_v3.
+- [Expressive v3](https://docs.summerengine.com/api/models/dialogue/expressive-v3.md): Expressive v3 on the Summer API: $0.119 per 1,000 characters, about 5 s, MP3 saved to your Summer library. Model id dialogue/expressive-v3.
 
 #### Sound effects
 
-- [Text to Sound v2](https://docs.summerengine.com/api/models/sound/eleven-text-to-sound-v2.md): Text to Sound v2 on the Summer API: $0.002 per second, about 3 s, MP3 saved to your Summer library. Model id sound/eleven_text_to_sound_v2.
+- [Sound Effects v2](https://docs.summerengine.com/api/models/sound/sfx-v2.md): Sound Effects v2 on the Summer API: $0.002 per second, about 3 s, MP3 saved to your Summer library. Model id sound/sfx-v2.
 - [Sonilo SFX 1.1](https://docs.summerengine.com/api/models/sound/sonilo-sfx-1-1.md): Sonilo SFX 1.1 on the Summer API: $0.0018 per second, about 12 s, MP3 saved to your Summer library. Model id sound/sonilo-sfx-1.1.
 - [Stable Audio 3 SFX](https://docs.summerengine.com/api/models/sound/stable-audio-3-sfx.md): Stable Audio 3 SFX on the Summer API: $0.0206 per sound, about 3 s, MP3 saved to your Summer library. Model id sound/stable-audio-3-sfx.
 
 #### Music
 
-- [Eleven Music v2](https://docs.summerengine.com/api/models/music/music-v2.md): Eleven Music v2 on the Summer API: $0.0025 per second, about 10 s, MP3 saved to your Summer library. Model id music/music_v2.
-- [Eleven Music v1](https://docs.summerengine.com/api/models/music/music-v1.md): Eleven Music v1 on the Summer API: $0.0025 per second, about 10 s, MP3 saved to your Summer library. Model id music/music_v1.
+- [Music v2](https://docs.summerengine.com/api/models/music/music-v2.md): Music v2 on the Summer API: $0.0025 per second, about 10 s, MP3 saved to your Summer library. Model id music/music-v2.
+- [Music v1](https://docs.summerengine.com/api/models/music/music-v1.md): Music v1 on the Summer API: $0.0025 per second, about 10 s, MP3 saved to your Summer library. Model id music/music-v1.
 
 ### Use the API
 
@@ -230,6 +230,12 @@
 - [Cancel a job](https://docs.summerengine.com/api/reference/post-jobs-jobid-cancel.md): Stop a job that has not finished.
 - [Start a file upload](https://docs.summerengine.com/api/reference/post-files.md): Start a picture upload (PNG, JPEG or WebP): POST every field plus the file to uploadUrl, then call POST /v1/files/complete.
 - [Finish a file upload](https://docs.summerengine.com/api/reference/post-files-complete.md): Finish a picture upload. The picture becomes a private asset in your Summer library, with a fileUrl to send as imageUrl.
+- [Search voices](https://docs.summerengine.com/api/reference/get-voices.md): Find voices for a voice or dialogue model: Summer's curated voices first, then the public voice library by words, language, gender, age or accent, each with a sample.
+- [Play a voice sample](https://docs.summerengine.com/api/reference/get-voices-preview-token.md): A voice's short sample, from the previewUrl in GET /v1/voices.
+- [Make a webhook secret](https://docs.summerengine.com/api/reference/post-webhooks-secret.md): Make your webhook signing secret, shown once. A new one stops the old one at once.
+- [List webhook deliveries](https://docs.summerengine.com/api/reference/get-webhooks-deliveries.md): Your newest webhook deliveries, each with every attempt.
+- [Read your key](https://docs.summerengine.com/api/reference/get-key.md): The calling key's name, kind, limit, what it spent this period and when that resets. Never the key itself.
+- [Read your balance](https://docs.summerengine.com/api/reference/get-balance.md): Your credit balance and what this key can spend now.
 
 ## Summer Router
 

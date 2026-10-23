@@ -6,7 +6,6 @@
   },
   "notes": {
     "image/grok-imagine-2": {
-      "slug": "grok-imagine-2",
       "tagline": "Concept images from xAI's Grok Imagine 2.0 at standard 1K output.",
       "gameUses": [
         "Early concept art for characters, props, and environments.",
@@ -15,7 +14,6 @@
       ]
     },
     "image/nano-banana-2": {
-      "slug": "nano-banana-2-lite",
       "tagline": "Fast 1K image generation and reference editing for clean game-asset references.",
       "gameUses": [
         "Clean, centered asset references ready for image to 3D.",
@@ -24,7 +22,6 @@
       ]
     },
     "image/seedream-5-pro": {
-      "slug": "seedream-5-0-pro",
       "tagline": "Strong prompt understanding, multilingual text, and structured layouts.",
       "gameUses": [
         "Posters, title cards, and signage with legible in-world text.",
@@ -32,8 +29,15 @@
         "Localized marketing art with text in the target language."
       ]
     },
+    "image/nano-banana-lite": {
+      "tagline": "Fast 1K generation and reference editing for asset iteration.",
+      "gameUses": [
+        "Rapid iteration on an asset idea before picking a direction.",
+        "Small edits to an existing image, such as swapping a color or adding a prop.",
+        "Batches of cheap drafts for a mood board."
+      ]
+    },
     "image/grok-imagine": {
-      "slug": "grok-imagine",
       "tagline": "Fast, sharp concept art and textures at a low price per image.",
       "gameUses": [
         "High-volume concept exploration at low cost.",
@@ -42,7 +46,6 @@
       ]
     },
     "image/gpt-image-2": {
-      "slug": "gpt-image-2",
       "tagline": "Precise text, UI, and structured image generation from OpenAI.",
       "gameUses": [
         "HUD, menu, and inventory mockups before building the real UI.",
@@ -51,7 +54,6 @@
       ]
     },
     "image/gemini-flash": {
-      "slug": "gemini-2-5-flash-image",
       "tagline": "Fast general-purpose image generation and editing from Google.",
       "gameUses": [
         "General concept art and asset references.",
@@ -60,7 +62,6 @@
       ]
     },
     "image/gpt-image-2.5": {
-      "slug": "gpt-image-2-5",
       "tagline": "OpenAI's top-ranked image model, with real light, exact text and faithful edits.",
       "gameUses": [
         "Key art and store capsules with exact titles.",
@@ -69,7 +70,6 @@
       ]
     },
     "image/muse-image": {
-      "slug": "muse-image",
       "tagline": "Fast, near-frontier images and precise edits at the lowest price.",
       "gameUses": [
         "Rapid concept rounds before committing to a style.",
@@ -78,7 +78,6 @@
       ]
     },
     "3d/hunyuan-3d": {
-      "slug": "hunyuan-3d-3-1-pro",
       "tagline": "High-quality geometry and textures from Tencent's Hunyuan 3D v3.1.",
       "gameUses": [
         "Props and set dressing such as crates, furniture, and weapons.",
@@ -87,7 +86,6 @@
       ]
     },
     "3d/meshy-7.1": {
-      "slug": "meshy-7-1",
       "tagline": "Meshy's newest model, with quad or triangle meshes and one-step rigging for characters.",
       "gameUses": [
         "Characters that come out rigged and ready to animate in one step.",
@@ -96,7 +94,6 @@
       ]
     },
     "3d/tripo-p2": {
-      "slug": "tripo-p2",
       "tagline": "The first model to build native quad meshes, with texture tiers up to extreme.",
       "gameUses": [
         "Production meshes with clean quad edge flow for rigging and editing.",
@@ -105,7 +102,6 @@
       ]
     },
     "3d/hunyuan-3d-rapid": {
-      "slug": "hunyuan-3d-3-1-rapid",
       "tagline": "Fast, lower-cost 3D drafts for shape checks.",
       "gameUses": [
         "Blockout meshes for level layout and scale checks.",
@@ -114,7 +110,6 @@
       ]
     },
     "3d/meshy-6": {
-      "slug": "meshy-6",
       "tagline": "Meshy 3D with the rigging and animation path for characters.",
       "gameUses": [
         "Characters that should come out rigged and ready for walk, run, and attack animations.",
@@ -123,7 +118,6 @@
       ]
     },
     "3d/hi3d-v3": {
-      "slug": "hi3d-v3-0",
       "tagline": "The finest geometry detail, built at 2048 cubed voxel resolution.",
       "gameUses": [
         "Sculpt-level detail on statues, armor and ornate props.",
@@ -132,7 +126,6 @@
       ]
     },
     "3d/rodin-2.5-fast": {
-      "slug": "rodin-2-5-fast",
       "tagline": "Hyper3D's fast tier: light meshes up to 20K faces for quick drafts.",
       "gameUses": [
         "Blockout meshes and shape checks before a final model.",
@@ -141,7 +134,6 @@
       ]
     },
     "3d/trellis-2": {
-      "slug": "trellis-2",
       "tagline": "Image to 3D mesh through the Summer MCP, from any engine.",
       "gameUses": [
         "Props and set dressing from concept art or a reference photo.",
@@ -150,7 +142,6 @@
       ]
     },
     "video/gemini-omni-flash": {
-      "slug": "gemini-omni-flash",
       "tagline": "Fast video with synchronized audio from text, a still image, references, or a motion clip.",
       "gameUses": [
         "Trailer and teaser shots while the game is still a prototype.",
@@ -160,7 +151,6 @@
       ]
     },
     "video/veo3.1-fast": {
-      "slug": "veo-3-1-fast",
       "tagline": "The faster, cheaper Veo tier for drafting shots with native audio.",
       "gameUses": [
         "Drafting cutscene ideas quickly before paying for a premium render.",
@@ -169,7 +159,6 @@
       ]
     },
     "video/seedance-2-fast": {
-      "slug": "seedance-2-0-fast",
       "tagline": "Fast multimodal video with audio and clips up to 15 seconds.",
       "gameUses": [
         "Longer single shots, up to 15 seconds, for trailers and teasers.",
@@ -178,7 +167,6 @@
       ]
     },
     "video/kling-3": {
-      "slug": "kling-3-0",
       "tagline": "Fluid motion, native audio, and motion transfer from a reference clip onto your character.",
       "gameUses": [
         "Turning a phone recording of a run, jump, or attack into the same move performed by your character.",
@@ -187,7 +175,6 @@
       ]
     },
     "video/veo3.1": {
-      "slug": "veo-3-1",
       "tagline": "Google's premium Veo tier for coherent shots with native audio.",
       "gameUses": [
         "Final trailer shots and store-page video where coherence matters most.",
@@ -196,7 +183,6 @@
       ]
     },
     "video/seedance-2": {
-      "slug": "seedance-2-0",
       "tagline": "The higher-quality Seedance tier for audio-backed clips up to 15 seconds.",
       "gameUses": [
         "Character-consistent cutscenes built from your concept art.",
@@ -205,7 +191,6 @@
       ]
     },
     "video/gemini-omni-flash-1.1": {
-      "slug": "gemini-omni-flash",
       "tagline": "Fast video with synchronized audio from text, a still image, references, or a motion clip.",
       "gameUses": [
         "Trailer and teaser shots while the game is still a prototype.",
@@ -215,7 +200,6 @@
       ]
     },
     "video/seedance-2.5": {
-      "slug": "seedance-2-5",
       "tagline": "Cinematic long takes with sound, from text, a still image or a set of references.",
       "gameUses": [
         "Hero shots for a trailer with sweeping camera moves.",
@@ -224,7 +208,6 @@
       ]
     },
     "video/kling-3-pro": {
-      "slug": "kling-3-0",
       "tagline": "Fluid motion, native audio, and motion transfer from a reference clip onto your character.",
       "gameUses": [
         "Turning a phone recording of a run, jump, or attack into the same move performed by your character.",
@@ -233,7 +216,6 @@
       ]
     },
     "video/minimax-h3-max": {
-      "slug": "minimax-h3-max",
       "tagline": "Ranked first for image to video, with sharp motion up to 15 seconds.",
       "gameUses": [
         "Trailer shots that follow a detailed camera and action brief.",
@@ -242,7 +224,6 @@
       ]
     },
     "video/wan-3": {
-      "slug": "wan-3-0",
       "tagline": "Alibaba's Wan 3.0, smooth motion and native audio from a prompt, a frame or references.",
       "gameUses": [
         "Cutscene shots with ambient sound in one pass.",
@@ -251,7 +232,6 @@
       ]
     },
     "video/happy-horse-1.1": {
-      "slug": "happy-horse-1-1",
       "tagline": "Native audio with multilingual lip sync, written straight into the prompt.",
       "gameUses": [
         "Talking NPC and narrator clips with lines written in the prompt.",
@@ -260,7 +240,6 @@
       ]
     },
     "video/veo3.1-lite": {
-      "slug": "veo-3-1-lite",
       "tagline": "The lowest-cost Veo tier, 720p clips with native audio.",
       "gameUses": [
         "Cheap drafts of cutscene and trailer ideas.",
@@ -269,7 +248,6 @@
       ]
     },
     "video/grok-video-1.5": {
-      "slug": "grok-imagine-video-1-5",
       "tagline": "xAI's video model with sound, from a prompt, a still or references.",
       "gameUses": [
         "Quick animated social clips for an update or a jam entry.",
@@ -278,7 +256,6 @@
       ]
     },
     "video/vidu-q3": {
-      "slug": "vidu-q3-pro",
       "tagline": "Vidu's Q3 Pro model, clips with audio up to 16 seconds.",
       "gameUses": [
         "Longer single shots for trailers and intros.",
@@ -287,7 +264,6 @@
       ]
     },
     "video/pixverse-v6": {
-      "slug": "pixverse-v6",
       "tagline": "Fast, low-cost clips with sound.",
       "gameUses": [
         "Many quick variations of a trailer beat to pick from.",
@@ -296,7 +272,6 @@
       ]
     },
     "video/ltx-2-5-pro": {
-      "slug": "ltx-2-5-pro",
       "tagline": "Lightricks' open-source audio and video model, sound and picture in one pass.",
       "gameUses": [
         "Cutscene beats with sound effects and ambience built in.",
@@ -305,7 +280,6 @@
       ]
     },
     "video/luma-ray-3.2": {
-      "slug": "luma-ray-3-2",
       "tagline": "Luma's cinematic video model, rich camera work and seamless loops.",
       "gameUses": [
         "Cinematic camera moves for trailers and store videos.",
@@ -313,17 +287,15 @@
         "Hero shots of an environment from concept art."
       ]
     },
-    "voice/eleven_v3": {
-      "slug": "eleven-v3",
-      "tagline": "ElevenLabs' most emotionally rich speech model, with multi-speaker dialogue.",
+    "voice/expressive-v3": {
+      "tagline": null,
       "gameUses": [
         "NPC dialogue with emotion, pauses, and delivery that fits the scene.",
         "Multi-character conversations generated in one pass.",
         "Placeholder voice-over for cutscenes before recording actors."
       ]
     },
-    "voice/eleven_multilingual_v2": {
-      "slug": "eleven-multilingual-v2",
+    "voice/multilingual-v2": {
       "tagline": "Stable, lifelike speech for longer narration in many languages.",
       "gameUses": [
         "Narration for intros, tutorials, and story recaps.",
@@ -331,8 +303,7 @@
         "Long in-world recordings such as audio logs and radio broadcasts."
       ]
     },
-    "voice/eleven_flash_v2_5": {
-      "slug": "eleven-flash-v2-5",
+    "voice/flash-v2.5": {
       "tagline": "Low-latency speech for fast iteration.",
       "gameUses": [
         "Iterating on dialogue lines and timing during writing.",
@@ -341,7 +312,6 @@
       ]
     },
     "voice/gemini-3.8-flash-tts": {
-      "slug": "gemini-3-8-flash-tts",
       "tagline": "Google's newest speech model, directed in plain words.",
       "gameUses": [
         "Character lines where the delivery matters as much as the words.",
@@ -350,7 +320,6 @@
       ]
     },
     "voice/gemini-3.8-flash-lite-tts": {
-      "slug": "gemini-3-8-flash-lite-tts",
       "tagline": "The lighter Gemini 3.8 speech model, for more lines for less.",
       "gameUses": [
         "Bulk barks and callouts for enemies and crowds.",
@@ -359,7 +328,6 @@
       ]
     },
     "voice/minimax-speech-2.8-hd": {
-      "slug": "minimax-speech-2-8-hd",
       "tagline": "Studio-grade speech with emotion, pitch and speed controls.",
       "gameUses": [
         "Emotional cutscene lines with laughs, gasps and pauses in the right places.",
@@ -368,7 +336,6 @@
       ]
     },
     "voice/xai-tts-v1": {
-      "slug": "xai-tts",
       "tagline": "Grok's expressive voices, with laugh, sigh and pause tags.",
       "gameUses": [
         "Lively companion and sidekick chatter.",
@@ -377,7 +344,6 @@
       ]
     },
     "voice/qwen-audio-3-tts": {
-      "slug": "qwen-audio-3-tts",
       "tagline": "Alibaba's speech model with 45 character voices.",
       "gameUses": [
         "Anime and cartoon style character voices.",
@@ -386,7 +352,6 @@
       ]
     },
     "voice/inworld-tts-1.5-max": {
-      "slug": "inworld-tts-1-5-max",
       "tagline": "Game-ready character voices from Inworld, at the lowest price here.",
       "gameUses": [
         "NPC voices for large casts, one voice per character.",
@@ -394,17 +359,15 @@
         "High volume dialogue where cost per line matters."
       ]
     },
-    "dialogue/eleven_v3": {
-      "slug": "eleven-v3",
-      "tagline": "ElevenLabs' most emotionally rich speech model, with multi-speaker dialogue.",
+    "dialogue/expressive-v3": {
+      "tagline": null,
       "gameUses": [
         "NPC dialogue with emotion, pauses, and delivery that fits the scene.",
         "Multi-character conversations generated in one pass.",
         "Placeholder voice-over for cutscenes before recording actors."
       ]
     },
-    "sound/eleven_text_to_sound_v2": {
-      "slug": "eleven-text-to-sound-v2",
+    "sound/sfx-v2": {
       "tagline": "Sound effects, loops, and ambience from a prompt.",
       "gameUses": [
         "Footsteps, impacts, pickups, and UI clicks.",
@@ -413,7 +376,6 @@
       ]
     },
     "sound/sonilo-sfx-1.1": {
-      "slug": "sonilo-sfx-1-1",
       "tagline": "Detailed sound effects and ambience from a prompt.",
       "gameUses": [
         "Impacts, creaks and mechanical sounds with real texture.",
@@ -422,7 +384,6 @@
       ]
     },
     "sound/stable-audio-3-sfx": {
-      "slug": "stable-audio-3-sfx",
       "tagline": "Fast sound effects, strong on quick movement.",
       "gameUses": [
         "Sword swings, whooshes and dashes.",
@@ -430,8 +391,7 @@
         "Short UI and pickup sounds."
       ]
     },
-    "music/music_v2": {
-      "slug": "eleven-music-v2",
+    "music/music-v2": {
       "tagline": "Music with stronger vocals, arrangement, and long-form structure.",
       "gameUses": [
         "Level and menu music in the style of your game.",
@@ -439,8 +399,7 @@
         "Title songs with lyrics for trailers."
       ]
     },
-    "music/music_v1": {
-      "slug": "eleven-music-v1",
+    "music/music-v1": {
       "tagline": "Studio-grade music from a prompt or a composition plan.",
       "gameUses": [
         "Background music for levels and menus.",

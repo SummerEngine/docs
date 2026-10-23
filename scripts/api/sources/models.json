@@ -6,10 +6,10 @@
     "image/default": "image/nano-banana-2",
     "3d/default": "3d/hunyuan-3d",
     "video/default": "video/kling-3",
-    "voice/default": "voice/eleven_v3",
-    "dialogue/default": "dialogue/eleven_v3",
-    "sound/default": "sound/eleven_text_to_sound_v2",
-    "music/default": "music/music_v2"
+    "voice/default": "voice/expressive-v3",
+    "dialogue/default": "dialogue/expressive-v3",
+    "sound/default": "sound/sfx-v2",
+    "music/default": "music/music-v2"
   },
   "models": [
     {
@@ -359,7 +359,7 @@
       "id": "image/nano-banana-lite",
       "datedId": "image/nano-banana-lite-20260924",
       "capability": "image",
-      "name": "Nano Banana Lite",
+      "name": "Nano Banana 1 Lite",
       "vendor": "Google",
       "tags": [
         "text-to-image",
@@ -3846,11 +3846,11 @@
       }
     },
     {
-      "id": "voice/eleven_v3",
-      "datedId": "voice/eleven_v3-20260924",
+      "id": "voice/expressive-v3",
+      "datedId": "voice/expressive-v3-20260924",
       "capability": "voice",
-      "name": "Eleven v3",
-      "vendor": "ElevenLabs",
+      "name": "Expressive v3",
+      "vendor": "Summer",
       "tags": [
         "text-to-speech"
       ],
@@ -3880,7 +3880,7 @@
         "type": "object",
         "properties": {
           "text": {
-            "description": "The words to speak, or the sound to make (at most 450 characters for a sound effect).",
+            "description": "The words to speak, at most 5000 characters.",
             "type": "string",
             "minLength": 1,
             "maxLength": 5000
@@ -3921,6 +3921,9 @@
             }
           }
         },
+        "required": [
+          "text"
+        ],
         "additionalProperties": false
       },
       "voices": [
@@ -4011,11 +4014,11 @@
       ]
     },
     {
-      "id": "voice/eleven_multilingual_v2",
-      "datedId": "voice/eleven_multilingual_v2-20260924",
+      "id": "voice/multilingual-v2",
+      "datedId": "voice/multilingual-v2-20260924",
       "capability": "voice",
-      "name": "Eleven Multilingual V2",
-      "vendor": "ElevenLabs",
+      "name": "Multilingual v2",
+      "vendor": "Summer",
       "tags": [
         "text-to-speech"
       ],
@@ -4043,7 +4046,7 @@
         "type": "object",
         "properties": {
           "text": {
-            "description": "The words to speak, or the sound to make (at most 450 characters for a sound effect).",
+            "description": "The words to speak, at most 5000 characters.",
             "type": "string",
             "minLength": 1,
             "maxLength": 5000
@@ -4084,6 +4087,9 @@
             }
           }
         },
+        "required": [
+          "text"
+        ],
         "additionalProperties": false
       },
       "voices": [
@@ -4174,11 +4180,11 @@
       ]
     },
     {
-      "id": "voice/eleven_flash_v2_5",
-      "datedId": "voice/eleven_flash_v2_5-20260924",
+      "id": "voice/flash-v2.5",
+      "datedId": "voice/flash-v2.5-20260924",
       "capability": "voice",
-      "name": "Eleven Flash v2.5",
-      "vendor": "ElevenLabs",
+      "name": "Flash v2.5",
+      "vendor": "Summer",
       "tags": [
         "text-to-speech"
       ],
@@ -4206,7 +4212,7 @@
         "type": "object",
         "properties": {
           "text": {
-            "description": "The words to speak, or the sound to make (at most 450 characters for a sound effect).",
+            "description": "The words to speak, at most 5000 characters.",
             "type": "string",
             "minLength": 1,
             "maxLength": 5000
@@ -4247,6 +4253,9 @@
             }
           }
         },
+        "required": [
+          "text"
+        ],
         "additionalProperties": false
       },
       "voices": [
@@ -4369,7 +4378,7 @@
         "type": "object",
         "properties": {
           "text": {
-            "description": "The words to speak, or the sound to make (at most 450 characters for a sound effect).",
+            "description": "The words to speak, at most 5000 characters.",
             "type": "string",
             "minLength": 1,
             "maxLength": 5000
@@ -4410,6 +4419,9 @@
             }
           }
         },
+        "required": [
+          "text"
+        ],
         "additionalProperties": false
       },
       "voices": [
@@ -4568,7 +4580,7 @@
         "type": "object",
         "properties": {
           "text": {
-            "description": "The words to speak, or the sound to make (at most 450 characters for a sound effect).",
+            "description": "The words to speak, at most 5000 characters.",
             "type": "string",
             "minLength": 1,
             "maxLength": 5000
@@ -4609,6 +4621,9 @@
             }
           }
         },
+        "required": [
+          "text"
+        ],
         "additionalProperties": false
       },
       "voices": [
@@ -4767,7 +4782,7 @@
         "type": "object",
         "properties": {
           "text": {
-            "description": "The words to speak, or the sound to make (at most 450 characters for a sound effect).",
+            "description": "The words to speak, at most 5000 characters.",
             "type": "string",
             "minLength": 1,
             "maxLength": 5000
@@ -4808,6 +4823,9 @@
             }
           }
         },
+        "required": [
+          "text"
+        ],
         "additionalProperties": false
       },
       "voices": [
@@ -4914,7 +4932,7 @@
         "type": "object",
         "properties": {
           "text": {
-            "description": "The words to speak, or the sound to make (at most 450 characters for a sound effect).",
+            "description": "The words to speak, at most 5000 characters.",
             "type": "string",
             "minLength": 1,
             "maxLength": 5000
@@ -4955,6 +4973,9 @@
             }
           }
         },
+        "required": [
+          "text"
+        ],
         "additionalProperties": false
       },
       "voices": [
@@ -5105,10 +5126,10 @@
         "type": "object",
         "properties": {
           "text": {
-            "description": "The words to speak, or the sound to make (at most 450 characters for a sound effect).",
+            "description": "The words to speak, at most 2000 characters.",
             "type": "string",
             "minLength": 1,
-            "maxLength": 5000
+            "maxLength": 2000
           },
           "voiceId": {
             "description": "Speech: a voice of the game cast.",
@@ -5146,6 +5167,9 @@
             }
           }
         },
+        "required": [
+          "text"
+        ],
         "additionalProperties": false
       },
       "voices": [
@@ -5364,10 +5388,10 @@
         "type": "object",
         "properties": {
           "text": {
-            "description": "The words to speak, or the sound to make (at most 450 characters for a sound effect).",
+            "description": "The words to speak, at most 2000 characters.",
             "type": "string",
             "minLength": 1,
-            "maxLength": 5000
+            "maxLength": 2000
           },
           "voiceId": {
             "description": "Speech: a voice of the game cast.",
@@ -5405,6 +5429,9 @@
             }
           }
         },
+        "required": [
+          "text"
+        ],
         "additionalProperties": false
       },
       "voices": [
@@ -5863,11 +5890,11 @@
       ]
     },
     {
-      "id": "dialogue/eleven_v3",
-      "datedId": "dialogue/eleven_v3-20260924",
+      "id": "dialogue/expressive-v3",
+      "datedId": "dialogue/expressive-v3-20260924",
       "capability": "dialogue",
-      "name": "Eleven v3",
-      "vendor": "ElevenLabs",
+      "name": "Expressive v3",
+      "vendor": "Summer",
       "tags": [
         "dialogue"
       ],
@@ -6041,11 +6068,11 @@
       ]
     },
     {
-      "id": "sound/eleven_text_to_sound_v2",
-      "datedId": "sound/eleven_text_to_sound_v2-20260924",
+      "id": "sound/sfx-v2",
+      "datedId": "sound/sfx-v2-20260924",
       "capability": "sound",
-      "name": "Text to Sound v2",
-      "vendor": "ElevenLabs",
+      "name": "Sound Effects v2",
+      "vendor": "Summer",
       "tags": [
         "sound-effects"
       ],
@@ -6074,22 +6101,25 @@
         "type": "object",
         "properties": {
           "text": {
-            "description": "The words to speak, or the sound to make (at most 450 characters for a sound effect).",
+            "description": "The sound to make, at most 450 characters, e.g. \"heavy sword swing whoosh\".",
             "type": "string",
             "minLength": 1,
-            "maxLength": 5000
+            "maxLength": 450
           },
           "durationSeconds": {
-            "description": "Sound effect 0.5-30 (default 5); music 3-600 (default 30).",
+            "description": "Seconds, 0.5 to 30 (default 5).",
             "type": "number",
             "minimum": 0.5,
-            "maximum": 600
+            "maximum": 30
           },
           "loop": {
             "description": "Sound effect: a seamless loop, where the model can.",
             "type": "boolean"
           }
         },
+        "required": [
+          "text"
+        ],
         "additionalProperties": false
       }
     },
@@ -6125,22 +6155,25 @@
         "type": "object",
         "properties": {
           "text": {
-            "description": "The words to speak, or the sound to make (at most 450 characters for a sound effect).",
+            "description": "The sound to make, at most 450 characters, e.g. \"heavy sword swing whoosh\".",
             "type": "string",
             "minLength": 1,
-            "maxLength": 5000
+            "maxLength": 450
           },
           "durationSeconds": {
-            "description": "Sound effect 0.5-30 (default 5); music 3-600 (default 30).",
+            "description": "Seconds, 0.5 to 30 (default 5).",
             "type": "number",
             "minimum": 0.5,
-            "maximum": 600
+            "maximum": 30
           },
           "loop": {
             "description": "Sound effect: a seamless loop, where the model can.",
             "type": "boolean"
           }
         },
+        "required": [
+          "text"
+        ],
         "additionalProperties": false
       }
     },
@@ -6175,31 +6208,34 @@
         "type": "object",
         "properties": {
           "text": {
-            "description": "The words to speak, or the sound to make (at most 450 characters for a sound effect).",
+            "description": "The sound to make, at most 450 characters, e.g. \"heavy sword swing whoosh\".",
             "type": "string",
             "minLength": 1,
-            "maxLength": 5000
+            "maxLength": 450
           },
           "durationSeconds": {
-            "description": "Sound effect 0.5-30 (default 5); music 3-600 (default 30).",
+            "description": "Seconds, 0.5 to 30 (default 5).",
             "type": "number",
             "minimum": 0.5,
-            "maximum": 600
+            "maximum": 30
           },
           "loop": {
             "description": "Sound effect: a seamless loop, where the model can.",
             "type": "boolean"
           }
         },
+        "required": [
+          "text"
+        ],
         "additionalProperties": false
       }
     },
     {
-      "id": "music/music_v2",
-      "datedId": "music/music_v2-20260924",
+      "id": "music/music-v2",
+      "datedId": "music/music-v2-20260924",
       "capability": "music",
-      "name": "Eleven Music v2",
-      "vendor": "ElevenLabs",
+      "name": "Music v2",
+      "vendor": "Summer",
       "tags": [
         "music"
       ],
@@ -6228,27 +6264,30 @@
         "type": "object",
         "properties": {
           "prompt": {
-            "description": "Music: what it should sound like.",
+            "description": "What the music should sound like, at most 2000 characters.",
             "type": "string",
             "minLength": 1,
             "maxLength": 2000
           },
           "durationSeconds": {
-            "description": "Sound effect 0.5-30 (default 5); music 3-600 (default 30).",
+            "description": "Seconds, 3 to 600 (default 30).",
             "type": "number",
-            "minimum": 0.5,
+            "minimum": 3,
             "maximum": 600
           }
         },
+        "required": [
+          "prompt"
+        ],
         "additionalProperties": false
       }
     },
     {
-      "id": "music/music_v1",
-      "datedId": "music/music_v1-20260924",
+      "id": "music/music-v1",
+      "datedId": "music/music-v1-20260924",
       "capability": "music",
-      "name": "Eleven Music v1",
-      "vendor": "ElevenLabs",
+      "name": "Music v1",
+      "vendor": "Summer",
       "tags": [
         "music"
       ],
@@ -6275,18 +6314,21 @@
         "type": "object",
         "properties": {
           "prompt": {
-            "description": "Music: what it should sound like.",
+            "description": "What the music should sound like, at most 2000 characters.",
             "type": "string",
             "minLength": 1,
             "maxLength": 2000
           },
           "durationSeconds": {
-            "description": "Sound effect 0.5-30 (default 5); music 3-600 (default 30).",
+            "description": "Seconds, 3 to 600 (default 30).",
             "type": "number",
-            "minimum": 0.5,
+            "minimum": 3,
             "maximum": 600
           }
         },
+        "required": [
+          "prompt"
+        ],
         "additionalProperties": false
       }
     }

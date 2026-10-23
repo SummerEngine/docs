@@ -99,8 +99,8 @@ Send these fields in `input`. The full JSON Schema is `inputSchema` in [`GET /v1
 
 | Field | Type | About |
 |---|---|---|
-| `text` | string | The words to speak, or the sound to make (at most 450 characters for a sound effect). up to 5000 characters |
-| `durationSeconds` | number | Sound effect 0.5-30 (default 5); music 3-600 (default 30). 0.5 to 600 |
+| `text` (required) | string | The sound to make, at most 450 characters, e.g. "heavy sword swing whoosh". up to 450 characters |
+| `durationSeconds` | number | Seconds, 0.5 to 30 (default 5). 0.5 to 30 |
 | `loop` | boolean | Sound effect: a seamless loop, where the model can. |
 
 ## For agents

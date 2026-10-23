@@ -265,14 +265,14 @@
                 "group": "Voice",
                 "icon": "mic",
                 "pages": [
-                  "api/models/voice/eleven-v3",
-                  "api/models/voice/eleven-multilingual-v2",
+                  "api/models/voice/expressive-v3",
+                  "api/models/voice/multilingual-v2",
                   "api/models/voice/inworld-tts-1-5-max",
                   "api/models/voice/xai-tts-v1",
                   "api/models/voice/gemini-3-8-flash-lite-tts",
                   "api/models/voice/gemini-3-8-flash-tts",
                   "api/models/voice/qwen-audio-3-tts",
-                  "api/models/voice/eleven-flash-v2-5",
+                  "api/models/voice/flash-v2-5",
                   "api/models/voice/minimax-speech-2-8-hd"
                 ]
               },
@@ -280,14 +280,14 @@
                 "group": "Dialogue",
                 "icon": "messages-square",
                 "pages": [
-                  "api/models/dialogue/eleven-v3"
+                  "api/models/dialogue/expressive-v3"
                 ]
               },
               {
                 "group": "Sound effects",
                 "icon": "audio-lines",
                 "pages": [
-                  "api/models/sound/eleven-text-to-sound-v2",
+                  "api/models/sound/sfx-v2",
                   "api/models/sound/sonilo-sfx-1-1",
                   "api/models/sound/stable-audio-3-sfx"
                 ]
@@ -321,7 +321,13 @@
               "api/reference/get-jobs-jobid-events",
               "api/reference/post-jobs-jobid-cancel",
               "api/reference/post-files",
-              "api/reference/post-files-complete"
+              "api/reference/post-files-complete",
+              "api/reference/get-voices",
+              "api/reference/get-voices-preview-token",
+              "api/reference/post-webhooks-secret",
+              "api/reference/get-webhooks-deliveries",
+              "api/reference/get-key",
+              "api/reference/get-balance"
             ]
           }
         ]

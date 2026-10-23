@@ -79,7 +79,7 @@
       "get": {
         "operationId": "models_list",
         "summary": "List Summer API models",
-        "description": "List the curated game-dev models of the Summer API: ids, capability, input schema, output formats, typical time and price. Public; no sign-in. Next: models.estimate for one request.",
+        "description": "List the curated models: id, capability, input schema, output formats, typical time and price. Public; no key needed.",
         "x-summer-op": "models.list",
         "security": [],
         "parameters": [
@@ -318,7 +318,7 @@
                             "additionalProperties": {}
                           },
                           "voices": {
-                            "description": "Voice and dialogue models: the voiceId values they speak with.",
+                            "description": "Voice and dialogue models: the curated voiceId values; voices.search finds the rest.",
                             "type": "array",
                             "items": {
                               "type": "object",
@@ -386,7 +386,7 @@
       "get": {
         "operationId": "models_get",
         "summary": "Read a Summer API model",
-        "description": "Read one Summer API model by id, dated id or alias: its input schema, output formats, typical time and price. Public; no sign-in. Next: models.estimate.",
+        "description": "Read one model by id, dated id or alias (such as 3d/default). Public; no key needed.",
         "x-summer-op": "models.get",
         "security": [],
         "parameters": [
@@ -603,7 +603,7 @@
                           "additionalProperties": {}
                         },
                         "voices": {
-                          "description": "Voice and dialogue models: the voiceId values they speak with.",
+                          "description": "Voice and dialogue models: the curated voiceId values; voices.search finds the rest.",
                           "type": "array",
                           "items": {
                             "type": "object",
@@ -667,7 +667,7 @@
       "post": {
         "operationId": "models_estimate",
         "summary": "Estimate a Summer API job",
-        "description": "Price one exact job before running it: the USD amount, what makes it up and a quote id that holds the price for 15 minutes. Charges nothing; no sign-in. Next: models.run with the quoteId.",
+        "description": "Price one exact job without running it: the USD amount, its breakdown and a quoteId that holds the price for 15 minutes. Public; no key needed.",
         "x-summer-op": "models.estimate",
         "security": [],
         "requestBody": {
@@ -794,7 +794,7 @@
       "post": {
         "operationId": "models_run",
         "summary": "Run a Summer API job",
-        "description": "Run one Summer API model on its input into the person's Summer assets. Short jobs come back done; long ones answer running with a job id for jobs.wait. Spends their credits; a quoteId caps the charge at its price.",
+        "description": "Run a model on its input. Short jobs answer 201 with the finished job; long ones answer 202 with a job id: follow it with GET /v1/jobs/{jobId}, its events, Prefer: wait=60 or a webhookUrl. The made files land in your Summer library.",
         "x-summer-op": "models.run",
         "parameters": [
           {
@@ -845,6 +845,11 @@
                     "type": "string",
                     "minLength": 1,
                     "maxLength": 600
+                  },
+                  "webhookUrl": {
+                    "description": "Summer POSTs here once, signed, when the job finishes. Needs a signing secret: webhooks.rotate_secret.",
+                    "type": "string",
+                    "maxLength": 2048
                   }
                 },
                 "required": [
@@ -866,7 +871,7 @@
                       "type": "object",
                       "properties": {
                         "id": {
-                          "description": "Follow it with jobs.get or jobs.wait.",
+                          "description": "The job id: read it again until it finishes.",
                           "type": "string"
                         },
                         "state": {
@@ -895,6 +900,10 @@
                           "description": "What the job charged, once known.",
                           "type": "string",
                           "pattern": "^\\d+(\\.\\d+)?$"
+                        },
+                        "webhookId": {
+                          "description": "The webhook delivery for webhookUrl (webhooks.list_deliveries).",
+                          "type": "string"
                         },
                         "result": {
                           "description": "The finished work: asset ids and Summer file URLs.",
@@ -930,7 +939,7 @@
                       "type": "object",
                       "properties": {
                         "id": {
-                          "description": "Follow it with jobs.get or jobs.wait.",
+                          "description": "The job id: read it again until it finishes.",
                           "type": "string"
                         },
                         "state": {
@@ -959,6 +968,10 @@
                           "description": "What the job charged, once known.",
                           "type": "string",
                           "pattern": "^\\d+(\\.\\d+)?$"
+                        },
+                        "webhookId": {
+                          "description": "The webhook delivery for webhookUrl (webhooks.list_deliveries).",
+                          "type": "string"
                         },
                         "result": {
                           "description": "The finished work: asset ids and Summer file URLs.",
@@ -1000,7 +1013,7 @@
       "get": {
         "operationId": "jobs_get",
         "summary": "Check a job",
-        "description": "Read one job once: its state (queued, running, awaiting_approval, done, failed...), progress and, when done, its result. Next: jobs.wait to wait for it.",
+        "description": "Read a job: its state (queued, running, done, failed, ...), progress and, when done, result.assets with Summer file URLs.",
         "x-summer-op": "jobs.get",
         "parameters": [
           {
@@ -1147,7 +1160,7 @@
       "post": {
         "operationId": "jobs_cancel",
         "summary": "Cancel a job",
-        "description": "Stop one of the person's jobs that has not finished: a plan agent request, a cloud build, or a publish request still waiting for the owner (its link stops working). Work already saved stays. Returns the job. Next: jobs.list.",
+        "description": "Stop a job that has not finished, where it can be stopped (generation jobs run to the end).",
         "x-summer-op": "jobs.cancel",
         "parameters": [
           {
@@ -1339,7 +1352,7 @@
       "post": {
         "operationId": "assets_upload_complete",
         "summary": "Finish an image upload",
-        "description": "Finish an upload from assets.upload_begin: checks it is the upload Summer signed for this person, reads the image and saves it as their private asset. Returns the asset id and size. Free. Next: assets.get.",
+        "description": "Finish an image upload: the image becomes a private file in your Summer library, with a URL to pass as imageUrl.",
         "x-summer-op": "assets.upload_complete",
         "parameters": [
           {
@@ -1447,6 +1460,741 @@
                 }
               }
             }
+          }
+        }
+      }
+    },
+    "/webhooks/secret": {
+      "post": {
+        "operationId": "webhooks_rotate_secret",
+        "summary": "Make a webhook signing secret",
+        "description": "Make a new webhook signing secret, shown once; the old one stops at once.",
+        "x-summer-op": "webhooks.rotate_secret",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "description": "A new key for each new request; the same key returns the first answer."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Done.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "secret": {
+                      "description": "Shown only now: keep it, as SUMMER_WEBHOOK_SECRET for example.",
+                      "type": "string"
+                    },
+                    "signature": {
+                      "description": "How each POST is signed.",
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "secret",
+                    "signature"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/webhooks/deliveries": {
+      "get": {
+        "operationId": "webhooks_list_deliveries",
+        "summary": "List webhook deliveries",
+        "description": "Your newest webhook deliveries, each with every attempt.",
+        "x-summer-op": "webhooks.list_deliveries",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "default": 20,
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Done.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "deliveries": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "jobId": {
+                            "type": "string"
+                          },
+                          "model": {
+                            "type": "string"
+                          },
+                          "url": {
+                            "type": "string"
+                          },
+                          "state": {
+                            "type": "string",
+                            "enum": [
+                              "watching",
+                              "pending",
+                              "delivered",
+                              "failed"
+                            ]
+                          },
+                          "status": {
+                            "description": "How the job finished, once it did.",
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "createdAt": {
+                            "type": "string"
+                          },
+                          "deliveredAt": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "attempts": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "at": {
+                                  "type": "string"
+                                },
+                                "status": {
+                                  "description": "The receiver's HTTP status; null when it did not answer.",
+                                  "anyOf": [
+                                    {
+                                      "type": "number"
+                                    },
+                                    {
+                                      "type": "null"
+                                    }
+                                  ]
+                                },
+                                "ms": {
+                                  "type": "number"
+                                },
+                                "error": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "at",
+                                "status",
+                                "ms"
+                              ],
+                              "additionalProperties": false
+                            }
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "jobId",
+                          "model",
+                          "url",
+                          "state",
+                          "status",
+                          "createdAt",
+                          "deliveredAt",
+                          "attempts"
+                        ],
+                        "additionalProperties": false
+                      }
+                    }
+                  },
+                  "required": [
+                    "deliveries"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/voices": {
+      "get": {
+        "operationId": "voices_search",
+        "summary": "Find a voice",
+        "description": "Find voices for a voice or dialogue model: the curated cast, then the public voice library by words, language, gender, age, accent or use case, each with a sample.",
+        "x-summer-op": "voices.search",
+        "parameters": [
+          {
+            "name": "model",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "description": "A voice/* or dialogue/* model id.",
+              "default": "voice/default",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 120
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "description": "Words in the name or description, e.g. \"gravelly old wizard\".",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            }
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "description": "ISO 639-1, e.g. en, de, ja.",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            }
+          },
+          {
+            "name": "gender",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "description": "male, female or neutral.",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            }
+          },
+          {
+            "name": "age",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "description": "young, middle_aged or old.",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            }
+          },
+          {
+            "name": "accent",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "description": "e.g. british, american, australian.",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            }
+          },
+          {
+            "name": "useCase",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "description": "e.g. characters_animation, narrative_story, conversational.",
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 100
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "default": 0,
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Done.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "defaults": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "voiceId": {
+                            "description": "Send it as voiceId (or a dialogue line's voiceId).",
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "source": {
+                            "description": "curated: Summer's cast; library: the public voice library; model: the model's own voices.",
+                            "type": "string",
+                            "enum": [
+                              "curated",
+                              "library",
+                              "model"
+                            ]
+                          },
+                          "gender": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "age": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "accent": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "language": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "useCase": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "description": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "previewUrl": {
+                            "description": "A short sample, served by Summer.",
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "voiceId",
+                          "name",
+                          "source",
+                          "gender",
+                          "age",
+                          "accent",
+                          "language",
+                          "useCase",
+                          "description",
+                          "previewUrl"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "voices": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "voiceId": {
+                            "description": "Send it as voiceId (or a dialogue line's voiceId).",
+                            "type": "string"
+                          },
+                          "name": {
+                            "type": "string"
+                          },
+                          "source": {
+                            "description": "curated: Summer's cast; library: the public voice library; model: the model's own voices.",
+                            "type": "string",
+                            "enum": [
+                              "curated",
+                              "library",
+                              "model"
+                            ]
+                          },
+                          "gender": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "age": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "accent": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "language": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "useCase": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "description": {
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          },
+                          "previewUrl": {
+                            "description": "A short sample, served by Summer.",
+                            "anyOf": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "null"
+                              }
+                            ]
+                          }
+                        },
+                        "required": [
+                          "voiceId",
+                          "name",
+                          "source",
+                          "gender",
+                          "age",
+                          "accent",
+                          "language",
+                          "useCase",
+                          "description",
+                          "previewUrl"
+                        ],
+                        "additionalProperties": false
+                      }
+                    },
+                    "hasMore": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "defaults",
+                    "voices",
+                    "hasMore"
+                  ],
+                  "additionalProperties": false
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/key": {
+      "get": {
+        "operationId": "read_this_key",
+        "summary": "Read this key",
+        "description": "The calling key: its name, scopes, spend limit, what it spent this period and when that resets. Never the key itself.",
+        "responses": {
+          "200": {
+            "description": "The answer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "kind": {
+                          "type": "string"
+                        },
+                        "scopes": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "limit_usd": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "limit_reset": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "spent_usd": {
+                          "type": "number"
+                        },
+                        "remaining_usd": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "resets_at": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "total_spent_usd": {
+                          "type": "number"
+                        },
+                        "expires_at": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "created_at": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/balance": {
+      "get": {
+        "operationId": "read_the_balance",
+        "summary": "Read the balance",
+        "description": "The credits this key spends (its owner's balance) and what the key may still spend now.",
+        "responses": {
+          "200": {
+            "description": "The answer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "balance_usd": {
+                          "type": "number"
+                        },
+                        "spendable_usd": {
+                          "type": "number"
+                        },
+                        "key_remaining_usd": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "key_resets_at": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "top_up_url": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/voices/preview/{token}": {
+      "get": {
+        "operationId": "voices_preview",
+        "summary": "Play a voice sample",
+        "description": "A voice sample from a previewUrl of GET /v1/voices. Public.",
+        "security": [],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "MP3 audio.",
+            "content": {
+              "audio/mpeg": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not a sample Summer serves."
           }
         }
       }

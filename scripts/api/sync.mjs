@@ -66,7 +66,16 @@ const NOTE_SLUGS = {
   "video/kling-3-pro": "kling-3-0",
   "video/gemini-omni-flash-1.1": "gemini-omni-flash",
   "sound/eleven_text_to_sound_v2": "eleven-text-to-sound-v2",
+  "voice/expressive-v3": "eleven-v3",
+  "dialogue/expressive-v3": "eleven-v3",
+  "voice/multilingual-v2": "eleven-multilingual-v2",
+  "voice/flash-v2.5": "eleven-flash-v2-5",
+  "sound/sfx-v2": "eleven-text-to-sound-v2",
+  "music/music-v2": "eleven-music-v2",
+  "music/music-v1": "eleven-music-v1",
 };
+// A model the API lists under Summer's own name keeps no line that names who makes it.
+const NAMES_A_MAKER = /\b(?:Eleven\w*|Google|OpenAI|Meta|xAI|ByteDance|Tencent|Alibaba)\b/;
 const norm = (s) => String(s).toLowerCase().replace(/[^a-z0-9]/g, "");
 
 function modelNotes(pse, models) {
@@ -83,7 +92,9 @@ function modelNotes(pse, models) {
       missing.push(m.id);
       continue;
     }
-    notes[m.id] = { slug: page.slug, tagline: page.tagline, gameUses: page.gameUses ?? [] };
+    const own = m.vendor === "Summer";
+    const keep = (line) => !own || !NAMES_A_MAKER.test(line);
+    notes[m.id] = { tagline: keep(page.tagline) ? page.tagline : null, gameUses: (page.gameUses ?? []).filter(keep) };
   }
   if (missing.length) console.warn(`api sync: no model page notes for ${missing.join(", ")}`);
   return { source: { repo: "SummerEngine/PublicSummerEngine", path: "config/models/model-pages.json", commit }, notes };
