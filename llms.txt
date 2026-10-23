@@ -6,11 +6,13 @@
 
 - Summer API base URL: https://www.summerengine.com/v1
 - Auth: `Authorization: Bearer $SUMMER_API_KEY`. Keys start with `sk-summer-v1-`.
-- Get a key without a browser session: `POST https://www.summerengine.com/api/api-keys/requests`, show the person `approve_url` and `user_code`, they choose Allow, then poll `poll_url` with `Authorization: Bearer <poll_token>` until the answer holds `key`. Steps: https://docs.summerengine.com/api/agents.md
+- Get a key with one click: `npx -y summer-engine@latest login --api-key`. Show the person the link it prints; they choose Allow, and the key is saved to `~/.summer/api-key`.
+- CLI: `npx -y summer-engine@latest api models|estimate|run|jobs`. `api run <model> --input '<json>' --download <dir>` runs a job, follows it and saves the files. JSON when piped.
+- Without the CLI: `POST https://www.summerengine.com/api/api-keys/requests`, show the person `approve_url` and `user_code`, then poll `poll_url` with `Authorization: Bearer <poll_token>` until the answer holds `key`. Steps: https://docs.summerengine.com/api/agents.md
 - Models and prices: `GET https://www.summerengine.com/v1/models` (public, no key). Read prices there, never from memory or training data. Defaults per job: `3d/default`, `image/default`, `video/default`, `voice/default`, `dialogue/default`, `sound/default`, `music/default`.
 - Exact price of one request: `POST https://www.summerengine.com/v1/estimate` with the same body as the job (free, no key).
 - Run: `POST https://www.summerengine.com/v1/jobs` with `{"model", "input"}`, a required `Idempotency-Key` header (new per job, the same on a retry) and `Prefer: wait=60`. A long job (3D, video) answers `running`: poll `GET https://www.summerengine.com/v1/jobs/{id}` every `pollAfterSeconds` (else 5 s) while `state` is `queued` or `running`. Stop on `done` (download the `fileUrl` of every entry in `result.assets`; `job.model` is the model that ran) or on `failed`, `cancelled`, `expired`, `stale` or `declined` (show `error.message`).
-- Free credits: a new account's welcome credits pay only for models with `tier: "free"`. Other models need bought credits; without them a job answers `402` `no_credits` with a `fix_url` to show the person.
+- Credits: welcome credits pay for models with `tier: "free"`, bought credits pay for every model, no plan needed. A job without enough credits answers `402` `no_credits` with a `fix_url` to show the person.
 - OpenAPI 3.1: https://www.summerengine.com/v1/openapi.json
 - MCP for chat apps and cloud work: `https://mcp.summerengine.com/mcp` (OAuth sign-in).
 - CLI and local MCP for engine work: `npx -y summer-engine@latest setup <agent> --yes`.
@@ -132,8 +134,8 @@
 ### Start here
 
 - [Summer API: game assets for any agent](https://docs.summerengine.com/api/overview.md): One API for game assets: 3D models, images, video, voice, sound effects and music from curated models tested for games. One key, game-ready files in your Summer library. No markup on assets. Every model at the provider's list price.
-- [Summer API quickstart: your first 3D model](https://docs.summerengine.com/api/quickstart.md): Get a Summer API key, check the price for free, then make a 3D treasure chest and save the GLB. Copy-paste code for curl, TypeScript and Python.
-- [Use the Summer API from Claude Code, Codex, Cursor, Hermes and ChatGPT](https://docs.summerengine.com/api/agents.md): One step per agent: paste one prompt into Claude Code, Codex, Cursor or Hermes, or add one connector URL in ChatGPT or Claude. The agent asks for a key and you approve it with one click.
+- [Summer API quickstart: your first 3D model](https://docs.summerengine.com/api/quickstart.md): Get a Summer API key with one click, check the price for free, then make a 3D treasure chest and save the GLB. One CLI command, or copy-paste code for curl, TypeScript and Python.
+- [Use the Summer API from Claude Code, Codex, Cursor, Hermes and ChatGPT](https://docs.summerengine.com/api/agents.md): One step per agent: paste one prompt into Claude Code, Codex, Cursor or Hermes, or add one connector URL in ChatGPT or Claude. You approve the key with one click.
 
 ### Models and pricing
 
@@ -152,36 +154,36 @@
 
 #### Images
 
-- [Nano Banana 2 Lite](https://docs.summerengine.com/api/models/image/nano-banana-2.md): Nano Banana 2 Lite on the Summer API: $0.0484 per image, not measured yet, PNG, JPG, WEBP saved to your Summer library. Model id image/nano-banana-2.
-- [Grok Imagine 2](https://docs.summerengine.com/api/models/image/grok-imagine-2.md): Grok Imagine 2 on the Summer API: $0.06 per image, not measured yet, PNG, JPG, WEBP saved to your Summer library. Model id image/grok-imagine-2.
-- [Muse Image](https://docs.summerengine.com/api/models/image/muse-image.md): Muse Image on the Summer API: $0.01 per image, not measured yet, PNG, JPG, WEBP saved to your Summer library. Model id image/muse-image.
-- [Grok Imagine](https://docs.summerengine.com/api/models/image/grok-imagine.md): Grok Imagine on the Summer API: $0.02 per image, not measured yet, PNG, JPG, WEBP saved to your Summer library. Model id image/grok-imagine.
-- [Gemini 2.5 Flash](https://docs.summerengine.com/api/models/image/gemini-flash.md): Gemini 2.5 Flash on the Summer API: $0.039 per image, not measured yet, PNG, JPG, WEBP saved to your Summer library. Model id image/gemini-flash.
-- [Nano Banana Lite](https://docs.summerengine.com/api/models/image/nano-banana-lite.md): Nano Banana Lite on the Summer API: $0.0484 per image, not measured yet, PNG, JPG, WEBP saved to your Summer library. Model id image/nano-banana-lite.
-- [GPT Image 2.5](https://docs.summerengine.com/api/models/image/gpt-image-2-5.md): GPT Image 2.5 on the Summer API: $0.053 per image, not measured yet, PNG, JPG, WEBP saved to your Summer library. Model id image/gpt-image-2.5.
-- [Seedream 5.0 Pro](https://docs.summerengine.com/api/models/image/seedream-5-pro.md): Seedream 5.0 Pro on the Summer API: $0.135 per image, not measured yet, PNG, JPG, WEBP saved to your Summer library. Model id image/seedream-5-pro.
-- [GPT Image 2](https://docs.summerengine.com/api/models/image/gpt-image-2.md): GPT Image 2 on the Summer API: $0.211 per image, not measured yet, PNG, JPG, WEBP saved to your Summer library. Model id image/gpt-image-2.
+- [Nano Banana 2 Lite](https://docs.summerengine.com/api/models/image/nano-banana-2.md): Nano Banana 2 Lite on the Summer API: $0.0484 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/nano-banana-2.
+- [Grok Imagine 2](https://docs.summerengine.com/api/models/image/grok-imagine-2.md): Grok Imagine 2 on the Summer API: $0.06 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/grok-imagine-2.
+- [Muse Image](https://docs.summerengine.com/api/models/image/muse-image.md): Muse Image on the Summer API: $0.01 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/muse-image.
+- [Grok Imagine](https://docs.summerengine.com/api/models/image/grok-imagine.md): Grok Imagine on the Summer API: $0.02 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/grok-imagine.
+- [Gemini 2.5 Flash](https://docs.summerengine.com/api/models/image/gemini-flash.md): Gemini 2.5 Flash on the Summer API: $0.039 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/gemini-flash.
+- [Nano Banana Lite](https://docs.summerengine.com/api/models/image/nano-banana-lite.md): Nano Banana Lite on the Summer API: $0.0484 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/nano-banana-lite.
+- [GPT Image 2.5](https://docs.summerengine.com/api/models/image/gpt-image-2-5.md): GPT Image 2.5 on the Summer API: $0.053 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/gpt-image-2.5.
+- [Seedream 5.0 Pro](https://docs.summerengine.com/api/models/image/seedream-5-pro.md): Seedream 5.0 Pro on the Summer API: $0.135 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/seedream-5-pro.
+- [GPT Image 2](https://docs.summerengine.com/api/models/image/gpt-image-2.md): GPT Image 2 on the Summer API: $0.211 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/gpt-image-2.
 
 #### Video
 
-- [Kling 3.0 Standard](https://docs.summerengine.com/api/models/video/kling-3.md): Kling 3.0 Standard on the Summer API: $0.14 per second, not measured yet, MP4 saved to your Summer library. Model id video/kling-3.
-- [Gemini Omni Flash](https://docs.summerengine.com/api/models/video/gemini-omni-flash.md): Gemini Omni Flash on the Summer API: $0.125 per second, not measured yet, MP4 saved to your Summer library. Model id video/gemini-omni-flash.
-- [Kling 3.0 Pro](https://docs.summerengine.com/api/models/video/kling-3-pro.md): Kling 3.0 Pro on the Summer API: $0.168 per second, not measured yet, MP4 saved to your Summer library. Model id video/kling-3-pro.
-- [Veo 3.1 Lite](https://docs.summerengine.com/api/models/video/veo3-1-lite.md): Veo 3.1 Lite on the Summer API: $0.05 per second, not measured yet, MP4 saved to your Summer library. Model id video/veo3.1-lite.
-- [PixVerse V6](https://docs.summerengine.com/api/models/video/pixverse-v6.md): PixVerse V6 on the Summer API: $0.06 per second, not measured yet, MP4 saved to your Summer library. Model id video/pixverse-v6.
-- [MiniMax H3 Max](https://docs.summerengine.com/api/models/video/minimax-h3-max.md): MiniMax H3 Max on the Summer API: $0.08 per second, not measured yet, MP4 saved to your Summer library. Model id video/minimax-h3-max.
-- [Gemini Omni Flash 1.1](https://docs.summerengine.com/api/models/video/gemini-omni-flash-1-1.md): Gemini Omni Flash 1.1 on the Summer API: $0.10 per second, not measured yet, MP4 saved to your Summer library. Model id video/gemini-omni-flash-1.1.
-- [Wan 3.0](https://docs.summerengine.com/api/models/video/wan-3.md): Wan 3.0 on the Summer API: $0.10 per second, not measured yet, MP4 saved to your Summer library. Model id video/wan-3.
-- [LTX-2.5 Pro](https://docs.summerengine.com/api/models/video/ltx-2-5-pro.md): LTX-2.5 Pro on the Summer API: $0.12 per second, not measured yet, MP4 saved to your Summer library. Model id video/ltx-2-5-pro.
-- [Grok Imagine Video 1.5](https://docs.summerengine.com/api/models/video/grok-video-1-5.md): Grok Imagine Video 1.5 on the Summer API: $0.14 per second, not measured yet, MP4 saved to your Summer library. Model id video/grok-video-1.5.
-- [HappyHorse 1.1](https://docs.summerengine.com/api/models/video/happy-horse-1-1.md): HappyHorse 1.1 on the Summer API: $0.14 per second, not measured yet, MP4 saved to your Summer library. Model id video/happy-horse-1.1.
-- [Veo 3.1 Fast](https://docs.summerengine.com/api/models/video/veo3-1-fast.md): Veo 3.1 Fast on the Summer API: $0.15 per second, not measured yet, MP4 saved to your Summer library. Model id video/veo3.1-fast.
-- [Vidu Q3 Pro](https://docs.summerengine.com/api/models/video/vidu-q3.md): Vidu Q3 Pro on the Summer API: $0.154 per second, not measured yet, MP4 saved to your Summer library. Model id video/vidu-q3.
-- [Luma Ray 3.2](https://docs.summerengine.com/api/models/video/luma-ray-3-2.md): Luma Ray 3.2 on the Summer API: $0.20 per second, not measured yet, MP4 saved to your Summer library. Model id video/luma-ray-3.2.
-- [Seedance 2.0 Fast](https://docs.summerengine.com/api/models/video/seedance-2-fast.md): Seedance 2.0 Fast on the Summer API: $0.242 per second, not measured yet, MP4 saved to your Summer library. Model id video/seedance-2-fast.
-- [Seedance 2.0](https://docs.summerengine.com/api/models/video/seedance-2.md): Seedance 2.0 on the Summer API: $0.302 per second, not measured yet, MP4 saved to your Summer library. Model id video/seedance-2.
-- [Veo 3.1](https://docs.summerengine.com/api/models/video/veo3-1.md): Veo 3.1 on the Summer API: $0.40 per second, not measured yet, MP4 saved to your Summer library. Model id video/veo3.1.
-- [Seedance 2.5](https://docs.summerengine.com/api/models/video/seedance-2-5.md): Seedance 2.5 on the Summer API: $0.462 per second, not measured yet, MP4 saved to your Summer library. Model id video/seedance-2.5.
+- [Kling 3.0 Standard](https://docs.summerengine.com/api/models/video/kling-3.md): Kling 3.0 Standard on the Summer API: $0.14 per second, MP4 saved to your Summer library. Model id video/kling-3.
+- [Gemini Omni Flash](https://docs.summerengine.com/api/models/video/gemini-omni-flash.md): Gemini Omni Flash on the Summer API: $0.125 per second, MP4 saved to your Summer library. Model id video/gemini-omni-flash.
+- [Kling 3.0 Pro](https://docs.summerengine.com/api/models/video/kling-3-pro.md): Kling 3.0 Pro on the Summer API: $0.168 per second, MP4 saved to your Summer library. Model id video/kling-3-pro.
+- [Veo 3.1 Lite](https://docs.summerengine.com/api/models/video/veo3-1-lite.md): Veo 3.1 Lite on the Summer API: $0.05 per second, MP4 saved to your Summer library. Model id video/veo3.1-lite.
+- [PixVerse V6](https://docs.summerengine.com/api/models/video/pixverse-v6.md): PixVerse V6 on the Summer API: $0.06 per second, MP4 saved to your Summer library. Model id video/pixverse-v6.
+- [MiniMax H3 Max](https://docs.summerengine.com/api/models/video/minimax-h3-max.md): MiniMax H3 Max on the Summer API: $0.08 per second, MP4 saved to your Summer library. Model id video/minimax-h3-max.
+- [Gemini Omni Flash 1.1](https://docs.summerengine.com/api/models/video/gemini-omni-flash-1-1.md): Gemini Omni Flash 1.1 on the Summer API: $0.10 per second, MP4 saved to your Summer library. Model id video/gemini-omni-flash-1.1.
+- [Wan 3.0](https://docs.summerengine.com/api/models/video/wan-3.md): Wan 3.0 on the Summer API: $0.10 per second, MP4 saved to your Summer library. Model id video/wan-3.
+- [LTX-2.5 Pro](https://docs.summerengine.com/api/models/video/ltx-2-5-pro.md): LTX-2.5 Pro on the Summer API: $0.12 per second, MP4 saved to your Summer library. Model id video/ltx-2-5-pro.
+- [Grok Imagine Video 1.5](https://docs.summerengine.com/api/models/video/grok-video-1-5.md): Grok Imagine Video 1.5 on the Summer API: $0.14 per second, MP4 saved to your Summer library. Model id video/grok-video-1.5.
+- [HappyHorse 1.1](https://docs.summerengine.com/api/models/video/happy-horse-1-1.md): HappyHorse 1.1 on the Summer API: $0.14 per second, MP4 saved to your Summer library. Model id video/happy-horse-1.1.
+- [Veo 3.1 Fast](https://docs.summerengine.com/api/models/video/veo3-1-fast.md): Veo 3.1 Fast on the Summer API: $0.15 per second, MP4 saved to your Summer library. Model id video/veo3.1-fast.
+- [Vidu Q3 Pro](https://docs.summerengine.com/api/models/video/vidu-q3.md): Vidu Q3 Pro on the Summer API: $0.154 per second, MP4 saved to your Summer library. Model id video/vidu-q3.
+- [Luma Ray 3.2](https://docs.summerengine.com/api/models/video/luma-ray-3-2.md): Luma Ray 3.2 on the Summer API: $0.20 per second, MP4 saved to your Summer library. Model id video/luma-ray-3.2.
+- [Seedance 2.0 Fast](https://docs.summerengine.com/api/models/video/seedance-2-fast.md): Seedance 2.0 Fast on the Summer API: $0.242 per second, MP4 saved to your Summer library. Model id video/seedance-2-fast.
+- [Seedance 2.0](https://docs.summerengine.com/api/models/video/seedance-2.md): Seedance 2.0 on the Summer API: $0.302 per second, MP4 saved to your Summer library. Model id video/seedance-2.
+- [Veo 3.1](https://docs.summerengine.com/api/models/video/veo3-1.md): Veo 3.1 on the Summer API: $0.40 per second, MP4 saved to your Summer library. Model id video/veo3.1.
+- [Seedance 2.5](https://docs.summerengine.com/api/models/video/seedance-2-5.md): Seedance 2.5 on the Summer API: $0.462 per second, MP4 saved to your Summer library. Model id video/seedance-2.5.
 
 #### Voice
 
@@ -218,15 +220,15 @@
 
 ### API reference
 
-- [List models](https://docs.summerengine.com/api/reference/get-models.md): List the curated game-dev models of the Summer API: ids, capability, input schema, output formats, typical time and price. Public; no sign-in.
-- [Get a model](https://docs.summerengine.com/api/reference/get-models-model.md): Read one Summer API model by id, dated id or alias: its input schema, output formats, typical time and price. Public; no sign-in.
-- [Estimate a job](https://docs.summerengine.com/api/reference/post-estimate.md): Price one exact job before running it: the USD amount, what makes it up and a quote id that holds the price for 15 minutes. Charges nothing; no sign-in.
-- [Run a job](https://docs.summerengine.com/api/reference/post-jobs.md): Run one Summer API model on its input into the person's Summer assets. Short jobs come back done; long ones answer running with a job id for jobs.wait. Spends their credits; a quoteId caps the charge at its price.
-- [Get a job](https://docs.summerengine.com/api/reference/get-jobs-jobid.md): Read one job once: its state (queued, running, awaiting_approval, done, failed...), progress and, when done, its result.
-- [Follow a job](https://docs.summerengine.com/api/reference/get-jobs-jobid-events.md): Follow a job as server-sent events: one `job` event per change, until it finishes.
-- [Cancel a job](https://docs.summerengine.com/api/reference/post-jobs-jobid-cancel.md): Stop one of the person's jobs that has not finished: a plan agent request, a cloud build, or a publish request still waiting for the owner (its link stops working). Work already saved stays. Returns the job.
-- [Start a file upload](https://docs.summerengine.com/api/reference/post-files.md): Start an image upload (PNG, JPEG or WebP): POST every field plus the file to uploadUrl, then POST /v1/files/complete with the upload's answer.
-- [Finish a file upload](https://docs.summerengine.com/api/reference/post-files-complete.md): Finish an upload from assets.upload_begin: checks it is the upload Summer signed for this person, reads the image and saves it as their private asset. Returns the asset id and size. Free.
+- [List models](https://docs.summerengine.com/api/reference/get-models.md): Every Summer API model with its id, input schema, output formats, typical time and price. Public, no key.
+- [Get a model](https://docs.summerengine.com/api/reference/get-models-model.md): One model by id, dated id or default alias, with its input schema and price. Public, no key.
+- [Estimate a job](https://docs.summerengine.com/api/reference/post-estimate.md): The price of one exact job before it runs, what makes it up, and a quote id that holds the price for 15 minutes. Free, no key.
+- [Run a job](https://docs.summerengine.com/api/reference/post-jobs.md): Run one model on its input. The files go to your Summer library. Short jobs come back done; long ones answer running with a job id to follow with GET /v1/jobs/{jobId}. A quoteId caps the charge.
+- [Get a job](https://docs.summerengine.com/api/reference/get-jobs-jobid.md): Read a job: its state, progress and, when done, result.assets with each file's Summer URL.
+- [Follow a job](https://docs.summerengine.com/api/reference/get-jobs-jobid-events.md): Follow a job as server-sent events: a job event on each change, then done.
+- [Cancel a job](https://docs.summerengine.com/api/reference/post-jobs-jobid-cancel.md): Stop a job that has not finished.
+- [Start a file upload](https://docs.summerengine.com/api/reference/post-files.md): Start a picture upload (PNG, JPEG or WebP): POST every field plus the file to uploadUrl, then call POST /v1/files/complete.
+- [Finish a file upload](https://docs.summerengine.com/api/reference/post-files-complete.md): Finish a picture upload. The picture becomes a private asset in your Summer library, with a fileUrl to send as imageUrl.
 
 ## Multiplayer games
 

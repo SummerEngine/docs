@@ -1,6 +1,6 @@
 ---
 title: "Seedance 2.5"
-description: "Seedance 2.5 on the Summer API: $0.462 per second, not measured yet, MP4 saved to your Summer library. Model id video/seedance-2.5."
+description: "Seedance 2.5 on the Summer API: $0.462 per second, MP4 saved to your Summer library. Model id video/seedance-2.5."
 generated: true
 generator: scripts/api
 ---
@@ -13,7 +13,6 @@ Seedance 2.5: a video model for your game.
 |---|---|
 | Model id | `video/seedance-2.5` |
 | Price | $0.462 per second |
-| Typical time | not measured yet |
 | Output | MP4 |
 | Made by | ByteDance |
 | Commercial use | Yes |
@@ -41,9 +40,15 @@ No markup: this is the provider's list price, checked 2026-09-26. A failed job c
 
 ## Example call
 
-Needs a key in `SUMMER_API_KEY`: see the [quickstart](/api/quickstart). This job takes minutes: the call answers `running` with a job id, so check `GET /v1/jobs/{id}` until `state` is `done` or another final state ([jobs](/api/jobs)). The [quickstart](/api/quickstart) has the full loop.
+Needs a Summer API key: see the [quickstart](/api/quickstart). This job takes minutes. The CLI follows it and saves the file. Over HTTP the call answers `running` with a job id: check `GET /v1/jobs/{id}` until `state` is `done` ([jobs](/api/jobs)); the [quickstart](/api/quickstart) has the full loop.
 
 <CodeGroup>
+
+```bash CLI
+npx -y summer-engine@latest api run video/seedance-2.5 \
+  --input '{"prompt":"a slow pan over a misty forest village at dawn","duration":5}' \
+  --download .
+```
 
 ```bash curl
 curl https://www.summerengine.com/v1/jobs \

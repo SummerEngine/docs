@@ -1,6 +1,6 @@
 ---
 title: "Nano Banana Lite"
-description: "Nano Banana Lite on the Summer API: $0.0484 per image, not measured yet, PNG, JPG, WEBP saved to your Summer library. Model id image/nano-banana-lite."
+description: "Nano Banana Lite on the Summer API: $0.0484 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/nano-banana-lite."
 generated: true
 generator: scripts/api
 ---
@@ -13,7 +13,6 @@ Fast 1K generation and reference editing for asset iteration.
 |---|---|
 | Model id | `image/nano-banana-lite` |
 | Price | $0.0484 per image |
-| Typical time | not measured yet |
 | Output | PNG, JPG, WEBP |
 | Made by | Google |
 | Commercial use | Yes |
@@ -37,9 +36,15 @@ No markup: this is the provider's list price, checked 2026-09-24. A failed job c
 
 ## Example call
 
-Needs a key in `SUMMER_API_KEY`: see the [quickstart](/api/quickstart). This job usually comes back done in the same call. If it answers `running`, check `GET /v1/jobs/{id}` until it finishes ([jobs](/api/jobs)).
+Needs a Summer API key: see the [quickstart](/api/quickstart). This job comes back done in the same call, with the file ready to download.
 
 <CodeGroup>
+
+```bash CLI
+npx -y summer-engine@latest api run image/nano-banana-lite \
+  --input '{"prompt":"a cozy pixel-art tavern at night, warm window light","aspectRatio":"16:9"}' \
+  --download .
+```
 
 ```bash curl
 curl https://www.summerengine.com/v1/jobs \

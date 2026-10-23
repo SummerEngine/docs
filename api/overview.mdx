@@ -22,10 +22,10 @@ Summer is the game engine built for AI. With the **Summer API**, your agent send
 
 ## Set up with your agent
 
-Paste this into Claude Code, Codex, Cursor, Hermes or any agent that can run commands. It asks you for one click to approve a key with a spend limit, then makes a test asset.
+Paste this into Claude Code, Codex, Cursor, Hermes or any agent that can run commands. You approve a key with one click and a spend limit, and the agent makes its first asset.
 
 ```text Prompt for your agent wrap
-Use the Summer API for game assets. Read https://docs.summerengine.com/llms.txt, get a Summer API key with the approval link it describes, save it as SUMMER_API_KEY in .env, then make "a stylized treasure chest, game prop" with 3d/default (on a new account with only welcome credits, use a 3D model with tier "free") and save the GLB in this project.
+Use the Summer API for game assets (docs: https://docs.summerengine.com/llms.txt). Run `npx -y summer-engine@latest login --api-key` and show me the link it prints. Then run `npx -y summer-engine@latest api run 3d/default --input '{"kind":"text-to-3d","prompt":"a stylized treasure chest, game prop"}' --download assets` and tell me where the GLB is.
 ```
 
 In ChatGPT or Claude, add `https://mcp.summerengine.com/mcp` as a connector instead. See [Agents](/api/agents).
@@ -64,7 +64,7 @@ curl https://www.summerengine.com/v1/jobs \
   -d '{"model": "image/default", "input": {"prompt": "a cozy pixel-art tavern at night"}}'
 ```
 
-Images, voice and sound usually come back in the same call. A 3D model takes a few minutes: the call answers with a job id, and your agent checks it until the file is ready. The [quickstart](/api/quickstart) makes a 3D model end to end.
+Images, voice and sound come back in the same call. A 3D model takes a few minutes: the call answers with a job id, and your agent follows it until the file is ready. With the CLI it is one command: `summer api run 3d/default --input '...' --download`. The [quickstart](/api/quickstart) makes a 3D model end to end.
 
 ## Why Summer
 
@@ -79,7 +79,8 @@ Images, voice and sound usually come back in the same call. A 3D model takes a f
 
 | How | For | Start |
 |---|---|---|
-| REST with a key | Any agent or program: Claude Code, Codex, Cursor, Hermes, your own scripts | [Quickstart](/api/quickstart) |
+| `summer` CLI | Coding agents in a terminal: Claude Code, Codex, Cursor, Hermes | [Agents](/api/agents#the-summer-cli) |
+| REST with a key | Any agent or program, your own scripts and servers | [Quickstart](/api/quickstart) |
 | MCP | ChatGPT, Claude and other chat apps | [Agents](/api/agents#chatgpt-and-claude) |
 | OpenAPI 3.1 | SDK generators and tools | [`/v1/openapi.json`](https://www.summerengine.com/v1/openapi.json) |
 

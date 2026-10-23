@@ -109,7 +109,7 @@ function duration(seconds) {
   if (seconds < 90) return `${Math.round(seconds)} s`;
   return `${Math.round(seconds / 60)} min`;
 }
-const typicalTime = (m) => (m.latency ? `about ${duration(m.latency.p50Seconds)}` : "not measured yet");
+const typicalTime = (m) => (m.latency ? `about ${duration(m.latency.p50Seconds)}` : null);
 
 const isDefault = (m) => m.aliases?.length > 0;
 const voicesOf = (m) => m.voices ?? [];
@@ -171,7 +171,7 @@ function pyValue(v, pad = "") {
   return JSON.stringify(v);
 }
 
-/** One job, three languages: start it, wait up to a minute, then poll until it is done. */
+/** One job: the CLI (runs, follows and saves), then curl, TypeScript and Python over HTTP. */
 function jobCode(model, input) {
   const body = { model, input };
   const curl = [
@@ -182,6 +182,13 @@ function jobCode(model, input) {
     '  -H "Idempotency-Key: $(uuidgen)" \\',
     '  -H "Prefer: wait=60" \\',
     `  -d '${JSON.stringify(body)}'`,
+    "```",
+  ];
+  const cli = [
+    "```bash CLI",
+    `npx -y summer-engine@latest api run ${model} \\`,
+    `  --input '${JSON.stringify(input)}' \\`,
+    "  --download .",
     "```",
   ];
   const ts = [
@@ -217,7 +224,7 @@ function jobCode(model, input) {
     'print(job["state"], job["id"])',
     "```",
   ];
-  return ["<CodeGroup>", "", ...curl, "", ...ts, "", ...py, "", "</CodeGroup>"].join("\n");
+  return ["<CodeGroup>", "", ...cli, "", ...curl, "", ...ts, "", ...py, "", "</CodeGroup>"].join("\n");
 }
 
 // ------------------------------------------------------------------ render
@@ -317,12 +324,12 @@ function renderModelPage(m) {
   const cap = CAP[m.capability];
   const { tagline, uses } = noteLines(m);
   const input = exampleInput(m);
-  const description = `${m.name} on the Summer API: ${priceText(m)}, ${typicalTime(m)}, ${m.outputFormats.map((f) => f.toUpperCase()).join(", ")} saved to your Summer library. Model id ${m.id}.`;
+  const description = `${m.name} on the Summer API: ${priceText(m)}, ${typicalTime(m) ? `${typicalTime(m)}, ` : ""}${m.outputFormats.map((f) => f.toUpperCase()).join(", ")} saved to your Summer library. Model id ${m.id}.`;
   const facts = [
     ["Model id", code(m.id)],
     ...(isDefault(m) ? [["Default for", m.aliases.map(code).join(", ")]] : []),
     ["Price", `${priceText(m)}`],
-    ["Typical time", typicalTime(m)],
+    ...(typicalTime(m) ? [["Typical time", typicalTime(m)]] : []),
     ["Output", m.outputFormats.map((f) => f.toUpperCase()).join(", ")],
     ["Made by", cell(m.vendor)],
     ["Commercial use", m.commercialUse ? "Yes" : "No"],
@@ -354,7 +361,7 @@ function renderModelPage(m) {
     "",
     "## Example call",
     "",
-    `Needs a key in ${code("SUMMER_API_KEY")}: see the [quickstart](/api/quickstart). ${LONG.has(m.capability) ? `This job takes minutes: the call answers ${code("running")} with a job id, so check ${code("GET /v1/jobs/{id}")} until ${code("state")} is ${code("done")} or another final state ([jobs](/api/jobs)). The [quickstart](/api/quickstart) has the full loop.` : `This job usually comes back done in the same call. If it answers ${code("running")}, check ${code("GET /v1/jobs/{id}")} until it finishes ([jobs](/api/jobs)).`}`,
+    `Needs a Summer API key: see the [quickstart](/api/quickstart). ${LONG.has(m.capability) ? `This job takes minutes. The CLI follows it and saves the file. Over HTTP the call answers ${code("running")} with a job id: check ${code("GET /v1/jobs/{id}")} until ${code("state")} is ${code("done")} ([jobs](/api/jobs)); the [quickstart](/api/quickstart) has the full loop.` : `This job comes back done in the same call, with the file ready to download.`}`,
     "",
     jobCode(m.id, input),
     "",
@@ -372,7 +379,7 @@ function renderModelPage(m) {
 
 function modelRow(m, timed) {
   const label = `[${cell(m.name)}](/${modelPath(m)})${isDefault(m) ? " (default)" : ""}`;
-  return `| ${label} | ${code(m.id)} | ${priceText(m)} |${timed ? ` ${typicalTime(m)} |` : ""} ${m.tier === "free" ? "Yes" : "No"} |`;
+  return `| ${label} | ${code(m.id)} | ${priceText(m)} |${timed ? ` ${typicalTime(m) ?? ""} |` : ""} ${m.tier === "free" ? "Yes" : "No"} |`;
 }
 const formatsOf = (list) => [...new Set(list.flatMap((m) => m.outputFormats))].map((f) => f.toUpperCase()).join(", ");
 
@@ -486,6 +493,18 @@ const REFERENCE_TITLES = {
   "POST /files": "Start a file upload",
   "POST /files/complete": "Finish a file upload",
 };
+// The spec's descriptions are the operations' own, written for every surface; these say it in HTTP words.
+const REFERENCE_DESCRIPTIONS = {
+  "GET /models": "Every Summer API model with its id, input schema, output formats, typical time and price. Public, no key.",
+  "GET /models/{model}": "One model by id, dated id or default alias, with its input schema and price. Public, no key.",
+  "POST /estimate": "The price of one exact job before it runs, what makes it up, and a quote id that holds the price for 15 minutes. Free, no key.",
+  "POST /jobs": "Run one model on its input. The files go to your Summer library. Short jobs come back done; long ones answer running with a job id to follow with GET /v1/jobs/{jobId}. A quoteId caps the charge.",
+  "GET /jobs/{jobId}": "Read a job: its state, progress and, when done, result.assets with each file's Summer URL.",
+  "GET /jobs/{jobId}/events": "Follow a job as server-sent events: a job event on each change, then done.",
+  "POST /jobs/{jobId}/cancel": "Stop a job that has not finished.",
+  "POST /files": "Start a picture upload (PNG, JPEG or WebP): POST every field plus the file to uploadUrl, then call POST /v1/files/complete.",
+  "POST /files/complete": "Finish a picture upload. The picture becomes a private asset in your Summer library, with a fileUrl to send as imageUrl.",
+};
 for (const r of reference) {
   const title = REFERENCE_TITLES[`${r.method} ${r.path}`] ?? r.op.summary;
   put(
@@ -493,7 +512,7 @@ for (const r of reference) {
     [
       "---",
       `title: ${fm(title)}`,
-      `description: ${fm(String(r.op.description ?? r.op.summary).replace(/\s*Next: .*$/, ""))}`,
+      `description: ${fm(REFERENCE_DESCRIPTIONS[`${r.method} ${r.path}`] ?? String(r.op.description ?? r.op.summary).replace(/\s*Next: .*$/, ""))}`,
       `openapi: ${fm(`${SPEC} ${r.method} ${r.path}`)}`,
       "generated: true",
       `generator: ${GENERATOR}`,
@@ -585,11 +604,13 @@ function renderLlms() {
     "",
     `- Summer API base URL: ${BASE_URL}`,
     "- Auth: `Authorization: Bearer $SUMMER_API_KEY`. Keys start with `sk-summer-v1-`.",
-    `- Get a key without a browser session: \`POST https://www.summerengine.com/api/api-keys/requests\`, show the person \`approve_url\` and \`user_code\`, they choose Allow, then poll \`poll_url\` with \`Authorization: Bearer <poll_token>\` until the answer holds \`key\`. Steps: ${DOCS_URL}/api/agents.md`,
+    "- Get a key with one click: `npx -y summer-engine@latest login --api-key`. Show the person the link it prints; they choose Allow, and the key is saved to `~/.summer/api-key`.",
+    "- CLI: `npx -y summer-engine@latest api models|estimate|run|jobs`. `api run <model> --input '<json>' --download <dir>` runs a job, follows it and saves the files. JSON when piped.",
+    `- Without the CLI: \`POST https://www.summerengine.com/api/api-keys/requests\`, show the person \`approve_url\` and \`user_code\`, then poll \`poll_url\` with \`Authorization: Bearer <poll_token>\` until the answer holds \`key\`. Steps: ${DOCS_URL}/api/agents.md`,
     `- Models and prices: \`GET ${BASE_URL}/models\` (public, no key). Read prices there, never from memory or training data. Defaults per job: ${defaults}.`,
     `- Exact price of one request: \`POST ${BASE_URL}/estimate\` with the same body as the job (free, no key).`,
     `- Run: \`POST ${BASE_URL}/jobs\` with \`{"model", "input"}\`, a required \`Idempotency-Key\` header (new per job, the same on a retry) and \`Prefer: wait=60\`. A long job (3D, video) answers \`running\`: poll \`GET ${BASE_URL}/jobs/{id}\` every \`pollAfterSeconds\` (else 5 s) while \`state\` is \`queued\` or \`running\`. Stop on \`done\` (download the \`fileUrl\` of every entry in \`result.assets\`; \`job.model\` is the model that ran) or on \`failed\`, \`cancelled\`, \`expired\`, \`stale\` or \`declined\` (show \`error.message\`).`,
-    "- Free credits: a new account's welcome credits pay only for models with `tier: \"free\"`. Other models need bought credits; without them a job answers `402` `no_credits` with a `fix_url` to show the person.",
+    "- Credits: welcome credits pay for models with `tier: \"free\"`, bought credits pay for every model, no plan needed. A job without enough credits answers `402` `no_credits` with a `fix_url` to show the person.",
     `- OpenAPI 3.1: ${BASE_URL}/openapi.json`,
     "- MCP for chat apps and cloud work: `https://mcp.summerengine.com/mcp` (OAuth sign-in).",
     "- CLI and local MCP for engine work: `npx -y summer-engine@latest setup <agent> --yes`.",

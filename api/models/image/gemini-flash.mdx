@@ -1,6 +1,6 @@
 ---
 title: "Gemini 2.5 Flash"
-description: "Gemini 2.5 Flash on the Summer API: $0.039 per image, not measured yet, PNG, JPG, WEBP saved to your Summer library. Model id image/gemini-flash."
+description: "Gemini 2.5 Flash on the Summer API: $0.039 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/gemini-flash."
 generated: true
 generator: scripts/api
 ---
@@ -13,7 +13,6 @@ Fast general-purpose image generation and editing from Google.
 |---|---|
 | Model id | `image/gemini-flash` |
 | Price | $0.039 per image |
-| Typical time | not measured yet |
 | Output | PNG, JPG, WEBP |
 | Made by | Google |
 | Commercial use | Yes |
@@ -37,9 +36,15 @@ No markup: this is the provider's list price, checked 2026-09-24. A failed job c
 
 ## Example call
 
-Needs a key in `SUMMER_API_KEY`: see the [quickstart](/api/quickstart). This job usually comes back done in the same call. If it answers `running`, check `GET /v1/jobs/{id}` until it finishes ([jobs](/api/jobs)).
+Needs a Summer API key: see the [quickstart](/api/quickstart). This job comes back done in the same call, with the file ready to download.
 
 <CodeGroup>
+
+```bash CLI
+npx -y summer-engine@latest api run image/gemini-flash \
+  --input '{"prompt":"a cozy pixel-art tavern at night, warm window light","aspectRatio":"16:9"}' \
+  --download .
+```
 
 ```bash curl
 curl https://www.summerengine.com/v1/jobs \

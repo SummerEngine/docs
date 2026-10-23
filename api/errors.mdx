@@ -28,7 +28,7 @@ Every error from `/v1` has the same shape:
 | `message` | What happened and what to do, in plain words. Show it to the person. |
 | `param` | The field to fix, such as `input.prompt` or `Idempotency-Key`, or `null` |
 | `request_id` | Also in the `X-Request-Id` header. Send it to Summer support. |
-| `fix_url` | Where the person fixes it, such as adding credits. Only when there is one. |
+| `fix_url` | Where the person fixes it, such as the page to add credits |
 | `doc_url` | This page, at the code's section |
 
 A call that answers an error charges nothing, with one exception: after `outcome_unknown` a job may have started. Send the same request again with the same `Idempotency-Key` to find out. The key request calls of [Agents](/api/agents#get-a-key-from-your-agent) answer with a `status` field instead.
@@ -95,7 +95,7 @@ A request with this `Idempotency-Key` is still running. Wait a moment and send t
 
 ### unsupported
 
-The job cannot do this, for example cancel an asset job that already started.
+This job does not support that action.
 
 ### rate_limited
 

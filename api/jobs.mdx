@@ -72,21 +72,13 @@ To get changes pushed instead, open the event stream. It sends a `job` event wit
 curl -N "https://www.summerengine.com/v1/jobs/$JOB_ID/events" -H "Authorization: Bearer $SUMMER_API_KEY"
 ```
 
-`POST /v1/jobs/{id}/cancel` asks to stop a job. Asset jobs cannot be stopped once they start: the call answers `409` with `unsupported`.
-
-{/* TODO(summer-api): webhooks (webhook_url on POST /v1/jobs, signed Summer-Signature deliveries) are not built. Document them here when they ship. */}
-
-Webhooks are not available yet. Use `Prefer: wait`, the event stream or `GET /v1/jobs/{id}`.
-
 ## The result
 
 A finished job's `result` holds Summer file URLs and the ids of the assets in your Summer library.
 
-Every job has the same `result`: `assets`, one entry per file, each with `assetId`, `fileUrl` and `thumbnailUrl`. An image job with `numImages` above 1 has one entry per image. A job reads `done` only once every file is in Summer storage. Until then a 3D job can read `running` with `progress` 99 and the message "Finished; saving the file to Summer storage."
+Every job has the same `result`: `assets`, one entry per file, each with `assetId`, `fileUrl` and `thumbnailUrl`. An image job with `numImages` above 1 has one entry per image. A job reads `done` once every file is in Summer storage, so every `fileUrl` is ready to download.
 
 Every URL is on Summer's own storage and downloads without a key. Download the file into your project, or keep the asset id: in Summer Engine your agent imports an asset by its id.
-
-{/* TODO(summer-api): before launch, decide and document asset visibility for API outputs (today a free account's generated assets are public; PLAN.md section 6). */}
 
 ## Send a picture
 

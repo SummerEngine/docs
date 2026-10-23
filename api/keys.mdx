@@ -57,8 +57,6 @@ Answers `data` with `balance_usd` (your credits), `spendable_usd` (what this key
 
 All amounts are US dollars. `null` means no limit.
 
-{/* TODO(summer-api): GET /v1/key and GET /v1/balance are not in /v1/openapi.json yet; add them to the API reference when they are. */}
-
 ## Rate limits
 
 Summer limits how fast jobs start for each kind of asset (images, audio, 3D and video). Over the limit, a call answers `429` with a `Retry-After` header in seconds. Wait that long, then send the same request with the same `Idempotency-Key`.

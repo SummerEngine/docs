@@ -40,9 +40,15 @@ No markup: this is the provider's list price, checked 2026-09-24. A failed job c
 
 ## Example call
 
-Needs a key in `SUMMER_API_KEY`: see the [quickstart](/api/quickstart). This job takes minutes: the call answers `running` with a job id, so check `GET /v1/jobs/{id}` until `state` is `done` or another final state ([jobs](/api/jobs)). The [quickstart](/api/quickstart) has the full loop.
+Needs a Summer API key: see the [quickstart](/api/quickstart). This job takes minutes. The CLI follows it and saves the file. Over HTTP the call answers `running` with a job id: check `GET /v1/jobs/{id}` until `state` is `done` ([jobs](/api/jobs)); the [quickstart](/api/quickstart) has the full loop.
 
 <CodeGroup>
+
+```bash CLI
+npx -y summer-engine@latest api run 3d/hunyuan-3d \
+  --input '{"kind":"text-to-3d","prompt":"a stylized treasure chest, game prop"}' \
+  --download .
+```
 
 ```bash curl
 curl https://www.summerengine.com/v1/jobs \

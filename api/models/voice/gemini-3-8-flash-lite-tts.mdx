@@ -35,9 +35,15 @@ No markup: this is the provider's list price, checked 2026-09-26. A failed job c
 
 ## Example call
 
-Needs a key in `SUMMER_API_KEY`: see the [quickstart](/api/quickstart). This job usually comes back done in the same call. If it answers `running`, check `GET /v1/jobs/{id}` until it finishes ([jobs](/api/jobs)).
+Needs a Summer API key: see the [quickstart](/api/quickstart). This job comes back done in the same call, with the file ready to download.
 
 <CodeGroup>
+
+```bash CLI
+npx -y summer-engine@latest api run voice/gemini-3.8-flash-lite-tts \
+  --input '{"text":"The gate is open. Go, before the guards come back."}' \
+  --download .
+```
 
 ```bash curl
 curl https://www.summerengine.com/v1/jobs \
