@@ -112,6 +112,7 @@ function duration(seconds) {
 const typicalTime = (m) => (m.latency ? `about ${duration(m.latency.p50Seconds)}` : "not measured yet");
 
 const isDefault = (m) => m.aliases?.length > 0;
+const voicesOf = (m) => m.voices ?? [];
 /** Capabilities whose jobs run for minutes and answer `running`. */
 const LONG = new Set(["3d", "video"]);
 const props = (m) => m.inputSchema?.properties ?? {};
@@ -142,8 +143,11 @@ const EXAMPLE_INPUT = {
   image: () => ({ prompt: "a cozy pixel-art tavern at night, warm window light", aspectRatio: "16:9" }),
   video: () => ({ prompt: "a slow pan over a misty forest village at dawn", duration: 5 }),
   voice: () => ({ text: "The gate is open. Go, before the guards come back." }),
-  // TODO(summer-api): a real cast voice id once the API lists voices.
-  dialogue: () => ({ inputs: [{ text: "Did you hear that?", voiceId: "<voice id>" }, { text: "Only the wind. Keep walking.", voiceId: "<voice id>" }] }),
+  dialogue: (m) => {
+    const [a, b] = voicesOf(m);
+    if (!a) throw new Error(`model ${m.id}: dialogue needs voices in GET /v1/models`);
+    return { inputs: [{ text: "Did you hear that?", voiceId: a.voiceId }, { text: "Only the wind. Keep walking.", voiceId: (b ?? a).voiceId }] };
+  },
   sound: () => ({ text: "a sword hits a wooden shield", durationSeconds: 2 }),
   music: () => ({ prompt: "a calm lo-fi loop for a cozy farming game menu", durationSeconds: 30 }),
 };
@@ -289,6 +293,26 @@ function inputSection(m) {
   ].join("\n");
 }
 
+function voicesSection(m) {
+  const voices = voicesOf(m);
+  if (!voices.length) return [];
+  const need = m.capability === "dialogue" ? `Each line in ${code("inputs")} needs a ${code("voiceId")} from this list.` : `${code("voiceId")} is optional: without it the model uses its default voice.`;
+  return [
+    "## Voices",
+    "",
+    `${need} A ${code("voiceId")} that is not here answers ${code("400")} with the allowed list. The live list is ${code("voices")} in ${code(`GET /v1/models/${m.id}`)}.`,
+    "",
+    `<Accordion title=${JSON.stringify(`All ${voices.length} voices`)}>`,
+    "",
+    "| Name | voiceId |",
+    "|---|---|",
+    ...voices.map((v) => `| ${cell(v.name)} | ${code(v.voiceId)} |`),
+    "",
+    "</Accordion>",
+    "",
+  ];
+}
+
 function renderModelPage(m) {
   const cap = CAP[m.capability];
   const { tagline, uses } = noteLines(m);
@@ -334,10 +358,11 @@ function renderModelPage(m) {
     "",
     jobCode(m.id, input),
     "",
-    "The finished job holds Summer file URLs and the asset ids in your Summer library. Download the file into your project, or import it in Summer Engine by its asset id.",
+    `The finished job has ${code("state")} ${code('"done"')} and ${code("result.assets")}: one entry per file, each with ${code("assetId")}, ${code("fileUrl")} (a Summer URL) and ${code("thumbnailUrl")}. Download the file into your project, or import it in Summer Engine by its asset id.`,
     "",
     inputSection(m),
     "",
+    ...voicesSection(m),
     "## For agents",
     "",
     `This page as Markdown: [${DOCS_URL}/${modelPath(m)}.md](${DOCS_URL}/${modelPath(m)}.md). The live record with the JSON Schema: ${code(`GET ${BASE_URL}/models/${m.id}`)}, public, no key.`,
@@ -563,7 +588,7 @@ function renderLlms() {
     `- Get a key without a browser session: \`POST https://www.summerengine.com/api/api-keys/requests\`, show the person \`approve_url\` and \`user_code\`, they choose Allow, then poll \`poll_url\` with \`Authorization: Bearer <poll_token>\` until the answer holds \`key\`. Steps: ${DOCS_URL}/api/agents.md`,
     `- Models and prices: \`GET ${BASE_URL}/models\` (public, no key). Read prices there, never from memory or training data. Defaults per job: ${defaults}.`,
     `- Exact price of one request: \`POST ${BASE_URL}/estimate\` with the same body as the job (free, no key).`,
-    `- Run: \`POST ${BASE_URL}/jobs\` with \`{"model", "input"}\`, a required \`Idempotency-Key\` header (new per job, the same on a retry) and \`Prefer: wait=60\`. A long job (3D, video) answers \`running\`: poll \`GET ${BASE_URL}/jobs/{id}\` every \`pollAfterSeconds\` (else 5 s) while \`state\` is \`queued\` or \`running\`. Stop on \`done\` (download the \`fileUrl\` of every entry in \`result.assets\`, else of \`result.asset\`, else of \`result\`; \`job.model\` is the model that ran) or on \`failed\`, \`cancelled\`, \`expired\`, \`stale\` or \`declined\` (show \`error.message\`).`,
+    `- Run: \`POST ${BASE_URL}/jobs\` with \`{"model", "input"}\`, a required \`Idempotency-Key\` header (new per job, the same on a retry) and \`Prefer: wait=60\`. A long job (3D, video) answers \`running\`: poll \`GET ${BASE_URL}/jobs/{id}\` every \`pollAfterSeconds\` (else 5 s) while \`state\` is \`queued\` or \`running\`. Stop on \`done\` (download the \`fileUrl\` of every entry in \`result.assets\`; \`job.model\` is the model that ran) or on \`failed\`, \`cancelled\`, \`expired\`, \`stale\` or \`declined\` (show \`error.message\`).`,
     "- Free credits: a new account's welcome credits pay only for models with `tier: \"free\"`. Other models need bought credits; without them a job answers `402` `no_credits` with a `fix_url` to show the person.",
     `- OpenAPI 3.1: ${BASE_URL}/openapi.json`,
     "- MCP for chat apps and cloud work: `https://mcp.summerengine.com/mcp` (OAuth sign-in).",

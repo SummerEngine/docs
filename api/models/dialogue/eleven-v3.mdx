@@ -47,7 +47,7 @@ curl https://www.summerengine.com/v1/jobs \
   -H "Content-Type: application/json" \
   -H "Idempotency-Key: $(uuidgen)" \
   -H "Prefer: wait=60" \
-  -d '{"model":"dialogue/eleven_v3","input":{"inputs":[{"text":"Did you hear that?","voiceId":"<voice id>"},{"text":"Only the wind. Keep walking.","voiceId":"<voice id>"}]}}'
+  -d '{"model":"dialogue/eleven_v3","input":{"inputs":[{"text":"Did you hear that?","voiceId":"JBFqnCBsd6RMkjVDRZzb"},{"text":"Only the wind. Keep walking.","voiceId":"IKne3meq5aSn9XLyUdCD"}]}}'
 ```
 
 ```ts TypeScript
@@ -65,11 +65,11 @@ const res = await fetch("https://www.summerengine.com/v1/jobs", {
       "inputs": [
         {
           "text": "Did you hear that?",
-          "voiceId": "<voice id>"
+          "voiceId": "JBFqnCBsd6RMkjVDRZzb"
         },
         {
           "text": "Only the wind. Keep walking.",
-          "voiceId": "<voice id>"
+          "voiceId": "IKne3meq5aSn9XLyUdCD"
         }
       ]
     }
@@ -89,7 +89,7 @@ res = requests.post(
         "Idempotency-Key": str(uuid.uuid4()),
         "Prefer": "wait=60",
     },
-    json={"model": "dialogue/eleven_v3", "input": {"inputs": [{"text": "Did you hear that?", "voiceId": "<voice id>"}, {"text": "Only the wind. Keep walking.", "voiceId": "<voice id>"}]}},
+    json={"model": "dialogue/eleven_v3", "input": {"inputs": [{"text": "Did you hear that?", "voiceId": "JBFqnCBsd6RMkjVDRZzb"}, {"text": "Only the wind. Keep walking.", "voiceId": "IKne3meq5aSn9XLyUdCD"}]}},
 )
 job = res.json()["job"]
 print(job["state"], job["id"])
@@ -97,7 +97,7 @@ print(job["state"], job["id"])
 
 </CodeGroup>
 
-The finished job holds Summer file URLs and the asset ids in your Summer library. Download the file into your project, or import it in Summer Engine by its asset id.
+The finished job has `state` `"done"` and `result.assets`: one entry per file, each with `assetId`, `fileUrl` (a Summer URL) and `thumbnailUrl`. Download the file into your project, or import it in Summer Engine by its asset id.
 
 ## Input
 
@@ -107,6 +107,38 @@ Send these fields in `input`. The full JSON Schema is `inputSchema` in [`GET /v1
 |---|---|---|
 | `inputs` | array of objects | Dialogue: one line per entry. 1 to 40 items |
 | `voiceSettings` | object | Speech: voice tuning. |
+
+## Voices
+
+Each line in `inputs` needs a `voiceId` from this list. A `voiceId` that is not here answers `400` with the allowed list. The live list is `voices` in `GET /v1/models/dialogue/eleven_v3`.
+
+<Accordion title="All 21 voices">
+
+| Name | voiceId |
+|---|---|
+| George | `JBFqnCBsd6RMkjVDRZzb` |
+| Charlie | `IKne3meq5aSn9XLyUdCD` |
+| Jessica | `cgSgspJ2msm6clMCkdW9` |
+| Harry | `SOYHLrjzK2X1ezoPC6cr` |
+| Callum | `N2lVS1w4EtoT3dr4eOWO` |
+| Brian | `nPczCjzI2devNBz1zQrb` |
+| Bill | `pqHfZKP75CvOlQylNhV4` |
+| Sarah | `EXAVITQu4vr4xnSDxMaL` |
+| Lily | `pFZP5JQG7iQjIQuC4Bku` |
+| Liam | `TX3LPaxmHKxFdv7VOQHJ` |
+| Matilda | `XrExE9yKIg1WjnnlVkGX` |
+| Daniel | `onwK4e9ZLuTAKqWW03F9` |
+| River | `SAz9YHcvj6GT2YYXdXww` |
+| Bella | `hpp4J3VqNfWAUOO0d1Us` |
+| Laura | `FGY2WhTYpPnrIDTdsKH5` |
+| Alice | `Xb7hH8MSUJpSbSDYk0k2` |
+| Adam | `pNInz6obpgDQGcFmaJgB` |
+| Eric | `cjVigY5qzO86Huf0OWal` |
+| Chris | `iP95p4xoKVk53GoZ742B` |
+| Roger | `CwhRBWXzGAHq8TQ4Fs17` |
+| Will | `bIHbv24MWmeRgasZH58o` |
+
+</Accordion>
 
 ## For agents
 

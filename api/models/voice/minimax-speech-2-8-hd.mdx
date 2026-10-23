@@ -86,7 +86,7 @@ print(job["state"], job["id"])
 
 </CodeGroup>
 
-The finished job holds Summer file URLs and the asset ids in your Summer library. Download the file into your project, or import it in Summer Engine by its asset id.
+The finished job has `state` `"done"` and `result.assets`: one entry per file, each with `assetId`, `fileUrl` (a Summer URL) and `thumbnailUrl`. Download the file into your project, or import it in Summer Engine by its asset id.
 
 ## Input
 
@@ -97,6 +97,34 @@ Send these fields in `input`. The full JSON Schema is `inputSchema` in [`GET /v1
 | `text` | string | The words to speak, or the sound to make (at most 450 characters for a sound effect). up to 5000 characters |
 | `voiceId` | string | Speech: a voice of the game cast. up to 100 characters |
 | `voiceSettings` | object | Speech: voice tuning. |
+
+## Voices
+
+`voiceId` is optional: without it the model uses its default voice. A `voiceId` that is not here answers `400` with the allowed list. The live list is `voices` in `GET /v1/models/voice/minimax-speech-2.8-hd`.
+
+<Accordion title="All 17 voices">
+
+| Name | voiceId |
+|---|---|
+| Wise woman | `Wise_Woman` |
+| Calm woman | `Calm_Woman` |
+| Lively girl | `Lively_Girl` |
+| Lovely girl | `Lovely_Girl` |
+| Sweet girl 2 | `Sweet_Girl_2` |
+| Exuberant girl | `Exuberant_Girl` |
+| Inspirational girl | `Inspirational_girl` |
+| Abbess | `Abbess` |
+| Friendly person | `Friendly_Person` |
+| Young knight | `Young_Knight` |
+| Imposing manner | `Imposing_Manner` |
+| Elegant man | `Elegant_Man` |
+| Deep voice man | `Deep_Voice_Man` |
+| Casual guy | `Casual_Guy` |
+| Patient man | `Patient_Man` |
+| Determined man | `Determined_Man` |
+| Decent boy | `Decent_Boy` |
+
+</Accordion>
 
 ## For agents
 

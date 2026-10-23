@@ -62,7 +62,7 @@ Using a coding agent? Paste this and it does all three steps for you: `Use the S
     done
     [ "$STATE" = done ] || { echo "$JOB"; exit 1; }
 
-    URL=$(echo "$JOB" | jq -r '(.job.result.assets[0] // .job.result.asset // .job.result).fileUrl')
+    URL=$(echo "$JOB" | jq -r '.job.result.assets[0].fileUrl')
     curl -fsL "$URL" -o chest.glb && echo "Saved chest.glb"
     ```
 
@@ -92,7 +92,7 @@ Using a coding agent? Paste this and it does all three steps for you: `Use the S
     }
     if (job.state !== "done") throw new Error(`The job ended ${job.state}: ${job.error?.message ?? ""}`);
 
-    const asset = job.result.assets?.[0] ?? job.result.asset ?? job.result;
+    const asset = job.result.assets[0];
     const file = await fetch(asset.fileUrl);
     if (!file.ok) throw new Error(`Download failed: ${file.status}`);
     await writeFile("chest.glb", Buffer.from(await file.arrayBuffer()));
@@ -125,8 +125,7 @@ Using a coding agent? Paste this and it does all three steps for you: `Use the S
     if job["state"] != "done":
         raise SystemExit(f"The job ended {job['state']}: {job.get('error')}")
 
-    result = job["result"]
-    asset = (result.get("assets") or [result.get("asset") or result])[0]
+    asset = job["result"]["assets"][0]
     file = requests.get(asset["fileUrl"])
     file.raise_for_status()
     with open("chest.glb", "wb") as f:

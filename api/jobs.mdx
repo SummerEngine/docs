@@ -80,15 +80,9 @@ Webhooks are not available yet. Use `Prefer: wait`, the event stream or `GET /v1
 
 ## The result
 
-A finished job's `result` holds Summer file URLs and the ids of the assets in your Summer library:
+A finished job's `result` holds Summer file URLs and the ids of the assets in your Summer library.
 
-| Job | `result` |
-|---|---|
-| Image | `assets`: one entry per image, each with `assetId`, `fileUrl` and `thumbnailUrl` |
-| Voice, dialogue, sound, music | `asset`: `assetId`, `fileUrl`, `thumbnailUrl` and `durationSeconds` |
-| 3D model, video | `assetId`, `fileUrl` and `thumbnailUrl` of the asset it made |
-
-To read any of them: take every entry of `result.assets`; if there is none, take `result.asset`; if there is none, take `result` itself.
+Every job has the same `result`: `assets`, one entry per file, each with `assetId`, `fileUrl` and `thumbnailUrl`. An image job with `numImages` above 1 has one entry per image. A job reads `done` only once every file is in Summer storage. Until then a 3D job can read `running` with `progress` 99 and the message "Finished; saving the file to Summer storage."
 
 Every URL is on Summer's own storage and downloads without a key. Download the file into your project, or keep the asset id: in Summer Engine your agent imports an asset by its id.
 
