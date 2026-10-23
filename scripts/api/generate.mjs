@@ -456,7 +456,7 @@ function renderModelsPage() {
     "",
     "## The JSON",
     "",
-    `${code("GET /v1/models")} answers one object. Each model carries its price in the same scheme: ${code("unit")} (${[...new Set(models.map((m) => m.price.unit))].map(code).join(", ")}), ${code("price")} for one unit as a decimal string in US dollars, ${code("quantityField")} (the input field that counts the units), and ${code("modifiers")} (input values that replace the price or add to it). ${code("tier")} ${code('"free"')} means welcome credits can pay for it. Here is the default 3D model as it is listed, with its ${code("inputSchema")} cut to two fields:`,
+    `${code("GET /v1/models")} answers one object. Each model carries its price in the same scheme: ${code("unit")} (${[...new Set(models.map((m) => m.price.unit))].map(code).join(", ")}), ${code("price")} for one unit as a decimal string in US dollars, ${code("quantityField")} (the input field that counts the units), and ${code("modifiers")} (input values that replace the price or add to it). ${code("tier")} ${code('"free"')} means welcome credits can pay for it. ${code("datedId")} records which price check a model follows; a job may send it, and it runs the current model. Here is the default 3D model as it is listed, with its ${code("inputSchema")} cut to two fields:`,
     "",
     "```json GET /v1/models",
     json(sampleListing(), 2),

@@ -56,6 +56,7 @@ Using a coding agent? Paste this and it does all three steps for you: `Use the S
 
     while true; do
       JOB=$(curl -s "$API/jobs/$ID" -H "$AUTH")
+      echo "$JOB" | jq -e .job > /dev/null || { echo "$JOB"; exit 1; }
       STATE=$(echo "$JOB" | jq -r .job.state)
       [ "$STATE" = queued ] || [ "$STATE" = running ] || break
       sleep "$(echo "$JOB" | jq -r '.job.pollAfterSeconds // 5')"
@@ -88,7 +89,9 @@ Using a coding agent? Paste this and it does all three steps for you: `Use the S
 
     while (job.state === "queued" || job.state === "running") {
       await new Promise((done) => setTimeout(done, (job.pollAfterSeconds ?? 5) * 1000));
-      job = (await (await fetch(`${API}/jobs/${job.id}`, { headers: auth })).json()).job;
+      const read = await (await fetch(`${API}/jobs/${job.id}`, { headers: auth })).json();
+      if (read.error) throw new Error(`${read.error.code}: ${read.error.message}`);
+      job = read.job;
     }
     if (job.state !== "done") throw new Error(`The job ended ${job.state}: ${job.error?.message ?? ""}`);
 
@@ -121,7 +124,10 @@ Using a coding agent? Paste this and it does all three steps for you: `Use the S
 
     while job["state"] in ("queued", "running"):
         time.sleep(job.get("pollAfterSeconds", 5))
-        job = requests.get(f"{API}/jobs/{job['id']}", headers=auth).json()["job"]
+        read = requests.get(f"{API}/jobs/{job['id']}", headers=auth).json()
+        if "error" in read:
+            raise SystemExit(f"{read['error']['code']}: {read['error']['message']}")
+        job = read["job"]
     if job["state"] != "done":
         raise SystemExit(f"The job ended {job['state']}: {job.get('error')}")
 

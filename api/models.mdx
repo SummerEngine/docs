@@ -152,7 +152,7 @@ Level, menu and combat music from a description. Output: MP3.
 
 ## The JSON
 
-`GET /v1/models` answers one object. Each model carries its price in the same scheme: `unit` (`call`, `output_second`, `1k_characters`), `price` for one unit as a decimal string in US dollars, `quantityField` (the input field that counts the units), and `modifiers` (input values that replace the price or add to it). `tier` `"free"` means welcome credits can pay for it. Here is the default 3D model as it is listed, with its `inputSchema` cut to two fields:
+`GET /v1/models` answers one object. Each model carries its price in the same scheme: `unit` (`call`, `output_second`, `1k_characters`), `price` for one unit as a decimal string in US dollars, `quantityField` (the input field that counts the units), and `modifiers` (input values that replace the price or add to it). `tier` `"free"` means welcome credits can pay for it. `datedId` records which price check a model follows; a job may send it, and it runs the current model. Here is the default 3D model as it is listed, with its `inputSchema` cut to two fields:
 
 ```json GET /v1/models
 {
