@@ -1,0 +1,102 @@
+name: api-price-sync
+
+# The Summer API pages (api/models, api/reference) render the pinned inputs in
+# scripts/api/sources. Prices are never typed by hand: this job reads them from
+# production GET /v1/models (and the spec from /v1/openapi.json) with
+# scripts/api/sync.mjs. When the pages change it pushes bot/api-price-sync and
+# alerts the team in Slack and Sentry (the same alert PSE's model-prices cron
+# sends) with the price changes and a one-click link to open the PR. The
+# enterprise policy does not let Actions open PRs, so a person or agent does.
+#
+# Before launch /v1/models answers 404: the job ends green with a notice. Any
+# other failure (5xx, bad JSON, a marked-up price list, a failed docs check)
+# fails the job, so GitHub emails the team. A change with no way to alert
+# (no SLACK_WEBHOOK_URL or SENTRY_DSN secret) fails too: never silent.
+
+on:
+  schedule:
+    - cron: "23 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: api-price-sync
+  cancel-in-progress: false
+
+env:
+  BRANCH: bot/api-price-sync
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22.23.4"
+
+      - name: Pull models and prices from GET /v1/models
+        id: sync
+        run: |
+          set +e
+          node scripts/api/sync.mjs
+          code=$?
+          set -e
+          if [ "$code" = 3 ]; then
+            echo "::notice::GET /v1/models answers 404: the Summer API is not launched yet. Nothing to sync."
+            echo "live=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          exit "$code"
+
+      - name: Push the bot branch and alert the team
+        if: steps.sync.outputs.live != 'false'
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        run: |
+          if [ -z "$(git status --porcelain)" ]; then
+            echo "The Summer API pages already match GET /v1/models."
+            exit 0
+          fi
+          changes="$(node scripts/api/price-diff.mjs)"
+          git status --short | head -50
+          npm run check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -q -B "$BRANCH"
+          git add -A
+          git commit -q -m "Docs: sync Summer API models and prices from /v1/models"
+          git push -f origin "$BRANCH"
+
+          open_pr="https://github.com/${GITHUB_REPOSITORY}/compare/main...${BRANCH}?expand=1"
+          text="$(printf '%s\n%s\n%s\n%s' \
+            ":warning: *Docs prices are behind /v1/models* (SummerEngine/docs)" \
+            "$changes" \
+            "Fix: open the PR in one click: ${open_pr} (branch ${BRANCH} has the synced pages). To redo it locally: node scripts/api/sync.mjs && npm run check, then open a PR." \
+            "Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}")"
+          { echo "## Docs prices are behind /v1/models"; echo; echo '```'; echo "$changes"; echo '```'; echo; echo "[Open the PR]($open_pr)"; } >> "$GITHUB_STEP_SUMMARY"
+
+          alerted=0
+          if [ -n "$SLACK_WEBHOOK_URL" ]; then
+            jq -n --arg text "$text" '{text: $text}' | curl -fsS -X POST -H 'Content-Type: application/json' --data @- "$SLACK_WEBHOOK_URL" >/dev/null && alerted=1
+          fi
+          if [ -n "$SENTRY_DSN" ]; then
+            # DSN: https://<key>@<host>/<project>
+            key="${SENTRY_DSN#*://}"; key="${key%%@*}"
+            host="${SENTRY_DSN#*@}"; host="${host%%/*}"
+            project="${SENTRY_DSN##*/}"
+            id="$(cat /proc/sys/kernel/random/uuid | tr -d -)"
+            { echo "{\"event_id\":\"$id\"}"; echo '{"type":"event"}'; jq -cn --arg id "$id" --arg text "$text" '{event_id: $id, level: "warning", logger: "api-price-sync", message: {formatted: "Docs prices are behind /v1/models"}, extra: {text: $text}}'; } \
+              | curl -fsS -X POST -H "X-Sentry-Auth: Sentry sentry_version=7, sentry_key=$key" --data-binary @- "https://$host/api/$project/envelope/" >/dev/null && alerted=1
+          fi
+          if [ "$alerted" != 1 ]; then
+            echo "::error::Docs prices changed but no alert went out (set SLACK_WEBHOOK_URL or SENTRY_DSN). Open the PR: $open_pr"
+            exit 1
+          fi
+          echo "::warning::Docs prices changed. Open the PR: $open_pr"
