@@ -327,7 +327,11 @@
               "api/reference/post-webhooks-secret",
               "api/reference/get-webhooks-deliveries",
               "api/reference/get-key",
-              "api/reference/get-balance"
+              "api/reference/get-balance",
+              "api/reference/delete-key",
+              "api/reference/get-batches-batchid",
+              "api/reference/patch-key",
+              "api/reference/post-batches"
             ]
           }
         ]

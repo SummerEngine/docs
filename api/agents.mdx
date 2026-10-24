@@ -38,12 +38,13 @@ One browser sign-in. It renews itself, so the agent never asks again on this com
 | `summer api models [id] [--capability 3d]` | Lists models with their input and price |
 | `summer api estimate <model> --input '<json>'` | The price of one job and a quote that holds it for 15 minutes. Free. |
 | `summer api run <model> --input '<json>' --download [dir]` | Runs the job, follows it and saves each file as `<assetId>.<ext>`. Add `--quote <quoteId>` to cap the charge. |
-| `summer api jobs <id> [--wait] [--download [dir]]` | Reads a job, follows it, or saves its files |
+| `summer api run --batch jobs.jsonl --download [dir]` | Runs up to 500 jobs from a file with one `{"model", "input"}` per line, all or none, and saves every file |
+| `summer api jobs <id> [--wait] [--download [dir]] [--cancel]` | Reads a job, follows it, saves its files, or cancels it |
 | `summer token` | Prints a one-hour token for `curl`: `Authorization: Bearer $(summer token)` |
 
 Run them as `npx -y summer-engine@latest api ...`, or as `summer api ...` once the CLI is installed. The output is JSON when piped or with `--json`, and a short summary in a terminal.
 
-The CLI's MCP server has the same calls as tools: `summer_api_models`, `summer_api_estimate`, `summer_api_run` and `summer_api_job`.
+The CLI's MCP server has the same calls as tools: `summer_api_models`, `summer_api_estimate`, `summer_api_run`, `summer_api_batch` and `summer_api_job`. `npx -y summer-engine@latest setup <agent> --yes` also installs the `summer-api` skill, which teaches the agent this whole flow, and the `summer-router` skill for AI characters in games.
 
 ## ChatGPT and Claude
 
@@ -62,8 +63,9 @@ Every app you connect shows in [Settings > Connected agents & apps](https://summ
 ## What agents should always do
 
 - Read models and prices from `summer api models` or `GET /v1/models`, never from memory.
-- Price a big batch first with `summer api estimate` or `POST /v1/estimate`, and tell the person the total.
+- Price a big batch first with `summer api estimate` or `POST /v1/estimate`, and tell the person the total. Then send it as one batch (`summer api run --batch`, `POST /v1/batches`), not job by job.
+- Treat `queued` as accepted: the job starts in order and its price is held. Never send it again.
 - Send a new `Idempotency-Key` for each new job and the same one when retrying it. The CLI does this for you.
 - Save finished files in the project, and keep the asset id to import the asset again.
 - Keep tokens out of game code, builds and commits.
-- On `402`, show the person the error message: it links where to top up or raise the app's limit.
+- On `402`, show the person the error message and stop. `no_credits` links where to add credits; `over_limit` links where to raise this app's limit.

@@ -1,7 +1,7 @@
 ---
-title: "Summer API jobs: estimate, run, follow, webhooks and download"
-sidebarTitle: "Jobs and webhooks"
-description: "How a Summer API job works: price it with POST /v1/estimate, start it with POST /v1/jobs, wait with Prefer: wait, follow it with GET /v1/jobs/{id}, server-sent events or a signed webhook, then download the result. Upload input pictures with POST /v1/files."
+title: "Summer API jobs: estimate, run, batches, follow, webhooks and download"
+sidebarTitle: "Jobs, batches and webhooks"
+description: "How a Summer API job works: price it with POST /v1/estimate, start it with POST /v1/jobs or up to 500 at once with POST /v1/batches, follow it with GET /v1/jobs/{id}, server-sent events or a signed webhook, then download the result. No rate limits on paid usage."
 icon: "workflow"
 ---
 
@@ -48,8 +48,39 @@ The answer is `{"job": {...}}`:
 
 - `201` with `state: "done"`: the job finished. `result` holds the work.
 - `202` with `state: "running"`: still working. Follow `job.id`.
+- `202` with `state: "queued"`: all your running slots are busy. The job is accepted at a held price and starts in order. Its id starts with `q:`; follow it like any job. Do not send it again.
 
 The job also carries `model`, the model that ran (also when you sent a default id such as `3d/default`, so you can run the same model again), `estimatedPrice`, and `price` once Summer knows what it charged.
+
+## Running slots and the queue
+
+Paid work has no rate limits. Each account runs 10 jobs at once at the start, and up to 40 as it buys more credits. Every job past that answers `queued` and starts as soon as one of your running jobs finishes, in the order you sent them. Queued and running jobs hold their price against your paid balance and the app's spend limit until they are charged, so the queue never spends past either one.
+
+The only refusals are about money, at once and before any work starts: `402` `no_credits` (the paid balance) or `402` `over_limit` (the app's own limit). A queued job that cannot start for 30 minutes while your queue stands still fails with nothing charged.
+
+## Run many jobs: batches
+
+`POST /v1/batches` takes up to 500 jobs in one call, all or none. Every job is priced first. When your paid credits and the app's limit cover all of them, all are accepted (`202`) and run in order on your running slots. When they do not, nothing is accepted.
+
+```bash
+curl https://www.summerengine.com/v1/batches \
+  -H "Authorization: Bearer $SUMMER_TOKEN" \
+  -H "Content-Type: application/json" \
+  -H "Idempotency-Key: $(uuidgen)" \
+  -d '{"jobs": [
+    {"model": "3d/default", "input": {"kind": "text-to-3d", "prompt": "a wooden barrel with iron bands, game prop"}},
+    {"model": "image/default", "input": {"prompt": "a red health potion icon, flat fantasy style", "removeBackground": true}},
+    {"model": "sound/default", "input": {"text": "glass potion bottle uncorked, short pop", "durationSeconds": 1}}
+  ]}'
+```
+
+The answer is `{"batch": {"id": "b_...", "estimatedPrice": "...", "jobs": [{"id": "q:...", "state": "queued", "model": "...", "estimatedPrice": "..."}]}}`. Each job may carry its own `idempotencyKey` and `webhookUrl`; the header covers the whole batch, so a retry never queues it twice.
+
+`GET /v1/batches/{batchId}` answers every job with its state and, when done, its `result`, plus `counts` by state. Read it every 10 seconds or so until no job is `queued` or `running`, then download the files of the `done` jobs. Batches are kept 7 days.
+
+A batch that does not fit answers `402` with `details`: `fits` (how many jobs the money covers), `jobs`, `totalUsd` and `shortUsd` (how much more is needed). The code is `no_credits` when the paid balance is short and `over_limit` when the app's limit is.
+
+With the CLI, a batch is a JSONL file with one job per line: `summer api run --batch jobs.jsonl --download assets`.
 
 ## Follow a job
 
@@ -57,11 +88,12 @@ The job also carries `model`, the model that ran (also when you sent a default i
 curl "https://www.summerengine.com/v1/jobs/$JOB_ID" -H "Authorization: Bearer $SUMMER_TOKEN"
 ```
 
-Check again after `pollAfterSeconds` when the answer has it, or every 5 seconds. Job ids can hold a colon, such as `gen:...`; send them as they are. With the CLI, `summer api jobs <id> --download` follows the job and saves its files.
+Check again after `pollAfterSeconds` when the answer has it, or every 5 seconds. Job ids can hold a colon, such as `gen:...` or `q:...`; send them as they are. A queued job's read answers the job it became once it starts. With the CLI, `summer api jobs <id> --download` follows the job and saves its files.
 
 | `state` | Meaning |
 |---|---|
-| `queued`, `running` | Still working. `progress` (0 to 100) shows how far, when known. |
+| `queued` | Waiting for one of your running slots. Its price is held. |
+| `running` | Still working. `progress` (0 to 100) shows how far, when known. |
 | `done` | Finished. `result` holds the work. |
 | `failed` | It did not work. `error.code` and `error.message` say why. Nothing is charged. |
 | `cancelled`, `expired`, `stale`, `declined` | It stopped without a result. Start a new job. |

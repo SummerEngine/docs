@@ -2,7 +2,7 @@
 title: "Summer Router: AI inside your game, with no keys in the build"
 sidebarTitle: "Overview"
 description: "Summer Router lets a shipped game use frontier AI while people play: characters that talk and use your game's tools, lines in a character's voice, and images. No key in the build, caps on by default, paid from your Summer credits."
-icon: "sparkles"
+icon: "route"
 ---
 
 Summer is the game engine built for AI. **Summer Router** puts AI inside the game itself, while people play: a guard who argues with the player and opens the gate when convinced, a narrator who reads the player's name, a portrait painted for the player's character. Your game names a character and sends what the player said. Summer does the rest.
@@ -54,7 +54,7 @@ Transcription of the player's voice and realtime voice conversations are coming 
 
 ## Where it runs
 
-Summer Router is built into Summer Engine. Games call it through `Summer.client.router` and the **SummerRouterCharacter** node, and it runs wherever players play your game on Summer Games: the Summer app on desktop and phone, and summer.games in the browser. Players sign in to Summer once.
+Summer Router is built into Summer Engine 0.8 and later. Games call it through `Summer.client.router`, `Summer.authority.router` and the **SummerRouterCharacter** node, and it runs wherever players play your game on Summer Games: the Summer app on desktop and phone, and summer.games in the browser. Players sign in to Summer once. In the editor and in Local Play every call answers `unavailable`, so the game uses its offline lines.
 
 ## Who calls
 

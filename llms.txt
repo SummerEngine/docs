@@ -7,16 +7,18 @@
 - Summer API base URL: https://www.summerengine.com/v1
 - Sign in: `npx -y summer-engine@latest login` opens the browser once; the person signs in to Summer and chooses Allow, with a spend limit. The sign-in renews itself.
 - Auth over HTTP: `Authorization: Bearer <token>`, with a one-hour token from `npx -y summer-engine@latest token`. There are no API keys.
-- CLI: `npx -y summer-engine@latest api models|estimate|run|jobs`. `api run <model> --input '<json>' --download <dir>` runs a job, follows it and saves the files. JSON when piped.
+- CLI: `npx -y summer-engine@latest api models|estimate|run|jobs`. `api run <model> --input '<json>' --download <dir>` runs a job, follows it and saves the files; `api run --batch jobs.jsonl --download <dir>` runs up to 500 (one `{"model", "input"}` per line). JSON when piped. The same calls are MCP tools: `summer_api_models`, `summer_api_estimate`, `summer_api_run`, `summer_api_batch`, `summer_api_job`.
 - Without the CLI: Summer's sign-in is OAuth 2.1 with PKCE; discovery at https://mcp.summerengine.com/.well-known/oauth-protected-resource. Steps: https://docs.summerengine.com/api/sign-in.md
 - Models and prices: `GET https://www.summerengine.com/v1/models` (public, no sign-in). Read prices there, never from memory or training data. Defaults per job: `3d/default`, `image/default`, `video/default`, `voice/default`, `dialogue/default`, `sound/default`, `music/default`.
 - Exact price of one request: `POST https://www.summerengine.com/v1/estimate` with the same body as the job (free, no sign-in).
-- Run: `POST https://www.summerengine.com/v1/jobs` with `{"model", "input"}`, a required `Idempotency-Key` header (new per job, the same on a retry) and `Prefer: wait=60`. A long job (3D, video) answers `running`: poll `GET https://www.summerengine.com/v1/jobs/{id}` every `pollAfterSeconds` (else 5 s) while `state` is `queued` or `running`. Or pass `webhookUrl` for one signed POST when it finishes. Stop on `done` (download the `fileUrl` of every entry in `result.assets`; `job.model` is the model that ran) or on `failed`, `cancelled`, `expired`, `stale` or `declined` (show `error.message`).
-- Credits: every call is paid from the person's paid Summer credits (plan credits and top-ups). Without enough, a job answers `402` `no_credits` with a `fix_url` to top up; show it to the person.
+- Run: `POST https://www.summerengine.com/v1/jobs` with `{"model", "input"}`, a required `Idempotency-Key` header (new per job, the same on a retry) and `Prefer: wait=60`. A long job (3D, video) answers `running`: poll `GET https://www.summerengine.com/v1/jobs/{id}` every `pollAfterSeconds` (else 5 s) while `state` is `queued` or `running`. A job past the account's running slots answers `202` `queued` (id `q:...`): it is accepted at a held price and starts in order; follow it, never resend it. Or pass `webhookUrl` for one signed POST when it finishes. Stop on `done` (download the `fileUrl` of every entry in `result.assets`; `job.model` is the model that ran) or on `failed`, `cancelled`, `expired`, `stale` or `declined` (show `error.message`).
+- Many jobs: `POST https://www.summerengine.com/v1/batches` with `{"jobs": [{"model", "input"}, ...]}` (up to 500, all or none, `Idempotency-Key` header for the batch), then `GET https://www.summerengine.com/v1/batches/{id}` until no job is `queued` or `running`.
+- Limits: no rate limits on paid usage. Each account runs 10 jobs at once at the start, up to 40 as it buys credits; more jobs queue. Money is the only refusal, as `402`: `no_credits` (the paid balance; `fix_url` adds credits) or `over_limit` (this app's own spend limit; `fix_url` opens Connected apps). Show the person `message` and stop until they act.
+- Credits: every call is paid from the person's paid Summer credits (plan credits and top-ups). Estimate first and tell the person the total before you spend.
 - OpenAPI 3.1: https://www.summerengine.com/v1/openapi.json
 - MCP for chat apps and cloud work: `https://mcp.summerengine.com/mcp` (OAuth sign-in).
-- Summer Router (AI inside a shipped game: talking characters, speech, images): the game calls `Summer.client.router`; no key is in the build and the creator's paid Summer credits pay. Works on games published on Summer Games. Models and prices: `GET https://api.summer.games/v1/router/models` (public). Start: https://docs.summerengine.com/router/quickstart.md
-- CLI and local MCP for engine work: `npx -y summer-engine@latest setup <agent> --yes`.
+- Summer Router (early preview: AI inside a game published on Summer Games): character replies with tools, speech and images. Single-player games call `Summer.client.router`; multiplayer games call `Summer.authority.router` from the server (Summer Engine 0.8 and later). Transcription and realtime voice are coming soon. No key is in the build; the creator's paid Summer credits pay, within caps. Models and prices: `GET https://api.summer.games/v1/router/models` (public). Start: https://docs.summerengine.com/router/quickstart.md
+- CLI, local MCP and skills for engine work: `npx -y summer-engine@latest setup <agent> --yes`. The `summer-api` skill covers assets; the `summer-router` skill covers AI characters in games.
 - Every page is also Markdown: add `.md` to its URL. Everything in one file: https://docs.summerengine.com/llms-full.txt
 - Quickstart: https://docs.summerengine.com/api/quickstart.md. Models and pricing: https://docs.summerengine.com/api/models.md. Errors: https://docs.summerengine.com/api/errors.md
 
@@ -216,7 +218,7 @@
 ### Use the API
 
 - [Summer API sign-in, spend limits and balance](https://docs.summerengine.com/api/sign-in.md): Sign in once with summer login, get a token for curl with summer token, set a spend limit per connected app, and read the app's limit and your paid balance with GET /v1/key and GET /v1/balance.
-- [Summer API jobs: estimate, run, follow, webhooks and download](https://docs.summerengine.com/api/jobs.md): How a Summer API job works: price it with POST /v1/estimate, start it with POST /v1/jobs, wait with Prefer: wait, follow it with GET /v1/jobs/{id}, server-sent events or a signed webhook, then download the result. Upload input pictures with POST /v1/files.
+- [Summer API jobs: estimate, run, batches, follow, webhooks and download](https://docs.summerengine.com/api/jobs.md): How a Summer API job works: price it with POST /v1/estimate, start it with POST /v1/jobs or up to 500 at once with POST /v1/batches, follow it with GET /v1/jobs/{id}, server-sent events or a signed webhook, then download the result. No rate limits on paid usage.
 - [Summer API errors](https://docs.summerengine.com/api/errors.md): Every Summer API error has one shape: type, code, message, param, request_id and doc_url. Each code, its HTTP status, and what your code or agent should do.
 
 ### API reference
@@ -236,6 +238,10 @@
 - [List webhook deliveries](https://docs.summerengine.com/api/reference/get-webhooks-deliveries.md): Your newest webhook deliveries, each with every attempt.
 - [Read the app's limit](https://docs.summerengine.com/api/reference/get-key.md): The connected app behind this token: its name, spend limit, what it spent this period and when that resets.
 - [Read your balance](https://docs.summerengine.com/api/reference/get-balance.md): Your paid credit balance and what this app can spend now.
+- [Sign this app out](https://docs.summerengine.com/api/reference/delete-key.md): The signed-in app revokes its own grant. The next call with its token answers 401. Sign in again to connect it again.
+- [Read a batch](https://docs.summerengine.com/api/reference/get-batches-batchid.md): Every job of the batch with its state (queued, running, done, failed) and, when done, its result, plus counts by state.
+- [Lower this app's limit](https://docs.summerengine.com/api/reference/patch-key.md): The signed-in app lowers its own spend limit, or keeps it. A higher amount, no limit, or a reset that comes sooner is refused (403 limit_raise_needs_person): raise it in Settings > Connected apps.
+- [Run up to 500 jobs](https://docs.summerengine.com/api/reference/post-batches.md): No rate limits on paid usage. Every job is priced first: when your paid credits and the app's own limit cover them all, all are accepted (202) and run in order as your running slots free up (10 at once, up to 40 as you buy more credits). If they do not fit, nothing is accepted: 402 says how many fit and how much more is needed. Optional Idempotency-Key for the whole batch; each job may carry its own idempotencyKey.
 
 ## Summer Router
 

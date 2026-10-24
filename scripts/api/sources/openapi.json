@@ -21,7 +21,7 @@
         "type": "http",
         "scheme": "bearer",
         "bearerFormat": "JWT",
-        "description": "A Summer sign-in (Supabase OAuth 2.1 access token, one hour): npx -y summer-engine login, then summer token. Each app you sign in spends your paid credits up to the limit you set in Connected apps."
+        "description": "A Summer sign-in: an OAuth 2.1 access token, valid one hour. Sign in once with npx -y summer-engine login, then print a token with summer token. Each app you sign in spends your paid credits up to the limit you set in Connected apps."
       }
     },
     "schemas": {
@@ -47,7 +47,7 @@
               },
               "code": {
                 "type": "string",
-                "description": "A stable code: invalid_input, not_signed_in, no_credits, rate_limited, ..."
+                "description": "A stable code: invalid_input, not_signed_in, no_credits (the paid balance), over_limit (the app's own spend limit), ..."
               },
               "message": {
                 "type": "string"
@@ -80,7 +80,7 @@
       "get": {
         "operationId": "models_list",
         "summary": "List Summer API models",
-        "description": "List the curated models: id, capability, input schema, output formats, typical time and price. Public; no key needed.",
+        "description": "List the curated models: id, capability, input schema, output formats, typical time and price. Public; no sign-in.",
         "x-summer-op": "models.list",
         "security": [],
         "parameters": [
@@ -387,7 +387,7 @@
       "get": {
         "operationId": "models_get",
         "summary": "Read a Summer API model",
-        "description": "Read one model by id, dated id or alias (such as 3d/default). Public; no key needed.",
+        "description": "Read one model by id, dated id or alias (such as 3d/default). Public; no sign-in.",
         "x-summer-op": "models.get",
         "security": [],
         "parameters": [
@@ -668,7 +668,7 @@
       "post": {
         "operationId": "models_estimate",
         "summary": "Estimate a Summer API job",
-        "description": "Price one exact job without running it: the USD amount, its breakdown and a quoteId that holds the price for 15 minutes. Public; no key needed.",
+        "description": "Price one exact job without running it: the USD amount, its breakdown and a quoteId that holds the price for 15 minutes. Public; no sign-in.",
         "x-summer-op": "models.estimate",
         "security": [],
         "requestBody": {
@@ -795,7 +795,7 @@
       "post": {
         "operationId": "models_run",
         "summary": "Run a Summer API job",
-        "description": "Run a model on its input. Short jobs answer 201 with the finished job; long ones answer 202 with a job id: follow it with GET /v1/jobs/{jobId}, its events, Prefer: wait=60 or a webhookUrl. The made files land in your Summer library.",
+        "description": "Run a model on its input. Short jobs answer 201 with the finished job; long ones answer 202 with a job id: follow it with GET /v1/jobs/{jobId}, its events, Prefer: wait=60 or a webhookUrl. The made files land in your Summer library. No rate limits on paid usage: past your running slots a job answers 202 queued at a held price and starts in order.",
         "x-summer-op": "models.run",
         "parameters": [
           {
@@ -1086,6 +1086,18 @@
                         },
                         "pollAfterSeconds": {
                           "type": "number"
+                        },
+                        "model": {
+                          "description": "Summer API jobs: the model id it runs.",
+                          "type": "string"
+                        },
+                        "estimatedPrice": {
+                          "description": "Summer API jobs: the price quoted when it was accepted, in USD.",
+                          "type": "string"
+                        },
+                        "price": {
+                          "description": "Summer API jobs: what it charged, in USD, once known.",
+                          "type": "string"
                         }
                       },
                       "required": [
@@ -1244,6 +1256,18 @@
                         },
                         "pollAfterSeconds": {
                           "type": "number"
+                        },
+                        "model": {
+                          "description": "Summer API jobs: the model id it runs.",
+                          "type": "string"
+                        },
+                        "estimatedPrice": {
+                          "description": "Summer API jobs: the price quoted when it was accepted, in USD.",
+                          "type": "string"
+                        },
+                        "price": {
+                          "description": "Summer API jobs: what it charged, in USD, once known.",
+                          "type": "string"
                         }
                       },
                       "required": [
@@ -2088,10 +2112,327 @@
                         },
                         "created_at": {
                           "type": "string"
+                        },
+                        "held_usd": {
+                          "type": "number",
+                          "description": "Held for this app's queued and running jobs until their charges land; it counts against remaining_usd."
                         }
                       }
                     }
                   }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "lower_this_app_limit",
+        "summary": "Lower this app's limit",
+        "description": "The signed-in app lowers its own spend limit, or keeps it. A higher amount, no limit, or a reset that comes sooner is refused (403 limit_raise_needs_person): raise it in Settings > Connected apps.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "limitUsd"
+                ],
+                "properties": {
+                  "limitUsd": {
+                    "type": [
+                      "number",
+                      "null"
+                    ],
+                    "minimum": 0,
+                    "maximum": 10000,
+                    "description": "Dollars per period; null keeps no limit of its own (only when it has none)."
+                  },
+                  "limitReset": {
+                    "type": "string",
+                    "enum": [
+                      "none",
+                      "daily",
+                      "weekly",
+                      "monthly"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "The answer.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "client_id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "scopes": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
+                        },
+                        "limit_usd": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "limit_reset": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "spent_usd": {
+                          "type": "number"
+                        },
+                        "remaining_usd": {
+                          "type": [
+                            "number",
+                            "null"
+                          ]
+                        },
+                        "resets_at": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "total_spent_usd": {
+                          "type": "number"
+                        },
+                        "expires_at": {
+                          "type": [
+                            "string",
+                            "null"
+                          ]
+                        },
+                        "created_at": {
+                          "type": "string"
+                        },
+                        "held_usd": {
+                          "type": "number",
+                          "description": "Held for this app's queued and running jobs until their charges land; it counts against remaining_usd."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "operationId": "sign_out_this_app",
+        "summary": "Sign this app out",
+        "description": "The signed-in app revokes its own grant. The next call with its token answers 401. Sign in again to connect it again.",
+        "responses": {
+          "200": {
+            "description": "Signed out.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "revoked": {
+                          "type": "boolean"
+                        },
+                        "client_id": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/batches": {
+      "post": {
+        "operationId": "batches_create",
+        "summary": "Run up to 500 jobs",
+        "description": "No rate limits on paid usage. Every job is priced first: when your paid credits and the app's own limit cover them all, all are accepted (202) and run in order as your running slots free up (10 at once, up to 40 as you buy more credits). If they do not fit, nothing is accepted: 402 says how many fit and how much more is needed. Optional Idempotency-Key for the whole batch; each job may carry its own idempotencyKey.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "jobs"
+                ],
+                "properties": {
+                  "jobs": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 500,
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "model",
+                        "input"
+                      ],
+                      "properties": {
+                        "model": {
+                          "type": "string"
+                        },
+                        "input": {
+                          "type": "object"
+                        },
+                        "idempotencyKey": {
+                          "type": "string"
+                        },
+                        "webhookUrl": {
+                          "type": "string",
+                          "format": "uri"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Accepted: every job queued.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "batch": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "estimatedPrice": {
+                          "type": "string"
+                        },
+                        "jobs": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "description": "q:<id> until it starts; reads answer the job it became."
+                              },
+                              "state": {
+                                "type": "string",
+                                "enum": [
+                                  "queued"
+                                ]
+                              },
+                              "model": {
+                                "type": "string"
+                              },
+                              "estimatedPrice": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "An error.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/batches/{batchId}": {
+      "get": {
+        "operationId": "batches_get",
+        "summary": "Read a batch",
+        "description": "Every job of the batch with its state (queued, running, done, failed) and, when done, its result, plus counts by state.",
+        "parameters": [
+          {
+            "name": "batchId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The batch.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
                 }
               }
             }
@@ -2145,6 +2486,14 @@
                         },
                         "top_up_url": {
                           "type": "string"
+                        },
+                        "held_usd": {
+                          "type": "number",
+                          "description": "Held for the account's queued and running jobs until their charges land."
+                        },
+                        "key_held_usd": {
+                          "type": "number",
+                          "description": "The part of held_usd that is this app's."
                         }
                       }
                     }

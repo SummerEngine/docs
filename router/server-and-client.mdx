@@ -23,7 +23,7 @@ $Subtitle.text = r.text if r.ok else "The guard ignores you."
 
 ## Multiplayer games
 
-In a multiplayer game the server owns the shared world, so the server talks to the character. Each call names the session of the player it is for:
+In a multiplayer game the server owns the shared world, so the server talks to the character. The player's game sends what the player typed to the server as a Command, the same way it asks for any other action (see [share the game world](/build/shared-state)). The server answers the Command, asks the character for that player's session, applies what the character did, and publishes the line in shared State so every player sees it. Each call names the session of the player it is for:
 
 ```gdscript server.gd
 func _on_player_asked(session: SummerSession, line: String) -> void:
@@ -42,6 +42,18 @@ The server has the same calls as the client, each with the session first:
 | `generate(session, "image", {"prompt": ..., "size": ...})` | `data` and `mime_type`, plus `image` and `texture` |
 
 On a refusal, `r.message` is a plain line for the players, such as "AI limit reached for this game today". Show it, and the game goes on.
+
+When the character calls a tool, the server runs it and sends the result back, so the character can answer with it:
+
+```gdscript server.gd
+var r: SummerRouterResult = await Summer.authority.router.reply(session, "shopkeeper", line, {"conversation_id": conversation})
+if r.ok and not r.tool_calls.is_empty():
+    var results := []
+    for call in r.tool_calls:
+        # Check every argument: the server, not the model, decides what happens.
+        results.append({"call_id": call.call_id, "output": Shop.sell_to(session, str(call.args.get("item", "")))})
+    r = await Summer.authority.router.reply(session, "shopkeeper", "", {"conversation_id": conversation, "tool_results": results})
+```
 
 Server calls run on worlds hosted on Summer Games. In the local emulator every call answers `unavailable`, so keep the offline line.
 

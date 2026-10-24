@@ -48,7 +48,7 @@ A call that answers an error charges nothing. After `outcome_unknown`, send the 
 | [`idempotency_conflict`](#idempotency_conflict) | 409 | With a new `Idempotency-Key` |
 | [`in_progress`](#in_progress) | 409 | Yes, the same request |
 | [`unsupported`](#unsupported) | 409 | No |
-| [`rate_limited`](#rate_limited) | 429 | Yes, after `Retry-After` |
+| [`rate_limited`](#rate_limited) | 429 | Yes, after `Retry-After` (paid work has no rate limits) |
 | [`internal`](#internal) | 500 | Yes, once |
 | [`outcome_unknown`](#outcome_unknown) | 502 | Check first |
 | [`unavailable`](#unavailable) | 503 | Yes, with backoff |
@@ -67,11 +67,11 @@ No token, or the token expired or its app was revoked. Run `summer login` once, 
 
 ### no_credits
 
-The account has too few paid credits for this job. Nothing ran and nothing was charged. `fix_url` opens the page where the person tops up. Check what this app can spend with `GET /v1/balance`.
+The account's paid credits cannot cover this job, next to the jobs it already holds a price for. Nothing ran and nothing was charged. `fix_url` opens the page where the person adds credits; show them `message`. Check what this app can spend with `GET /v1/balance`. A refused batch also has `details`: `fits`, `jobs`, `totalUsd` and `shortUsd`.
 
 ### over_limit
 
-The app reached its own spend limit. Nothing ran and nothing was charged. The person raises it in [Settings > Connected agents & apps](https://summerengine.com/settings/connected-apps), or the limit resets at `resets_at` from `GET /v1/key`.
+The app reached the spend limit the person set for it. Nothing ran and nothing was charged. Show the person `message`: `fix_url` opens [Settings > Connected agents & apps](https://summerengine.com/settings/connected-apps), where they raise it. Or wait until `resets_at` from `GET /v1/key`. Do not ask for a top-up: the balance is not the problem. A refused batch also has `details`, as for `no_credits`.
 
 ### forbidden
 
@@ -99,7 +99,7 @@ This job does not support that action.
 
 ### rate_limited
 
-Too many jobs started too fast. Wait the seconds in the `Retry-After` header, then send the same request with the same `Idempotency-Key`.
+Paid Summer API work has no rate limits: a job past your running slots answers `202` `queued` instead. If a call ever answers `429`, wait the seconds in the `Retry-After` header, then send the same request with the same `Idempotency-Key`.
 
 ### internal
 
