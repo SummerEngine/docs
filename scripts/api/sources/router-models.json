@@ -3,7 +3,7 @@
     {
       "id": "fast-text",
       "capability": "character.reply",
-      "display_name": "Fast",
+      "display_name": "Claude Haiku 4.5",
       "default": true,
       "status": "available",
       "prices": [
@@ -22,7 +22,7 @@
     {
       "id": "smart-text",
       "capability": "character.reply",
-      "display_name": "Smart",
+      "display_name": "Claude Sonnet 5.5",
       "default": false,
       "status": "available",
       "prices": [
@@ -41,7 +41,7 @@
     {
       "id": "image-flash",
       "capability": "image",
-      "display_name": "Flash image",
+      "display_name": "Gemini 3.1 Flash Image",
       "default": true,
       "status": "available",
       "prices": [
@@ -55,28 +55,28 @@
     {
       "id": "voice-flash",
       "capability": "speech",
-      "display_name": "Flash voice",
+      "display_name": "Flash v2.5",
       "default": true,
       "status": "available",
       "prices": [
         {
           "unit": "characters",
           "per": 1000,
-          "usd": "0.06"
+          "usd": "0.04"
         }
       ]
     },
     {
       "id": "scribe",
       "capability": "transcribe",
-      "display_name": "Scribe",
+      "display_name": "Scribe v2",
       "default": true,
       "status": "coming_soon",
       "prices": [
         {
           "unit": "audio_seconds",
           "per": 60,
-          "usd": "0.003672"
+          "usd": "0.003667"
         }
       ]
     }

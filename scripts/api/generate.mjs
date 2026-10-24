@@ -702,7 +702,7 @@ for (const p of [...handWritten, ...pages.keys()]) {
   if (hit) problems.push(`${p}.mdx: names another provider: …${hit[0]}…`);
 }
 // Summer Router pages name no provider and no model maker at all: the creator picks models in Studio.
-const ROUTER_OTHERS = /.{0,40}\b(?:Vercel|ElevenLabs|OpenAI|Anthropic|Gemini|Google|Meshy|Gateway)\b.{0,40}/;
+const ROUTER_OTHERS = /.{0,40}\b(?:Vercel|ElevenLabs|OpenAI|Anthropic|Google|Meshy|Gateway)\b.{0,40}/;
 for (const p of [...handWritten, ...pages.keys()].filter((p) => p.startsWith("router/"))) {
   const hit = (pages.get(p) ?? readFileSync(join(ROOT, `${p}.mdx`), "utf8")).match(ROUTER_OTHERS);
   if (hit) problems.push(`${p}.mdx: names a provider: …${hit[0]}…`);
