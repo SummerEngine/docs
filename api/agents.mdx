@@ -42,7 +42,7 @@ One browser sign-in. It renews itself, so the agent never asks again on this com
 | `summer api jobs <id> [--wait] [--download [dir]]` | Reads a job, follows it, or saves its files |
 | `summer token` | Prints a one-hour token for `curl`: `Authorization: Bearer $(summer token)` |
 
-Run them as `npx -y summer-engine@latest api ...`, or as `summer api ...` once the CLI is installed. The output is JSON when piped or with `--json`, and a short summary in a terminal.
+Run them as `npx -y summer-engine@latest api ...`, or as `summer api ...` once the CLI is installed. The output is JSON when piped or with `--json`, and a short summary in a terminal. In Windows PowerShell or cmd, put the input in a file and pass `--input "@input.json"`.
 
 The CLI's MCP server has the same calls as tools: `summer_api_models`, `summer_api_estimate`, `summer_api_run`, `summer_api_batch` and `summer_api_job`. `npx -y summer-engine@latest setup <agent> --yes` also installs the `summer-api` skill, which teaches the agent this whole flow, and the `summer-router` skill for AI characters in games.
 
