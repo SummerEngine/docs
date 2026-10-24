@@ -65,7 +65,7 @@ Pass the same `conversation_id` from `r.conversation_id` on the next call, and t
 
 - **A voice line:** `await Summer.client.router.speak("Welcome, traveller!", {"character": "narrator"})` returns `audio` to play. See [speech](/router/speech).
 - **An image:** `await Summer.client.router.generate("image", {"prompt": "a flower made of glass", "size": "512x512"})` returns a `texture`. See [image](/router/image).
-- **What the character knows:** `variables` fill the character's `{{variables}}`, such as the player's name, and `context` tells it what just happened in the game.
+- **What the character knows:** `variables` fill the character's declared `{{variables}}`, such as the player's name, when the character lists `variables` in its overridable fields. `context` tells it what just happened in the game.
 
 <CardGroup cols={3}>
   <Card title="Server and client" icon="server" href="/router/server-and-client">

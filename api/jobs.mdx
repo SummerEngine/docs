@@ -74,7 +74,9 @@ curl https://www.summerengine.com/v1/batches \
   ]}'
 ```
 
-The answer is `{"batch": {"id": "b_...", "estimatedPrice": "...", "jobs": [{"id": "q:...", "state": "queued", "model": "...", "estimatedPrice": "..."}]}}`. Each job may carry its own `idempotencyKey` and `webhookUrl`; the header covers the whole batch, so a retry never queues it twice.
+The answer is `{"batch": {"id": "b_...", "estimatedPrice": "...", "jobs": [{"id": "q:...", "state": "queued", "model": "...", "estimatedPrice": "..."}]}}`. Each job may carry its own `idempotencyKey` and `webhookUrl`. The header covers the whole batch: a retry with the same `Idempotency-Key` answers the batch it already made and never queues it twice.
+
+A batch takes no `quoteId`. Each job is priced when the batch arrives and holds that price (`estimatedPrice`). To tell the person the total first, estimate each distinct request with `POST /v1/estimate` and add them up.
 
 `GET /v1/batches/{batchId}` answers every job with its state and, when done, its `result`, plus `counts` by state. Read it every 10 seconds or so until no job is `queued` or `running`, then download the files of the `done` jobs. Batches are kept 7 days.
 
@@ -97,6 +99,8 @@ Check again after `pollAfterSeconds` when the answer has it, or every 5 seconds.
 | `done` | Finished. `result` holds the work. |
 | `failed` | It did not work. `error.code` and `error.message` say why. Nothing is charged. |
 | `cancelled`, `expired`, `stale`, `declined` | It stopped without a result. Start a new job. |
+
+Summer API jobs never wait for an approval (`awaiting_approval` is for other Summer jobs). Once accepted, queued or running, a Summer API job runs to the end: `POST /v1/jobs/{id}/cancel` answers `unsupported` for it. A job that fails costs nothing.
 
 To get changes pushed instead, open the event stream. It sends a `job` event with `{"job": {...}}` each time the job changes, then `done` with `{"state": ...}` when the job reaches any final state, `failed` included. After about 4 minutes it sends `timeout`: open it again, or check the job.
 

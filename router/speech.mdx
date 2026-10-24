@@ -16,7 +16,7 @@ A line spoken in a character's voice.
 | In your game | `Summer.client.router.speak(text: String, options: Dictionary = {"character": ""})` |
 | Status | Available |
 | Metered | per character spoken, from the creator's Summer credits |
-| Counts toward | per player per day, per game per day, per game per month, per account per month, per character per player per day, per character per game per day ([limits](/router/limits)) |
+| Counts toward | per player per day, per game per day, per game per month, per account per month, per character per player per day, per character per game per day ([limits](/router/limits)). A multiplayer server's calls count toward the game's caps, not the player's. |
 
 ## Example
 
@@ -37,7 +37,9 @@ The SDK builds the request from the call's arguments and options. Summer checks 
 |---|---|---|
 | `text` | string | 1 to 5000 characters |
 | `character` | string | The id of a character you made in Studio |
-| `exchange_id` | string | Any |
+| `exchange_id` | string | The exchange_id of a reply from the last hour |
+
+Send `text` with `character`, or only `exchange_id` with an empty text.
 
 ## Errors
 

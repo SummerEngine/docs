@@ -28,9 +28,9 @@ In a multiplayer game the server owns the shared world, so the server talks to t
 ```gdscript server.gd
 func _on_player_asked(session: SummerSession, line: String) -> void:
     var r: SummerRouterResult = await Summer.authority.router.reply(session, "guard", line)
-    $GuardSubtitle.text = r.text if r.ok else r.message
+    publish_guard_line(r.text if r.ok else r.message)  # write it to shared State: every player sees it
     if r.ok and r.tool_calls.any(func(call): return call.name == "open_gate"):
-        $Gate.open()
+        open_gate()  # the server changes the world, and shared State carries it to the players
 ```
 
 The server has the same calls as the client, each with the session first:
@@ -38,10 +38,12 @@ The server has the same calls as the client, each with the session first:
 | Call | Result |
 |---|---|
 | `reply(session, character, text, options)` | `text`, `tool_calls`, `exchange_id`, `conversation_id`. Options as on the client, without `tools`: the server reads `tool_calls` and acts, or answers them with `tool_results` on the next call. |
-| `speak(session, text, {"character": id})` | `data` and `mime_type` to send to the players, and `audio` to play on the server |
+| `speak(session, text, {"character": id})` | `data` and `mime_type`, and `audio` when the server can decode it. Audio is too big for shared State: to voice a line, each player's game calls `Summer.client.router.speak(line, {"character": id})` for the line it shows. |
 | `generate(session, "image", {"prompt": ..., "size": ...})` | `data` and `mime_type`, plus `image` and `texture` |
 
 On a refusal, `r.message` is a plain line for the players, such as "AI limit reached for this game today". Show it, and the game goes on.
+
+Server calls count toward the game's caps, not the player's. Pace each player on the server (one line in flight per player, a short gap, a length cap on the text), so one player cannot use up the game's daily cap.
 
 When the character calls a tool, the server runs it and sends the result back, so the character can answer with it:
 

@@ -55,7 +55,7 @@ A call that answers an error charges nothing. After `outcome_unknown`, send the 
 
 ### invalid_input
 
-The request does not match the model's input. `param` names the field, such as `input.duration`, and `message` says what it takes. Read the model's `inputSchema` with `GET /v1/models/{id}`. A missing `Idempotency-Key` header on `POST /v1/jobs` also answers this.
+The request does not match the model's input. `param` names the field, such as `input.duration`, and `message` says what it takes. Read the model's `inputSchema` with `GET /v1/models/{id}`. A missing `Idempotency-Key` header on `POST /v1/jobs` also answers this, and so does an expired `quoteId` (`param` is `quoteId`): estimate again.
 
 ### moved
 
@@ -63,7 +63,7 @@ The name you sent was replaced. `message` names the new one.
 
 ### not_signed_in
 
-No token, or the token expired or its app was revoked. Run `summer login` once, then send `Authorization: Bearer $(summer token)`; a token lasts one hour. After a revoke, connect the app again.
+No token, or the token expired or its app was revoked. A token lasts one hour: get a new one with `summer token` and send the request again. With no sign-in on this computer, or after the person revoked the app, run `summer login` first.
 
 ### no_credits
 
@@ -95,7 +95,7 @@ A request with this `Idempotency-Key` is still running. Wait a moment and send t
 
 ### unsupported
 
-This job does not support that action.
+This job does not support that action, such as cancelling a Summer API job: it runs to the end.
 
 ### rate_limited
 

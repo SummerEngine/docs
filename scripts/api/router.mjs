@@ -29,7 +29,7 @@ const KIND_COPY = {
       "",
       "**Tools.** Declare each tool on the character in Studio, with the same name as in `tools`. When the character calls one, the SDK runs your handler with the arguments as a `Dictionary`, sends what it returns back to the character, and the character goes on, for up to 8 rounds in one call. Return any JSON value; return `{\"error\": \"...\"}` to tell the character it failed. A handler that takes longer than 30 seconds sends a timeout to the character.",
       "",
-      "**Options.** `variables` fill the character's `{{variables}}`, such as the player's name. `context` tells the character what just happened in the game. `overrides` set the fields you marked overridable on the character, such as its first message.",
+      "**Options.** `variables` fill the character's declared `{{variables}}`, such as the player's name; the character must list `variables` in its overridable fields. `context` tells the character what just happened in the game. `overrides` set the fields you marked overridable on the character, such as its first message.",
       "",
       "For a whole conversation in one node, use **SummerRouterCharacter** (see the [quickstart](/router/quickstart)).",
     ].join("\n"),
@@ -91,7 +91,19 @@ function limits(schema) {
   if (schema.minimum !== undefined && schema.maximum !== undefined) out.push(`${schema.minimum} to ${schema.maximum}`);
   if (schema.maxItems !== undefined) out.push(`up to ${schema.maxItems} items`);
   if (schema.maxProperties !== undefined) out.push(`up to ${schema.maxProperties} entries`);
+  const id = /^\^\[A-Za-z0-9_-\]\{(\d+),(\d+)\}\$$/.exec(schema.pattern ?? "");
+  if (id) out.push(`${id[1]} to ${id[2]} letters, digits, dashes or underscores; your game may choose it`);
   return out.join(", ");
+}
+
+/** The kind's either-or fields (anyOf / oneOf of required lists), as one plain line. */
+function alternatives(kind) {
+  const list = (key) => (kind.inputs?.[key] ?? []).map((choice) => (choice.required ?? []).map((name) => code(name)).join(" with "));
+  const any = list("anyOf");
+  const one = list("oneOf");
+  if (any.length) return `Send ${any.join(", ")}, or both. With only ${code("tool_results")}, leave the text empty: it answers the previous turn's tool calls.`;
+  if (one.length) return `Send ${one[0]}, or only ${one.slice(1).join(", or only ")} with an empty text.`;
+  return "";
 }
 
 /** The kind's request fields a game sets (the SDK fills request_id). */
@@ -100,7 +112,7 @@ function inputRows(kind) {
   const required = new Set(kind.inputs?.required ?? []);
   return Object.entries(props)
     .filter(([name]) => name !== "request_id")
-    .map(([name, s]) => `| ${code(name)}${required.has(name) ? " (required)" : ""} | ${cell(typeOf(s)).replace(/\\`/g, "`")} | ${name === "character" ? "The id of a character you made in Studio" : cell([s.description, limits(s)].filter(Boolean).join(". ")) || (s.enum ? "One of these" : "Any")} |`);
+    .map(([name, s]) => `| ${code(name)}${required.has(name) ? " (required)" : ""} | ${cell(typeOf(s)).replace(/\\`/g, "`")} | ${name === "character" ? "The id of a character you made in Studio" : name === "exchange_id" ? "The exchange_id of a reply from the last hour" : cell([s.description, limits(s)].filter(Boolean).join(". ")) || (s.enum ? "One of these" : "Any")} |`);
 }
 
 const PRICE_UNIT = {
@@ -194,11 +206,11 @@ export function routerPages(registry, policy, list = null) {
         `| In your game | ${code(sdkCall(kind))} |`,
         `| Status | ${statusText(kind)} |`,
         `| Metered | ${UNIT[kind.billing_unit] ?? kind.billing_unit}, from the creator's Summer credits |`,
-        `| Counts toward | ${kind.limit_keys.filter((k) => k !== "environment_day").map((k) => limitTitle[k] ?? k).join(", ")} ([limits](/router/limits)) |`,
+        `| Counts toward | ${kind.limit_keys.filter((k) => k !== "environment_day").map((k) => limitTitle[k] ?? k).join(", ")} ([limits](/router/limits)). A multiplayer server's calls count toward the game's caps, not the player's. |`,
         "",
         ...(copy.example ? ["## Example", "", "```gdscript", ...copy.example, "```", "", copy.after, ""] : []),
         ...(rows.length
-          ? ["## Input limits", "", "The SDK builds the request from the call's arguments and options. Summer checks these limits:", "", "| Field | Type | Limits |", "|---|---|---|", ...rows, ""]
+          ? ["## Input limits", "", "The SDK builds the request from the call's arguments and options. Summer checks these limits:", "", "| Field | Type | Limits |", "|---|---|---|", ...rows, "", ...(alternatives(kind) ? [alternatives(kind), ""] : [])]
           : []),
         "## Errors",
         "",
@@ -330,7 +342,7 @@ export function routerPages(registry, policy, list = null) {
       "| `error`, `fix`, `docs_url` | a refusal | The tag, one line on what to do, and this page at the tag |",
       "| `message` | a refusal | A plain line to show the players, such as \"AI limit reached for this game today\" |",
       "| `retryable`, `retry_after` | a refusal | `true` when the same call can work later; for `rate_limited`, the seconds to wait |",
-      "| `scope`, `resets_at` | `limit_reached` | The cap that was reached, and when it resets |",
+      "| `scope`, `resets_at` | `limit_reached` | The cap that was reached (`player_day`, `game_day`, `game_month`, `account_month`, `character_player_day`, `character_game_day`), and when it resets, in Unix seconds |",
       "| `reason` | some refusals | A finer reason, such as `not_found` from `verify_exchange` |",
       "| `request_id` | every result | Send it to Summer support |",
       "| `text`, `tool_calls`, `exchange_id`, `conversation_id` | a character reply | The answer, the tools it called, and the ids to verify or go on |",

@@ -1173,7 +1173,7 @@
       "post": {
         "operationId": "jobs_cancel",
         "summary": "Cancel a job",
-        "description": "Stop a job that has not finished, where it can be stopped (generation jobs run to the end).",
+        "description": "Stop a job that has not finished, where it can be stopped. Summer API jobs, queued or running, run to the end and answer unsupported.",
         "x-summer-op": "jobs.cancel",
         "parameters": [
           {
@@ -2308,6 +2308,19 @@
         "operationId": "batches_create",
         "summary": "Run up to 500 jobs",
         "description": "No rate limits on paid usage. Every job is priced first: when your paid credits and the app's own limit cover them all, all are accepted (202) and run in order as your running slots free up (10 at once, up to 40 as you buy more credits). If they do not fit, nothing is accepted: 402 says how many fit and how much more is needed. Optional Idempotency-Key for the whole batch; each job may carry its own idempotencyKey.",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 128
+            },
+            "description": "One key for the whole batch: a retry with the same key answers the batch it made and never queues it twice."
+          }
+        ],
         "requestBody": {
           "required": true,
           "content": {
@@ -2352,7 +2365,7 @@
         },
         "responses": {
           "202": {
-            "description": "Accepted: every job queued.",
+            "description": "Accepted: every job queued, each at the price it holds (no quoteId: each job is priced when the batch is accepted).",
             "content": {
               "application/json": {
                 "schema": {
@@ -2432,7 +2445,37 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "type": "object",
+                  "properties": {
+                    "batch": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "estimatedPrice": {
+                          "type": "string"
+                        },
+                        "createdAt": {
+                          "type": "string"
+                        },
+                        "counts": {
+                          "type": "object",
+                          "additionalProperties": {
+                            "type": "integer"
+                          },
+                          "description": "How many jobs are in each state."
+                        },
+                        "jobs": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "description": "Each job as GET /v1/jobs/{jobId} answers it: id, state, model, estimatedPrice, price once known, result once done."
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
