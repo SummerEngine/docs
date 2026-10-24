@@ -29,6 +29,7 @@ There is no API key. Your agent signs in with your Summer account in the browser
 
 - **Hosted MCP** (Claude, ChatGPT and any app that adds a remote MCP server): add `https://mcp.summerengine.com/mcp`. The app opens the Summer sign-in page. Sign in and choose **Allow**.
 - **On your computer** (the `summer-engine` MCP and CLI): run `npx -y summer-engine@latest login`. One browser sign-in covers your Summer account and the store, publishing and Grow tools.
+- **Summer API** (game assets over HTTP): the same `summer login`, then `Authorization: Bearer $(summer token)`. Each connected app has its own spend limit in **Settings > Connected agents & apps**. See [sign-in and limits](/api/sign-in).
 
 See [MCP setup](/mcp/setup) and [Connect your agent](/publishing/connect-your-agent).
 
