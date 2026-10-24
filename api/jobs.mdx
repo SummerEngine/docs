@@ -56,7 +56,7 @@ The job also carries `model`, the model that ran (also when you sent a default i
 
 Paid work has no rate limits. Each account runs 10 jobs at once at the start, and up to 40 as it buys more credits. Every job past that answers `queued` and starts as soon as one of your running jobs finishes, in the order you sent them. Queued and running jobs hold their price against your paid balance and the app's spend limit until they are charged, so the queue never spends past either one.
 
-The only refusals are about money, at once and before any work starts: `402` `no_credits` (the paid balance) or `402` `over_limit` (the app's own limit). A queued job that cannot start for 30 minutes while your queue stands still fails with nothing charged.
+The only refusals are about money, at once and before any work starts: `402` `no_credits` (the paid balance) or `402` `over_limit` (the app's own limit). A queued job that cannot start for 30 minutes while your queue stands still ends `failed`, with nothing charged.
 
 ## Run many jobs: batches
 
@@ -78,9 +78,9 @@ The answer is `{"batch": {"id": "b_...", "estimatedPrice": "...", "jobs": [{"id"
 
 A batch takes no `quoteId`. Each job is priced when the batch arrives and holds that price (`estimatedPrice`). To tell the person the total first, estimate each distinct request with `POST /v1/estimate` and add them up.
 
-`GET /v1/batches/{batchId}` answers every job with its state and, when done, its `result`, plus `counts` by state. Read it every 10 seconds or so until no job is `queued` or `running`, then download the files of the `done` jobs. Batches are kept 7 days.
+`GET /v1/batches/{batchId}` answers every job, in the order you sent them, with its state and, when done, its `result`, plus `counts` by state. Read it every 10 seconds or so until no job is `queued` or `running`, then download the files of the `done` jobs. Batches are kept 7 days.
 
-A batch that does not fit answers `402` with `details`: `fits` (how many jobs the money covers), `jobs`, `totalUsd` and `shortUsd` (how much more is needed). The code is `no_credits` when the paid balance is short and `over_limit` when the app's limit is.
+A job with a wrong input refuses the whole batch with `invalid_input`; `param` names the job, such as `jobs[3]`. A batch that does not fit answers `402` with `details`: `fits` (how many jobs the money covers), `jobs`, `totalUsd` and `shortUsd` (how much more is needed). The code is `no_credits` when the paid balance is short and `over_limit` when the app's limit is.
 
 With the CLI, a batch is a JSONL file with one job per line: `summer api run --batch jobs.jsonl --download assets`.
 

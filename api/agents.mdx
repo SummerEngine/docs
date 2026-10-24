@@ -39,7 +39,7 @@ One browser sign-in. It renews itself, so the agent never asks again on this com
 | `summer api estimate <model> --input '<json>'` | The price of one job and a quote that holds it for 15 minutes. Free. |
 | `summer api run <model> --input '<json>' --download [dir]` | Runs the job, follows it and saves each file as `<assetId>.<ext>`. Add `--quote <quoteId>` to cap the charge. |
 | `summer api run --batch jobs.jsonl --download [dir]` | Runs up to 500 jobs from a file with one `{"model", "input"}` per line, all or none, and saves every file |
-| `summer api jobs <id> [--wait] [--download [dir]] [--cancel]` | Reads a job, follows it, saves its files, or cancels it |
+| `summer api jobs <id> [--wait] [--download [dir]]` | Reads a job, follows it, or saves its files |
 | `summer token` | Prints a one-hour token for `curl`: `Authorization: Bearer $(summer token)` |
 
 Run them as `npx -y summer-engine@latest api ...`, or as `summer api ...` once the CLI is installed. The output is JSON when piped or with `--json`, and a short summary in a terminal.

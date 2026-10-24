@@ -43,6 +43,7 @@ A call that answers an error charges nothing. After `outcome_unknown`, send the 
 | [`no_credits`](#no_credits) | 402 | After credits are added |
 | [`over_limit`](#over_limit) | 402 | After the limit resets or is raised |
 | [`forbidden`](#forbidden) | 403 | No |
+| [`limit_raise_needs_person`](#limit_raise_needs_person) | 403 | No: the person raises it |
 | [`not_found`](#not_found) | 404 | No |
 | [`conflict`](#conflict) | 409 | After a new estimate |
 | [`idempotency_conflict`](#idempotency_conflict) | 409 | With a new `Idempotency-Key` |
@@ -76,6 +77,10 @@ The app reached the spend limit the person set for it. Nothing ran and nothing w
 ### forbidden
 
 This app or account may not do this.
+
+### limit_raise_needs_person
+
+`PATCH /v1/key` asked for a higher limit, no limit, or a reset that comes sooner. An app may only lower its own limit. The person raises it in [Settings > Connected agents & apps](https://summerengine.com/settings/connected-apps).
 
 ### not_found
 

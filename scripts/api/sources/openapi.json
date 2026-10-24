@@ -211,7 +211,7 @@
                             ]
                           },
                           "tier": {
-                            "description": "free: welcome credits may pay for it.",
+                            "description": "free: in Studio, welcome credits may pay for it. The Summer API always uses paid credits.",
                             "type": "string",
                             "enum": [
                               "free",
@@ -496,7 +496,7 @@
                           ]
                         },
                         "tier": {
-                          "description": "free: welcome credits may pay for it.",
+                          "description": "free: in Studio, welcome credits may pay for it. The Summer API always uses paid credits.",
                           "type": "string",
                           "enum": [
                             "free",
