@@ -69,12 +69,18 @@ SUMMER="/Applications/Summer.app/Contents/MacOS/Summer"
 ```powershell Windows PowerShell
 Expand-Archive build\my-game.summer.zip -DestinationPath build\bundle -Force
 $summer = "$env:LOCALAPPDATA\SummerEngine\current\Summer.exe"
+function Run-Summer([int]$seconds, [string]$log, [string[]]$engineArgs) {
+  $quoted = ($engineArgs + @('--log-file', $log) | ForEach-Object { '"' + $_ + '"' }) -join ' '
+  $p = Start-Process $summer -ArgumentList $quoted -PassThru -NoNewWindow
+  if (-not $p.WaitForExit($seconds * 1000)) { $p | Stop-Process }
+}
 ```
 
 </CodeGroup>
 
-On Windows, Summer Engine writes its output to a log file, so each Windows
-command below starts it with `--log-file` and then searches that file.
+On Windows, Summer Engine writes its output only to a log file. `Run-Summer`
+starts it with `--log-file`, stops it after the given seconds, and each check
+then searches that file.
 
 A server pack you export on its own with your server preset is not the same
 file. It can pass a check that the uploaded `.zip` fails.
@@ -116,8 +122,7 @@ scene named:
 ```
 
 ```powershell Windows PowerShell
-$p = Start-Process $summer -PassThru -NoNewWindow -ArgumentList '--headless','--verbose','--main-pack','build\bundle\server.pck','--log-file','build\server.log'
-Start-Sleep 15; $p | Stop-Process
+Run-Summer 15 build\server.log '--headless','--verbose','--main-pack','build\bundle\server.pck'
 Select-String -Path build\server.log -Pattern "Completed load for: 'res://.*tscn'" | Select-Object -First 1
 ```
 
@@ -225,7 +230,7 @@ load:
 ```
 
 ```powershell Windows PowerShell
-Start-Process $summer -Wait -NoNewWindow -ArgumentList '--headless','--verbose','--main-pack','build\bundle\client.pck','--quit-after','600','--log-file','build\client.log'
+Run-Summer 60 build\client.log '--headless','--verbose','--main-pack','build\bundle\client.pck','--quit-after','600'
 Select-String -Path build\client.log -Pattern 'SCRIPT ERROR|Parse Error|Failed to load script'
 ```
 
@@ -301,7 +306,7 @@ on your computer.
    ```
 
    ```powershell Windows PowerShell
-   Start-Process $summer -Wait -NoNewWindow -ArgumentList '--headless','--main-pack','build\bundle\client.pck','--script',"$HOME\list_pack.gd",'--log-file','build\pack.log'
+   Run-Summer 60 build\pack.log '--headless','--main-pack','build\bundle\client.pck','--script',"$HOME\list_pack.gd"
    Select-String -Path build\pack.log -Pattern '^PACK '
    ```
 
