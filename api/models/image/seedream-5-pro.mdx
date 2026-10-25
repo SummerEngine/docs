@@ -17,6 +17,17 @@ Strong prompt understanding, multilingual text, and structured layouts.
 | Made by | ByteDance |
 | Commercial use | Yes |
 
+## Examples
+
+Real outputs of `image/seedream-5-pro`, each with the input that made it.
+
+<div className="summer-samples">
+<figure className="summer-sample"><img src="https://media.summer.games/preview/v3/create/image/gamedev/costumes.webp" alt="Seedream 5.0 Pro: Costume variant lineup for one original stylized game character, ELKA, a young adult woman ranger with long…" /><figcaption><strong>Prompt:</strong> Costume variant lineup for one original stylized game character, ELKA, a young adult woman ranger with long platinum-blonde braids and a calm, confident face. Four full-body versions of the same character side by side…</figcaption></figure>
+<figure className="summer-sample"><img src="https://media.summer.games/preview/v3/create/image/gamedev/level.webp" alt="Seedream 5.0 Pro: Isometric game level mockup of a cozy fishing island for a farming and fishing game: a small harbour with wooden docks…" /><figcaption><strong>Prompt:</strong> Isometric game level mockup of a cozy fishing island for a farming and fishing game: a small harbour with wooden docks and moored boats, a lighthouse on the rocks, a market square with striped awnings, vegetable plots,…</figcaption></figure>
+<figure className="summer-sample"><img src="https://media.summer.games/preview/v3/create/image/gamedev/tex-stone.webp" alt="Seedream 5.0 Pro: Mossy medieval cobblestone path: rounded grey and slate-blue stones of varied sizes set in dark earth, thin green moss…" /><figcaption><strong>Prompt:</strong> Mossy medieval cobblestone path: rounded grey and slate-blue stones of varied sizes set in dark earth, thin green moss in the joints, subtle wear and small chips. Seamless tileable texture for a game material, top-down…</figcaption></figure>
+<figure className="summer-sample"><img src="https://media.summer.games/preview/v3/create/image/gamedev/tex-lava.webp" alt="Seedream 5.0 Pro: Cooling volcanic lava: black cracked basalt crust plates separated by glowing orange and yellow molten seams, thin…" /><figcaption><strong>Prompt:</strong> Cooling volcanic lava: black cracked basalt crust plates separated by glowing orange and yellow molten seams, thin ember-red edges on the plates, the glow evenly distributed across the tile. Seamless tileable texture…</figcaption></figure>
+</div>
+
 ## Best for
 
 - Posters, title cards, and signage with legible in-world text.
@@ -91,6 +102,18 @@ job = res.json()["job"]
 print(job["state"], job["id"])
 ```
 
+```js MCP
+// Summer's MCP server: npx -y summer-engine@latest setup <agent> --yes
+summer_api_run({
+  model: "image/seedream-5-pro",
+  input: {
+    prompt: "a cozy pixel-art tavern at night, warm window light",
+    aspectRatio: "16:9"
+  },
+  out: "assets",
+})
+```
+
 </CodeGroup>
 
 The finished job has `state` `"done"` and `result.assets`: one entry per file, each with `assetId`, `fileUrl` (a Summer URL) and `thumbnailUrl`. Download the file into your project, or import it in Summer Engine by its asset id.
@@ -111,6 +134,17 @@ Send these fields in `input`. The full JSON Schema is `inputSchema` in [`GET /v1
 | `removeBackground` | boolean | Also cut out the background (transparent PNG); costs a removal per image. |
 | `seed` | integer | Same seed and prompt, similar image (Nano Banana models). 0 to 9007199254740991 |
 | `title` | string | up to 200 characters |
+
+## Related models
+
+<div className="summer-gallery">
+<CardGroup cols={2}>
+  <Card title="Nano Banana 2 Lite" href="/api/models/image/nano-banana-2" img="https://media.summer.games/preview/v3/create/image/image-gallery-nb2-potion-shop.webp">`image/nano-banana-2`: \$0.0484 per image (default)</Card>
+  <Card title="Grok Imagine 2" href="/api/models/image/grok-imagine-2" img="https://media.summer.games/preview/v3/create/image/image-gallery-grok2-rook-charge.webp">`image/grok-imagine-2`: \$0.06 per image</Card>
+  <Card title="Muse Image" href="/api/models/image/muse-image" img="https://media.summer.games/preview/v3/create/image/image-gallery-muse-moss-garden.webp">`image/muse-image`: \$0.01 per image</Card>
+  <Card title="Grok Imagine" href="/api/models/image/grok-imagine" img="/images/api/tiles/image.svg">`image/grok-imagine`: \$0.02 per image</Card>
+</CardGroup>
+</div>
 
 ## For agents
 

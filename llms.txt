@@ -138,7 +138,16 @@
 
 - [Summer API: game assets for any agent](https://docs.summerengine.com/api/overview.md): One API for game assets: 3D models, images, video, voice, sound effects and music from curated models tested for games. One sign-in, game-ready files in your Summer library. No markup on assets. Every model at the provider's list price.
 - [Summer API quickstart: your first 3D model](https://docs.summerengine.com/api/quickstart.md): Sign in once with summer login, check the price for free, then make a 3D treasure chest and save the GLB. One CLI command, or copy-paste code for curl, TypeScript and Python.
+- [The Summer API from Summer Studio](https://docs.summerengine.com/api/from-studio.md): Signed in to Summer Studio? Open the Developers hub to connect your coding agent, see every model and its price, and manage each connected app's spend limit.
 - [Use the Summer API from Claude Code, Codex, Cursor, Hermes and ChatGPT](https://docs.summerengine.com/api/agents.md): One step per agent: paste one prompt into Claude Code, Codex, Cursor or Hermes, or add one connector URL in ChatGPT or Claude. You sign in once and choose Allow with a spend limit.
+
+#### Quickstart per agent
+
+- [Summer API quickstart for Claude Code](https://docs.summerengine.com/api/quickstarts/claude-code.md): Connect Claude Code to the Summer API in one command, sign in once with a spend limit, and let it make 3D models, images, video, voice, sound and music for your game.
+- [Summer API quickstart for Codex](https://docs.summerengine.com/api/quickstarts/codex.md): Connect Codex to the Summer API in one command, sign in once with a spend limit, and let it make 3D models, images, video, voice, sound and music for your game.
+- [Summer API quickstart for Cursor](https://docs.summerengine.com/api/quickstarts/cursor.md): Connect Cursor to the Summer API in one command, sign in once with a spend limit, and let the Agent make 3D models, images, video, voice, sound and music for your game.
+- [Summer API quickstart for ChatGPT and Claude](https://docs.summerengine.com/api/quickstarts/chatgpt-and-claude.md): Add the Summer MCP to ChatGPT or Claude as a custom connector, sign in once with a spend limit, and make 3D models, images, video, voice, sound and music in the chat.
+- [Summer API quickstart for Hermes](https://docs.summerengine.com/api/quickstarts/hermes.md): Connect Hermes Agent to the Summer API in one command, sign in once with a spend limit, and let it make 3D models, images, video, voice, sound and music for your game.
 
 ### Models and pricing
 

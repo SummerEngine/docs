@@ -18,6 +18,17 @@ Meshy 3D with the rigging and animation path for characters.
 | Made by | Meshy |
 | Commercial use | Yes |
 
+## Examples
+
+Real outputs of `3d/meshy-6`, each with the input that made it.
+
+<div className="summer-samples">
+<figure className="summer-sample"><model-viewer src="https://media.summer.games/preview/v3/glb/asha-walking.glb" poster="https://media.summer.games/preview/v3/create/3d/rig-asha-walk.jpg" alt="Meshy 6: Asha, a stylized adult ranger with a bow, full body game character in an A-pose" camera-controls="" auto-rotate="" loading="lazy"><img slot="poster" src="https://media.summer.games/preview/v3/create/3d/rig-asha-walk.jpg" alt="Meshy 6: Asha, a stylized adult ranger with a bow, full body game character in an A-pose" /></model-viewer><figcaption><strong>From a picture, prompt:</strong> Asha, a stylized adult ranger with a bow, full body game character in an A-pose <a href="https://media.summer.games/preview/v3/glb/asha-walking.glb">GLB</a></figcaption></figure>
+<figure className="summer-sample"><model-viewer src="https://media.summer.games/preview/v3/glb/rook-walking.glb" poster="https://media.summer.games/preview/v3/create/3d/rig-rook-walk.jpg" alt="Meshy 6: Rook, a handmade cardboard knight, full body game character in an A-pose" camera-controls="" auto-rotate="" loading="lazy"><img slot="poster" src="https://media.summer.games/preview/v3/create/3d/rig-rook-walk.jpg" alt="Meshy 6: Rook, a handmade cardboard knight, full body game character in an A-pose" /></model-viewer><figcaption><strong>From a picture, prompt:</strong> Rook, a handmade cardboard knight, full body game character in an A-pose <a href="https://media.summer.games/preview/v3/glb/rook-walking.glb">GLB</a></figcaption></figure>
+<figure className="summer-sample"><model-viewer src="https://www.summerengine.com/api/media/assets/041e7a3f-7777-42fa-aeba-3c629f360435/original" poster="https://media.summer.games/preview/v3/create/3d/store/realm-princess.jpg" alt="Meshy 6: The Realm Princess, a stylized fantasy princess with long red hair and a flowing white and gold gown, full body game…" camera-controls="" auto-rotate="" loading="lazy"><img slot="poster" src="https://media.summer.games/preview/v3/create/3d/store/realm-princess.jpg" alt="Meshy 6: The Realm Princess, a stylized fantasy princess with long red hair and a flowing white and gold gown, full body game…" /></model-viewer><figcaption><strong>From a picture, prompt:</strong> The Realm Princess, a stylized fantasy princess with long red hair and a flowing white and gold gown, full body game character <a href="https://www.summerengine.com/api/media/assets/041e7a3f-7777-42fa-aeba-3c629f360435/original">GLB</a></figcaption></figure>
+<figure className="summer-sample"><model-viewer src="https://media.summer.games/preview/v3/glb/mp-meshy-6-moss.glb" poster="https://media.summer.games/preview/v3/model-pages/meshy-6/moss-turntable.jpg" alt="Meshy 6: Moss, a small forest creature with leaf ears, a mossy round body and big dark eyes" camera-controls="" auto-rotate="" loading="lazy"><img slot="poster" src="https://media.summer.games/preview/v3/model-pages/meshy-6/moss-turntable.jpg" alt="Meshy 6: Moss, a small forest creature with leaf ears, a mossy round body and big dark eyes" /></model-viewer><figcaption><strong>From a picture, prompt:</strong> Moss, a small forest creature with leaf ears, a mossy round body and big dark eyes <a href="https://media.summer.games/preview/v3/glb/mp-meshy-6-moss.glb">GLB</a></figcaption></figure>
+</div>
+
 ## Best for
 
 - Characters that should come out rigged and ready for walk, run, and attack animations.
@@ -93,6 +104,20 @@ job = res.json()["job"]
 print(job["state"], job["id"])
 ```
 
+```js MCP
+// Summer's MCP server: npx -y summer-engine@latest setup <agent> --yes
+summer_api_run({
+  model: "3d/meshy-6",
+  input: {
+    kind: "text-to-3d",
+    prompt: "a stylized treasure chest, game prop"
+  },
+  out: "assets",
+})
+// It answers `next` while the job runs: follow it to the end.
+summer_api_job({ jobId: "<jobId>", wait: true, out: "assets" })
+```
+
 </CodeGroup>
 
 The finished job has `state` `"done"` and `result.assets`: one entry per file, each with `assetId`, `fileUrl` (a Summer URL) and `thumbnailUrl`. Download the file into your project, or import it in Summer Engine by its asset id.
@@ -118,6 +143,17 @@ Send these fields in `input`. The full JSON Schema is `inputSchema` in [`GET /v1
 | `targetPolycount` | integer | About how many polygons, e.g. 800 for a low-poly kit piece. 100 to 300000 |
 | `topology` | `triangle`, `quad` | quad: a quad mesh (where the model can). |
 | `seed` | integer | 0 to 9007199254740991 |
+
+## Related models
+
+<div className="summer-gallery">
+<CardGroup cols={2}>
+  <Card title="Hunyuan 3D Pro" href="/api/models/3d/hunyuan-3d" img="https://media.summer.games/preview/v3/model-pages/hunyuan-3d-3-1-pro/moss-turntable.jpg">`3d/hunyuan-3d`: \$0.525 per model (default)</Card>
+  <Card title="Rodin 2.5 Fast" href="/api/models/3d/rodin-2-5-fast" img="https://media.summer.games/preview/v3/create/3d/models/rodin-2-5-fast-chest.jpg">`3d/rodin-2.5-fast`: \$0.10 per model</Card>
+  <Card title="Hunyuan 3D Rapid" href="/api/models/3d/hunyuan-3d-rapid" img="https://media.summer.games/preview/v3/model-pages/hunyuan-3d-3-1-rapid/moss-preview.jpg">`3d/hunyuan-3d-rapid`: \$0.225 per model</Card>
+  <Card title="Trellis 2" href="/api/models/3d/trellis-2" img="/images/api/tiles/3d.svg">`3d/trellis-2`: \$0.348 per model</Card>
+</CardGroup>
+</div>
 
 ## For agents
 

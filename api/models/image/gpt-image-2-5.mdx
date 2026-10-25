@@ -17,6 +17,17 @@ OpenAI's top-ranked image model, with real light, exact text and faithful edits.
 | Made by | OpenAI |
 | Commercial use | Yes |
 
+## Examples
+
+Real outputs of `image/gpt-image-2.5`, each with the input that made it.
+
+<div className="summer-samples">
+<figure className="summer-sample"><img src="https://media.summer.games/preview/v3/create/image/gamedev/turnaround.webp" alt="GPT Image 2.5: Character turnaround sheet for an original stylized 3D game heroine, MIRA, a young adult sky-pirate mechanic:…" /><figcaption><strong>Prompt:</strong> Character turnaround sheet for an original stylized 3D game heroine, MIRA, a young adult sky-pirate mechanic: copper-red hair in a short braided bob, light freckles, brass aviator goggles pushed up on her forehead, a…</figcaption></figure>
+<figure className="summer-sample"><img src="https://media.summer.games/preview/v3/create/image/gamedev/capsule-main.webp" alt="GPT Image 2.5: Steam main capsule artwork for an original cozy fantasy adventure game titled 'LANTERN HOLLOW'. A young adult woman…" /><figcaption><strong>Prompt:</strong> Steam main capsule artwork for an original cozy fantasy adventure game titled "LANTERN HOLLOW". A young adult woman lantern keeper with a long auburn braid and a hooded forest-green cloak stands on a mossy hill at dusk…</figcaption></figure>
+<figure className="summer-sample"><img src="https://media.summer.games/preview/v3/create/image/gamedev/props.webp" alt="GPT Image 2.5: Game prop sheet: eight original fantasy props laid out in a clean 4 by 2 grid on a neutral light-grey background, each…" /><figcaption><strong>Prompt:</strong> Game prop sheet: eight original fantasy props laid out in a clean 4 by 2 grid on a neutral light-grey background, each isolated with even spacing, shown in the same three-quarter view with one soft top light and a…</figcaption></figure>
+<figure className="summer-sample"><img src="https://media.summer.games/preview/v3/create/image/gamedev/environment.webp" alt="GPT Image 2.5: Environment concept art for an original adventure game level: a monastery village carved into towering red sandstone…" /><figcaption><strong>Prompt:</strong> Environment concept art for an original adventure game level: a monastery village carved into towering red sandstone cliffs above a turquoise river gorge, rope bridges and wooden walkways linking cave dwellings,…</figcaption></figure>
+</div>
+
 ## Best for
 
 - Key art and store capsules with exact titles.
@@ -92,6 +103,18 @@ job = res.json()["job"]
 print(job["state"], job["id"])
 ```
 
+```js MCP
+// Summer's MCP server: npx -y summer-engine@latest setup <agent> --yes
+summer_api_run({
+  model: "image/gpt-image-2.5",
+  input: {
+    prompt: "a cozy pixel-art tavern at night, warm window light",
+    aspectRatio: "16:9"
+  },
+  out: "assets",
+})
+```
+
 </CodeGroup>
 
 The finished job has `state` `"done"` and `result.assets`: one entry per file, each with `assetId`, `fileUrl` (a Summer URL) and `thumbnailUrl`. Download the file into your project, or import it in Summer Engine by its asset id.
@@ -112,6 +135,17 @@ Send these fields in `input`. The full JSON Schema is `inputSchema` in [`GET /v1
 | `removeBackground` | boolean | Also cut out the background (transparent PNG); costs a removal per image. |
 | `seed` | integer | Same seed and prompt, similar image (Nano Banana models). 0 to 9007199254740991 |
 | `title` | string | up to 200 characters |
+
+## Related models
+
+<div className="summer-gallery">
+<CardGroup cols={2}>
+  <Card title="Nano Banana 2 Lite" href="/api/models/image/nano-banana-2" img="https://media.summer.games/preview/v3/create/image/image-gallery-nb2-potion-shop.webp">`image/nano-banana-2`: \$0.0484 per image (default)</Card>
+  <Card title="Grok Imagine 2" href="/api/models/image/grok-imagine-2" img="https://media.summer.games/preview/v3/create/image/image-gallery-grok2-rook-charge.webp">`image/grok-imagine-2`: \$0.06 per image</Card>
+  <Card title="Muse Image" href="/api/models/image/muse-image" img="https://media.summer.games/preview/v3/create/image/image-gallery-muse-moss-garden.webp">`image/muse-image`: \$0.01 per image</Card>
+  <Card title="Grok Imagine" href="/api/models/image/grok-imagine" img="/images/api/tiles/image.svg">`image/grok-imagine`: \$0.02 per image</Card>
+</CardGroup>
+</div>
 
 ## For agents
 

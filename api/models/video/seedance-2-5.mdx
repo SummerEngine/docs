@@ -17,6 +17,17 @@ Seedance 2.5: a video model for your game.
 | Made by | ByteDance |
 | Commercial use | Yes |
 
+## Examples
+
+Real outputs of `video/seedance-2.5`, each with the input that made it.
+
+<div className="summer-samples">
+<figure className="summer-sample"><video controls muted loop playsInline preload="metadata" poster="https://media.summer.games/preview/v3/create/video/flagship/flagship-seedance-card.webp" src="https://media.summer.games/preview/v3/create/video/flagship/flagship-seedance-card.mp4" /><figcaption><strong>From a picture, prompt:</strong> A bolt of violet lightning strikes the raised pendant in the first instant. Ribbons of blue light spiral around her as the camera orbits a full 360 degrees; the hoodie dissolves and sleek white and cobalt armor plates…</figcaption></figure>
+<figure className="summer-sample"><video controls muted loop playsInline preload="metadata" poster="https://media.summer.games/preview/v3/create/video/trend/trend-henshin-anime.jpg" src="https://media.summer.games/preview/v3/create/video/trend/trend-henshin-anime.mp4" /><figcaption><strong>From a picture, prompt:</strong> Henshin transformation: she raises the glowing pendant and ribbons of blue light spiral up around her from feet to head while the camera orbits 180 degrees around her. The hoodie dissolves into sleek white and cobalt…</figcaption></figure>
+<figure className="summer-sample"><video controls muted loop playsInline preload="metadata" poster="https://media.summer.games/preview/v3/create/video/trend/trend-anime-duel.jpg" src="https://media.summer.games/preview/v3/create/video/trend/trend-anime-duel.mp4" /><figcaption><strong>From a picture, prompt:</strong> One continuous tracking shot: the two fighters rush in and clash in a flurry of fast strikes, sparks flying where the blades meet. The crimson fighter leaps and spins over her rival while the camera whips around them…</figcaption></figure>
+<figure className="summer-sample"><video controls muted loop playsInline preload="metadata" poster="https://media.summer.games/preview/v3/create/video/trend/trend-toy-unboxing.jpg" src="https://media.summer.games/preview/v3/create/video/trend/trend-toy-unboxing.mp4" /><figcaption><strong>From a picture, prompt:</strong> Satisfying unboxing: the hands slide the figure out of the box and set it down on the desk. The little vinyl heroine blinks, stretches, comes to life, twirls her tiny sword and strikes a proud pose while the camera…</figcaption></figure>
+</div>
+
 ## Best for
 
 - Hero shots for a trailer with sweeping camera moves.
@@ -95,6 +106,20 @@ job = res.json()["job"]
 print(job["state"], job["id"])
 ```
 
+```js MCP
+// Summer's MCP server: npx -y summer-engine@latest setup <agent> --yes
+summer_api_run({
+  model: "video/seedance-2.5",
+  input: {
+    prompt: "a slow pan over a misty forest village at dawn",
+    duration: 5
+  },
+  out: "assets",
+})
+// It answers `next` while the job runs: follow it to the end.
+summer_api_job({ jobId: "<jobId>", wait: true, out: "assets" })
+```
+
 </CodeGroup>
 
 The finished job has `state` `"done"` and `result.assets`: one entry per file, each with `assetId`, `fileUrl` (a Summer URL) and `thumbnailUrl`. Download the file into your project, or import it in Summer Engine by its asset id.
@@ -111,6 +136,17 @@ Send these fields in `input`. The full JSON Schema is `inputSchema` in [`GET /v1
 | `aspectRatio` | `16:9`, `9:16`, `1:1`, `4:3`, `3:4`, `21:9`, `3:2`, `2:3`, `auto` | Default `"16:9"`. |
 | `negativePrompt` | string | What the clip must not show. up to 1000 characters |
 | `resolution` | `720p`, `1080p`, `4k`, `768P`, `1080P` | Only a quality the model offers; leave out for its default. |
+
+## Related models
+
+<div className="summer-gallery">
+<CardGroup cols={2}>
+  <Card title="Kling 3.0 Standard" href="/api/models/video/kling-3" img="/images/api/tiles/video.svg">`video/kling-3`: \$0.14 per second (default)</Card>
+  <Card title="Gemini Omni Flash" href="/api/models/video/gemini-omni-flash" img="/images/api/tiles/video.svg">`video/gemini-omni-flash`: \$0.125 per second</Card>
+  <Card title="Kling 3.0 Pro" href="/api/models/video/kling-3-pro" img="https://media.summer.games/preview/v3/create/video/flagship/flagship-kling-card-v2.webp">`video/kling-3-pro`: \$0.168 per second</Card>
+  <Card title="Veo 3.1 Lite" href="/api/models/video/veo3-1-lite" img="https://media.summer.games/preview/v3/create/video/models/frontier-hero-veo-3-1-lite.jpg">`video/veo3.1-lite`: \$0.05 per second</Card>
+</CardGroup>
+</div>
 
 ## For agents
 

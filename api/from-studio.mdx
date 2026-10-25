@@ -1,0 +1,48 @@
+---
+title: "The Summer API from Summer Studio"
+sidebarTitle: "From Studio"
+description: "Signed in to Summer Studio? Open the Developers hub to connect your coding agent, see every model and its price, and manage each connected app's spend limit."
+icon: "layout-dashboard"
+---
+
+import DefaultPrices from "/snippets/api-default-prices.mdx";
+
+You are signed in to Summer Studio. Everything your agent needs for the Summer API is one click away, in the same account: the same credits, the same library, the same sign-in.
+
+## Open the Developers hub
+
+In Studio, open **Developers**{/* DEVHUB_ROUTE */}. It has:
+
+- **Connect your agent**: the one command for Claude Code, Codex, Cursor or Hermes, and the connector address for ChatGPT and Claude.
+- **Models and prices**: every model with its price, the same list as [models and pricing](/api/models).
+- **Quickstart**: your first asset in three steps.
+
+You can also ask **Ask Summer**, the chat in Studio: "How do I let my coding agent make assets?" It opens the hub and shows the models and prices.
+
+## Connect your agent
+
+Pick your agent. Each guide is one command and one sign-in:
+
+<CardGroup cols={3}>
+  <Card title="Claude Code" icon="terminal" href="/api/quickstarts/claude-code" />
+  <Card title="Codex" icon="square-terminal" href="/api/quickstarts/codex" />
+  <Card title="Cursor" icon="mouse-pointer-2" href="/api/quickstarts/cursor" />
+  <Card title="Hermes" icon="feather" href="/api/quickstarts/hermes" />
+  <Card title="ChatGPT and Claude" icon="message-circle" href="/api/quickstarts/chatgpt-and-claude" />
+</CardGroup>
+
+When the agent signs in, the browser shows the Summer sign-in page with your Studio account already signed in. Pick a spend limit and choose **Allow**.
+
+## Where things are in Studio
+
+| What | Where |
+|---|---|
+| Your agents and apps, each with its spend limit and **Revoke** | [Settings > Connected apps](https://summerengine.com/settings/connected-apps) |
+| Credits and top-ups | [Credits](https://summerengine.com/studio/credits) |
+| Everything your agent made | Your Summer library in Studio, next to what you made in Studio |
+
+## What it costs
+
+Every model has one public price: the provider's list price. No markup on assets. Your agent prices each job for free before it spends (`summer api estimate`, or [`POST /v1/estimate`](/api/jobs#know-the-price-first)), and jobs use your paid Summer credits: your plan's credits and your top-ups.
+
+<DefaultPrices />

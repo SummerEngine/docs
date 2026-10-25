@@ -1,0 +1,56 @@
+---
+title: "Summer API quickstart for Codex"
+sidebarTitle: "Codex"
+description: "Connect Codex to the Summer API in one command, sign in once with a spend limit, and let it make 3D models, images, video, voice, sound and music for your game."
+icon: "square-terminal"
+---
+
+import DefaultPrices from "/snippets/api-default-prices.mdx";
+
+Codex (the CLI or the app) makes your game's assets through the Summer API: 3D models, images, video, voice, sound effects and music, saved straight into your project.
+
+<Steps>
+  <Step title="Connect">
+    ```bash
+    npx -y summer-engine@latest setup codex --yes
+    ```
+
+    This adds Summer's MCP server to `~/.codex/config.toml` and installs the `summer-api` skill in `~/.agents/skills`. Start a new Codex session after it runs.
+  </Step>
+  <Step title="Sign in once">
+    ```bash
+    npx -y summer-engine@latest login
+    ```
+
+    The browser opens the Summer sign-in page. Sign in with your Summer account, pick a spend limit for this agent and choose **Allow**. The sign-in renews itself, so you do this once per computer. There are no API keys to copy.
+  </Step>
+  <Step title="Ask for assets">
+    Ask in plain words, in your project folder:
+    
+    ```text Prompt wrap
+    Use the Summer API to make a low-poly wooden barrel, a red health potion icon with a transparent background, and a short sword-swing sound for my game. Estimate first, tell me the total, then save the files in assets/.
+    ```
+    
+    The agent uses the `summer-api` skill: it picks a model for each asset, prices the jobs with `summer api estimate`, asks you, then runs them with `summer api run --download assets` (or `--batch` for many). Every file is also saved to your Summer library.
+  </Step>
+</Steps>
+
+<Tip>
+Codex can also use the hosted Summer MCP, with no local install: `codex mcp add summer-cloud --url https://mcp.summerengine.com/mcp`, then `codex mcp login summer-cloud`.
+</Tip>
+
+## What it costs
+
+Every model has one public price: per model, image or clip, per second, or per 1,000 characters. It is the provider's list price. No markup on assets. A failed job costs nothing. The defaults:
+
+<DefaultPrices />
+
+- **Priced before it spends.** The agent reads prices from `summer api models` and prices each job for free with `summer api estimate` ([`POST /v1/estimate`](/api/jobs#know-the-price-first)). Ask it for the total before a big batch.
+- **Paid from your Summer credits.** Jobs use your paid credits: your plan's credits and your [top-ups](https://summerengine.com/studio/credits). No plan is needed to start.
+- **A limit per agent.** You pick a spend limit when you choose **Allow**. Change it or revoke the agent any time in [Settings > Connected apps](https://summerengine.com/settings/connected-apps). See [sign-in and limits](/api/sign-in).
+
+## Next
+
+- [Models and pricing](/api/models): every model with examples and its price.
+- [Jobs](/api/jobs): queued, running and done, batches and webhooks.
+- [Errors](/api/errors): `no_credits`, `over_limit` and what to show the person.

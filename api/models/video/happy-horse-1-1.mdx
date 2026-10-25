@@ -17,6 +17,16 @@ Native audio with multilingual lip sync, written straight into the prompt.
 | Made by | Alibaba |
 | Commercial use | Yes |
 
+## Examples
+
+Real outputs of `video/happy-horse-1.1`, each with the input that made it.
+
+<div className="summer-samples">
+<figure className="summer-sample"><video controls muted loop playsInline preload="metadata" poster="https://media.summer.games/preview/v3/create/video/models/frontier-hero-happy-horse-1-1.jpg" src="https://media.summer.games/preview/v3/create/video/models/frontier-hero-happy-horse-1-1.mp4" /><figcaption><strong>From a picture, prompt:</strong> She draws the katana in one fluid motion and spins into a slow-motion sweeping cut; rain droplets burst away from the blade and her hair and sash swirl; she finishes in a poised stance as the camera circles slowly…</figcaption></figure>
+<figure className="summer-sample"><video controls muted loop playsInline preload="metadata" poster="https://media.summer.games/preview/v3/create/video/models/happy-horse-1-1-fox.jpg" src="https://media.summer.games/preview/v3/create/video/models/happy-horse-1-1-fox.mp4" /><figcaption><strong>Prompt:</strong> A cheerful cartoon fox girl adventurer in a green scarf skips across a sunny meadow toward the camera, waves and laughs, soft 3D animated film style, gentle camera push in</figcaption></figure>
+<figure className="summer-sample"><video controls muted loop playsInline preload="metadata" poster="https://media.summer.games/preview/v3/create/video/models/happy-horse-1-1-asha.jpg" src="https://media.summer.games/preview/v3/create/video/models/happy-horse-1-1-asha.mp4" /><figcaption><strong>From a picture, prompt:</strong> She turns her head toward the camera, the falcon on her shoulder ruffles its feathers, a light breeze moves her braid, slow push in</figcaption></figure>
+</div>
+
 ## Best for
 
 - Talking NPC and narrator clips with lines written in the prompt.
@@ -93,6 +103,20 @@ job = res.json()["job"]
 print(job["state"], job["id"])
 ```
 
+```js MCP
+// Summer's MCP server: npx -y summer-engine@latest setup <agent> --yes
+summer_api_run({
+  model: "video/happy-horse-1.1",
+  input: {
+    prompt: "a slow pan over a misty forest village at dawn",
+    duration: 5
+  },
+  out: "assets",
+})
+// It answers `next` while the job runs: follow it to the end.
+summer_api_job({ jobId: "<jobId>", wait: true, out: "assets" })
+```
+
 </CodeGroup>
 
 The finished job has `state` `"done"` and `result.assets`: one entry per file, each with `assetId`, `fileUrl` (a Summer URL) and `thumbnailUrl`. Download the file into your project, or import it in Summer Engine by its asset id.
@@ -109,6 +133,17 @@ Send these fields in `input`. The full JSON Schema is `inputSchema` in [`GET /v1
 | `aspectRatio` | `16:9`, `9:16`, `1:1`, `4:3`, `3:4`, `21:9`, `3:2`, `2:3`, `auto` | Default `"16:9"`. |
 | `negativePrompt` | string | What the clip must not show. up to 1000 characters |
 | `resolution` | `720p`, `1080p`, `4k`, `768P`, `1080P` | Only a quality the model offers; leave out for its default. |
+
+## Related models
+
+<div className="summer-gallery">
+<CardGroup cols={2}>
+  <Card title="Kling 3.0 Standard" href="/api/models/video/kling-3" img="/images/api/tiles/video.svg">`video/kling-3`: \$0.14 per second (default)</Card>
+  <Card title="Gemini Omni Flash" href="/api/models/video/gemini-omni-flash" img="/images/api/tiles/video.svg">`video/gemini-omni-flash`: \$0.125 per second</Card>
+  <Card title="Kling 3.0 Pro" href="/api/models/video/kling-3-pro" img="https://media.summer.games/preview/v3/create/video/flagship/flagship-kling-card-v2.webp">`video/kling-3-pro`: \$0.168 per second</Card>
+  <Card title="Veo 3.1 Lite" href="/api/models/video/veo3-1-lite" img="https://media.summer.games/preview/v3/create/video/models/frontier-hero-veo-3-1-lite.jpg">`video/veo3.1-lite`: \$0.05 per second</Card>
+</CardGroup>
+</div>
 
 ## For agents
 

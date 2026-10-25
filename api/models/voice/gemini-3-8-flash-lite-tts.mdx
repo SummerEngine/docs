@@ -18,6 +18,14 @@ The lighter Gemini 3.8 speech model, for more lines for less.
 | Made by | Google |
 | Commercial use | Yes |
 
+## Examples
+
+Real outputs of `voice/gemini-3.8-flash-lite-tts`, each with the input that made it.
+
+<div className="summer-samples">
+<figure className="summer-sample"><img src="https://media.summer.games/preview/v3/create/image/image-fan-neon-courier.webp" alt="Wren, shopkeeper" /><audio controls preload="none" src="https://media.summer.games/preview/v3/create/audio/speech-gemini-lite.mp3" /><figcaption><strong>Words:</strong> Welcome back, adventurer! Potions on the left, swords on the right, and please do not touch the dragon egg. Again.</figcaption></figure>
+</div>
+
 ## Best for
 
 - Bulk barks and callouts for enemies and crowds.
@@ -89,6 +97,17 @@ job = res.json()["job"]
 print(job["state"], job["id"])
 ```
 
+```js MCP
+// Summer's MCP server: npx -y summer-engine@latest setup <agent> --yes
+summer_api_run({
+  model: "voice/gemini-3.8-flash-lite-tts",
+  input: {
+    text: "The gate is open. Go, before the guards come back."
+  },
+  out: "assets",
+})
+```
+
 </CodeGroup>
 
 The finished job has `state` `"done"` and `result.assets`: one entry per file, each with `assetId`, `fileUrl` (a Summer URL) and `thumbnailUrl`. Download the file into your project, or import it in Summer Engine by its asset id.
@@ -143,6 +162,17 @@ Send these fields in `input`. The full JSON Schema is `inputSchema` in [`GET /v1
 | Sadaltager | `Sadaltager` |
 
 </Accordion>
+
+## Related models
+
+<div className="summer-gallery">
+<CardGroup cols={2}>
+  <Card title="Expressive v3" href="/api/models/voice/expressive-v3" img="/images/api/tiles/voice.svg">`voice/expressive-v3`: \$0.119 per 1,000 characters (default)</Card>
+  <Card title="Multilingual v2" href="/api/models/voice/multilingual-v2" img="/images/api/tiles/voice.svg">`voice/multilingual-v2`: \$0.119 per 1,000 characters</Card>
+  <Card title="Inworld TTS-1.5 Max" href="/api/models/voice/inworld-tts-1-5-max" img="https://media.summer.games/preview/v3/create/image/image-gallery-muse-moss-garden.webp">`voice/inworld-tts-1.5-max`: \$0.01 per 1,000 characters</Card>
+  <Card title="xAI TTS" href="/api/models/voice/xai-tts-v1" img="https://media.summer.games/preview/v3/create/image/image-fan-nova-chrome.webp">`voice/xai-tts-v1`: \$0.015 per 1,000 characters</Card>
+</CardGroup>
+</div>
 
 ## For agents
 

@@ -39,12 +39,15 @@ const SPEC = "/scripts/api/sources/openapi.json";
 const MODELS_PAGE = "api/models";
 const MODELS_DIR = "api/models";
 const REFERENCE_DIR = "api/reference";
+const PRICES_SNIPPET = "snippets/api-default-prices";
 const TAB = "Summer API";
 
 const readJson = (p) => JSON.parse(readFileSync(p, "utf8"));
 const catalog = readJson(join(SOURCES, "models.json"));
 const notes = existsSync(join(SOURCES, "model-notes.json")) ? readJson(join(SOURCES, "model-notes.json")).notes : {};
 const spec = readJson(join(SOURCES, "openapi.json"));
+// Real outputs per model, pinned by scripts/api/samples.mjs from the summerengine.com/create examples.
+const samples = existsSync(join(SOURCES, "model-samples.json")) ? readJson(join(SOURCES, "model-samples.json")).samples : {};
 
 // ------------------------------------------------------------------ data
 
@@ -225,7 +228,24 @@ function jobCode(model, input) {
     'print(job["state"], job["id"])',
     "```",
   ];
-  return ["<CodeGroup>", "", ...cli, "", ...curl, "", ...ts, "", ...py, "", "</CodeGroup>"].join("\n");
+  const mcp = [
+    "```js MCP",
+    "// Summer's MCP server: npx -y summer-engine@latest setup <agent> --yes",
+    `summer_api_run({\n  model: ${JSON.stringify(model)},\n  input: ${jsValue(input, "  ")},\n  out: "assets",\n})`,
+    ...(LONG.has(model.split("/")[0]) ? ["// It answers `next` while the job runs: follow it to the end.", 'summer_api_job({ jobId: "<jobId>", wait: true, out: "assets" })'] : []),
+    "```",
+  ];
+  return ["<CodeGroup>", "", ...cli, "", ...curl, "", ...ts, "", ...py, "", ...mcp, "", "</CodeGroup>"].join("\n");
+}
+
+/** A JavaScript object literal: unquoted keys where they are plain names. */
+function jsValue(v, pad = "") {
+  if (Array.isArray(v)) return `[${v.map((x) => jsValue(x, pad)).join(", ")}]`;
+  if (v && typeof v === "object") {
+    const inner = Object.entries(v).map(([k, x]) => `${pad}  ${/^[A-Za-z_$][\w$]*$/.test(k) ? k : JSON.stringify(k)}: ${jsValue(x, `${pad}  `)}`);
+    return `{\n${inner.join(",\n")}\n${pad}}`;
+  }
+  return JSON.stringify(v);
 }
 
 // ------------------------------------------------------------------ render
@@ -326,6 +346,75 @@ function voicesSection(m) {
   ];
 }
 
+// A JSX attribute string: JSX strings take no escapes, so quotes and braces never reach one.
+const attr = (v) => `"${String(v).replace(/"/g, "'").replace(/[{}<>\\]/g, "")}"`;
+const samplesOf = (m) => samples[m.id] ?? [];
+const TILE = (cap) => `/images/api/tiles/${cap}.svg`;
+/** The picture that stands for a model: its first sample's still, or the neutral tile of its capability. */
+const thumbnail = (m) => {
+  const s = samplesOf(m)[0];
+  return s ? (s.kind === "image" ? s.url : s.poster ?? TILE(m.capability)) : TILE(m.capability);
+};
+const clip = (text, max = 220) => {
+  const flat = String(text ?? "").replace(/\s+/g, " ").trim();
+  return flat.length > max ? `${flat.slice(0, max - 1).replace(/\s+\S*$/, "")}…` : flat;
+};
+
+function sampleMedia(s, m) {
+  const alt = attr(`${m.name}: ${clip(s.prompt, 120)}`);
+  switch (s.kind) {
+    case "image":
+      return `<img src=${attr(s.url)} alt=${alt} />`;
+    case "video":
+      return `<video controls muted loop playsInline preload="metadata" poster=${attr(s.poster)} src=${attr(s.url)} />`;
+    case "3d":
+      // model-viewer (loaded by model-viewer.js) turns the turntable still into a model to spin; without it the still shows.
+      return `<model-viewer src=${attr(s.url)} poster=${attr(s.poster)} alt=${alt} camera-controls="" auto-rotate="" loading="lazy"><img slot="poster" src=${attr(s.poster)} alt=${alt} /></model-viewer>`;
+    case "audio":
+      return [s.poster ? `<img src=${attr(s.poster)} alt=${attr(s.title ?? m.name)} />` : "", `<audio controls preload="none" src=${attr(s.url)} />`].filter(Boolean).join("");
+    default:
+      throw new Error(`model ${m.id}: unknown sample kind ${s.kind}`);
+  }
+}
+
+function examplesSection(m) {
+  const list = samplesOf(m);
+  if (!list.length) return [];
+  const label = (s) => (s.kind === "audio" ? "Words" : s.fromPicture ? "From a picture, prompt" : "Prompt");
+  return [
+    "## Examples",
+    "",
+    `Real outputs of ${code(m.id)}, each with the input that made it.`,
+    "",
+    '<div className="summer-samples">',
+    ...list.map((s) =>
+      [
+        '<figure className="summer-sample">',
+        sampleMedia(s, m),
+        `<figcaption><strong>${label(s)}:</strong> ${escapeProse(clip(s.prompt))}${s.kind === "3d" ? ` <a href=${attr(s.url)}>GLB</a>` : ""}</figcaption>`,
+        "</figure>",
+      ].join(""),
+    ),
+    "</div>",
+    "",
+  ];
+}
+
+function relatedSection(m) {
+  const list = byCapability[m.capability].filter((x) => x.id !== m.id).slice(0, 4);
+  if (!list.length) return [];
+  return [
+    "## Related models",
+    "",
+    '<div className="summer-gallery">',
+    "<CardGroup cols={2}>",
+    ...list.map((x) => `  <Card title=${attr(x.name)} href=${attr(`/${modelPath(x)}`)} img=${attr(thumbnail(x))}>${code(x.id)}: ${priceText(x)}${isDefault(x) ? " (default)" : ""}</Card>`),
+    "</CardGroup>",
+    "</div>",
+    "",
+  ];
+}
+
 function renderModelPage(m) {
   const cap = CAP[m.capability];
   const { tagline, uses } = noteLines(m);
@@ -361,6 +450,7 @@ function renderModelPage(m) {
     "|---|---|",
     ...facts.map(([k, v]) => `| ${k} | ${v} |`),
     "",
+    ...examplesSection(m),
     ...(best.length ? ["## Best for", "", ...best.map((b) => `- ${escapeProse(b)}`), ""] : []),
     priceSection(m),
     "",
@@ -375,6 +465,7 @@ function renderModelPage(m) {
     inputSection(m),
     "",
     ...voicesSection(m),
+    ...relatedSection(m),
     "## For agents",
     "",
     `This page as Markdown: [${DOCS_URL}/${modelPath(m)}.md](${DOCS_URL}/${modelPath(m)}.md). The live record with the JSON Schema: ${code(`GET ${BASE_URL}/models/${m.id}`)}, public, no sign-in.`,
@@ -397,6 +488,29 @@ function sampleListing() {
     aliases: Object.fromEntries(Object.entries(aliases).slice(0, 2)),
     models: [{ ...m, inputSchema: { type: "object", properties } }],
   };
+}
+
+/** One row per job: the default id, the model it runs and its price. */
+function defaultsTable() {
+  const out = ["| I need | Model id | Runs | Price |", "|---|---|---|---|"];
+  for (const c of CAPABILITIES) {
+    const alias = `${c.id}/default`;
+    const target = models.find((m) => m.id === aliases[alias]);
+    if (target) out.push(`| ${c.blurb.split(".")[0]} | ${code(alias)} | [${cell(target.name)}](/${modelPath(target)}) | ${priceText(target)} |`);
+  }
+  return out;
+}
+
+/** The defaults and their prices, for the hand-written pages (they import it; prices are never typed by hand). */
+function renderPricesSnippet() {
+  return [
+    banner("GET /v1/models"),
+    "",
+    ...defaultsTable(),
+    "",
+    `Every other model and its price: [models and pricing](/${MODELS_PAGE}). Prices checked up to ${updatedAt}.`,
+    "",
+  ].join("\n");
 }
 
 function renderModelsPage() {
@@ -431,14 +545,8 @@ function renderModelsPage() {
     "",
     "Send the default id when you have no preference. It runs the model Summer tests first for that job, and it moves when a better one passes.",
     "",
-    "| I need | Model id | Runs | Price |",
-    "|---|---|---|---|",
+    ...defaultsTable(),
   ];
-  for (const c of CAPABILITIES) {
-    const alias = `${c.id}/default`;
-    const target = models.find((m) => m.id === aliases[alias]);
-    if (target) out.push(`| ${c.blurb.split(".")[0]} | ${code(alias)} | [${cell(target.name)}](/${modelPath(target)}) | ${priceText(target)} |`);
-  }
   for (const c of CAPABILITIES) {
     const list = byCapability[c.id];
     if (!list.length) continue;
@@ -448,6 +556,12 @@ function renderModelsPage() {
       `## ${c.title}`,
       "",
       `${c.blurb} Output: ${formatsOf(list)}.`,
+      "",
+      '<div className="summer-gallery">',
+      "<CardGroup cols={3}>",
+      ...list.map((m) => `  <Card title=${attr(`${m.name}${isDefault(m) ? " (default)" : ""}`)} href=${attr(`/${modelPath(m)}`)} img=${attr(thumbnail(m))}>${priceText(m)}${typicalTime(m) ? `, ${typicalTime(m)}` : ""}</Card>`),
+      "</CardGroup>",
+      "</div>",
       "",
       `| Model | Id | Price |${timed ? " Typical time |" : ""}`,
       `|---|---|---|${timed ? "---|" : ""}`,
@@ -540,6 +654,7 @@ for (const r of reference) {
 }
 
 put(MODELS_PAGE, renderModelsPage());
+put(PRICES_SNIPPET, renderPricesSnippet());
 for (const m of models) put(modelPath(m), renderModelPage(m));
 
 // Summer Router: its own tab, from the pinned registry and default caps.
@@ -549,7 +664,8 @@ for (const [path, content] of router.pages) put(path, content);
 
 // ------------------------------------------------------------- navigation
 
-const HAND_WRITTEN = ["api/overview", "api/quickstart", "api/agents", "api/sign-in", "api/jobs", "api/errors"];
+const QUICKSTARTS = ["claude-code", "codex", "cursor", "chatgpt-and-claude", "hermes"].map((p) => `api/quickstarts/${p}`);
+const HAND_WRITTEN = ["api/overview", "api/quickstart", "api/from-studio", "api/agents", ...QUICKSTARTS, "api/sign-in", "api/jobs", "api/errors"];
 const REFERENCE_ORDER = ["GET /models", "GET /models/{model}", "POST /estimate", "POST /jobs", "GET /jobs/{jobId}", "GET /jobs/{jobId}/events", "POST /jobs/{jobId}/cancel", "POST /files", "POST /files/complete", "GET /voices", "GET /voices/preview/{token}", "POST /webhooks/secret", "GET /webhooks/deliveries", "GET /key", "GET /balance"];
 const rank = (r) => {
   const i = REFERENCE_ORDER.indexOf(`${r.method} ${r.path}`);
@@ -558,7 +674,7 @@ const rank = (r) => {
 const tab = {
   tab: TAB,
   groups: [
-    { group: "Start here", pages: ["api/overview", "api/quickstart", "api/agents"] },
+    { group: "Start here", pages: ["api/overview", "api/quickstart", "api/from-studio", "api/agents", { group: "Quickstart per agent", icon: "bot", pages: QUICKSTARTS }] },
     {
       group: "Models and pricing",
       pages: [MODELS_PAGE, ...CAPABILITIES.filter((c) => byCapability[c.id].length).map((c) => ({ group: c.title, icon: c.icon, pages: byCapability[c.id].map(modelPath) }))],

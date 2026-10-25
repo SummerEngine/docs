@@ -19,6 +19,17 @@ Expressive v3: a voice model for your game.
 | Made by | Summer |
 | Commercial use | Yes |
 
+## Examples
+
+Real outputs of `voice/expressive-v3`, each with the input that made it.
+
+<div className="summer-samples">
+<figure className="summer-sample"><audio controls preload="none" src="https://media.summer.games/preview/v3/create/audio/voices-bram.mp3" /><figcaption><strong>Words:</strong> [warmly] Sit, sit! First mug's on the house. [laughs] The second one... we'll talk about the second one.</figcaption></figure>
+<figure className="summer-sample"><audio controls preload="none" src="https://media.summer.games/preview/v3/create/audio/voices-wizard.mp3" /><figcaption><strong>Words:</strong> [whispering] Come closer, apprentice. [pause] The map was never lost... it was hiding from you. [chuckles softly]</figcaption></figure>
+<figure className="summer-sample"><audio controls preload="none" src="https://media.summer.games/preview/v3/create/audio/voices-announcer.mp3" /><figcaption><strong>Words:</strong> [excited] And they're off! Round three, final lap, and the crowd is on its feet!</figcaption></figure>
+<figure className="summer-sample"><audio controls preload="none" src="https://media.summer.games/preview/v3/create/audio/voices-vex.mp3" /><figcaption><strong>Words:</strong> [flat, fast] Package secured. Two minutes out. [pause] Tell the client to stop calling, I'm literally flying.</figcaption></figure>
+</div>
+
 ## Best for
 
 - The default voice model: what `voice/default` runs today.
@@ -91,6 +102,17 @@ job = res.json()["job"]
 print(job["state"], job["id"])
 ```
 
+```js MCP
+// Summer's MCP server: npx -y summer-engine@latest setup <agent> --yes
+summer_api_run({
+  model: "voice/expressive-v3",
+  input: {
+    text: "The gate is open. Go, before the guards come back."
+  },
+  out: "assets",
+})
+```
+
 </CodeGroup>
 
 The finished job has `state` `"done"` and `result.assets`: one entry per file, each with `assetId`, `fileUrl` (a Summer URL) and `thumbnailUrl`. Download the file into your project, or import it in Summer Engine by its asset id.
@@ -136,6 +158,17 @@ Send these fields in `input`. The full JSON Schema is `inputSchema` in [`GET /v1
 | Will | `bIHbv24MWmeRgasZH58o` |
 
 </Accordion>
+
+## Related models
+
+<div className="summer-gallery">
+<CardGroup cols={2}>
+  <Card title="Multilingual v2" href="/api/models/voice/multilingual-v2" img="/images/api/tiles/voice.svg">`voice/multilingual-v2`: \$0.119 per 1,000 characters</Card>
+  <Card title="Inworld TTS-1.5 Max" href="/api/models/voice/inworld-tts-1-5-max" img="https://media.summer.games/preview/v3/create/image/image-gallery-muse-moss-garden.webp">`voice/inworld-tts-1.5-max`: \$0.01 per 1,000 characters</Card>
+  <Card title="xAI TTS" href="/api/models/voice/xai-tts-v1" img="https://media.summer.games/preview/v3/create/image/image-fan-nova-chrome.webp">`voice/xai-tts-v1`: \$0.015 per 1,000 characters</Card>
+  <Card title="Gemini 3.8 Flash Lite TTS" href="/api/models/voice/gemini-3-8-flash-lite-tts" img="https://media.summer.games/preview/v3/create/image/image-fan-neon-courier.webp">`voice/gemini-3.8-flash-lite-tts`: \$0.03 per 1,000 characters</Card>
+</CardGroup>
+</div>
 
 ## For agents
 

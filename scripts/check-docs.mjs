@@ -100,6 +100,8 @@ function resolveDiffBase() {
 function walkMdx(dir, out = []) {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     if (entry.name.startsWith(".") || entry.name === "node_modules" || entry.name === "scripts") continue;
+    // Mintlify serves no page from snippets/: those files are imported into pages.
+    if (dir === ROOT && entry.name === "snippets") continue;
     const full = join(dir, entry.name);
     if (entry.isDirectory()) walkMdx(full, out);
     else if (entry.name.endsWith(".mdx")) out.push(full);

@@ -18,6 +18,14 @@ Game-ready character voices from Inworld, at the lowest price here.
 | Made by | Inworld |
 | Commercial use | Yes |
 
+## Examples
+
+Real outputs of `voice/inworld-tts-1.5-max`, each with the input that made it.
+
+<div className="summer-samples">
+<figure className="summer-sample"><img src="https://media.summer.games/preview/v3/create/image/image-gallery-muse-moss-garden.webp" alt="Pixie, grove sprite" /><audio controls preload="none" src="https://media.summer.games/preview/v3/create/audio/speech-inworld.mp3" /><figcaption><strong>Words:</strong> Oh! A visitor! Nobody ever finds the hidden grove. Quick, follow the glowing mushrooms before the owls wake up!</figcaption></figure>
+</div>
+
 ## Best for
 
 - NPC voices for large casts, one voice per character.
@@ -87,6 +95,17 @@ res = requests.post(
 )
 job = res.json()["job"]
 print(job["state"], job["id"])
+```
+
+```js MCP
+// Summer's MCP server: npx -y summer-engine@latest setup <agent> --yes
+summer_api_run({
+  model: "voice/inworld-tts-1.5-max",
+  input: {
+    text: "The gate is open. Go, before the guards come back."
+  },
+  out: "assets",
+})
 ```
 
 </CodeGroup>
@@ -226,6 +245,17 @@ Send these fields in `input`. The full JSON Schema is `inputSchema` in [`GET /v1
 | Omar | `Omar (ar)` |
 
 </Accordion>
+
+## Related models
+
+<div className="summer-gallery">
+<CardGroup cols={2}>
+  <Card title="Expressive v3" href="/api/models/voice/expressive-v3" img="/images/api/tiles/voice.svg">`voice/expressive-v3`: \$0.119 per 1,000 characters (default)</Card>
+  <Card title="Multilingual v2" href="/api/models/voice/multilingual-v2" img="/images/api/tiles/voice.svg">`voice/multilingual-v2`: \$0.119 per 1,000 characters</Card>
+  <Card title="xAI TTS" href="/api/models/voice/xai-tts-v1" img="https://media.summer.games/preview/v3/create/image/image-fan-nova-chrome.webp">`voice/xai-tts-v1`: \$0.015 per 1,000 characters</Card>
+  <Card title="Gemini 3.8 Flash Lite TTS" href="/api/models/voice/gemini-3-8-flash-lite-tts" img="https://media.summer.games/preview/v3/create/image/image-fan-neon-courier.webp">`voice/gemini-3.8-flash-lite-tts`: \$0.03 per 1,000 characters</Card>
+</CardGroup>
+</div>
 
 ## For agents
 

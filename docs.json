@@ -201,7 +201,19 @@
             "pages": [
               "api/overview",
               "api/quickstart",
-              "api/agents"
+              "api/from-studio",
+              "api/agents",
+              {
+                "group": "Quickstart per agent",
+                "icon": "bot",
+                "pages": [
+                  "api/quickstarts/claude-code",
+                  "api/quickstarts/codex",
+                  "api/quickstarts/cursor",
+                  "api/quickstarts/chatgpt-and-claude",
+                  "api/quickstarts/hermes"
+                ]
+              }
             ]
           },
           {

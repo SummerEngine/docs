@@ -91,6 +91,18 @@ job = res.json()["job"]
 print(job["state"], job["id"])
 ```
 
+```js MCP
+// Summer's MCP server: npx -y summer-engine@latest setup <agent> --yes
+summer_api_run({
+  model: "image/gemini-flash",
+  input: {
+    prompt: "a cozy pixel-art tavern at night, warm window light",
+    aspectRatio: "16:9"
+  },
+  out: "assets",
+})
+```
+
 </CodeGroup>
 
 The finished job has `state` `"done"` and `result.assets`: one entry per file, each with `assetId`, `fileUrl` (a Summer URL) and `thumbnailUrl`. Download the file into your project, or import it in Summer Engine by its asset id.
@@ -111,6 +123,17 @@ Send these fields in `input`. The full JSON Schema is `inputSchema` in [`GET /v1
 | `removeBackground` | boolean | Also cut out the background (transparent PNG); costs a removal per image. |
 | `seed` | integer | Same seed and prompt, similar image (Nano Banana models). 0 to 9007199254740991 |
 | `title` | string | up to 200 characters |
+
+## Related models
+
+<div className="summer-gallery">
+<CardGroup cols={2}>
+  <Card title="Nano Banana 2 Lite" href="/api/models/image/nano-banana-2" img="https://media.summer.games/preview/v3/create/image/image-gallery-nb2-potion-shop.webp">`image/nano-banana-2`: \$0.0484 per image (default)</Card>
+  <Card title="Grok Imagine 2" href="/api/models/image/grok-imagine-2" img="https://media.summer.games/preview/v3/create/image/image-gallery-grok2-rook-charge.webp">`image/grok-imagine-2`: \$0.06 per image</Card>
+  <Card title="Muse Image" href="/api/models/image/muse-image" img="https://media.summer.games/preview/v3/create/image/image-gallery-muse-moss-garden.webp">`image/muse-image`: \$0.01 per image</Card>
+  <Card title="Grok Imagine" href="/api/models/image/grok-imagine" img="/images/api/tiles/image.svg">`image/grok-imagine`: \$0.02 per image</Card>
+</CardGroup>
+</div>
 
 ## For agents
 

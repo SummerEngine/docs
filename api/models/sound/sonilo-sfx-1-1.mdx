@@ -88,6 +88,18 @@ job = res.json()["job"]
 print(job["state"], job["id"])
 ```
 
+```js MCP
+// Summer's MCP server: npx -y summer-engine@latest setup <agent> --yes
+summer_api_run({
+  model: "sound/sonilo-sfx-1.1",
+  input: {
+    text: "a sword hits a wooden shield",
+    durationSeconds: 2
+  },
+  out: "assets",
+})
+```
+
 </CodeGroup>
 
 The finished job has `state` `"done"` and `result.assets`: one entry per file, each with `assetId`, `fileUrl` (a Summer URL) and `thumbnailUrl`. Download the file into your project, or import it in Summer Engine by its asset id.
@@ -101,6 +113,15 @@ Send these fields in `input`. The full JSON Schema is `inputSchema` in [`GET /v1
 | `text` (required) | string | The sound to make, at most 450 characters, e.g. "heavy sword swing whoosh". up to 450 characters |
 | `durationSeconds` | number | Seconds, 0.5 to 30 (default 5). 0.5 to 30 |
 | `loop` | boolean | Sound effect: a seamless loop, where the model can. |
+
+## Related models
+
+<div className="summer-gallery">
+<CardGroup cols={2}>
+  <Card title="Sound Effects v2" href="/api/models/sound/sfx-v2" img="https://media.summer.games/preview/v3/create/image/image-gallery-muse-moss-garden.webp">`sound/sfx-v2`: \$0.002 per second (default)</Card>
+  <Card title="Stable Audio 3 SFX" href="/api/models/sound/stable-audio-3-sfx" img="/images/api/tiles/sound.svg">`sound/stable-audio-3-sfx`: \$0.0206 per sound</Card>
+</CardGroup>
+</div>
 
 ## For agents
 
