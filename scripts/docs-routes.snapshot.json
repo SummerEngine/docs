@@ -187,8 +187,8 @@
     "skills/writing-plans/plan-document-reviewer-prompt",
     "skills/writing-skills",
     "skills/writing-skills/testing-skills-with-subagents",
-    "skills/ai-characters-in-games",
     "skills/design-npc",
+    "skills/summer-router",
     "skills/animation-tree",
     "skills/character-animation-wiring",
     "skills/facial-and-lipsync",
@@ -201,6 +201,7 @@
     "skills/asset-strategy",
     "skills/lumera-single-image-scene-reconstruction",
     "skills/skintokens-auto-rigging",
+    "skills/summer-api",
     "skills/summer-assets",
     "skills/adaptive-music",
     "skills/ambient-bed",
@@ -813,6 +814,10 @@
     {
       "source": "/mcp/tools/grow",
       "destination": "/mcp/operations/legacy-names"
+    },
+    {
+      "source": "/skills/ai-characters-in-games",
+      "destination": "/mcp/skills"
     }
   ]
 }
