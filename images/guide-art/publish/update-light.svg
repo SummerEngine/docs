@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 230" width="880" height="230" font-family="Inter, -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
 <rect x="0.5" y="0.5" width="879" height="229" rx="16" fill="#fbf7ef" stroke="#e6dcc8"/>
-<text x="40" y="40" font-size="15" font-weight="600" fill="#2a251b" text-anchor="start" opacity="1">Players keep the live version until the new one is promoted</text>
+<text x="40" y="40" font-size="15" font-weight="600" fill="#2a251b" text-anchor="start" opacity="1">Players keep the live version until the new one goes live</text>
 <rect x="40" y="62" width="300" height="140" rx="14" fill="#f6e3c4" stroke="#d9922e" stroke-width="2" opacity="1"/>
 <text x="64" y="92" font-size="18" font-weight="700" fill="#2a251b" text-anchor="start" opacity="1">v1.0.0</text>
 <rect x="269.08" y="74" width="41.839999999999996" height="24" rx="12" fill="#ffffff" stroke="#d9922e" stroke-width="1.5" opacity="1"/>

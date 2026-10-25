@@ -40,7 +40,7 @@ def journey(k):
         ("Art", "every slot"),
         ("Store page", "text per store"),
         ("Upload", "checked by Summer"),
-        ("Submit", "gets a link"),
+        ("Ask you", "before going live"),
     ]
     for i, (title, note) in enumerate(steps):
         x = 30 + i * 132
@@ -52,18 +52,18 @@ def journey(k):
         k.arrow(x + 120, 100, x + 131, 100, c["muted"], 2)
     # The owner's one click.
     k.rect(700, 50, 150, 100, fill=c["accent"], rx=14)
-    k.text(775, 92, "Approve", 15, c["bg"], 700)
-    k.text(775, 112, "publishing", 15, c["bg"], 700)
+    k.text(775, 92, "Yes,", 15, c["bg"], 700)
+    k.text(775, 112, "go live", 15, c["bg"], 700)
     # After approval.
     k.line(775, 152, 775, 160, c["muted"], 2)
     k.line(775, 160, 560, 160, c["muted"], 2)
     k.add(f'<path d="M 554 162 L 560 169 L 566 162" fill="none" stroke="{c["muted"]}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>')
     k.rect(470, 170, 180, 44, fill=c["panel"], stroke=c["line"], rx=12)
-    k.text(560, 197, "Summer reviews", 13, weight=600)
+    k.text(560, 197, "Automatic checks", 13, weight=600)
     k.rect(670, 170, 180, 44, fill=c["accent_soft"], stroke=c["accent"], rx=12, width=2)
     k.text(760, 197, "Live on summer.games", 13, weight=600)
     k.arrow(652, 192, 668, 192, c["muted"], 2)
-    k.text(30, 197, "Nothing reaches players before your click and Summer's review.", 12, c["muted"], anchor="start")
+    k.text(30, 197, "Nothing reaches players before your yes and Summer's automatic checks.", 12, c["muted"], anchor="start")
 
 
 def servers(k):
@@ -259,41 +259,38 @@ def upload(k):
         k.badge(260, 92 + j * 22, ok=True, r=7)
         k.text(274, 96 + j * 22, label, 12, anchor="start")
     k.arrow(414, 115, 454, 115)
-    # Submit.
+    # The plan.
     k.rect(460, 40, 170, 150, fill=c["panel"], stroke=c["line"], rx=14)
-    k.text(545, 66, "Submit", 13, weight=600)
+    k.text(545, 66, "Go live plan", 13, weight=600)
     k.text(545, 98, "page + build", 12, c["muted"])
-    k.text(545, 118, "+ proposed price", 12, c["muted"])
-    k.chip(545, 158, "nothing published", c["muted"], 11)
+    k.text(545, 118, "shown to you", 12, c["muted"])
+    k.chip(545, 158, "nothing live yet", c["muted"], 11)
     k.arrow(634, 115, 674, 115)
-    # Link.
+    # Your yes, then live.
     k.rect(680, 40, 170, 150, fill=c["accent_soft"], stroke=c["accent"], rx=14, width=2)
-    k.text(765, 66, "Approval link", 13, weight=600)
-    k.add(
-        f'<path d="M 748 112 a 12 12 0 0 1 0 -17 l 8 -8 a 12 12 0 0 1 17 17 l -4 4 M 782 104 a 12 12 0 0 1 0 17 '
-        f'l -8 8 a 12 12 0 0 1 -17 -17 l 4 -4" fill="none" stroke="{c["accent"]}" stroke-width="3" stroke-linecap="round"/>'
-    )
-    k.text(765, 160, "for the owner", 12, c["muted"])
+    k.text(765, 66, "You say yes", 13, weight=600)
+    k.text(765, 98, "live once the", 12, c["muted"])
+    k.text(765, 118, "checks pass", 12, c["muted"])
 
 
 def approval(k):
     c = k.c
     k.rect(30, 50, 160, 90, fill=c["panel"], stroke=c["line"], rx=14)
-    k.text(110, 84, "Agent submits", 14, weight=600)
-    k.text(110, 106, "summer_store_submit", 11, c["muted"])
+    k.text(110, 84, "Agent asks", 14, weight=600)
+    k.text(110, 106, "needs_approval", 11, c["muted"])
     k.arrow(194, 95, 234, 95)
     k.rect(240, 50, 180, 90, fill=c["panel"], stroke=c["accent"], rx=14, width=2)
     k.text(330, 82, "Awaiting you", 14, weight=600)
-    k.text(330, 104, "page, art, build, price", 11, c["muted"])
-    k.text(330, 122, "exactly as submitted", 11, c["muted"])
+    k.text(330, 104, "exactly what changes", 11, c["muted"])
+    k.text(330, 122, "on the approval page", 11, c["muted"])
     k.arrow(424, 95, 464, 95, c["accent"])
     k.rect(470, 50, 170, 90, fill=c["accent"], rx=14)
     k.text(555, 90, "Approve", 15, c["bg"], 700)
-    k.text(555, 110, "publishing", 15, c["bg"], 700)
+    k.text(555, 110, "it", 15, c["bg"], 700)
     k.arrow(644, 95, 684, 95)
     k.rect(690, 50, 160, 90, fill=c["accent_soft"], stroke=c["accent"], rx=14, width=2)
-    k.text(770, 84, "Summer reviews", 14, weight=600)
-    k.text(770, 106, "then it goes live", 11, c["muted"])
+    k.text(770, 84, "Automatic checks", 14, weight=600)
+    k.text(770, 106, "then it is live", 11, c["muted"])
     # Side branches.
     k.line(330, 142, 330, 176, c["muted"], 2, dash="4 4")
     k.rect(240, 180, 180, 50, fill=c["panel"], stroke=c["line"], rx=12)
@@ -301,7 +298,7 @@ def approval(k):
     k.text(330, 220, "Cancelled: nothing published", 11, c["muted"])
     k.rect(470, 180, 170, 50, fill=c["panel"], stroke=c["no"], rx=12, dash="5 5")
     k.text(555, 202, "Page changed", 13, c["no"], 600)
-    k.text(555, 220, "Stale: submit again", 11, c["muted"])
+    k.text(555, 220, "Stale: ask again", 11, c["muted"])
     k.line(410, 142, 520, 178, c["no"], 2, dash="4 4")
 
 

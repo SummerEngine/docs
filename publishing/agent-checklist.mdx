@@ -1,7 +1,7 @@
 ---
 title: "Agent checklist: publish a game on Summer Games end to end"
 sidebarTitle: "Agent checklist"
-description: "The ordered checklist an AI agent follows to publish a game on Summer Games with Summer MCP operations, from export to store page, upload and owner approval."
+description: "The ordered checklist an AI agent follows to publish a game on Summer Games with Summer MCP operations, from export to store page, upload and going live after the owner says yes."
 icon: "clipboard-check"
 "og:image": "https://docs.summerengine.com/images/og/publishing-agent-checklist.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/publishing-agent-checklist.jpg"
@@ -98,19 +98,19 @@ For each empty required slot of each store the game is on:
 - [ ] `summer_store_get_listing`: the checklist has nothing missing.
 - [ ] Optional: `store.preview_link` and show the owner.
 
-## 9. Publish
+## 9. Go live
 
-- [ ] `summer_store_publish` with `gameId`, the price the owner asked for as `price: {"currency": "USD", "amountMinor": 499}` (`amountMinor: 0` is free; leave `price` out to keep the current one), a short `note` and a new `idempotencyKey`.
-- [ ] `needs_approval` (for now every agent publish, even when **Publish** is on in [Agent permissions](/mcp/permissions)): give the owner `approval.url` and say: "Open this link and approve it. Summer reviews it next." Then `summer_jobs_wait` with `job.id` until the job ends.
-- [ ] `done`: Summer's review runs next.
+- [ ] Price: the store page keeps its price. To set the price the owner asked for, use [`pricing.set_base`](/mcp/operations/pricing).
+- [ ] `summer_go_live` with `gameId` and the `publicationId` from `summer_publish_build`. It answers the plan: what goes live.
+- [ ] Show the plan to the owner and ask. Only after they say yes, call `summer_go_live` again with `confirm: true`.
+- [ ] `needs_permission`: **Publish** is off in [Agent permissions](/mcp/permissions). Ask the owner to turn it on, or to click **Publish** in Studio.
 
-## After the publish
+## After going live
 
-- [ ] `summer_store_status` shows the review and its feedback.
-- [ ] Summer staff review the page. When the review passes, the store page goes live; the owner clicks nothing more.
-- [ ] Store bundle: once the review passed, `store.release` with `gameId` and a new `idempotencyKey` releases exactly the build the owner approved. Wait with `summer_jobs_wait`. Web builds and downloads need no release.
-- [ ] If `summer_store_status` says the review needs changes, fix every point in its feedback and publish again with a new `idempotencyKey`. Never say the game is live before Summer approves it.
-- [ ] If the job ends `stale`, read the store page again and publish again with a new `idempotencyKey`.
+- [ ] The game is live as soon as Summer's automatic checks pass. There is no review: never tell the owner to wait for one.
+- [ ] `waiting`: call `summer_go_live` again to keep watching. With `waitingOn: "summer"`, every check passed and Summer is finishing the launch.
+- [ ] A failed check: it names the check and its fix. Fix it, upload a new version and go live again.
+- [ ] `live`: give the owner the page link. Never say the game is live before `summer_go_live` or `summer_store_status` says so.
 - [ ] Later: `analytics.overview` with `days: 28` for the numbers.
 
 ---

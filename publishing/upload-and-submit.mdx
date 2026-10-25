@@ -1,16 +1,16 @@
 ---
 title: "Upload your build and publish"
 sidebarTitle: "Upload and publish"
-description: "Upload a store bundle, web build or download to Summer Games with the Summer MCP, wait for the checks, preview the page and publish it with store.publish."
+description: "Upload a store bundle, web build or download to Summer Games with the Summer MCP, wait for the checks, preview the page and go live with summer_go_live after the owner says yes."
 icon: "upload"
 "og:image": "https://docs.summerengine.com/images/og/publishing-upload-and-submit.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/publishing-upload-and-submit.jpg"
 ---
 
-After the store page is filled and the game is exported, your agent uploads the build and publishes. In Studio you do the same under **Check and submit**; see [Publish your game](/build/publish). Every input of these operations: [Store and publishing operations](/mcp/operations/store).
+After the store page is filled and the game is exported, your agent uploads the build and publishes. In Studio you do the same under **Check and publish**; see [Publish your game](/build/publish). Every input of these operations: [Store and publishing operations](/mcp/operations/store).
 
-<img className="block dark:hidden" src="/images/guide-art/publishing/upload-light.svg" alt="Your export is uploaded in resumable 64 MiB parts. Summer checks it on iPhone, Android, Mac and Windows. Submit sends the page, the build and a proposed price, and publishes nothing. The owner gets an approval link." />
-<img className="hidden dark:block" src="/images/guide-art/publishing/upload-dark.svg" alt="Your export is uploaded in resumable 64 MiB parts. Summer checks it on iPhone, Android, Mac and Windows. Submit sends the page, the build and a proposed price, and publishes nothing. The owner gets an approval link." />
+<img className="block dark:hidden" src="/images/guide-art/publishing/upload-light.svg" alt="Your export is uploaded in resumable 64 MiB parts. Summer checks it on iPhone, Android, Mac and Windows. Then summer_go_live shows you the page and build, and the game goes live after your yes, once the checks pass." />
+<img className="hidden dark:block" src="/images/guide-art/publishing/upload-dark.svg" alt="Your export is uploaded in resumable 64 MiB parts. Summer checks it on iPhone, Android, Mac and Windows. Then summer_go_live shows you the page and build, and the game goes live after your yes, once the checks pass." />
 
 ## 1. Upload the build
 
@@ -33,7 +33,7 @@ It returns the exact game, file, SHA-256, size and version.
 | `clientVersion` | `vMAJOR.MINOR.PATCH`. A new upload needs a new version. |
 | `platform` | Web builds and downloads: `web`, `macos-universal`, `windows-x64` or `linux-x64`. Defaults to the last export's platform. Omit it for a store bundle. |
 | `confirm` | `true` uploads. Without it, the call only shows what it will upload. |
-| `publish` | Leave `false`. Publish with `summer_store_publish`. |
+| `publish` | Leave `false`. Go live with `summer_go_live`. |
 | `waitSeconds` | How long to wait for Summer's checks (default 600). On timeout, call again to keep waiting. |
 
 Store bundles upload in 64 MiB parts, web builds in 16 MiB parts. If the connection drops, call it again with the same file and version: it continues the same upload and skips the parts already stored.
@@ -64,52 +64,45 @@ A private link to the saved page on summer.games. It is hidden from search, and 
 
 ## 4. Check what is missing
 
-`summer_store_get_listing` returns the publish checklist for each store. Fix everything it lists before you submit. Read it again after each change.
+`summer_store_get_listing` returns the publish checklist for each store. Fix everything it lists before you go live. Read it again after each change.
 
-## 5. Publish
+## 5. Go live
 
-`summer_store_publish`:
+`summer_go_live` (operation [`store.go_live`](/mcp/operations/store#go_live)) takes the game live. The first call shows what will go live: the page and the build.
 
-```json
-{
-  "gameId": "<gameId>",
-  "price": { "currency": "USD", "amountMinor": 0 },
-  "note": "First release: desktop and mobile store pages, build v1.0.0.",
-  "idempotencyKey": "<a new key>"
-}
+```json title="1. The plan"
+{ "tool": "summer_go_live", "gameId": "<gameId>", "publicationId": "<from summer_publish_build>" }
+```
+
+Show the plan to the owner and ask them. Only after they say yes, call it again with `confirm: true`:
+
+```json title="2. Go live"
+{ "tool": "summer_go_live", "gameId": "<gameId>", "publicationId": "<from summer_publish_build>", "confirm": true }
 ```
 
 | Input | Meaning |
 |---|---|
-| `gameId` | The game. |
-| `uploadId` | The store bundle to publish (a `b.` id from `summer_store_status`). Defaults to the newest ready one. |
-| `price` | The price in US cents: `amountMinor` 50 to 100000, or `0` for free. Omit it to keep the current price. |
-| `note` | A short note: what changed and why. |
-| `idempotencyKey` | Required. A new key for each new publish; the same key only to retry it. |
+| `gameId` | The store game. Omit it to get the list of your games. |
+| `publicationId` | The build to release, from `summer_publish_build`. Defaults to the newest uploaded export. |
+| `confirm` | `true` only after the owner said yes to this exact page and build. |
+| `waitSeconds` | How long to watch before answering (default 600). |
 
-It checks the publish checklist first. Then it asks the owner: for now every agent publish answers `needs_approval` with the owner's approval link, even when **Publish** is on in [Agent permissions](/mcp/permissions).
+It releases the build to every platform that passed its checks, publishes the store page, and watches until players get it. The game is live as soon as Summer's automatic checks pass. There is no review to wait for. Web builds and downloads go live with the page.
 
-- `needs_approval`: give the owner `approval.url`, then wait with `summer_jobs_wait` and `job.id`. Nothing is published until they approve.
-- `done`: it went to Summer's review.
+- `live`: the game is on Summer Games. Give the owner the page link.
+- `waiting`: call it again to keep watching. With `waitingOn: "summer"`, every check passed and Summer is finishing the launch: nothing to fix.
+- A failed check: it names the check and its fix. Fix it, upload again, and go live again.
+- `needs_permission`: **Publish** is off in the owner's [Agent permissions](/mcp/permissions). Ask them to turn it on, or to publish in Studio.
 
-To withdraw a request that still waits: `store.cancel_publish` with `gameId` and the `approvalId`.
-
-## What happens next
-
-1. The owner opens the approval link and approves. See [Approvals](/publishing/owner-approval).
-2. Summer staff review the page. `summer_store_status` shows the review and its feedback.
-3. When the review passes, the store page goes live. The owner clicks nothing more.
-4. A store bundle then goes to players with [`store.release`](/mcp/operations/store#release) (`gameId` and a new `idempotencyKey`). It releases only the build the owner approved, and answers a job: wait with `summer_jobs_wait`. Web builds and downloads need no release.
-
-If the review asks for changes, fix every point in its feedback, then publish again with a new `idempotencyKey`.
+The price comes from the store page. To change it, see [Pricing](/mcp/operations/pricing).
 
 ## Updates
 
-Export again with a new version, upload it the same way, and publish again. Players keep the current version until the new one is live.
+Export again with a new version, upload it the same way, and go live again. Players keep the current version until the new one is live.
 
 ## Ask your agent
 
-<Prompt description="**Upload my build and publish it.** Your agent uploads, waits for the checks and publishes. It gives you any approval link.">
+<Prompt description="**Upload my build and take it live.** Your agent uploads, waits for the checks and asks you before it goes live.">
 Upload my exported game to Summer Games and publish it. Use the Summer
 Engine MCP and follow
 https://docs.summerengine.com/publishing/upload-and-submit.md.
@@ -118,9 +111,8 @@ https://docs.summerengine.com/publishing/upload-and-submit.md.
   [VERSION, for example "v1.0.0"].
 - Wait until every build is ready. If one fails, tell me why.
 - Check the store page's checklist and fix what is missing.
-- Publish with my price: [free, or a price in US dollars].
-- If you get an approval link, give it to me. Do not say the game is live
-  until Summer's review passes.
+- Show me what will go live and ask me. Go live only after I say yes.
+- Tell me the game is live only when summer_go_live says so.
 </Prompt>
 
 ---
