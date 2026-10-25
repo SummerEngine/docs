@@ -1,13 +1,58 @@
 ---
 title: "Summer Engine Changelog"
 sidebarTitle: "Changelog"
-description: "Summer Engine release notes: the summer-engine 4.x MCP and CLI, the Summer SDK, and desktop app updates for macOS and Windows, newest first."
+description: "Every Summer Engine release, newest first: the desktop app for macOS and Windows, the summer-engine MCP and CLI, and the Summer SDK."
 icon: "history"
 "og:image": "https://docs.summerengine.com/images/og/changelog-overview.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/changelog-overview.jpg"
 ---
 
-<Update label="4.3" description="October 16, 2026">
+Every Summer release, newest first: the Summer desktop app, the `summer-engine` MCP and CLI, and the Summer SDK. Filter by tag to see one of them.
+
+<Update label="MCP and CLI 4.8" description="October 24, 2026" tags={["MCP and CLI"]}>
+
+## summer-engine 4.8: the Summer API, Studio inside the Summer app, and agents that show their work
+
+Released on npm as `summer-engine@4.8.0`. Version 4.7.0 was not published; its changes ship here.
+
+- **The Summer API from your agent.** `summer api models`, `estimate`, `run` and `jobs`, and the `summer_api_*` MCP tools, make images, 3D models, sound and video with Summer's curated models. They use your Summer sign-in, with no API keys to copy. `summer api run --batch` queues up to 500 jobs at once.
+- **Agents show you what they work on.** `summer_view_set` moves the Summer app to the view the agent is working in: chat, 3D, 2D, script, game or Studio.
+- **Studio opens inside the Summer app.** Studio pages and forms run in the app's own Studio tab when it is open, instead of a browser.
+- **Signed out? One link.** A cloud tool that needs the Summer sign-in answers with a sign-in link, and the next call works once you sign in.
+- **Opening a project switches the running editor** to it in the same window.
+- **Summer Radio for agents** (`studio.radio`), **`summer token`** for curl, and the **Summer Router** commands and skill (early preview).
+- Node.js 22 or newer.
+
+</Update>
+
+<Update label="MCP and CLI 4.6" description="October 21, 2026" tags={["MCP and CLI"]}>
+
+## summer-engine 4.6: a first game that looks finished
+
+Released on npm as `summer-engine@4.6.0`.
+
+- **First games look finished.** Every agent now reads, first thing, that a first game gets a sky and sun with shadows, fog, textures, real models and a styled UI font, and that it plays the game and checks a screenshot before calling it ready.
+- **One-click agent connect in the Summer app.** `summer setup --detect --json` finds the agents on the computer, and `summer setup <agent> --yes --json` reports each step, so the desktop app connects Claude Code, Codex and others in one click with its own bundled Node.js.
+
+</Update>
+
+<Update label="MCP and CLI 4.5" description="October 19, 2026" tags={["MCP and CLI"]}>
+
+## summer-engine 4.5: from nothing to a live game over MCP
+
+Released on npm as `summer-engine@4.5.0`. Version 4.4.0 was not published; its changes ship here.
+
+- **`summer dev`**: one command installs Summer Engine (with your yes), creates a good-looking starter project and opens it for your agent. Agents without a shell use `projects.create_local` and `projects.open_local`.
+- **The MCP opens your project itself** when a tool needs the engine.
+- **`summer preview`** shows the running game in your agent's own browser, such as Claude Code Desktop's Browser pane.
+- **Go live with no wait.** `summer_go_live` releases your build and publishes the store page as soon as Summer's automated checks pass. The new `launch-ready` skill gets a game ready to launch: build, real screenshots, store art and text, then one yes.
+- **Videos import by themselves**: MP4, MOV and WebM convert on import.
+- **New skills**: `painted-25d-world` for painted 2D and 2.5D worlds, and `make-content` for postable videos of your game.
+- **Store**: bundles and sales from your agent (`store.set_bundles`, `store.set_sales`), and items named by slug.
+
+</Update>
+
+<Update label="MCP and CLI 4.3" description="October 16, 2026" tags={["MCP and CLI"]}>
 
 ## summer-engine 4.3: the CLI reports usage like the MCP server
 
@@ -19,7 +64,7 @@ Released on npm as `summer-engine@4.3.0`.
 
 </Update>
 
-<Update label="4.2" description="October 16, 2026">
+<Update label="MCP and CLI 4.2" description="October 16, 2026" tags={["MCP and CLI"]}>
 
 ## summer-engine 4.2: Summer without MCP, and skills that stay current
 
@@ -51,7 +96,7 @@ Released on npm as `summer-engine@4.2.0`. Version 4.1.0 was not published; its c
 
 </Update>
 
-<Update label="4.0" description="October 15, 2026">
+<Update label="MCP and CLI 4.0" description="October 15, 2026" tags={["MCP and CLI"]}>
 
 ## Summer 4.0: one URL, one sign-in, every capability an operation
 
@@ -67,7 +112,267 @@ Summer is the game engine built for AI. Any agent builds, tests and publishes a 
 
 </Update>
 
-<Update label="Summer SDK" description="July 28, 2026">
+<Update label="Desktop 0.7.3" description="October 11, 2026" tags={["Desktop app"]}>
+
+## Summer 0.7.3: Steadier publishing to Summer Games
+
+- Exporting to Summer Games no longer crashes on compressed files
+- Publishing stops a multiplayer server that starts the wrong scene
+
+**Fixed**
+
+- Summer Games export: a compressed binary resource no longer crashes the export
+- Multiplayer: a hosted build whose server starts the wrong scene is refused before it goes live
+
+</Update>
+
+<Update label="Desktop 0.7.2" description="October 10, 2026" tags={["Desktop app"]}>
+
+## Summer 0.7.2: Android and steadier multiplayer
+
+- Your Summer Games builds now export to Android
+- Joining a multiplayer game opens the world you picked
+- Steadier matchmaking and player input in multiplayer
+
+**New**
+
+- Android: export Summer Games builds for Android
+- Export templates now download from Summer’s CDN
+
+**Better**
+
+- Multiplayer: player latency is measured before party matchmaking
+- Multiplayer: player input is validated before the game uses it
+
+**Fixed**
+
+- Multiplayer: joining a hosted game opens the saved world you picked
+- Android: looping sounds no longer crash the game
+- Summer’s agent now finds named classes and files inside asset packs
+
+</Update>
+
+<Update label="Desktop 0.7.0" description="October 7, 2026" tags={["Desktop app"]}>
+
+## Summer 0.7.0: The hype release
+
+- You can now build multiplayer games
+- Launch your game on the Summer Games store
+- Your games run in the browser
+
+**New**
+
+- Multiplayer: build multiplayer games in Summer
+- Summer Games store: launch your game on the store
+- Web export: your games run in the browser
+
+</Update>
+
+<Update label="Desktop 0.5.68" description="September 15, 2026" tags={["Desktop app"]}>
+
+## Summer 0.5.68: Summer just got a lot steadier
+
+- Way fewer crashes — hardened GPU teardown, rendering, and input handling
+- Windows: cleaner focus after activation and better crash reporting
+- Steadier shell and command handling, even through shutdown
+
+**Fixed**
+
+- Rendering: discard canvas passes after failed instance-buffer mapping; retry failed UMA allocations; guard preview readback
+- Input: bound the input-action cache and clear orphaned pressed actions on focus loss
+- Shell/command executor: deadlines independent of frame ticks, safe cancel and exit-ownership through editor shutdown
+- Editor: guard deferred callbacks, doc lifecycle, and file edits (raw base receipts) across reload and teardown
+- Windows: cleaner chat focus after activation and engine-owned crash-dump collection with matching symbols
+- Studio: read generated downloads asynchronously
+
+</Update>
+
+<Update label="Desktop 0.5.67" description="September 13, 2026" tags={["Desktop app"]}>
+
+## Summer 0.5.67: A steadier Summer under the hood
+
+- Windows picks up where it left off after sleep instead of losing the thread
+- Fewer graphics crashes on Mac — the Metal renderer got tougher
+- The editor's Agent panels come back when you focus the dock
+
+**Fixed**
+
+- Windows: recover chat and editor state cleanly after sleep/suspend
+- macOS: harden Metal rendering (drawable preservation, offscreen queue) against crashes
+- Editor: reveal Agent Layout panels on dock focus (SUM-395)
+- Editor: guard deferred callbacks, animation preview, scene ops, and documentation/EditorFileSystem lifetimes during teardown
+- Bridge: retain executed results and keep native chat polling alive during receipt-queue recovery
+- Core: escape every C0 control character in JSON strings
+- Rendering: synchronize headless texture RID allocation; fix async resource-load token ownership
+- Crash reporting: embed native Sentry destination and forward frames for richer reports
+
+</Update>
+
+<Update label="Desktop 0.5.66" description="September 10, 2026" tags={["Desktop app"]}>
+
+## Summer 0.5.66: Summer can build your game with you
+
+- Ask Summer to create and edit entire scenes, live in your project
+- Summer understands 3D space and can place, align, and frame objects on request
+- A steadier editor with more reliable asset downloads and safer crash recovery
+
+**New**
+
+- Conversational scene building: Summer creates, arranges, and wires up nodes for you in the live project
+- Spatial awareness so Summer can place and align objects, frame the camera, and navigate your 3D scene
+- Summer can work in your project in the background without taking over your screen or mouse
+
+**Better**
+
+- Asset downloads retry across every available server, so one flaky connection no longer fails an import
+- Crash reporting, a shutdown watchdog, and macOS Metal and menu fixes keep long sessions steady
+- Faster, quieter startup with a skippable intro
+
+**Fixed**
+
+- Stopping a running game now reports the correct state every time
+- The native Asset Store no longer shows up in the Agent layout
+- macOS builds load C# projects cleanly with the correct bundled .NET runtime
+
+</Update>
+
+<Update label="Desktop 0.5.65" description="August 31, 2026" tags={["Desktop app"]}>
+
+## Summer 0.5.65: Summer Engine now runs on Godot 4.7.2
+
+- Summer Engine is now built on the Godot 4.7.2 foundation
+- Fresh export templates keep game builds aligned with the upgraded editor
+- Imported scenes, Studio downloads, and C# workflows are more reliable
+
+**Better**
+
+- The editor and export templates now include the Godot 4.7.2 platform, rendering, and stability fixes
+- C# builds use the updated GodotSharp assemblies and the correctly entitled bundled .NET runtime on macOS
+- Studio downloads and completed import receipts recover more reliably
+
+**Fixed**
+
+- Imported 3D scenes no longer leave the editor blocked behind an unanswered dialog
+- macOS automatic updates retain signed delta paths for recent Summer Engine versions
+
+</Update>
+
+<Update label="Desktop 0.5.64" description="August 29, 2026" tags={["Desktop app"]}>
+
+## Summer 0.5.64: Project changes keep moving safely
+
+- Waiting operations no longer leave project changes stuck without progress
+- Confirmed work resumes automatically instead of requiring a manual retry
+- Reconnect retries stay attached to the current editor session
+
+**Fixed**
+
+- No-progress waiting remains active until the editor returns an authoritative result
+- Reconciled operations continue safely after an earlier project change is confirmed
+- Same-session retries recover without applying the same mutation twice
+
+**Better**
+
+- Long editing sessions recover more cleanly from reconnects and delayed operation results
+
+</Update>
+
+<Update label="Desktop 0.5.63" description="August 27, 2026" tags={["Desktop app"]}>
+
+## Summer 0.5.63: Reliable edits through reloads and reconnects
+
+- Completed edits are delivered after the editor page reloads or reconnects
+- Operation results recover cleanly instead of leaving future project changes blocked
+- Long sessions stay usable when delivery acknowledgements are delayed or lost
+
+**Fixed**
+
+- The editor pauses result delivery while its embedded page is not ready, then flushes queued results when it returns
+- Expired acknowledgement entries are retired so they cannot permanently block later mutations
+- Durable receipts recover completed operation results after a reload without applying the same edit twice
+
+**Better**
+
+- Result delivery remains bounded during long sessions and repeated renderer reconnects
+
+</Update>
+
+<Update label="Desktop 0.5.62" description="August 19, 2026" tags={["Desktop app"]}>
+
+## Summer 0.5.62: More reliable saves and steadier long sessions
+
+- Fixes rare cases where project files could be lost or corrupted while saving
+- Editor exits now hand off cleanly so unfinished work is never left in limbo
+- Faster error recovery and a bunch of general improvements
+
+**Fixed**
+
+- Saves are verified on disk after writing, and interrupted writes can no longer truncate files
+- 3D model files are protected from being opened or overwritten as text
+- Closing the editor mid-task now reports results properly instead of leaving operations uncertain
+
+**Better**
+
+- Editor updates apply more reliably across versions
+- A bunch of general improvements
+
+</Update>
+
+<Update label="Desktop 0.5.61" description="August 11, 2026" tags={["Desktop app"]}>
+
+## Summer 0.5.61: A steadier editor and reliable template projects
+
+- Template projects now extract their root files into the correct project folder
+- The editor starts faster by avoiding invisible web surfaces until they are needed
+- Shutdowns, crash reporting, and long-running command cleanup are more reliable
+
+**Better**
+
+- Hidden web surfaces suspend and resume with less background rendering work
+- Active agent work receives full-speed processing while idle work stays within a bounded editor budget
+- Crash reports authenticate after a normal sign-in and retain stronger source context
+
+**Fixed**
+
+- Root-level files from project templates no longer extract into an invalid res: directory on Windows
+- Windows shutdown terminates active shell work without leaving the editor stuck indefinitely
+- Repeated Windows display work releases native graphics resources correctly
+
+</Update>
+
+<Update label="Desktop 0.5.60" description="August 1, 2026" tags={["Desktop app"]}>
+
+## Summer 0.5.60: New Auto models and a stronger engine foundation
+
+- Auto mode now uses Luna and DeepSeek Flash for cheaper, more capable game builds
+- Better context management keeps longer builds focused and reliable
+- Sub-agents and editor tools recover more cleanly during multi-step work
+
+**New**
+
+- Auto mode can route each eligible user consistently to Luna or DeepSeek Flash
+- A native sandbox policy now protects filesystem, process, network, and dynamic-code boundaries for trusted game runtimes
+- A multiplayer transport foundation adds bounded admission, prediction, transfer, and two-peer runtime coverage
+- Trusted creator launch and publishing contracts provide a verifiable path from project work to packaged releases
+
+**Better**
+
+- Agent context and tool continuations keep less repeated information during longer builds
+- Sub-agent runs preserve their transcript and result more reliably across refreshes and reconnects
+- Desktop and MCP sessions route to the matching live editor when several projects are open
+- Native operations preserve terminal receipts and coordinate queued, active, and canceled work more predictably
+- Template archive downloads and imports recover safely through redirects and transient failures
+
+**Fixed**
+
+- Malformed model tool calls are repaired only when their intended input can be recovered safely
+- Canceled Windows commands terminate their full process tree without leaving orphaned descendants or blocked pipes
+- Editor shutdown waits for active native work to settle while keeping later commands usable after cancellation
+- Changes-panel Git checks no longer perform expensive process work on the editor main thread
+
+</Update>
+
+<Update label="Summer SDK" description="July 28, 2026" tags={["Summer SDK"]}>
 
 ## Crafty is now Summercraft, and the Crafty SDK is now the Summer SDK
 
@@ -84,7 +389,82 @@ The publishing platform has since become [Summer Games](https://summer.games).
 
 </Update>
 
-<Update label="0.5.55" description="July 23, 2026">
+<Update label="Desktop 0.5.59" description="July 26, 2026" tags={["Desktop app"]}>
+
+## Summer 0.5.59: A smoother editor and more reliable 3D creation
+
+- Heavy AI and bridge work stays within a guarded main-thread budget
+- Repeated project polling reuses known state instead of rereading the same data
+- 3D generation, Studio imports, retries, and credit handling recover more safely
+
+**New**
+
+- Main-thread work now has explicit budgets, diagnostics, and hard guards for long-running editor tasks
+- Studio uses safe browser storage helpers so malformed local state cannot break the workspace
+
+**Better**
+
+- Bridge receipt polling and WebView DPI handling reuse cached values instead of repeating hot-path work
+- Meshy-backed 3D requests route through the supported Fal pipeline while preserving rig and character identity
+- Visual claims require stronger proof and unsupported web shaders degrade safely
+
+**Fixed**
+
+- Credit races and insufficient-credit errors preserve correct charges and actionable user feedback
+- Studio imports and uncertain bridge retries avoid duplicate or partially applied work
+- Interrupted onboarding and asset-repair flows recover without losing their pending handoff
+
+</Update>
+
+<Update label="Desktop 0.5.58" description="July 26, 2026" tags={["Desktop app"]}>
+
+## Summer 0.5.58: Faster editing, safer checkpoints, reliable project discovery
+
+- AI tools stay attached to the correct live project when several editor windows are open
+- Checkpoints include unsaved scripts and scenes by flushing open editor buffers first
+- Repeated edits reuse known filesystem and Git state while startup failures preserve their diagnosis
+
+**Better**
+
+- Project Git status is refreshed in the background and reused across the editor instead of repeatedly launching the same expensive checks
+- Checkpoint creation flushes open scripts and scenes before staging, so recovery points reflect the work visible in the editor
+- Project state updates reuse known filesystem and repository state instead of repeating expensive work after every AI edit
+- Git operations avoid repeated repository discovery and configuration queries when the answer is already known
+
+**Fixed**
+
+- Multiple editor instances publish separate discovery records so writes and cancellations can target the intended project safely
+- Editors report unfinished startup and import work when they exit before initialization settles
+- Headless platform alerts return controlled errors instead of aborting and hiding the original failure
+
+</Update>
+
+<Update label="Desktop 0.5.57" description="July 25, 2026" tags={["Desktop app"]}>
+
+## Summer 0.5.57: Safer automation, tied to the right project
+
+- AI tools stay attached to the correct live project across editor windows
+- Editor-only changes can be verified without interrupting the project you are using
+- Failed writes and recovery problems surface honestly instead of reporting false success
+
+**New**
+
+- Supervised editor-context scripting gives Summer a safe way to author and verify changes that require the live editor
+
+**Better**
+
+- Summer receives fresh project structure and Git state as files change, so work begins from more accurate context
+- Multi-window discovery recovers automatically when the newest editor closes, keeping CLI and MCP tools connected to a live project
+
+**Fixed**
+
+- Headless and batch verification no longer steal the machine-wide editor connection or shared recovery locks
+- Scripted edits and verification failures no longer report success when the requested change did not land
+- Agent-authored assets register with the editor immediately, and stale checkpoint locks recover more safely
+
+</Update>
+
+<Update label="MCP and CLI 0.5.55" description="July 23, 2026" tags={["MCP and CLI"]}>
 
 ## The right edit, even with a team at work
 
@@ -113,7 +493,29 @@ migrations or new settings.
 
 </Update>
 
-<Update label="0.5.54" description="July 22, 2026">
+<Update label="Desktop 0.5.55" description="July 23, 2026" tags={["Desktop app"]}>
+
+## Summer 0.5.55: The right edit, even with a team at work
+
+- Scene changes target the exact file you asked for instead of depending on whichever tab is open
+- Multiple agents can work across your project without routine project-wide blocking
+- Stops, retries, and reconnects recover cleanly without losing finished work or replaying edits
+
+**Better**
+
+- Scene operations carry an explicit scene target, save once at the transaction boundary, and return evidence of what actually changed
+- File writes stage and verify complete content before replacing the live file
+- Agent work can proceed concurrently while destructive restore and broad Studio imports retain their stronger safety boundaries
+
+**Fixed**
+
+- Stopping an agent no longer leaves later messages stuck behind stale running state
+- Reconnects preserve completed results and attach them to the request that produced them
+- Failed scene dependencies report the exact path so Summer can repair and retry instead of abandoning the task
+
+</Update>
+
+<Update label="MCP and CLI 0.5.54" description="July 22, 2026" tags={["MCP and CLI"]}>
 
 ## Your work survives the reconnect
 
@@ -141,7 +543,29 @@ the same projects and chats.
 
 </Update>
 
-<Update label="0.5.47" description="July 11, 2026">
+<Update label="Desktop 0.5.54" description="July 22, 2026" tags={["Desktop app"]}>
+
+## Summer 0.5.54: Reliable work through reconnects
+
+- Completed edits and results survive chat or bridge reconnects instead of disappearing
+- Uncertain requests are fenced so the same project change cannot be applied twice
+- Live work stays visible and easier to follow when a connection is interrupted
+
+**Better**
+
+- Desktop bridge requests now carry a connection generation and exact project identity, keeping work attached to the editor and project that accepted it
+- Accepted operations keep durable receipts so reconnecting chat surfaces can recover the original result without replaying the mutation
+- Live work presentation preserves useful progress and completed steps through temporary bridge failures
+
+**Fixed**
+
+- Renderer reloads no longer lose completed native operation results or leave the chat guessing whether a project edit landed
+- Stale or uncertain bridge retries no longer risk applying the same scene or file mutation twice
+- Scene files opened from the filesystem reliably reveal the correct 2D or 3D workspace
+
+</Update>
+
+<Update label="MCP and CLI 0.5.47" description="July 11, 2026" tags={["MCP and CLI"]}>
 
 ## Build games by drawing on them
 
@@ -185,7 +609,58 @@ You choose how much runs without asking. **Manual** approves every edit, command
 
 </Update>
 
-<Update label="0.5.43" description="July 2, 2026">
+<Update label="Desktop 0.5.47" description="July 11, 2026" tags={["Desktop app"]}>
+
+## Summer 0.5.47: Design Mode, Skills, and a rebuilt agent team
+
+- Design Mode lets you click nodes or draw on your 2D and 3D viewport to tell the AI what to change, without leaving the scene
+- Skills replace scattered playbooks with one library you can extend, trigger with slash commands, and reuse across every project
+- The orchestrator now delegates to a team of in-process experts that run in parallel, stream live in a side panel, and accept mid-run steering
+- Permission modes give you Claude Code-style control over what runs automatically and what waits for your approval
+
+**New**
+
+- Design Mode. Select a node in your 2D or 3D scene and a floating chat bar appears right on the viewport. Describe the change and it goes into the same chat, same model, same history as the sidebar. Cmd+Shift+D (Ctrl+Shift+D on Windows) toggles it.
+- Draw on your game to build it. Drag on the viewport to circle an area, add a tree here, move this platform, fix the lighting in this corner. Summer captures a screenshot of your drawing and sends it with your message so the AI sees exactly what you mean.
+- Fullscreen Iteration Mode. Collapse the chat sidebar or press Cmd+Shift+M to work fullscreen with a persistent bar at the bottom. The viewport fills the window while you iterate without losing the conversation.
+- Skills framework. Summer ships playbooks for building games, lighting scenes, debugging, performance, and more. Type / in the chat to trigger one. Open Settings → Skills to read, customize, or write your own. Project skills override user skills override Summer defaults.
+- Memory in Settings. Project decisions (art style, genre, naming rules) persist across chats and show up in a dedicated Memory section next to Skills.
+- Slash commands. /make-game, /debug, /optimize, and /assets load the right playbook into your message so Summer starts in the right mode immediately.
+- In-process expert team. The main agent plans and delegates. Explore reads your project. Builder writes scenes, scripts, and wires main scene, input, and project settings. Studio Asset Agent generates art and models. Summer expert verifies and repairs engine work. General Advisor gives a slower second opinion when the plan is unclear.
+- Subagent side panel. Running experts show up as live tiles with transcripts you can drill into. Continue a thread, steer mid-run, or stop a run without losing context.
+- Permission modes in the composer. Manual approves every edit and generation. Accept edits auto-runs file changes but asks before spending credits. Auto approve (default) runs edits and generation but still blocks destructive actions. Bypass auto-runs ordinary tools while critical recovery and catastrophic shell actions still require approval.
+- Per-layer context breakdown. See how much of the context window goes to system prompt, tools, rules, skills, subagents, and conversation.
+- Dictation in the composer. Hold the mic button to speak your prompt, release to insert, Enter to finalize.
+- Work visibility. The chat shows what Summer is doing right now, including when it is waiting on a subagent or planning the next step.
+
+**Better**
+
+- Auto mode default is now GPT-5.6 Luna at high reasoning. The orchestrator plans first and delegates build work instead of doing engine glue inline.
+- Expert delegation runs inside one server invocation instead of queuing to Railway. Faster handoffs, live streaming, and durable run rows that survive reloads.
+- Long asset jobs still run on Railway workers. When they finish, a durable wake resumes the chat automatically.
+- Subagent transcripts render through the real chat UI with tool cards and markdown, not raw tokens.
+- OpenAI-family models get first-class adapter support with cleaner reasoning history and fewer tool-schema rejections across providers.
+- AI SDK 7 upgrade. Typed data parts, needsApproval on tools, and a hardened tool loop across the chat harness.
+- Update banner shows phase-aware progress during slow applies and curated release notes for 0.5.47.
+- Chat sidebar history finds projects by fingerprint first so conversations do not vanish on newer projects.
+
+**Fixed**
+
+- Design Mode overlay stays transparent on Windows WebView2 so the viewport shows through correctly.
+- Checkpoint saves no longer interfere with active chat streams.
+- Expert continuation chains group as one tile per agent instead of fragmenting across the panel.
+- Snapshot cards deduplicate so you see one card per capture.
+- SetResourceProperty accepts common field aliases from different models without rejecting valid edits.
+- Theme provider nesting removed so light and dark mode apply consistently.
+- Development database pool reuses connections across hot reloads.
+
+**Removed**
+
+- Legacy queued expert delegation (BullMQ → Railway → Redis poll). Experts are in-process now. Railway remains for long-running asset generation only.
+
+</Update>
+
+<Update label="MCP and CLI 0.5.43" description="July 2, 2026" tags={["MCP and CLI"]}>
 
 ## Summer can see its own work
 
@@ -224,5 +699,490 @@ Long builds used to hit a wall after about 12 minutes. Now Summer keeps working 
 ## Security and privacy
 
 - Fixed an issue where an AI-edited image could be served to the wrong user. Image storage is now isolated per account.
+
+</Update>
+
+<Update label="Desktop 0.5.41" description="June 19, 2026" tags={["Desktop app"]}>
+
+## Summer 0.5.41: Studio assets can land in your open project
+
+- Add Studio assets directly to the project currently open in Summer Engine
+- Cloud assets now download into the local project before you use them, instead of pretending they already exist on disk
+- Embedded Studio understands the open project and falls back safely for older desktop clients
+
+**New**
+
+- Studio asset install bridge: embedded Studio can add one or more cloud assets directly to the open desktop project, without making you hunt through a separate download folder
+- Imported Studio assets land under res://assets/summer with per-asset manifests so the editor and future cloud sync can identify where each cloud asset lives locally
+
+**Better**
+
+- Studio asset cards, detail modals, and preview modals now share the same Add to project flow and report clearer local/cloud import state
+- The desktop bridge advertises project, scene, and asset-install capabilities so Studio can choose direct native import or the older server bridge safely
+- Chat can receive a prepared user message for selected assets, setting up the follow-up "use these in my scene" flow
+
+**Fixed**
+
+- Adding assets from embedded Studio no longer assumes cloud assets already exist on disk; they are downloaded into the open local project before use
+
+</Update>
+
+<Update label="Desktop 0.5.39" description="June 16, 2026" tags={["Desktop app"]}>
+
+## Summer 0.5.39: Summer Cloud, rock-solid terminal, and one-step transparent assets
+
+- Summer Cloud is in research preview — try backing up and syncing your projects to the cloud, with a new Cloud dashboard on the web and a Cloud tab in Studio
+- Terminal commands are rock-solid now: approvals do not falsely time out, results never get lost on a reload or flaky connection, and you always see exactly what ran
+- Generate a transparent-background asset in one step — or strip the background off anything you already made
+- Premium mode is sharper and can see your images — it now runs on a faster, vision-capable model with a much larger context window
+- Run several projects and windows at once and the AI always reaches the right one
+- Ask for a whole world and Summer ships a playable slice first instead of silently churning through hundreds of generations
+
+**New**
+
+- Summer Cloud (research preview): an early look at cloud storage and sync for your projects, with a /dashboard/cloud overview (storage meter, per-project file list) and a new Cloud tab in Studio — it is evolving fast and we would love your feedback
+- Summer Cloud in the CLI and MCP (research preview): summer cloud sync commands with restorable versions, pre-apply checkpoints, and conflict handling so your editor can autosync as you build
+- One-step transparent images: ask for a transparent background and Summer generates the image and removes the background in a single step, plus a standalone background-removal tool for assets you already have
+- Save anything from Studio on the desktop app: images, audio, video, 3D models, and full GLB and ZIP exports now download straight through the native app
+- 3D characters generate in a clean T-pose, ready to rig
+
+**Better**
+
+- Premium mode handles images natively now — paste a screenshot or mockup and it sees it directly, on a faster model with more headroom for long chats
+- Over-scoped requests get honest expectations: ask for a full world (or to clone a AAA game with no mistakes) and Summer builds a playable vertical slice first — one zone, reuse-first — then expands, instead of firing off dozens of generations blind
+- Multi-window routing: the desktop-to-chat bridge now routes per window, so edits and imports always land in the project you meant
+- You can keep typing in chat while your game is running
+- Blocked generations now tell you to rephrase instead of showing a generic error
+- Smoother sign-in: your language and where you were headed are preserved through login, signup, and pricing
+- Cancellation handling is more accurate — you keep paid access until your billing period actually ends
+- The desktop app is lighter on your machine when idle, and stays instant while you are actively working
+
+**Fixed**
+
+- Terminal approvals no longer time out when you click Run, results survive reloads and flaky connections, and commands never accidentally run twice
+- Project rules (.summerrules) load reliably now — when you ask the AI to read them and automatically on project open — including non-English and Unicode content
+- Default video generation works again with a refreshed model lineup
+- Asset imports auto-retry transient connection hiccups instead of failing the whole turn
+- Game templates import cleanly: the editor picks up new project settings, autoloads, and input actions right away, and the play button launches the right scene
+- Image-to-3D results no longer get lost when saving
+- Fewer unexpected chat errors, and finished answers are no longer mislabeled as cut off (so no needless Continue prompt)
+
+</Update>
+
+<Update label="Desktop 0.5.32" description="May 21, 2026" tags={["Desktop app"]}>
+
+## Summer 0.5.32: Smarter Auto mode, editor write lock, and pricing refresh
+
+- Auto mode rebuilt — faster, more reliable agentic turns with intelligent multi-model routing (still the best value per message)
+- Desktop 0.5.32 locks the editor while the AI writes, so your open scenes and scripts stay in sync
+- New Basic plan ($5/mo), yearly billing, and clearer credit tiers — Studio creation now requires an active subscription
+- Shorter effective context window in Auto — start a fresh chat for big builds so the AI stays focused
+
+**New**
+
+- Auto mode routes across multiple models behind the scenes — text work uses a new agentic coding model; image attachments automatically upgrade to a vision-capable model
+- Basic plan ($5/month, $5 credits) for hands-on Godot assist; Pro+ positioned for AI-led game building
+- Yearly billing on Pro, Pro Plus, and Ultra (20% off, credits still refresh monthly)
+- $3 startup bonus for new accounts (replaces the old $10/month free credit grant)
+- Localized game templates and marketing copy in German, Spanish, Japanese, Portuguese, and Chinese
+- Studio asset creation and generation gated behind an active paid subscription (chat welcome bonus still works)
+
+**Better**
+
+- Auto mode: much faster tool loops, better multi-step reasoning across tool calls, and clearer thinking in the UI
+- AI write lock — the native editor pauses manual edits while a turn is running, with heartbeat renewal for long jobs
+- Desktop 0.5.32: mutation leases and editor reconciliation so AI writes match what you see in open inspectors, docks, and viewports
+- Structured tool errors — bridge timeouts, missing files, and failed ops return feedback in chat instead of breaking the whole turn
+- Bridge and state-read timeouts extended to 60s for heavier imports and scene reads
+- Snapshot tools hidden from non-vision models so Auto no longer hallucinates scene screenshots it cannot see
+- Onboarding resume gate, auth hardening, and polished marketing handoff from web to desktop
+- Credit warnings simplified — clearer separation between out-of-credits and upstream gateway errors
+- Free-tier GameSoul onboarding capped at 100 drafts before upgrade prompt
+
+**Fixed**
+
+- Retry on a failed turn no longer replays historical bridge state reads from earlier messages
+- Game view embed toggles reconcile correctly after macOS upgrades to 0.5.32
+- Meshy image-to-3D and text-to-3D payloads cleaned up after v6 API drift
+- 3D generation progress cards deduplicated and persist across new messages in the same chat
+- Navigation language switcher placement and xl breakpoint overflow
+
+</Update>
+
+<Update label="Desktop 0.5.31" description="May 19, 2026" tags={["Desktop app"]}>
+
+## Summer 0.5.31: Studio tilesets, Meshy v6, and calmer tool errors
+
+- AI Tileset Slicer and Asset Pack Planner in Studio — turn sprite sheets into classified, named packs ready for your project
+- Meshy v6 for image-to-3D and text-to-3D, with a clearer generation UI that stays visible across chat turns
+- AI tools now return structured feedback when the engine is busy instead of breaking the whole chat turn
+- Smarter bulk import routing so large asset drops stay responsive in the editor
+
+**New**
+
+- Studio: AI Tileset Slicer — upload a sheet, slice, classify (character, prop, terrain, UI, VFX), name, and save as an asset pack
+- Studio: Asset Pack Planner wizard — theme, review, per-asset generation, then save the full pack
+- Studio: Asset packs surface with working links into your library
+- Skill playbook for placing generated assets into scenes
+- Completion sound when a chat turn finishes, synced with the Conjured timer
+- Settings overlay inside the editor — account and billing without leaving your project
+- Stale web-bundle detection so the editor shell refreshes after a deploy
+
+**Better**
+
+- Meshy v6 exposed to the AI and Studio 3D tools with updated model routing
+- 3D-from-image jobs keep a persistent progress card across new messages in the same chat
+- Import tools batch large drops and align with the 0.5.31 desktop import pipeline
+- Bridge and tool timeouts tuned for heavier state reads and imports
+- Retry on a failed turn no longer replays historical bridge reads from earlier messages
+- Stream resume handles empty gateway responses more gracefully
+
+**Fixed**
+
+- Asset generation shows every image in a multi-output run, not only the first
+- Windows import relay and background 3D jobs behave correctly across chat turns
+- Tileset upscale and recreate flows report clearer errors in the UI
+
+</Update>
+
+<Update label="Desktop 0.5.30" description="May 17, 2026" tags={["Desktop app"]}>
+
+## Summer 0.5.30: Desktop ↔ web bridge overhaul
+
+- Major reliability pass on the connection between the chat and your open project
+- Live desktop heartbeat in chat so you can see when the editor is actually reachable
+- Required-update flow with clear full-screen guidance when auto-update cannot migrate your install
+- AI leans on live engine state before reporting that work succeeded
+
+**New**
+
+- Dismissible banner when a chat stream stalls waiting on the desktop bridge
+- /api/desktop/alive signal wired into the chat experience
+- Full-screen update blocker for installs that must migrate before continuing
+
+**Better**
+
+- Cached chat history for faster sidebar loads when reopening projects
+- Prompt context wait window extended to match the desktop relay under heavy turns
+- Agent prompts emphasize runtime evidence over assumptions after tool calls
+- macOS and Windows 0.5.30 builds notarized / signed with both export template flavors
+
+**Fixed**
+
+- Editor state reads stay responsive during long AI turns with many tool calls
+- Watchdog recovers stalled streams instead of leaving silent placeholders
+- Update prompts only surface when a full reinstall is actually required
+
+</Update>
+
+<Update label="Desktop 0.5.28" description="May 12, 2026" tags={["Desktop app"]}>
+
+## Summer 0.5.28: Smoother updates and import fidelity
+
+- In-app updates back on Windows with Velopack; macOS Sparkle path refined
+- WebView cache bypass after install so you land on the latest UI immediately
+- Steady desktop release cadence (0.5.23–0.5.27) with signing and template parity
+
+**Better**
+
+- Windows Velopack installer with published SHA256 and restored one-click update path
+- macOS post-merge auto-install hook for Sparkle builds
+- Import keeps the original image extension from the source file
+
+</Update>
+
+<Update label="Desktop 0.5.20" description="April 13, 2026" tags={["Desktop app"]}>
+
+## Summer 0.5.20: Skills, rewind, and a stronger agent harness
+
+- Nine production-grade game-building skills (movement, combat, UI, and more)
+- Rewind an individual assistant message when you want to back up one step
+- Run-and-verify loop with heartbeats and raised timeouts for multi-step engine work
+- Opus 4.7 on the free tier plus an expanded model lineup
+
+**New**
+
+- Skill library wired into orchestrator prompts for repeatable multi-step workflows
+- Per-message Rewind with confirmation modal
+- previewScene and SummerGit checkpoint tools in the harness
+- Plan files and updateTodos verify-gate for structured agent tasks
+- summer/skills knowledge pattern for composing tools across a turn
+- Template import via download + tar extract; enableGodotPlugin helper for fresh projects
+
+**Better**
+
+- runAndVerify: three-attempt retry loop with progress heartbeats
+- 3D generation capabilities and in-chat documentation
+- Chat model entitlements and routing for new providers
+- Turn caps on tool calls and wall-clock time to keep long runs bounded
+
+**Fixed**
+
+- Reject Pending Changes renamed from Undo All, with a confirm dialog
+- Bridge timeout diagnostics downgraded to warnings where appropriate
+
+</Update>
+
+<Update label="Desktop 0.5.15" description="April 5, 2026" tags={["Desktop app"]}>
+
+## Summer 0.5.15: Bridge relay and theme reliability
+
+- Bridge relay now handles every tool call through one path — fewer mystery timeouts
+- Theme and dark mode stay in sync in the chat rail
+- macOS 0.5.13 and Windows 0.5.15 desktop builds with bridge and launch fixes
+
+**Better**
+
+- Non-React bridge relay with prewarm tuning and version tracking
+- Theme requests on chrome.webview with retry when the host wakes late
+- Eliminated redundant bridge calls and tightened message memoization in chat
+
+**Fixed**
+
+- PostWebMessageAsJson channel mismatch on Windows
+- Windows 0.5.12 launch crash on Windows N/KN editions
+- Windows 0.5.13 disables intro video path that conflicted with some NVIDIA drivers
+- Prompt context failure cache uses a stable key across working-set revisions
+
+</Update>
+
+<Update label="Desktop 0.5.11" description="April 2, 2026" tags={["Desktop app"]}>
+
+## Summer 0.5.11: C# support and new AI tool system
+
+- Full .NET/C# support on macOS and Windows
+- New AI tool system with smarter code editing and project understanding
+- Improved export pipeline and texture format defaults
+
+**New**
+
+- .NET/C# support: create and edit C# scripts, bundled .NET SDK, GodotSharp assemblies
+- New AI tool system for more reliable code editing and scene manipulation
+- Bundled export templates for one-click game exports on macOS
+
+**Better**
+
+- macOS export defaults now use ETC2/ASTC texture formats (fewer export blockers)
+- Export error messages link to troubleshooting guide
+- macOS app bundle includes all dependencies for offline use
+
+</Update>
+
+<Update label="Desktop 0.4.8" description="March 6, 2026" tags={["Desktop app"]}>
+
+## Summer 0.4.8: Windows updater & cross-platform polish
+
+- Seamless in-app updates on Windows (download, install, relaunch)
+- Sparkle auto-updates on macOS
+- WebView hardening and MCP onboarding improvements
+
+**New**
+
+- Windows in-app download with progress, silent NSIS install, and project restore on relaunch
+- MCP onboarding and safety defaults for fresh AI chats
+
+**Better**
+
+- WebView security hardening
+- Sparkle update flow refinements on macOS
+
+</Update>
+
+<Update label="Desktop 0.4.5" description="February 23, 2026" tags={["Desktop app"]}>
+
+## Summer 0.4.5: Sparkle auto-updates
+
+- Native Sparkle framework for in-app updates on macOS
+- Automatic update checks and one-click install
+
+**New**
+
+- Sparkle framework integration for seamless macOS updates
+
+**Better**
+
+- Update flow: check, download, and install without leaving the app
+
+</Update>
+
+<Update label="Desktop 0.4.4" description="February 21, 2026" tags={["Desktop app"]}>
+
+## Summer 0.4.4: macOS release
+
+- Updated billing system and improved dashboard and invoicing logic
+- Project manager and editor improvements
+
+**Better**
+
+- Pricing is now much more transparent and easier to understand
+- Project manager updates and improvements
+
+</Update>
+
+<Update label="Desktop 0.4.3" description="February 20, 2026" tags={["Desktop app"]}>
+
+## Summer 0.4.3: Intelligent subagents, grep, shell tools, and more
+
+- Subagents: The main AI can spin up parallel agents to research your codebase or execute complex tasks in the background. And big improvements to core tools.
+- Grep tools: Fast code search across your project with ripgrep
+- Shell tools: Run commands with user approval for full control
+- Improved tool calling: Smarter edit flow, strReplace, glob, and unified diff preview
+- Bulk asset import: Import villages, forests, or cities in one batch
+- Import reliability: Assets appear immediately without tab switching
+
+**New**
+
+- Subagent architecture: Orchestrator delegates to specialized background agents
+- Explore subagent: Rapid codebase discovery with ripgrep and file tools
+- Grep tools for AI code search across the project
+- Shell command execution with user approval
+- strReplace for surgical edits, glob for file discovery
+- importAssets and ImportFromUrlBatch for bulk asset imports
+
+**Better**
+
+- Tool calling: AI chooses the right tool (strReplace vs replaceText vs writeFile)
+- Unified edit preview with accept/reject controls
+- ImportFromUrl uses scan_changes so assets appear immediately
+- Historical chats no longer re-run operations when browsing
+- macOS installer: signed and notarized, export templates bundled
+
+**Fixed**
+
+- File reading reliability when working in another tab
+- Import recursion and cache errors for new directories
+
+</Update>
+
+<Update label="Desktop 0.5.1" description="February 19, 2026" tags={["Desktop app"]}>
+
+## Summer 0.5.1: Bulk Asset Import and Import Reliability
+
+- Bulk import assets in one go: Ask Summer to build a village, forest, or city and it now imports all the assets in a single batch instead of one at a time. One scan, one wait, then everything is ready to place.
+- Import reliability fixed: Assets imported by the AI now appear and work immediately, without needing to switch tabs or refocus the editor. The engine correctly discovers new files and runs the import pipeline.
+- Historical chats no longer re-run: Opening a previous chat from your history no longer fires off all the old operations again. The engine stays responsive when you browse past conversations.
+- Summer gives you a heads-up before bulk imports so you stay fully in control of the process.
+
+**New**
+
+- importAssets: Import multiple assets in one batch. Plan what you need (trees, houses, props), then import all at once. One filesystem scan instead of one per asset.
+- ImportFromUrlBatch: Engine op that downloads and writes all files, then runs a single scan. Built for villages, forests, and any scene that needs many assets.
+
+**Better**
+
+- ImportFromUrl now uses scan_changes so new directories and files are discovered correctly. Fixes assets not appearing until tab switch.
+- AI prompts updated so Summer tells you before bulk import that the computer may lag for a few seconds.
+- Asset placement guide at top of prompts: search, import, InstantiateScene with scene (not scenePath), SetProp, snapshot.
+
+**Fixed**
+
+- Historical chat re-execution: Opening a past chat no longer replays all ops to the engine. Messages loaded from DB are marked historical and skip bridge dispatch.
+- Import recursion and cache errors: update_file + reimport_files failed for new dirs and caused recursive import. Switched to scan_changes for imported assets.
+
+</Update>
+
+<Update label="Desktop 0.5.0" description="February 19, 2026" tags={["Desktop app"]}>
+
+## Summer 0.5.0: Introducing Subagents: Parallel AI Power
+
+- Meet Subagents: The main AI can now spin up independent, parallel agents to research your codebase or execute complex, multi-step tasks in the background
+- Real-time visibility: Watch the subagents stream their thoughts and use tools live in the chat, keeping you fully in the loop
+- Fast and comprehensive: The new 'Explore' subagent rapidly searches, greps, and reads your files, handing off a neat summary back to the main chat
+- No more context overload: Deep-dive investigations happen in their own thread, keeping the main conversation clean and focused on building your game
+
+**New**
+
+- Subagent Architecture: The orchestrator AI can now delegate tasks to specialized, background AI agents
+- Explore Subagent: A fast, read-only agent built for rapid codebase discovery using ripgrep and file system tools
+- General Purpose Subagent: A fully capable agent that inherits the orchestrator's intelligence for making complex edits autonomously
+
+**Better**
+
+- UI Chat Experience: Subagent activity streams live as a beautifully interleaved transcript of thoughts and tools, ending with a clear summary report
+
+**Fixed**
+
+- File Reading Reliability: Hardened the bridge between Summer Engine and the AI so it perfectly reads the exact file requested, even if you are actively working in another tab
+
+</Update>
+
+<Update label="Desktop 0.4.2" description="February 17, 2026" tags={["Desktop app"]}>
+
+## Summer 0.4.2: New tools and smarter code editing
+
+- New strReplace tool for precise, token-efficient edits: rename variables, fix typos, or swap snippets without rewriting whole files
+- New glob tool to find files by pattern (e.g. all .gd scripts, scenes in a folder). Discover your project structure before editing
+- Smarter edit flow: the AI now chooses the right tool for each job (small tweaks vs. full rewrites vs. new files)
+- Unified edit preview so every file change shows the same clear diff with accept/reject controls
+
+**New**
+
+- strReplace: surgical edits via exact string match. Great for small changes, renames, or when you need to touch one spot without resending the whole file. Supports replace_all for batch renames.
+- glob: find files by pattern across your project. Search for *.gd, **/scripts/*.tscn, or any glob pattern. Fast discovery before read or edit.
+
+**Better**
+
+- Edit tools now share one consistent UI for streaming and completion: cleaner, more predictable feedback when the AI changes your code
+- Stronger AI guidance on when to use each tool: strReplace for small edits, replaceText for large ones, writeFile only for brand-new files
+- Refined readFile and writeFile behavior so the AI prefers editing existing files and only creates new ones when you ask
+
+</Update>
+
+<Update label="Desktop 0.4.1" description="February 16, 2026" tags={["Desktop app"]}>
+
+## Summer 0.4.1: Godot 4.6 + AI Tooling Overhaul
+
+- Bundled ripgrep for fast AI code search
+- Bundled Git for SummerGit checkpoints (no system Git required)
+- Subagent support for parallel AI tasks
+- Shell commands execution with user approval
+- Faster, higher-quality code generation
+- Large file and repo handling improvements
+
+**New**
+
+- Ripgrep (grep) bundled for AI search across codebases
+- Git bundled for SummerGit. Checkpoints work without system Git
+- Subagent implementations for running parallel agents
+- Shell command execution (with user approval)
+
+**Better**
+
+- Code generation speed and quality overhaul
+- Code edits now handle large files and repos much better
+
+</Update>
+
+<Update label="Desktop 0.1.1" description="January 27, 2026" tags={["Desktop app"]}>
+
+## Summer 0.1.1: Dashboard & Changelog Fixes
+
+- Usage dashboard now shows correct model names
+- Changelog page rebuilt with reliable data source
+
+**Fixed**
+
+- Usage dashboard showing wrong model names (was hardcoded to claude-4.5-sonnet)
+- Changelog page failing due to GitHub API dependency
+
+**Removed**
+
+- Misleading "MAX" badge from usage entries
+
+</Update>
+
+<Update label="Desktop 0.1.0" description="January 27, 2026" tags={["Desktop app"]}>
+
+## Summer 0.1.0: Initial Public Release
+
+- Summer Engine is now publicly available
+- Create games through conversation with AI
+
+**New**
+
+- AI-powered game creation through natural conversation
+- Desktop app with embedded editor
+- Asset store with 3D models and animations
+- Real-time scene building with expert agents
 
 </Update>
