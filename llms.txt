@@ -28,11 +28,11 @@
 
 ### Start here
 
-- [Summer: the game engine built for AI](https://docs.summerengine.com/index.md): Summer is the game engine built for AI. Describe a game and an agent builds it in a full 2D and 3D engine, adds multiplayer Summer hosts, and publishes it on Summer Games.
+- [Summer: the AI game engine for people and agents](https://docs.summerengine.com/index.md): Summer is the AI game engine built for people and agents to make games. Build in the editor with AI, or bring your own agent, then launch on Summer Games and grow.
 - [Quickstart: make your first game in the Summer app](https://docs.summerengine.com/quickstarts/fresh-project.md): Install Summer on Windows or Mac, sign in, and describe your game. Summer's agent builds it next to the editor, plays it to check its work, and you play it in minutes.
 - [Quickstart: make a game with your coding agent](https://docs.summerengine.com/quickstarts/coding-agent.md): Connect Claude Code, Codex, Cursor or any agent to Summer with one command, then ask for a game. Your agent installs Summer Engine, builds the game, plays it and shows you.
 - [Quickstart: plan your game in the browser](https://docs.summerengine.com/quickstarts/browser.md): Describe your game on summerengine.com, answer a few questions and shape a storyboard with Summer. Then open it in the Summer app, where Summer builds it.
-- [Install Summer on Windows or Mac](https://docs.summerengine.com/essentials/installation.md): Install Summer on Windows 10 and newer or Apple-silicon Macs: one setup installs Summer Engine, the summer command and connects your coding agents. Or install the summer command alone with npm.
+- [Install Summer on Windows or Mac](https://docs.summerengine.com/essentials/installation.md): Install Summer on Windows 10 and newer or Apple-silicon Macs from summerengine.com/download, get past SmartScreen, install the summer command for your coding agent, and check that it works.
 - [Quickstart: make your game multiplayer](https://docs.summerengine.com/quickstarts/multiplayer-game.md): Make a Summer game multiplayer with one prompt: a client, a server that owns the rules, and a Local Play test with two players on your computer. Summer hosts the matches.
 - [Work with Summer's agent in the Summer app](https://docs.summerengine.com/quickstarts/ai-game-dev.md): How to get great games from Summer's built-in agent: what to ask, pictures and voice, choosing a model, several chats at once, Design mode, and undoing any turn.
 
@@ -40,7 +40,7 @@
 
 - [How to publish your game on Summer Games (summer.games)](https://docs.summerengine.com/publishing/summer-games.md): Publish a game on Summer Games in five steps: export, art, store page, upload and publish. Do it in Summer Studio, or let your AI agent do it.
 - [What you need ready to publish on Summer Games](https://docs.summerengine.com/publishing/what-you-need.md): Checklist before you publish on Summer Games: your Summer account, a build that exports, store text and art for each store, a price, payouts and analytics.
-- [Can my AI agent publish my game for me?](https://docs.summerengine.com/publishing/agent-publishing.md): Yes. Claude Code, Codex, Claude or ChatGPT on the Summer MCP can make your store page, upload the build and publish on Summer Games. You approve with one link.
+- [Can my AI agent publish my game for me?](https://docs.summerengine.com/publishing/agent-publishing.md): Yes. Claude Code, Codex, Claude or ChatGPT on the Summer MCP can make your store page, upload the build and publish on Summer Games. It asks you before the game goes live.
 - [What does it cost to publish a game on Summer Games?](https://docs.summerengine.com/publishing/cost.md): Publishing on Summer Games is free, with tips from players. Set a price and Summer takes 30% of each sale. Games built in Summer Engine can sell items for Sparks.
 
 #### Step by step
@@ -50,15 +50,15 @@
 - [Summer Games store art: every slot, size and rule](https://docs.summerengine.com/publishing/store-art.md): Every art slot of a Summer Games store page for the desktop and mobile stores: key art, icon, screenshots, capsules and tall cover, with sizes and rules.
 - [Make Summer Games store art with your AI agent](https://docs.summerengine.com/publishing/generate-store-art.md): Your AI agent checks My assets, makes missing store art with the Summer MCP, crops it to each Summer Games slot, uploads it and puts it in the slot.
 - [Summer Games store page text: tagline, description and tags](https://docs.summerengine.com/publishing/store-text.md): Write the title, tagline, desktop and mobile descriptions, tags and age rating of a Summer Games store page: the limits, good examples and Same as desktop.
-- [Release readiness checklist for Summer Games](https://docs.summerengine.com/publishing/release-readiness.md): Ten checks to run before you publish or promote a Summer game, so players can really play it: server scene, online join, saves, pack files and Summer version.
-- [Upload your build and publish](https://docs.summerengine.com/publishing/upload-and-submit.md): Upload a store bundle, web build or download to Summer Games with the Summer MCP, wait for the checks, preview the page and publish it with store.publish.
-- [Approve what your AI agent asks: publishing and approval links](https://docs.summerengine.com/publishing/owner-approval.md): How Summer approval links work: when your AI agent must ask first, how to approve publishing a game on Summer Games, and what each approval state means.
+- [Release readiness checklist for Summer Games](https://docs.summerengine.com/publishing/release-readiness.md): Ten checks to run before you publish a Summer game or a new version of it, so players can really play it: server scene, online join, saves, pack files and Summer version.
+- [Upload your build and publish](https://docs.summerengine.com/publishing/upload-and-submit.md): Upload a store bundle, web build or download to Summer Games with the Summer MCP, wait for the checks, preview the page and go live with summer_go_live after the owner says yes.
+- [Approve what your AI agent asks: publishing and approval links](https://docs.summerengine.com/publishing/owner-approval.md): How Summer approval links work: when your AI agent must ask first, how it asks before your game goes live on Summer Games, and what each approval state means.
 - [Game analytics on Summer Games: send events and read them in Grow](https://docs.summerengine.com/publishing/analytics.md): What Summer counts for every game on Summer Games, how to send custom events with Summer.client.analytics, and how to read the numbers in Summer Grow.
 - [Summer Games publishing errors and fixes](https://docs.summerengine.com/publishing/summer-games-troubleshooting.md): Fixes for errors when you publish on Summer Games in Summer Studio or through the Summer MCP: sign-in, export, upload, store page, approval and analytics.
 
 #### For agents
 
-- [Agent checklist: publish a game on Summer Games end to end](https://docs.summerengine.com/publishing/agent-checklist.md): The ordered checklist an AI agent follows to publish a game on Summer Games with Summer MCP operations, from export to store page, upload and owner approval.
+- [Agent checklist: publish a game on Summer Games end to end](https://docs.summerengine.com/publishing/agent-checklist.md): The ordered checklist an AI agent follows to publish a game on Summer Games with Summer MCP operations, from export to store page, upload and going live after the owner says yes.
 - [Summer MCP operations for publishing on Summer Games](https://docs.summerengine.com/publishing/mcp-tools.md): Which Summer MCP operation does each Summer Games publishing job: find the game, store page, art, upload, publish, release, prices, analytics and team.
 
 ### Other ways to start
@@ -189,14 +189,14 @@
 - [Choose server size and player count](https://docs.summerengine.com/build/server-size.md): Pick a server size for each Summer World, from Small (256 MB) to 8XL (64 GB), and set how many players a World holds, from a turn-based duel to a big shared world.
 - [Run console commands on a live game server](https://docs.summerengine.com/build/console-commands.md): Register console commands in your Summer Engine game and run them on a live World from the creator dashboard: announcements, live events and status checks.
 - [Track player events with game analytics](https://docs.summerengine.com/build/analytics.md): Record tutorial steps, finished levels and purchases from players' games and your server in Summer Engine, and see them in your game's Analytics tab.
-- [Publish your game on summer.games](https://docs.summerengine.com/build/publish.md): Publish a Summer Engine game on summer.games: export one .zip in the editor, build the store page in Summer Studio, upload, pass the checks and submit for review.
+- [Publish your game on summer.games](https://docs.summerengine.com/build/publish.md): Publish a Summer Engine game on summer.games: export one .zip in the editor, build the store page in Summer Studio, upload, and publish. It goes live as soon as Summer's automatic checks pass.
 
 ## Grow
 
 ### Start here
 
 - [What is Summer Grow?](https://docs.summerengine.com/grow/overview.md): Summer Grow, in Summer Studio, is where you publish a game on Summer Games and grow it: numbers, earnings, prices, A/B tests, featured places and your team.
-- [Publish your game from Summer Studio](https://docs.summerengine.com/grow/publish.md): Publish your game on Summer Games from Summer Studio: choose how you earn, fill the desktop and mobile store pages, upload builds, submit for review, go live.
+- [Publish your game from Summer Studio](https://docs.summerengine.com/grow/publish.md): Publish your game on Summer Games from Summer Studio: choose how you earn, fill the desktop and mobile store pages, upload builds and publish. Your game goes live as soon as the automatic checks pass.
 - [Enter the Summer Games Jam](https://docs.summerengine.com/grow/game-jam.md): The Summer Games Jam is a weekly game jam: build a game in a week, enter it from Summer Studio, and players play it on the jam's page on summer.games.
 
 ### Insights
@@ -463,7 +463,7 @@
 
 - [Technical reference](https://docs.summerengine.com/api-reference/overview.md): Generated reference for Summer: every operation your agent can run, the public Summer Platform HTTP API and the in-game Summer GDScript API. Built from the source code, never written by hand.
 - [Compatibility & upstream](https://docs.summerengine.com/reference/compatibility.md): Generated Summer Engine product-release and upstream compatibility facts from the pinned engine contract.
-- 197 more pages in Reference: open the pages above, or read https://docs.summerengine.com/llms-full.txt
+- 202 more pages in Reference: open the pages above, or read https://docs.summerengine.com/llms-full.txt
 
 ## Guides
 

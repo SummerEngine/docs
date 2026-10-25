@@ -1,13 +1,13 @@
 ---
 title: "Install Summer on Windows or Mac"
 sidebarTitle: "Install"
-description: "Install Summer on Windows 10 and newer or Apple-silicon Macs: one setup installs Summer Engine, the summer command and connects your coding agents. Or install the summer command alone with npm."
+description: "Install Summer on Windows 10 and newer or Apple-silicon Macs from summerengine.com/download, get past SmartScreen, install the summer command for your coding agent, and check that it works."
 icon: "download"
 "og:image": "https://docs.summerengine.com/images/og/essentials-installation.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/essentials-installation.jpg"
 ---
 
-One setup installs everything: the Summer app with Summer Engine, the `summer` command, and the Summer connection for any coding agent on your computer.
+Install the Summer app on Windows or Mac. For a coding agent, add the `summer` command.
 
 ## Install the Summer app
 
@@ -15,35 +15,20 @@ Download Summer from [summerengine.com/download](https://www.summerengine.com/do
 
 <Tabs>
   <Tab title="Windows">
-    Run the setup file you downloaded. Summer installs for your Windows user.
+    Run `SummerEngine-<version>-Setup.exe`. Summer installs for your Windows user and opens.
+
+    Windows SmartScreen may show a warning while Summer's new signing certificate builds its reputation. Click **More info**, then **Run anyway**.
   </Tab>
   <Tab title="macOS">
-    Open the download, then open **Install Summer**. Summer Engine goes into your Applications folder.
+    Open `Summer.dmg` and move **Summer** into your Applications folder, then open it. macOS asks you to confirm an app downloaded from the internet: click **Open**.
   </Tab>
 </Tabs>
 
-Setup shows each step as it runs:
+**If everything worked, you see:** Summer's Home, with one message box. Sign in in your browser, then follow [Quickstart: Summer app](/quickstarts/fresh-project) to make your first Summer game.
 
-1. **Check this computer**: about 3 GB free space.
-2. **Download Summer Engine**.
-3. **Install the summer command**, with its own copy of Node.js. You don't need to install Node.
-4. **Connect your agent (MCP)**: only when it finds Claude Code, Codex, Cursor or GitHub Copilot.
+## Install the summer command
 
-**If everything worked, you see:** "Summer is ready" and **Open Summer**. Click it, sign in in your browser, and follow [Quickstart: Summer app](/quickstarts/fresh-project) to make your first Summer game.
-
-## Check that it works
-
-Open a new terminal and run:
-
-```bash
-summer --version
-```
-
-It prints the version of the `summer` command, such as `4.8.0`. To check the engine, your sign-in and your agents in one go, run `summer doctor`.
-
-## Install only the summer command
-
-For a coding agent on a computer without the Summer app, or for scripts. It needs [Node.js](https://nodejs.org) 22 or newer.
+For a coding agent, or for scripts. It needs [Node.js](https://nodejs.org) 22 or newer.
 
 <CodeGroup>
 
@@ -71,6 +56,8 @@ npx -y summer-engine@latest dev
 
 To connect an agent, see [Quickstart: coding agent](/quickstarts/coding-agent).
 
+**Check that it works:** `npx -y summer-engine@latest --version` prints the version, such as `4.8.0`. `npx -y summer-engine@latest doctor` checks Node.js, Summer Engine, your sign-in and your agents in one go.
+
 ## Sign in
 
 The Summer app signs you in the first time you open it. From a terminal, run:
@@ -85,7 +72,7 @@ Building and playing games needs no sign-in. You need it for AI assets, publishi
 
 ## Update
 
-The Summer app updates itself. When a new version is ready, the top bar shows **Update ready · Restart**. You can also open **Settings > Updates & About** and click **Check for updates**. The update also brings the `summer` command to the matching version.
+The Summer app updates itself. When a new version is ready, the top bar shows **Update ready · Restart**. You can also open **Settings > Updates & About** and click **Check for updates**.
 
 `npx -y summer-engine@latest` always runs the newest release. For a global install, run `npm install -g summer-engine@latest` or `brew upgrade summer`.
 
@@ -94,9 +81,9 @@ The Summer app updates itself. When a new version is ready, the top bar shows **
 | | |
 |---|---|
 | Windows | Windows 10 or newer, 64-bit |
-| Mac | Apple silicon (2020 or newer), macOS 12 or newer |
+| Mac | Apple silicon (2020 or newer), macOS 11 or newer |
 | Memory | 8 GB recommended |
-| Storage | About 3 GB for Summer, plus 3.7 GB if you start with the Sun Temple |
+| Storage | About 2 GB for Summer, plus 3.7 GB if you start with the Sun Temple |
 | Linux | No app. `npx -y summer-engine@latest install` puts the engine in `~/.summer/engine/` |
 
 ## Troubleshooting
@@ -106,7 +93,7 @@ The Summer app updates itself. When a new version is ready, the top bar shows **
     Type `npx.cmd` in place of `npx`. It is the same command without the script block. Don't change the execution policy.
   </Accordion>
   <Accordion title="summer: command not found">
-    Open a new terminal. Setup adds the `summer` command to your path, and terminals that were already open don't see it yet.
+    Open a new terminal: terminals that were open before you installed the command don't see it yet. Or run it without installing: `npx -y summer-engine@latest`.
   </Accordion>
   <Accordion title="summer doctor says Node.js is too old">
     The `summer` command needs Node.js 22 or newer when you run it with `npx` or npm. Install the current LTS from [nodejs.org](https://nodejs.org), then open a new terminal.

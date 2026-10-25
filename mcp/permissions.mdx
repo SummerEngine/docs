@@ -17,7 +17,7 @@ They are in **Studio > Settings > Agents**, under **Agent permissions** (`https:
 |---|---|---|
 | **Make and build** | On | Edit drafts, scenes, plans and uploads, and start builds. |
 | **Spend credits** | On | Generate assets and run paid builds, within your credits and auto top-up limit. |
-| **Publish** | On | Publish store pages, versions and releases. Summer's store review still runs first. |
+| **Publish** | On | Publish store pages, versions and releases. Your agent still asks you in the chat before a game goes live. |
 | **Prices and live changes** | On | Change prices and sales, start or stop A/B tests, change member roles. |
 | **Delete for good** | Off | Delete or remove things for good. |
 | **Contact people** | Off | Send invites and other emails to real people. |
@@ -26,7 +26,7 @@ Reads never ask. Each operation names the switch it needs: see [Operations](/mcp
 
 ## When a switch is off
 
-Your agent asks you first. Changes Summer Games still asks for work the same way. The call answers `needs_approval` with a link:
+Your agent asks you first. Changes Summer Games still asks for (prices, A/B tests, members) work the same way. The call answers `needs_approval` with a link:
 
 ```text
 https://www.summerengine.com/studio/approvals/<id>
@@ -56,11 +56,9 @@ Some changes ask you every time, whatever the switches say:
 - team names;
 - the analytics event limit.
 
-## Summer's review still runs
+## Going live
 
-Publishing never skips Summer's store review. A game goes live on Summer Games only after the review passes.
-
-Until Summer Games follows the switches, it asks the game's owner to approve an agent's publish; the answer is `needs_approval` with the owner's approval link. See [Approvals](/publishing/owner-approval).
+Your agent always asks you in the chat before a game goes live, and calls `summer_go_live` with `confirm: true` only after your yes. The game is live as soon as Summer's automatic checks pass. There is no review to wait for. With **Publish** off, your agent can't take a game live: you publish it in Studio.
 
 ## Credits
 

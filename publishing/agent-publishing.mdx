@@ -1,7 +1,7 @@
 ---
 title: "Can my AI agent publish my game for me?"
 sidebarTitle: "Can my agent do it?"
-description: "Yes. Claude Code, Codex, Claude or ChatGPT on the Summer MCP can make your store page, upload the build and publish on Summer Games. You approve with one link."
+description: "Yes. Claude Code, Codex, Claude or ChatGPT on the Summer MCP can make your store page, upload the build and publish on Summer Games. It asks you before the game goes live."
 icon: "bot"
 "og:image": "https://docs.summerengine.com/images/og/publishing-agent-publishing.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/publishing-agent-publishing.jpg"
@@ -9,10 +9,10 @@ icon: "bot"
 
 **Yes.** Your AI agent can do every step, from the finished game to a published store page. Six switches in **Studio > Settings > [Agent permissions](/mcp/permissions)** say what it may do without asking.
 
-**Publish** is on by default, but for now Summer Games still asks the game's owner to approve every agent publish: the answer is `needs_approval` with the owner's approval link. Your agent gives you the link, and you click **Approve publishing**. Then Summer reviews the game, and it goes live when the review passes.
+Your agent always asks you before the game goes live. After your yes, the game is live as soon as Summer's automatic checks pass. There is no review to wait for.
 
-<img className="block dark:hidden" src="/images/guide-art/publishing/journey-light.svg" alt="Your agent does five steps: export, art, store page, upload and submit. You click Approve publishing. Summer reviews it, then it is live on summer.games." />
-<img className="hidden dark:block" src="/images/guide-art/publishing/journey-dark.svg" alt="Your agent does five steps: export, art, store page, upload and submit. You click Approve publishing. Summer reviews it, then it is live on summer.games." />
+<img className="block dark:hidden" src="/images/guide-art/publishing/journey-light.svg" alt="Your agent does five steps: export, art, store page, upload, and asks you before going live. You say yes. Summer's automatic checks run, then it is live on summer.games." />
+<img className="hidden dark:block" src="/images/guide-art/publishing/journey-dark.svg" alt="Your agent does five steps: export, art, store page, upload, and asks you before going live. You say yes. Summer's automatic checks run, then it is live on summer.games." />
 
 ## What your agent does
 
@@ -32,8 +32,8 @@ icon: "bot"
   <Step title="Uploads the build">
     Summer checks it on every platform.
   </Step>
-  <Step title="Publishes">
-    It publishes the page, the build and the price you asked for. Summer reviews it next. If the answer is an approval link, your agent gives it to you.
+  <Step title="Asks you, then goes live">
+    It shows you what will go live and asks. After your yes, it takes the game live with `summer_go_live`. The game is live as soon as Summer's automatic checks pass, and your agent gives you the page link.
   </Step>
 </Steps>
 
@@ -42,29 +42,30 @@ icon: "bot"
 | Step | Why |
 |---|---|
 | **Sign in** to your Summer account the first time | Your agent acts as you, so you say yes once in your browser. |
-| **Approve** when your agent asks | It asks when a switch in Agent permissions is off, or when Summer Games asks the owner. You see exactly what will change. Your agent cannot approve for you. |
+| **Say yes** before it goes live | Your agent always asks before a game goes live, and when a switch in Agent permissions is off. You see exactly what will change. Your agent cannot approve for you. |
 | **Set up payouts** for a paid game | Your payout account is yours. |
 
-There is no second click for you: once Summer's review passes, the store page goes live. For a store bundle (the Summer Games apps), your agent then runs `store.release`, which releases only the build you approved. Web builds and downloads need no release.
+There is no second click and no review: after your yes, the page and the build go live as soon as Summer's automatic checks pass.
 
 ## Ask your agent
 
 Connect your agent first: [Connect your agent](/publishing/connect-your-agent). Then paste the master prompt from [How do I publish my game on Summer?](/publishing/summer-games#let-your-agent-publish-it), or this shorter one:
 
-<Prompt description="**Publish my game on Summer Games.** Your agent does every step and gives you any approval link.">
+<Prompt description="**Publish my game on Summer Games.** Your agent does every step and asks you before it goes live.">
 Publish my Summer game on Summer Games. Use the Summer Engine MCP and the
 `publish-your-game` skill, and follow
 https://docs.summerengine.com/publishing/agent-checklist.md from top to bottom.
-Ask me only what my project does not say. Stop when the game is published.
-If you get an approval link, give it to me.
+Ask me only what my project does not say. Ask me before the game goes live.
+When it is live, give me the link and remind me to join it online once in
+the Summer Games app.
 </Prompt>
 
 ## Is it safe?
 
-- **Six switches set the limits.** **Make and build**, **Spend credits**, **Publish** and **Prices and live changes** are on by default. **Delete for good** and **Contact people** are off, so your agent asks first. These defaults apply now. You can change them soon. Until then, Summer Games still asks the game's owner before an agent publishes, and price, A/B test and member changes ask you first.
-- **When a switch is off, or Summer Games still asks, your agent asks.** You get a link (`https://www.summerengine.com/studio/approvals/<id>`) and a card in your open Studio tab. Nothing changes until you approve.
+- **Six switches set the limits.** **Make and build**, **Spend credits**, **Publish** and **Prices and live changes** are on by default. **Delete for good** and **Contact people** are off, so your agent asks first. These defaults apply now. You can change them soon. Until then, price, A/B test and member changes ask you first. Going live always asks you.
+- **When a switch is off, your agent asks.** You get a link (`https://www.summerengine.com/studio/approvals/<id>`) and a card in your open Studio tab. Nothing changes until you approve.
 - **You see what agents did.** **Studio > Settings > Agent activity** lists every change, newest first, with Undo for prices, sales, country prices, member roles, team names and the event limit.
-- **Summer reviews every game** before players see it.
+- **Summer checks every build** before players get it: the game goes live only when the automatic checks pass.
 - **The price is yours.** Your agent sets the price you asked for. A paid game needs your payouts set up.
 - **Art uses your credits.** Your agent spends within your credits and auto top-up limit, so it checks My assets first.
 

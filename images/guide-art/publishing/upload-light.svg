@@ -22,15 +22,15 @@
 <line x1="414" y1="115" x2="448" y2="115" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
 <path d="M 445 109 L 454 115 L 445 121" fill="none" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
 <rect x="460" y="40" width="170" height="150" rx="14" fill="#ffffff" stroke="#e6dcc8" stroke-width="1.5" opacity="1"/>
-<text x="545" y="66" font-size="13" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">Submit</text>
+<text x="545" y="66" font-size="13" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">Go live plan</text>
 <text x="545" y="98" font-size="12" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">page + build</text>
-<text x="545" y="118" font-size="12" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">+ proposed price</text>
-<rect x="483.77" y="146" width="122.46" height="24" rx="12" fill="#ffffff" stroke="#8a806b" stroke-width="1.5" opacity="1"/>
-<text x="545" y="162.5" font-size="11" font-weight="700" fill="#8a806b" text-anchor="middle" opacity="1">nothing published</text>
+<text x="545" y="118" font-size="12" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">shown to you</text>
+<rect x="486.96" y="146" width="116.08" height="24" rx="12" fill="#ffffff" stroke="#8a806b" stroke-width="1.5" opacity="1"/>
+<text x="545" y="162.5" font-size="11" font-weight="700" fill="#8a806b" text-anchor="middle" opacity="1">nothing live yet</text>
 <line x1="634" y1="115" x2="668" y2="115" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" opacity="1"/>
 <path d="M 665 109 L 674 115 L 665 121" fill="none" stroke="#8a806b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
 <rect x="680" y="40" width="170" height="150" rx="14" fill="#f6e3c4" stroke="#d9922e" stroke-width="2" opacity="1"/>
-<text x="765" y="66" font-size="13" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">Approval link</text>
-<path d="M 748 112 a 12 12 0 0 1 0 -17 l 8 -8 a 12 12 0 0 1 17 17 l -4 4 M 782 104 a 12 12 0 0 1 0 17 l -8 8 a 12 12 0 0 1 -17 -17 l 4 -4" fill="none" stroke="#d9922e" stroke-width="3" stroke-linecap="round"/>
-<text x="765" y="160" font-size="12" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">for the owner</text>
+<text x="765" y="66" font-size="13" font-weight="600" fill="#2a251b" text-anchor="middle" opacity="1">You say yes</text>
+<text x="765" y="98" font-size="12" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">live once the</text>
+<text x="765" y="118" font-size="12" font-weight="500" fill="#8a806b" text-anchor="middle" opacity="1">checks pass</text>
 </svg>

@@ -1,17 +1,17 @@
 ---
-title: "Summer: the game engine built for AI"
+title: "Summer: the AI game engine for people and agents"
 sidebarTitle: "Welcome"
-description: "Summer is the game engine built for AI. Describe a game and an agent builds it in a full 2D and 3D engine, adds multiplayer Summer hosts, and publishes it on Summer Games."
+description: "Summer is the AI game engine built for people and agents to make games. Build in the editor with AI, or bring your own agent, then launch on Summer Games and grow."
 icon: "house"
 "og:image": "https://docs.summerengine.com/images/og/index.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/index.jpg"
 ---
 
-Describe the game you want, and an agent builds it: scenes, code, art and sound. It plays the game to check its own work. Every Summer game can go online with the Summer SDK: Summer runs the servers, matchmaking, saves and store, and your agent publishes the game on [Summer Games](https://summer.games).
+Every tool you need to build a game, launch it, learn from your players and make it a success, in one place. The engine and the MCP are free. You only pay for what you use.
 
 ## Start in 5 minutes
 
-Pick the way you like to work. Each quickstart ends with a game you can play.
+Each quickstart ends with a game you can play.
 
 <CardGroup cols={3}>
   <Card title="The Summer app" icon="monitor" href="/quickstarts/fresh-project">
@@ -25,39 +25,42 @@ Pick the way you like to work. Each quickstart ends with a game you can play.
   </Card>
 </CardGroup>
 
-## Using a coding agent?
-
-Paste this into Claude Code, Codex, Cursor or any other agent. It installs what is missing and opens a first game.
+Using a coding agent? Paste this in. It installs what is missing and opens a first game.
 
 <Prompt description="**Set up Summer and start a game.** Your agent checks your computer, installs Summer and opens a starter project.">
 Install Summer Engine and let's make a game. Follow https://docs.summerengine.com/quickstarts/coding-agent.md: check what I already have installed, install whatever is missing, and open a starter project so we can start building.
 </Prompt>
 
-Or run the setup yourself:
+## Build
 
-```bash
-npx -y summer-engine@latest setup claude-code --yes
-```
+- **The editor, with AI built in.** Summer's agent builds scenes, writes code, adds art and sound, then plays the game to check its work. [Work with Summer's agent](/quickstarts/ai-game-dev)
+- **Or bring your own agent.** Claude Code, Codex, Cursor, Hermes and more get the same tools through the Summer MCP and the `summer` CLI. [Agents overview](/mcp/overview)
+- **175,000+ free assets.** 3D models, textures, sprites and sounds, ready to drop into your game. [Asset library](/art-system/gallery)
+- **The Summer API.** Frontier generative models for images, 3D models, video, voice, sound effects and music, at API cost with zero markup. [Summer API](/api/overview)
+- **Build together on the Summer Board.** A live board for your team and your agents: talk, draw, and your agents jump in and start working. Bring your own agent or use Summer's. [Summer Board](/mcp/operations/board)
+- **Open and extendable.** Build your own plugins, and let your agent build custom tools in Summer Studio, such as a quest maker or an audio designer, that your whole team uses. [Summer Apps](/apps/overview) · [Plugins](/extending/overview)
+- **Godot projects open in Summer.** Summer follows upstream Godot, so you can bring the project you already have. [Bring your project](/knowledge-base/godot-compatibility)
 
-Use `codex`, `cursor` or [your agent's id](/mcp/setup#every-agent) in place of `claude-code`. On Windows PowerShell, type `npx.cmd` in place of `npx`.
+## Play together
 
-## Build and ship
+- **Multiplayer primitives and servers.** The Summer SDK gives your game matchmaking, parties, saves and leaderboards, and Summer runs a server for every match. [Multiplayer](/build/multiplayer)
+- **Cross-play.** On Summer Games, players on iPhone, Android, Mac and Windows play together. Cross-play on Steam and itch.io is coming.
+- **AI inside your game.** The Summer Router adds AI characters, text to speech and images to games published on Summer Games. [Summer Router](/router/overview)
+- **Every platform.** Windows, Mac, Linux, iOS, Android and the web. PlayStation and Xbox take some more custom work. [Platforms](/publishing/overview) · [Consoles](/publishing/consoles)
 
-<CardGroup cols={2}>
-  <Card title="Make it multiplayer" icon="users" href="/quickstarts/multiplayer-game">
-    One project, a server that owns the rules, and matches Summer hosts.
-  </Card>
-  <Card title="Publish on Summer Games" icon="rocket" href="/publishing/agent-publishing">
-    Your agent makes the store page, uploads the build and asks you before it goes live.
-  </Card>
-  <Card title="Connect any agent" icon="plug" href="/mcp/overview">
-    MCP, the `summer` command and skills: what each one does and when to use it.
-  </Card>
-  <Card title="Install" icon="download" href="/essentials/installation">
-    Windows and Mac, the `summer` command, and how to check that it works.
-  </Card>
-</CardGroup>
+## Launch and grow
+
+- **Publish on Summer Games, hands-free.** Your agent makes the store page and uploads the build. After your yes, the game is live as soon as Summer's automatic checks pass. [Publish with your agent](/publishing/agent-publishing)
+- **Games from any engine.** Upload games made with Unity, Unreal, Three.js or Godot to Summer Games too. [Publish from Studio](/grow/publish)
+- **Analytics for your game.** Track every event in your game, and let any agent read the numbers through the MCP, so you learn and make the game better. [Analytics](/build/analytics)
+- **Summer Grow.** Tools to make organic content and ads for your game, built on what works across every game we make. [Summer Grow](/grow/overview)
+- **Sparks and the creator program.** Players buy Sparks once and spend them in any Summer game. You earn from the Sparks spent in yours. [Sell items for Sparks](/build/store) · [Earnings](/grow/earnings)
+
+## What it costs
+
+- **The engine and the MCP are free.** Pay for what you use: a subscription gives you the frontier models in one place, or top up any amount. [Pricing](/essentials/pricing)
+- **30% only when you sell.** Summer takes 30% of each sale. If you don't sell, you pay nothing. [What publishing costs](/publishing/cost)
 
 ---
 
-Need help? Ask in [Discord](https://discord.gg/summerengine) for the fastest reply, or email [support@summerengine.com](mailto:support@summerengine.com).
+We want Summer to be the best place to make and play games with people and agents. Have an idea, as a person or as an agent? Tell us in [Discord](https://discord.gg/summerengine), or email [support@summerengine.com](mailto:support@summerengine.com).

@@ -1,7 +1,7 @@
 ---
 title: "Release readiness checklist for Summer Games"
 sidebarTitle: "Release readiness"
-description: "Ten checks to run before you publish or promote a Summer game, so players can really play it: server scene, online join, saves, pack files and Summer version."
+description: "Ten checks to run before you publish a Summer game or a new version of it, so players can really play it: server scene, online join, saves, pack files and Summer version."
 icon: "list-checks"
 "og:image": "https://docs.summerengine.com/images/og/publishing-release-readiness.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/publishing-release-readiness.jpg"
@@ -54,11 +54,33 @@ whenever that happens again.
 
 Run the checks on the file you upload: your summer.games `.zip`. Export it
 as usual, in the editor (**Project → Export**, the **summer.games** preset) or
-with your agent, and take the server out of it:
+with your agent. Use the path your export printed; `build/my-game.summer.zip`
+below is an example. Then unpack it and name the Summer Engine executable,
+once per terminal. Every check below uses both.
 
-```sh
-unzip -o build/my-game.summer.zip server.pck -d build/bundle
+<CodeGroup>
+
+```sh macOS / Linux
+unzip -o build/my-game.summer.zip -d build/bundle
+SUMMER="/Applications/Summer.app/Contents/MacOS/Summer"
+# Linux: SUMMER is the engine binary in ~/.summer/engine/
 ```
+
+```powershell Windows PowerShell
+Expand-Archive build\my-game.summer.zip -DestinationPath build\bundle -Force
+$summer = "$env:LOCALAPPDATA\SummerEngine\current\Summer.exe"
+function Run-Summer([int]$seconds, [string]$log, [string[]]$engineArgs) {
+  $quoted = ($engineArgs + @('--log-file', $log) | ForEach-Object { '"' + $_ + '"' }) -join ' '
+  $p = Start-Process $summer -ArgumentList $quoted -PassThru -NoNewWindow
+  if (-not $p.WaitForExit($seconds * 1000)) { $p | Stop-Process }
+}
+```
+
+</CodeGroup>
+
+On Windows, Summer Engine writes its output only to a log file. `Run-Summer`
+starts it with `--log-file`, stops it after the given seconds, and each check
+then searches that file.
 
 A server pack you export on its own with your server preset is not the same
 file. It can pass a check that the uploaded `.zip` fails.
@@ -92,11 +114,21 @@ tells Summer the server is ready, so every online join fails.
 **Check it.** Start the server from your `.zip` the way Summer does, with no
 scene named:
 
-```sh
-<summer> --headless --verbose --main-pack build/bundle/server.pck
+<CodeGroup>
+
+```sh macOS / Linux
+"$SUMMER" --headless --verbose --main-pack build/bundle/server.pck
+# Stop it with Ctrl+C after a few seconds.
 ```
 
-`<summer>` is the Summer Engine executable. Stop it after a few seconds and find the first `Completed load for: 'res://…tscn'` line. It
+```powershell Windows PowerShell
+Run-Summer 15 build\server.log '--headless','--verbose','--main-pack','build\bundle\server.pck'
+Select-String -Path build\server.log -Pattern "Completed load for: 'res://.*tscn'" | Select-Object -First 1
+```
+
+</CodeGroup>
+
+Find the first `Completed load for: 'res://…tscn'` line. It
 must be your server scene, such as `res://authority/main.tscn`. If it shows
 your title or client scene, add `summer_authority` to the server preset's
 **Custom Features** and export again.
@@ -107,7 +139,7 @@ there and still fail this check.
 ### 2. Join online with the version you release
 
 The check above runs on your computer. Players use a hosted server, so
-also test there: right after you promote a new version, open your game in a
+also test there: right after a new version goes live, open your game in a
 Summer Games app, join online and play until you're in the game. Do it
 before you tell players about the update. If the join fails, see
 [Players can't join online](#players-cant-join-online).
@@ -170,9 +202,17 @@ doesn't compile your scripts when you upload, so the upload still passes.
 
 **Check it.** Read which Summer made your `.zip`:
 
-```sh
-unzip -p build/my-game.summer.zip summer-bundle.json
+<CodeGroup>
+
+```sh macOS / Linux
+cat build/bundle/summer-bundle.json
 ```
+
+```powershell Windows PowerShell
+Get-Content build\bundle\summer-bundle.json
+```
+
+</CodeGroup>
 
 Under `"export"`, `summerVersion` must be a released Summer version, and
 `engineSha` must match the `engineSha` that Summer publishes for that version
@@ -183,12 +223,20 @@ If that address has nothing for your version, update Summer and export again.
 Then run your game on that released Summer and look for scripts that fail to
 load:
 
-```sh
-unzip -o build/my-game.summer.zip client.pck -d build/bundle
-<summer> --headless --verbose --main-pack build/bundle/client.pck --quit-after 600 2>&1 | grep -E 'SCRIPT ERROR|Parse Error|Failed to load script'
+<CodeGroup>
+
+```sh macOS / Linux
+"$SUMMER" --headless --verbose --main-pack build/bundle/client.pck --quit-after 600 2>&1 | grep -E 'SCRIPT ERROR|Parse Error|Failed to load script'
 ```
 
-`<summer>` is the released Summer Engine executable of that version. The
+```powershell Windows PowerShell
+Run-Summer 60 build\client.log '--headless','--verbose','--main-pack','build\bundle\client.pck','--quit-after','600'
+Select-String -Path build\client.log -Pattern 'SCRIPT ERROR|Parse Error|Failed to load script'
+```
+
+</CodeGroup>
+
+Use the released Summer Engine of that version. The
 command must print nothing. Don't rely on the run failing: it finishes
 normally even when a script can't load. The run loads your main scene and
 autoloads; a script that loads only later in play is checked when you play
@@ -214,9 +262,17 @@ on your computer.
 
 1. Search your scripts for files they read by path:
 
-   ```sh
+   <CodeGroup>
+
+   ```sh macOS / Linux
    grep -rn -E 'FileAccess\.|DirAccess\.|load_from_file|load_dynamic_font|ConfigFile' --include='*.gd' .
    ```
+
+   ```powershell Windows PowerShell
+   Get-ChildItem -Recurse -Filter *.gd | Select-String -Pattern 'FileAccess\.|DirAccess\.|load_from_file|load_dynamic_font|ConfigFile'
+   ```
+
+   </CodeGroup>
 
    Note every `res://` file or folder those lines read. Skip `user://`
    paths; those are saves.
@@ -243,10 +299,18 @@ on your computer.
 
    Then run it on the `client.pck` from your `.zip`:
 
-   ```sh
-   unzip -o build/my-game.summer.zip client.pck -d build/bundle
-   <summer> --headless --main-pack build/bundle/client.pck --script ~/list_pack.gd | grep '^PACK '
+   <CodeGroup>
+
+   ```sh macOS / Linux
+   "$SUMMER" --headless --main-pack build/bundle/client.pck --script ~/list_pack.gd | grep '^PACK '
    ```
+
+   ```powershell Windows PowerShell
+   Run-Summer 60 build\pack.log '--headless','--main-pack','build\bundle\client.pck','--script',"$HOME\list_pack.gd"
+   Select-String -Path build\pack.log -Pattern '^PACK '
+   ```
+
+   </CodeGroup>
 
    Every file from step 1 must have its own `PACK res://…` line. If one is
    missing, add it to the summer.games preset's non-resource filter, for
@@ -255,7 +319,7 @@ on your computer.
    fallback. Put the font in your project: import a `.ttf` or `.otf`, or read
    its bytes from a file that step 2 shows is in the pack. If you need a
    fallback, use `ThemeDB.fallback_font`, Summer's built-in font.
-4. Right after you promote the version, open your game on an iPhone in the
+4. Right after the version goes live, open your game on an iPhone in the
    Summer Games app and look at the title screen and one menu. Every label
    must show letters, not boxes. Your editor, Local Play and the desktop app
    can't show this problem.
@@ -270,17 +334,25 @@ with `0.6.x` doesn't start in an app that carries `0.7`, and players see
 game, so your game can work on Mac and Windows and still fail on every
 phone.
 
-**Check it.** Read which Summer made your `.zip`:
+**Check it.** Read which Summer made your `.zip`, as in check 7:
 
-```sh
-unzip -p build/my-game.summer.zip summer-bundle.json
+<CodeGroup>
+
+```sh macOS / Linux
+cat build/bundle/summer-bundle.json
 ```
+
+```powershell Windows PowerShell
+Get-Content build\bundle\summer-bundle.json
+```
+
+</CodeGroup>
 
 Under `"export"`, the first two numbers of `summerVersion` must match the
 current Summer release on the
 [download page](https://summerengine.com/download). When Summer moves to a
 new version line, for example from 0.6 to 0.7, update Summer, export your
-game again, upload it as a new version and promote it. Then open it on a
+game again, upload it as a new version and take it live. Then open it on a
 phone, as in [check 2](#2-join-online-with-the-version-you-release).
 
 ### 10. Play for three minutes while signed in
@@ -310,11 +382,11 @@ game works in Local Play.
 - **Your server pack starts the wrong scene.** Run
   [check 1](#1-your-server-starts-its-server-scene). If it loads your title or
   client scene, add `summer_authority` to your server preset's **Custom
-  Features**, export a new version, upload it and promote it.
+  Features**, export a new version, upload it and take it live.
 - **Your game passes a fixed Game ID.** Run
   [check 6](#6-your-game-doesnt-hard-code-its-game-id). Call
   `Summer.initialize()` with no ID, export a new version, upload it and
-  promote it.
+  take it live.
 
 **An empty server log does not mean nothing ran.** A release server holds
 back what your game prints when it isn't attached to a terminal. Its output
@@ -337,7 +409,7 @@ in your editor. Running your `.zip` as in
 your scripts use something the released version doesn't have. Re-export with
 the current Summer release from the
 [download page](https://summerengine.com/download), upload the new version
-and promote it. Run check 7 on the new `.zip` before you upload it.
+and take it live. Run check 7 on the new `.zip` before you upload it.
 
 ### Text shows as boxes on iPhone
 
@@ -346,7 +418,7 @@ right on your computer. Your game most likely reads a font file that isn't
 in your pack and falls back to `SystemFont`. Run
 [check 8](#8-every-file-your-game-reads-is-in-the-pack): add the font to the
 summer.games preset's non-resource filter, or import it, export a new
-version, upload it and promote it.
+version, upload it and take it live.
 
 ### The game could not start
 
@@ -354,7 +426,7 @@ The Summer Games app on iPhone or Android says **The game could not start**,
 while the game works on desktop. Your `.zip` most likely comes from a Summer
 version line the app doesn't carry. Run
 [check 9](#9-export-with-the-summer-version-the-apps-run): update Summer,
-export again, upload the new version and promote it. If the versions match
+export again, upload the new version and take it live. If the versions match
 and it still fails, ask on [Discord](https://discord.gg/summerengine) with
 your game's name and the time you tried.
 
