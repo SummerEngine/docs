@@ -751,6 +751,7 @@ function renderLlms() {
     "- CLI, local MCP and skills for engine work: `npx -y summer-engine@latest setup <agent> --yes`. The `summer-api` skill covers assets; the `summer-router` skill covers AI characters in games.",
     "- Every page is also Markdown: add `.md` to its URL. Everything in one file: https://docs.summerengine.com/llms-full.txt",
     `- Quickstart: ${DOCS_URL}/api/quickstart.md. Models and pricing: ${DOCS_URL}/api/models.md. Errors: ${DOCS_URL}/api/errors.md`,
+    `- Setup per agent (one command, then \`summer login\`): ${QUICKSTARTS.map((p) => `${DOCS_URL}/${p}.md`).join(", ")}. Signed in to Summer Studio: ${DOCS_URL}/api/from-studio.md`,
     "",
   ];
   for (const t of docs.navigation.tabs) {

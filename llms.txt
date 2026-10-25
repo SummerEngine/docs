@@ -21,6 +21,7 @@
 - CLI, local MCP and skills for engine work: `npx -y summer-engine@latest setup <agent> --yes`. The `summer-api` skill covers assets; the `summer-router` skill covers AI characters in games.
 - Every page is also Markdown: add `.md` to its URL. Everything in one file: https://docs.summerengine.com/llms-full.txt
 - Quickstart: https://docs.summerengine.com/api/quickstart.md. Models and pricing: https://docs.summerengine.com/api/models.md. Errors: https://docs.summerengine.com/api/errors.md
+- Setup per agent (one command, then `summer login`): https://docs.summerengine.com/api/quickstarts/claude-code.md, https://docs.summerengine.com/api/quickstarts/codex.md, https://docs.summerengine.com/api/quickstarts/cursor.md, https://docs.summerengine.com/api/quickstarts/chatgpt-and-claude.md, https://docs.summerengine.com/api/quickstarts/hermes.md. Signed in to Summer Studio: https://docs.summerengine.com/api/from-studio.md
 
 ## Docs
 
