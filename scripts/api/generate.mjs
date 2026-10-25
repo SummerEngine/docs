@@ -360,6 +360,8 @@ const clip = (text, max = 220) => {
   return flat.length > max ? `${flat.slice(0, max - 1).replace(/\s+\S*$/, "")}…` : flat;
 };
 
+// Mintlify keeps img and video; a 3D or audio example is a still linking to its file, and
+// summer-samples.js turns the link into a model to turn or a player.
 function sampleMedia(s, m) {
   const alt = attr(`${m.name}: ${clip(s.prompt, 120)}`);
   switch (s.kind) {
@@ -368,10 +370,8 @@ function sampleMedia(s, m) {
     case "video":
       return `<video controls muted loop playsInline preload="metadata" poster=${attr(s.poster)} src=${attr(s.url)} />`;
     case "3d":
-      // model-viewer (loaded by model-viewer.js) turns the turntable still into a model to spin; without it the still shows.
-      return `<model-viewer src=${attr(s.url)} poster=${attr(s.poster)} alt=${alt} camera-controls="" auto-rotate="" loading="lazy"><img slot="poster" src=${attr(s.poster)} alt=${alt} /></model-viewer>`;
     case "audio":
-      return [s.poster ? `<img src=${attr(s.poster)} alt=${attr(s.title ?? m.name)} />` : "", `<audio controls preload="none" src=${attr(s.url)} />`].filter(Boolean).join("");
+      return `<a href=${attr(s.url)}><img src=${attr(s.poster ?? TILE(m.capability))} alt=${s.kind === "audio" ? attr(s.title ?? m.name) : alt} /></a>`;
     default:
       throw new Error(`model ${m.id}: unknown sample kind ${s.kind}`);
   }

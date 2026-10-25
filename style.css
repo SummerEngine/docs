@@ -61,3 +61,6 @@ html.dark .summer-samples model-viewer {
   object-fit: cover;
   width: 100%;
 }
+.summer-samples figure > div > div:has(> audio) {
+  width: 100%;
+}
