@@ -1,6 +1,6 @@
 ---
 title: "Nano Banana 2 Lite"
-description: "Nano Banana 2 Lite on the Summer API: $0.0484 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/nano-banana-2."
+description: "Nano Banana 2 Lite on the Summer API: $0.042 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/nano-banana-2."
 generated: true
 generator: scripts/api
 ---
@@ -13,7 +13,8 @@ Fast 1K image generation and reference editing for clean game-asset references.
 |---|---|
 | Model id | `image/nano-banana-2` |
 | Default for | `image/default` |
-| Price | \$0.0484 per image |
+| Price | \$0.042 per image |
+| Does | [Text to image](/api/models#text-to-image), [Edit a picture](/api/models#edit-a-picture) |
 | Output | PNG, JPG, WEBP |
 | Made by | Google |
 | Commercial use | Yes |
@@ -42,13 +43,13 @@ Real outputs of `image/nano-banana-2`, each with the input that made it.
 
 ## Price
 
-**\$0.0484 per image**, times `numImages`. Exact list price: `0.048375 USD`.
+**\$0.042 per image**, times `numImages`. Exact list price: `0.042 USD`.
 
 | When | Price |
 |---|---|
 | `removeBackground` is `true` | adds \$0.018 |
 
-No markup: this is the provider's list price, checked 2026-09-24. A failed job costs nothing. Get the exact price of one request, free and without a key, from [`POST /v1/estimate`](/api/jobs#know-the-price-first).
+No markup: this is the provider's list price, checked 2026-10-23. A failed job costs nothing. Get the exact price of one request, free and without a key, from [`POST /v1/estimate`](/api/jobs#know-the-price-first).
 
 ## Example call
 
@@ -146,9 +147,9 @@ Send these fields in `input`. The full JSON Schema is `inputSchema` in [`GET /v1
 <div className="summer-gallery">
 <CardGroup cols={2}>
   <Card title="Grok Imagine 2" href="/api/models/image/grok-imagine-2" img="https://media.summer.games/preview/v3/create/image/image-gallery-grok2-rook-charge.webp">`image/grok-imagine-2`: \$0.06 per image</Card>
+  <Card title="FLUX 3 Klein" href="/api/models/image/flux-3-klein" img="/images/api/tiles/image.svg">`image/flux-3-klein`: \$0.009 per image</Card>
   <Card title="Muse Image" href="/api/models/image/muse-image" img="https://media.summer.games/preview/v3/create/image/image-gallery-muse-moss-garden.webp">`image/muse-image`: \$0.01 per image</Card>
   <Card title="Grok Imagine" href="/api/models/image/grok-imagine" img="/images/api/tiles/image.svg">`image/grok-imagine`: \$0.02 per image</Card>
-  <Card title="Gemini 2.5 Flash" href="/api/models/image/gemini-flash" img="/images/api/tiles/image.svg">`image/gemini-flash`: \$0.039 per image</Card>
 </CardGroup>
 </div>
 

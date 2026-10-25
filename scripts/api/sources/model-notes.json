@@ -2,9 +2,49 @@
   "source": {
     "repo": "SummerEngine/PublicSummerEngine",
     "path": "config/models/model-pages.json",
-    "commit": "b6c500cc2f331ceb3985e1d4dbe93edb4ed9113d"
+    "commit": "0e661498e4fa9868d92926a4d4c0f464556ed46b"
   },
   "notes": {
+    "image/nano-banana-2.1": {
+      "tagline": "Google's newest image model, sharp and faithful to the prompt.",
+      "gameUses": [
+        "Character and prop concepts that keep the same look across many images.",
+        "Edits to existing art: new poses, outfits or colors.",
+        "Store page art and key art drafts."
+      ]
+    },
+    "image/flux-3": {
+      "tagline": "Photoreal and painterly images with precise prompt control.",
+      "gameUses": [
+        "Key art and store capsules with a strong focal point.",
+        "Painterly environment concepts.",
+        "Edits that combine several references into one scene."
+      ]
+    },
+    "image/flux-3-klein": {
+      "tagline": "The small, fast FLUX 3 for drafts under a cent.",
+      "gameUses": [
+        "Many quick variations of an icon or item.",
+        "Fast mood boards before choosing a style.",
+        "Cheap reference images for 3D generation."
+      ]
+    },
+    "image/ideogram-4.5": {
+      "tagline": "The model for words in images: logos, titles and signs.",
+      "gameUses": [
+        "Game logos and title cards.",
+        "In-world signs, posters and book covers.",
+        "Store page art with the game name in it."
+      ]
+    },
+    "image/recraft-4.1": {
+      "tagline": "Clean illustration and design with tight composition.",
+      "gameUses": [
+        "Inventory icons and item art in one consistent style.",
+        "Interface pieces such as badges, frames and buttons.",
+        "Flat illustration for menus and loading screens."
+      ]
+    },
     "image/grok-imagine-2": {
       "tagline": "Concept images from xAI's Grok Imagine 2.0 at standard 1K output.",
       "gameUses": [
@@ -29,14 +69,6 @@
         "Localized marketing art with text in the target language."
       ]
     },
-    "image/nano-banana-lite": {
-      "tagline": "Fast 1K generation and reference editing for asset iteration.",
-      "gameUses": [
-        "Rapid iteration on an asset idea before picking a direction.",
-        "Small edits to an existing image, such as swapping a color or adding a prop.",
-        "Batches of cheap drafts for a mood board."
-      ]
-    },
     "image/grok-imagine": {
       "tagline": "Fast, sharp concept art and textures at a low price per image.",
       "gameUses": [
@@ -51,14 +83,6 @@
         "HUD, menu, and inventory mockups before building the real UI.",
         "Cards, icons, and badges with exact text.",
         "Editing an existing image with detailed, multi-part instructions."
-      ]
-    },
-    "image/gemini-flash": {
-      "tagline": "Fast general-purpose image generation and editing from Google.",
-      "gameUses": [
-        "General concept art and asset references.",
-        "Editing an image in steps, such as changing an outfit and then the background.",
-        "Quick visual answers to \"what would this look like\" questions during design."
       ]
     },
     "image/gpt-image-2.5": {
@@ -182,14 +206,6 @@
         "Keeping a hero character on-model across shots with reference images."
       ]
     },
-    "video/seedance-2": {
-      "tagline": "The higher-quality Seedance tier for audio-backed clips up to 15 seconds.",
-      "gameUses": [
-        "Character-consistent cutscenes built from your concept art.",
-        "Looping menu backgrounds and animated key art.",
-        "Pitch and publisher videos that show the intended feel of the game."
-      ]
-    },
     "video/gemini-omni-flash-1.1": {
       "tagline": "Fast video with synchronized audio from text, a still image, references, or a motion clip.",
       "gameUses": [
@@ -215,12 +231,28 @@
         "Multi-shot action clips for trailers."
       ]
     },
+    "video/kling-4": {
+      "tagline": "Steady characters, longer takes and per-shot prompts.",
+      "gameUses": [
+        "Trailer shots where the hero must look the same from start to end.",
+        "Animating key art or a character sheet into a short scene.",
+        "Multi-shot sequences for a cutscene or a store page."
+      ]
+    },
     "video/minimax-h3-max": {
       "tagline": "Ranked first for image to video, with sharp motion up to 15 seconds.",
       "gameUses": [
         "Trailer shots that follow a detailed camera and action brief.",
         "Animating key art or a character portrait for a store page.",
         "Keeping one character consistent across several shots with references."
+      ]
+    },
+    "video/minimax-h3-max-turbo": {
+      "tagline": "The fast, low-cost H3 Max for drafts and many takes.",
+      "gameUses": [
+        "Testing camera moves and timing for a trailer shot.",
+        "Animating many concept frames in one sitting.",
+        "Draft cutscenes to review before rendering at full quality."
       ]
     },
     "video/wan-3": {
@@ -255,12 +287,28 @@
         "Combining a character and a setting from reference images."
       ]
     },
+    "video/grok-video-1.5-lite": {
+      "tagline": "Low-cost Grok video clips for drafts.",
+      "gameUses": [
+        "Cheap first passes of an animation idea.",
+        "Short looping clips for menus and store pages.",
+        "Comparing many prompts before a final render."
+      ]
+    },
     "video/vidu-q3": {
       "tagline": "Vidu's Q3 Pro model, clips with audio up to 16 seconds.",
       "gameUses": [
         "Longer single shots for trailers and intros.",
         "Animating stylized and anime key art.",
         "Transitions between a start frame and an end frame."
+      ]
+    },
+    "video/vidu-q4": {
+      "tagline": "Smooth, consistent motion from one frame.",
+      "gameUses": [
+        "Bringing a character portrait or key art to life.",
+        "Idle and ambient loops for a title screen.",
+        "Short animated beats for a store page."
       ]
     },
     "video/pixverse-v6": {
@@ -381,6 +429,14 @@
         "Impacts, creaks and mechanical sounds with real texture.",
         "Ambience beds for rain, wind, caves and crowds.",
         "Longer effects such as engines, machines and storms."
+      ]
+    },
+    "sound/mirelo-sfx-2.0": {
+      "tagline": "Rich sound effects and ambience built for games.",
+      "gameUses": [
+        "Impacts, footsteps and object sounds with real texture.",
+        "Ambience beds for forests, caves and towns.",
+        "Interface and pickup sounds."
       ]
     },
     "sound/stable-audio-3-sfx": {

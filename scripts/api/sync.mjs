@@ -7,6 +7,7 @@
  *   node scripts/api/sync.mjs --base <url>             another deployment, e.g. a preview: https://<host>/v1
  *   node scripts/api/sync.mjs --models <file> --openapi <file>   saved answers of the two calls
  *   ... --pse <publicsummerengine checkout>            also refresh model-notes.json from config/models/model-pages.json
+ *   ... --pse-ref <ref>                                 read it at that ref (default origin/main), e.g. a PR branch before it merges
  *   ... --router <summer-platform checkout or ref dir>  also refresh the Summer Router registry and default caps:
  *       contracts/summer-router/registry.json and the summer.router_policy row of its migration
  *   ... --router-models <file or url>                   the Summer Router price list, GET /v1/router/models
@@ -42,6 +43,7 @@ function parseArgs(argv) {
     else if (a === "--models") opts.models = resolve(next());
     else if (a === "--openapi") opts.openapi = resolve(next());
     else if (a === "--pse") opts.pse = resolve(next());
+    else if (a === "--pse-ref") opts.pseRef = next();
     else if (a === "--router") opts.router = resolve(next());
     else if (a === "--router-models") opts.routerModels = next();
     else throw new Error(`unknown argument ${a}`);
@@ -81,9 +83,9 @@ const NOTE_SLUGS = {
 const NAMES_A_MAKER = /\b(?:Eleven\w*|Google|OpenAI|Meta|xAI|ByteDance|Tencent|Alibaba)\b/;
 const norm = (s) => String(s).toLowerCase().replace(/[^a-z0-9]/g, "");
 
-function modelNotes(pse, models) {
-  const raw = execFileSync("git", ["-C", pse, "show", "origin/main:config/models/model-pages.json"], { encoding: "utf8" });
-  const commit = execFileSync("git", ["-C", pse, "rev-parse", "origin/main"], { encoding: "utf8" }).trim();
+function modelNotes(pse, models, ref = "origin/main") {
+  const raw = execFileSync("git", ["-C", pse, "show", `${ref}:config/models/model-pages.json`], { encoding: "utf8" });
+  const commit = execFileSync("git", ["-C", pse, "rev-parse", ref], { encoding: "utf8" }).trim();
   const pages = JSON.parse(raw).pages.filter((p) => p.status === "live");
   const bySlug = new Map(pages.map((p) => [p.slug, p]));
   const byName = new Map(pages.map((p) => [norm(p.name), p]));
@@ -155,7 +157,7 @@ const write = (name, value) => writeFileSync(join(SOURCES, name), JSON.stringify
 write("models.json", { source: opts.models ? "file" : `${opts.base}/models`, ...models });
 // The spec names the deployment it came from; the docs always point at production.
 write("openapi.json", { ...openapi, servers: [{ url: DEFAULT_BASE }] });
-if (opts.pse) write("model-notes.json", modelNotes(opts.pse, models.models));
+if (opts.pse) write("model-notes.json", modelNotes(opts.pse, models.models, opts.pseRef));
 if (opts.router) {
   const { registry, policy } = readRouter(opts.router);
   write("router-registry.json", registry);

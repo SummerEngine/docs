@@ -381,15 +381,6 @@
         "prompt": "A cheerful cartoon fox girl adventurer in a green scarf skips across a sunny meadow toward the camera, waves and laughs, soft 3D animated film style, gentle camera push in"
       }
     ],
-    "video/seedance-2": [
-      {
-        "kind": "video",
-        "url": "https://media.summer.games/preview/v3/create/video/models/frontier-hero-seedance-2-0.mp4",
-        "poster": "https://media.summer.games/preview/v3/create/video/models/frontier-hero-seedance-2-0.jpg",
-        "prompt": "The page turns by itself and a new paper landscape unfolds and pops up with satisfying folds; the tiny paper heroine runs across a paper bridge while paper birds flap past and the paper river ripples; the camera glides low across the pop-up world following her. Stop-motion papercraft charm. One continuous shot, no cuts, consistent character, correct anatomy and hands, no text, no logos, no captions.",
-        "fromPicture": true
-      }
-    ],
     "video/seedance-2-fast": [
       {
         "kind": "video",

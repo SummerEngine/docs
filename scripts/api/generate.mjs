@@ -27,6 +27,7 @@ import { dirname, join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { cell, code, escapeProse, fm } from "../reference/lib/mdx.mjs";
 import { ROUTER_HAND_WRITTEN, ROUTER_TAB, routerPages } from "./router.mjs";
+import { guidePages } from "./guides.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, "..", "..");
@@ -61,6 +62,54 @@ const CAPABILITIES = [
   { id: "music", title: "Music", icon: "music", one: "track", noun: "music model", blurb: "Level, menu and combat music from a description." },
 ];
 const CAP = Object.fromEntries(CAPABILITIES.map((c) => [c.id, c]));
+
+/**
+ * The task segments the gallery and the model pages follow, from each model's
+ * tags in GET /v1/models: one segment per job a game developer has. A model
+ * can do several. Unknown tags still show, under their own words.
+ */
+const SEGMENTS = {
+  "text-to-image": "Text to image",
+  "image-edit": "Edit a picture",
+  "pixel-art": "Pixel art",
+  "vector-image": "Vector art",
+  "text-to-3d": "Text to 3D",
+  "image-to-3d": "Picture to 3D",
+  "multiview-to-3d": "Several pictures to 3D",
+  "text-to-motion": "Text to motion",
+  "motion-library": "Motion library",
+  "text-to-video": "Text to video",
+  "image-to-video": "Picture to video",
+  "reference-to-video": "References to video",
+  "video-to-video": "Edit a video",
+  "motion-transfer": "Motion transfer",
+  "video-to-audio": "Video to sound",
+  "lipsync": "Lip sync",
+  "text-to-speech": "Text to speech",
+  "dialogue": "Dialogue",
+  "sound-effects": "Sound effects",
+  "music": "Music",
+};
+const segmentTitle = (tag) => SEGMENTS[tag] ?? tag.replace(/-/g, " ").replace(/^./, (c) => c.toUpperCase());
+const anchor = (title) => title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+/** A capability's segments: the models of each tag, with segments of the same models merged ("Text to video and picture to video"). */
+function segmentsOf(list) {
+  const groups = [];
+  for (const tag of [...Object.keys(SEGMENTS), ...new Set(list.flatMap((m) => m.tags))]) {
+    if (groups.some((g) => g.tags.includes(tag))) continue;
+    const members = list.filter((m) => m.tags.includes(tag));
+    if (!members.length) continue;
+    const same = groups.find((g) => g.models.length === members.length && g.models.every((m) => members.includes(m)));
+    if (same) same.tags.push(tag);
+    else groups.push({ tags: [tag], models: members });
+  }
+  return groups.map((g) => {
+    const titles = g.tags.map(segmentTitle);
+    const title = titles.length === 1 ? titles[0] : `${titles.slice(0, -1).join(", ")} and ${titles.at(-1).replace(/^./, (c) => c.toLowerCase())}`;
+    return { ...g, title, anchor: anchor(title) };
+  });
+}
 
 const models = catalog.models;
 const aliases = catalog.aliases ?? {};
@@ -420,6 +469,7 @@ function renderModelPage(m) {
     ...(isDefault(m) ? [["Default for", m.aliases.map(code).join(", ")]] : []),
     ["Price", `${priceText(m)}`],
     ...(typicalTime(m) ? [["Typical time", typicalTime(m)]] : []),
+    ["Does", segmentsOf(byCapability[m.capability]).filter((s) => s.models.includes(m)).map((s) => `[${s.title}](/${MODELS_PAGE}#${s.anchor})`).join(", ")],
     ["Output", m.outputFormats.map((f) => f.toUpperCase()).join(", ")],
     ["Made by", cell(m.vendor)],
     ["Commercial use", m.commercialUse ? "Yes" : "No"],
@@ -546,18 +596,14 @@ function renderModelsPage() {
     const list = byCapability[c.id];
     if (!list.length) continue;
     const timed = list.some((m) => m.latency);
+    const card = (m) => `  <Card title=${attr(`${m.name}${isDefault(m) ? " (default)" : ""}`)} href=${attr(`/${modelPath(m)}`)} img=${attr(thumbnail(m))}>${priceText(m)}${typicalTime(m) ? `, ${typicalTime(m)}` : ""}</Card>`;
+    const gallery = (members) => ['<div className="summer-gallery">', "<CardGroup cols={3}>", ...members.map(card), "</CardGroup>", "</div>"];
+    const segments = segmentsOf(list);
+    out.push("", `## ${c.title}`, "", `${c.blurb} Output: ${formatsOf(list)}.`, "");
+    // One gallery per task (text to 3D, picture to 3D, ...) when the capability has more than one.
+    if (segments.length > 1) for (const s of segments) out.push(`### ${s.title}`, "", ...gallery(s.models), "");
+    else out.push(...gallery(list), "");
     out.push(
-      "",
-      `## ${c.title}`,
-      "",
-      `${c.blurb} Output: ${formatsOf(list)}.`,
-      "",
-      '<div className="summer-gallery">',
-      "<CardGroup cols={3}>",
-      ...list.map((m) => `  <Card title=${attr(`${m.name}${isDefault(m) ? " (default)" : ""}`)} href=${attr(`/${modelPath(m)}`)} img=${attr(thumbnail(m))}>${priceText(m)}${typicalTime(m) ? `, ${typicalTime(m)}` : ""}</Card>`),
-      "</CardGroup>",
-      "</div>",
-      "",
       `| Model | Id | Price |${timed ? " Typical time |" : ""}`,
       `|---|---|---|${timed ? "---|" : ""}`,
       ...list.map((m) => modelRow(m, timed)),
@@ -657,6 +703,10 @@ const routerModelsPath = join(SOURCES, "router-models.json");
 const router = routerPages(readJson(join(SOURCES, "router-registry.json")), readJson(join(SOURCES, "router-policy.json")), existsSync(routerModelsPath) ? readJson(routerModelsPath) : null);
 for (const [path, content] of router.pages) put(path, content);
 
+// How to make: hand-written guides, with models, inputs, code and prices from the model list.
+const guides = guidePages(join(HERE, "guides"), { models, aliases, modelPath, money, unitLabel, jobCode, code, cell, fm, banner, generator: GENERATOR });
+for (const [path, content] of guides.pages) put(path, content);
+
 // ------------------------------------------------------------- navigation
 
 const QUICKSTARTS = ["claude-code", "codex", "cursor", "chatgpt-and-claude", "hermes"].map((p) => `api/quickstarts/${p}`);
@@ -671,6 +721,7 @@ const tab = {
   icon: "braces",
   groups: [
     { group: "Start here", pages: ["api/overview", "api/quickstart", "api/from-studio", "api/agents", { group: "Quickstart per agent", icon: "bot", pages: QUICKSTARTS }] },
+    ...(guides.nav.length ? [{ group: "How to make", pages: guides.nav }] : []),
     {
       group: "Models and pricing",
       pages: [MODELS_PAGE, ...CAPABILITIES.filter((c) => byCapability[c.id].length).map((c) => ({ group: c.title, icon: c.icon, pages: byCapability[c.id].map(modelPath) }))],
@@ -753,6 +804,7 @@ function renderLlms() {
     "- CLI, local MCP and skills for engine work: `npx -y summer-engine@latest setup <agent> --yes`. The `summer-api` skill covers assets; the `summer-router` skill covers AI characters in games.",
     "- Every page is also Markdown: add `.md` to its URL. Everything in one file: https://docs.summerengine.com/llms-full.txt",
     `- Quickstart: ${DOCS_URL}/api/quickstart.md. Models and pricing: ${DOCS_URL}/api/models.md. Errors: ${DOCS_URL}/api/errors.md`,
+    `- How to make X (which models to chain, the exact steps and the cost): ${DOCS_URL}/api/guides.md, for example ${DOCS_URL}/api/guides/3d-character.md and ${DOCS_URL}/api/guides/trailer.md`,
     `- Setup per agent (one command, then \`summer login\`): ${QUICKSTARTS.map((p) => `${DOCS_URL}/${p}.md`).join(", ")}. Signed in to Summer Studio: ${DOCS_URL}/api/from-studio.md`,
     "",
   ];
@@ -761,7 +813,8 @@ function renderLlms() {
     const groups = t.groups ?? [];
     // A generated tab of hundreds of pages (skills, reference) gets its overview here;
     // its pages link on from there and are all in llms-full.txt.
-    const size = groups.reduce((n, g) => n + countPages(g), 0);
+    // The Summer API tab is listed in full however large it grows: agents look up models and guides here.
+    const size = t.tab === TAB ? 0 : groups.reduce((n, g) => n + countPages(g), 0);
     for (const g of size > BIG_TAB ? groups.slice(0, 1) : groups) {
       out.push("", `### ${g.group}`, "");
       indexLines(g, 4, out);
