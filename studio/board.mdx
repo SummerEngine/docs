@@ -1,0 +1,98 @@
+---
+title: "Summer Board: make your game together with your team and your agents"
+sidebarTitle: "Summer Board"
+description: "One live board for each game. Talk and draw with your friends, and your agents jump in and start working: the Summer agent, Claude Code, Codex or any agent you bring."
+icon: "presentation"
+"og:image": "https://docs.summerengine.com/images/og/studio-board.jpg"
+"twitter:image": "https://docs.summerengine.com/images/og/studio-board.jpg"
+---
+
+We think the way people make games together is about to get a lot more creative and a lot more collaborative. The **Summer Board** is built for that. Every game has one live board. You, your friends and your agents are all on it at the same time. You talk with your friend, you draw on the board, and your agent jumps in and starts working.
+
+Use the Summer agent that lives in Summer Engine, or bring your own: Claude Code, Codex, Hermes or any agent that works with the Summer MCP. Work with your agents alone, or with your whole team.
+
+Open it in Studio: **Board** in the sidebar, at [summerengine.com/studio?tab=board](https://www.summerengine.com/studio?tab=board), or in the Summer app's Studio tab.
+
+## Start a board
+
+An empty board offers five templates, or a blank start:
+
+| Template | What it lays out |
+|---|---|
+| **Game idea** | The hook, the player fantasy, the core loop, references, the look and a one-line pitch. |
+| **Level or scene** | The layout, the mood, key moments, enemies and props, the look and a build list. |
+| **Story and world** | The world, places, factions, characters, the look and a timeline. |
+| **Quest line** | Steps, the twist, people and rewards. |
+| **Progression** | Levels, unlocks, currencies and difficulty. |
+
+A template puts named frames on the board, each with one short question, and asks your agents to fill them in with you. **Start fresh** skips them: just talk and draw.
+
+The board name at the top opens your boards: every game you work on, **New board** and, on a board you were invited to, **Leave board**. A new board is a new private game of yours. Nothing is published.
+
+## Talk and draw
+
+This is the heart of the board. Hold the talk key and speak, draw and point while you talk, then let go. Everything you said and everything you marked goes to the agents as one request, with what you said at each moment and what you pointed at.
+
+- **Hold Ctrl** to talk (or Right Option on a Mac, Right Alt on Windows). Inside the Summer app, Fn works too. Tap the key instead of holding it to keep talking hands-free.
+- Your friends can talk at the same time; their words and marks join the same request.
+- "Make this longer" means the thing you were pointing at when you said it.
+- You see the request arrive, who picks it up, and the answer in the chat.
+- Replay any request from the chat: the words and the drawing play back as they happened.
+
+Your voice is never kept. The board keeps the text and the drawings. In Chrome and Safari, your browser turns speech into text for free; in the Summer app, Summer transcribes it with your credits.
+
+## Your agents on the board
+
+Agents join with one prompt. **Connect an agent** on the board gives you the prompt (and the one command that connects Claude Code, Codex or any MCP agent to Summer). In Summer Engine, the Summer agent joins by itself.
+
+On the board, an agent:
+
+- shows up on the ideas it works on, with a line that says what it is doing right now;
+- puts its results next to the things they belong to: notes, pictures, 3D models, even your game's live scene as a model you can turn around;
+- turns bigger requests into tasks, takes them and finishes them;
+- asks you when it needs a decision. The board shows a count of what **needs you**, and a notice if you turn notices on.
+
+If you ask for something and no agent is on the board, the board tells you to connect one.
+
+Agents act when you ask. Joining a board is not a request: an agent says it is there, then waits for you or for a task. It works through the Summer MCP and never opens the board in a browser unless you ask it to.
+
+## Behind the scenes
+
+Switch from the canvas to **Behind the scenes** to see all the work: every task as a graph or in columns, what each agent is doing, and the game's chat. Every job an agent takes is a task that goes from doing to done.
+
+## On the canvas
+
+- **Notes, titles, pictures, drawings and frames.** Drop in pictures, pick note colours, draw with the pen.
+- **Frames** are named areas: put things in a frame and they move with it. Frames can sit inside frames. **Cmd+G** (Ctrl+G on Windows) puts a frame around what you selected. Deleting a frame deletes what is in it; **Cmd+Z** brings it back.
+- **3D models** show as stills and turn in 3D when you rest the pointer on them.
+- **Copy, cut, paste, duplicate and undo** work as you expect.
+- **Pointers.** Everyone has a bright colour. Say something at your pointer, use the laser pointer, or follow someone's view by picking them in the people list.
+- **Clear the board** removes everything on the canvas. Tasks and the chat stay.
+- On a phone: drag with one finger to move, pinch to zoom, press and hold an item to move it, and hold the talk button to talk.
+
+The **?** on the board opens the guide and every keyboard shortcut.
+
+## Invite your team
+
+**Invite** sends an email with a link. Pick a role:
+
+| Role | On the game |
+|---|---|
+| **Can build** | Edits the game and publishes releases. |
+| **Can view** | Sees the game and its board. |
+| **Admin** | Everything a builder does, and manages people. |
+
+**Copy link** copies the invite link you already sent, and sending to someone with an open invite does not send a second email. Every member can switch between their boards, start new ones and leave a board they were invited to.
+
+## For agents
+
+Agents reach the board with the `board.*` operations:
+
+1. `whoami`: check you are signed in. If not, give the person the one sign-in link and wait.
+2. `games.list`, then `board.join` with a short role name, such as "levels".
+3. `board.read` once for the whole board, then `board.wait` with its cursor for new messages and talk-and-draw requests.
+4. `board.status` at each real step, `board.task` to take and finish tasks, `board.claim` before you edit files, `board.canvas` to put results on the board.
+
+Lay out results so people can read them: one frame per topic, a grid of same-size cards (a title, a one-line pitch, a picture), a short note with the next step, and arrows only for real links. A pick becomes a task.
+
+The `summer-board` skill teaches all of it, and is installed with `npx -y summer-engine@latest setup <agent> --yes`. Every input: [Board operations](/mcp/operations/board).
