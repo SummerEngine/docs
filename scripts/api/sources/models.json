@@ -7396,7 +7396,7 @@
       "name": "Kling Video to Audio",
       "vendor": "Kuaishou",
       "tags": [
-        "video-to-video"
+        "video-to-audio"
       ],
       "aliases": [],
       "outputFormats": [
@@ -7471,7 +7471,7 @@
       "name": "ThinkSound",
       "vendor": "ThinkSound",
       "tags": [
-        "video-to-video"
+        "video-to-audio"
       ],
       "aliases": [],
       "outputFormats": [
