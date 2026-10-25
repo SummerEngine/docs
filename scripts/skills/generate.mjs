@@ -130,7 +130,12 @@ function toMdx(markdown, skill, fromPath) {
   const out = [];
   let fence = null;
   let droppedTitle = false;
-  const text = markdown.replace(/<!--[\s\S]*?-->/g, "").replace(/\r\n/g, "\n");
+  // Strip HTML comments until none is left (one pass can join "<!<!---->--" into a new one).
+  let text = markdown.replace(/\r\n/g, "\n");
+  for (let prev = null; prev !== text; ) {
+    prev = text;
+    text = text.replace(/<!--[\s\S]*?-->/g, "");
+  }
   for (const line of text.split("\n")) {
     const f = line.match(/^\s*(```+|~~~+)/);
     if (fence) {
