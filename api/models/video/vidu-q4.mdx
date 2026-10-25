@@ -1,6 +1,6 @@
 ---
 title: "Vidu Q4"
-description: "Vidu Q4 on the Summer API: $0 per clip, about 2 min, MP4 saved to your Summer library. Model id video/vidu-q4."
+description: "Vidu Q4 on the Summer API: $0.0665 per second, about 2 min, MP4 saved to your Summer library. Model id video/vidu-q4."
 generated: true
 generator: scripts/api
 ---
@@ -12,7 +12,7 @@ Smooth, consistent motion from one frame.
 | | |
 |---|---|
 | Model id | `video/vidu-q4` |
-| Price | \$0 per clip |
+| Price | \$0.0665 per second |
 | Typical time | about 2 min |
 | Does | [Picture to video](/api/models#picture-to-video) |
 | Output | MP4 |
@@ -28,11 +28,13 @@ Smooth, consistent motion from one frame.
 
 ## Price
 
-**\$0 per clip**. Exact list price: `0 USD`.
+**\$0.0665 per second**, counted from `duration`. Exact list price: `0.0665 USD`.
+
+At the default `duration` of 5 seconds: \$0.333.
 
 | When | Price |
 |---|---|
-| `imageUrl` is set | \$0.333 per clip |
+| `resolution` is `"1080p"` | \$0.084 per second |
 
 No markup: this is the provider's list price, checked 2026-10-24. A failed job costs nothing. Get the exact price of one request, free and without a key, from [`POST /v1/estimate`](/api/jobs#know-the-price-first).
 
@@ -123,7 +125,7 @@ Send these fields in `input`. The full JSON Schema is `inputSchema` in [`GET /v1
 | `duration` | integer | Seconds; the model renders its nearest supported length. 1 to 20 Default `5`. |
 | `aspectRatio` | `16:9`, `9:16`, `1:1`, `4:3`, `3:4`, `21:9`, `3:2`, `2:3`, `auto` | Default `"16:9"`. |
 | `negativePrompt` | string | What the clip must not show. up to 1000 characters |
-| `resolution` | `720p`, `1080p`, `4k`, `768P`, `1080P`, `480P`, `480p` | Only a quality the model offers; leave out for its default. |
+| `resolution` | `720p`, `1080p`, `4k`, `480p`, `768p`, `2k`, `768P`, `1080P`, `480P` | Only a quality the model offers; leave out for its default. |
 
 ## Related models
 
@@ -132,7 +134,7 @@ Send these fields in `input`. The full JSON Schema is `inputSchema` in [`GET /v1
   <Card title="Kling 3.0 Standard" href="/api/models/video/kling-3" img="/images/api/tiles/video.svg">`video/kling-3`: \$0.14 per second (default)</Card>
   <Card title="Gemini Omni Flash" href="/api/models/video/gemini-omni-flash" img="/images/api/tiles/video.svg">`video/gemini-omni-flash`: \$0.125 per second</Card>
   <Card title="Kling 3.0 Pro" href="/api/models/video/kling-3-pro" img="https://media.summer.games/preview/v3/create/video/flagship/flagship-kling-card-v2.webp">`video/kling-3-pro`: \$0.168 per second</Card>
-  <Card title="MiniMax H3 Max Turbo" href="/api/models/video/minimax-h3-max-turbo" img="/images/api/tiles/video.svg">`video/minimax-h3-max-turbo`: \$0.026 per second</Card>
+  <Card title="HeyGen Video" href="/api/models/video/heygen-video" img="/images/api/tiles/video.svg">`video/heygen-video`: \$0.01 per second</Card>
 </CardGroup>
 </div>
 

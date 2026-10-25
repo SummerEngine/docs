@@ -2,7 +2,7 @@
   "source": {
     "repo": "SummerEngine/PublicSummerEngine",
     "path": "config/models/model-pages.json",
-    "commit": "0e661498e4fa9868d92926a4d4c0f464556ed46b"
+    "commit": "7cf09f0377ae47bededab1fc534388bee4c64de2"
   },
   "notes": {
     "image/nano-banana-2.1": {
@@ -35,6 +35,22 @@
         "Game logos and title cards.",
         "In-world signs, posters and book covers.",
         "Store page art with the game name in it."
+      ]
+    },
+    "image/ideogram-transparent": {
+      "tagline": "PNGs with a real transparent background.",
+      "gameUses": [
+        "Game logos and title text on a transparent background.",
+        "Item icons, stickers and UI pieces ready to place.",
+        "Decals for signs and props."
+      ]
+    },
+    "image/ideogram-vector": {
+      "tagline": "SVG vector art: icons and logos that scale to any size.",
+      "gameUses": [
+        "Resolution-independent UI icons and HUD glyphs.",
+        "Logos and badges you can scale for any screen.",
+        "Flat 2D art for menus."
       ]
     },
     "image/recraft-4.1": {
@@ -141,6 +157,14 @@
         "Multi-view reconstructions of a character sheet."
       ]
     },
+    "3d/tripo-h3.1": {
+      "tagline": "Detailed geometry, PBR, quad output, and multi-view generation.",
+      "gameUses": [
+        "Quad-topology meshes that are easier to edit in a modeling tool.",
+        "Multi-view reconstructions of props and characters.",
+        "Detailed hero assets with PBR textures."
+      ]
+    },
     "3d/hi3d-v3": {
       "tagline": "The finest geometry detail, built at 2048 cubed voxel resolution.",
       "gameUses": [
@@ -157,12 +181,44 @@
         "Low-poly assets for mobile and web games."
       ]
     },
+    "3d/hunyuan3d-v3": {
+      "tagline": "Textured 3D models from a prompt or an image.",
+      "gameUses": [
+        "Concept art of a prop or character turned into a textured model.",
+        "Extra side views for a more faithful back and sides.",
+        "Real-object reference photos turned into props."
+      ]
+    },
+    "3d/tripo-p1": {
+      "tagline": "Low-poly textured models from one image.",
+      "gameUses": [
+        "Props and characters for mobile games under a tight face budget.",
+        "Stylized low-poly assets from a concept image.",
+        "Quick untextured blockouts for level greyboxing."
+      ]
+    },
+    "3d/pixal3d": {
+      "tagline": "Pixel-aligned image to 3D with clean, remeshed triangles.",
+      "gameUses": [
+        "Hero props that must match their concept art closely.",
+        "Clean remeshed meshes that are easy to edit and rig.",
+        "Fast textured models from a single render."
+      ]
+    },
     "3d/trellis-2": {
       "tagline": "Image to 3D mesh through the Summer MCP, from any engine.",
       "gameUses": [
         "Props and set dressing from concept art or a reference photo.",
         "A second opinion on a mesh when another model struggles with a shape.",
         "Batch conversion of a sheet of item icons into 3D pickups."
+      ]
+    },
+    "3d/trellis-multi": {
+      "tagline": "Several photos of one object fused into one model, for about two cents.",
+      "gameUses": [
+        "Bulk filler props for prototypes.",
+        "Objects you already have several photos or renders of.",
+        "A cheap fallback when a single image hides the back."
       ]
     },
     "video/gemini-omni-flash": {
@@ -235,8 +291,16 @@
       "tagline": "Steady characters, longer takes and per-shot prompts.",
       "gameUses": [
         "Trailer shots where the hero must look the same from start to end.",
-        "Animating key art or a character sheet into a short scene.",
-        "Multi-shot sequences for a cutscene or a store page."
+        "Cutscenes that put your characters, from renders or concept art, into new scenes (references).",
+        "Cut scene with sound: render the clip with Kling 4.0, then add sound with Kling Video to Audio."
+      ]
+    },
+    "video/heygen-video": {
+      "tagline": "Low-cost clips with sound, from a prompt, an image or references.",
+      "gameUses": [
+        "Cheap trailer shots and story beats with sound.",
+        "In-game TV screens, billboards and menu loops.",
+        "Animatics for a cutscene before the final render."
       ]
     },
     "video/minimax-h3-max": {
@@ -244,7 +308,7 @@
       "gameUses": [
         "Trailer shots that follow a detailed camera and action brief.",
         "Animating key art or a character portrait for a store page.",
-        "Keeping one character consistent across several shots with references."
+        "Reframe a 16:9 trailer into a 9:16 short for TikTok and store previews, keeping motion and sound."
       ]
     },
     "video/minimax-h3-max-turbo": {
@@ -383,6 +447,38 @@
         "Narration where pace and pitch need fine control."
       ]
     },
+    "voice/minimax-speech-2.8-turbo": {
+      "tagline": "The fast MiniMax Speech 2.8 at a lower price.",
+      "gameUses": [
+        "Many NPC barks with emotion control.",
+        "Placeholder dialogue while writing.",
+        "Trying delivery before a final HD take."
+      ]
+    },
+    "voice/gemini-3.1-flash-tts": {
+      "tagline": "Speech directed in plain words, with 30 voices.",
+      "gameUses": [
+        "Story lines with directed delivery: whispered, tense, cheerful.",
+        "Narration in many languages.",
+        "Quick voice drafts for every character."
+      ]
+    },
+    "voice/seed-audio-1.0": {
+      "tagline": "ByteDance's natural speech with preset voices.",
+      "gameUses": [
+        "NPC voice lines with natural pacing.",
+        "Mixed-language dialogue.",
+        "Narration for tutorials and trailers."
+      ]
+    },
+    "voice/heygen-voice": {
+      "tagline": "Expressive speech in 39 languages, and a very cheap Turbo.",
+      "gameUses": [
+        "NPC dialogue in a stock voice.",
+        "Localized voice-over from one script.",
+        "Thousands of short lines with Turbo."
+      ]
+    },
     "voice/xai-tts-v1": {
       "tagline": "Grok's expressive voices, with laugh, sigh and pause tags.",
       "gameUses": [
@@ -461,6 +557,14 @@
         "Background music for levels and menus.",
         "Tracks with a planned structure, such as a calm intro that builds to a boss theme.",
         "Short jingles for events and transitions."
+      ]
+    },
+    "music/lyria-2": {
+      "tagline": "A 30 second instrumental cue from a prompt.",
+      "gameUses": [
+        "30 second menu and level loops.",
+        "Stingers for wins, losses and level ups.",
+        "Ambient soundscapes for exploration."
       ]
     }
   }

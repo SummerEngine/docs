@@ -93,6 +93,22 @@
         "input": "https://media.summer.games/preview/v3/create/3d/concept-asha.webp"
       }
     ],
+    "3d/rodin-2.5": [
+      {
+        "kind": "3d",
+        "url": "https://media.summer.games/preview/v3/glb/mp-rodin-2-5-moss.glb",
+        "poster": "https://media.summer.games/preview/v3/model-pages/rodin-2-5/moss-turntable.jpg",
+        "prompt": "Moss, a small forest creature with leaf ears, a mossy round body and big dark eyes",
+        "fromPicture": true,
+        "input": "https://media.summer.games/preview/v3/create/3d/concept-moss.png"
+      },
+      {
+        "kind": "3d",
+        "url": "https://media.summer.games/preview/v3/glb/f3d-rodin-sword.glb",
+        "poster": "https://media.summer.games/preview/v3/create/3d/models/rodin-2-5-sword.jpg",
+        "prompt": "An ornate fantasy longsword with a gold filigree hilt, a floating blue crystal in the crossguard and a glowing runed blade, stylized game weapon"
+      }
+    ],
     "3d/rodin-2.5-fast": [
       {
         "kind": "3d",
@@ -101,6 +117,22 @@
         "prompt": "A fantasy treasure chest of dark oak with brass corners and a curved lid, slightly open with gold coins inside",
         "fromPicture": true,
         "input": "https://media.summer.games/preview/v3/create/3d/image-to-3d-chest-input.webp"
+      }
+    ],
+    "3d/tripo-h3.1": [
+      {
+        "kind": "3d",
+        "url": "https://media.summer.games/preview/v3/glb/mp-tripo-h3-1-moss.glb",
+        "poster": "https://media.summer.games/preview/v3/model-pages/tripo-h3-1/moss-turntable.jpg",
+        "prompt": "Moss, a small forest creature with leaf ears, a mossy round body and big dark eyes",
+        "fromPicture": true,
+        "input": "https://media.summer.games/preview/v3/create/3d/concept-moss.png"
+      },
+      {
+        "kind": "3d",
+        "url": "https://media.summer.games/preview/v3/glb/f3d-tripoh31-cauldron.glb",
+        "poster": "https://media.summer.games/preview/v3/create/3d/models/tripo-h3-1-cauldron.jpg",
+        "prompt": "A cozy witch cauldron on three stubby legs, bubbling green potion, a wooden ladle and little mushrooms around the rim, stylized hand-painted game prop"
       }
     ],
     "3d/tripo-p2": [

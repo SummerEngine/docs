@@ -41,6 +41,7 @@ Real outputs of `video/minimax-h3-max`, each with the input that made it.
 
 - Trailer shots that follow a detailed camera and action brief.
 - Animating key art or a character portrait for a store page.
+- Reframe a 16:9 trailer into a 9:16 short for TikTok and store previews, keeping motion and sound.
 
 ## Price
 
@@ -141,7 +142,7 @@ Send these fields in `input`. The full JSON Schema is `inputSchema` in [`GET /v1
 | `duration` | integer | Seconds; the model renders its nearest supported length. 1 to 20 Default `5`. |
 | `aspectRatio` | `16:9`, `9:16`, `1:1`, `4:3`, `3:4`, `21:9`, `3:2`, `2:3`, `auto` | Default `"16:9"`. |
 | `negativePrompt` | string | What the clip must not show. up to 1000 characters |
-| `resolution` | `720p`, `1080p`, `4k`, `768P`, `1080P`, `480P`, `480p` | Only a quality the model offers; leave out for its default. |
+| `resolution` | `720p`, `1080p`, `4k`, `480p`, `768p`, `2k`, `768P`, `1080P`, `480P` | Only a quality the model offers; leave out for its default. |
 
 ## Related models
 
@@ -150,7 +151,7 @@ Send these fields in `input`. The full JSON Schema is `inputSchema` in [`GET /v1
   <Card title="Kling 3.0 Standard" href="/api/models/video/kling-3" img="/images/api/tiles/video.svg">`video/kling-3`: \$0.14 per second (default)</Card>
   <Card title="Gemini Omni Flash" href="/api/models/video/gemini-omni-flash" img="/images/api/tiles/video.svg">`video/gemini-omni-flash`: \$0.125 per second</Card>
   <Card title="Kling 3.0 Pro" href="/api/models/video/kling-3-pro" img="https://media.summer.games/preview/v3/create/video/flagship/flagship-kling-card-v2.webp">`video/kling-3-pro`: \$0.168 per second</Card>
-  <Card title="Vidu Q4" href="/api/models/video/vidu-q4" img="/images/api/tiles/video.svg">`video/vidu-q4`: \$0 per clip</Card>
+  <Card title="HeyGen Video" href="/api/models/video/heygen-video" img="/images/api/tiles/video.svg">`video/heygen-video`: \$0.01 per second</Card>
 </CardGroup>
 </div>
 

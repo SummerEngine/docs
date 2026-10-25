@@ -253,14 +253,22 @@
 
 ### Models and pricing
 
-- [Summer API models and pricing](https://docs.summerengine.com/api/models.md): Every model on the Summer API with its price: 8 3D models, 12 image models, 21 video models, 11 voice models, 1 dialogue model, 4 sound effect models, 3 music models. No markup on assets. Every model at the provider's list price. Generated from GET /v1/models.
+- [Summer API models and pricing](https://docs.summerengine.com/api/models.md): Every model on the Summer API with its price: 16 3D models, 14 image models, 22 video models, 19 voice models, 1 dialogue model, 4 sound effect models, 6 music models. No markup on assets. Every model at the provider's list price. Generated from GET /v1/models.
 
 #### 3D models
 
 - [Hunyuan 3D Pro](https://docs.summerengine.com/api/models/3d/hunyuan-3d.md): Hunyuan 3D Pro on the Summer API: $0.525 per model, about 5 min, GLB saved to your Summer library. Model id 3d/hunyuan-3d.
+- [TRELLIS Multi-image](https://docs.summerengine.com/api/models/3d/trellis-multi.md): TRELLIS Multi-image on the Summer API: $0.062 per model, about 53 s, GLB saved to your Summer library. Model id 3d/trellis-multi.
 - [Rodin 2.5 Fast](https://docs.summerengine.com/api/models/3d/rodin-2-5-fast.md): Rodin 2.5 Fast on the Summer API: $0.10 per model, about 2 min, GLB saved to your Summer library. Model id 3d/rodin-2.5-fast.
+- [Tripo H3.1](https://docs.summerengine.com/api/models/3d/tripo-h3-1.md): Tripo H3.1 on the Summer API: $0.20 per model, about 5 min, GLB saved to your Summer library. Model id 3d/tripo-h3.1.
 - [Hunyuan 3D Rapid](https://docs.summerengine.com/api/models/3d/hunyuan-3d-rapid.md): Hunyuan 3D Rapid on the Summer API: $0.225 per model, about 3 min, GLB saved to your Summer library. Model id 3d/hunyuan-3d-rapid.
+- [Pixal3D](https://docs.summerengine.com/api/models/3d/pixal3d.md): Pixal3D on the Summer API: $0.342 per model, about 8 min, GLB saved to your Summer library. Model id 3d/pixal3d.
 - [Trellis 2](https://docs.summerengine.com/api/models/3d/trellis-2.md): Trellis 2 on the Summer API: $0.342 per model, about 5 min, GLB saved to your Summer library. Model id 3d/trellis-2.
+- [Rodin 2.5 High](https://docs.summerengine.com/api/models/3d/rodin-2-5.md): Rodin 2.5 High on the Summer API: $0.40 per model, about 5 min, GLB saved to your Summer library. Model id 3d/rodin-2.5.
+- [Hunyuan3D v2 Multi-view Turbo](https://docs.summerengine.com/api/models/3d/hunyuan3d-v2-multiview-turbo.md): Hunyuan3D v2 Multi-view Turbo on the Summer API: $0.462 per model, about 2 min, GLB saved to your Summer library. Model id 3d/hunyuan3d-v2-multiview-turbo.
+- [Hunyuan3D v2 Multi-view](https://docs.summerengine.com/api/models/3d/hunyuan3d-v2-multiview.md): Hunyuan3D v2 Multi-view on the Summer API: $0.522 per model, about 2 min, GLB saved to your Summer library. Model id 3d/hunyuan3d-v2-multiview.
+- [Hunyuan3D v3](https://docs.summerengine.com/api/models/3d/hunyuan3d-v3.md): Hunyuan3D v3 on the Summer API: $0.525 per model, about 3 min, GLB saved to your Summer library. Model id 3d/hunyuan3d-v3.
+- [Tripo P1](https://docs.summerengine.com/api/models/3d/tripo-p1.md): Tripo P1 on the Summer API: $0.542 per model, about 2 min, GLB saved to your Summer library. Model id 3d/tripo-p1.
 - [Meshy 6](https://docs.summerengine.com/api/models/3d/meshy-6.md): Meshy 6 on the Summer API: $0.80 per model, about 8 min, GLB saved to your Summer library. Model id 3d/meshy-6.
 - [Tripo P2](https://docs.summerengine.com/api/models/3d/tripo-p2.md): Tripo P2 on the Summer API: $1.10 per model, about 4 min, GLB saved to your Summer library. Model id 3d/tripo-p2.
 - [Meshy 7.1](https://docs.summerengine.com/api/models/3d/meshy-7-1.md): Meshy 7.1 on the Summer API: $1.20 per model, about 7 min, GLB saved to your Summer library. Model id 3d/meshy-7.1.
@@ -277,8 +285,10 @@
 - [Nano Banana 2.1](https://docs.summerengine.com/api/models/image/nano-banana-2-1.md): Nano Banana 2.1 on the Summer API: $0.04 per image, about 22 s, PNG, JPG, WEBP saved to your Summer library. Model id image/nano-banana-2.1.
 - [FLUX 3](https://docs.summerengine.com/api/models/image/flux-3.md): FLUX 3 on the Summer API: $0.048 per image, about 21 s, PNG, JPG, WEBP saved to your Summer library. Model id image/flux-3.
 - [GPT Image 2.5](https://docs.summerengine.com/api/models/image/gpt-image-2-5.md): GPT Image 2.5 on the Summer API: $0.053 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/gpt-image-2.5.
+- [Ideogram 3 Transparent](https://docs.summerengine.com/api/models/image/ideogram-transparent.md): Ideogram 3 Transparent on the Summer API: $0.06 per image, about 22 s, PNG, JPG, WEBP saved to your Summer library. Model id image/ideogram-transparent.
 - [Ideogram 4.5](https://docs.summerengine.com/api/models/image/ideogram-4-5.md): Ideogram 4.5 on the Summer API: $0.06 per image, about 11 s, PNG, JPG, WEBP saved to your Summer library. Model id image/ideogram-4.5.
 - [Seedream 5.0 Pro](https://docs.summerengine.com/api/models/image/seedream-5-pro.md): Seedream 5.0 Pro on the Summer API: $0.135 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/seedream-5-pro.
+- [Ideogram Vector](https://docs.summerengine.com/api/models/image/ideogram-vector.md): Ideogram Vector on the Summer API: $0.16 per image, about 26 s, PNG, JPG, WEBP saved to your Summer library. Model id image/ideogram-vector.
 - [GPT Image 2](https://docs.summerengine.com/api/models/image/gpt-image-2.md): GPT Image 2 on the Summer API: $0.211 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/gpt-image-2.
 
 #### Video
@@ -286,11 +296,12 @@
 - [Kling 3.0 Standard](https://docs.summerengine.com/api/models/video/kling-3.md): Kling 3.0 Standard on the Summer API: $0.14 per second, MP4 saved to your Summer library. Model id video/kling-3.
 - [Gemini Omni Flash](https://docs.summerengine.com/api/models/video/gemini-omni-flash.md): Gemini Omni Flash on the Summer API: $0.125 per second, MP4 saved to your Summer library. Model id video/gemini-omni-flash.
 - [Kling 3.0 Pro](https://docs.summerengine.com/api/models/video/kling-3-pro.md): Kling 3.0 Pro on the Summer API: $0.168 per second, MP4 saved to your Summer library. Model id video/kling-3-pro.
-- [Vidu Q4](https://docs.summerengine.com/api/models/video/vidu-q4.md): Vidu Q4 on the Summer API: $0 per clip, about 2 min, MP4 saved to your Summer library. Model id video/vidu-q4.
+- [HeyGen Video](https://docs.summerengine.com/api/models/video/heygen-video.md): HeyGen Video on the Summer API: $0.01 per second, about 14 s, MP4 saved to your Summer library. Model id video/heygen-video.
 - [MiniMax H3 Max Turbo](https://docs.summerengine.com/api/models/video/minimax-h3-max-turbo.md): MiniMax H3 Max Turbo on the Summer API: $0.026 per second, about 2 s, MP4 saved to your Summer library. Model id video/minimax-h3-max-turbo.
 - [Grok Imagine Video 1.5 Lite](https://docs.summerengine.com/api/models/video/grok-video-1-5-lite.md): Grok Imagine Video 1.5 Lite on the Summer API: $0.03 per second, about 28 s, MP4 saved to your Summer library. Model id video/grok-video-1.5-lite.
 - [Veo 3.1 Lite](https://docs.summerengine.com/api/models/video/veo3-1-lite.md): Veo 3.1 Lite on the Summer API: $0.05 per second, MP4 saved to your Summer library. Model id video/veo3.1-lite.
 - [PixVerse V6](https://docs.summerengine.com/api/models/video/pixverse-v6.md): PixVerse V6 on the Summer API: $0.06 per second, MP4 saved to your Summer library. Model id video/pixverse-v6.
+- [Vidu Q4](https://docs.summerengine.com/api/models/video/vidu-q4.md): Vidu Q4 on the Summer API: $0.0665 per second, about 2 min, MP4 saved to your Summer library. Model id video/vidu-q4.
 - [MiniMax H3 Max](https://docs.summerengine.com/api/models/video/minimax-h3-max.md): MiniMax H3 Max on the Summer API: $0.08 per second, MP4 saved to your Summer library. Model id video/minimax-h3-max.
 - [Gemini Omni Flash 1.1](https://docs.summerengine.com/api/models/video/gemini-omni-flash-1-1.md): Gemini Omni Flash 1.1 on the Summer API: $0.10 per second, MP4 saved to your Summer library. Model id video/gemini-omni-flash-1.1.
 - [Wan 3.0](https://docs.summerengine.com/api/models/video/wan-3.md): Wan 3.0 on the Summer API: $0.10 per second, MP4 saved to your Summer library. Model id video/wan-3.
@@ -309,15 +320,23 @@
 
 - [Expressive v3](https://docs.summerengine.com/api/models/voice/expressive-v3.md): Expressive v3 on the Summer API: $0.08 per 1,000 characters, about 5 s, MP3 saved to your Summer library. Model id voice/expressive-v3.
 - [Multilingual v2](https://docs.summerengine.com/api/models/voice/multilingual-v2.md): Multilingual v2 on the Summer API: $0.08 per 1,000 characters, about 5 s, MP3 saved to your Summer library. Model id voice/multilingual-v2.
+- [HeyGen Voice Turbo](https://docs.summerengine.com/api/models/voice/heygen-voice-turbo.md): HeyGen Voice Turbo on the Summer API: $0.002 per 1,000 characters, about 11 s, MP3 saved to your Summer library. Model id voice/heygen-voice-turbo.
 - [Inworld TTS-1.5 Max](https://docs.summerengine.com/api/models/voice/inworld-tts-1-5-max.md): Inworld TTS-1.5 Max on the Summer API: $0.01 per 1,000 characters, about 4 s, MP3 saved to your Summer library. Model id voice/inworld-tts-1.5-max.
+- [HeyGen Voice](https://docs.summerengine.com/api/models/voice/heygen-voice.md): HeyGen Voice on the Summer API: $0.015 per 1,000 characters, about 11 s, MP3 saved to your Summer library. Model id voice/heygen-voice.
 - [xAI TTS](https://docs.summerengine.com/api/models/voice/xai-tts-v1.md): xAI TTS on the Summer API: $0.015 per 1,000 characters, about 4 s, MP3 saved to your Summer library. Model id voice/xai-tts-v1.
 - [Gemini 3.8 Flash Lite TTS](https://docs.summerengine.com/api/models/voice/gemini-3-8-flash-lite-tts.md): Gemini 3.8 Flash Lite TTS on the Summer API: $0.03 per 1,000 characters, about 4 s, MP3 saved to your Summer library. Model id voice/gemini-3.8-flash-lite-tts.
 - [Expressive v4 Turbo](https://docs.summerengine.com/api/models/voice/expressive-v4-turbo.md): Expressive v4 Turbo on the Summer API: $0.04 per 1,000 characters, about 2 s, MP3 saved to your Summer library. Model id voice/expressive-v4-turbo.
 - [Flash v2.5](https://docs.summerengine.com/api/models/voice/flash-v2-5.md): Flash v2.5 on the Summer API: $0.04 per 1,000 characters, about 3 s, MP3 saved to your Summer library. Model id voice/flash-v2.5.
 - [Gemini 3.8 Flash TTS](https://docs.summerengine.com/api/models/voice/gemini-3-8-flash-tts.md): Gemini 3.8 Flash TTS on the Summer API: $0.045 per 1,000 characters, about 7 s, MP3 saved to your Summer library. Model id voice/gemini-3.8-flash-tts.
+- [Gemini 3.1 Flash TTS](https://docs.summerengine.com/api/models/voice/gemini-3-1-flash-tts.md): Gemini 3.1 Flash TTS on the Summer API: $0.05 per 1,000 characters, about 4 s, MP3 saved to your Summer library. Model id voice/gemini-3.1-flash-tts.
 - [Qwen Audio 3.0 TTS](https://docs.summerengine.com/api/models/voice/qwen-audio-3-tts.md): Qwen Audio 3.0 TTS on the Summer API: $0.05 per 1,000 characters, about 6 s, MP3 saved to your Summer library. Model id voice/qwen-audio-3-tts.
+- [MiniMax Speech 2.8 Turbo](https://docs.summerengine.com/api/models/voice/minimax-speech-2-8-turbo.md): MiniMax Speech 2.8 Turbo on the Summer API: $0.06 per 1,000 characters, about 5 s, MP3 saved to your Summer library. Model id voice/minimax-speech-2.8-turbo.
+- [Qwen3 TTS 0.6B](https://docs.summerengine.com/api/models/voice/qwen-3-tts-0-6b.md): Qwen3 TTS 0.6B on the Summer API: $0.07 per 1,000 characters, about 70 s, MP3 saved to your Summer library. Model id voice/qwen-3-tts-0.6b.
 - [Expressive v4](https://docs.summerengine.com/api/models/voice/expressive-v4.md): Expressive v4 on the Summer API: $0.08 per 1,000 characters, about 1 s, MP3 saved to your Summer library. Model id voice/expressive-v4.
+- [Qwen3 TTS 1.7B](https://docs.summerengine.com/api/models/voice/qwen-3-tts-1-7b.md): Qwen3 TTS 1.7B on the Summer API: $0.09 per 1,000 characters, about 86 s, MP3 saved to your Summer library. Model id voice/qwen-3-tts-1.7b.
+- [Qwen3 TTS Voice Design](https://docs.summerengine.com/api/models/voice/qwen-3-tts-voice-design.md): Qwen3 TTS Voice Design on the Summer API: $0.09 per 1,000 characters, about 61 s, MP3 saved to your Summer library. Model id voice/qwen-3-tts-voice-design.
 - [MiniMax Speech 2.8 HD](https://docs.summerengine.com/api/models/voice/minimax-speech-2-8-hd.md): MiniMax Speech 2.8 HD on the Summer API: $0.10 per 1,000 characters, about 5 s, MP3 saved to your Summer library. Model id voice/minimax-speech-2.8-hd.
+- [Seed Audio 1.0](https://docs.summerengine.com/api/models/voice/seed-audio-1-0.md): Seed Audio 1.0 on the Summer API: $0.223 per 1,000 characters, about 36 s, MP3 saved to your Summer library. Model id voice/seed-audio-1.0.
 
 #### Dialogue
 
@@ -333,8 +352,11 @@
 #### Music
 
 - [Music v2](https://docs.summerengine.com/api/models/music/music-v2.md): Music v2 on the Summer API: $0.0025 per second, about 10 s, MP3 saved to your Summer library. Model id music/music-v2.
+- [MiniMax Music 3](https://docs.summerengine.com/api/models/music/minimax-music-3.md): MiniMax Music 3 on the Summer API: $0.002 per second, about 10 s, MP3 saved to your Summer library. Model id music/minimax-music-3.
 - [Music v1](https://docs.summerengine.com/api/models/music/music-v1.md): Music v1 on the Summer API: $0.0025 per second, about 10 s, MP3 saved to your Summer library. Model id music/music-v1.
-- [Music v2.5](https://docs.summerengine.com/api/models/music/music-v2-5.md): Music v2.5 on the Summer API: $0.0025 per second, about 10 s, MP3 saved to your Summer library. Model id music/music-v2.5.
+- [Music v2.5](https://docs.summerengine.com/api/models/music/music-v2-5.md): Music v2.5 on the Summer API: $0.0025 per second, about 5 s, MP3 saved to your Summer library. Model id music/music-v2.5.
+- [MiniMax Music v2](https://docs.summerengine.com/api/models/music/minimax-music-v2.md): MiniMax Music v2 on the Summer API: $0.03 per track, about 25 s, MP3 saved to your Summer library. Model id music/minimax-music-v2.
+- [Lyria 2](https://docs.summerengine.com/api/models/music/lyria-2.md): Lyria 2 on the Summer API: $0.10 per track, about 25 s, MP3 saved to your Summer library. Model id music/lyria-2.
 
 ### Use the API
 
