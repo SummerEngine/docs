@@ -201,7 +201,7 @@ export function guidePages(sourceDir, kit) {
         "Each guide is one real job from a game's production, start to finish: which models to chain and why, the exact request for every step in the CLI, over HTTP and through MCP, and what the whole chain costs at list price. Hand a guide to your coding agent and it can run it for you.",
         "",
         "<CardGroup cols={2}>",
-        ...nav.map((n) => `  <Card title=${JSON.stringify(n.title)} icon=${JSON.stringify(n.icon)} href=${JSON.stringify(`/${n.path}`)}>\n    ${cell(n.description)} From ${n.typical ? "about " : ""}${money(n.total)}.\n  </Card>`),
+        ...nav.map((n) => `  <Card title=${JSON.stringify(n.title)} icon=${JSON.stringify(n.icon)} href=${JSON.stringify(`/${n.path}`)}>\n    ${cell(n.description)} The whole chain: ${n.typical ? "about " : ""}${money(n.total)}.\n  </Card>`),
         "</CardGroup>",
         "",
       ].join("\n"),
