@@ -1,0 +1,65 @@
+---
+title: "Build your own tools: custom apps and custom UI in Summer Studio"
+sidebarTitle: "Build your own tools"
+description: "Your agent builds custom tools and custom UI for your game inside Summer Studio: a quest maker, an item database, a balance table, a sound picker. Your whole team uses them, live, and your agents can too."
+icon: "wrench"
+"og:image": "https://docs.summerengine.com/images/og/apps-custom-tools.jpg"
+"twitter:image": "https://docs.summerengine.com/images/og/apps-custom-tools.jpg"
+---
+
+Every game is different, and every game ends up needing its own tools. A quest maker for your RPG. An item and loot database. A weapon balance table. A grid to pick the best of three sound effects. A tracker for which levels are done.
+
+In Summer, you do not wait for someone to build those, and you do not glue together spreadsheets. **Your agent builds them for you, inside Summer Studio**, as Summer Apps. You describe the tool; your agent writes it, publishes it, looks at it, and opens it for you. Then your whole team works on it together, all in one place, and your agents can use it too.
+
+Summer is open like that: you can build your own plugins for the engine, and your own tools and UI in Studio.
+
+## Two kinds of custom UI
+
+| | Code app | Layout app |
+|---|---|---|
+| **What it is** | A small web page (HTML, JS, CSS) built with the Summer SDK and the Summer UI kit. | One JSON layout of Summer UI parts that Summer draws. No code runs. |
+| **Best for** | Real tools your team keeps: databases, editors, trackers, dashboards. | Quick decisions: pick a sound, approve art, fill in a short form. |
+| **Examples** | Quest maker, item database, balance table, live-ops calendar. | "Sword swing: pick a sound", "Which logo?" |
+
+Both look like the rest of Studio, in light and dark, on a laptop and a phone. Your agent picks the right kind for the job.
+
+## What a custom tool can do
+
+- **Shared and live.** A tool belongs to your team. Everyone who opens it sees the same data, and every change shows up for everyone at once.
+- **Works on your game.** Tools read and change your Summer assets, make new ones with the generative models, and read your game's analytics. Docking a tool next to your scene in Summer Engine comes with the next Summer Engine update.
+- **An API for your agents.** A tool's data is an API: your agent reads and writes it with no tool open. Ask "add a fire sword to the item database" and it is there.
+- **New tools for your agents.** A tool can give your agents new tools of their own, and send events your agent waits for, such as "the team picked this sound".
+- **Versioned.** Every publish is a new version, and you can go back to any one.
+- **Safe.** Tools run in a sandbox with only the permissions they declare.
+
+## Make one
+
+Ask your agent in plain words. Claude Code, Codex, Cursor and other agents use the Summer MCP; in Studio, **Apps > Build a new app** asks Summer Agent.
+
+<Prompt description="**A quest maker for your game.** Your agent builds it as a Summer App and opens it in your Studio tab.">
+Build us a quest maker as a Summer App: quests with a name, giver, steps,
+rewards and the quests they unlock, a list we can filter by area, and a view
+of the quest chain. Keep the quests in the app's shared data so you can read
+and edit them later. Read apps.guide first, and look at it with
+apps.screenshot before you tell me it is done.
+</Prompt>
+
+<Prompt description="**A quick sound pick.** A layout app for one decision.">
+Make three versions of a sword swing sound and give the team a layout app to
+pick one. When someone picks, tell me which one and use it in the game.
+</Prompt>
+
+Your agent first checks whether Summer already does the job (the asset library, Grow dashboards, the Board). It builds a tool only when the need is real.
+
+## Where your tools live
+
+**Studio > Apps** lists your team's tools: **Pinned**, **Scratch**, **Team apps** and **Archived**. New tools start in Scratch; **Keep** moves one to your team's apps, and **Pin to sidebar** puts it in your Studio sidebar. **Starter apps** adds ready-made ones: Pick one, Asset tracker, Balance table and Live ops.
+
+## Go deeper
+
+- [Build your first app](/apps/build-your-first-app): the walkthrough.
+- [Build with your agent](/apps/build-with-your-agent): the build loop and prompts that work.
+- [Agents and apps](/apps/agents): data, agent tools, events and every `apps.*` operation.
+- [Design kit](/apps/design-kit): the UI kit, layout apps and the design rules.
+- [Apps for game teams](/apps/game-teams/item-and-quest-database): item and quest database, weapon balance table, loot tables, economy and level progress.
+- [Extending Summer Engine](/extending/overview): plugins and native extensions for the engine itself.

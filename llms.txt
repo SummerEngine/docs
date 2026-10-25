@@ -96,6 +96,8 @@
 
 ### Summer Studio
 
+- [What is Summer Studio? Every tool for your game in one place](https://docs.summerengine.com/studio/overview.md): Summer Studio is where the generative models come together, where your team and agents work on the Summer Board, where you build your own tools, and where you publish and grow your game.
+- [Summer Board: make your game together with your team and your agents](https://docs.summerengine.com/studio/board.md): One live board for each game. Talk and draw with your friends, and your agents jump in and start working: the Summer agent, Claude Code, Codex or any agent you bring.
 - [Game Assets in Summer Studio: Create, Find and Import](https://docs.summerengine.com/art-system/overview.md): Summer Studio makes game assets with AI (image, video, audio, 3D), keeps them in My Assets, and Summer Engine imports any of them into your game.
 - [AI Asset Generation for Games in Summer Studio](https://docs.summerengine.com/art-system/ai-generation.md): Generate game images, video, audio and 3D models in Summer Studio, write prompts that work, and have Summer Engine import the results into your game.
 - [Summer Asset Store: Free Game Assets to Browse and Import](https://docs.summerengine.com/art-system/gallery.md): Browse and search free game assets in the Summer Asset Store: 3D models, sprites, 2D art, music, sound effects and animations, ready to import into Summer Engine.
@@ -105,6 +107,7 @@
 ### Summer Apps
 
 - [Summer Apps: team tools your agent builds in Summer Studio](https://docs.summerengine.com/apps/overview.md): Summer Apps are team tools inside Summer Studio that any agent builds through the Summer MCP: shared live data, your assets, game analytics and agent tools.
+- [Build your own tools: custom apps and custom UI in Summer Studio](https://docs.summerengine.com/apps/custom-tools.md): Your agent builds custom tools and custom UI for your game inside Summer Studio: a quest maker, an item database, a balance table, a sound picker. Your whole team uses them, live, and your agents can too.
 - [Build your first Summer App with an AI agent](https://docs.summerengine.com/apps/build-your-first-app.md): Walkthrough: ask your agent for a team tool, and it builds, publishes, checks and opens a Summer App in your Summer Studio tab. Then change it by asking again.
 - [Build a Summer App with your agent: the build loop](https://docs.summerengine.com/apps/build-with-your-agent.md): How an agent builds a Summer App that works the first time: connect the Summer MCP, follow the build loop, avoid three common mistakes, and check it with apps.screenshot.
 - [Summer Apps for agents: data, tools, events and operations](https://docs.summerengine.com/apps/agents.md): How agents use Summer Apps through the Summer MCP: read and write an app's shared data, run its agent tools, wait for its events, and the full apps.* operation list.

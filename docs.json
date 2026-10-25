@@ -142,6 +142,8 @@
           {
             "group": "Summer Studio",
             "pages": [
+              "studio/overview",
+              "studio/board",
               "art-system/overview",
               "art-system/ai-generation",
               "art-system/gallery",
@@ -153,6 +155,7 @@
             "group": "Summer Apps",
             "pages": [
               "apps/overview",
+              "apps/custom-tools",
               "apps/build-your-first-app",
               "apps/build-with-your-agent",
               "apps/agents",
