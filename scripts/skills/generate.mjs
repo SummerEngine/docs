@@ -55,7 +55,7 @@ const DOMAINS = {
   scripting: ["Scripting", "code"],
   tools: ["Tools", "wrench"],
   ui: ["UI", "panels-top-left"],
-  vfx: ["Visual effects", "sparkles"],
+  vfx: ["Visual effects", "flame"],
   video: ["Video", "clapperboard"],
 };
 const WORDS = {
