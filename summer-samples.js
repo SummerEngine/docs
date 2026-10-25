@@ -10,6 +10,12 @@
   function loadViewer() {
     if (viewerLoaded) return;
     viewerLoaded = true;
+    // The docs CSP refuses fetch() of blob: URLs, which is how the 3D loader reads
+    // textures embedded in a GLB. Without createImageBitmap it reads them through
+    // an <img>, which the CSP allows.
+    try {
+      window.createImageBitmap = undefined;
+    } catch (e) {}
     var script = document.createElement("script");
     script.type = "module";
     script.src = VIEWER;
