@@ -54,8 +54,9 @@ whenever that happens again.
 
 Run the checks on the file you upload: your summer.games `.zip`. Export it
 as usual, in the editor (**Project → Export**, the **summer.games** preset) or
-with your agent. Then unpack it and name the Summer Engine executable, once
-per terminal. Every check below uses both.
+with your agent. Use the path your export printed; `build/my-game.summer.zip`
+below is an example. Then unpack it and name the Summer Engine executable,
+once per terminal. Every check below uses both.
 
 <CodeGroup>
 
@@ -116,7 +117,7 @@ scene named:
 
 ```powershell Windows PowerShell
 $p = Start-Process $summer -PassThru -NoNewWindow -ArgumentList '--headless','--verbose','--main-pack','build\bundle\server.pck','--log-file','build\server.log'
-Start-Sleep 15; Stop-Process $p
+Start-Sleep 15; $p | Stop-Process
 Select-String -Path build\server.log -Pattern "Completed load for: 'res://.*tscn'" | Select-Object -First 1
 ```
 

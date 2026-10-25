@@ -14,7 +14,7 @@ After the store page is filled and the game is exported, your agent uploads the 
 
 ## 1. Upload the build
 
-With the npm MCP on your computer, `summer_publish_build` (operation `store.upload_file`) uploads the file from your disk: a store bundle, a web build or a download. The first call shows what it will upload; the second, with `confirm: true`, uploads it.
+With the npm MCP on your computer, `summer_publish_build` (operation `store.upload_file`) uploads the file from your disk: a store bundle, a web build or a download. The first call shows what it will upload. Show it to the owner; the second call, with `confirm: true`, uploads it after they approve this exact file and version.
 
 ```json title="1. Preview"
 { "tool": "summer_publish_build", "gameId": "<gameId>", "clientVersion": "v1.0.0" }
@@ -92,7 +92,7 @@ It releases the build to every platform that passed its checks, publishes the st
 - `live`: the game is on Summer Games. Give the owner the page link.
 - `waiting`: call it again to keep watching. With `waitingOn: "summer"`, every check passed and Summer is finishing the launch: nothing to fix.
 - A failed check: it names the check and its fix. Fix it, upload again, and go live again.
-- `needs_permission`: **Publish** is off in the owner's [Agent permissions](/mcp/permissions). Ask them to turn it on, or to publish in Studio.
+- `needs_permission`: **Publish** is off for agents on this account ([Agent permissions](/mcp/permissions)). Ask the owner to click **Publish** in Studio.
 
 The price comes from the store page. To change it, see [Pricing](/mcp/operations/pricing).
 

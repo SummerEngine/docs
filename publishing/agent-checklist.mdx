@@ -88,7 +88,7 @@ For each empty required slot of each store the game is on:
 
 ## 7. Upload
 
-- [ ] With the npm MCP: each export with `summer_publish_build` (operation `store.upload_file`), `gameId` and a new `clientVersion` (web builds and downloads take their `platform` from the export). The first call checks the game and returns what it will upload; call again with `confirm: true` to upload.
+- [ ] With the npm MCP: each export with `summer_publish_build` (operation `store.upload_file`), `gameId` and a new `clientVersion` (web builds and downloads take their `platform` from the export). The first call checks the game and returns what it will upload. Show that to the owner, and call again with `confirm: true` only after they approve this exact file and version.
 - [ ] Without the npm MCP: `store.upload_begin` (`kind`: `bundle`, `web` or `download`), `store.upload_sign_parts`, PUT each part, `store.upload_complete`, then `summer_jobs_wait`. See [Upload and publish](/publishing/upload-and-submit).
 - [ ] On a game that is already live, a web build or download is finished by the owner in Studio.
 - [ ] `summer_store_status` shows each upload `ready`. On `failed`, fix and upload a new version.
@@ -103,7 +103,7 @@ For each empty required slot of each store the game is on:
 - [ ] Price: the store page keeps its price. To set the price the owner asked for, use [`pricing.set_base`](/mcp/operations/pricing).
 - [ ] `summer_go_live` with `gameId` and the `publicationId` from `summer_publish_build`. It answers the plan: what goes live.
 - [ ] Show the plan to the owner and ask. Only after they say yes, call `summer_go_live` again with `confirm: true`.
-- [ ] `needs_permission`: **Publish** is off in [Agent permissions](/mcp/permissions). Ask the owner to turn it on, or to click **Publish** in Studio.
+- [ ] `needs_permission`: **Publish** is off for agents on this account. Ask the owner to click **Publish** in Studio.
 
 ## After going live
 
