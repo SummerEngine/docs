@@ -28,11 +28,11 @@
 
 ### Start here
 
-- [Summer: the game engine built for AI](https://docs.summerengine.com/index.md): Summer is the game engine built for AI. Describe a game and an agent builds it in a full 2D and 3D engine, adds multiplayer Summer hosts, and publishes it on Summer Games.
+- [Summer: the AI game engine for people and agents](https://docs.summerengine.com/index.md): Summer is the AI game engine built for people and agents to make games. Build in the editor with AI, or bring your own agent, then launch on Summer Games and grow.
 - [Quickstart: make your first game in the Summer app](https://docs.summerengine.com/quickstarts/fresh-project.md): Install Summer on Windows or Mac, sign in, and describe your game. Summer's agent builds it next to the editor, plays it to check its work, and you play it in minutes.
 - [Quickstart: make a game with your coding agent](https://docs.summerengine.com/quickstarts/coding-agent.md): Connect Claude Code, Codex, Cursor or any agent to Summer with one command, then ask for a game. Your agent installs Summer Engine, builds the game, plays it and shows you.
 - [Quickstart: plan your game in the browser](https://docs.summerengine.com/quickstarts/browser.md): Describe your game on summerengine.com, answer a few questions and shape a storyboard with Summer. Then open it in the Summer app, where Summer builds it.
-- [Install Summer on Windows or Mac](https://docs.summerengine.com/essentials/installation.md): Install Summer on Windows 10 and newer or Apple-silicon Macs: one setup installs Summer Engine, the summer command and connects your coding agents. Or install the summer command alone with npm.
+- [Install Summer on Windows or Mac](https://docs.summerengine.com/essentials/installation.md): Install Summer on Windows 10 and newer or Apple-silicon Macs from summerengine.com/download, get past SmartScreen, install the summer command for your coding agent, and check that it works.
 - [Quickstart: make your game multiplayer](https://docs.summerengine.com/quickstarts/multiplayer-game.md): Make a Summer game multiplayer with one prompt: a client, a server that owns the rules, and a Local Play test with two players on your computer. Summer hosts the matches.
 - [Work with Summer's agent in the Summer app](https://docs.summerengine.com/quickstarts/ai-game-dev.md): How to get great games from Summer's built-in agent: what to ask, pictures and voice, choosing a model, several chats at once, Design mode, and undoing any turn.
 
