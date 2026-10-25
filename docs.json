@@ -603,7 +603,7 @@
               "skills/create-asset-sheet",
               "skills/instantiate-asset-pack",
               {
-                "group": "painted-25d-world",
+                "group": "Painted 2.5D World",
                 "pages": [
                   "skills/painted-25d-world",
                   "skills/painted-25d-world/building-blocks/blender-route",
@@ -645,7 +645,7 @@
             "pages": [
               "skills/bounded-engine-runs",
               {
-                "group": "brainstorming",
+                "group": "Brainstorming Ideas into Designs",
                 "pages": [
                   "skills/brainstorming",
                   "skills/brainstorming/spec-document-reviewer-prompt"
@@ -658,7 +658,7 @@
               "skills/godogen-visual-proof-game-generation",
               "skills/headless-scripting",
               {
-                "group": "investigating-bugs",
+                "group": "Systematic Debugging",
                 "pages": [
                   "skills/investigating-bugs",
                   "skills/investigating-bugs/condition-based-waiting",
@@ -675,14 +675,14 @@
               "skills/using-summer",
               "skills/verification-before-completion",
               {
-                "group": "writing-plans",
+                "group": "Writing Plans",
                 "pages": [
                   "skills/writing-plans",
                   "skills/writing-plans/plan-document-reviewer-prompt"
                 ]
               },
               {
-                "group": "writing-skills",
+                "group": "Writing Skills",
                 "pages": [
                   "skills/writing-skills",
                   "skills/writing-skills/testing-skills-with-subagents"
@@ -707,7 +707,7 @@
               "skills/procedural-animation",
               "skills/retarget",
               {
-                "group": "text-to-motion",
+                "group": "Text to Motion",
                 "pages": [
                   "skills/text-to-motion",
                   "skills/text-to-motion/prompts-and-controls",
@@ -740,7 +740,7 @@
             "group": "Character controllers",
             "pages": [
               {
-                "group": "character-movement",
+                "group": "Character Movement",
                 "pages": [
                   "skills/character-movement",
                   "skills/character-movement/references/default-third-person-controller",
@@ -790,7 +790,7 @@
               "skills/auto-fire-targeting",
               "skills/celeste-momentum-platforming",
               {
-                "group": "combat-basics",
+                "group": "Combat Basics",
                 "pages": [
                   "skills/combat-basics",
                   "skills/combat-basics/references/projectiles-and-aoe"
@@ -805,7 +805,7 @@
             "group": "Level design",
             "pages": [
               {
-                "group": "concept-to-level",
+                "group": "Concept to Level",
                 "pages": [
                   "skills/concept-to-level",
                   "skills/concept-to-level/references/technical-rules"
@@ -820,28 +820,28 @@
             "pages": [
               "skills/multiplayer",
               {
-                "group": "multiplayer-movement",
+                "group": "Multiplayer Movement",
                 "pages": [
                   "skills/multiplayer-movement",
                   "skills/multiplayer-movement/files"
                 ]
               },
               {
-                "group": "multiplayer-project",
+                "group": "Multiplayer Project",
                 "pages": [
                   "skills/multiplayer-project",
                   "skills/multiplayer-project/files"
                 ]
               },
               {
-                "group": "multiplayer-publish",
+                "group": "Multiplayer Publish",
                 "pages": [
                   "skills/multiplayer-publish",
                   "skills/multiplayer-publish/export-errors"
                 ]
               },
               {
-                "group": "multiplayer-state",
+                "group": "Multiplayer State",
                 "pages": [
                   "skills/multiplayer-state",
                   "skills/multiplayer-state/files"
@@ -896,7 +896,7 @@
               "skills/browse-templates",
               "skills/camera-rigs",
               {
-                "group": "make-game",
+                "group": "Make Game",
                 "pages": [
                   "skills/make-game",
                   "skills/make-game/references/2d-platformer-polish",
@@ -918,7 +918,7 @@
               "skills/scene-composition",
               "skills/scene-hierarchy-design",
               {
-                "group": "scene-scripting",
+                "group": "Scene Scripting",
                 "pages": [
                   "skills/scene-scripting",
                   "skills/scene-scripting/references/ctx-api",
@@ -927,7 +927,7 @@
                 ]
               },
               {
-                "group": "spatial-placement",
+                "group": "Spatial Placement",
                 "pages": [
                   "skills/spatial-placement",
                   "skills/spatial-placement/references/kit-placement-tools"
@@ -935,7 +935,7 @@
               },
               "skills/verifying-scenes",
               {
-                "group": "world-building-3d",
+                "group": "Build 3D Worlds with Spatial Evidence",
                 "pages": [
                   "skills/world-building-3d",
                   "skills/world-building-3d/references/spatial-tools"
@@ -947,7 +947,7 @@
             "group": "Scripting",
             "pages": [
               {
-                "group": "gdscript-patterns",
+                "group": "GDScript Patterns",
                 "pages": [
                   "skills/gdscript-patterns",
                   "skills/gdscript-patterns/reference"
@@ -960,7 +960,7 @@
             "group": "Tools",
             "pages": [
               {
-                "group": "summer-apps",
+                "group": "Summer Apps",
                 "pages": [
                   "skills/summer-apps",
                   "skills/summer-apps/manifest",
@@ -982,14 +982,14 @@
             "pages": [
               "skills/game-feel",
               {
-                "group": "vfx-dissolve",
+                "group": "Dissolve",
                 "pages": [
                   "skills/vfx-dissolve",
                   "skills/vfx-dissolve/building-blocks/noise-3d-fbm"
                 ]
               },
               {
-                "group": "vfx-fire",
+                "group": "Fire",
                 "pages": [
                   "skills/vfx-fire",
                   "skills/vfx-fire/building-blocks/additive-billboard-particles",
@@ -997,14 +997,14 @@
                 ]
               },
               {
-                "group": "vfx-hit-spark",
+                "group": "Hit Spark",
                 "pages": [
                   "skills/vfx-hit-spark",
                   "skills/vfx-hit-spark/building-blocks/additive-billboard-particles"
                 ]
               },
               {
-                "group": "vfx-lightning",
+                "group": "Lightning",
                 "pages": [
                   "skills/vfx-lightning",
                   "skills/vfx-lightning/building-blocks/additive-billboard-particles",
@@ -1012,14 +1012,14 @@
                 ]
               },
               {
-                "group": "vfx-magic-glow",
+                "group": "Magic Glow",
                 "pages": [
                   "skills/vfx-magic-glow",
                   "skills/vfx-magic-glow/building-blocks/additive-billboard-particles"
                 ]
               },
               {
-                "group": "vfx-muzzle-flash",
+                "group": "Muzzle Flash",
                 "pages": [
                   "skills/vfx-muzzle-flash",
                   "skills/vfx-muzzle-flash/building-blocks/additive-billboard-particles",
@@ -1027,14 +1027,14 @@
                 ]
               },
               {
-                "group": "vfx-smoke",
+                "group": "Smoke",
                 "pages": [
                   "skills/vfx-smoke",
                   "skills/vfx-smoke/building-blocks/noise-3d-fbm"
                 ]
               },
               {
-                "group": "vfx-water-ripple",
+                "group": "Water Ripple",
                 "pages": [
                   "skills/vfx-water-ripple",
                   "skills/vfx-water-ripple/building-blocks/additive-billboard-particles"

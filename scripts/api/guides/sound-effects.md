@@ -2,7 +2,7 @@
 title: "How to make sound effects for your game with AI: a full SFX pack in one batch"
 sidebarTitle: "Sound effects"
 description: "Make a complete game sound effects pack with AI: UI clicks, footsteps on four materials, hits, swings, pickups and a looping ambience, as one batch. Prompts that work, lengths, loops, file names, mixing and keeping the set consistent, with exact CLI, API and MCP steps and the cost."
-icon: "volume-high"
+icon: "audio-lines"
 order: 2
 ---
 

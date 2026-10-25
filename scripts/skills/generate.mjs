@@ -334,7 +334,7 @@ const skillsTab = {
     ...usedGroups.map(([d, list]) => ({
       group: DOMAINS[d][0],
       pages: list.map((s) =>
-        s.files.length ? { group: s.slug, pages: [`${BASE}/${s.slug}`, ...s.files.map((f) => filePage(s.slug, f.path))] } : `${BASE}/${s.slug}`,
+        s.files.length ? { group: nameOf(s), pages: [`${BASE}/${s.slug}`, ...s.files.map((f) => filePage(s.slug, f.path))] } : `${BASE}/${s.slug}`,
       ),
     })),
   ],
