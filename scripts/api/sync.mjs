@@ -23,7 +23,7 @@
  */
 
 import { execFileSync } from "node:child_process";
-import { readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -83,6 +83,10 @@ const NOTE_SLUGS = {
 const NAMES_A_MAKER = /\b(?:Eleven\w*|Google|OpenAI|Meta|xAI|ByteDance|Tencent|Alibaba)\b/;
 const norm = (s) => String(s).toLowerCase().replace(/[^a-z0-9]/g, "");
 
+// Each model's /models page slug, pinned by scripts/api/site-slugs.mts: the first place to find its notes.
+const siteSlugsPath = join(SOURCES, "site-model-slugs.json");
+const siteSlugs = existsSync(siteSlugsPath) ? JSON.parse(readFileSync(siteSlugsPath, "utf8")).slugs : {};
+
 function modelNotes(pse, models, ref = "origin/main") {
   const raw = execFileSync("git", ["-C", pse, "show", `${ref}:config/models/model-pages.json`], { encoding: "utf8" });
   const commit = execFileSync("git", ["-C", pse, "rev-parse", ref], { encoding: "utf8" }).trim();
@@ -92,7 +96,7 @@ function modelNotes(pse, models, ref = "origin/main") {
   const notes = {};
   const missing = [];
   for (const m of models) {
-    const page = bySlug.get(NOTE_SLUGS[m.id]) ?? byName.get(norm(m.name));
+    const page = bySlug.get(siteSlugs[m.id]) ?? bySlug.get(NOTE_SLUGS[m.id]) ?? byName.get(norm(m.name));
     if (!page) {
       missing.push(m.id);
       continue;
