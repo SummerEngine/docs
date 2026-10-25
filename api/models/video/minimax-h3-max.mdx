@@ -63,7 +63,7 @@ Sign in once with `summer login`; over HTTP, send `Authorization: Bearer $SUMMER
 
 ```bash CLI
 npx -y summer-engine@latest api run video/minimax-h3-max \
-  --input '{"prompt":"a slow pan over a misty forest village at dawn","duration":5}' \
+  --input '{"prompt":"the treasure chest from the reference slowly opens on a mossy forest floor, warm light spills out","referenceImageUrls":["https://docs.summerengine.com/images/api/chest.png"],"duration":5}' \
   --download .
 ```
 
@@ -73,7 +73,7 @@ curl https://www.summerengine.com/v1/jobs \
   -H "Content-Type: application/json" \
   -H "Idempotency-Key: $(uuidgen)" \
   -H "Prefer: wait=60" \
-  -d '{"model":"video/minimax-h3-max","input":{"prompt":"a slow pan over a misty forest village at dawn","duration":5}}'
+  -d '{"model":"video/minimax-h3-max","input":{"prompt":"the treasure chest from the reference slowly opens on a mossy forest floor, warm light spills out","referenceImageUrls":["https://docs.summerengine.com/images/api/chest.png"],"duration":5}}'
 ```
 
 ```ts TypeScript
@@ -88,7 +88,10 @@ const res = await fetch("https://www.summerengine.com/v1/jobs", {
   body: JSON.stringify({
     "model": "video/minimax-h3-max",
     "input": {
-      "prompt": "a slow pan over a misty forest village at dawn",
+      "prompt": "the treasure chest from the reference slowly opens on a mossy forest floor, warm light spills out",
+      "referenceImageUrls": [
+        "https://docs.summerengine.com/images/api/chest.png"
+      ],
       "duration": 5
     }
   }),
@@ -107,7 +110,7 @@ res = requests.post(
         "Idempotency-Key": str(uuid.uuid4()),
         "Prefer": "wait=60",
     },
-    json={"model": "video/minimax-h3-max", "input": {"prompt": "a slow pan over a misty forest village at dawn", "duration": 5}},
+    json={"model": "video/minimax-h3-max", "input": {"prompt": "the treasure chest from the reference slowly opens on a mossy forest floor, warm light spills out", "referenceImageUrls": ["https://docs.summerengine.com/images/api/chest.png"], "duration": 5}},
 )
 job = res.json()["job"]
 print(job["state"], job["id"])
@@ -118,7 +121,8 @@ print(job["state"], job["id"])
 summer_api_run({
   model: "video/minimax-h3-max",
   input: {
-    prompt: "a slow pan over a misty forest village at dawn",
+    prompt: "the treasure chest from the reference slowly opens on a mossy forest floor, warm light spills out",
+    referenceImageUrls: ["https://docs.summerengine.com/images/api/chest.png"],
     duration: 5
   },
   out: "assets",
@@ -139,6 +143,8 @@ Send these fields in `input`. The full JSON Schema is `inputSchema` in [`GET /v1
 |---|---|---|
 | `prompt` | string | What happens in the clip. Needed without imageUrl. up to 4000 characters |
 | `imageUrl` | string | A public image URL to animate (image to video). up to 2048 characters |
+| `referenceImageUrls` | array of string | Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move. 1 to 10 items |
+| `videoUrl` | string | An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length. up to 2048 characters |
 | `duration` | integer | Seconds; the model renders its nearest supported length. 1 to 20 Default `5`. |
 | `aspectRatio` | `16:9`, `9:16`, `1:1`, `4:3`, `3:4`, `21:9`, `3:2`, `2:3`, `auto` | Default `"16:9"`. |
 | `negativePrompt` | string | What the clip must not show. up to 1000 characters |
@@ -151,7 +157,7 @@ Send these fields in `input`. The full JSON Schema is `inputSchema` in [`GET /v1
   <Card title="Kling 3.0 Standard" href="/api/models/video/kling-3" img="/images/api/tiles/video.svg">`video/kling-3`: \$0.14 per second (default)</Card>
   <Card title="Gemini Omni Flash" href="/api/models/video/gemini-omni-flash" img="/images/api/tiles/video.svg">`video/gemini-omni-flash`: \$0.125 per second</Card>
   <Card title="Kling 3.0 Pro" href="/api/models/video/kling-3-pro" img="https://media.summer.games/preview/v3/create/video/flagship/flagship-kling-card-v2.webp">`video/kling-3-pro`: \$0.168 per second</Card>
-  <Card title="HeyGen Video" href="/api/models/video/heygen-video" img="/images/api/tiles/video.svg">`video/heygen-video`: \$0.01 per second</Card>
+  <Card title="Seedance 2.0 Fast" href="/api/models/video/seedance-2-fast-ref" img="/images/api/tiles/video.svg">`video/seedance-2-fast-ref`: \$0.242 per second</Card>
 </CardGroup>
 </div>
 

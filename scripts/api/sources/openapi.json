@@ -98,7 +98,8 @@
                 "voice",
                 "dialogue",
                 "sound",
-                "music"
+                "music",
+                "motion"
               ]
             }
           }
@@ -147,7 +148,8 @@
                               "voice",
                               "dialogue",
                               "sound",
-                              "music"
+                              "music",
+                              "motion"
                             ]
                           },
                           "name": {
@@ -432,7 +434,8 @@
                             "voice",
                             "dialogue",
                             "sound",
-                            "music"
+                            "music",
+                            "motion"
                           ]
                         },
                         "name": {

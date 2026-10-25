@@ -9,7 +9,7 @@
 - Auth over HTTP: `Authorization: Bearer <token>`, with a one-hour token from `npx -y summer-engine@latest token`. There are no API keys.
 - CLI: `npx -y summer-engine@latest api models|estimate|run|jobs`. `api run <model> --input '<json>' --download <dir>` runs a job, follows it and saves the files; `api run --batch jobs.jsonl --download <dir>` runs up to 500 (one `{"model", "input"}` per line). JSON when piped. The same calls are MCP tools: `summer_api_models`, `summer_api_estimate`, `summer_api_run`, `summer_api_batch`, `summer_api_job`.
 - Without the CLI: Summer's sign-in is OAuth 2.1 with PKCE; discovery at https://mcp.summerengine.com/.well-known/oauth-protected-resource. Steps: https://docs.summerengine.com/api/sign-in.md
-- Models and prices: `GET https://www.summerengine.com/v1/models` (public, no sign-in). Read prices there, never from memory or training data. Defaults per job: `3d/default`, `image/default`, `video/default`, `voice/default`, `dialogue/default`, `sound/default`, `music/default`.
+- Models and prices: `GET https://www.summerengine.com/v1/models` (public, no sign-in). Read prices there, never from memory or training data. Defaults per job: `3d/default`, `image/default`, `video/default`, `voice/default`, `dialogue/default`, `sound/default`, `music/default`, `motion/default`.
 - Exact price of one request: `POST https://www.summerengine.com/v1/estimate` with the same body as the job (free, no sign-in).
 - Run: `POST https://www.summerengine.com/v1/jobs` with `{"model", "input"}`, a required `Idempotency-Key` header (new per job, the same on a retry) and `Prefer: wait=60`. A long job (3D, video) answers `running`: poll `GET https://www.summerengine.com/v1/jobs/{id}` every `pollAfterSeconds` (else 5 s) while `state` is `queued` or `running`. A job past the account's running slots answers `202` `queued` (id `q:...`): it is accepted at a held price and starts in order; follow it, never resend it. Or pass `webhookUrl` for one signed POST when it finishes. Stop on `done` (download the `fileUrl` of every entry in `result.assets`; `job.model` is the model that ran) or on `failed`, `cancelled`, `expired`, `stale` or `declined` (show `error.message`).
 - Many jobs: `POST https://www.summerengine.com/v1/batches` with `{"jobs": [{"model", "input"}, ...]}` (up to 500, all or none, `Idempotency-Key` header for the batch), then `GET https://www.summerengine.com/v1/batches/{id}` until no job is `queued` or `running`.
@@ -242,7 +242,7 @@
 - [How to make a 3D game character with AI: concept, model, rig and animations](https://docs.summerengine.com/api/guides/3d-character.md): Make a rigged, animated 3D game character with AI: a clean concept picture, image-to-3D with a rig and Idle, Walk, Run and Jump on the same job, and a matching portrait for your dialogue UI. Exact CLI, API and MCP steps and what it costs.
 - [How to make sound effects for your game with AI: a full SFX pack in one batch](https://docs.summerengine.com/api/guides/sound-effects.md): Make a complete game sound effects pack with AI: UI clicks, footsteps on four materials, hits, swings, pickups and a looping ambience, as one batch. Prompts that work, lengths, loops, file names, mixing and keeping the set consistent, with exact CLI, API and MCP steps and the cost.
 - [How to make music for your game's cutscenes with AI: timed cues, a menu loop and a combat theme](https://docs.summerengine.com/api/guides/cutscene-music.md): Make game music with AI that sounds like one score: a cutscene cue timed to the scene's length, a menu loop and a combat theme that share one musical identity, plus a victory sting. Tempo and bar math, prompts that work, loop points and mixing, with exact CLI, API and MCP steps and the cost.
-- [How to make cutscenes for your game with AI: on-model shots, a voice line and a music cue](https://docs.summerengine.com/api/guides/cutscenes.md): Make a game cutscene with AI that keeps your character on-model: a character reference picture, a style frame, image-to-video shots with native sound, a voice line, a music cue and sound accents, then assemble the shots. Exact CLI, API and MCP steps and what it costs.
+- [How to make cutscenes for your game with AI: on-model shots, a voice line and a music cue](https://docs.summerengine.com/api/guides/cutscenes.md): Make a game cutscene with AI that keeps your character on-model: a character reference picture, a style frame, image-to-video shots, sound made from each finished shot, a voice line, a music cue and sound accents, then assemble the shots. Exact CLI, API and MCP steps and what it costs.
 - [How to make a game trailer with AI: real gameplay, a hook shot, music and store cuts](https://docs.summerengine.com/api/guides/trailer.md): Make a game trailer with AI around your real gameplay: key art, an image-to-video hook shot, transitions, title cards, a trailer music cue, a voiceover and hits, then a 16:9 store cut and a 9:16 social cut. Structure, capture tips, exact CLI, API and MCP steps and the cost.
 - [How to make voice lines for game characters with AI: casting, delivery, barks and dialogue](https://docs.summerengine.com/api/guides/voice-lines.md): Make voice lines for game characters with AI: cast each character from the model's voice list, direct delivery with punctuation and stage words, make story lines, multi-character conversations and hundreds of combat barks, and voice other languages with the same cast. Exact CLI, API and MCP steps and the cost.
 - [How to make a game logo and vector-style art with AI](https://docs.summerengine.com/api/guides/logo-and-vector-art.md): Make a game title logo with the exact lettering you typed, on a transparent background, plus an emblem, a one-colour version and flat vector-style illustrations in the same style. Which models get text right, exact CLI, API and MCP steps, what to check before you print or ship, and what it costs.
@@ -253,7 +253,7 @@
 
 ### Models and pricing
 
-- [Summer API models and pricing](https://docs.summerengine.com/api/models.md): Every model on the Summer API with its price: 16 3D models, 14 image models, 22 video models, 19 voice models, 1 dialogue model, 4 sound effect models, 6 music models. No markup on assets. Every model at the provider's list price. Generated from GET /v1/models.
+- [Summer API models and pricing](https://docs.summerengine.com/api/models.md): Every model on the Summer API with its price: 16 3D models, 14 image models, 40 video models, 19 voice models, 1 dialogue model, 4 sound effect models, 6 music models, 3 motion models. No markup on assets. Every model at the provider's list price. Generated from GET /v1/models.
 
 #### 3D models
 
@@ -296,25 +296,43 @@
 - [Kling 3.0 Standard](https://docs.summerengine.com/api/models/video/kling-3.md): Kling 3.0 Standard on the Summer API: $0.14 per second, MP4 saved to your Summer library. Model id video/kling-3.
 - [Gemini Omni Flash](https://docs.summerengine.com/api/models/video/gemini-omni-flash.md): Gemini Omni Flash on the Summer API: $0.125 per second, MP4 saved to your Summer library. Model id video/gemini-omni-flash.
 - [Kling 3.0 Pro](https://docs.summerengine.com/api/models/video/kling-3-pro.md): Kling 3.0 Pro on the Summer API: $0.168 per second, MP4 saved to your Summer library. Model id video/kling-3-pro.
+- [Seedance 2.0 Fast](https://docs.summerengine.com/api/models/video/seedance-2-fast-ref.md): Seedance 2.0 Fast on the Summer API: $0.242 per second, MP4 saved to your Summer library. Model id video/seedance-2-fast-ref.
 - [HeyGen Video](https://docs.summerengine.com/api/models/video/heygen-video.md): HeyGen Video on the Summer API: $0.01 per second, about 14 s, MP4 saved to your Summer library. Model id video/heygen-video.
+- [HeyGen Video References](https://docs.summerengine.com/api/models/video/heygen-video-ref.md): HeyGen Video References on the Summer API: $0.01 per second, about 48 s, MP4 saved to your Summer library. Model id video/heygen-video-ref.
+- [ThinkSound](https://docs.summerengine.com/api/models/video/thinksound.md): ThinkSound on the Summer API: $0.01 per second, about 8 min, MP4 saved to your Summer library. Model id video/thinksound.
 - [MiniMax H3 Max Turbo](https://docs.summerengine.com/api/models/video/minimax-h3-max-turbo.md): MiniMax H3 Max Turbo on the Summer API: $0.026 per second, about 2 s, MP4 saved to your Summer library. Model id video/minimax-h3-max-turbo.
 - [Grok Imagine Video 1.5 Lite](https://docs.summerengine.com/api/models/video/grok-video-1-5-lite.md): Grok Imagine Video 1.5 Lite on the Summer API: $0.03 per second, about 28 s, MP4 saved to your Summer library. Model id video/grok-video-1.5-lite.
+- [Kling Video to Audio](https://docs.summerengine.com/api/models/video/kling-video-to-audio.md): Kling Video to Audio on the Summer API: $0.035 per clip, about 39 s, MP4 saved to your Summer library. Model id video/kling-video-to-audio.
 - [Veo 3.1 Lite](https://docs.summerengine.com/api/models/video/veo3-1-lite.md): Veo 3.1 Lite on the Summer API: $0.05 per second, MP4 saved to your Summer library. Model id video/veo3.1-lite.
 - [PixVerse V6](https://docs.summerengine.com/api/models/video/pixverse-v6.md): PixVerse V6 on the Summer API: $0.06 per second, MP4 saved to your Summer library. Model id video/pixverse-v6.
 - [Vidu Q4](https://docs.summerengine.com/api/models/video/vidu-q4.md): Vidu Q4 on the Summer API: $0.0665 per second, about 2 min, MP4 saved to your Summer library. Model id video/vidu-q4.
 - [MiniMax H3 Max](https://docs.summerengine.com/api/models/video/minimax-h3-max.md): MiniMax H3 Max on the Summer API: $0.08 per second, MP4 saved to your Summer library. Model id video/minimax-h3-max.
+- [MiniMax H3 Max References](https://docs.summerengine.com/api/models/video/minimax-h3-max-ref.md): MiniMax H3 Max References on the Summer API: $0.08 per second, MP4 saved to your Summer library. Model id video/minimax-h3-max-ref.
+- [MiniMax H3 Max Reframe](https://docs.summerengine.com/api/models/video/minimax-h3-max-reframe.md): MiniMax H3 Max Reframe on the Summer API: $0.08 per second, about 22 s, MP4 saved to your Summer library. Model id video/minimax-h3-max-reframe.
 - [Gemini Omni Flash 1.1](https://docs.summerengine.com/api/models/video/gemini-omni-flash-1-1.md): Gemini Omni Flash 1.1 on the Summer API: $0.10 per second, MP4 saved to your Summer library. Model id video/gemini-omni-flash-1.1.
+- [Gemini Omni Flash 1.1](https://docs.summerengine.com/api/models/video/gemini-omni-flash-1-1-edit.md): Gemini Omni Flash 1.1 on the Summer API: $0.10 per second, about 46 s, MP4 saved to your Summer library. Model id video/gemini-omni-flash-1.1-edit.
+- [Gemini Omni Flash 1.1 References](https://docs.summerengine.com/api/models/video/gemini-omni-flash-1-1-ref.md): Gemini Omni Flash 1.1 References on the Summer API: $0.10 per second, MP4 saved to your Summer library. Model id video/gemini-omni-flash-1.1-ref.
 - [Wan 3.0](https://docs.summerengine.com/api/models/video/wan-3.md): Wan 3.0 on the Summer API: $0.10 per second, MP4 saved to your Summer library. Model id video/wan-3.
+- [Wan 3.0 References](https://docs.summerengine.com/api/models/video/wan-3-ref.md): Wan 3.0 References on the Summer API: $0.10 per second, MP4 saved to your Summer library. Model id video/wan-3-ref.
 - [LTX-2.5 Pro](https://docs.summerengine.com/api/models/video/ltx-2-5-pro.md): LTX-2.5 Pro on the Summer API: $0.12 per second, MP4 saved to your Summer library. Model id video/ltx-2-5-pro.
+- [Kling 3.0 Motion Control](https://docs.summerengine.com/api/models/video/kling-3-motion-control.md): Kling 3.0 Motion Control on the Summer API: $0.126 per second, about 3 min, MP4 saved to your Summer library. Model id video/kling-3-motion-control.
+- [Gemini Omni Flash](https://docs.summerengine.com/api/models/video/gemini-omni-flash-ref.md): Gemini Omni Flash on the Summer API: $0.13 per second, MP4 saved to your Summer library. Model id video/gemini-omni-flash-ref.
+- [Gemini Omni Flash](https://docs.summerengine.com/api/models/video/gemini-omni-flash-edit.md): Gemini Omni Flash on the Summer API: $0.13 per second, MP4 saved to your Summer library. Model id video/gemini-omni-flash-edit.
 - [Grok Imagine Video 1.5](https://docs.summerengine.com/api/models/video/grok-video-1-5.md): Grok Imagine Video 1.5 on the Summer API: $0.14 per second, MP4 saved to your Summer library. Model id video/grok-video-1.5.
 - [HappyHorse 1.1](https://docs.summerengine.com/api/models/video/happy-horse-1-1.md): HappyHorse 1.1 on the Summer API: $0.14 per second, MP4 saved to your Summer library. Model id video/happy-horse-1.1.
+- [HappyHorse 1.1 References](https://docs.summerengine.com/api/models/video/happy-horse-1-1-ref.md): HappyHorse 1.1 References on the Summer API: $0.14 per second, MP4 saved to your Summer library. Model id video/happy-horse-1.1-ref.
+- [Grok Imagine Video 1.5 References](https://docs.summerengine.com/api/models/video/grok-video-1-5-ref.md): Grok Imagine Video 1.5 References on the Summer API: $0.15 per second, MP4 saved to your Summer library. Model id video/grok-video-1.5-ref.
 - [Veo 3.1 Fast](https://docs.summerengine.com/api/models/video/veo3-1-fast.md): Veo 3.1 Fast on the Summer API: $0.15 per second, MP4 saved to your Summer library. Model id video/veo3.1-fast.
 - [Vidu Q3 Pro](https://docs.summerengine.com/api/models/video/vidu-q3.md): Vidu Q3 Pro on the Summer API: $0.154 per second, MP4 saved to your Summer library. Model id video/vidu-q3.
 - [Kling 4.0](https://docs.summerengine.com/api/models/video/kling-4.md): Kling 4.0 on the Summer API: $0.157 per second, about 3 min, MP4 saved to your Summer library. Model id video/kling-4.
+- [Kling 4.0 References](https://docs.summerengine.com/api/models/video/kling-4-ref.md): Kling 4.0 References on the Summer API: $0.157 per second, about 62 s, MP4 saved to your Summer library. Model id video/kling-4-ref.
+- [Kling 3.0 Motion Control Pro](https://docs.summerengine.com/api/models/video/kling-3-pro-motion-control.md): Kling 3.0 Motion Control Pro on the Summer API: $0.168 per second, MP4 saved to your Summer library. Model id video/kling-3-pro-motion-control.
 - [Luma Ray 3.2](https://docs.summerengine.com/api/models/video/luma-ray-3-2.md): Luma Ray 3.2 on the Summer API: $0.20 per second, MP4 saved to your Summer library. Model id video/luma-ray-3.2.
 - [Seedance 2.0 Fast](https://docs.summerengine.com/api/models/video/seedance-2-fast.md): Seedance 2.0 Fast on the Summer API: $0.242 per second, MP4 saved to your Summer library. Model id video/seedance-2-fast.
 - [Veo 3.1](https://docs.summerengine.com/api/models/video/veo3-1.md): Veo 3.1 on the Summer API: $0.40 per second, MP4 saved to your Summer library. Model id video/veo3.1.
 - [Seedance 2.5](https://docs.summerengine.com/api/models/video/seedance-2-5.md): Seedance 2.5 on the Summer API: $0.462 per second, MP4 saved to your Summer library. Model id video/seedance-2.5.
+- [Seedance 2.5 References](https://docs.summerengine.com/api/models/video/seedance-2-5-ref.md): Seedance 2.5 References on the Summer API: $0.462 per second, MP4 saved to your Summer library. Model id video/seedance-2.5-ref.
+- [Veo 3.1 Reference](https://docs.summerengine.com/api/models/video/veo3-1-ref.md): Veo 3.1 Reference on the Summer API: $3.20 per clip, MP4 saved to your Summer library. Model id video/veo3.1-ref.
 
 #### Voice
 
@@ -357,6 +375,12 @@
 - [Music v2.5](https://docs.summerengine.com/api/models/music/music-v2-5.md): Music v2.5 on the Summer API: $0.0025 per second, about 5 s, MP3 saved to your Summer library. Model id music/music-v2.5.
 - [MiniMax Music v2](https://docs.summerengine.com/api/models/music/minimax-music-v2.md): MiniMax Music v2 on the Summer API: $0.03 per track, about 25 s, MP3 saved to your Summer library. Model id music/minimax-music-v2.
 - [Lyria 2](https://docs.summerengine.com/api/models/music/lyria-2.md): Lyria 2 on the Summer API: $0.10 per track, about 25 s, MP3 saved to your Summer library. Model id music/lyria-2.
+
+#### Motion
+
+- [Meshy animation library](https://docs.summerengine.com/api/models/motion/library.md): Meshy animation library on the Summer API: $0.12 per animation, FBX, GLB saved to your Summer library. Model id motion/library.
+- [Hunyuan Motion Fast](https://docs.summerengine.com/api/models/motion/hunyuan-motion-fast.md): Hunyuan Motion Fast on the Summer API: $0.06 per animation, FBX, GLB saved to your Summer library. Model id motion/hunyuan-motion-fast.
+- [Hunyuan Motion](https://docs.summerengine.com/api/models/motion/hunyuan-motion.md): Hunyuan Motion on the Summer API: $0.08 per animation, FBX, GLB saved to your Summer library. Model id motion/hunyuan-motion.
 
 ### Use the API
 

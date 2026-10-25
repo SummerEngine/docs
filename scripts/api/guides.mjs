@@ -24,7 +24,7 @@
  *
  * `models` lists the models to use, best first: the first one the Summer API
  * lists wins, so a guide moves to a new model the day it ships. `{{x.fileUrl}}`
- * in an input is the file of an earlier step. A guide source never types a
+ * (or `{{x.assetId}}`) in an input is the file (or asset id) of an earlier step. A guide source never types a
  * dollar amount; every price comes from the model list.
  */
 
@@ -121,9 +121,9 @@ export function guidePages(sourceDir, kit) {
       steps.set(step.id, { ...step, model, input, count, cost });
     }
     const fileOf = (text) =>
-      text.replace(/\{\{(\w+)\.fileUrl\}\}/g, (_, id) => {
-        if (!steps.has(id)) throw new Error(`${file}: {{${id}.fileUrl}} names no step`);
-        return `<fileUrl of ${steps.get(id).title.toLowerCase()}>`;
+      text.replace(/\{\{(\w+)\.(fileUrl|assetId)\}\}/g, (_, id, field) => {
+        if (!steps.has(id)) throw new Error(`${file}: {{${id}.${field}}} names no step`);
+        return `<${field} of ${steps.get(id).title.toLowerCase()}>`;
       });
     const each = (s) => (s.count > 1 ? ` x ${s.count}` : "");
     const stepCost = (s) => `${s.cost.typical ? "about " : ""}${money(s.cost.usd * s.count)}`;

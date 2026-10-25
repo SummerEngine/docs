@@ -120,11 +120,11 @@ Send these fields in `input`. The full JSON Schema is `inputSchema` in [`GET /v1
 | Field | Type | About |
 |---|---|---|
 | `kind` | `text-to-3d`, `image-to-3d` | Default `"text-to-3d"`. |
-| `prompt` | string | text-to-3d: what to model. up to 600 characters |
-| `imageUrl` | string | image-to-3d: a public picture of the object. up to 2048 characters |
-| `imageUrls` | array of string | image-to-3d from 2 to 4 views of the same object. 2 to 4 items |
+| `prompt` | string | What to model. up to 600 characters |
+| `imageUrl` | string | A public picture of the object. up to 2048 characters |
+| `imageUrls` | array of string | Image-to-3d from 2 to 4 views of the same object. 2 to 4 items |
 | `title` | string | up to 200 characters |
-| `assetIntent` | `character`, `object` | character: a clean, riggable humanoid reference first. |
+| `assetIntent` | `character`, `object` | Character: a clean, riggable humanoid reference first. |
 | `referencePreparation` | `auto`, `always`, `never` | Clean up the picture before modeling it. Default `"auto"`. |
 | `poseMode` | `a-pose`, `t-pose` | A neutral pose for rigging later. |
 | `rig` | boolean | Auto-rig the model. Default `false`. |
@@ -132,7 +132,7 @@ Send these fields in `input`. The full JSON Schema is `inputSchema` in [`GET /v1
 | `actionIds` | array of integer | With rig: Library action ids. 0 to 12 items |
 | `riggingHeightMeters` | number | up to 10 |
 | `targetPolycount` | integer | About how many polygons, e.g. 800 for a low-poly kit piece. 100 to 300000 |
-| `topology` | `triangle`, `quad` | quad: a quad mesh (where the model can). |
+| `topology` | `triangle`, `quad` | Quad: a quad mesh (where the model can). |
 | `seed` | integer | 0 to 9007199254740991 |
 
 ## Related models

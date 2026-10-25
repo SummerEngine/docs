@@ -65,6 +65,7 @@ const CAPABILITIES = [
   { id: "dialogue", title: "Dialogue", icon: "messages-square", one: "dialogue", noun: "dialogue model", blurb: "Several characters talking, in one file." },
   { id: "sound", title: "Sound effects", icon: "audio-lines", one: "sound", noun: "sound effect model", blurb: "Hits, footsteps, pickups, UI clicks and loops from a description." },
   { id: "music", title: "Music", icon: "music", one: "track", noun: "music model", blurb: "Level, menu and combat music from a description." },
+  { id: "motion", title: "Motion", icon: "person-standing", one: "animation", noun: "motion model", blurb: "Animations for a rigged character: a move from words, or clips from a curated library." },
 ];
 const CAP = Object.fromEntries(CAPABILITIES.map((c) => [c.id, c]));
 
@@ -172,7 +173,7 @@ const typicalTime = (m) => (m.latency ? `about ${duration(m.latency.p50Seconds)}
 const isDefault = (m) => m.aliases?.length > 0;
 const voicesOf = (m) => m.voices ?? [];
 /** Capabilities whose jobs run for minutes and answer `running`. */
-const LONG = new Set(["3d", "video"]);
+const LONG = new Set(["3d", "video", "motion"]);
 const props = (m) => m.inputSchema?.properties ?? {};
 
 /** Within a capability: the default first, then Summer's well-tested picks, then by price. */
@@ -196,10 +197,24 @@ function noteLines(m) {
 // ------------------------------------------------------------- examples
 
 const SAMPLE_PICTURE = `${DOCS_URL}/images/api/chest.png`;
+// A short public clip for the models that take one (a Summer example output).
+const SAMPLE_CLIP = "https://media.summer.games/preview/v3/create/video/video-ref-omni-moss-lantern.mp4";
 const EXAMPLE_INPUT = {
   "3d": (m) => (props(m).kind?.enum?.includes("text-to-3d") ?? true ? { kind: "text-to-3d", prompt: "a stylized treasure chest, game prop" } : { kind: "image-to-3d", imageUrl: SAMPLE_PICTURE }),
   image: () => ({ prompt: "a cozy pixel-art tavern at night, warm window light", aspectRatio: "16:9" }),
-  video: () => ({ prompt: "a slow pan over a misty forest village at dawn", duration: 5 }),
+  // A clip in, a clip out (edit, reframe, sound, motion transfer), or references to keep: each gets its own inputs.
+  video: (m) =>
+    "videoUrl" in props(m) && !("duration" in props(m))
+      ? { prompt: "rain on the rooftops, distant thunder, footsteps on wet stone", videoUrl: SAMPLE_CLIP }
+      : "referenceImageUrls" in props(m) && m.tags.includes("motion-transfer")
+        ? { prompt: "the character performs the move from the clip", referenceImageUrls: [SAMPLE_PICTURE], videoUrl: SAMPLE_CLIP }
+        : "referenceImageUrls" in props(m)
+          ? { prompt: "the treasure chest from the reference slowly opens on a mossy forest floor, warm light spills out", referenceImageUrls: [SAMPLE_PICTURE], duration: 5 }
+          : { prompt: "a slow pan over a misty forest village at dawn", duration: 5 },
+  motion: (m) =>
+    "motionNames" in props(m)
+      ? { rigAssetId: "<assetId of your rigged model>", motionNames: ["idle", "walk", "run"] }
+      : { rigAssetId: "<assetId of your rigged model>", prompt: "jumps over a fence and lands in a crouch", durationSeconds: 4 },
   voice: () => ({ text: "The gate is open. Go, before the guards come back." }),
   dialogue: (m) => {
     const [a, b] = voicesOf(m);
@@ -362,11 +377,24 @@ function limits(schema) {
   return out.join(", ");
 }
 
+/**
+ * A field's description as an API caller reads it: no internal mode prefix
+ * ("hunyuan-custom: ..."), no operation names, and no sentence about a field
+ * this model does not take.
+ */
+function describe(m, text) {
+  if (!text) return "";
+  let out = text.replace(/^[a-z0-9]+(?:-[a-z0-9]+)+:\s*/, "").replace(/\(assets\.generate_3d with rig\)/g, "(a 3D job with `rig: true`)");
+  if (!("imageUrl" in props(m))) out = out.replace(/\s*Needed without imageUrl\./g, "");
+  out = out.trim();
+  return out.charAt(0).toUpperCase() + out.slice(1);
+}
+
 function inputSection(m) {
   const p = props(m);
   const required = new Set(m.inputSchema?.required ?? []);
   const rows = Object.entries(p).map(([name, s]) => {
-    const about = [s.description, limits(s), s.default !== undefined ? `Default ${code(JSON.stringify(s.default))}.` : ""].filter(Boolean).join(" ");
+    const about = [describe(m, s.description), limits(s), s.default !== undefined ? `Default ${code(JSON.stringify(s.default))}.` : ""].filter(Boolean).join(" ");
     return `| ${code(name)}${required.has(name) ? " (required)" : ""} | ${cell(typeOf(s)).replace(/\\`/g, "`")} | ${cell(about)} |`;
   });
   return [

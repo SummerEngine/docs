@@ -9,7 +9,8 @@
     "voice/default": "voice/expressive-v3",
     "dialogue/default": "dialogue/expressive-v3",
     "sound/default": "sound/sfx-v2",
-    "music/default": "music/music-v2"
+    "music/default": "music/music-v2",
+    "motion/default": "motion/library"
   },
   "models": [
     {
@@ -4092,6 +4093,21 @@
             "type": "string",
             "maxLength": 2048
           },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
+            "type": "string",
+            "maxLength": 2048
+          },
           "duration": {
             "description": "Seconds; the model renders its nearest supported length.",
             "default": 5,
@@ -4184,6 +4200,21 @@
             "type": "string",
             "maxLength": 2048
           },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
+            "type": "string",
+            "maxLength": 2048
+          },
           "duration": {
             "description": "Seconds; the model renders its nearest supported length.",
             "default": 5,
@@ -4268,6 +4299,21 @@
           },
           "imageUrl": {
             "description": "A public image URL to animate (image to video).",
+            "type": "string",
+            "maxLength": 2048
+          },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
             "type": "string",
             "maxLength": 2048
           },
@@ -4356,6 +4402,21 @@
           },
           "imageUrl": {
             "description": "A public image URL to animate (image to video).",
+            "type": "string",
+            "maxLength": 2048
+          },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
             "type": "string",
             "maxLength": 2048
           },
@@ -4448,6 +4509,21 @@
           },
           "imageUrl": {
             "description": "A public image URL to animate (image to video).",
+            "type": "string",
+            "maxLength": 2048
+          },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
             "type": "string",
             "maxLength": 2048
           },
@@ -4545,6 +4621,21 @@
           },
           "imageUrl": {
             "description": "A public image URL to animate (image to video).",
+            "type": "string",
+            "maxLength": 2048
+          },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
             "type": "string",
             "maxLength": 2048
           },
@@ -4646,6 +4737,21 @@
             "type": "string",
             "maxLength": 2048
           },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
+            "type": "string",
+            "maxLength": 2048
+          },
           "duration": {
             "description": "Seconds; the model renders its nearest supported length.",
             "default": 5,
@@ -4729,6 +4835,21 @@
           },
           "imageUrl": {
             "description": "A public image URL to animate (image to video).",
+            "type": "string",
+            "maxLength": 2048
+          },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
             "type": "string",
             "maxLength": 2048
           },
@@ -4825,6 +4946,21 @@
           },
           "imageUrl": {
             "description": "A public image URL to animate (image to video).",
+            "type": "string",
+            "maxLength": 2048
+          },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
             "type": "string",
             "maxLength": 2048
           },
@@ -4929,6 +5065,21 @@
             "type": "string",
             "maxLength": 2048
           },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
+            "type": "string",
+            "maxLength": 2048
+          },
           "duration": {
             "description": "Seconds; the model renders its nearest supported length.",
             "default": 5,
@@ -5018,6 +5169,21 @@
           },
           "imageUrl": {
             "description": "A public image URL to animate (image to video).",
+            "type": "string",
+            "maxLength": 2048
+          },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
             "type": "string",
             "maxLength": 2048
           },
@@ -5122,6 +5288,21 @@
             "type": "string",
             "maxLength": 2048
           },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
+            "type": "string",
+            "maxLength": 2048
+          },
           "duration": {
             "description": "Seconds; the model renders its nearest supported length.",
             "default": 5,
@@ -5211,6 +5392,21 @@
           },
           "imageUrl": {
             "description": "A public image URL to animate (image to video).",
+            "type": "string",
+            "maxLength": 2048
+          },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
             "type": "string",
             "maxLength": 2048
           },
@@ -5306,6 +5502,21 @@
             "type": "string",
             "maxLength": 2048
           },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
+            "type": "string",
+            "maxLength": 2048
+          },
           "duration": {
             "description": "Seconds; the model renders its nearest supported length.",
             "default": 5,
@@ -5398,6 +5609,21 @@
             "type": "string",
             "maxLength": 2048
           },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
+            "type": "string",
+            "maxLength": 2048
+          },
           "duration": {
             "description": "Seconds; the model renders its nearest supported length.",
             "default": 5,
@@ -5487,6 +5713,21 @@
           },
           "imageUrl": {
             "description": "A public image URL to animate (image to video).",
+            "type": "string",
+            "maxLength": 2048
+          },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
             "type": "string",
             "maxLength": 2048
           },
@@ -5591,6 +5832,21 @@
             "type": "string",
             "maxLength": 2048
           },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
+            "type": "string",
+            "maxLength": 2048
+          },
           "duration": {
             "description": "Seconds; the model renders its nearest supported length.",
             "default": 5,
@@ -5674,6 +5930,21 @@
           },
           "imageUrl": {
             "description": "A public image URL to animate (image to video).",
+            "type": "string",
+            "maxLength": 2048
+          },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
             "type": "string",
             "maxLength": 2048
           },
@@ -5772,6 +6043,21 @@
             "type": "string",
             "maxLength": 2048
           },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
+            "type": "string",
+            "maxLength": 2048
+          },
           "duration": {
             "description": "Seconds; the model renders its nearest supported length.",
             "default": 5,
@@ -5861,6 +6147,21 @@
           },
           "imageUrl": {
             "description": "A public image URL to animate (image to video).",
+            "type": "string",
+            "maxLength": 2048
+          },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
             "type": "string",
             "maxLength": 2048
           },
@@ -5956,6 +6257,21 @@
             "type": "string",
             "maxLength": 2048
           },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
+            "type": "string",
+            "maxLength": 2048
+          },
           "duration": {
             "description": "Seconds; the model renders its nearest supported length.",
             "default": 5,
@@ -6048,6 +6364,21 @@
             "type": "string",
             "maxLength": 2048
           },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
+            "type": "string",
+            "maxLength": 2048
+          },
           "duration": {
             "description": "Seconds; the model renders its nearest supported length.",
             "default": 5,
@@ -6075,6 +6406,1556 @@
             "type": "string",
             "minLength": 1,
             "maxLength": 1000
+          },
+          "resolution": {
+            "description": "Only a quality the model offers; leave out for its default.",
+            "type": "string",
+            "enum": [
+              "720p",
+              "1080p",
+              "4k",
+              "480p",
+              "768p",
+              "2k",
+              "768P",
+              "1080P",
+              "480P"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "video/gemini-omni-flash-ref",
+      "datedId": "video/gemini-omni-flash-ref-20260924",
+      "capability": "video",
+      "name": "Gemini Omni Flash",
+      "vendor": "Google",
+      "tags": [
+        "reference-to-video"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "mp4"
+      ],
+      "latency": null,
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "output_second",
+        "price": "0.13",
+        "quantityField": "duration",
+        "modifiers": [],
+        "priceUpdatedAt": "2026-09-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "description": "What happens in the clip. Needed without imageUrl.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "duration": {
+            "description": "Seconds; the model renders its nearest supported length.",
+            "default": 5,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "aspectRatio": {
+            "default": "16:9",
+            "type": "string",
+            "enum": [
+              "16:9",
+              "9:16",
+              "1:1",
+              "4:3",
+              "3:4",
+              "21:9",
+              "3:2",
+              "2:3",
+              "auto"
+            ]
+          },
+          "resolution": {
+            "description": "Only a quality the model offers; leave out for its default.",
+            "type": "string",
+            "enum": [
+              "720p",
+              "1080p",
+              "4k",
+              "480p",
+              "768p",
+              "2k",
+              "768P",
+              "1080P",
+              "480P"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "video/seedance-2-fast-ref",
+      "datedId": "video/seedance-2-fast-ref-20260924",
+      "capability": "video",
+      "name": "Seedance 2.0 Fast",
+      "vendor": "ByteDance",
+      "tags": [
+        "reference-to-video"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "mp4"
+      ],
+      "latency": null,
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": true,
+      "price": {
+        "unit": "output_second",
+        "price": "0.24192",
+        "quantityField": "duration",
+        "estimate": true,
+        "modifiers": [],
+        "priceUpdatedAt": "2026-09-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "description": "What happens in the clip. Needed without imageUrl.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
+            "type": "string",
+            "maxLength": 2048
+          },
+          "duration": {
+            "description": "Seconds; the model renders its nearest supported length.",
+            "default": 5,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "aspectRatio": {
+            "default": "16:9",
+            "type": "string",
+            "enum": [
+              "16:9",
+              "9:16",
+              "1:1",
+              "4:3",
+              "3:4",
+              "21:9",
+              "3:2",
+              "2:3",
+              "auto"
+            ]
+          },
+          "resolution": {
+            "description": "Only a quality the model offers; leave out for its default.",
+            "type": "string",
+            "enum": [
+              "720p",
+              "1080p",
+              "4k",
+              "480p",
+              "768p",
+              "2k",
+              "768P",
+              "1080P",
+              "480P"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "video/veo3.1-ref",
+      "datedId": "video/veo3.1-ref-20260926",
+      "capability": "video",
+      "name": "Veo 3.1 Reference",
+      "vendor": "Google",
+      "tags": [
+        "reference-to-video"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "mp4"
+      ],
+      "latency": null,
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "call",
+        "price": "3.2",
+        "modifiers": [
+          {
+            "field": "resolution",
+            "equals": "4k",
+            "price": "4.8"
+          }
+        ],
+        "priceUpdatedAt": "2026-09-26"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "description": "What happens in the clip. Needed without imageUrl.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "duration": {
+            "description": "Seconds; the model renders its nearest supported length.",
+            "default": 5,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "aspectRatio": {
+            "default": "16:9",
+            "type": "string",
+            "enum": [
+              "16:9",
+              "9:16",
+              "1:1",
+              "4:3",
+              "3:4",
+              "21:9",
+              "3:2",
+              "2:3",
+              "auto"
+            ]
+          },
+          "resolution": {
+            "description": "Only a quality the model offers; leave out for its default.",
+            "type": "string",
+            "enum": [
+              "720p",
+              "1080p",
+              "4k",
+              "480p",
+              "768p",
+              "2k",
+              "768P",
+              "1080P",
+              "480P"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "video/kling-3-motion-control",
+      "datedId": "video/kling-3-motion-control-20260924",
+      "capability": "video",
+      "name": "Kling 3.0 Motion Control",
+      "vendor": "Kuaishou",
+      "tags": [
+        "motion-transfer"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "mp4"
+      ],
+      "latency": {
+        "p50Seconds": 171,
+        "p90Seconds": null,
+        "measured": true
+      },
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "output_second",
+        "price": "0.126",
+        "quantityField": "videoUrl",
+        "modifiers": [],
+        "priceUpdatedAt": "2026-09-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "description": "What happens in the clip. Needed without imageUrl.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
+            "type": "string",
+            "maxLength": 2048
+          },
+          "aspectRatio": {
+            "default": "16:9",
+            "type": "string",
+            "enum": [
+              "16:9",
+              "9:16",
+              "1:1",
+              "4:3",
+              "3:4",
+              "21:9",
+              "3:2",
+              "2:3",
+              "auto"
+            ]
+          },
+          "resolution": {
+            "description": "Only a quality the model offers; leave out for its default.",
+            "type": "string",
+            "enum": [
+              "720p",
+              "1080p",
+              "4k",
+              "480p",
+              "768p",
+              "2k",
+              "768P",
+              "1080P",
+              "480P"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "video/gemini-omni-flash-edit",
+      "datedId": "video/gemini-omni-flash-edit-20260924",
+      "capability": "video",
+      "name": "Gemini Omni Flash",
+      "vendor": "Google",
+      "tags": [
+        "video-to-video"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "mp4"
+      ],
+      "latency": null,
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "output_second",
+        "price": "0.13",
+        "quantityField": "videoUrl",
+        "modifiers": [],
+        "priceUpdatedAt": "2026-09-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "description": "What happens in the clip. Needed without imageUrl.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
+            "type": "string",
+            "maxLength": 2048
+          },
+          "aspectRatio": {
+            "default": "16:9",
+            "type": "string",
+            "enum": [
+              "16:9",
+              "9:16",
+              "1:1",
+              "4:3",
+              "3:4",
+              "21:9",
+              "3:2",
+              "2:3",
+              "auto"
+            ]
+          },
+          "resolution": {
+            "description": "Only a quality the model offers; leave out for its default.",
+            "type": "string",
+            "enum": [
+              "720p",
+              "1080p",
+              "4k",
+              "480p",
+              "768p",
+              "2k",
+              "768P",
+              "1080P",
+              "480P"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "video/seedance-2.5-ref",
+      "datedId": "video/seedance-2.5-ref-20260926",
+      "capability": "video",
+      "name": "Seedance 2.5 References",
+      "vendor": "ByteDance",
+      "tags": [
+        "reference-to-video"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "mp4"
+      ],
+      "latency": null,
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "output_second",
+        "price": "0.46224",
+        "quantityField": "duration",
+        "estimate": true,
+        "modifiers": [
+          {
+            "field": "resolution",
+            "equals": "1080p",
+            "price": "1.145664"
+          }
+        ],
+        "priceUpdatedAt": "2026-09-26"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "description": "What happens in the clip. Needed without imageUrl.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
+            "type": "string",
+            "maxLength": 2048
+          },
+          "duration": {
+            "description": "Seconds; the model renders its nearest supported length.",
+            "default": 5,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "aspectRatio": {
+            "default": "16:9",
+            "type": "string",
+            "enum": [
+              "16:9",
+              "9:16",
+              "1:1",
+              "4:3",
+              "3:4",
+              "21:9",
+              "3:2",
+              "2:3",
+              "auto"
+            ]
+          },
+          "resolution": {
+            "description": "Only a quality the model offers; leave out for its default.",
+            "type": "string",
+            "enum": [
+              "720p",
+              "1080p",
+              "4k",
+              "480p",
+              "768p",
+              "2k",
+              "768P",
+              "1080P",
+              "480P"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "video/gemini-omni-flash-1.1-ref",
+      "datedId": "video/gemini-omni-flash-1.1-ref-20260926",
+      "capability": "video",
+      "name": "Gemini Omni Flash 1.1 References",
+      "vendor": "Google",
+      "tags": [
+        "reference-to-video"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "mp4"
+      ],
+      "latency": null,
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "output_second",
+        "price": "0.1",
+        "quantityField": "duration",
+        "modifiers": [
+          {
+            "field": "resolution",
+            "equals": "1080p",
+            "price": "0.15"
+          },
+          {
+            "field": "resolution",
+            "equals": "4k",
+            "price": "0.3"
+          }
+        ],
+        "priceUpdatedAt": "2026-09-26"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "description": "What happens in the clip. Needed without imageUrl.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "duration": {
+            "description": "Seconds; the model renders its nearest supported length.",
+            "default": 5,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "aspectRatio": {
+            "default": "16:9",
+            "type": "string",
+            "enum": [
+              "16:9",
+              "9:16",
+              "1:1",
+              "4:3",
+              "3:4",
+              "21:9",
+              "3:2",
+              "2:3",
+              "auto"
+            ]
+          },
+          "resolution": {
+            "description": "Only a quality the model offers; leave out for its default.",
+            "type": "string",
+            "enum": [
+              "720p",
+              "1080p",
+              "4k",
+              "480p",
+              "768p",
+              "2k",
+              "768P",
+              "1080P",
+              "480P"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "video/gemini-omni-flash-1.1-edit",
+      "datedId": "video/gemini-omni-flash-1.1-edit-20261024",
+      "capability": "video",
+      "name": "Gemini Omni Flash 1.1",
+      "vendor": "Google",
+      "tags": [
+        "video-to-video"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "mp4"
+      ],
+      "latency": {
+        "p50Seconds": 46,
+        "p90Seconds": 74,
+        "measured": false
+      },
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "output_second",
+        "price": "0.1",
+        "quantityField": "videoUrl",
+        "modifiers": [],
+        "priceUpdatedAt": "2026-10-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "description": "What happens in the clip. Needed without imageUrl.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
+            "type": "string",
+            "maxLength": 2048
+          },
+          "aspectRatio": {
+            "default": "16:9",
+            "type": "string",
+            "enum": [
+              "16:9",
+              "9:16",
+              "1:1",
+              "4:3",
+              "3:4",
+              "21:9",
+              "3:2",
+              "2:3",
+              "auto"
+            ]
+          },
+          "resolution": {
+            "description": "Only a quality the model offers; leave out for its default.",
+            "type": "string",
+            "enum": [
+              "720p",
+              "1080p",
+              "4k",
+              "480p",
+              "768p",
+              "2k",
+              "768P",
+              "1080P",
+              "480P"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "video/kling-4-ref",
+      "datedId": "video/kling-4-ref-20261024",
+      "capability": "video",
+      "name": "Kling 4.0 References",
+      "vendor": "Kuaishou",
+      "tags": [
+        "reference-to-video"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "mp4"
+      ],
+      "latency": {
+        "p50Seconds": 62,
+        "p90Seconds": 100,
+        "measured": false
+      },
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "output_second",
+        "price": "0.157",
+        "quantityField": "duration",
+        "modifiers": [
+          {
+            "field": "resolution",
+            "equals": "1080p",
+            "price": "0.235"
+          }
+        ],
+        "priceUpdatedAt": "2026-10-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "description": "What happens in the clip. Needed without imageUrl.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "duration": {
+            "description": "Seconds; the model renders its nearest supported length.",
+            "default": 5,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "aspectRatio": {
+            "default": "16:9",
+            "type": "string",
+            "enum": [
+              "16:9",
+              "9:16",
+              "1:1",
+              "4:3",
+              "3:4",
+              "21:9",
+              "3:2",
+              "2:3",
+              "auto"
+            ]
+          },
+          "resolution": {
+            "description": "Only a quality the model offers; leave out for its default.",
+            "type": "string",
+            "enum": [
+              "720p",
+              "1080p",
+              "4k",
+              "480p",
+              "768p",
+              "2k",
+              "768P",
+              "1080P",
+              "480P"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "video/heygen-video-ref",
+      "datedId": "video/heygen-video-ref-20261024",
+      "capability": "video",
+      "name": "HeyGen Video References",
+      "vendor": "HeyGen",
+      "tags": [
+        "reference-to-video"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "mp4"
+      ],
+      "latency": {
+        "p50Seconds": 48,
+        "p90Seconds": 76,
+        "measured": false
+      },
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "output_second",
+        "price": "0.01",
+        "quantityField": "duration",
+        "modifiers": [
+          {
+            "field": "resolution",
+            "equals": "1080p",
+            "price": "0.03"
+          },
+          {
+            "field": "resolution",
+            "equals": "2k",
+            "price": "0.03"
+          }
+        ],
+        "priceUpdatedAt": "2026-10-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "description": "What happens in the clip. Needed without imageUrl.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "duration": {
+            "description": "Seconds; the model renders its nearest supported length.",
+            "default": 5,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "aspectRatio": {
+            "default": "16:9",
+            "type": "string",
+            "enum": [
+              "16:9",
+              "9:16",
+              "1:1",
+              "4:3",
+              "3:4",
+              "21:9",
+              "3:2",
+              "2:3",
+              "auto"
+            ]
+          },
+          "resolution": {
+            "description": "Only a quality the model offers; leave out for its default.",
+            "type": "string",
+            "enum": [
+              "720p",
+              "1080p",
+              "4k",
+              "480p",
+              "768p",
+              "2k",
+              "768P",
+              "1080P",
+              "480P"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "video/minimax-h3-max-reframe",
+      "datedId": "video/minimax-h3-max-reframe-20261024",
+      "capability": "video",
+      "name": "MiniMax H3 Max Reframe",
+      "vendor": "MiniMax",
+      "tags": [
+        "video-to-video"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "mp4"
+      ],
+      "latency": {
+        "p50Seconds": 22,
+        "p90Seconds": 36,
+        "measured": false
+      },
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "output_second",
+        "price": "0.08",
+        "quantityField": "videoUrl",
+        "modifiers": [
+          {
+            "field": "resolution",
+            "equals": "480p",
+            "price": "0.05"
+          }
+        ],
+        "priceUpdatedAt": "2026-10-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "description": "What happens in the clip. Needed without imageUrl.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
+            "type": "string",
+            "maxLength": 2048
+          },
+          "aspectRatio": {
+            "default": "16:9",
+            "type": "string",
+            "enum": [
+              "16:9",
+              "9:16",
+              "1:1",
+              "4:3",
+              "3:4",
+              "21:9",
+              "3:2",
+              "2:3",
+              "auto"
+            ]
+          },
+          "resolution": {
+            "description": "Only a quality the model offers; leave out for its default.",
+            "type": "string",
+            "enum": [
+              "720p",
+              "1080p",
+              "4k",
+              "480p",
+              "768p",
+              "2k",
+              "768P",
+              "1080P",
+              "480P"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "video/kling-video-to-audio",
+      "datedId": "video/kling-video-to-audio-20261024",
+      "capability": "video",
+      "name": "Kling Video to Audio",
+      "vendor": "Kuaishou",
+      "tags": [
+        "video-to-video"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "mp4"
+      ],
+      "latency": {
+        "p50Seconds": 39,
+        "p90Seconds": 63,
+        "measured": false
+      },
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "call",
+        "price": "0.035",
+        "modifiers": [],
+        "priceUpdatedAt": "2026-10-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "description": "What happens in the clip. Needed without imageUrl.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
+            "type": "string",
+            "maxLength": 2048
+          },
+          "aspectRatio": {
+            "default": "16:9",
+            "type": "string",
+            "enum": [
+              "16:9",
+              "9:16",
+              "1:1",
+              "4:3",
+              "3:4",
+              "21:9",
+              "3:2",
+              "2:3",
+              "auto"
+            ]
+          },
+          "resolution": {
+            "description": "Only a quality the model offers; leave out for its default.",
+            "type": "string",
+            "enum": [
+              "720p",
+              "1080p",
+              "4k",
+              "480p",
+              "768p",
+              "2k",
+              "768P",
+              "1080P",
+              "480P"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "video/thinksound",
+      "datedId": "video/thinksound-20261024",
+      "capability": "video",
+      "name": "ThinkSound",
+      "vendor": "ThinkSound",
+      "tags": [
+        "video-to-video"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "mp4"
+      ],
+      "latency": {
+        "p50Seconds": 490,
+        "p90Seconds": 785,
+        "measured": false
+      },
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "output_second",
+        "price": "0.01",
+        "quantityField": "videoUrl",
+        "modifiers": [],
+        "priceUpdatedAt": "2026-10-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "description": "What happens in the clip. Needed without imageUrl.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
+            "type": "string",
+            "maxLength": 2048
+          },
+          "aspectRatio": {
+            "default": "16:9",
+            "type": "string",
+            "enum": [
+              "16:9",
+              "9:16",
+              "1:1",
+              "4:3",
+              "3:4",
+              "21:9",
+              "3:2",
+              "2:3",
+              "auto"
+            ]
+          },
+          "resolution": {
+            "description": "Only a quality the model offers; leave out for its default.",
+            "type": "string",
+            "enum": [
+              "720p",
+              "1080p",
+              "4k",
+              "480p",
+              "768p",
+              "2k",
+              "768P",
+              "1080P",
+              "480P"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "video/kling-3-pro-motion-control",
+      "datedId": "video/kling-3-pro-motion-control-20260925",
+      "capability": "video",
+      "name": "Kling 3.0 Motion Control Pro",
+      "vendor": "Kuaishou",
+      "tags": [
+        "motion-transfer"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "mp4"
+      ],
+      "latency": null,
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "output_second",
+        "price": "0.168",
+        "quantityField": "videoUrl",
+        "modifiers": [],
+        "priceUpdatedAt": "2026-09-25"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "description": "What happens in the clip. Needed without imageUrl.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "videoUrl": {
+            "description": "An input clip (public URL, at most 20 s): restyle or reframe it, move a character with its motion, or add sound to it (e.g. kling-video-to-audio). Billed on the clip's length.",
+            "type": "string",
+            "maxLength": 2048
+          },
+          "aspectRatio": {
+            "default": "16:9",
+            "type": "string",
+            "enum": [
+              "16:9",
+              "9:16",
+              "1:1",
+              "4:3",
+              "3:4",
+              "21:9",
+              "3:2",
+              "2:3",
+              "auto"
+            ]
+          },
+          "resolution": {
+            "description": "Only a quality the model offers; leave out for its default.",
+            "type": "string",
+            "enum": [
+              "720p",
+              "1080p",
+              "4k",
+              "480p",
+              "768p",
+              "2k",
+              "768P",
+              "1080P",
+              "480P"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "video/minimax-h3-max-ref",
+      "datedId": "video/minimax-h3-max-ref-20260926",
+      "capability": "video",
+      "name": "MiniMax H3 Max References",
+      "vendor": "MiniMax",
+      "tags": [
+        "reference-to-video"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "mp4"
+      ],
+      "latency": null,
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "output_second",
+        "price": "0.08",
+        "quantityField": "duration",
+        "modifiers": [
+          {
+            "field": "resolution",
+            "equals": "1080P",
+            "price": "0.16"
+          }
+        ],
+        "priceUpdatedAt": "2026-09-26"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "description": "What happens in the clip. Needed without imageUrl.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "duration": {
+            "description": "Seconds; the model renders its nearest supported length.",
+            "default": 5,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "aspectRatio": {
+            "default": "16:9",
+            "type": "string",
+            "enum": [
+              "16:9",
+              "9:16",
+              "1:1",
+              "4:3",
+              "3:4",
+              "21:9",
+              "3:2",
+              "2:3",
+              "auto"
+            ]
+          },
+          "resolution": {
+            "description": "Only a quality the model offers; leave out for its default.",
+            "type": "string",
+            "enum": [
+              "720p",
+              "1080p",
+              "4k",
+              "480p",
+              "768p",
+              "2k",
+              "768P",
+              "1080P",
+              "480P"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "video/wan-3-ref",
+      "datedId": "video/wan-3-ref-20260926",
+      "capability": "video",
+      "name": "Wan 3.0 References",
+      "vendor": "Alibaba",
+      "tags": [
+        "reference-to-video"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "mp4"
+      ],
+      "latency": null,
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "output_second",
+        "price": "0.1",
+        "quantityField": "duration",
+        "modifiers": [
+          {
+            "field": "resolution",
+            "equals": "1080p",
+            "price": "0.2"
+          }
+        ],
+        "priceUpdatedAt": "2026-09-26"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "description": "What happens in the clip. Needed without imageUrl.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "duration": {
+            "description": "Seconds; the model renders its nearest supported length.",
+            "default": 5,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "aspectRatio": {
+            "default": "16:9",
+            "type": "string",
+            "enum": [
+              "16:9",
+              "9:16",
+              "1:1",
+              "4:3",
+              "3:4",
+              "21:9",
+              "3:2",
+              "2:3",
+              "auto"
+            ]
+          },
+          "resolution": {
+            "description": "Only a quality the model offers; leave out for its default.",
+            "type": "string",
+            "enum": [
+              "720p",
+              "1080p",
+              "4k",
+              "480p",
+              "768p",
+              "2k",
+              "768P",
+              "1080P",
+              "480P"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "video/happy-horse-1.1-ref",
+      "datedId": "video/happy-horse-1.1-ref-20260926",
+      "capability": "video",
+      "name": "HappyHorse 1.1 References",
+      "vendor": "Alibaba",
+      "tags": [
+        "reference-to-video"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "mp4"
+      ],
+      "latency": null,
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "output_second",
+        "price": "0.14",
+        "quantityField": "duration",
+        "modifiers": [
+          {
+            "field": "resolution",
+            "equals": "1080p",
+            "price": "0.18"
+          }
+        ],
+        "priceUpdatedAt": "2026-09-26"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "description": "What happens in the clip. Needed without imageUrl.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "duration": {
+            "description": "Seconds; the model renders its nearest supported length.",
+            "default": 5,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "aspectRatio": {
+            "default": "16:9",
+            "type": "string",
+            "enum": [
+              "16:9",
+              "9:16",
+              "1:1",
+              "4:3",
+              "3:4",
+              "21:9",
+              "3:2",
+              "2:3",
+              "auto"
+            ]
+          },
+          "resolution": {
+            "description": "Only a quality the model offers; leave out for its default.",
+            "type": "string",
+            "enum": [
+              "720p",
+              "1080p",
+              "4k",
+              "480p",
+              "768p",
+              "2k",
+              "768P",
+              "1080P",
+              "480P"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "video/grok-video-1.5-ref",
+      "datedId": "video/grok-video-1.5-ref-20260926",
+      "capability": "video",
+      "name": "Grok Imagine Video 1.5 References",
+      "vendor": "xAI",
+      "tags": [
+        "reference-to-video"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "mp4"
+      ],
+      "latency": null,
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "output_second",
+        "price": "0.15",
+        "quantityField": "duration",
+        "modifiers": [],
+        "priceUpdatedAt": "2026-09-26"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "description": "What happens in the clip. Needed without imageUrl.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "referenceImageUrls": {
+            "description": "Reference to video: public images of the characters, props or style to keep (with a reference model, e.g. kling-4-ref). Motion transfer: the character to move.",
+            "minItems": 1,
+            "maxItems": 10,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "duration": {
+            "description": "Seconds; the model renders its nearest supported length.",
+            "default": 5,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "aspectRatio": {
+            "default": "16:9",
+            "type": "string",
+            "enum": [
+              "16:9",
+              "9:16",
+              "1:1",
+              "4:3",
+              "3:4",
+              "21:9",
+              "3:2",
+              "2:3",
+              "auto"
+            ]
           },
           "resolution": {
             "description": "Only a quality the model offers; leave out for its default.",
@@ -10338,6 +12219,164 @@
         },
         "required": [
           "prompt"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "motion/hunyuan-motion",
+      "datedId": "motion/hunyuan-motion-20260924",
+      "capability": "motion",
+      "name": "Hunyuan Motion",
+      "vendor": "Tencent",
+      "tags": [
+        "text-to-motion"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "fbx",
+        "glb"
+      ],
+      "latency": null,
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "call",
+        "price": "0.08",
+        "modifiers": [],
+        "priceUpdatedAt": "2026-09-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "rigAssetId": {
+            "description": "A rigged 3D model of the person (assets.generate_3d with rig).",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "prompt": {
+            "description": "hunyuan-custom: the motion in words, e.g. \"jumps over a fence\".",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "durationSeconds": {
+            "description": "hunyuan-custom: seconds, 1 to 10 (default 4).",
+            "type": "number",
+            "minimum": 1,
+            "maximum": 10
+          }
+        },
+        "required": [
+          "rigAssetId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "motion/hunyuan-motion-fast",
+      "datedId": "motion/hunyuan-motion-fast-20261024",
+      "capability": "motion",
+      "name": "Hunyuan Motion Fast",
+      "vendor": "Tencent",
+      "tags": [
+        "text-to-motion"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "fbx",
+        "glb"
+      ],
+      "latency": null,
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "call",
+        "price": "0.06",
+        "modifiers": [],
+        "priceUpdatedAt": "2026-10-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "rigAssetId": {
+            "description": "A rigged 3D model of the person (assets.generate_3d with rig).",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "prompt": {
+            "description": "hunyuan-custom: the motion in words, e.g. \"jumps over a fence\".",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "durationSeconds": {
+            "description": "hunyuan-custom: seconds, 1 to 10 (default 4).",
+            "type": "number",
+            "minimum": 1,
+            "maximum": 10
+          }
+        },
+        "required": [
+          "rigAssetId"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "motion/library",
+      "datedId": "motion/library-20260924",
+      "capability": "motion",
+      "name": "Meshy animation library",
+      "vendor": "Meshy",
+      "tags": [
+        "motion-library"
+      ],
+      "aliases": [
+        "motion/default"
+      ],
+      "outputFormats": [
+        "fbx",
+        "glb"
+      ],
+      "latency": null,
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "call",
+        "price": "0.12",
+        "quantityField": "motionNames",
+        "modifiers": [],
+        "priceUpdatedAt": "2026-09-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "rigAssetId": {
+            "description": "A rigged 3D model of the person (assets.generate_3d with rig).",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 128
+          },
+          "motionNames": {
+            "description": "meshy-library: idle, walk, run, sprint, jump, attack_sword, attack_punch, block, dodge_left, hit_react, death, wave, dance and more.",
+            "minItems": 1,
+            "maxItems": 12,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            }
+          }
+        },
+        "required": [
+          "rigAssetId"
         ],
         "additionalProperties": false
       }

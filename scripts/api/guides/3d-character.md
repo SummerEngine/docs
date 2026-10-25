@@ -6,7 +6,7 @@ icon: "person-standing"
 order: 1
 ---
 
-A playable character needs more than a pretty mesh. It needs one clean silhouette, a neutral pose a skeleton can fit, a rig, and the handful of motions the player sees every second: standing, walking, running, jumping. This guide makes all of that in two jobs, plus a portrait for dialogue, and you get a GLB that drops into Summer Engine or any engine that reads glTF.
+A playable character needs more than a pretty mesh. It needs one clean silhouette, a neutral pose a skeleton can fit, a rig, and the handful of motions the player sees every second: standing, walking, running, jumping. This guide makes all of that in two jobs, plus a move of her own and a portrait for dialogue, and you get a GLB that drops into Summer Engine or any engine that reads glTF.
 
 ## The chain
 
@@ -37,6 +37,17 @@ A playable character needs more than a pretty mesh. It needs one clean silhouett
         "rig": true,
         "animationNames": ["Idle", "Walk", "Run", "Jump"],
         "title": "Mira"
+      }
+    },
+    {
+      "id": "move",
+      "title": "A custom move",
+      "models": ["motion/hunyuan-motion", "motion/default"],
+      "why": "Animates the rigged character from words: the one move your game needs that no stock clip has.",
+      "input": {
+        "rigAssetId": "{{model.assetId}}",
+        "prompt": "pulls a wrench from her belt, spins it once in her hand and catches it, confident",
+        "durationSeconds": 4
       }
     },
     {
@@ -94,7 +105,15 @@ A 3D job takes a few minutes. The CLI follows it and saves the GLB; over HTTP th
 
 **Other models for this step.** {{model 3d/meshy-7.1}} gives a cleaner quad topology when an artist will keep editing the mesh ({{price 3d/meshy-7.1}}, rigging included at a lower add-on). {{model 3d/rodin-2.5-fast}} is the cheapest way to block out a cast of background characters ({{price 3d/rodin-2.5-fast}}). For a hero you will look at for hours, compare two models on the same concept picture before you commit: the [3D models](/api/models#3d-models) page lists them all with examples.
 
-## Step 3: a portrait that is the same person
+## Step 3: a move of her own
+
+Idle, Walk, Run and Jump cover moving around. A character feels like a person when she has one move nobody else has: a victory pose, a signature attack, a fidget while she waits. Describe it in one sentence and send the rigged model's `assetId` as `rigAssetId`. The clip is retargeted to her own skeleton, so it plays on the model from step 2 without any fixing.
+
+{{step move}}
+
+You get the animation as GLB and FBX. Keep moves to one action of 2 to 6 seconds; a long string of actions blurs. For stock moves (sprint, attack, block, dance), {{model motion/library}} adds named clips from a curated library ({{price motion/library}}), and {{model motion/hunyuan-motion-fast}} drafts a custom move for less ({{price motion/hunyuan-motion-fast}}).
+
+## Step 4: a portrait that is the same person
 
 Dialogue boxes, party menus and save slots want a face, not a full body. Edit the concept picture instead of drawing a new one: `referenceImageUrl` keeps the character on-model.
 

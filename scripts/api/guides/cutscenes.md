@@ -1,7 +1,7 @@
 ---
 title: "How to make cutscenes for your game with AI: on-model shots, a voice line and a music cue"
 sidebarTitle: "Cutscenes"
-description: "Make a game cutscene with AI that keeps your character on-model: a character reference picture, a style frame, image-to-video shots with native sound, a voice line, a music cue and sound accents, then assemble the shots. Exact CLI, API and MCP steps and what it costs."
+description: "Make a game cutscene with AI that keeps your character on-model: a character reference picture, a style frame, image-to-video shots, sound made from each finished shot, a voice line, a music cue and sound accents, then assemble the shots. Exact CLI, API and MCP steps and what it costs."
 icon: "clapperboard"
 order: 4
 ---
@@ -52,15 +52,26 @@ The hard part of an AI cutscene is not making a good shot. It is making three sh
     {
       "id": "shots",
       "title": "Image-to-video shots",
-      "models": ["video/kling-3-pro", "video/kling-3"],
-      "why": "Fluid motion that holds a character from its start frame, with native sound made with the picture.",
+      "models": ["video/kling-4", "video/kling-3-pro"],
+      "why": "Holds a character steadiest from its start frame to the last frame; the sound comes next, made from the finished clip.",
       "count": 3,
       "input": {
-        "prompt": "She slowly raises the brass lantern and looks down the empty street, fog drifting past her, the lantern flame flickering. Slow push-in. Ambient sound only: soft wind, a lantern creaking on its handle, distant water. No speech, no music.",
+        "prompt": "She slowly raises the brass lantern and looks down the empty street, fog drifting past her, the lantern flame flickering. Slow push-in.",
         "imageUrl": "{{styleframe.fileUrl}}",
         "duration": 5,
         "negativePrompt": "changing face, extra fingers, warped hands, text, subtitles",
         "aspectRatio": "16:9"
+      }
+    },
+    {
+      "id": "sound",
+      "title": "Sound for each shot",
+      "models": ["video/kling-video-to-audio", "video/thinksound"],
+      "why": "Watches the finished shot and makes the sound of what happens in it, in sync with the picture: the wind, the lantern, her steps.",
+      "count": 3,
+      "input": {
+        "prompt": "Soft wind through an empty street, a brass lantern creaking on its handle, fog, distant water. No speech, no music.",
+        "videoUrl": "{{shots.fileUrl}}"
       }
     },
     {
@@ -87,7 +98,7 @@ The hard part of an AI cutscene is not making a good shot. It is making three sh
       "id": "accents",
       "title": "Sound accents",
       "models": ["sound/sfx-v2", "sound/sonilo-sfx-1.1"],
-      "why": "Adds the one or two sounds the shots must have exactly on the cut, which native sound does not place for you.",
+      "why": "Adds the one or two sounds the scene must have exactly on the cut, which the shot sound does not place for you.",
       "count": 2,
       "input": {
         "text": "A brass oil lantern flame flares up brightly with a soft whoosh and a crackle, close, dry, no music, no voices.",
@@ -154,14 +165,22 @@ Run it three times, once per start frame, and change the prompt to that shot's a
 
 - **One verb for the camera.** `Slow push-in`, `static`, `slow pan left`. Complex moves through a crowd fall apart.
 - **5 seconds.** Faces, hands and physics drift with every second past about six. Two 5-second shots look better than one 10-second shot and cost the same.
-- **Say what the sound is.** {{model video/kling-3-pro}} makes sound with the picture. Ask for it: `ambient sound only: soft wind, a lantern creaking`. Add `no speech, no music`, because the voice and the music come from their own jobs.
+- **Describe only the picture.** The next step makes the sound from the finished shot, so the prompt spends every word on the action, the light and the camera.
 - **A negative prompt for the usual faults.** `changing face, extra fingers, warped hands, text, subtitles`.
 
 A video job takes a few minutes. The CLI follows it and saves the MP4; over HTTP you read `GET /v1/jobs/{id}` until `state` is `done` ([jobs](/api/jobs)). Try a new shot first on a cheap model such as {{model video/minimax-h3-max-turbo}} ({{price video/minimax-h3-max-turbo}}) to check the motion, then make the final.
 
-**Other models for this step.** {{model video/kling-4}} ({{price video/kling-4}}) holds a character steadiest from the first frame to the last; its notes do not list native sound, so plan the sound as the separate jobs in steps 5 to 7. {{model video/veo3.1}} gives the most coherent shots, with native sound, for the one shot that must be perfect ({{price video/veo3.1}}). {{model video/happy-horse-1.1}} makes the character speak with lip sync when you write the line into the video prompt: the voice then comes from the video model, not from your voice cast.
+**Other models for this step.** {{model video/kling-3-pro}} makes sound with the picture in one job ({{price video/kling-3-pro}}): ask for it in the prompt (`ambient sound only: soft wind, a lantern creaking`, then `no speech, no music`) and skip step 5. {{model video/veo3.1}} gives the most coherent shots, also with sound, for the one shot that must be perfect ({{price video/veo3.1}}). {{model video/happy-horse-1.1}} makes the character speak with lip sync when you write the line into the video prompt: the voice then comes from the video model, not from your voice cast. To keep a character the same across many shots without a start frame, the reference models take up to several pictures of her: {{model video/kling-4-ref}} ({{price video/kling-4-ref}}).
 
-## Step 5: the voice line
+## Step 5: sound for each shot
+
+Send each finished shot back as `videoUrl` and describe what should be heard. The model watches the clip and makes sound that follows it: a step lands when her foot does, the flame crackles when it flares. Ask for the place and its things, and keep `No speech, no music`: the voice and the music come from their own jobs.
+
+{{step sound}}
+
+The answer is the same clip with its new soundtrack. {{model video/thinksound}} ({{price video/thinksound}}) reasons about the scene before it makes the sound, and suits slow, quiet shots where every small sound counts; it takes longer. {{model video/kling-video-to-audio}} ({{price video/kling-video-to-audio}}) is fast and fits most shots.
+
+## Step 6: the voice line
 
 The line is its own job, so you choose the voice, the delivery and the timing. Pick the voice from the model's list (`npx -y summer-engine@latest api models voice/expressive-v4` prints every `voiceId`). Alice, a clear and calm voice, fits a lantern keeper who has seen something.
 
@@ -169,7 +188,7 @@ The line is its own job, so you choose the voice, the delivery and the timing. P
 
 Stage words in square brackets set the delivery: `[quietly]`, `[pause]`, `[whispering]`. Full stops make clear pauses, and an ellipsis trails off. A video model does not move lips to a separate voice file. So play the line over shots where the mouth is small or hidden: the wide shot and the over-the-shoulder shot here. The [voice lines guide](/api/guides/voice-lines) covers casting and delivery in depth.
 
-## Step 6: the music cue
+## Step 7: the music cue
 
 Time the cue to the scene: 15 seconds of picture plus a 2-second ring-out, so the last chord fades under the cut back to gameplay. At 60 BPM one bar is 4 seconds, so events on bar lines (0:08, 0:12) land where you ask more often. The swell starts under shot 2 and peaks inside shot 3.
 
@@ -177,17 +196,17 @@ Time the cue to the scene: 15 seconds of picture plus a 2-second ring-out, so th
 
 Make two or three takes and keep the one whose peak lands nearest 0:12. Then move the cut a few frames to the music, not the music to the cut. For a score that shares one theme across the menu, the cutscenes and combat, see [music for your game's cutscenes](/api/guides/cutscene-music).
 
-## Step 7: sound accents on the cut
+## Step 8: sound accents on the cut
 
-Native sound gives you the air of each shot. It does not put a sound on an exact frame. For the one or two moments that must hit (the lantern flaring on the cut to shot 3, a distant bell), make them as sound effects and place them yourself.
+The shot sound gives you the air of each shot. It does not put a sound on an exact frame. For the one or two moments that must hit (the lantern flaring on the cut to shot 3, a distant bell), make them as sound effects and place them yourself.
 
 {{step accents}}
 
-If you used a video model without native sound, make the ambience here too: one `loop: true` sound per location, at the length of the scene. There is no model on the Summer API today that adds sound to a finished video. Sound effects and music are always separate jobs that you place in the edit.
+For a long scene, add one `loop: true` ambience per location under the shots, at the length of the scene, so the air never drops out between cuts.
 
 ## Assemble the shots
 
-Cut on action: end shot 1 as she starts to turn, open shot 2 mid-turn. Then lay the sound in four layers: native sound low, the voice on top, the music under it, the accents on their frames. In any video editor that is four tracks. From a shell, two commands do it:
+Cut on action: end shot 1 as she starts to turn, open shot 2 mid-turn. Then lay the sound in four layers: shot sound low, the voice on top, the music under it, the accents on their frames. In any video editor that is four tracks. From a shell, two commands do it:
 
 ```bash
 printf "file 'shot_01.mp4'\nfile 'shot_02.mp4'\nfile 'shot_03.mp4'\n" > shots.txt
@@ -216,11 +235,11 @@ Once the first scene works, the next one is a batch. Write every start frame for
 |---|---|
 | The character's face changes between shots | Edit every start frame from the style frame, keep the "same face" sentence, and keep shots at 5 seconds |
 | The shot comes out square or vertical | Make the start frame in the framing you want; an image-to-video shot keeps it |
-| The character talks gibberish in the native sound | Add `No speech` to the video prompt |
+| The character talks gibberish in the shot sound | Add `No speech` to the sound prompt |
 | Lips do not match the voice line | Play the line over wide or back-facing shots, or use {{model video/happy-horse-1.1}} with the line in the prompt |
 | Hands melt or the lantern changes shape | Add them to `negativePrompt` and make the action smaller |
 | The camera move falls apart | Use one simple move per shot: push-in, pan or static |
-| The cutscene feels silent | Add the native sound back at a low level and an ambience loop under it |
+| The cutscene feels silent | Raise the shot sound and add an ambience loop under it |
 
 ## Questions
 
@@ -228,6 +247,6 @@ Once the first scene works, the next one is a batch. Write every start frame for
 
 **How long can one shot be?** `duration` goes up to 20 seconds, and each model renders its nearest supported length. For a character on screen, 5 seconds per shot holds the look best.
 
-**Can the video model add sound to a video I already have?** No. There is no video-to-audio model on the Summer API today. Make the ambience, effects and music as separate jobs.
+**Can I add sound to a video I already have?** Yes. Upload the clip (at most 20 seconds) and run step 5 on it with its `fileUrl` as `videoUrl`. That works for gameplay captures too.
 
 **Can I use the cutscene in a commercial game?** Yes. Every model on the Summer API allows commercial use of what it makes.

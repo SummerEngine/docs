@@ -2,7 +2,7 @@
   "source": {
     "repo": "SummerEngine/PublicSummerEngine",
     "path": "config/models/model-pages.json",
-    "commit": "e064ed8aaccfb5d47552ebdd6b864b45a126536e"
+    "commit": "99d0b07c61c117307b5a45b2a134d084703b2bf4"
   },
   "notes": {
     "image/nano-banana-2.1": {
@@ -423,6 +423,154 @@
         "Hero shots of an environment from concept art."
       ]
     },
+    "video/gemini-omni-flash-ref": {
+      "tagline": "Fast video with synchronized audio from text, a still image, references, or a motion clip.",
+      "gameUses": [
+        "Trailer and teaser shots while the game is still a prototype.",
+        "Animating key art or a character portrait into a short loop for a menu or store page.",
+        "Keeping one character consistent across several cutscene shots by feeding reference images.",
+        "Restyling a rough capture of your own gameplay into a different look for mood tests."
+      ]
+    },
+    "video/seedance-2-fast-ref": {
+      "tagline": "Fast multimodal video with audio and clips up to 15 seconds.",
+      "gameUses": [
+        "Longer single shots, up to 15 seconds, for trailers and teasers.",
+        "Start-to-end-frame animation, such as a door opening or a transformation between two poses.",
+        "Vertical 9:16 and ultrawide 21:9 cuts of the same idea for different platforms."
+      ]
+    },
+    "video/veo3.1-ref": {
+      "tagline": "Google's premium Veo tier for coherent shots with native audio.",
+      "gameUses": [
+        "Final trailer shots and store-page video where coherence matters most.",
+        "Intro and ending cinematics built around your own character art.",
+        "Keeping a hero character on-model across shots with reference images."
+      ]
+    },
+    "video/kling-3-motion-control": {
+      "tagline": "Fluid motion, native audio, and motion transfer from a reference clip onto your character.",
+      "gameUses": [
+        "Turning a phone recording of a run, jump, or attack into the same move performed by your character.",
+        "Previewing animation ideas for a character before rigging it.",
+        "Multi-shot action clips for trailers."
+      ]
+    },
+    "video/gemini-omni-flash-edit": {
+      "tagline": "Fast video with synchronized audio from text, a still image, references, or a motion clip.",
+      "gameUses": [
+        "Trailer and teaser shots while the game is still a prototype.",
+        "Animating key art or a character portrait into a short loop for a menu or store page.",
+        "Keeping one character consistent across several cutscene shots by feeding reference images.",
+        "Restyling a rough capture of your own gameplay into a different look for mood tests."
+      ]
+    },
+    "video/seedance-2.5-ref": {
+      "tagline": "Cinematic long takes with sound, from text, a still image or a set of references.",
+      "gameUses": [
+        "Hero shots for a trailer with sweeping camera moves.",
+        "Product and item orbits for a store page.",
+        "Building one shot from your concept art and a motion reference."
+      ]
+    },
+    "video/gemini-omni-flash-1.1-ref": {
+      "tagline": "Fast video with synchronized audio from text, a still image, references, or a motion clip.",
+      "gameUses": [
+        "Trailer and teaser shots while the game is still a prototype.",
+        "Animating key art or a character portrait into a short loop for a menu or store page.",
+        "Keeping one character consistent across several cutscene shots by feeding reference images.",
+        "Restyling a rough capture of your own gameplay into a different look for mood tests."
+      ]
+    },
+    "video/gemini-omni-flash-1.1-edit": {
+      "tagline": "Fast video with synchronized audio from text, a still image, references, or a motion clip.",
+      "gameUses": [
+        "Trailer and teaser shots while the game is still a prototype.",
+        "Animating key art or a character portrait into a short loop for a menu or store page.",
+        "Keeping one character consistent across several cutscene shots by feeding reference images.",
+        "Restyling a rough capture of your own gameplay into a different look for mood tests."
+      ]
+    },
+    "video/kling-4-ref": {
+      "tagline": "Steady characters, longer takes and per-shot prompts.",
+      "gameUses": [
+        "Trailer shots where the hero must look the same from start to end.",
+        "Cutscenes that put your characters, from renders or concept art, into new scenes (references).",
+        "Cut scene with sound: render the clip with Kling 4.0, then add sound with Kling Video to Audio or ThinkSound."
+      ]
+    },
+    "video/heygen-video-ref": {
+      "tagline": "Low-cost clips with sound, from a prompt, an image or references.",
+      "gameUses": [
+        "Cheap trailer shots and story beats with sound.",
+        "In-game TV screens, billboards and menu loops.",
+        "Animatics for a cutscene before the final render."
+      ]
+    },
+    "video/minimax-h3-max-reframe": {
+      "tagline": "Ranked first for image to video, with sharp motion up to 15 seconds.",
+      "gameUses": [
+        "Trailer shots that follow a detailed camera and action brief.",
+        "Animating key art or a character portrait for a store page.",
+        "Reframe a 16:9 trailer into a 9:16 short for TikTok and store previews, keeping motion and sound."
+      ]
+    },
+    "video/kling-video-to-audio": {
+      "tagline": "Sound effects that match the action, added to a silent clip.",
+      "gameUses": [
+        "Cut scene: render the clip with Kling 4.0, then add sound with this.",
+        "Sound on gameplay captures for a trailer edit.",
+        "Many short clips at a flat price each."
+      ]
+    },
+    "video/thinksound": {
+      "tagline": "Synced sound for a clip, from what happens on screen.",
+      "gameUses": [
+        "Foley for a silent cutscene render.",
+        "A quick sound pass on many trailer clips.",
+        "Cut scene: generate the clip with Kling 4.0, then add sound with ThinkSound."
+      ]
+    },
+    "video/kling-3-pro-motion-control": {
+      "tagline": "Fluid motion, native audio, and motion transfer from a reference clip onto your character.",
+      "gameUses": [
+        "Turning a phone recording of a run, jump, or attack into the same move performed by your character.",
+        "Previewing animation ideas for a character before rigging it.",
+        "Multi-shot action clips for trailers."
+      ]
+    },
+    "video/minimax-h3-max-ref": {
+      "tagline": "Ranked first for image to video, with sharp motion up to 15 seconds.",
+      "gameUses": [
+        "Trailer shots that follow a detailed camera and action brief.",
+        "Animating key art or a character portrait for a store page.",
+        "Reframe a 16:9 trailer into a 9:16 short for TikTok and store previews, keeping motion and sound."
+      ]
+    },
+    "video/wan-3-ref": {
+      "tagline": "Alibaba's Wan 3.0, smooth motion and native audio from a prompt, a frame or references.",
+      "gameUses": [
+        "Cutscene shots with ambient sound in one pass.",
+        "Turning concept art into a moving establishing shot.",
+        "Consistent character shots from a few reference images."
+      ]
+    },
+    "video/happy-horse-1.1-ref": {
+      "tagline": "Native audio with multilingual lip sync, written straight into the prompt.",
+      "gameUses": [
+        "Talking NPC and narrator clips with lines written in the prompt.",
+        "Character intros for trailers in several languages.",
+        "Animating a portrait that speaks one line of dialogue."
+      ]
+    },
+    "video/grok-video-1.5-ref": {
+      "tagline": "xAI's video model with sound, from a prompt, a still or references.",
+      "gameUses": [
+        "Quick animated social clips for an update or a jam entry.",
+        "Bringing a character illustration to life with sound.",
+        "Combining a character and a setting from reference images."
+      ]
+    },
     "voice/expressive-v4": {
       "tagline": null,
       "gameUses": [
@@ -661,6 +809,30 @@
         "Boss and level themes with a set song structure.",
         "Songs for credits, menus or an in-game radio.",
         "Cheap song drafts to choose from (v2)."
+      ]
+    },
+    "motion/hunyuan-motion": {
+      "tagline": "Custom skeletal animation for a rigged character from a text description.",
+      "gameUses": [
+        "One-off moves such as a victory dance, a stumble, or a specific attack.",
+        "Idle variations that give a character personality.",
+        "Cutscene performances described in plain language."
+      ]
+    },
+    "motion/hunyuan-motion-fast": {
+      "tagline": "Custom skeletal animation for a rigged character from a text description.",
+      "gameUses": [
+        "One-off moves such as a victory dance, a stumble, or a specific attack.",
+        "Idle variations that give a character personality.",
+        "Cutscene performances described in plain language."
+      ]
+    },
+    "motion/library": {
+      "tagline": "Prebuilt walk, run, jump, attack and idle clips for a rigged character, by name.",
+      "gameUses": [
+        "A full locomotion set for a player character in one call.",
+        "Standard enemy moves such as attack, hit reaction, and death.",
+        "Idle and emote clips for NPCs."
       ]
     }
   }
