@@ -1,5 +1,5 @@
 {
-  "source": "PublicSummerEngine src/lib/models/model-api.ts modelSlugsByApiId (session/dev-hub 7ea23f0ed, PSE #1414)",
+  "source": "PublicSummerEngine src/lib/models/model-api.ts modelSlugsByApiId (session/dev-hub 76cb114a4, PSE #1414)",
   "slugs": {
     "3d/hi3d-v3": "hi3d-v3-0",
     "3d/hunyuan-3d": "hunyuan-3d-3-1-pro",

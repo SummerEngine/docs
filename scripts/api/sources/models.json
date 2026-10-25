@@ -471,6 +471,226 @@
       }
     },
     {
+      "id": "image/ideogram-transparent",
+      "datedId": "image/ideogram-transparent-20261024",
+      "capability": "image",
+      "name": "Ideogram 3 Transparent",
+      "vendor": "Ideogram",
+      "tags": [
+        "text-to-image"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "png",
+        "jpg",
+        "webp"
+      ],
+      "latency": {
+        "p50Seconds": 22,
+        "p90Seconds": 35,
+        "measured": false
+      },
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "call",
+        "price": "0.06",
+        "quantityField": "numImages",
+        "modifiers": [
+          {
+            "field": "removeBackground",
+            "equals": true,
+            "add": "0.018"
+          }
+        ],
+        "priceUpdatedAt": "2026-10-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "description": "What to draw, or how to change the reference image.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "style": {
+            "type": "string",
+            "enum": [
+              "realistic",
+              "cartoon",
+              "anime",
+              "none"
+            ]
+          },
+          "aspectRatio": {
+            "description": "Default 1:1.",
+            "type": "string",
+            "enum": [
+              "1:1",
+              "16:9",
+              "9:16",
+              "4:3",
+              "3:4",
+              "3:2",
+              "2:3",
+              "5:4",
+              "4:5",
+              "21:9"
+            ]
+          },
+          "width": {
+            "description": "Smallest width wanted, in pixels; give height too. Store key art: 1920 x 1080 at 16:9.",
+            "type": "integer",
+            "minimum": 64,
+            "maximum": 4096
+          },
+          "height": {
+            "description": "Smallest height wanted, in pixels; give width too.",
+            "type": "integer",
+            "minimum": 64,
+            "maximum": 4096
+          },
+          "numImages": {
+            "default": 1,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4
+          },
+          "removeBackground": {
+            "description": "Also cut out the background (transparent PNG); costs a removal per image.",
+            "type": "boolean"
+          },
+          "seed": {
+            "description": "Same seed and prompt, similar image (Nano Banana models).",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "prompt"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "image/ideogram-vector",
+      "datedId": "image/ideogram-vector-20261024",
+      "capability": "image",
+      "name": "Ideogram Vector",
+      "vendor": "Ideogram",
+      "tags": [
+        "text-to-image"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "png",
+        "jpg",
+        "webp"
+      ],
+      "latency": {
+        "p50Seconds": 26,
+        "p90Seconds": 41,
+        "measured": false
+      },
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "call",
+        "price": "0.16",
+        "quantityField": "numImages",
+        "modifiers": [
+          {
+            "field": "removeBackground",
+            "equals": true,
+            "add": "0.018"
+          }
+        ],
+        "priceUpdatedAt": "2026-10-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "description": "What to draw, or how to change the reference image.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "style": {
+            "type": "string",
+            "enum": [
+              "realistic",
+              "cartoon",
+              "anime",
+              "none"
+            ]
+          },
+          "aspectRatio": {
+            "description": "Default 1:1.",
+            "type": "string",
+            "enum": [
+              "1:1",
+              "16:9",
+              "9:16",
+              "4:3",
+              "3:4",
+              "3:2",
+              "2:3",
+              "5:4",
+              "4:5",
+              "21:9"
+            ]
+          },
+          "width": {
+            "description": "Smallest width wanted, in pixels; give height too. Store key art: 1920 x 1080 at 16:9.",
+            "type": "integer",
+            "minimum": 64,
+            "maximum": 4096
+          },
+          "height": {
+            "description": "Smallest height wanted, in pixels; give width too.",
+            "type": "integer",
+            "minimum": 64,
+            "maximum": 4096
+          },
+          "numImages": {
+            "default": 1,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 4
+          },
+          "removeBackground": {
+            "description": "Also cut out the background (transparent PNG); costs a removal per image.",
+            "type": "boolean"
+          },
+          "seed": {
+            "description": "Same seed and prompt, similar image (Nano Banana models).",
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          }
+        },
+        "required": [
+          "prompt"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
       "id": "image/recraft-4.1",
       "datedId": "image/recraft-4.1-20261024",
       "capability": "image",
@@ -1999,6 +2219,162 @@
       }
     },
     {
+      "id": "3d/rodin-2.5",
+      "datedId": "3d/rodin-2.5-20260926",
+      "capability": "3d",
+      "name": "Rodin 2.5 High",
+      "vendor": "Hyper3D",
+      "tags": [
+        "text-to-3d",
+        "image-to-3d",
+        "multiview-to-3d"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "glb"
+      ],
+      "latency": {
+        "p50Seconds": 300,
+        "p90Seconds": 450,
+        "measured": false
+      },
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "call",
+        "price": "0.4",
+        "modifiers": [
+          {
+            "field": "kind",
+            "equals": "image-to-3d",
+            "add": "0.042"
+          },
+          {
+            "field": "rig",
+            "equals": true,
+            "add": "1.2"
+          }
+        ],
+        "priceUpdatedAt": "2026-09-26"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "default": "text-to-3d",
+            "type": "string",
+            "enum": [
+              "text-to-3d",
+              "image-to-3d"
+            ]
+          },
+          "prompt": {
+            "description": "text-to-3d: what to model.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 600
+          },
+          "imageUrl": {
+            "description": "image-to-3d: a public picture of the object.",
+            "type": "string",
+            "maxLength": 2048
+          },
+          "imageUrls": {
+            "description": "image-to-3d from 2 to 4 views of the same object.",
+            "minItems": 2,
+            "maxItems": 4,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "assetIntent": {
+            "description": "character: a clean, riggable humanoid reference first.",
+            "type": "string",
+            "enum": [
+              "character",
+              "object"
+            ]
+          },
+          "referencePreparation": {
+            "description": "Clean up the picture before modeling it.",
+            "default": "auto",
+            "type": "string",
+            "enum": [
+              "auto",
+              "always",
+              "never"
+            ]
+          },
+          "poseMode": {
+            "description": "A neutral pose for rigging later.",
+            "type": "string",
+            "enum": [
+              "a-pose",
+              "t-pose"
+            ]
+          },
+          "rig": {
+            "description": "Auto-rig the model.",
+            "default": false,
+            "type": "boolean"
+          },
+          "animationNames": {
+            "description": "With rig: animate a humanoid, e.g. Idle, Walk, Run, Jump.",
+            "maxItems": 12,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            }
+          },
+          "actionIds": {
+            "description": "With rig: Library action ids.",
+            "maxItems": 12,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 696
+            }
+          },
+          "riggingHeightMeters": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 10
+          },
+          "targetPolycount": {
+            "description": "About how many polygons, e.g. 800 for a low-poly kit piece.",
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 300000
+          },
+          "topology": {
+            "description": "quad: a quad mesh (where the model can).",
+            "type": "string",
+            "enum": [
+              "triangle",
+              "quad"
+            ]
+          },
+          "seed": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
       "id": "3d/meshy-6",
       "datedId": "3d/meshy-6-20261023",
       "capability": "3d",
@@ -2037,6 +2413,167 @@
           }
         ],
         "priceUpdatedAt": "2026-10-23"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "default": "text-to-3d",
+            "type": "string",
+            "enum": [
+              "text-to-3d",
+              "image-to-3d"
+            ]
+          },
+          "prompt": {
+            "description": "text-to-3d: what to model.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 600
+          },
+          "imageUrl": {
+            "description": "image-to-3d: a public picture of the object.",
+            "type": "string",
+            "maxLength": 2048
+          },
+          "imageUrls": {
+            "description": "image-to-3d from 2 to 4 views of the same object.",
+            "minItems": 2,
+            "maxItems": 4,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "assetIntent": {
+            "description": "character: a clean, riggable humanoid reference first.",
+            "type": "string",
+            "enum": [
+              "character",
+              "object"
+            ]
+          },
+          "referencePreparation": {
+            "description": "Clean up the picture before modeling it.",
+            "default": "auto",
+            "type": "string",
+            "enum": [
+              "auto",
+              "always",
+              "never"
+            ]
+          },
+          "poseMode": {
+            "description": "A neutral pose for rigging later.",
+            "type": "string",
+            "enum": [
+              "a-pose",
+              "t-pose"
+            ]
+          },
+          "rig": {
+            "description": "Auto-rig the model.",
+            "default": false,
+            "type": "boolean"
+          },
+          "animationNames": {
+            "description": "With rig: animate a humanoid, e.g. Idle, Walk, Run, Jump.",
+            "maxItems": 12,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            }
+          },
+          "actionIds": {
+            "description": "With rig: Library action ids.",
+            "maxItems": 12,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 696
+            }
+          },
+          "riggingHeightMeters": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 10
+          },
+          "targetPolycount": {
+            "description": "About how many polygons, e.g. 800 for a low-poly kit piece.",
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 300000
+          },
+          "topology": {
+            "description": "quad: a quad mesh (where the model can).",
+            "type": "string",
+            "enum": [
+              "triangle",
+              "quad"
+            ]
+          },
+          "seed": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "3d/tripo-h3.1",
+      "datedId": "3d/tripo-h3.1-20260926",
+      "capability": "3d",
+      "name": "Tripo H3.1",
+      "vendor": "Tripo",
+      "tags": [
+        "text-to-3d",
+        "image-to-3d",
+        "multiview-to-3d"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "glb"
+      ],
+      "latency": {
+        "p50Seconds": 300,
+        "p90Seconds": 450,
+        "measured": false
+      },
+      "tier": "free",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "call",
+        "price": "0.2",
+        "modifiers": [
+          {
+            "field": "kind",
+            "equals": "image-to-3d",
+            "add": "0.342"
+          },
+          {
+            "field": "rig",
+            "equals": true,
+            "add": "1.4"
+          },
+          {
+            "field": "topology",
+            "equals": "quad",
+            "add": "0.05"
+          }
+        ],
+        "priceUpdatedAt": "2026-09-26"
       },
       "inputSchema": {
         "type": "object",
@@ -2461,6 +2998,758 @@
       }
     },
     {
+      "id": "3d/hunyuan3d-v3",
+      "datedId": "3d/hunyuan3d-v3-20261024",
+      "capability": "3d",
+      "name": "Hunyuan3D v3",
+      "vendor": "Tencent",
+      "tags": [
+        "text-to-3d",
+        "image-to-3d",
+        "multiview-to-3d"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "glb"
+      ],
+      "latency": {
+        "p50Seconds": 153,
+        "p90Seconds": 245,
+        "measured": false
+      },
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "call",
+        "price": "0.525",
+        "modifiers": [
+          {
+            "field": "kind",
+            "equals": "image-to-3d",
+            "add": "0.042"
+          },
+          {
+            "field": "rig",
+            "equals": true,
+            "add": "1.075"
+          }
+        ],
+        "priceUpdatedAt": "2026-10-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "default": "text-to-3d",
+            "type": "string",
+            "enum": [
+              "text-to-3d",
+              "image-to-3d"
+            ]
+          },
+          "prompt": {
+            "description": "text-to-3d: what to model.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 600
+          },
+          "imageUrl": {
+            "description": "image-to-3d: a public picture of the object.",
+            "type": "string",
+            "maxLength": 2048
+          },
+          "imageUrls": {
+            "description": "image-to-3d from 2 to 4 views of the same object.",
+            "minItems": 2,
+            "maxItems": 4,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "assetIntent": {
+            "description": "character: a clean, riggable humanoid reference first.",
+            "type": "string",
+            "enum": [
+              "character",
+              "object"
+            ]
+          },
+          "referencePreparation": {
+            "description": "Clean up the picture before modeling it.",
+            "default": "auto",
+            "type": "string",
+            "enum": [
+              "auto",
+              "always",
+              "never"
+            ]
+          },
+          "poseMode": {
+            "description": "A neutral pose for rigging later.",
+            "type": "string",
+            "enum": [
+              "a-pose",
+              "t-pose"
+            ]
+          },
+          "rig": {
+            "description": "Auto-rig the model.",
+            "default": false,
+            "type": "boolean"
+          },
+          "animationNames": {
+            "description": "With rig: animate a humanoid, e.g. Idle, Walk, Run, Jump.",
+            "maxItems": 12,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            }
+          },
+          "actionIds": {
+            "description": "With rig: Library action ids.",
+            "maxItems": 12,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 696
+            }
+          },
+          "riggingHeightMeters": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 10
+          },
+          "targetPolycount": {
+            "description": "About how many polygons, e.g. 800 for a low-poly kit piece.",
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 300000
+          },
+          "topology": {
+            "description": "quad: a quad mesh (where the model can).",
+            "type": "string",
+            "enum": [
+              "triangle",
+              "quad"
+            ]
+          },
+          "seed": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "3d/tripo-p1",
+      "datedId": "3d/tripo-p1-20261024",
+      "capability": "3d",
+      "name": "Tripo P1",
+      "vendor": "Tripo",
+      "tags": [
+        "image-to-3d"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "glb"
+      ],
+      "latency": {
+        "p50Seconds": 97,
+        "p90Seconds": 155,
+        "measured": false
+      },
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "call",
+        "price": "0.542",
+        "modifiers": [
+          {
+            "field": "rig",
+            "equals": true,
+            "add": "1.058"
+          }
+        ],
+        "priceUpdatedAt": "2026-10-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "default": "text-to-3d",
+            "type": "string",
+            "enum": [
+              "text-to-3d",
+              "image-to-3d"
+            ]
+          },
+          "prompt": {
+            "description": "text-to-3d: what to model.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 600
+          },
+          "imageUrl": {
+            "description": "image-to-3d: a public picture of the object.",
+            "type": "string",
+            "maxLength": 2048
+          },
+          "imageUrls": {
+            "description": "image-to-3d from 2 to 4 views of the same object.",
+            "minItems": 2,
+            "maxItems": 4,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "assetIntent": {
+            "description": "character: a clean, riggable humanoid reference first.",
+            "type": "string",
+            "enum": [
+              "character",
+              "object"
+            ]
+          },
+          "referencePreparation": {
+            "description": "Clean up the picture before modeling it.",
+            "default": "auto",
+            "type": "string",
+            "enum": [
+              "auto",
+              "always",
+              "never"
+            ]
+          },
+          "poseMode": {
+            "description": "A neutral pose for rigging later.",
+            "type": "string",
+            "enum": [
+              "a-pose",
+              "t-pose"
+            ]
+          },
+          "rig": {
+            "description": "Auto-rig the model.",
+            "default": false,
+            "type": "boolean"
+          },
+          "animationNames": {
+            "description": "With rig: animate a humanoid, e.g. Idle, Walk, Run, Jump.",
+            "maxItems": 12,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            }
+          },
+          "actionIds": {
+            "description": "With rig: Library action ids.",
+            "maxItems": 12,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 696
+            }
+          },
+          "riggingHeightMeters": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 10
+          },
+          "targetPolycount": {
+            "description": "About how many polygons, e.g. 800 for a low-poly kit piece.",
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 300000
+          },
+          "topology": {
+            "description": "quad: a quad mesh (where the model can).",
+            "type": "string",
+            "enum": [
+              "triangle",
+              "quad"
+            ]
+          },
+          "seed": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "3d/pixal3d",
+      "datedId": "3d/pixal3d-20261024",
+      "capability": "3d",
+      "name": "Pixal3D",
+      "vendor": "Pixal3D",
+      "tags": [
+        "image-to-3d"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "glb"
+      ],
+      "latency": {
+        "p50Seconds": 482,
+        "p90Seconds": 771,
+        "measured": false
+      },
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "call",
+        "price": "0.342",
+        "modifiers": [
+          {
+            "field": "rig",
+            "equals": true,
+            "add": "1.258"
+          }
+        ],
+        "priceUpdatedAt": "2026-10-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "default": "text-to-3d",
+            "type": "string",
+            "enum": [
+              "text-to-3d",
+              "image-to-3d"
+            ]
+          },
+          "prompt": {
+            "description": "text-to-3d: what to model.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 600
+          },
+          "imageUrl": {
+            "description": "image-to-3d: a public picture of the object.",
+            "type": "string",
+            "maxLength": 2048
+          },
+          "imageUrls": {
+            "description": "image-to-3d from 2 to 4 views of the same object.",
+            "minItems": 2,
+            "maxItems": 4,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "assetIntent": {
+            "description": "character: a clean, riggable humanoid reference first.",
+            "type": "string",
+            "enum": [
+              "character",
+              "object"
+            ]
+          },
+          "referencePreparation": {
+            "description": "Clean up the picture before modeling it.",
+            "default": "auto",
+            "type": "string",
+            "enum": [
+              "auto",
+              "always",
+              "never"
+            ]
+          },
+          "poseMode": {
+            "description": "A neutral pose for rigging later.",
+            "type": "string",
+            "enum": [
+              "a-pose",
+              "t-pose"
+            ]
+          },
+          "rig": {
+            "description": "Auto-rig the model.",
+            "default": false,
+            "type": "boolean"
+          },
+          "animationNames": {
+            "description": "With rig: animate a humanoid, e.g. Idle, Walk, Run, Jump.",
+            "maxItems": 12,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            }
+          },
+          "actionIds": {
+            "description": "With rig: Library action ids.",
+            "maxItems": 12,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 696
+            }
+          },
+          "riggingHeightMeters": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 10
+          },
+          "targetPolycount": {
+            "description": "About how many polygons, e.g. 800 for a low-poly kit piece.",
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 300000
+          },
+          "topology": {
+            "description": "quad: a quad mesh (where the model can).",
+            "type": "string",
+            "enum": [
+              "triangle",
+              "quad"
+            ]
+          },
+          "seed": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "3d/hunyuan3d-v2-multiview",
+      "datedId": "3d/hunyuan3d-v2-multiview-20261024",
+      "capability": "3d",
+      "name": "Hunyuan3D v2 Multi-view",
+      "vendor": "Tencent",
+      "tags": [
+        "multiview-to-3d"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "glb"
+      ],
+      "latency": {
+        "p50Seconds": 120,
+        "p90Seconds": 192,
+        "measured": false
+      },
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "call",
+        "price": "0.522",
+        "modifiers": [
+          {
+            "field": "rig",
+            "equals": true,
+            "add": "1.12"
+          }
+        ],
+        "priceUpdatedAt": "2026-10-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "default": "text-to-3d",
+            "type": "string",
+            "enum": [
+              "text-to-3d",
+              "image-to-3d"
+            ]
+          },
+          "prompt": {
+            "description": "text-to-3d: what to model.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 600
+          },
+          "imageUrl": {
+            "description": "image-to-3d: a public picture of the object.",
+            "type": "string",
+            "maxLength": 2048
+          },
+          "imageUrls": {
+            "description": "image-to-3d from 2 to 4 views of the same object.",
+            "minItems": 2,
+            "maxItems": 4,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "assetIntent": {
+            "description": "character: a clean, riggable humanoid reference first.",
+            "type": "string",
+            "enum": [
+              "character",
+              "object"
+            ]
+          },
+          "referencePreparation": {
+            "description": "Clean up the picture before modeling it.",
+            "default": "auto",
+            "type": "string",
+            "enum": [
+              "auto",
+              "always",
+              "never"
+            ]
+          },
+          "poseMode": {
+            "description": "A neutral pose for rigging later.",
+            "type": "string",
+            "enum": [
+              "a-pose",
+              "t-pose"
+            ]
+          },
+          "rig": {
+            "description": "Auto-rig the model.",
+            "default": false,
+            "type": "boolean"
+          },
+          "animationNames": {
+            "description": "With rig: animate a humanoid, e.g. Idle, Walk, Run, Jump.",
+            "maxItems": 12,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            }
+          },
+          "actionIds": {
+            "description": "With rig: Library action ids.",
+            "maxItems": 12,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 696
+            }
+          },
+          "riggingHeightMeters": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 10
+          },
+          "targetPolycount": {
+            "description": "About how many polygons, e.g. 800 for a low-poly kit piece.",
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 300000
+          },
+          "topology": {
+            "description": "quad: a quad mesh (where the model can).",
+            "type": "string",
+            "enum": [
+              "triangle",
+              "quad"
+            ]
+          },
+          "seed": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "3d/hunyuan3d-v2-multiview-turbo",
+      "datedId": "3d/hunyuan3d-v2-multiview-turbo-20261024",
+      "capability": "3d",
+      "name": "Hunyuan3D v2 Multi-view Turbo",
+      "vendor": "Tencent",
+      "tags": [
+        "multiview-to-3d"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "glb"
+      ],
+      "latency": {
+        "p50Seconds": 92,
+        "p90Seconds": 147,
+        "measured": false
+      },
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "call",
+        "price": "0.462",
+        "modifiers": [
+          {
+            "field": "rig",
+            "equals": true,
+            "add": "1.18"
+          }
+        ],
+        "priceUpdatedAt": "2026-10-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "default": "text-to-3d",
+            "type": "string",
+            "enum": [
+              "text-to-3d",
+              "image-to-3d"
+            ]
+          },
+          "prompt": {
+            "description": "text-to-3d: what to model.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 600
+          },
+          "imageUrl": {
+            "description": "image-to-3d: a public picture of the object.",
+            "type": "string",
+            "maxLength": 2048
+          },
+          "imageUrls": {
+            "description": "image-to-3d from 2 to 4 views of the same object.",
+            "minItems": 2,
+            "maxItems": 4,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "assetIntent": {
+            "description": "character: a clean, riggable humanoid reference first.",
+            "type": "string",
+            "enum": [
+              "character",
+              "object"
+            ]
+          },
+          "referencePreparation": {
+            "description": "Clean up the picture before modeling it.",
+            "default": "auto",
+            "type": "string",
+            "enum": [
+              "auto",
+              "always",
+              "never"
+            ]
+          },
+          "poseMode": {
+            "description": "A neutral pose for rigging later.",
+            "type": "string",
+            "enum": [
+              "a-pose",
+              "t-pose"
+            ]
+          },
+          "rig": {
+            "description": "Auto-rig the model.",
+            "default": false,
+            "type": "boolean"
+          },
+          "animationNames": {
+            "description": "With rig: animate a humanoid, e.g. Idle, Walk, Run, Jump.",
+            "maxItems": 12,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            }
+          },
+          "actionIds": {
+            "description": "With rig: Library action ids.",
+            "maxItems": 12,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 696
+            }
+          },
+          "riggingHeightMeters": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 10
+          },
+          "targetPolycount": {
+            "description": "About how many polygons, e.g. 800 for a low-poly kit piece.",
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 300000
+          },
+          "topology": {
+            "description": "quad: a quad mesh (where the model can).",
+            "type": "string",
+            "enum": [
+              "triangle",
+              "quad"
+            ]
+          },
+          "seed": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
       "id": "3d/trellis-2",
       "datedId": "3d/trellis-2-20260924",
       "capability": "3d",
@@ -2492,6 +3781,155 @@
           }
         ],
         "priceUpdatedAt": "2026-09-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "kind": {
+            "default": "text-to-3d",
+            "type": "string",
+            "enum": [
+              "text-to-3d",
+              "image-to-3d"
+            ]
+          },
+          "prompt": {
+            "description": "text-to-3d: what to model.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 600
+          },
+          "imageUrl": {
+            "description": "image-to-3d: a public picture of the object.",
+            "type": "string",
+            "maxLength": 2048
+          },
+          "imageUrls": {
+            "description": "image-to-3d from 2 to 4 views of the same object.",
+            "minItems": 2,
+            "maxItems": 4,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "maxLength": 2048
+            }
+          },
+          "title": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "assetIntent": {
+            "description": "character: a clean, riggable humanoid reference first.",
+            "type": "string",
+            "enum": [
+              "character",
+              "object"
+            ]
+          },
+          "referencePreparation": {
+            "description": "Clean up the picture before modeling it.",
+            "default": "auto",
+            "type": "string",
+            "enum": [
+              "auto",
+              "always",
+              "never"
+            ]
+          },
+          "poseMode": {
+            "description": "A neutral pose for rigging later.",
+            "type": "string",
+            "enum": [
+              "a-pose",
+              "t-pose"
+            ]
+          },
+          "rig": {
+            "description": "Auto-rig the model.",
+            "default": false,
+            "type": "boolean"
+          },
+          "animationNames": {
+            "description": "With rig: animate a humanoid, e.g. Idle, Walk, Run, Jump.",
+            "maxItems": 12,
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 80
+            }
+          },
+          "actionIds": {
+            "description": "With rig: Library action ids.",
+            "maxItems": 12,
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 696
+            }
+          },
+          "riggingHeightMeters": {
+            "type": "number",
+            "exclusiveMinimum": 0,
+            "maximum": 10
+          },
+          "targetPolycount": {
+            "description": "About how many polygons, e.g. 800 for a low-poly kit piece.",
+            "type": "integer",
+            "minimum": 100,
+            "maximum": 300000
+          },
+          "topology": {
+            "description": "quad: a quad mesh (where the model can).",
+            "type": "string",
+            "enum": [
+              "triangle",
+              "quad"
+            ]
+          },
+          "seed": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9007199254740991
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "3d/trellis-multi",
+      "datedId": "3d/trellis-multi-20261024",
+      "capability": "3d",
+      "name": "TRELLIS Multi-image",
+      "vendor": "Microsoft",
+      "tags": [
+        "multiview-to-3d"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "glb"
+      ],
+      "latency": {
+        "p50Seconds": 53,
+        "p90Seconds": 85,
+        "measured": false
+      },
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "call",
+        "price": "0.062",
+        "modifiers": [
+          {
+            "field": "rig",
+            "equals": true,
+            "add": "1.58"
+          }
+        ],
+        "priceUpdatedAt": "2026-10-24"
       },
       "inputSchema": {
         "type": "object",
@@ -2689,10 +4127,12 @@
               "720p",
               "1080p",
               "4k",
+              "480p",
+              "768p",
+              "2k",
               "768P",
               "1080P",
-              "480P",
-              "480p"
+              "480P"
             ]
           }
         },
@@ -2779,10 +4219,12 @@
               "720p",
               "1080p",
               "4k",
+              "480p",
+              "768p",
+              "2k",
               "768P",
               "1080P",
-              "480P",
-              "480p"
+              "480P"
             ]
           }
         },
@@ -2864,10 +4306,12 @@
               "720p",
               "1080p",
               "4k",
+              "480p",
+              "768p",
+              "2k",
               "768P",
               "1080P",
-              "480P",
-              "480p"
+              "480P"
             ]
           }
         },
@@ -2950,10 +4394,12 @@
               "720p",
               "1080p",
               "4k",
+              "480p",
+              "768p",
+              "2k",
               "768P",
               "1080P",
-              "480P",
-              "480p"
+              "480P"
             ]
           }
         },
@@ -3040,10 +4486,12 @@
               "720p",
               "1080p",
               "4k",
+              "480p",
+              "768p",
+              "2k",
               "768P",
               "1080P",
-              "480P",
-              "480p"
+              "480P"
             ]
           }
         },
@@ -3135,10 +4583,12 @@
               "720p",
               "1080p",
               "4k",
+              "480p",
+              "768p",
+              "2k",
               "768P",
               "1080P",
-              "480P",
-              "480p"
+              "480P"
             ]
           }
         },
@@ -3231,10 +4681,12 @@
               "720p",
               "1080p",
               "4k",
+              "480p",
+              "768p",
+              "2k",
               "768P",
               "1080P",
-              "480P",
-              "480p"
+              "480P"
             ]
           }
         },
@@ -3315,10 +4767,12 @@
               "720p",
               "1080p",
               "4k",
+              "480p",
+              "768p",
+              "2k",
               "768P",
               "1080P",
-              "480P",
-              "480p"
+              "480P"
             ]
           }
         },
@@ -3409,10 +4863,113 @@
               "720p",
               "1080p",
               "4k",
+              "480p",
+              "768p",
+              "2k",
               "768P",
               "1080P",
-              "480P",
-              "480p"
+              "480P"
+            ]
+          }
+        },
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "video/heygen-video",
+      "datedId": "video/heygen-video-20261024",
+      "capability": "video",
+      "name": "HeyGen Video",
+      "vendor": "HeyGen",
+      "tags": [
+        "text-to-video",
+        "image-to-video"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "mp4"
+      ],
+      "latency": {
+        "p50Seconds": 14,
+        "p90Seconds": 22,
+        "measured": false
+      },
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "output_second",
+        "price": "0.01",
+        "quantityField": "duration",
+        "modifiers": [
+          {
+            "field": "resolution",
+            "equals": "1080p",
+            "price": "0.03"
+          },
+          {
+            "field": "resolution",
+            "equals": "2k",
+            "price": "0.03"
+          }
+        ],
+        "priceUpdatedAt": "2026-10-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "description": "What happens in the clip. Needed without imageUrl.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 4000
+          },
+          "imageUrl": {
+            "description": "A public image URL to animate (image to video).",
+            "type": "string",
+            "maxLength": 2048
+          },
+          "duration": {
+            "description": "Seconds; the model renders its nearest supported length.",
+            "default": 5,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 20
+          },
+          "aspectRatio": {
+            "default": "16:9",
+            "type": "string",
+            "enum": [
+              "16:9",
+              "9:16",
+              "1:1",
+              "4:3",
+              "3:4",
+              "21:9",
+              "3:2",
+              "2:3",
+              "auto"
+            ]
+          },
+          "negativePrompt": {
+            "description": "What the clip must not show.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 1000
+          },
+          "resolution": {
+            "description": "Only a quality the model offers; leave out for its default.",
+            "type": "string",
+            "enum": [
+              "720p",
+              "1080p",
+              "4k",
+              "480p",
+              "768p",
+              "2k",
+              "768P",
+              "1080P",
+              "480P"
             ]
           }
         },
@@ -3499,10 +5056,12 @@
               "720p",
               "1080p",
               "4k",
+              "480p",
+              "768p",
+              "2k",
               "768P",
               "1080P",
-              "480P",
-              "480p"
+              "480P"
             ]
           }
         },
@@ -3598,10 +5157,12 @@
               "720p",
               "1080p",
               "4k",
+              "480p",
+              "768p",
+              "2k",
               "768P",
               "1080P",
-              "480P",
-              "480p"
+              "480P"
             ]
           }
         },
@@ -3688,10 +5249,12 @@
               "720p",
               "1080p",
               "4k",
+              "480p",
+              "768p",
+              "2k",
               "768P",
               "1080P",
-              "480P",
-              "480p"
+              "480P"
             ]
           }
         },
@@ -3778,10 +5341,12 @@
               "720p",
               "1080p",
               "4k",
+              "480p",
+              "768p",
+              "2k",
               "768P",
               "1080P",
-              "480P",
-              "480p"
+              "480P"
             ]
           }
         },
@@ -3868,10 +5433,12 @@
               "720p",
               "1080p",
               "4k",
+              "480p",
+              "768p",
+              "2k",
               "768P",
               "1080P",
-              "480P",
-              "480p"
+              "480P"
             ]
           }
         },
@@ -3958,10 +5525,12 @@
               "720p",
               "1080p",
               "4k",
+              "480p",
+              "768p",
+              "2k",
               "768P",
               "1080P",
-              "480P",
-              "480p"
+              "480P"
             ]
           }
         },
@@ -4057,10 +5626,12 @@
               "720p",
               "1080p",
               "4k",
+              "480p",
+              "768p",
+              "2k",
               "768P",
               "1080P",
-              "480P",
-              "480p"
+              "480P"
             ]
           }
         },
@@ -4141,10 +5712,12 @@
               "720p",
               "1080p",
               "4k",
+              "480p",
+              "768p",
+              "2k",
               "768P",
               "1080P",
-              "480P",
-              "480p"
+              "480P"
             ]
           }
         },
@@ -4173,13 +5746,14 @@
       "commercialUse": true,
       "wellTested": false,
       "price": {
-        "unit": "call",
-        "price": "0",
+        "unit": "output_second",
+        "price": "0.0665",
+        "quantityField": "duration",
         "modifiers": [
           {
-            "field": "imageUrl",
-            "set": true,
-            "price": "0.3325"
+            "field": "resolution",
+            "equals": "1080p",
+            "price": "0.084"
           }
         ],
         "priceUpdatedAt": "2026-10-24"
@@ -4233,10 +5807,12 @@
               "720p",
               "1080p",
               "4k",
+              "480p",
+              "768p",
+              "2k",
               "768P",
               "1080P",
-              "480P",
-              "480p"
+              "480P"
             ]
           }
         },
@@ -4323,10 +5899,12 @@
               "720p",
               "1080p",
               "4k",
+              "480p",
+              "768p",
+              "2k",
               "768P",
               "1080P",
-              "480P",
-              "480p"
+              "480P"
             ]
           }
         },
@@ -4413,10 +5991,12 @@
               "720p",
               "1080p",
               "4k",
+              "480p",
+              "768p",
+              "2k",
               "768P",
               "1080P",
-              "480P",
-              "480p"
+              "480P"
             ]
           }
         },
@@ -4503,10 +6083,12 @@
               "720p",
               "1080p",
               "4k",
+              "480p",
+              "768p",
+              "2k",
               "768P",
               "1080P",
-              "480P",
-              "480p"
+              "480P"
             ]
           }
         },
@@ -5888,6 +7470,1194 @@
         {
           "voiceId": "Decent_Boy",
           "name": "Decent boy"
+        }
+      ]
+    },
+    {
+      "id": "voice/minimax-speech-2.8-turbo",
+      "datedId": "voice/minimax-speech-2.8-turbo-20261024",
+      "capability": "voice",
+      "name": "MiniMax Speech 2.8 Turbo",
+      "vendor": "MiniMax",
+      "tags": [
+        "text-to-speech"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "mp3"
+      ],
+      "latency": {
+        "p50Seconds": 5,
+        "p90Seconds": 7,
+        "measured": false
+      },
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "1k_characters",
+        "price": "0.06",
+        "quantityField": "text",
+        "modifiers": [],
+        "priceUpdatedAt": "2026-10-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "description": "The words to speak, at most 5000 characters.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 5000
+          },
+          "voiceId": {
+            "description": "Speech: a voice of the game cast.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "voiceSettings": {
+            "description": "Speech: voice tuning.",
+            "type": "object",
+            "properties": {
+              "stability": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "similarityBoost": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "style": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "speed": {
+                "type": "number",
+                "minimum": 0.7,
+                "maximum": 1.2
+              },
+              "useSpeakerBoost": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "voices": [
+        {
+          "voiceId": "Wise_Woman",
+          "name": "Wise woman"
+        },
+        {
+          "voiceId": "Calm_Woman",
+          "name": "Calm woman"
+        },
+        {
+          "voiceId": "Lively_Girl",
+          "name": "Lively girl"
+        },
+        {
+          "voiceId": "Lovely_Girl",
+          "name": "Lovely girl"
+        },
+        {
+          "voiceId": "Sweet_Girl_2",
+          "name": "Sweet girl 2"
+        },
+        {
+          "voiceId": "Exuberant_Girl",
+          "name": "Exuberant girl"
+        },
+        {
+          "voiceId": "Inspirational_girl",
+          "name": "Inspirational girl"
+        },
+        {
+          "voiceId": "Abbess",
+          "name": "Abbess"
+        },
+        {
+          "voiceId": "Friendly_Person",
+          "name": "Friendly person"
+        },
+        {
+          "voiceId": "Young_Knight",
+          "name": "Young knight"
+        },
+        {
+          "voiceId": "Imposing_Manner",
+          "name": "Imposing manner"
+        },
+        {
+          "voiceId": "Elegant_Man",
+          "name": "Elegant man"
+        },
+        {
+          "voiceId": "Deep_Voice_Man",
+          "name": "Deep voice man"
+        },
+        {
+          "voiceId": "Casual_Guy",
+          "name": "Casual guy"
+        },
+        {
+          "voiceId": "Patient_Man",
+          "name": "Patient man"
+        },
+        {
+          "voiceId": "Determined_Man",
+          "name": "Determined man"
+        },
+        {
+          "voiceId": "Decent_Boy",
+          "name": "Decent boy"
+        }
+      ]
+    },
+    {
+      "id": "voice/gemini-3.1-flash-tts",
+      "datedId": "voice/gemini-3.1-flash-tts-20261024",
+      "capability": "voice",
+      "name": "Gemini 3.1 Flash TTS",
+      "vendor": "Google",
+      "tags": [
+        "text-to-speech"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "mp3"
+      ],
+      "latency": {
+        "p50Seconds": 4,
+        "p90Seconds": 7,
+        "measured": false
+      },
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "1k_characters",
+        "price": "0.05",
+        "quantityField": "text",
+        "modifiers": [],
+        "priceUpdatedAt": "2026-10-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "description": "The words to speak, at most 5000 characters.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 5000
+          },
+          "voiceId": {
+            "description": "Speech: a voice of the game cast.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "voiceSettings": {
+            "description": "Speech: voice tuning.",
+            "type": "object",
+            "properties": {
+              "stability": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "similarityBoost": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "style": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "speed": {
+                "type": "number",
+                "minimum": 0.7,
+                "maximum": 1.2
+              },
+              "useSpeakerBoost": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "voices": [
+        {
+          "voiceId": "Kore",
+          "name": "Kore"
+        },
+        {
+          "voiceId": "Zephyr",
+          "name": "Zephyr"
+        },
+        {
+          "voiceId": "Leda",
+          "name": "Leda"
+        },
+        {
+          "voiceId": "Aoede",
+          "name": "Aoede"
+        },
+        {
+          "voiceId": "Callirrhoe",
+          "name": "Callirrhoe"
+        },
+        {
+          "voiceId": "Autonoe",
+          "name": "Autonoe"
+        },
+        {
+          "voiceId": "Despina",
+          "name": "Despina"
+        },
+        {
+          "voiceId": "Erinome",
+          "name": "Erinome"
+        },
+        {
+          "voiceId": "Laomedeia",
+          "name": "Laomedeia"
+        },
+        {
+          "voiceId": "Achernar",
+          "name": "Achernar"
+        },
+        {
+          "voiceId": "Gacrux",
+          "name": "Gacrux"
+        },
+        {
+          "voiceId": "Pulcherrima",
+          "name": "Pulcherrima"
+        },
+        {
+          "voiceId": "Vindemiatrix",
+          "name": "Vindemiatrix"
+        },
+        {
+          "voiceId": "Sulafat",
+          "name": "Sulafat"
+        },
+        {
+          "voiceId": "Puck",
+          "name": "Puck"
+        },
+        {
+          "voiceId": "Charon",
+          "name": "Charon"
+        },
+        {
+          "voiceId": "Fenrir",
+          "name": "Fenrir"
+        },
+        {
+          "voiceId": "Orus",
+          "name": "Orus"
+        },
+        {
+          "voiceId": "Enceladus",
+          "name": "Enceladus"
+        },
+        {
+          "voiceId": "Iapetus",
+          "name": "Iapetus"
+        },
+        {
+          "voiceId": "Umbriel",
+          "name": "Umbriel"
+        },
+        {
+          "voiceId": "Algieba",
+          "name": "Algieba"
+        },
+        {
+          "voiceId": "Algenib",
+          "name": "Algenib"
+        },
+        {
+          "voiceId": "Rasalgethi",
+          "name": "Rasalgethi"
+        },
+        {
+          "voiceId": "Alnilam",
+          "name": "Alnilam"
+        },
+        {
+          "voiceId": "Schedar",
+          "name": "Schedar"
+        },
+        {
+          "voiceId": "Achird",
+          "name": "Achird"
+        },
+        {
+          "voiceId": "Zubenelgenubi",
+          "name": "Zubenelgenubi"
+        },
+        {
+          "voiceId": "Sadachbia",
+          "name": "Sadachbia"
+        },
+        {
+          "voiceId": "Sadaltager",
+          "name": "Sadaltager"
+        }
+      ]
+    },
+    {
+      "id": "voice/qwen-3-tts-1.7b",
+      "datedId": "voice/qwen-3-tts-1.7b-20261024",
+      "capability": "voice",
+      "name": "Qwen3 TTS 1.7B",
+      "vendor": "Alibaba",
+      "tags": [
+        "text-to-speech"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "mp3"
+      ],
+      "latency": {
+        "p50Seconds": 86,
+        "p90Seconds": 138,
+        "measured": false
+      },
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "1k_characters",
+        "price": "0.09",
+        "quantityField": "text",
+        "modifiers": [],
+        "priceUpdatedAt": "2026-10-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "description": "The words to speak, at most 5000 characters.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 5000
+          },
+          "voiceId": {
+            "description": "Speech: a voice of the game cast.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "voiceSettings": {
+            "description": "Speech: voice tuning.",
+            "type": "object",
+            "properties": {
+              "stability": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "similarityBoost": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "style": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "speed": {
+                "type": "number",
+                "minimum": 0.7,
+                "maximum": 1.2
+              },
+              "useSpeakerBoost": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "voices": [
+        {
+          "voiceId": "Vivian",
+          "name": "Vivian"
+        },
+        {
+          "voiceId": "Serena",
+          "name": "Serena"
+        },
+        {
+          "voiceId": "Uncle_Fu",
+          "name": "Uncle Fu"
+        },
+        {
+          "voiceId": "Dylan",
+          "name": "Dylan"
+        },
+        {
+          "voiceId": "Eric",
+          "name": "Eric"
+        },
+        {
+          "voiceId": "Ryan",
+          "name": "Ryan"
+        },
+        {
+          "voiceId": "Aiden",
+          "name": "Aiden"
+        },
+        {
+          "voiceId": "Ono_Anna",
+          "name": "Ono Anna"
+        },
+        {
+          "voiceId": "Sohee",
+          "name": "Sohee"
+        }
+      ]
+    },
+    {
+      "id": "voice/qwen-3-tts-0.6b",
+      "datedId": "voice/qwen-3-tts-0.6b-20261024",
+      "capability": "voice",
+      "name": "Qwen3 TTS 0.6B",
+      "vendor": "Alibaba",
+      "tags": [
+        "text-to-speech"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "mp3"
+      ],
+      "latency": {
+        "p50Seconds": 70,
+        "p90Seconds": 112,
+        "measured": false
+      },
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "1k_characters",
+        "price": "0.07",
+        "quantityField": "text",
+        "modifiers": [],
+        "priceUpdatedAt": "2026-10-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "description": "The words to speak, at most 5000 characters.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 5000
+          },
+          "voiceId": {
+            "description": "Speech: a voice of the game cast.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "voiceSettings": {
+            "description": "Speech: voice tuning.",
+            "type": "object",
+            "properties": {
+              "stability": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "similarityBoost": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "style": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "speed": {
+                "type": "number",
+                "minimum": 0.7,
+                "maximum": 1.2
+              },
+              "useSpeakerBoost": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "voices": [
+        {
+          "voiceId": "Vivian",
+          "name": "Vivian"
+        },
+        {
+          "voiceId": "Serena",
+          "name": "Serena"
+        },
+        {
+          "voiceId": "Uncle_Fu",
+          "name": "Uncle Fu"
+        },
+        {
+          "voiceId": "Dylan",
+          "name": "Dylan"
+        },
+        {
+          "voiceId": "Eric",
+          "name": "Eric"
+        },
+        {
+          "voiceId": "Ryan",
+          "name": "Ryan"
+        },
+        {
+          "voiceId": "Aiden",
+          "name": "Aiden"
+        },
+        {
+          "voiceId": "Ono_Anna",
+          "name": "Ono Anna"
+        },
+        {
+          "voiceId": "Sohee",
+          "name": "Sohee"
+        }
+      ]
+    },
+    {
+      "id": "voice/qwen-3-tts-voice-design",
+      "datedId": "voice/qwen-3-tts-voice-design-20261024",
+      "capability": "voice",
+      "name": "Qwen3 TTS Voice Design",
+      "vendor": "Alibaba",
+      "tags": [
+        "text-to-speech"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "mp3"
+      ],
+      "latency": {
+        "p50Seconds": 61,
+        "p90Seconds": 98,
+        "measured": false
+      },
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "1k_characters",
+        "price": "0.09",
+        "quantityField": "text",
+        "modifiers": [],
+        "priceUpdatedAt": "2026-10-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "description": "The words to speak, at most 5000 characters.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 5000
+          },
+          "voiceId": {
+            "description": "Speech: a voice of the game cast.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "voiceSettings": {
+            "description": "Speech: voice tuning.",
+            "type": "object",
+            "properties": {
+              "stability": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "similarityBoost": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "style": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "speed": {
+                "type": "number",
+                "minimum": 0.7,
+                "maximum": 1.2
+              },
+              "useSpeakerBoost": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "voices": [
+        {
+          "voiceId": "designed",
+          "name": "Described voice"
+        }
+      ]
+    },
+    {
+      "id": "voice/seed-audio-1.0",
+      "datedId": "voice/seed-audio-1.0-20261024",
+      "capability": "voice",
+      "name": "Seed Audio 1.0",
+      "vendor": "ByteDance",
+      "tags": [
+        "text-to-speech"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "mp3"
+      ],
+      "latency": {
+        "p50Seconds": 36,
+        "p90Seconds": 57,
+        "measured": false
+      },
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "1k_characters",
+        "price": "0.223214",
+        "quantityField": "text",
+        "modifiers": [],
+        "priceUpdatedAt": "2026-10-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "description": "The words to speak, at most 2048 characters.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2048
+          },
+          "voiceId": {
+            "description": "Speech: a voice of the game cast.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "voiceSettings": {
+            "description": "Speech: voice tuning.",
+            "type": "object",
+            "properties": {
+              "stability": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "similarityBoost": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "style": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "speed": {
+                "type": "number",
+                "minimum": 0.7,
+                "maximum": 1.2
+              },
+              "useSpeakerBoost": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "voices": [
+        {
+          "voiceId": "stokie_en",
+          "name": "Stokie"
+        },
+        {
+          "voiceId": "vivi_mixed_en_zh_ja_es_id",
+          "name": "Vivi"
+        },
+        {
+          "voiceId": "mindy_en_es_id_pt_zh",
+          "name": "Mindy"
+        },
+        {
+          "voiceId": "kian_en_zh",
+          "name": "Kian"
+        },
+        {
+          "voiceId": "cedric_en_zh",
+          "name": "Cedric"
+        },
+        {
+          "voiceId": "sophie_en_zh",
+          "name": "Sophie"
+        },
+        {
+          "voiceId": "jean_en_zh",
+          "name": "Jean"
+        },
+        {
+          "voiceId": "magnus_en_zh",
+          "name": "Magnus"
+        },
+        {
+          "voiceId": "mabel_en_zh",
+          "name": "Mabel"
+        },
+        {
+          "voiceId": "nadia_en_zh",
+          "name": "Nadia"
+        },
+        {
+          "voiceId": "opal_en_zh",
+          "name": "Opal"
+        },
+        {
+          "voiceId": "pearl_en_zh",
+          "name": "Pearl"
+        },
+        {
+          "voiceId": "quentin_en_zh",
+          "name": "Quentin"
+        },
+        {
+          "voiceId": "corinne_mixed_en_zh",
+          "name": "Corinne"
+        },
+        {
+          "voiceId": "esther_mixed_en_zh",
+          "name": "Esther"
+        },
+        {
+          "voiceId": "lyla_mixed_en_zh",
+          "name": "Lyla"
+        },
+        {
+          "voiceId": "tracy_es_zh",
+          "name": "Tracy"
+        },
+        {
+          "voiceId": "sandy_es_mixed_en_zh",
+          "name": "Sandy"
+        },
+        {
+          "voiceId": "felix_zh",
+          "name": "Felix"
+        },
+        {
+          "voiceId": "celeste_zh",
+          "name": "Celeste"
+        },
+        {
+          "voiceId": "monkey_king_zh",
+          "name": "Monkey"
+        }
+      ]
+    },
+    {
+      "id": "voice/heygen-voice",
+      "datedId": "voice/heygen-voice-20261024",
+      "capability": "voice",
+      "name": "HeyGen Voice",
+      "vendor": "HeyGen",
+      "tags": [
+        "text-to-speech"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "mp3"
+      ],
+      "latency": {
+        "p50Seconds": 11,
+        "p90Seconds": 17,
+        "measured": false
+      },
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "1k_characters",
+        "price": "0.015",
+        "quantityField": "text",
+        "modifiers": [],
+        "priceUpdatedAt": "2026-10-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "description": "The words to speak, at most 5000 characters.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 5000
+          },
+          "voiceId": {
+            "description": "Speech: a voice of the game cast.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "voiceSettings": {
+            "description": "Speech: voice tuning.",
+            "type": "object",
+            "properties": {
+              "stability": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "similarityBoost": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "style": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "speed": {
+                "type": "number",
+                "minimum": 0.7,
+                "maximum": 1.2
+              },
+              "useSpeakerBoost": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "voices": [
+        {
+          "voiceId": "Jonah",
+          "name": "Jonah"
+        },
+        {
+          "voiceId": "Nadine",
+          "name": "Nadine"
+        },
+        {
+          "voiceId": "Tabitha",
+          "name": "Tabitha"
+        },
+        {
+          "voiceId": "Soren",
+          "name": "Soren"
+        },
+        {
+          "voiceId": "Elowen",
+          "name": "Elowen"
+        },
+        {
+          "voiceId": "Vincent",
+          "name": "Vincent"
+        },
+        {
+          "voiceId": "Jocelyn",
+          "name": "Jocelyn"
+        },
+        {
+          "voiceId": "Marielle",
+          "name": "Marielle"
+        },
+        {
+          "voiceId": "Corinne",
+          "name": "Corinne"
+        },
+        {
+          "voiceId": "Lucian",
+          "name": "Lucian"
+        },
+        {
+          "voiceId": "Kieran",
+          "name": "Kieran"
+        },
+        {
+          "voiceId": "Hugh",
+          "name": "Hugh"
+        },
+        {
+          "voiceId": "Noelle",
+          "name": "Noelle"
+        },
+        {
+          "voiceId": "Bram",
+          "name": "Bram"
+        },
+        {
+          "voiceId": "Ewan",
+          "name": "Ewan"
+        },
+        {
+          "voiceId": "Iona",
+          "name": "Iona"
+        },
+        {
+          "voiceId": "Cecily",
+          "name": "Cecily"
+        },
+        {
+          "voiceId": "Simon",
+          "name": "Simon"
+        },
+        {
+          "voiceId": "Weston",
+          "name": "Weston"
+        },
+        {
+          "voiceId": "Felicity",
+          "name": "Felicity"
+        },
+        {
+          "voiceId": "Gareth",
+          "name": "Gareth"
+        },
+        {
+          "voiceId": "Rory",
+          "name": "Rory"
+        },
+        {
+          "voiceId": "Meredith",
+          "name": "Meredith"
+        },
+        {
+          "voiceId": "Sabrina",
+          "name": "Sabrina"
+        }
+      ]
+    },
+    {
+      "id": "voice/heygen-voice-turbo",
+      "datedId": "voice/heygen-voice-turbo-20261024",
+      "capability": "voice",
+      "name": "HeyGen Voice Turbo",
+      "vendor": "HeyGen",
+      "tags": [
+        "text-to-speech"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "mp3"
+      ],
+      "latency": {
+        "p50Seconds": 11,
+        "p90Seconds": 17,
+        "measured": false
+      },
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "1k_characters",
+        "price": "0.002",
+        "quantityField": "text",
+        "modifiers": [],
+        "priceUpdatedAt": "2026-10-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "text": {
+            "description": "The words to speak, at most 5000 characters.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 5000
+          },
+          "voiceId": {
+            "description": "Speech: a voice of the game cast.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100
+          },
+          "voiceSettings": {
+            "description": "Speech: voice tuning.",
+            "type": "object",
+            "properties": {
+              "stability": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "similarityBoost": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "style": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              },
+              "speed": {
+                "type": "number",
+                "minimum": 0.7,
+                "maximum": 1.2
+              },
+              "useSpeakerBoost": {
+                "type": "boolean"
+              }
+            }
+          }
+        },
+        "required": [
+          "text"
+        ],
+        "additionalProperties": false
+      },
+      "voices": [
+        {
+          "voiceId": "Jonah",
+          "name": "Jonah"
+        },
+        {
+          "voiceId": "Nadine",
+          "name": "Nadine"
+        },
+        {
+          "voiceId": "Tabitha",
+          "name": "Tabitha"
+        },
+        {
+          "voiceId": "Soren",
+          "name": "Soren"
+        },
+        {
+          "voiceId": "Elowen",
+          "name": "Elowen"
+        },
+        {
+          "voiceId": "Vincent",
+          "name": "Vincent"
+        },
+        {
+          "voiceId": "Jocelyn",
+          "name": "Jocelyn"
+        },
+        {
+          "voiceId": "Marielle",
+          "name": "Marielle"
+        },
+        {
+          "voiceId": "Corinne",
+          "name": "Corinne"
+        },
+        {
+          "voiceId": "Lucian",
+          "name": "Lucian"
+        },
+        {
+          "voiceId": "Kieran",
+          "name": "Kieran"
+        },
+        {
+          "voiceId": "Hugh",
+          "name": "Hugh"
+        },
+        {
+          "voiceId": "Noelle",
+          "name": "Noelle"
+        },
+        {
+          "voiceId": "Bram",
+          "name": "Bram"
+        },
+        {
+          "voiceId": "Ewan",
+          "name": "Ewan"
+        },
+        {
+          "voiceId": "Iona",
+          "name": "Iona"
+        },
+        {
+          "voiceId": "Cecily",
+          "name": "Cecily"
+        },
+        {
+          "voiceId": "Simon",
+          "name": "Simon"
+        },
+        {
+          "voiceId": "Weston",
+          "name": "Weston"
+        },
+        {
+          "voiceId": "Felicity",
+          "name": "Felicity"
+        },
+        {
+          "voiceId": "Gareth",
+          "name": "Gareth"
+        },
+        {
+          "voiceId": "Rory",
+          "name": "Rory"
+        },
+        {
+          "voiceId": "Meredith",
+          "name": "Meredith"
+        },
+        {
+          "voiceId": "Sabrina",
+          "name": "Sabrina"
         }
       ]
     },
@@ -7338,8 +10108,8 @@
         "mp3"
       ],
       "latency": {
-        "p50Seconds": 10,
-        "p90Seconds": 11,
+        "p50Seconds": 5,
+        "p90Seconds": 8,
         "measured": false
       },
       "tier": "free",
@@ -7401,6 +10171,154 @@
         "quantityField": "durationSeconds",
         "modifiers": [],
         "priceUpdatedAt": "2026-09-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "description": "What the music should sound like, at most 2000 characters.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "durationSeconds": {
+            "description": "Seconds, 3 to 600 (default 30).",
+            "type": "number",
+            "minimum": 3,
+            "maximum": 600
+          }
+        },
+        "required": [
+          "prompt"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "music/lyria-2",
+      "datedId": "music/lyria-2-20261024",
+      "capability": "music",
+      "name": "Lyria 2",
+      "vendor": "Google",
+      "tags": [
+        "music"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "mp3"
+      ],
+      "latency": {
+        "p50Seconds": 25,
+        "p90Seconds": 40,
+        "measured": false
+      },
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "call",
+        "price": "0.1",
+        "modifiers": [],
+        "priceUpdatedAt": "2026-10-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "description": "What the music should sound like, at most 2000 characters.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "durationSeconds": {
+            "description": "Seconds, 3 to 600 (default 30).",
+            "type": "number",
+            "minimum": 3,
+            "maximum": 600
+          }
+        },
+        "required": [
+          "prompt"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "music/minimax-music-v2",
+      "datedId": "music/minimax-music-v2-20261024",
+      "capability": "music",
+      "name": "MiniMax Music v2",
+      "vendor": "MiniMax",
+      "tags": [
+        "music"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "mp3"
+      ],
+      "latency": {
+        "p50Seconds": 25,
+        "p90Seconds": 40,
+        "measured": false
+      },
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "call",
+        "price": "0.03",
+        "modifiers": [],
+        "priceUpdatedAt": "2026-10-24"
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "description": "What the music should sound like, at most 2000 characters.",
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000
+          },
+          "durationSeconds": {
+            "description": "Seconds, 3 to 600 (default 30).",
+            "type": "number",
+            "minimum": 3,
+            "maximum": 600
+          }
+        },
+        "required": [
+          "prompt"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "id": "music/minimax-music-3",
+      "datedId": "music/minimax-music-3-20261024",
+      "capability": "music",
+      "name": "MiniMax Music 3",
+      "vendor": "MiniMax",
+      "tags": [
+        "music"
+      ],
+      "aliases": [],
+      "outputFormats": [
+        "mp3"
+      ],
+      "latency": {
+        "p50Seconds": 10,
+        "p90Seconds": 16,
+        "measured": false
+      },
+      "tier": "pro",
+      "commercialUse": true,
+      "wellTested": false,
+      "price": {
+        "unit": "output_second",
+        "price": "0.002",
+        "quantityField": "durationSeconds",
+        "modifiers": [],
+        "priceUpdatedAt": "2026-10-24"
       },
       "inputSchema": {
         "type": "object",
