@@ -1,66 +1,291 @@
 ---
-title: "Summer: the AI game engine for people and agents"
-sidebarTitle: "Welcome"
-description: "Summer is the AI game engine built for people and agents to make games. Build in the editor with AI, or bring your own agent, then launch on Summer Games and grow."
+title: "Summer Engine: the game engine built for AI"
+sidebarTitle: "The AI Game Engine"
+description: "The AI game engine built for people and agents to make games together: build, make it multiplayer, publish on Summer Games, Steam or your own site, and grow it."
 icon: "house"
 "og:image": "https://docs.summerengine.com/images/og/index.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/index.jpg"
 ---
 
-Every tool you need to build a game, launch it, learn from your players and make it a success, in one place. The engine and the MCP are free. You only pay for what you use.
+Summer is the AI game engine built for people and agents to make games together. Not just to build
+a game, but to launch it, learn from it and make it successful. Every tool for that is here, in one place.
 
-## Start in 5 minutes
+**For people**, Summer Engine is an editor with Summer Agent built in. It has the same tools your own
+agent gets. **For agents**, the Summer MCP and CLI reach everything: bring Claude Code, Codex, Cursor,
+Hermes or any agent you like, add one URL and sign in once.
 
-Each quickstart ends with a game you can play.
+**Make it.** A full engine for full 2D and 3D games: physics, animation, real code in C++, C# or
+scripts. Your agent makes images, 3D models, textures, sound effects, music and cutscene video with
+the frontier generative models, at API cost, plus more than 175,000 free assets. Summer is built on
+core Godot and follows upstream, so you can bring a Godot project and keep building it here. It is
+open: build your own plugins, and let your agent build custom tools for your game, like a quest maker
+or an audio designer, right inside Summer Studio for your whole team.
 
-<CardGroup cols={3}>
-  <Card title="The Summer app" icon="monitor" href="/quickstarts/fresh-project">
-    Install Summer on Windows or Mac and describe your game. Summer's agent builds it next to the editor.
+**Make it together.** On the **Summer Board** you, your friends and your agents work on one live board.
+Talk, draw, and your agent jumps in and starts working. Use Summer Agent or bring your own.
+
+**Make it multiplayer.** Every **Summer game** can go online with the **Summer SDK**: Summer runs the servers, matchmaking, parties, saves, leaderboards and store.
+Start from a multiplayer template and make it your own. One build plays across iPhone, Android, Mac
+and Windows on Summer Games, and cross-play on Steam and itch.io is coming.
+
+**Launch it anywhere.** Windows, Mac, Linux, iOS, Android and the web; consoles take extra porting
+work. Your agent publishes on [Summer Games](https://summer.games) hands-free through the MCP: it makes
+the store page, uploads the build, and the game goes live once you say yes and Summer's checks pass.
+Steam, itch.io or your own site work too, and Summer Games also takes builds made in other engines.
+
+**Grow it.** Track everything that happens in your game, and let your agent read the analytics, talk
+with your players and make the game better. Tools for organic content and ads are rolling out.
+
+**Fair by design.** The engine and the MCP are free. You pay only for what you use: a plan with every
+frontier model in one place, or top up any amount. When your game sells on Summer Games, Summer takes
+30% of sales. If it does not sell, you pay nothing for that. We win when you win.
+
+## Start here
+
+Follow this path in order:
+
+<CardGroup cols={2}>
+  <Card title="1. Connect your AI agent" icon="bot" href="/mcp/setup">
+    Add one URL and sign in. Engine work: one command. Claude Code, Codex, Cursor, Claude, ChatGPT and many more.
   </Card>
-  <Card title="Your coding agent" icon="terminal" href="/quickstarts/coding-agent">
-    Claude Code, Codex, Cursor and 28 more. One command connects your agent to Summer.
+  <Card title="2. Install Summer Engine" icon="download" href="/essentials/installation">
+    Download it for Mac or Windows, or let your agent install it.
   </Card>
-  <Card title="Your browser" icon="globe" href="/quickstarts/browser">
-    Plan your game with Summer on the web, then build it in the app.
+  <Card title="3. Make your first game" icon="rocket" href="/quickstarts/fresh-project">
+    Describe the game. Your agent builds it and you play it.
+  </Card>
+  <Card title="4. Make it multiplayer" icon="users" href="/quickstarts/multiplayer-game">
+    Summer runs the servers. Your agent adds the online part.
+  </Card>
+  <Card title="5. Add what your game needs" icon="boxes" href="/build/matchmaking">
+    Matchmaking, parties, saves, leaderboards, chat and a store.
+  </Card>
+  <Card title="6. Publish" icon="upload" href="/build/publish">
+    Go live on summer.games. Your agent does the steps, you approve.
   </Card>
 </CardGroup>
 
-Using a coding agent? Paste this in. It installs what is missing and opens a first game.
+## Other ways to start
 
-<Prompt description="**Set up Summer and start a game.** Your agent checks your computer, installs Summer and opens a starter project.">
-Install Summer Engine and let's make a game. Follow https://docs.summerengine.com/quickstarts/coding-agent.md: check what I already have installed, install whatever is missing, and open a starter project so we can start building.
-</Prompt>
+<CardGroup cols={2}>
+  <Card title="How do I make a game with Summer Agent?" icon="message-square" href="/quickstarts/ai-game-dev">
+    Describe your game in the Summer app. Summer Agent builds it while you watch.
+  </Card>
+  <Card title="How do I use the Summer Engine CLI and MCP?" icon="terminal" href="/mcp/cli">
+    The CLI installs and runs Summer Engine, and runs any Summer operation from a shell: `summer <area> <action>`.
+  </Card>
+  <Card title="How do I make a PC game with Summer Agent?" icon="monitor" href="/quickstarts/pc-game">
+    Build and export a Windows game with Summer Agent
+  </Card>
+  <Card title="How do I make a Mac game with Summer Agent?" icon="apple" href="/quickstarts/mac-game">
+    Build and export a macOS game with Summer Agent
+  </Card>
+  <Card title="How do I make a web game with Summer Agent?" icon="globe" href="/quickstarts/web-game">
+    Create a browser-playable game with Summer Agent
+  </Card>
+  <Card title="How do I make an iOS game with Summer Agent?" icon="smartphone" href="/quickstarts/ios-game">
+    Build and export an iPhone or iPad game with Summer Agent
+  </Card>
+  <Card title="How do I make an Android game with Summer Agent?" icon="smartphone" href="/quickstarts/android-game">
+    Build and export an Android game with Summer Agent
+  </Card>
+  <Card title="How do I make a console game with Summer Agent?" icon="gamepad-2" href="/quickstarts/console-game">
+    Build a Nintendo Switch, PlayStation, or Xbox game with Summer Agent
+  </Card>
+  <Card title="How do I make a PlayStation game with Summer Agent?" icon="gamepad-2" href="/quickstarts/playstation-game">
+    Build and export a PlayStation game with Summer Agent
+  </Card>
+  <Card title="How do I migrate from Unity to Summer Engine?" icon="arrow-right" href="/quickstarts/unity-migration">
+    Rebuild your Unity project in Summer Engine with Summer Agent
+  </Card>
+  <Card title="How do I migrate from Unreal to Summer Engine?" icon="arrow-right" href="/quickstarts/unreal-migration">
+    Rebuild your Unreal project in Summer Engine with Summer Agent
+  </Card>
+  <Card title="Bringing an existing project?" icon="git-compare-arrows" href="/quickstarts/existing-godot">
+    Open the game you already have in Summer Engine and keep building it with AI.
+  </Card>
+</CardGroup>
 
-## Build
+## How Do I Make Games with My IDE?
 
-- **The editor, with AI built in.** Summer's agent builds scenes, writes code, adds art and sound, then plays the game to check its work. [Work with Summer's agent](/quickstarts/ai-game-dev)
-- **Or bring your own agent.** Claude Code, Codex, Cursor, Hermes and more get the same tools through the Summer MCP and the `summer` CLI. [Agents overview](/mcp/overview)
-- **175,000+ free assets.** 3D models, textures, sprites and sounds, ready to drop into your game. [Asset library](/art-system/gallery)
-- **The Summer API.** Frontier generative models for images, 3D models, video, voice, sound effects and music, at API cost with zero markup. [Summer API](/api/overview)
-- **Build together on the Summer Board.** A live board for your team and your agents: talk, draw, and your agents jump in and start working. Bring your own agent or use Summer's. [Summer Board](/mcp/operations/board)
-- **Open and extendable.** Build your own plugins, and let your agent build custom tools in Summer Studio, such as a quest maker or an audio designer, that your whole team uses. [Summer Apps](/apps/overview) · [Plugins](/extending/overview)
-- **Godot projects open in Summer.** Summer follows upstream Godot, so you can bring the project you already have. [Bring your project](/knowledge-base/godot-compatibility)
+Add Summer Engine to Cursor, Claude Code, Devin Desktop, or your favorite AI-powered editor:
 
-## Play together
+<CardGroup cols={1}>
+  <Card title="How do I make a game with Cursor?" icon="mouse-pointer" href="/mcp/cursor">
+    Add Summer Engine to Cursor. One-click or manual config. Full page.
+  </Card>
+  <Card title="How do I make a game with Claude Code?" icon="message-square" href="/mcp/claude-code">
+    Add Summer Engine to Claude Code. Full setup guide.
+  </Card>
+  <Card title="How do I make a game with Devin Desktop?" icon="wind" href="/mcp/devin-desktop">
+    Add Summer Engine to Devin Desktop. Full setup guide.
+  </Card>
+  <Card title="How do I make a game with Antigravity?" icon="rocket" href="/mcp/antigravity">
+    Add Summer Engine to Antigravity. Full setup guide.
+  </Card>
+  <Card title="How do I make a game with Codex?" icon="code" href="/mcp/codex">
+    Add Summer Engine to Codex. Full setup guide.
+  </Card>
+  <Card title="How do I make a game with VS Code or GitHub Copilot?" icon="square-code" href="/mcp/vscode">
+    Add Summer Engine to VS Code or Copilot. Full setup guide.
+  </Card>
+  <Card title="How do I make a game with Zed?" icon="zap" href="/mcp/zed">
+    Add Summer Engine to Zed. Full setup guide.
+  </Card>
+</CardGroup>
 
-- **Multiplayer primitives and servers.** The Summer SDK gives your game matchmaking, parties, saves and leaderboards, and Summer runs a server for every match. [Multiplayer](/build/multiplayer)
-- **Cross-play.** On Summer Games, players on iPhone, Android, Mac and Windows play together. Cross-play on Steam and itch.io is coming.
-- **AI inside your game.** The Summer Router adds AI characters, text to speech and images to games published on Summer Games. [Summer Router](/router/overview)
-- **Every platform.** Windows, Mac, Linux, iOS, Android and the web. PlayStation and Xbox take some more custom work. [Platforms](/publishing/overview) · [Consoles](/publishing/consoles)
+## Learn
 
-## Launch and grow
+Deep dives into Summer Engine's capabilities:
 
-- **Publish on Summer Games, hands-free.** Your agent makes the store page and uploads the build. After your yes, the game is live as soon as Summer's automatic checks pass. [Publish with your agent](/publishing/agent-publishing)
-- **Games from any engine.** Upload games made with Unity, Unreal, Three.js or Godot to Summer Games too. [Publish from Studio](/grow/publish)
-- **Analytics for your game.** Track every event in your game, and let any agent read the numbers through the MCP, so you learn and make the game better. [Analytics](/build/analytics)
-- **Summer Grow.** Tools to make organic content and ads for your game, built on what works across every game we make. [Summer Grow](/grow/overview)
-- **Sparks and the creator program.** Players buy Sparks once and spend them in any Summer game. You earn from the Sparks spent in yours. [Sell items for Sparks](/build/store) · [Earnings](/grow/earnings)
+<CardGroup cols={2}>
+  <Card title="MCP: Build with Cursor, Claude, Devin Desktop, Antigravity, Codex, VS Code, Zed" icon="plug" href="/mcp/overview">
+    How to make games with Summer Engine from your IDE. MCP setup, CLI, API reference.
+  </Card>
+  <Card title="AI Operations" icon="brain" href="/ai-tools/operations">
+    How Summer Engine modifies your project safely through natural language
+  </Card>
+  <Card title="Project Intelligence" icon="search" href="/ai-tools/rag-search">
+    How AI understands your entire codebase, scenes, and assets
+  </Card>
+  <Card title="Asset Generation" icon="palette" href="/art-system/ai-generation">
+    Create 2D art, 3D models, and audio with AI
+  </Card>
+  <Card title="Publishing Your Game" icon="upload" href="/publishing/overview">
+    Export for desktop, mobile and the web, then publish on Summer Games, Steam or your own site.
+  </Card>
+</CardGroup>
 
-## What it costs
+## Knowledge Base
 
-- **The engine and the MCP are free.** Pay for what you use: a subscription gives you the frontier models in one place, or top up any amount. [Pricing](/essentials/pricing)
-- **30% only when you sell.** Summer takes 30% of each sale. If you don't sell, you pay nothing. [What publishing costs](/publishing/cost)
+Common questions about Summer Engine:
+
+<CardGroup cols={1}>
+  <Card title="What is Summer Engine?" href="/knowledge-base/what-is-summer">
+    The AI game engine for people and agents.
+  </Card>
+  <Card title="Is Summer Engine compatible with my existing project?" href="/knowledge-base/godot-compatibility">
+    Bring your project over: commit a copy, open it, check plugins and exports.
+  </Card>
+  <Card title="Is my code safe?" href="/knowledge-base/privacy-and-code-safety">
+    Encrypted in transit and at rest, never sold. What AI providers see, and how training use works.
+  </Card>
+  <Card title="How good are AI-generated assets?" href="/knowledge-base/ai-asset-quality">
+    3D models, characters, textures, sprites and audio, made to ship in your game.
+  </Card>
+  <Card title="Can I make a game with just AI, no coding?" href="/knowledge-base/ai-game-dev">
+    Yes. Describe the game and your agent writes all the code.
+  </Card>
+  <Card title="How do I get support?" href="/knowledge-base/support">
+    Ask in Discord first for the fastest reply, then email for concrete help.
+  </Card>
+</CardGroup>
+
+## What You Can Do
+
+Describe a whole game in plain words or go deep into engine code. Summer Engine does both.
+
+<Columns cols={2}>
+  <Card
+    title="Scene Operations"
+    icon="layout-template"
+    href="/essentials/first-chat"
+  >
+    Describe scene changes in plain English - "Add a player that can jump"
+  </Card>
+  <Card
+    title="Project Intelligence"
+    icon="brain"
+    href="/ai-tools/rag-search"
+  >
+    AI understands your entire project - code, scenes, assets, and relationships
+  </Card>
+  <Card
+    title="Specialist Agents"
+    icon="users"
+    href="/ai-tools/subagents"
+  >
+    A team of researcher, builder, asset maker, verifier and advisor that the main agent hands work to
+  </Card>
+  <Card
+    title="Asset Generation"
+    icon="palette"
+    href="/art-system/ai-generation"
+  >
+    Generate 2D art, 3D models, characters, audio and video for your game
+  </Card>
+</Columns>
+
+## For Pros and New Game Devs
+
+Summer Engine is for everyone who makes games: describe a game in plain words, or take full control of a professional engine.
+
+### For Creators & Vibe Coders
+- **Describe it, play it**: tell your agent the game you want and play it minutes later
+- **Art and sound included**: generate 3D models, characters, textures, sprites and audio in the engine
+- **Online from day one**: multiplayer, saves and leaderboards without running a server
+- **Focus on fun**: skip the boilerplate and get straight to the gameplay
+
+### For Professional Developers
+- **Ship commercial games**: We shipped *Don't Pray* on Steam in 2.5 months using Summer Engine
+- **Full engine access**: total control over every node and script, with native C++ and C# when you need it
+- **Clean code**: your agent writes structured code you can read and own
+- **Faster everything**: hand the tedious work to agents and spend your time on design and polish
+
+Agents do the heavy lifting, and you can go as deep as you want.
+
+<Columns cols={2}>
+  <Card
+    title="Unified Workflow"
+    icon="workflow"
+    href="/essentials/first-chat"
+  >
+    One editor, one context. Design, code, and playtest without tab juggling.
+  </Card>
+  <Card
+    title="Expert AI Agents"
+    icon="users"
+    href="/ai-tools/subagents"
+  >
+    The main agent hands work to specialists that run in parallel and report back in your chat.
+  </Card>
+  <Card
+    title="Safe AI Operations"
+    icon="shield"
+    href="/ai-tools/operations"
+  >
+    Scene edits go through engine operations with undo. File writes return exact receipts and refuse stale overwrites.
+  </Card>
+  <Card
+    title="Open Existing Projects"
+    icon="check"
+    href="/knowledge-base/godot-compatibility"
+  >
+    Evaluate a committed copy of an existing project. Familiar formats and concepts reduce
+    migration work; verify imports, plugins, native extensions, and exports against the
+    current Summer Engine release.
+  </Card>
+</Columns>
+
+## Ready to Build?
+
+<CardGroup cols={2}>
+  <Card
+    title="Download Summer Engine"
+    icon="download"
+    href="https://summerengine.com/download"
+  >
+    Get started with the AI game engine today
+  </Card>
+  <Card
+    title="Browse Game Templates"
+    icon="layout-template"
+    href="https://summerengine.com/templates"
+  >
+    Start from a template: shooter, RPG, platformer, horror, and more
+  </Card>
+</CardGroup>
 
 ---
 
-We want Summer to be the best place to make and play games with people and agents. Have an idea, as a person or as an agent? Tell us in [Discord](https://discord.gg/summerengine), or email [support@summerengine.com](mailto:support@summerengine.com).
+Need help? Ask in [Discord](https://discord.gg/summerengine) first. That is where you get the fastest reply and support. For concrete help, email [support@summerengine.com](mailto:support@summerengine.com) or [founders@summerengine.com](mailto:founders@summerengine.com).

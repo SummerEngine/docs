@@ -28,7 +28,7 @@
 
 ### Start here
 
-- [Summer: the AI game engine for people and agents](https://docs.summerengine.com/index.md): Summer is the AI game engine built for people and agents to make games. Build in the editor with AI, or bring your own agent, then launch on Summer Games and grow.
+- [Summer Engine: the game engine built for AI](https://docs.summerengine.com/index.md): The AI game engine built for people and agents to make games together: build, make it multiplayer, publish on Summer Games, Steam or your own site, and grow it.
 - [Quickstart: make your first game in the Summer app](https://docs.summerengine.com/quickstarts/fresh-project.md): Install Summer on Windows or Mac, sign in, and describe your game. Summer's agent builds it next to the editor, plays it to check its work, and you play it in minutes.
 - [Quickstart: make a game with your coding agent](https://docs.summerengine.com/quickstarts/coding-agent.md): Connect Claude Code, Codex, Cursor or any agent to Summer with one command, then ask for a game. Your agent installs Summer Engine, builds the game, plays it and shows you.
 - [Quickstart: plan your game in the browser](https://docs.summerengine.com/quickstarts/browser.md): Describe your game on summerengine.com, answer a few questions and shape a storyboard with Summer. Then open it in the Summer app, where Summer builds it.
