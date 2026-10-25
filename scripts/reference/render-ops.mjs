@@ -14,7 +14,7 @@ export const OPS_AREAS = [
   { id: "jobs", title: "Jobs", icon: "clock", blurb: "Long work and waiting for your approval: read, wait for, list and cancel jobs." },
   { id: "docs", title: "Docs and skills", icon: "book-open", blurb: "Summer's skills, templates, references and the engine class reference." },
   { id: "assets", title: "Assets", icon: "image", blurb: "Make, find, edit and upload images, 3D models, sound, music, voices, video and animation." },
-  { id: "makers", title: "Makers", icon: "wand-sparkles", blurb: "One-shot creative recipes: trailers, ads, NPC voices, sprite sheets and more." },
+  { id: "makers", title: "Makers", icon: "pencil-ruler", blurb: "One-shot creative recipes: trailers, ads, NPC voices, sprite sheets and more." },
   { id: "projects", title: "Projects", icon: "folder", blurb: "Where a game is made: list, create, build and open projects." },
   { id: "plans", title: "Plans", icon: "map", blurb: "The game plan: look, characters, direction and the plan agent." },
   { id: "games", title: "Games", icon: "gamepad-2", blurb: "Your games on Summer Games, and who works on them." },

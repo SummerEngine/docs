@@ -356,6 +356,7 @@ export function routerPages(registry, policy, list = null) {
 
   const nav = {
     tab: ROUTER_TAB,
+    icon: "route",
     groups: [
       { group: "Start here", pages: ["router/overview", "router/quickstart", "router/server-and-client"] },
       { group: "Capabilities", pages: ["router/capabilities", ...(list ? ["router/models"] : []), ...kinds.map(kindPath)] },

@@ -133,6 +133,89 @@
 
 - [Summer Engine Desktop Troubleshooting](https://docs.summerengine.com/desktop/troubleshooting.md): Fix common Summer Engine desktop problems: the app will not start, AI chat stalls, agent sign-in fails, changes do not apply, and where to find logs.
 
+## Multiplayer games
+
+### Start here
+
+- [Make a multiplayer game on Summer Games](https://docs.summerengine.com/build/multiplayer.md): Build an online multiplayer game with Summer Engine, the game engine built for AI: one project, a server that owns the rules, and hosted matches on Summer Games.
+
+### Games like yours
+
+- [Make a game like Counter-Strike](https://docs.summerengine.com/build/games-like/tactical-shooter.md): Build a competitive team shooter like Counter-Strike with Summer Engine: ranked 5v5 matchmaking, instant movement, lag-compensated hits and ratings.
+- [Make a game like League of Legends](https://docs.summerengine.com/build/games-like/moba.md): Build a team battle arena like League of Legends with Summer Engine: ranked 5v5 with an accept prompt, parties, a server-run map, fair hits and ratings.
+- [Make a game like Minecraft](https://docs.summerengine.com/build/games-like/survival-sandbox.md): Build a shared survival or sandbox world like a Minecraft server with Summer Engine: a persistent World that saves, sleeps and wakes, plus player saves and chat.
+- [Make a game like Deep Rock Galactic](https://docs.summerengine.com/build/games-like/co-op.md): Build a squad co-op game like Deep Rock Galactic with Summer Engine: parties, quick play to fill the squad, a server-run mission and progress that carries over.
+- [Make a party game like Among Us](https://docs.summerengine.com/build/games-like/party-games.md): Build a party game like Among Us with Summer Engine: quick play with parties, secret roles dealt by the server, short rounds, chat and a board of total wins.
+- [Make a game like Hearthstone](https://docs.summerengine.com/build/games-like/card-games.md): Build a card or turn-based game like Hearthstone with Summer Engine: rated 1v1 matchmaking, hidden hands, server-checked turns and a ranked ladder.
+- [Make a single-player or mobile game](https://docs.summerengine.com/build/games-like/single-player.md): Add Summer accounts, owned items, a Sparks shop, analytics and publishing to a single-player or mobile game made with Summer Engine, with no server to run.
+
+### Play together
+
+- [Add matchmaking: quick play, ranked and teams](https://docs.summerengine.com/build/matchmaking.md): Add matchmaking to a Summer Engine multiplayer game: quick play, ranked by rating, fixed teams and an accept prompt. Summer starts a server for every match.
+- [Let friends play together in a party](https://docs.summerengine.com/build/parties.md): Summer parties let friends choose a mode together and queue as one: the leader presses Play and the whole party lands in the same match and on the same team.
+- [Make a persistent world that saves between sessions](https://docs.summerengine.com/build/persistent-worlds.md): Give a Summer Engine game a persistent World: a base, farm or realm that saves while people play, sleeps when empty and wakes up just as players left it.
+
+### Real-time feel
+
+- [Make multiplayer movement feel instant](https://docs.summerengine.com/build/movement.md): In a Summer Engine multiplayer game each player moves their own character with no input delay, the server checks every move, and others glide smoothly.
+- [Make hits fair with lag-compensated hit detection](https://docs.summerengine.com/build/hit-detection.md): Summer Engine checks shots, swings and abilities against what the attacking player saw on screen, so a hit that looked like a hit counts and walls still block.
+- [Share game state between players](https://docs.summerengine.com/build/shared-state.md): In a Summer Engine multiplayer game the server owns scores, doors, pickups and private hands of cards. Players send requests, and everyone sees the same game.
+
+### Progress
+
+- [Save player progress across matches and devices](https://docs.summerengine.com/build/player-progress.md): Save each player's coins, unlocks, level and settings from your Summer Engine game's server, and bring them back in every match, on any server and device.
+
+### Compete
+
+- [Add skill ratings and leaderboards](https://docs.summerengine.com/build/leaderboards.md): Give a Summer Engine game Elo skill ratings for ranked queues and score boards for anything it counts, each with the player's place and a public top 50.
+- [End a multiplayer match and show results](https://docs.summerengine.com/build/match-results.md): Your Summer Engine server decides who won, lost, drew or left. Summer records the result once, moves ratings and shows each player their own outcome.
+
+### Social
+
+- [Show friends, profiles and direct messages](https://docs.summerengine.com/build/friends.md): Show which Summer friends are online or in your game, open Summer's friends, profile and chat screens over the game, and send direct messages with consent.
+- [Add in-game text chat](https://docs.summerengine.com/build/chat.md): Add text chat to a Summer Engine multiplayer game: one chat per match or up to 64 channels per World. Summer filters messages and applies blocks and rate limits.
+
+### Make money
+
+- [Sell in-game items for Sparks](https://docs.summerengine.com/build/store.md): Sell skins, items and upgrades for Sparks in a Summer Engine game. Summer runs checkout and inventory; your game shows the shop and unlocks what players own.
+- [Add skins and cosmetics players wear](https://docs.summerengine.com/build/cosmetics.md): Let players equip skins, hats and outfits they own in a Summer Engine game. Your server checks ownership, and every player in the match sees the look.
+- [Charge for your game and accept tips](https://docs.summerengine.com/build/paid-games.md): Publish free on Summer Games, then earn with tips in Sparks, a one-time price with discounts, or an item shop. You set it up in Summer Studio, not in code.
+
+### Run your game
+
+- [Choose server size and player count](https://docs.summerengine.com/build/server-size.md): Pick a server size for each Summer World, from Small (256 MB) to 8XL (64 GB), and set how many players a World holds, from a turn-based duel to a big shared world.
+- [Run console commands on a live game server](https://docs.summerengine.com/build/console-commands.md): Register console commands in your Summer Engine game and run them on a live World from the creator dashboard: announcements, live events and status checks.
+- [Track player events with game analytics](https://docs.summerengine.com/build/analytics.md): Record tutorial steps, finished levels and purchases from players' games and your server in Summer Engine, and see them in your game's Analytics tab.
+- [Publish your game on summer.games](https://docs.summerengine.com/build/publish.md): Publish a Summer Engine game on summer.games: export one .zip in the editor, build the store page in Summer Studio, upload, pass the checks and submit for review.
+
+## Grow
+
+### Start here
+
+- [What is Summer Grow?](https://docs.summerengine.com/grow/overview.md): Summer Grow, in Summer Studio, is where you publish a game on Summer Games and grow it: numbers, earnings, prices, A/B tests, featured places and your team.
+- [Publish your game from Summer Studio](https://docs.summerengine.com/grow/publish.md): Publish your game on Summer Games from Summer Studio: choose how you earn, fill the desktop and mobile store pages, upload builds, submit for review, go live.
+- [Enter the Summer Games Jam](https://docs.summerengine.com/grow/game-jam.md): The Summer Games Jam is a weekly game jam: build a game in a week, enter it from Summer Studio, and players play it on the jam's page on summer.games.
+
+### Insights
+
+- [Summer Grow Analytics: your game's numbers on Summer Games](https://docs.summerengine.com/grow/analytics.md): Summer Grow Analytics shows one Summer Games title day by day: store page views, launches, play sessions, play time, campaign links and your custom events.
+- [Earnings and payouts for your Summer Games titles](https://docs.summerengine.com/grow/earnings.md): Summer Grow shows what your games earn on Summer Games, from paid copies and items sold for Sparks, and how to connect Stripe to get paid for a paid game.
+
+### Grow your game
+
+- [Run a promotion: sales, discounts and prices by country](https://docs.summerengine.com/grow/promotions.md): Run sales on Summer Games from Summer Grow: discount a paid game with start and end dates, set prices by country, and apply for a promotion slot.
+- [Paid growth: ads, email outreach and creator introductions](https://docs.summerengine.com/grow/paid-growth.md): Apply in Summer Grow for paid growth run by the Summer team: ads that link to your summer.games page, emails to players, or introductions to creators.
+- [Get featured on Summer Games](https://docs.summerengine.com/grow/featured-placement.md): Check how ready each store page is to be featured on Summer Games, then apply in Summer Grow for the home hero, New and noteworthy, a collection or genre shelf.
+- [A/B test your store page](https://docs.summerengine.com/grow/ab-tests.md): Run A/B tests on your Summer Games store page in Summer Grow: show two to four versions of art, text or language and see which one more visitors buy.
+- [Build your own Grow dashboards](https://docs.summerengine.com/grow/dashboards.md): Build your own Summer Grow dashboards: tiles for store page views, launches, play sessions, play time or a custom event, as lines, bars or one number.
+- [Alerts: flag a drop in your game's numbers](https://docs.summerengine.com/grow/alerts.md): Summer Grow alerts flag a day when your play sessions or store page views drop, or launches per store page view fall too low, over the last 28 days.
+- [Community: wishlists, follows and comments](https://docs.summerengine.com/grow/community.md): Summer Grow Community shows how many players wishlist and follow each of your games on Summer Games, plus the likes and comments they leave on them.
+- [Live ops: plan updates, events and sales](https://docs.summerengine.com/grow/live-ops.md): Summer Grow Live ops is one planning calendar for your games: release dates from your store pages plus the updates, events, sales and maintenance you plan.
+
+### With your agent
+
+- [Run Summer Grow with your AI agent](https://docs.summerengine.com/grow/use-the-agent.md): The Summer Studio assistant, or your own agent through the Summer Engine MCP, runs Summer Grow: reads numbers, sets prices, runs A/B tests and applies for growth.
+
 ## Summer API
 
 ### Start here
@@ -275,89 +358,6 @@
 
 - [Summer Router limits and caps](https://docs.summerengine.com/router/limits.md): Every game starts with spend caps and rate limits: $5 per player per day, $100 per game per day, 30 calls a minute per player. Change them per game in Studio.
 - [Summer Router errors](https://docs.summerengine.com/router/errors.md): Every Summer Router refusal has one stable tag, a one-line fix and a docs link, and the game keeps running. Each tag, its status and what to do.
-
-## Multiplayer games
-
-### Start here
-
-- [Make a multiplayer game on Summer Games](https://docs.summerengine.com/build/multiplayer.md): Build an online multiplayer game with Summer Engine, the game engine built for AI: one project, a server that owns the rules, and hosted matches on Summer Games.
-
-### Games like yours
-
-- [Make a game like Counter-Strike](https://docs.summerengine.com/build/games-like/tactical-shooter.md): Build a competitive team shooter like Counter-Strike with Summer Engine: ranked 5v5 matchmaking, instant movement, lag-compensated hits and ratings.
-- [Make a game like League of Legends](https://docs.summerengine.com/build/games-like/moba.md): Build a team battle arena like League of Legends with Summer Engine: ranked 5v5 with an accept prompt, parties, a server-run map, fair hits and ratings.
-- [Make a game like Minecraft](https://docs.summerengine.com/build/games-like/survival-sandbox.md): Build a shared survival or sandbox world like a Minecraft server with Summer Engine: a persistent World that saves, sleeps and wakes, plus player saves and chat.
-- [Make a game like Deep Rock Galactic](https://docs.summerengine.com/build/games-like/co-op.md): Build a squad co-op game like Deep Rock Galactic with Summer Engine: parties, quick play to fill the squad, a server-run mission and progress that carries over.
-- [Make a party game like Among Us](https://docs.summerengine.com/build/games-like/party-games.md): Build a party game like Among Us with Summer Engine: quick play with parties, secret roles dealt by the server, short rounds, chat and a board of total wins.
-- [Make a game like Hearthstone](https://docs.summerengine.com/build/games-like/card-games.md): Build a card or turn-based game like Hearthstone with Summer Engine: rated 1v1 matchmaking, hidden hands, server-checked turns and a ranked ladder.
-- [Make a single-player or mobile game](https://docs.summerengine.com/build/games-like/single-player.md): Add Summer accounts, owned items, a Sparks shop, analytics and publishing to a single-player or mobile game made with Summer Engine, with no server to run.
-
-### Play together
-
-- [Add matchmaking: quick play, ranked and teams](https://docs.summerengine.com/build/matchmaking.md): Add matchmaking to a Summer Engine multiplayer game: quick play, ranked by rating, fixed teams and an accept prompt. Summer starts a server for every match.
-- [Let friends play together in a party](https://docs.summerengine.com/build/parties.md): Summer parties let friends choose a mode together and queue as one: the leader presses Play and the whole party lands in the same match and on the same team.
-- [Make a persistent world that saves between sessions](https://docs.summerengine.com/build/persistent-worlds.md): Give a Summer Engine game a persistent World: a base, farm or realm that saves while people play, sleeps when empty and wakes up just as players left it.
-
-### Real-time feel
-
-- [Make multiplayer movement feel instant](https://docs.summerengine.com/build/movement.md): In a Summer Engine multiplayer game each player moves their own character with no input delay, the server checks every move, and others glide smoothly.
-- [Make hits fair with lag-compensated hit detection](https://docs.summerengine.com/build/hit-detection.md): Summer Engine checks shots, swings and abilities against what the attacking player saw on screen, so a hit that looked like a hit counts and walls still block.
-- [Share game state between players](https://docs.summerengine.com/build/shared-state.md): In a Summer Engine multiplayer game the server owns scores, doors, pickups and private hands of cards. Players send requests, and everyone sees the same game.
-
-### Progress
-
-- [Save player progress across matches and devices](https://docs.summerengine.com/build/player-progress.md): Save each player's coins, unlocks, level and settings from your Summer Engine game's server, and bring them back in every match, on any server and device.
-
-### Compete
-
-- [Add skill ratings and leaderboards](https://docs.summerengine.com/build/leaderboards.md): Give a Summer Engine game Elo skill ratings for ranked queues and score boards for anything it counts, each with the player's place and a public top 50.
-- [End a multiplayer match and show results](https://docs.summerengine.com/build/match-results.md): Your Summer Engine server decides who won, lost, drew or left. Summer records the result once, moves ratings and shows each player their own outcome.
-
-### Social
-
-- [Show friends, profiles and direct messages](https://docs.summerengine.com/build/friends.md): Show which Summer friends are online or in your game, open Summer's friends, profile and chat screens over the game, and send direct messages with consent.
-- [Add in-game text chat](https://docs.summerengine.com/build/chat.md): Add text chat to a Summer Engine multiplayer game: one chat per match or up to 64 channels per World. Summer filters messages and applies blocks and rate limits.
-
-### Make money
-
-- [Sell in-game items for Sparks](https://docs.summerengine.com/build/store.md): Sell skins, items and upgrades for Sparks in a Summer Engine game. Summer runs checkout and inventory; your game shows the shop and unlocks what players own.
-- [Add skins and cosmetics players wear](https://docs.summerengine.com/build/cosmetics.md): Let players equip skins, hats and outfits they own in a Summer Engine game. Your server checks ownership, and every player in the match sees the look.
-- [Charge for your game and accept tips](https://docs.summerengine.com/build/paid-games.md): Publish free on Summer Games, then earn with tips in Sparks, a one-time price with discounts, or an item shop. You set it up in Summer Studio, not in code.
-
-### Run your game
-
-- [Choose server size and player count](https://docs.summerengine.com/build/server-size.md): Pick a server size for each Summer World, from Small (256 MB) to 8XL (64 GB), and set how many players a World holds, from a turn-based duel to a big shared world.
-- [Run console commands on a live game server](https://docs.summerengine.com/build/console-commands.md): Register console commands in your Summer Engine game and run them on a live World from the creator dashboard: announcements, live events and status checks.
-- [Track player events with game analytics](https://docs.summerengine.com/build/analytics.md): Record tutorial steps, finished levels and purchases from players' games and your server in Summer Engine, and see them in your game's Analytics tab.
-- [Publish your game on summer.games](https://docs.summerengine.com/build/publish.md): Publish a Summer Engine game on summer.games: export one .zip in the editor, build the store page in Summer Studio, upload, pass the checks and submit for review.
-
-## Grow
-
-### Start here
-
-- [What is Summer Grow?](https://docs.summerengine.com/grow/overview.md): Summer Grow, in Summer Studio, is where you publish a game on Summer Games and grow it: numbers, earnings, prices, A/B tests, featured places and your team.
-- [Publish your game from Summer Studio](https://docs.summerengine.com/grow/publish.md): Publish your game on Summer Games from Summer Studio: choose how you earn, fill the desktop and mobile store pages, upload builds, submit for review, go live.
-- [Enter the Summer Games Jam](https://docs.summerengine.com/grow/game-jam.md): The Summer Games Jam is a weekly game jam: build a game in a week, enter it from Summer Studio, and players play it on the jam's page on summer.games.
-
-### Insights
-
-- [Summer Grow Analytics: your game's numbers on Summer Games](https://docs.summerengine.com/grow/analytics.md): Summer Grow Analytics shows one Summer Games title day by day: store page views, launches, play sessions, play time, campaign links and your custom events.
-- [Earnings and payouts for your Summer Games titles](https://docs.summerengine.com/grow/earnings.md): Summer Grow shows what your games earn on Summer Games, from paid copies and items sold for Sparks, and how to connect Stripe to get paid for a paid game.
-
-### Grow your game
-
-- [Run a promotion: sales, discounts and prices by country](https://docs.summerengine.com/grow/promotions.md): Run sales on Summer Games from Summer Grow: discount a paid game with start and end dates, set prices by country, and apply for a promotion slot.
-- [Paid growth: ads, email outreach and creator introductions](https://docs.summerengine.com/grow/paid-growth.md): Apply in Summer Grow for paid growth run by the Summer team: ads that link to your summer.games page, emails to players, or introductions to creators.
-- [Get featured on Summer Games](https://docs.summerengine.com/grow/featured-placement.md): Check how ready each store page is to be featured on Summer Games, then apply in Summer Grow for the home hero, New and noteworthy, a collection or genre shelf.
-- [A/B test your store page](https://docs.summerengine.com/grow/ab-tests.md): Run A/B tests on your Summer Games store page in Summer Grow: show two to four versions of art, text or language and see which one more visitors buy.
-- [Build your own Grow dashboards](https://docs.summerengine.com/grow/dashboards.md): Build your own Summer Grow dashboards: tiles for store page views, launches, play sessions, play time or a custom event, as lines, bars or one number.
-- [Alerts: flag a drop in your game's numbers](https://docs.summerengine.com/grow/alerts.md): Summer Grow alerts flag a day when your play sessions or store page views drop, or launches per store page view fall too low, over the last 28 days.
-- [Community: wishlists, follows and comments](https://docs.summerengine.com/grow/community.md): Summer Grow Community shows how many players wishlist and follow each of your games on Summer Games, plus the likes and comments they leave on them.
-- [Live ops: plan updates, events and sales](https://docs.summerengine.com/grow/live-ops.md): Summer Grow Live ops is one planning calendar for your games: release dates from your store pages plus the updates, events, sales and maintenance you plan.
-
-### With your agent
-
-- [Run Summer Grow with your AI agent](https://docs.summerengine.com/grow/use-the-agent.md): The Summer Studio assistant, or your own agent through the Summer Engine MCP, runs Summer Grow: reads numbers, sets prices, runs A/B tests and applies for growth.
 
 ## MCP
 

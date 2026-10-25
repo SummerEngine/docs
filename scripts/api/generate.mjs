@@ -668,6 +668,7 @@ const rank = (r) => {
 };
 const tab = {
   tab: TAB,
+  icon: "braces",
   groups: [
     { group: "Start here", pages: ["api/overview", "api/quickstart", "api/from-studio", "api/agents", { group: "Quickstart per agent", icon: "bot", pages: QUICKSTARTS }] },
     {
@@ -683,8 +684,9 @@ const docsJsonPath = join(ROOT, "docs.json");
 const docsJsonRaw = readFileSync(docsJsonPath, "utf8");
 const docs = JSON.parse(docsJsonRaw);
 const tabs = docs.navigation.tabs.filter((t) => t.tab !== TAB && t.tab !== ROUTER_TAB);
-const at = docs.navigation.tabs.findIndex((t) => t.tab === TAB);
-tabs.splice(at < 0 ? 1 : at, 0, tab, router.nav);
+// Docs, Multiplayer games and Grow come first; the Summer API and Router tabs follow Grow.
+const grow = tabs.findIndex((t) => t.tab === "Grow");
+tabs.splice(grow < 0 ? 1 : grow + 1, 0, tab, router.nav);
 docs.navigation.tabs = tabs;
 const docsJsonNext = JSON.stringify(docs, null, 2) + "\n";
 
