@@ -1,73 +1,77 @@
 ---
-title: "How do I make a game with Summer Agent?"
-description: "Describe your game in plain words and Summer Agent, the AI built into Summer Engine, builds the scenes, code and assets. Play it, ask for changes, undo any step."
-icon: "rocket"
+title: "Work with Summer's agent in the Summer app"
+sidebarTitle: "Work with Summer's agent"
+description: "How to get great games from Summer's built-in agent: what to ask, pictures and voice, choosing a model, several chats at once, Design mode, and undoing any turn."
+icon: "message-square"
 "og:image": "https://docs.summerengine.com/images/og/quickstarts-ai-game-dev.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/quickstarts-ai-game-dev.jpg"
 ---
 
-## Make a Game with Summer Agent
+Summer's agent lives in the chat next to your game. You describe a change in plain words, and it writes the code, builds the scenes, adds assets, plays the game and looks at it before it tells you what changed. New to Summer? Start with [Quickstart: Summer app](/quickstarts/fresh-project).
 
-Summer Engine is the game engine built for AI. Describe the game you want and **Summer Agent**, the AI built into Summer Engine, builds it: code, assets and game systems. Play it, ask for changes, and keep going. Every change can be undone.
+## Ask for what you want to play
 
-## What is Summer Agent?
+Describe the result, not the steps. Say what the player does, sees and hears:
 
-**Summer Agent** is the AI built into Summer Engine. You describe the next change in plain words and Summer Agent makes it in your project. You play the result and decide what ships. Prefer your own coding agent (Claude Code, Codex, Cursor and others)? Connect it with the [Summer Engine MCP](/mcp/setup).
+```text
+When I pick up a relic, play a chime, flash the screen gold, and add 1 to the counter
+at the top. After the fifth relic, open the temple door.
+```
 
-## Step 1: Get Summer Engine
+Then play it and ask for the next change: "Make the door open slower", "The guardians are too easy". Short follow-ups work best, one idea at a time.
 
-<Steps>
-  <Step title="Download Summer Engine">
-    Download it from [summerengine.com/download](https://summerengine.com/download) for Mac (Apple silicon) or Windows.
-  </Step>
-  <Step title="Create your account">
-    Sign in with Google, GitHub or email. No credit card required.
-  </Step>
-</Steps>
+Not sure what to make? Click **Find an idea together** on Home, and Summer asks you a few questions first.
 
-## Step 2: Describe Your Game
+## Show it, don't only tell it
 
-Create a new project, then tell Summer Agent what you want. Examples:
+- **Pictures**: paste a screenshot or attach images, such as a reference for the look you want or a bug you see.
+- **Design mode**: press **Shift+D**, then click to select something in the game view or drag to draw on it. Your drawing goes to the agent with your next message.
+- **Voice**: click **Dictate** in the message box and speak for up to 45 seconds. Dictation is part of Summer Pro.
 
-- **"Create a 2D platformer with a character that can jump and double-jump"**
-- **"Make a top-down shooter with enemies that chase the player"**
-- **"Build a puzzle game where you match colored blocks"**
-- **"Add a main menu with Start and Quit buttons"**
-- **"Generate a low-poly tree for my forest scene"**
+## Choose a model
 
-Summer Agent understands natural language. You don't need to be precise. Just describe what you want.
+In the chat, the model picker starts on **Auto**, which picks a good model for each turn. Set it to favour **Balance**, **Intelligence** or **Cost**. You can also pick one model yourself. Premium models ask you before they are used. Free accounts get a number of messages each day.
 
-## Step 3: Review and Iterate
+## Run several chats at once
 
-- **Review changes**: Summer Agent shows you what it will change before applying
-- **Undo anytime**: All Summer Agent changes use the standard undo system
-- **Refine with follow-ups**: "Make the jump higher" or "Add more platforms"
+Open up to six chats, also on the same game. One chat can build a level while another makes the menu. Big tasks can also start their own helpers, which show in the chat as **Subagents**. Chats are kept on your computer and backed up to your account.
 
-## What You Can Build with Summer Agent
+## Undo anything
 
-- **Game logic**: Movement, combat, scoring, menus
-- **2D and 3D assets**: Characters, environments, props (Summer Agent–generated)
-- **Audio**: Music and sound effects (Summer Agent–generated)
-- **UI**: Menus, HUDs, buttons
-- **Physics**: Collision, gravity, interactions
+- **Undo this turn**: open the **Changes** tab next to the chat.
+- **Rewind to here**: on any message, go back to how the game was at that point.
+- **Edit message**: change what you asked and run it again.
 
-## Next Steps
+The agent writes only inside your game's folder. Your game is plain project files on your computer that you can keep in Git.
+
+## Work the way you like
+
+- **Play** in the top bar runs the game (**F5** on Windows, **Cmd+R** on Mac). The arrow next to it has more: play in its own window, muted, or one scene.
+- The workspace tabs **3D**, **2D**, **Script**, **Game** and **Studio** sit next to the chat. **Settings > Layout** switches between Simple and Advanced, or picks a preset such as **Focus chat** or **Full editor**.
+- **Settings > Connections** adds tools to the agent, such as Blender in one click.
+- **Cmd+K** (Mac) or **Ctrl+K** (Windows) searches commands, chats, games and settings.
+
+## Use your own coding agent too
+
+Claude Code, Codex and Cursor can drive the same game. In **Settings > Connections**, click **Copy prompt** and paste it into your agent. See [Quickstart: coding agent](/quickstarts/coding-agent).
+
+## Next steps
 
 <CardGroup cols={2}>
-  <Card title="First Chat Tutorial" icon="message-square" href="/essentials/first-chat">
-    Learn effective prompting for game development
+  <Card title="Make it multiplayer" icon="users" href="/quickstarts/multiplayer-game">
+    Summer runs the servers. One prompt adds the online part.
   </Card>
-  <Card title="AI Asset Generation" icon="palette" href="/art-system/ai-generation">
-    Create 2D art, 3D models, and audio with AI
+  <Card title="Make art and sound" icon="palette" href="/art-system/ai-generation">
+    3D models, characters, textures, sprites and audio for your game.
   </Card>
-  <Card title="AI Operations" icon="brain" href="/ai-tools/operations">
-    What Summer Agent can do in your project
+  <Card title="Publish on Summer Games" icon="upload" href="/publishing/agent-publishing">
+    The store page, the build and going live.
   </Card>
-  <Card title="Publishing" icon="upload" href="/publishing/overview">
-    Export and release your game
+  <Card title="Models" icon="cpu" href="/auto-mode/auto">
+    How Auto picks a model, and when to choose one yourself.
   </Card>
 </CardGroup>
 
 ---
 
-Need help? Ask in [Discord](https://discord.gg/summerengine) first. That is where you get the fastest reply and support. For concrete help, email [support@summerengine.com](mailto:support@summerengine.com) or [founders@summerengine.com](mailto:founders@summerengine.com).
+Need help? Ask in [Discord](https://discord.gg/summerengine) for the fastest reply, or email [support@summerengine.com](mailto:support@summerengine.com).

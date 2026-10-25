@@ -59,9 +59,12 @@
             "group": "Start here",
             "pages": [
               "index",
-              "essentials/installation",
               "quickstarts/fresh-project",
-              "quickstarts/multiplayer-game"
+              "quickstarts/coding-agent",
+              "quickstarts/browser",
+              "essentials/installation",
+              "quickstarts/multiplayer-game",
+              "quickstarts/ai-game-dev"
             ]
           },
           {
@@ -98,7 +101,6 @@
           {
             "group": "Other ways to start",
             "pages": [
-              "quickstarts/ai-game-dev",
               "quickstarts/web-game",
               "quickstarts/pc-game",
               "quickstarts/mac-game",

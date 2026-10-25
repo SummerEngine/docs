@@ -1,105 +1,86 @@
 ---
-title: "Make your first game with Summer Engine"
-sidebarTitle: "Make your first game"
-description: "Download Summer Engine, start an empty project and describe the game you want. Summer Agent or your own AI agent builds it, and you play it in the editor."
+title: "Quickstart: make your first game in the Summer app"
+sidebarTitle: "Quickstart: Summer app"
+description: "Install Summer on Windows or Mac, sign in, and describe your game. Summer's agent builds it next to the editor, plays it to check its work, and you play it in minutes."
 icon: "rocket"
 "og:image": "https://docs.summerengine.com/images/og/quickstarts-fresh-project.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/quickstarts-fresh-project.jpg"
 ---
 
-## Make a Summer game
+In five steps you install Summer, describe your first Summer game, and play it. Summer's agent writes the code, builds the scenes and adds the art while you watch.
 
-Summer Engine is the game engine built for AI. Start with an empty project and describe what you want to play. Your agent
-builds it and you play it in the editor. When you want players online, the next guide adds the
-**Summer SDK** for multiplayer, and then you publish.
+<Note>
+Prefer Claude Code, Codex or Cursor? Follow [Quickstart: your coding agent](/quickstarts/coding-agent) instead.
+</Note>
 
-## Step 1: Download Summer Engine
+**You need:** a Windows 10 or newer PC, or a Mac with Apple silicon, and about 3 GB of free space.
 
-Download Summer Engine for free.
+<Steps>
+  <Step title="Install Summer">
+    Download Summer from [summerengine.com/download](https://www.summerengine.com/download).
 
-<AccordionGroup>
-  <Accordion icon="download" title="Get Summer Engine for free">
-    **For Mac users:**
-    - Visit [summerengine.com/download](https://summerengine.com/download) and click **Download for macOS** (Apple silicon Macs)
-    - Drag Summer Engine to your Applications folder
-    - Double-click to open. macOS may ask for permission; that is normal.
+    <Tabs>
+      <Tab title="Windows">
+        Run the setup file you downloaded.
+      </Tab>
+      <Tab title="macOS">
+        Open the download, then open **Install Summer**.
+      </Tab>
+    </Tabs>
 
-    **For Windows users:**
-    - Visit [summerengine.com/download](https://summerengine.com/download) and click **Download for Windows**
-    - Run the installer. If Windows asks for permission, click **Yes**.
+    Setup shows each step as it runs: **Check this computer**, **Download Summer Engine** and **Install the summer command**. When it finds Claude Code, Codex or Cursor on your computer, it also connects them to Summer.
 
-    <Tip>Summer Engine is free to download and try. No credit card required.</Tip>
+    **If everything worked, you see:** "Summer is ready" and an **Open Summer** button.
+  </Step>
+  <Step title="Sign in">
+    Click **Open Summer**. Your browser opens the Summer sign-in page. Sign in or create a free account, then choose how you want to build. **Start free** works for this quickstart.
 
-    Using your own coding agent? `npx -y summer-engine@latest install` installs Summer Engine from the command line. See [Install Summer Engine](/essentials/installation).
-  </Accordion>
-  <Accordion icon="user" title="Create your account">
-    1. **Open Summer Engine.**
-    2. **Click "Sign in".** This opens your web browser.
-    3. **Create an account** with Google, GitHub or email.
-    4. **Go back to Summer Engine.** The app signs you in.
+    **If everything worked, you see:** "You're signed in" in the Summer window. Summer, the `summer` command and your agents now all use this account.
+  </Step>
+  <Step title="Pick a start">
+    Summer opens on **Home**. The first time, it asks how to begin:
 
-    <Tip>You sign in in your browser, so Summer Engine never sees your password.</Tip>
-  </Accordion>
-</AccordionGroup>
+    - **Start with the Sun Temple** (recommended): a finished world with lighting, characters and props that you remix into your own game. It downloads about 3.7 GB first.
+    - **Start empty**: describe your game and Summer builds it from nothing.
 
-## Step 2: Build Your First Summer Game
+    Not sure what to make? Click **Find an idea together**, and Summer asks you a few quick questions.
+  </Step>
+  <Step title="Describe your game">
+    Type what you want to play into **Describe the game you want to make…**. For example:
 
-<AccordionGroup>
-  <Accordion icon="plus" title="Start a new Summer game">
-    1. **Create a new project** in the Project Manager and give it a name.
-    2. **Choose a location** on your computer.
-    3. **Click "Create".** Summer Engine opens with the chat panel.
-    4. **Wait a few seconds** while Summer Agent reads your new project.
+    ```text
+    Make a third-person adventure in a desert ruin. I collect five glowing relics while
+    stone guardians patrol. Show how many relics I have, and play a sound when I pick one up.
+    ```
 
-    <Tip>You talk to Summer Agent in the chat panel.</Tip>
-  </Accordion>
-  <Accordion icon="message-square" title="Have your first conversation">
-    Try typing these:
+    Summer names the game, writes the code, builds the scenes and adds assets. Each step shows in the chat, such as "Adding Relic" and "Playing the game". Summer plays the game and looks at it before it says it is done.
 
-    **"Create a player character that I can move around"**
-    - Summer Agent creates a character
-    - Adds movement controls (arrow keys or WASD)
-    - Press the play button to test it
+    **If everything worked, you see:** the game in the editor next to the chat, and a result with **Play** and **Fix it**.
+  </Step>
+  <Step title="Play it and change it">
+    Click **Play** in the top bar (**F5** on Windows, **Cmd+R** on Mac). Then ask for the next change in plain words: "Make the guardians faster", "Add a main menu".
 
-    **"Add some platforms to jump on"**
-    - Summer Agent creates platforms in your game world
-    - Sets up physics so your character can land on them
+    Every turn can be undone: open the **Changes** tab and click **Undo this turn**, or choose **Rewind to here** on any message. To point at something, press **Shift+D** for Design mode and draw on the game view.
+  </Step>
+</Steps>
 
-    **"Make the camera follow my player"**
-    - Summer Agent adds a smooth camera that follows your character
-
-    <Tip>You do not need to be precise. Describe what you want in plain words.</Tip>
-  </Accordion>
-</AccordionGroup>
-
-## Understanding the Interface
-
-Summer Engine is a full game editor with Summer Agent built in.
-
-<AccordionGroup>
-  <Accordion icon="layout" title="Chat panel (right side)">
-    - **Multiple chat tabs**: a conversation per feature
-    - **Change review**: see what Summer Agent wants to change before it applies it
-    - **Sources**: the files Summer Agent reads from your project
-  </Accordion>
-  <Accordion icon="git-branch" title="Built-in Git integration">
-    - **Changes panel**: your real repository, with changed, staged and conflicted files grouped
-    - **Stage, commit, push**: per file, from the panel or by asking Summer Agent
-    - **Summer Agent can run git for you**: status, diff, stage, commit, branch, fetch, pull, push. It writes the commit message when it commits
-  </Accordion>
-</AccordionGroup>
-
-## Continue the canonical path
+## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Previous: Install Summer Engine" icon="arrow-left" href="/essentials/installation">
-    Return to installation and verification.
+  <Card title="Make it multiplayer" icon="users" href="/quickstarts/multiplayer-game">
+    The Summer SDK adds servers, matchmaking and saves. One prompt does it.
   </Card>
-  <Card title="Next: Make a multiplayer game" icon="arrow-right" href="/quickstarts/multiplayer-game">
-    Add servers, matchmaking and more to your Summer game.
+  <Card title="Publish on Summer Games" icon="upload" href="/publishing/agent-publishing">
+    Summer makes the store page and uploads the build. You say when it goes live.
+  </Card>
+  <Card title="Work with Summer's agent" icon="message-square" href="/quickstarts/ai-game-dev">
+    Pictures, voice, models, several chats at once, and how to get great results.
+  </Card>
+  <Card title="Add your coding agent" icon="terminal" href="/quickstarts/coding-agent">
+    Drive the same game from Claude Code, Codex or Cursor.
   </Card>
 </CardGroup>
 
 ---
 
-Need help? Ask in [Discord](https://discord.gg/summerengine) first. That is where you get the fastest reply and support. For concrete help, email [support@summerengine.com](mailto:support@summerengine.com) or [founders@summerengine.com](mailto:founders@summerengine.com).
+Need help? Ask in [Discord](https://discord.gg/summerengine) for the fastest reply, or email [support@summerengine.com](mailto:support@summerengine.com).

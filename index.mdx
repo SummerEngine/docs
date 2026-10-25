@@ -1,282 +1,63 @@
 ---
-title: "Summer Engine: the game engine built for AI"
-sidebarTitle: "The AI Game Engine"
-description: "The game engine built for AI. Any agent builds, tests and publishes a full multiplayer game. Publish on Summer Games, Steam or your own site, and earn."
+title: "Summer: the game engine built for AI"
+sidebarTitle: "Welcome"
+description: "Summer is the game engine built for AI. Describe a game and an agent builds it in a full 2D and 3D engine, adds multiplayer Summer hosts, and publishes it on Summer Games."
 icon: "house"
 "og:image": "https://docs.summerengine.com/images/og/index.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/index.jpg"
 ---
 
-Summer is the game engine built for AI. Any agent builds, tests and publishes a full multiplayer
-game. Build real 2D and 3D games, publish them on Summer Games, Steam or your own site, then track,
-grow and earn from them, all in one place. For the biggest game studios to indie developers.
+Describe the game you want, and an agent builds it: scenes, code, art and sound. It plays the game to check its own work. Every Summer game can go online with the Summer SDK: Summer runs the servers, matchmaking, saves and store, and your agent publishes the game on [Summer Games](https://summer.games).
 
-Connect Claude Code, Codex, Cursor, Claude, ChatGPT or any other agent: add one URL and sign in
-once. For engine work, one command adds the local server. Describe the game you want, and your
-agent builds it: scenes, code and assets, right inside the engine.
+## Start in 5 minutes
 
-Every **Summer game** comes with multiplayer built in. Summer runs the servers, matchmaking,
-parties, saves, leaderboards and store, so your agent can make a full online game, not a demo.
-When it is ready, your agent publishes it on [Summer Games](https://summer.games) and you approve
-it with one click.
+Pick the way you like to work. Each quickstart ends with a game you can play.
 
-Prefer to stay in the app? **Summer Agent**, the AI built into Summer Engine, does the same work
-from a chat next to your game.
+<CardGroup cols={3}>
+  <Card title="The Summer app" icon="monitor" href="/quickstarts/fresh-project">
+    Install Summer on Windows or Mac and describe your game. Summer's agent builds it next to the editor.
+  </Card>
+  <Card title="Your coding agent" icon="terminal" href="/quickstarts/coding-agent">
+    Claude Code, Codex, Cursor and 28 more. One command connects your agent to Summer.
+  </Card>
+  <Card title="Your browser" icon="globe" href="/quickstarts/browser">
+    Plan your game with Summer on the web, then build it in the app.
+  </Card>
+</CardGroup>
 
-**Why Summer Engine:**
-- **Built for agents**: add one URL and your agent works in Summer. With the local server it drives the engine directly: it builds scenes, runs the game, reads errors and fixes them.
-- **Multiplayer built in**: servers, matchmaking, parties, saves, leaderboards, chat and a store through the **Summer SDK**.
-- **Publish in one step**: free to publish on Summer Games; your agent makes the store page and uploads the build.
-- **A full engine for full games**: 2D and 3D, physics, animation and real code in C++, C# or scripts. Ship to desktop, mobile and the web.
-- **Your project is yours**: plain project files you can read, edit and keep in Git.
-- **Your data is not for sale**: encrypted in transit and at rest, and never sold. See [Is my code safe?](/knowledge-base/privacy-and-code-safety).
+## Using a coding agent?
 
-## Start here
+Paste this into Claude Code, Codex, Cursor or any other agent. It installs what is missing and opens a first game.
 
-Follow this path in order:
+<Prompt description="**Set up Summer and start a game.** Your agent checks your computer, installs Summer and opens a starter project.">
+Install Summer Engine and let's make a game. Follow https://docs.summerengine.com/quickstarts/coding-agent.md: check what I already have installed, install whatever is missing, and open a starter project so we can start building.
+</Prompt>
+
+Or run the setup yourself:
+
+```bash
+npx -y summer-engine@latest setup claude-code --yes
+```
+
+Use `codex`, `cursor` or [your agent's id](/mcp/setup#every-agent) in place of `claude-code`. On Windows PowerShell, type `npx.cmd` in place of `npx`.
+
+## Build and ship
 
 <CardGroup cols={2}>
-  <Card title="1. Connect your AI agent" icon="bot" href="/mcp/setup">
-    Add one URL and sign in. Engine work: one command. Claude Code, Codex, Cursor, Claude, ChatGPT and many more.
+  <Card title="Make it multiplayer" icon="users" href="/quickstarts/multiplayer-game">
+    One project, a server that owns the rules, and matches Summer hosts.
   </Card>
-  <Card title="2. Install Summer Engine" icon="download" href="/essentials/installation">
-    Download it for Mac or Windows, or let your agent install it.
+  <Card title="Publish on Summer Games" icon="rocket" href="/publishing/agent-publishing">
+    Your agent makes the store page, uploads the build and asks you before it goes live.
   </Card>
-  <Card title="3. Make your first game" icon="rocket" href="/quickstarts/fresh-project">
-    Describe the game. Your agent builds it and you play it.
+  <Card title="Connect any agent" icon="plug" href="/mcp/overview">
+    MCP, the `summer` command and skills: what each one does and when to use it.
   </Card>
-  <Card title="4. Make it multiplayer" icon="users" href="/quickstarts/multiplayer-game">
-    Summer runs the servers. Your agent adds the online part.
-  </Card>
-  <Card title="5. Add what your game needs" icon="boxes" href="/build/matchmaking">
-    Matchmaking, parties, saves, leaderboards, chat and a store.
-  </Card>
-  <Card title="6. Publish" icon="upload" href="/build/publish">
-    Go live on summer.games. Your agent does the steps, you approve.
-  </Card>
-</CardGroup>
-
-## Other ways to start
-
-<CardGroup cols={2}>
-  <Card title="How do I make a game with Summer Agent?" icon="rocket" href="/quickstarts/ai-game-dev">
-    Describe your game in the Summer app. Summer Agent builds it while you watch.
-  </Card>
-  <Card title="How do I use the Summer Engine CLI and MCP?" icon="terminal" href="/mcp/cli">
-    The CLI installs and runs Summer Engine, and runs any Summer operation from a shell: `summer <area> <action>`.
-  </Card>
-  <Card title="How do I make a PC game with Summer Agent?" icon="monitor" href="/quickstarts/pc-game">
-    Build and export a Windows game with Summer Agent
-  </Card>
-  <Card title="How do I make a Mac game with Summer Agent?" icon="apple" href="/quickstarts/mac-game">
-    Build and export a macOS game with Summer Agent
-  </Card>
-  <Card title="How do I make a web game with Summer Agent?" icon="globe" href="/quickstarts/web-game">
-    Create a browser-playable game with Summer Agent
-  </Card>
-  <Card title="How do I make an iOS game with Summer Agent?" icon="smartphone" href="/quickstarts/ios-game">
-    Build and export an iPhone or iPad game with Summer Agent
-  </Card>
-  <Card title="How do I make an Android game with Summer Agent?" icon="smartphone" href="/quickstarts/android-game">
-    Build and export an Android game with Summer Agent
-  </Card>
-  <Card title="How do I make a console game with Summer Agent?" icon="gamepad-2" href="/quickstarts/console-game">
-    Build a Nintendo Switch, PlayStation, or Xbox game with Summer Agent
-  </Card>
-  <Card title="How do I make a PlayStation game with Summer Agent?" icon="gamepad-2" href="/quickstarts/playstation-game">
-    Build and export a PlayStation game with Summer Agent
-  </Card>
-  <Card title="How do I migrate from Unity to Summer Engine?" icon="arrow-right" href="/quickstarts/unity-migration">
-    Rebuild your Unity project in Summer Engine with Summer Agent
-  </Card>
-  <Card title="How do I migrate from Unreal to Summer Engine?" icon="arrow-right" href="/quickstarts/unreal-migration">
-    Rebuild your Unreal project in Summer Engine with Summer Agent
-  </Card>
-  <Card title="Bringing an existing project?" icon="git-compare-arrows" href="/quickstarts/existing-godot">
-    Open the game you already have in Summer Engine and keep building it with AI.
-  </Card>
-</CardGroup>
-
-## How Do I Make Games with My IDE?
-
-Add Summer Engine to Cursor, Claude Code, Devin Desktop, or your favorite AI-powered editor:
-
-<CardGroup cols={1}>
-  <Card title="How do I make a game with Cursor?" icon="mouse-pointer" href="/mcp/cursor">
-    Add Summer Engine to Cursor. One-click or manual config. Full page.
-  </Card>
-  <Card title="How do I make a game with Claude Code?" icon="message-square" href="/mcp/claude-code">
-    Add Summer Engine to Claude Code. Full setup guide.
-  </Card>
-  <Card title="How do I make a game with Devin Desktop?" icon="wind" href="/mcp/devin-desktop">
-    Add Summer Engine to Devin Desktop. Full setup guide.
-  </Card>
-  <Card title="How do I make a game with Antigravity?" icon="rocket" href="/mcp/antigravity">
-    Add Summer Engine to Antigravity. Full setup guide.
-  </Card>
-  <Card title="How do I make a game with Codex?" icon="code" href="/mcp/codex">
-    Add Summer Engine to Codex. Full setup guide.
-  </Card>
-  <Card title="How do I make a game with VS Code or GitHub Copilot?" icon="square-code" href="/mcp/vscode">
-    Add Summer Engine to VS Code or Copilot. Full setup guide.
-  </Card>
-  <Card title="How do I make a game with Zed?" icon="zap" href="/mcp/zed">
-    Add Summer Engine to Zed. Full setup guide.
-  </Card>
-</CardGroup>
-
-## Learn
-
-Deep dives into Summer Engine's capabilities:
-
-<CardGroup cols={2}>
-  <Card title="MCP: Build with Cursor, Claude, Devin Desktop, Antigravity, Codex, VS Code, Zed" icon="plug" href="/mcp/overview">
-    How to make games with Summer Engine from your IDE. MCP setup, CLI, API reference.
-  </Card>
-  <Card title="AI Operations" icon="brain" href="/ai-tools/operations">
-    How Summer Engine modifies your project safely through natural language
-  </Card>
-  <Card title="Project Intelligence" icon="search" href="/ai-tools/rag-search">
-    How AI understands your entire codebase, scenes, and assets
-  </Card>
-  <Card title="Asset Generation" icon="palette" href="/art-system/ai-generation">
-    Create 2D art, 3D models, and audio with AI
-  </Card>
-  <Card title="Publishing Your Game" icon="upload" href="/publishing/overview">
-    Export for desktop, mobile and the web, then publish on Summer Games, Steam or your own site.
-  </Card>
-</CardGroup>
-
-## Knowledge Base
-
-Common questions about Summer Engine:
-
-<CardGroup cols={1}>
-  <Card title="What is Summer Engine?" href="/knowledge-base/what-is-summer">
-    The AI game engine for people and agents.
-  </Card>
-  <Card title="Is Summer Engine compatible with my existing project?" href="/knowledge-base/godot-compatibility">
-    Bring your project over: commit a copy, open it, check plugins and exports.
-  </Card>
-  <Card title="Is my code safe?" href="/knowledge-base/privacy-and-code-safety">
-    Encrypted in transit and at rest, never sold. What AI providers see, and how training use works.
-  </Card>
-  <Card title="How good are AI-generated assets?" href="/knowledge-base/ai-asset-quality">
-    3D models, characters, textures, sprites and audio, made to ship in your game.
-  </Card>
-  <Card title="Can I make a game with just AI, no coding?" href="/knowledge-base/ai-game-dev">
-    Yes. Describe the game and your agent writes all the code.
-  </Card>
-  <Card title="How do I get support?" href="/knowledge-base/support">
-    Ask in Discord first for the fastest reply, then email for concrete help.
-  </Card>
-</CardGroup>
-
-## What You Can Do
-
-Describe a whole game in plain words or go deep into engine code. Summer Engine does both.
-
-<Columns cols={2}>
-  <Card
-    title="Scene Operations"
-    icon="layout-template"
-    href="/essentials/first-chat"
-  >
-    Describe scene changes in plain English - "Add a player that can jump"
-  </Card>
-  <Card
-    title="Project Intelligence"
-    icon="brain"
-    href="/ai-tools/rag-search"
-  >
-    AI understands your entire project - code, scenes, assets, and relationships
-  </Card>
-  <Card
-    title="Specialist Agents"
-    icon="users"
-    href="/ai-tools/subagents"
-  >
-    A team of researcher, builder, asset maker, verifier and advisor that the main agent hands work to
-  </Card>
-  <Card
-    title="Asset Generation"
-    icon="palette"
-    href="/art-system/ai-generation"
-  >
-    Generate 2D art, 3D models, characters, audio and video for your game
-  </Card>
-</Columns>
-
-## For Pros and New Game Devs
-
-Summer Engine is for everyone who makes games: describe a game in plain words, or take full control of a professional engine.
-
-### For Creators & Vibe Coders
-- **Describe it, play it**: tell your agent the game you want and play it minutes later
-- **Art and sound included**: generate 3D models, characters, textures, sprites and audio in the engine
-- **Online from day one**: multiplayer, saves and leaderboards without running a server
-- **Focus on fun**: skip the boilerplate and get straight to the gameplay
-
-### For Professional Developers
-- **Ship commercial games**: We shipped *Don't Pray* on Steam in 2.5 months using Summer Engine
-- **Full engine access**: total control over every node and script, with native C++ and C# when you need it
-- **Clean code**: your agent writes structured code you can read and own
-- **Faster everything**: hand the tedious work to agents and spend your time on design and polish
-
-Agents do the heavy lifting, and you can go as deep as you want.
-
-<Columns cols={2}>
-  <Card
-    title="Unified Workflow"
-    icon="workflow"
-    href="/essentials/first-chat"
-  >
-    One editor, one context. Design, code, and playtest without tab juggling.
-  </Card>
-  <Card
-    title="Expert AI Agents"
-    icon="users"
-    href="/ai-tools/subagents"
-  >
-    The main agent hands work to specialists that run in parallel and report back in your chat.
-  </Card>
-  <Card
-    title="Safe AI Operations"
-    icon="shield"
-    href="/ai-tools/operations"
-  >
-    Scene edits go through engine operations with undo. File writes return exact receipts and refuse stale overwrites.
-  </Card>
-  <Card
-    title="Open Existing Projects"
-    icon="check"
-    href="/knowledge-base/godot-compatibility"
-  >
-    Evaluate a committed copy of an existing project. Familiar formats and concepts reduce
-    migration work; verify imports, plugins, native extensions, and exports against the
-    current Summer Engine release.
-  </Card>
-</Columns>
-
-## Ready to Build?
-
-<CardGroup cols={2}>
-  <Card
-    title="Download Summer Engine"
-    icon="download"
-    href="https://summerengine.com/download"
-  >
-    Get started with the AI game engine today
-  </Card>
-  <Card
-    title="Browse Game Templates"
-    icon="layout-template"
-    href="https://summerengine.com/templates"
-  >
-    Start from a template: shooter, RPG, platformer, horror, and more
+  <Card title="Install" icon="download" href="/essentials/installation">
+    Windows and Mac, the `summer` command, and how to check that it works.
   </Card>
 </CardGroup>
 
 ---
 
-Need help? Ask in [Discord](https://discord.gg/summerengine) first. That is where you get the fastest reply and support. For concrete help, email [support@summerengine.com](mailto:support@summerengine.com) or [founders@summerengine.com](mailto:founders@summerengine.com).
+Need help? Ask in [Discord](https://discord.gg/summerengine) for the fastest reply, or email [support@summerengine.com](mailto:support@summerengine.com).

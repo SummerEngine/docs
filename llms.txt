@@ -28,10 +28,13 @@
 
 ### Start here
 
-- [Summer Engine: the game engine built for AI](https://docs.summerengine.com/index.md): The game engine built for AI. Any agent builds, tests and publishes a full multiplayer game. Publish on Summer Games, Steam or your own site, and earn.
-- [Install Summer Engine](https://docs.summerengine.com/essentials/installation.md): Download Summer Engine for Apple-silicon Macs or Windows 10 and newer, or let your AI agent install it with npx -y summer-engine@latest install.
-- [Make your first game with Summer Engine](https://docs.summerengine.com/quickstarts/fresh-project.md): Download Summer Engine, start an empty project and describe the game you want. Summer Agent or your own AI agent builds it, and you play it in the editor.
-- [Make a multiplayer game with Summer Engine](https://docs.summerengine.com/quickstarts/multiplayer-game.md): Make a multiplayer game with Summer Engine: Summer runs the servers, matchmaking, parties, saves, leaderboards and store, and your agent builds the game.
+- [Summer: the game engine built for AI](https://docs.summerengine.com/index.md): Summer is the game engine built for AI. Describe a game and an agent builds it in a full 2D and 3D engine, adds multiplayer Summer hosts, and publishes it on Summer Games.
+- [Quickstart: make your first game in the Summer app](https://docs.summerengine.com/quickstarts/fresh-project.md): Install Summer on Windows or Mac, sign in, and describe your game. Summer's agent builds it next to the editor, plays it to check its work, and you play it in minutes.
+- [Quickstart: make a game with your coding agent](https://docs.summerengine.com/quickstarts/coding-agent.md): Connect Claude Code, Codex, Cursor or any agent to Summer with one command, then ask for a game. Your agent installs Summer Engine, builds the game, plays it and shows you.
+- [Quickstart: plan your game in the browser](https://docs.summerengine.com/quickstarts/browser.md): Describe your game on summerengine.com, answer a few questions and shape a storyboard with Summer. Then open it in the Summer app, where Summer builds it.
+- [Install Summer on Windows or Mac](https://docs.summerengine.com/essentials/installation.md): Install Summer on Windows 10 and newer or Apple-silicon Macs: one setup installs Summer Engine, the summer command and connects your coding agents. Or install the summer command alone with npm.
+- [Quickstart: make your game multiplayer](https://docs.summerengine.com/quickstarts/multiplayer-game.md): Make a Summer game multiplayer with one prompt: a client, a server that owns the rules, and a Local Play test with two players on your computer. Summer hosts the matches.
+- [Work with Summer's agent in the Summer app](https://docs.summerengine.com/quickstarts/ai-game-dev.md): How to get great games from Summer's built-in agent: what to ask, pictures and voice, choosing a model, several chats at once, Design mode, and undoing any turn.
 
 ### Create and publish your game
 
@@ -60,7 +63,6 @@
 
 ### Other ways to start
 
-- [How do I make a game with Summer Agent?](https://docs.summerengine.com/quickstarts/ai-game-dev.md): Describe your game in plain words and Summer Agent, the AI built into Summer Engine, builds the scenes, code and assets. Play it, ask for changes, undo any step.
 - [How do I make a web game with AI?](https://docs.summerengine.com/quickstarts/web-game.md): Build a browser game with AI in Summer Engine, export a web build with summer_export_game, and publish it to play on summer.games, itch.io or your own site.
 - [How do I make a PC game with AI?](https://docs.summerengine.com/quickstarts/pc-game.md): Build a Windows PC game with AI in Summer Engine, export a 64-bit .exe with summer_export_game or the editor, and publish it on Summer Games, Steam or itch.io.
 - [How do I make a Mac game with AI?](https://docs.summerengine.com/quickstarts/mac-game.md): Build a Mac game with AI in Summer Engine and export a universal app for Intel and Apple silicon Macs, for Summer Games, Steam, itch.io or your own site.
@@ -138,7 +140,7 @@
 
 ### Start here
 
-- [Make a multiplayer game on Summer Games](https://docs.summerengine.com/build/multiplayer.md): Build an online multiplayer game with Summer Engine, the game engine built for AI: one project, a server that owns the rules, and hosted matches on Summer Games.
+- [Make a multiplayer game on Summer Games](https://docs.summerengine.com/build/multiplayer.md): Build an online multiplayer game with Summer Engine: one project, a server that owns the rules, the client code that joins a match, Local Play with several players, and hosted matches.
 
 ### Games like yours
 
@@ -390,8 +392,8 @@
 ### Overview
 
 - [Summer MCP Servers: Summer Engine MCP and Summer Games MCP](https://docs.summerengine.com/mcp/summer-mcps.md): Summer has two public MCP servers: the Summer Engine MCP lets an agent build and publish games; the Summer Games MCP lets players use their account from Claude or ChatGPT.
-- [Summer Engine MCP: Build Games with Any AI Agent](https://docs.summerengine.com/mcp/overview.md): Summer Engine is the game engine built for AI. Connect Claude Code, Codex, Cursor, ChatGPT or any agent: one URL for cloud work, one command for engine work.
-- [Summer Engine MCP Setup for Any AI Agent](https://docs.summerengine.com/mcp/setup.md): Connect any agent to Summer Engine: add mcp.summerengine.com/mcp for cloud work, or run one setup command for engine work in Claude Code, Codex, Cursor and 28 more.
+- [Use Summer from any AI agent: MCP, CLI and skills](https://docs.summerengine.com/mcp/overview.md): How coding agents and chat apps work with Summer: the Summer MCP server, the summer command and the Summer skills. What each one does, which one to use, and one command that sets them all up.
+- [Summer MCP setup for Claude Code, Codex, Cursor and any agent](https://docs.summerengine.com/mcp/setup.md): Connect any AI agent to Summer with one command: npx -y summer-engine@latest setup <agent> --yes. Or add the hosted server mcp.summerengine.com/mcp to a chat app. Verify it, sign in, and fix common problems.
 - [Agent Permissions and Approvals in Summer Studio](https://docs.summerengine.com/mcp/permissions.md): Six switches in Summer Studio say what connected agents may do without asking. When a change needs your yes, the agent gives you an approval link.
 - [Use Summer Engine in ChatGPT and Claude](https://docs.summerengine.com/mcp/chatgpt-and-claude.md): Add Summer to ChatGPT or Claude as a custom connector at mcp.summerengine.com/mcp and sign in once. What the two app-directory versions can and cannot do.
 
