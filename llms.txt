@@ -551,7 +551,7 @@
 - [How do I export to mobile (iOS and Android)?](https://docs.summerengine.com/knowledge-base/export-mobile.md): Export a Summer Engine game to iOS and Android: enable ETC2/ASTC textures, add an export preset and set up signing. iOS needs a Mac and an Apple Developer account.
 
 ## Changelog
-- [Summer Engine Changelog](https://docs.summerengine.com/changelog/overview.md): Summer Engine release notes: the summer-engine 4.x MCP and CLI, the Summer SDK, and desktop app updates for macOS and Windows, newest first.
+- [Summer Engine Changelog](https://docs.summerengine.com/changelog/overview.md): Every Summer Engine release, newest first: the desktop app for macOS and Windows, the summer-engine MCP and CLI, and the Summer SDK.
 
 ## Security
 
