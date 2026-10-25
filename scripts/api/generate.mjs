@@ -49,6 +49,11 @@ const notes = existsSync(join(SOURCES, "model-notes.json")) ? readJson(join(SOUR
 const spec = readJson(join(SOURCES, "openapi.json"));
 // Real outputs per model, pinned by scripts/api/samples.mjs from the summerengine.com/create examples.
 const samples = existsSync(join(SOURCES, "model-samples.json")) ? readJson(join(SOURCES, "model-samples.json")).samples : {};
+// Each model's page on summerengine.com/models, pinned by scripts/api/site-slugs.mts from PSE.
+const siteSlugs = existsSync(join(SOURCES, "site-model-slugs.json")) ? readJson(join(SOURCES, "site-model-slugs.json")).slugs : {};
+const SITE_MODELS = "https://www.summerengine.com/models";
+// A model the API lists under Summer's own name links nowhere that names its maker.
+const sitePage = (m) => (siteSlugs[m.id] && m.vendor !== "Summer" ? `${SITE_MODELS}/${siteSlugs[m.id]}` : null);
 
 // ------------------------------------------------------------------ data
 
@@ -472,6 +477,7 @@ function renderModelPage(m) {
     ["Does", segmentsOf(byCapability[m.capability]).filter((s) => s.models.includes(m)).map((s) => `[${s.title}](/${MODELS_PAGE}#${s.anchor})`).join(", ")],
     ["Output", m.outputFormats.map((f) => f.toUpperCase()).join(", ")],
     ["Made by", cell(m.vendor)],
+    ...(sitePage(m) ? [["Try it", `[Examples and playground on summerengine.com](${sitePage(m)})`]] : []),
     ["Commercial use", m.commercialUse ? "Yes" : "No"],
   ];
   const best = [
@@ -520,7 +526,7 @@ function renderModelPage(m) {
 
 function modelRow(m, timed) {
   const label = `[${cell(m.name)}](/${modelPath(m)})${isDefault(m) ? " (default)" : ""}`;
-  return `| ${label} | ${code(m.id)} | ${priceText(m)} |${timed ? ` ${typicalTime(m) ?? ""} |` : ""}`;
+  return `| ${label} | ${code(m.id)} | ${priceText(m)} |${timed ? ` ${typicalTime(m) ?? ""} |` : ""} ${sitePage(m) ? `[Examples](${sitePage(m)})` : ""} |`;
 }
 const formatsOf = (list) => [...new Set(list.flatMap((m) => m.outputFormats))].map((f) => f.toUpperCase()).join(", ");
 
@@ -575,6 +581,8 @@ function renderModelsPage() {
     "",
     `**No markup on assets. Every model at the provider's list price.** ${models.length} curated models, each tested for games. A failed job costs nothing, and you pay from one credit balance. No plan needed.`,
     "",
+    "Browse every model with examples and prices: [summerengine.com/models](https://www.summerengine.com/models).",
+    "",
     `This table is generated from [\`GET /v1/models\`](/api/reference/get-models), the same list the API prices and charges from. Agents: read prices and ids from there, never from memory, and copy ids exactly as listed. Each model page shows the date its price was last checked.`,
     "",
     "<CardGroup cols={2}>",
@@ -604,8 +612,8 @@ function renderModelsPage() {
     if (segments.length > 1) for (const s of segments) out.push(`### ${s.title}`, "", ...gallery(s.models), "");
     else out.push(...gallery(list), "");
     out.push(
-      `| Model | Id | Price |${timed ? " Typical time |" : ""}`,
-      `|---|---|---|${timed ? "---|" : ""}`,
+      `| Model | Id | Price |${timed ? " Typical time |" : ""} On summerengine.com |`,
+      `|---|---|---|${timed ? "---|" : ""}---|`,
       ...list.map((m) => modelRow(m, timed)),
     );
     const options = [...new Set(list.flatMap((m) => (m.price.modifiers ?? []).map((r) => r.field)))];
