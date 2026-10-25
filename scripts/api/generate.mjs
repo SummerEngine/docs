@@ -380,21 +380,16 @@ function sampleMedia(s, m) {
 function examplesSection(m) {
   const list = samplesOf(m);
   if (!list.length) return [];
-  const label = (s) => (s.kind === "audio" ? "Words" : s.fromPicture ? "From a picture, prompt" : "Prompt");
+  const label = (s) => (s.kind === "audio" ? "Words" : s.fromPicture ? "From a picture" : "Prompt");
   return [
     "## Examples",
     "",
-    `Real outputs of ${code(m.id)}, each with the input that made it.`,
+    `Real outputs of ${code(m.id)}, each with the input that made it.${list.some((s) => s.kind === "3d") ? " Drag a model to turn it." : ""}`,
     "",
     '<div className="summer-samples">',
-    ...list.map((s) =>
-      [
-        '<figure className="summer-sample">',
-        sampleMedia(s, m),
-        `<figcaption><strong>${label(s)}:</strong> ${escapeProse(clip(s.prompt))}${s.kind === "3d" ? ` <a href=${attr(s.url)}>GLB</a>` : ""}</figcaption>`,
-        "</figure>",
-      ].join(""),
-    ),
+    "<Columns cols={2}>",
+    ...list.flatMap((s) => [`  <Frame caption=${attr(`${label(s)}: ${clip(s.prompt, 180)}`)}>`, `    ${sampleMedia(s, m)}`, "  </Frame>"]),
+    "</Columns>",
     "</div>",
     "",
   ];
