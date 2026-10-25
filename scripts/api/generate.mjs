@@ -52,8 +52,8 @@ const samples = existsSync(join(SOURCES, "model-samples.json")) ? readJson(join(
 // Each model's page on summerengine.com/models, pinned by scripts/api/site-slugs.mts from PSE.
 const siteSlugs = existsSync(join(SOURCES, "site-model-slugs.json")) ? readJson(join(SOURCES, "site-model-slugs.json")).slugs : {};
 const SITE_MODELS = "https://www.summerengine.com/models";
-// A model the API lists under Summer's own name links nowhere that names its maker.
-const sitePage = (m) => (siteSlugs[m.id] && m.vendor !== "Summer" ? `${SITE_MODELS}/${siteSlugs[m.id]}` : null);
+// A model the API lists under Summer's own name links only to an address that does not name its maker.
+const sitePage = (m) => (siteSlugs[m.id] && !(m.vendor === "Summer" && /eleven/i.test(siteSlugs[m.id])) ? `${SITE_MODELS}/${siteSlugs[m.id]}` : null);
 
 // ------------------------------------------------------------------ data
 
