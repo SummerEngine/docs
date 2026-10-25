@@ -693,8 +693,8 @@
           {
             "group": "AI and NPCs",
             "pages": [
-              "skills/ai-characters-in-games",
-              "skills/design-npc"
+              "skills/design-npc",
+              "skills/summer-router"
             ]
           },
           {
@@ -722,6 +722,7 @@
               "skills/asset-strategy",
               "skills/lumera-single-image-scene-reconstruction",
               "skills/skintokens-auto-rigging",
+              "skills/summer-api",
               "skills/summer-assets"
             ]
           },
@@ -1740,6 +1741,10 @@
     {
       "source": "/mcp/tools/grow",
       "destination": "/mcp/operations/legacy-names"
+    },
+    {
+      "source": "/skills/ai-characters-in-games",
+      "destination": "/mcp/skills"
     }
   ]
 }
