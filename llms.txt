@@ -1,0 +1,567 @@
+# Summer Engine
+
+> Summer is the game engine built for AI. Any agent builds, tests and publishes a full multiplayer game. The Summer API makes the game's assets: 3D models, images, video, voice, sound effects and music from curated models tested for games, saved to your Summer library and ready for the engine. No markup on assets. Every model at the provider's list price.
+
+## Agent instructions
+
+- Summer API base URL: https://www.summerengine.com/v1
+- Sign in: `npx -y summer-engine@latest login` opens the browser once; the person signs in to Summer and chooses Allow, with a spend limit. The sign-in renews itself.
+- Auth over HTTP: `Authorization: Bearer <token>`, with a one-hour token from `npx -y summer-engine@latest token`. There are no API keys.
+- CLI: `npx -y summer-engine@latest api models|estimate|run|jobs`. `api run <model> --input '<json>' --download <dir>` runs a job, follows it and saves the files; `api run --batch jobs.jsonl --download <dir>` runs up to 500 (one `{"model", "input"}` per line). JSON when piped. The same calls are MCP tools: `summer_api_models`, `summer_api_estimate`, `summer_api_run`, `summer_api_batch`, `summer_api_job`.
+- Without the CLI: Summer's sign-in is OAuth 2.1 with PKCE; discovery at https://mcp.summerengine.com/.well-known/oauth-protected-resource. Steps: https://docs.summerengine.com/api/sign-in.md
+- Models and prices: `GET https://www.summerengine.com/v1/models` (public, no sign-in). Read prices there, never from memory or training data. Defaults per job: `3d/default`, `image/default`, `video/default`, `voice/default`, `dialogue/default`, `sound/default`, `music/default`, `motion/default`.
+- Exact price of one request: `POST https://www.summerengine.com/v1/estimate` with the same body as the job (free, no sign-in).
+- Run: `POST https://www.summerengine.com/v1/jobs` with `{"model", "input"}`, a required `Idempotency-Key` header (new per job, the same on a retry) and `Prefer: wait=60`. A long job (3D, video) answers `running`: poll `GET https://www.summerengine.com/v1/jobs/{id}` every `pollAfterSeconds` (else 5 s) while `state` is `queued` or `running`. A job past the account's running slots answers `202` `queued` (id `q:...`): it is accepted at a held price and starts in order; follow it, never resend it. Or pass `webhookUrl` for one signed POST when it finishes. Stop on `done` (download the `fileUrl` of every entry in `result.assets`; `job.model` is the model that ran) or on `failed`, `cancelled`, `expired`, `stale` or `declined` (show `error.message`).
+- Many jobs: `POST https://www.summerengine.com/v1/batches` with `{"jobs": [{"model", "input"}, ...]}` (up to 500, all or none, `Idempotency-Key` header for the batch), then `GET https://www.summerengine.com/v1/batches/{id}` until no job is `queued` or `running`.
+- Limits: no rate limits on paid usage. Each account runs 10 jobs at once at the start, up to 40 as it buys credits; more jobs queue. Money is the only refusal, as `402`: `no_credits` (the paid balance; `fix_url` adds credits) or `over_limit` (this app's own spend limit; `fix_url` opens Connected apps). Show the person `message` and stop until they act.
+- Credits: every call is paid from the person's paid Summer credits (plan credits and top-ups). Estimate first and tell the person the total before you spend.
+- OpenAPI 3.1: https://www.summerengine.com/v1/openapi.json
+- MCP for chat apps and cloud work: `https://mcp.summerengine.com/mcp` (OAuth sign-in).
+- Summer Router (early preview: AI inside a game published on Summer Games): character replies with tools, speech and images. Single-player games call `Summer.client.router`; multiplayer games call `Summer.authority.router` from the server (Summer Engine 0.8 and later). Transcription and realtime voice are coming soon. No key is in the build; the creator's paid Summer credits pay, within caps. Models and prices: `GET https://api.summer.games/v1/router/models` (public). Start: https://docs.summerengine.com/router/quickstart.md
+- CLI, local MCP and skills for engine work: `npx -y summer-engine@latest setup <agent> --yes`. The `summer-api` skill covers assets; the `summer-router` skill covers AI characters in games.
+- Every page is also Markdown: add `.md` to its URL. Everything in one file: https://docs.summerengine.com/llms-full.txt
+- Quickstart: https://docs.summerengine.com/api/quickstart.md. Models and pricing: https://docs.summerengine.com/api/models.md. Errors: https://docs.summerengine.com/api/errors.md
+- How to make X (which models to chain, the exact steps and the cost): https://docs.summerengine.com/api/guides.md, for example https://docs.summerengine.com/api/guides/3d-character.md and https://docs.summerengine.com/api/guides/trailer.md
+- Setup per agent (one command, then `summer login`): https://docs.summerengine.com/api/quickstarts/claude-code.md, https://docs.summerengine.com/api/quickstarts/codex.md, https://docs.summerengine.com/api/quickstarts/cursor.md, https://docs.summerengine.com/api/quickstarts/chatgpt-and-claude.md, https://docs.summerengine.com/api/quickstarts/hermes.md. Signed in to Summer Studio: https://docs.summerengine.com/api/from-studio.md
+
+## Docs
+
+### Start here
+
+- [Summer Engine: the game engine built for AI](https://docs.summerengine.com/index.md): The AI game engine built for people and agents to make games together: build, make it multiplayer, publish on Summer Games, Steam or your own site, and grow it.
+- [Quickstart: make your first game in the Summer app](https://docs.summerengine.com/quickstarts/fresh-project.md): Install Summer on Windows or Mac, sign in, and describe your game. Summer's agent builds it next to the editor, plays it to check its work, and you play it in minutes.
+- [Quickstart: make a game with your coding agent](https://docs.summerengine.com/quickstarts/coding-agent.md): Connect Claude Code, Codex, Cursor or any agent to Summer with one command, then ask for a game. Your agent installs Summer Engine, builds the game, plays it and shows you.
+- [Quickstart: plan your game in the browser](https://docs.summerengine.com/quickstarts/browser.md): Describe your game on summerengine.com, answer a few questions and shape a storyboard with Summer. Then open it in the Summer app, where Summer builds it.
+- [Install Summer on Windows or Mac](https://docs.summerengine.com/essentials/installation.md): Install Summer on Windows 10 and newer or Apple-silicon Macs from summerengine.com/download, get past SmartScreen, install the summer command for your coding agent, and check that it works.
+- [Quickstart: make your game multiplayer](https://docs.summerengine.com/quickstarts/multiplayer-game.md): Make a Summer game multiplayer with one prompt: a client, a server that owns the rules, and a Local Play test with two players on your computer. Summer hosts the matches.
+- [Work with Summer's agent in the Summer app](https://docs.summerengine.com/quickstarts/ai-game-dev.md): How to get great games from Summer's built-in agent: what to ask, pictures and voice, choosing a model, several chats at once, Design mode, and undoing any turn.
+
+### Create and publish your game
+
+- [How to publish your game on Summer Games (summer.games)](https://docs.summerengine.com/publishing/summer-games.md): Publish a game on Summer Games in five steps: export, art, store page, upload and publish. Do it in Summer Studio, or let your AI agent do it.
+- [What you need ready to publish on Summer Games](https://docs.summerengine.com/publishing/what-you-need.md): Checklist before you publish on Summer Games: your Summer account, a build that exports, store text and art for each store, a price, payouts and analytics.
+- [Can my AI agent publish my game for me?](https://docs.summerengine.com/publishing/agent-publishing.md): Yes. Claude Code, Codex, Claude or ChatGPT on the Summer MCP can make your store page, upload the build and publish on Summer Games. It asks you before the game goes live.
+- [What does it cost to publish a game on Summer Games?](https://docs.summerengine.com/publishing/cost.md): Publishing on Summer Games is free, with tips from players. Set a price and Summer takes 30% of each sale. Games built in Summer Engine can sell items for Sparks.
+
+#### Step by step
+
+- [Connect your AI agent to Summer to publish games](https://docs.summerengine.com/publishing/connect-your-agent.md): Connect Claude Code, Codex, Claude or ChatGPT to the Summer MCP to publish on Summer Games: the summer-engine npm MCP on your computer, or the hosted MCP.
+- [Export your game for Summer Games](https://docs.summerengine.com/publishing/export.md): Which build Summer Games takes for iPhone, Android, Mac, Windows and the web, how summer_export_game makes it, and where export templates come from.
+- [Summer Games store art: every slot, size and rule](https://docs.summerengine.com/publishing/store-art.md): Every art slot of a Summer Games store page for the desktop and mobile stores: key art, icon, screenshots, capsules and tall cover, with sizes and rules.
+- [Make Summer Games store art with your AI agent](https://docs.summerengine.com/publishing/generate-store-art.md): Your AI agent checks My assets, makes missing store art with the Summer MCP, crops it to each Summer Games slot, uploads it and puts it in the slot.
+- [Summer Games store page text: tagline, description and tags](https://docs.summerengine.com/publishing/store-text.md): Write the title, tagline, desktop and mobile descriptions, tags and age rating of a Summer Games store page: the limits, good examples and Same as desktop.
+- [Release readiness checklist for Summer Games](https://docs.summerengine.com/publishing/release-readiness.md): Ten checks to run before you publish a Summer game or a new version of it, so players can really play it: server scene, online join, saves, pack files and Summer version.
+- [Upload your build and publish](https://docs.summerengine.com/publishing/upload-and-submit.md): Upload a store bundle, web build or download to Summer Games with the Summer MCP, wait for the checks, preview the page and go live with summer_go_live after the owner says yes.
+- [Approve what your AI agent asks: publishing and approval links](https://docs.summerengine.com/publishing/owner-approval.md): How Summer approval links work: when your AI agent must ask first, how it asks before your game goes live on Summer Games, and what each approval state means.
+- [Game analytics on Summer Games: send events and read them in Grow](https://docs.summerengine.com/publishing/analytics.md): What Summer counts for every game on Summer Games, how to send custom events with Summer.client.analytics, and how to read the numbers in Summer Grow.
+- [Summer Games publishing errors and fixes](https://docs.summerengine.com/publishing/summer-games-troubleshooting.md): Fixes for errors when you publish on Summer Games in Summer Studio or through the Summer MCP: sign-in, export, upload, store page, approval and analytics.
+
+#### For agents
+
+- [Agent checklist: publish a game on Summer Games end to end](https://docs.summerengine.com/publishing/agent-checklist.md): The ordered checklist an AI agent follows to publish a game on Summer Games with Summer MCP operations, from export to store page, upload and going live after the owner says yes.
+- [Summer MCP operations for publishing on Summer Games](https://docs.summerengine.com/publishing/mcp-tools.md): Which Summer MCP operation does each Summer Games publishing job: find the game, store page, art, upload, publish, release, prices, analytics and team.
+
+### Other ways to start
+
+- [How do I make a web game with AI?](https://docs.summerengine.com/quickstarts/web-game.md): Build a browser game with AI in Summer Engine, export a web build with summer_export_game, and publish it to play on summer.games, itch.io or your own site.
+- [How do I make a PC game with AI?](https://docs.summerengine.com/quickstarts/pc-game.md): Build a Windows PC game with AI in Summer Engine, export a 64-bit .exe with summer_export_game or the editor, and publish it on Summer Games, Steam or itch.io.
+- [How do I make a Mac game with AI?](https://docs.summerengine.com/quickstarts/mac-game.md): Build a Mac game with AI in Summer Engine and export a universal app for Intel and Apple silicon Macs, for Summer Games, Steam, itch.io or your own site.
+- [How do I make an iOS game with AI?](https://docs.summerengine.com/quickstarts/ios-game.md): Build an iPhone game with AI in Summer Engine, export it with summer_export_game, and publish it to the Summer Games app for iPhone from Summer Studio.
+- [How do I make an Android game with AI?](https://docs.summerengine.com/quickstarts/android-game.md): Build an Android game with AI in Summer Engine, export it with summer_export_game, and publish it to the Summer Games app for Android from Summer Studio.
+- [How do I make a console game with AI?](https://docs.summerengine.com/quickstarts/console-game.md): Build your game with AI in Summer Engine on PC first, then reach Switch, PlayStation or Xbox after platform approval, through a porting studio or the Summer team.
+- [How do I make a PlayStation game with AI?](https://docs.summerengine.com/quickstarts/playstation-game.md): Build your game with AI in Summer Engine on PC, get PlayStation Partners approval, then port it to PS4 or PS5 with a porting studio or the Summer team's help.
+
+### Essentials
+
+- [Sign In to Summer Engine and Connect Your Agent](https://docs.summerengine.com/essentials/authentication.md): Create a Summer account and sign in to Summer Engine and your AI agent. There is no API key: your agent signs in with your Summer account in the browser.
+- [Summer Engine Account and Billing](https://docs.summerengine.com/essentials/account-billing.md): Manage your Summer Engine plan, invoices, credits, auto top-up and on-demand spend limits from Billing in Summer Studio, with Stripe for payments.
+- [Summer Engine Pricing and Plans](https://docs.summerengine.com/essentials/pricing.md): Summer Engine plans: Free, Pro $20/mo, Pro+ $60/mo and Ultra $200/mo. The desktop app and local MCP stay free; paid plans raise hosted AI limits.
+- [Your First AI Chat in Summer Engine](https://docs.summerengine.com/essentials/first-chat.md): Use Summer Agent, the chat inside Summer Engine, to add objects, change properties and write scripts by describing what you want in plain words.
+- [Summer Engine FAQ](https://docs.summerengine.com/essentials/faq.md): Answers to common Summer Engine questions: what it is, pricing, AI models, multiplayer, existing projects, privacy, publishing to Steam and mobile.
+
+### Models
+
+- [Auto Model Selection in Summer Engine](https://docs.summerengine.com/auto-mode/auto.md): Auto is the default model setting in Summer Engine chat: Summer picks the model and experts for each task. Available on every plan, including Free.
+- [MAX Mode: Frontier Models for Hard Tasks in Summer Engine](https://docs.summerengine.com/auto-mode/premium.md): MAX Mode in Summer Engine chat picks frontier models and experts for demanding tasks. Paid plans only, and it uses much more of your balance than Auto.
+- [Choosing a Model in Summer Engine: Auto, MAX or a Specific Model](https://docs.summerengine.com/auto-mode/models.md): How model choice works in Summer Engine chat: Auto, MAX Mode, or a specific model from the selector, and which models each plan can pick.
+
+### Using Summer
+
+- [Design Mode: Click or Draw on Your Scene to Edit It](https://docs.summerengine.com/ai-tools/design-mode.md): In Summer Engine's Design Mode you click nodes or draw on the 2D or 3D viewport, say what to change, and the same chat makes the edit in your scene.
+- [What Summer Engine's AI Can Do in Your Project](https://docs.summerengine.com/ai-tools/operations.md): What the Summer Engine agent does in your project: write GDScript, edit scenes, make and import assets, change project settings, and check its own work.
+- [How Summer's AI Agents Build Your Game](https://docs.summerengine.com/ai-tools/subagents.md): Summer Engine builds with an AI agent team: a main agent plans and talks to you, and specialists research, build, make assets and verify. You stay in charge.
+- [Project Memory: How Summer Engine Remembers Your Game](https://docs.summerengine.com/ai-tools/memory.md): Summer Engine keeps a memory per project: art style, genre, mechanics and naming rules carry into every new chat. Read it in Settings > Memory.
+- [Project Intelligence: How Summer Engine Indexes Your Project](https://docs.summerengine.com/ai-tools/rag-search.md): Summer Engine indexes your project's scripts, scenes and text files so the agent finds the right code fast. What it indexes, what it skips, and how it stays current.
+- [Search and Import Game Assets from Your AI Agent (MCP)](https://docs.summerengine.com/ai-tools/mcp-asset-search.md): Search the Summer asset library and your own assets from Claude Code, Cursor or any MCP agent, then import the best match into your Summer Engine project.
+
+### Summer Studio
+
+- [Game Assets in Summer Studio: Create, Find and Import](https://docs.summerengine.com/art-system/overview.md): Summer Studio makes game assets with AI (image, video, audio, 3D), keeps them in My Assets, and Summer Engine imports any of them into your game.
+- [AI Asset Generation for Games in Summer Studio](https://docs.summerengine.com/art-system/ai-generation.md): Generate game images, video, audio and 3D models in Summer Studio, write prompts that work, and have Summer Engine import the results into your game.
+- [Summer Asset Store: Free Game Assets to Browse and Import](https://docs.summerengine.com/art-system/gallery.md): Browse and search free game assets in the Summer Asset Store: 3D models, sprites, 2D art, music, sound effects and animations, ready to import into Summer Engine.
+- [Organize Game Assets in Folders in Summer Studio](https://docs.summerengine.com/art-system/collections.md): Sort your Summer Studio assets into folders and subfolders, with one folder per project, so you and Summer Engine can find the right asset fast.
+- [Asset Licenses in Summer Studio and the Asset Store: CC0, CC BY 4.0, Private](https://docs.summerengine.com/art-system/licensing.md): The licenses on Summer Asset Store and Summer Studio assets: CC0, CC BY 4.0 and Private, what each lets you do, and how to credit a creator.
+
+### Summer Apps
+
+- [Summer Apps: team tools your agent builds in Summer Studio](https://docs.summerengine.com/apps/overview.md): Summer Apps are team tools inside Summer Studio that any agent builds through the Summer MCP: shared live data, your assets, game analytics and agent tools.
+- [Build your first Summer App with an AI agent](https://docs.summerengine.com/apps/build-your-first-app.md): Walkthrough: ask your agent for a team tool, and it builds, publishes, checks and opens a Summer App in your Summer Studio tab. Then change it by asking again.
+- [Build a Summer App with your agent: the build loop](https://docs.summerengine.com/apps/build-with-your-agent.md): How an agent builds a Summer App that works the first time: connect the Summer MCP, follow the build loop, avoid three common mistakes, and check it with apps.screenshot.
+- [Summer Apps for agents: data, tools, events and operations](https://docs.summerengine.com/apps/agents.md): How agents use Summer Apps through the Summer MCP: read and write an app's shared data, run its agent tools, wait for its events, and the full apps.* operation list.
+- [Summer Apps SDK reference: window.summer](https://docs.summerengine.com/apps/sdk.md): Every window.summer call in a Summer App: data, assets, generate, ai, agent, page, engine, team, projects, grow and choices, with permissions, results and types.
+- [Summer App manifest: summer.app.json reference](https://docs.summerengine.com/apps/manifest.md): Every key of summer.app.json, the Summer App manifest: name, purpose, permissions, data collections, agent events and tools, engine files, docks and publish limits.
+- [Summer Apps design kit: UI components and rules](https://docs.summerengine.com/apps/design-kit.md): The Summer Apps UI kit: design tokens, Geist, summer-* components that follow Summer Studio light and dark, the JSON layout format, and the design rules.
+- [Summer Apps in Summer Engine: project access, docks and plugins](https://docs.summerengine.com/apps/engine-and-docks.md): How a Summer App reads and changes your open Summer Engine project, which editor operations it may use, and how to dock it or pair it with an editor plugin.
+- [Summer Apps security: sandbox, permissions and spending limits](https://docs.summerengine.com/apps/security.md): How Summer Studio keeps agent-built Summer Apps safe: a separate sandboxed site, no cookies or network, declared permissions, team-only access and spending limits.
+
+#### Apps for game teams
+
+- [Economy balance sheet: a Summer App for game teams](https://docs.summerengine.com/apps/game-teams/economy-balance-sheet.md): A Summer App for game teams: every currency source and sink per hour of play, net income against your target, with manifest, seed data and agent edits.
+- [Item and quest database: a Summer App for game teams](https://docs.summerengine.com/apps/game-teams/item-and-quest-database.md): A Summer App for game teams: one shared database of items and quests with search, edit dialogs and a reference check, plus manifest, seed data and agent edits.
+- [Weapon balance table: a Summer App for game teams](https://docs.summerengine.com/apps/game-teams/weapon-balance-table.md): A Summer App for game teams: every weapon's damage, attack speed and DPS in one shared table, with a DPS budget chart, in-place edits and agent nerfs.
+- [Loot table editor: a Summer App for game teams](https://docs.summerengine.com/apps/game-teams/loot-table-editor.md): A Summer App for game teams: loot weights, the real drop chance per roll and per kill, and an agent tool that sets a drop to an exact chance.
+- [Level progress tracker: a Summer App for game teams](https://docs.summerengine.com/apps/game-teams/level-progress-tracker.md): A Summer App for game teams: a shared board of every level from blockout to done, with owners, blockers, playtest scores and a stand-up report for your agent.
+
+### Other Engine Migration
+
+- [How do I migrate from Unity to Summer Engine?](https://docs.summerengine.com/quickstarts/unity-migration.md): Move a Unity game to Summer Engine, the game engine built for AI: Summer Agent reads your project, makes a migration plan, and rebuilds it scene by scene.
+- [How do I migrate from Unreal to Summer Engine?](https://docs.summerengine.com/quickstarts/unreal-migration.md): Move an Unreal game to Summer Engine, the game engine built for AI: Summer Agent reads your project, makes a migration plan, and rebuilds it level by level.
+
+### Automation
+
+- [Headless Scripting: Run Summer Engine From the Command Line](https://docs.summerengine.com/automation/headless.md): Run Summer Engine with no window from a shell: the GDScript entry point, exit codes, import passes, navmesh and LOD baking, and headless exports.
+- [Authoring Summer Engine Project Files From Scripts](https://docs.summerengine.com/automation/authoring.md): Write Summer Engine project files without the editor: where user:// lives, feature-tag overrides, translation formats, saving scenes, and hand-written .tscn limits.
+
+### Reference
+
+- [Summer Engine Desktop Troubleshooting](https://docs.summerengine.com/desktop/troubleshooting.md): Fix common Summer Engine desktop problems: the app will not start, AI chat stalls, agent sign-in fails, changes do not apply, and where to find logs.
+
+## Multiplayer games
+
+### Start here
+
+- [Make a multiplayer game on Summer Games](https://docs.summerengine.com/build/multiplayer.md): Build an online multiplayer game with Summer Engine: one project, a server that owns the rules, the client code that joins a match, Local Play with several players, and hosted matches.
+
+### Games like yours
+
+- [Make a game like Counter-Strike](https://docs.summerengine.com/build/games-like/tactical-shooter.md): Build a competitive team shooter like Counter-Strike with Summer Engine: ranked 5v5 matchmaking, instant movement, lag-compensated hits and ratings.
+- [Make a game like League of Legends](https://docs.summerengine.com/build/games-like/moba.md): Build a team battle arena like League of Legends with Summer Engine: ranked 5v5 with an accept prompt, parties, a server-run map, fair hits and ratings.
+- [Make a game like Minecraft](https://docs.summerengine.com/build/games-like/survival-sandbox.md): Build a shared survival or sandbox world like a Minecraft server with Summer Engine: a persistent World that saves, sleeps and wakes, plus player saves and chat.
+- [Make a game like Deep Rock Galactic](https://docs.summerengine.com/build/games-like/co-op.md): Build a squad co-op game like Deep Rock Galactic with Summer Engine: parties, quick play to fill the squad, a server-run mission and progress that carries over.
+- [Make a party game like Among Us](https://docs.summerengine.com/build/games-like/party-games.md): Build a party game like Among Us with Summer Engine: quick play with parties, secret roles dealt by the server, short rounds, chat and a board of total wins.
+- [Make a game like Hearthstone](https://docs.summerengine.com/build/games-like/card-games.md): Build a card or turn-based game like Hearthstone with Summer Engine: rated 1v1 matchmaking, hidden hands, server-checked turns and a ranked ladder.
+- [Make a single-player or mobile game](https://docs.summerengine.com/build/games-like/single-player.md): Add Summer accounts, owned items, a Sparks shop, analytics and publishing to a single-player or mobile game made with Summer Engine, with no server to run.
+
+### Play together
+
+- [Add matchmaking: quick play, ranked and teams](https://docs.summerengine.com/build/matchmaking.md): Add matchmaking to a Summer Engine multiplayer game: quick play, ranked by rating, fixed teams and an accept prompt. Summer starts a server for every match.
+- [Let friends play together in a party](https://docs.summerengine.com/build/parties.md): Summer parties let friends choose a mode together and queue as one: the leader presses Play and the whole party lands in the same match and on the same team.
+- [Make a persistent world that saves between sessions](https://docs.summerengine.com/build/persistent-worlds.md): Give a Summer Engine game a persistent World: a base, farm or realm that saves while people play, sleeps when empty and wakes up just as players left it.
+
+### Real-time feel
+
+- [Make multiplayer movement feel instant](https://docs.summerengine.com/build/movement.md): In a Summer Engine multiplayer game each player moves their own character with no input delay, the server checks every move, and others glide smoothly.
+- [Make hits fair with lag-compensated hit detection](https://docs.summerengine.com/build/hit-detection.md): Summer Engine checks shots, swings and abilities against what the attacking player saw on screen, so a hit that looked like a hit counts and walls still block.
+- [Share game state between players](https://docs.summerengine.com/build/shared-state.md): In a Summer Engine multiplayer game the server owns scores, doors, pickups and private hands of cards. Players send requests, and everyone sees the same game.
+
+### Progress
+
+- [Save player progress across matches and devices](https://docs.summerengine.com/build/player-progress.md): Save each player's coins, unlocks, level and settings from your Summer Engine game's server, and bring them back in every match, on any server and device.
+
+### Compete
+
+- [Add skill ratings and leaderboards](https://docs.summerengine.com/build/leaderboards.md): Give a Summer Engine game Elo skill ratings for ranked queues and score boards for anything it counts, each with the player's place and a public top 50.
+- [End a multiplayer match and show results](https://docs.summerengine.com/build/match-results.md): Your Summer Engine server decides who won, lost, drew or left. Summer records the result once, moves ratings and shows each player their own outcome.
+
+### Social
+
+- [Show friends, profiles and direct messages](https://docs.summerengine.com/build/friends.md): Show which Summer friends are online or in your game, open Summer's friends, profile and chat screens over the game, and send direct messages with consent.
+- [Add in-game text chat](https://docs.summerengine.com/build/chat.md): Add text chat to a Summer Engine multiplayer game: one chat per match or up to 64 channels per World. Summer filters messages and applies blocks and rate limits.
+
+### Make money
+
+- [Sell in-game items for Sparks](https://docs.summerengine.com/build/store.md): Sell skins, items and upgrades for Sparks in a Summer Engine game. Summer runs checkout and inventory; your game shows the shop and unlocks what players own.
+- [Add skins and cosmetics players wear](https://docs.summerengine.com/build/cosmetics.md): Let players equip skins, hats and outfits they own in a Summer Engine game. Your server checks ownership, and every player in the match sees the look.
+- [Charge for your game and accept tips](https://docs.summerengine.com/build/paid-games.md): Publish free on Summer Games, then earn with tips in Sparks, a one-time price with discounts, or an item shop. You set it up in Summer Studio, not in code.
+
+### Run your game
+
+- [Choose server size and player count](https://docs.summerengine.com/build/server-size.md): Pick a server size for each Summer World, from Small (256 MB) to 8XL (64 GB), and set how many players a World holds, from a turn-based duel to a big shared world.
+- [Run console commands on a live game server](https://docs.summerengine.com/build/console-commands.md): Register console commands in your Summer Engine game and run them on a live World from the creator dashboard: announcements, live events and status checks.
+- [Track player events with game analytics](https://docs.summerengine.com/build/analytics.md): Record tutorial steps, finished levels and purchases from players' games and your server in Summer Engine, and see them in your game's Analytics tab.
+- [Publish your game on summer.games](https://docs.summerengine.com/build/publish.md): Publish a Summer Engine game on summer.games: export one .zip in the editor, build the store page in Summer Studio, upload, and publish. It goes live as soon as Summer's automatic checks pass.
+
+## Grow
+
+### Start here
+
+- [What is Summer Grow?](https://docs.summerengine.com/grow/overview.md): Summer Grow, in Summer Studio, is where you publish a game on Summer Games and grow it: numbers, earnings, prices, A/B tests, featured places and your team.
+- [Publish your game from Summer Studio](https://docs.summerengine.com/grow/publish.md): Publish your game on Summer Games from Summer Studio: choose how you earn, fill the desktop and mobile store pages, upload builds and publish. Your game goes live as soon as the automatic checks pass.
+- [Enter the Summer Games Jam](https://docs.summerengine.com/grow/game-jam.md): The Summer Games Jam is a weekly game jam: build a game in a week, enter it from Summer Studio, and players play it on the jam's page on summer.games.
+
+### Insights
+
+- [Summer Grow Analytics: your game's numbers on Summer Games](https://docs.summerengine.com/grow/analytics.md): Summer Grow Analytics shows one Summer Games title day by day: store page views, launches, play sessions, play time, campaign links and your custom events.
+- [Earnings and payouts for your Summer Games titles](https://docs.summerengine.com/grow/earnings.md): Summer Grow shows what your games earn on Summer Games, from paid copies and items sold for Sparks, and how to connect Stripe to get paid for a paid game.
+
+### Grow your game
+
+- [Run a promotion: sales, discounts and prices by country](https://docs.summerengine.com/grow/promotions.md): Run sales on Summer Games from Summer Grow: discount a paid game with start and end dates, set prices by country, and apply for a promotion slot.
+- [Paid growth: ads, email outreach and creator introductions](https://docs.summerengine.com/grow/paid-growth.md): Apply in Summer Grow for paid growth run by the Summer team: ads that link to your summer.games page, emails to players, or introductions to creators.
+- [Get featured on Summer Games](https://docs.summerengine.com/grow/featured-placement.md): Check how ready each store page is to be featured on Summer Games, then apply in Summer Grow for the home hero, New and noteworthy, a collection or genre shelf.
+- [A/B test your store page](https://docs.summerengine.com/grow/ab-tests.md): Run A/B tests on your Summer Games store page in Summer Grow: show two to four versions of art, text or language and see which one more visitors buy.
+- [Build your own Grow dashboards](https://docs.summerengine.com/grow/dashboards.md): Build your own Summer Grow dashboards: tiles for store page views, launches, play sessions, play time or a custom event, as lines, bars or one number.
+- [Alerts: flag a drop in your game's numbers](https://docs.summerengine.com/grow/alerts.md): Summer Grow alerts flag a day when your play sessions or store page views drop, or launches per store page view fall too low, over the last 28 days.
+- [Community: wishlists, follows and comments](https://docs.summerengine.com/grow/community.md): Summer Grow Community shows how many players wishlist and follow each of your games on Summer Games, plus the likes and comments they leave on them.
+- [Live ops: plan updates, events and sales](https://docs.summerengine.com/grow/live-ops.md): Summer Grow Live ops is one planning calendar for your games: release dates from your store pages plus the updates, events, sales and maintenance you plan.
+
+### With your agent
+
+- [Run Summer Grow with your AI agent](https://docs.summerengine.com/grow/use-the-agent.md): The Summer Studio assistant, or your own agent through the Summer Engine MCP, runs Summer Grow: reads numbers, sets prices, runs A/B tests and applies for growth.
+
+## Summer API
+
+### Start here
+
+- [Summer API: game assets for any agent](https://docs.summerengine.com/api/overview.md): One API for game assets: 3D models, images, video, voice, sound effects and music from curated models tested for games. One sign-in, game-ready files in your Summer library. No markup on assets. Every model at the provider's list price.
+- [Summer API quickstart: your first 3D model](https://docs.summerengine.com/api/quickstart.md): Sign in once with summer login, check the price for free, then make a 3D treasure chest and save the GLB. One CLI command, or copy-paste code for curl, TypeScript and Python.
+- [The Summer API from Summer Studio](https://docs.summerengine.com/api/from-studio.md): Signed in to Summer Studio? Open Studio > Developers to connect your coding agent, see every model and its price, and manage each connected app's spend limit.
+- [Use the Summer API from Claude Code, Codex, Cursor, Hermes and ChatGPT](https://docs.summerengine.com/api/agents.md): One step per agent: paste one prompt into Claude Code, Codex, Cursor or Hermes, or add one connector URL in ChatGPT or Claude. You sign in once and choose Allow with a spend limit.
+
+#### Quickstart per agent
+
+- [Summer API quickstart for Claude Code](https://docs.summerengine.com/api/quickstarts/claude-code.md): Connect Claude Code to the Summer API in one command, sign in once with a spend limit, and let it make 3D models, images, video, voice, sound and music for your game.
+- [Summer API quickstart for Codex](https://docs.summerengine.com/api/quickstarts/codex.md): Connect Codex to the Summer API in one command, sign in once with a spend limit, and let it make 3D models, images, video, voice, sound and music for your game.
+- [Summer API quickstart for Cursor](https://docs.summerengine.com/api/quickstarts/cursor.md): Connect Cursor to the Summer API in one command, sign in once with a spend limit, and let the Agent make 3D models, images, video, voice, sound and music for your game.
+- [Summer API quickstart for ChatGPT and Claude](https://docs.summerengine.com/api/quickstarts/chatgpt-and-claude.md): Add the Summer MCP to ChatGPT or Claude as a custom connector, sign in once with a spend limit, and make 3D models, images, video, voice, sound and music in the chat.
+- [Summer API quickstart for Hermes](https://docs.summerengine.com/api/quickstarts/hermes.md): Connect Hermes Agent to the Summer API in one command, sign in once with a spend limit, and let it make 3D models, images, video, voice, sound and music for your game.
+
+### How to make
+
+- [How to make game assets with AI: every guide](https://docs.summerengine.com/api/guides.md): Step-by-step guides for game developers: which Summer API models to chain for a 3D character, sound effects, cutscene music, a trailer, voice lines, a logo, textures and more, with the exact CLI, API and MCP steps and what each costs.
+- [How to make a 3D game character with AI: concept, model, rig and animations](https://docs.summerengine.com/api/guides/3d-character.md): Make a rigged, animated 3D game character with AI: a clean concept picture, image-to-3D with a rig and Idle, Walk, Run and Jump on the same job, and a matching portrait for your dialogue UI. Exact CLI, API and MCP steps and what it costs.
+- [How to make sound effects for your game with AI: a full SFX pack in one batch](https://docs.summerengine.com/api/guides/sound-effects.md): Make a complete game sound effects pack with AI: UI clicks, footsteps on four materials, hits, swings, pickups and a looping ambience, as one batch. Prompts that work, lengths, loops, file names, mixing and keeping the set consistent, with exact CLI, API and MCP steps and the cost.
+- [How to make music for your game's cutscenes with AI: timed cues, a menu loop and a combat theme](https://docs.summerengine.com/api/guides/cutscene-music.md): Make game music with AI that sounds like one score: a cutscene cue timed to the scene's length, a menu loop and a combat theme that share one musical identity, plus a victory sting. Tempo and bar math, prompts that work, loop points and mixing, with exact CLI, API and MCP steps and the cost.
+- [How to make cutscenes for your game with AI: on-model shots, a voice line and a music cue](https://docs.summerengine.com/api/guides/cutscenes.md): Make a game cutscene with AI that keeps your character on-model: a character reference picture, a style frame, image-to-video shots, sound made from each finished shot, a voice line, a music cue and sound accents, then assemble the shots. Exact CLI, API and MCP steps and what it costs.
+- [How to make a game trailer with AI: real gameplay, a hook shot, music and store cuts](https://docs.summerengine.com/api/guides/trailer.md): Make a game trailer with AI around your real gameplay: key art, an image-to-video hook shot, transitions, title cards, a trailer music cue, a voiceover and hits, then a 16:9 store cut and a 9:16 social cut. Structure, capture tips, exact CLI, API and MCP steps and the cost.
+- [How to make voice lines for game characters with AI: casting, delivery, barks and dialogue](https://docs.summerengine.com/api/guides/voice-lines.md): Make voice lines for game characters with AI: cast each character from the model's voice list, direct delivery with punctuation and stage words, make story lines, multi-character conversations and hundreds of combat barks, and voice other languages with the same cast. Exact CLI, API and MCP steps and the cost.
+- [How to make a game logo and vector-style art with AI](https://docs.summerengine.com/api/guides/logo-and-vector-art.md): Make a game title logo with the exact lettering you typed, on a transparent background, plus an emblem, a one-colour version and flat vector-style illustrations in the same style. Which models get text right, exact CLI, API and MCP steps, what to check before you print or ship, and what it costs.
+- [How to make seamless textures for your game with AI](https://docs.summerengine.com/api/guides/textures.md): Make tileable ground, wall and material textures for your game with AI: one anchor texture, a matching set from it, a seam check you can trust, a free normal map, and tiling in the engine. Exact CLI, API and MCP steps and what it costs.
+- [How to make 3D props and an environment kit with AI](https://docs.summerengine.com/api/guides/props-and-environment.md): Make a style-locked 3D environment kit with AI: one style sentence, a concept sheet, a clean picture per piece, image-to-3D with a polygon budget, batches of 20 to 100 pieces, and scale and placement in the engine. Exact CLI, API and MCP steps and what it costs.
+- [How to make game icons and item sprites with AI](https://docs.summerengine.com/api/guides/icons-and-sprites.md): Make a matching set of inventory icons and item sprites with AI: one style anchor, the same style words and seed, a reference picture for every icon, transparent backgrounds, the right sizes, pixel art, and simple sprite animation. Exact CLI, API and MCP steps and what it costs.
+- [How to make an animated title screen for your game](https://docs.summerengine.com/api/guides/menu-background.md): Make an animated title screen with AI: key art with room for the logo and menu, a short video loop with no visible seam, a menu music loop that repeats without a gap, a confirm sound, and the scene that plays it all. Exact CLI, API and MCP steps and what it costs.
+
+### Models and pricing
+
+- [Summer API models and pricing](https://docs.summerengine.com/api/models.md): Every model on the Summer API with its price: 16 3D models, 14 image models, 40 video models, 19 voice models, 1 dialogue model, 4 sound effect models, 6 music models, 3 motion models. No markup on assets. Every model at the provider's list price. Generated from GET /v1/models.
+
+#### 3D models
+
+- [Hunyuan 3D Pro](https://docs.summerengine.com/api/models/3d/hunyuan-3d.md): Hunyuan 3D Pro on the Summer API: $0.525 per model, about 5 min, GLB saved to your Summer library. Model id 3d/hunyuan-3d.
+- [TRELLIS Multi-image](https://docs.summerengine.com/api/models/3d/trellis-multi.md): TRELLIS Multi-image on the Summer API: $0.062 per model, about 53 s, GLB saved to your Summer library. Model id 3d/trellis-multi.
+- [Rodin 2.5 Fast](https://docs.summerengine.com/api/models/3d/rodin-2-5-fast.md): Rodin 2.5 Fast on the Summer API: $0.10 per model, about 2 min, GLB saved to your Summer library. Model id 3d/rodin-2.5-fast.
+- [Tripo H3.1](https://docs.summerengine.com/api/models/3d/tripo-h3-1.md): Tripo H3.1 on the Summer API: $0.20 per model, about 5 min, GLB saved to your Summer library. Model id 3d/tripo-h3.1.
+- [Hunyuan 3D Rapid](https://docs.summerengine.com/api/models/3d/hunyuan-3d-rapid.md): Hunyuan 3D Rapid on the Summer API: $0.225 per model, about 3 min, GLB saved to your Summer library. Model id 3d/hunyuan-3d-rapid.
+- [Pixal3D](https://docs.summerengine.com/api/models/3d/pixal3d.md): Pixal3D on the Summer API: $0.342 per model, about 8 min, GLB saved to your Summer library. Model id 3d/pixal3d.
+- [Trellis 2](https://docs.summerengine.com/api/models/3d/trellis-2.md): Trellis 2 on the Summer API: $0.342 per model, about 5 min, GLB saved to your Summer library. Model id 3d/trellis-2.
+- [Rodin 2.5 High](https://docs.summerengine.com/api/models/3d/rodin-2-5.md): Rodin 2.5 High on the Summer API: $0.40 per model, about 5 min, GLB saved to your Summer library. Model id 3d/rodin-2.5.
+- [Hunyuan3D v2 Multi-view Turbo](https://docs.summerengine.com/api/models/3d/hunyuan3d-v2-multiview-turbo.md): Hunyuan3D v2 Multi-view Turbo on the Summer API: $0.462 per model, about 2 min, GLB saved to your Summer library. Model id 3d/hunyuan3d-v2-multiview-turbo.
+- [Hunyuan3D v2 Multi-view](https://docs.summerengine.com/api/models/3d/hunyuan3d-v2-multiview.md): Hunyuan3D v2 Multi-view on the Summer API: $0.522 per model, about 2 min, GLB saved to your Summer library. Model id 3d/hunyuan3d-v2-multiview.
+- [Hunyuan3D v3](https://docs.summerengine.com/api/models/3d/hunyuan3d-v3.md): Hunyuan3D v3 on the Summer API: $0.525 per model, about 3 min, GLB saved to your Summer library. Model id 3d/hunyuan3d-v3.
+- [Tripo P1](https://docs.summerengine.com/api/models/3d/tripo-p1.md): Tripo P1 on the Summer API: $0.542 per model, about 2 min, GLB saved to your Summer library. Model id 3d/tripo-p1.
+- [Meshy 6](https://docs.summerengine.com/api/models/3d/meshy-6.md): Meshy 6 on the Summer API: $0.80 per model, about 8 min, GLB saved to your Summer library. Model id 3d/meshy-6.
+- [Tripo P2](https://docs.summerengine.com/api/models/3d/tripo-p2.md): Tripo P2 on the Summer API: $1.10 per model, about 4 min, GLB saved to your Summer library. Model id 3d/tripo-p2.
+- [Meshy 7.1](https://docs.summerengine.com/api/models/3d/meshy-7-1.md): Meshy 7.1 on the Summer API: $1.20 per model, about 7 min, GLB saved to your Summer library. Model id 3d/meshy-7.1.
+- [Hi3D V3.0](https://docs.summerengine.com/api/models/3d/hi3d-v3.md): Hi3D V3.0 on the Summer API: $2.142 per model, about 18 min, GLB saved to your Summer library. Model id 3d/hi3d-v3.
+
+#### Images
+
+- [Nano Banana 2 Lite](https://docs.summerengine.com/api/models/image/nano-banana-2.md): Nano Banana 2 Lite on the Summer API: $0.042 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/nano-banana-2.
+- [Grok Imagine 2](https://docs.summerengine.com/api/models/image/grok-imagine-2.md): Grok Imagine 2 on the Summer API: $0.06 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/grok-imagine-2.
+- [FLUX 3 Klein](https://docs.summerengine.com/api/models/image/flux-3-klein.md): FLUX 3 Klein on the Summer API: $0.009 per image, about 2 s, PNG, JPG, WEBP saved to your Summer library. Model id image/flux-3-klein.
+- [Muse Image](https://docs.summerengine.com/api/models/image/muse-image.md): Muse Image on the Summer API: $0.01 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/muse-image.
+- [Grok Imagine](https://docs.summerengine.com/api/models/image/grok-imagine.md): Grok Imagine on the Summer API: $0.02 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/grok-imagine.
+- [Recraft V4.1](https://docs.summerengine.com/api/models/image/recraft-4-1.md): Recraft V4.1 on the Summer API: $0.035 per image, about 6 s, PNG, JPG, WEBP saved to your Summer library. Model id image/recraft-4.1.
+- [Nano Banana 2.1](https://docs.summerengine.com/api/models/image/nano-banana-2-1.md): Nano Banana 2.1 on the Summer API: $0.04 per image, about 22 s, PNG, JPG, WEBP saved to your Summer library. Model id image/nano-banana-2.1.
+- [FLUX 3](https://docs.summerengine.com/api/models/image/flux-3.md): FLUX 3 on the Summer API: $0.048 per image, about 21 s, PNG, JPG, WEBP saved to your Summer library. Model id image/flux-3.
+- [GPT Image 2.5](https://docs.summerengine.com/api/models/image/gpt-image-2-5.md): GPT Image 2.5 on the Summer API: $0.053 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/gpt-image-2.5.
+- [Ideogram 3 Transparent](https://docs.summerengine.com/api/models/image/ideogram-transparent.md): Ideogram 3 Transparent on the Summer API: $0.06 per image, about 22 s, PNG, JPG, WEBP saved to your Summer library. Model id image/ideogram-transparent.
+- [Ideogram 4.5](https://docs.summerengine.com/api/models/image/ideogram-4-5.md): Ideogram 4.5 on the Summer API: $0.06 per image, about 11 s, PNG, JPG, WEBP saved to your Summer library. Model id image/ideogram-4.5.
+- [Seedream 5.0 Pro](https://docs.summerengine.com/api/models/image/seedream-5-pro.md): Seedream 5.0 Pro on the Summer API: $0.135 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/seedream-5-pro.
+- [Ideogram Vector](https://docs.summerengine.com/api/models/image/ideogram-vector.md): Ideogram Vector on the Summer API: $0.16 per image, about 26 s, PNG, JPG, WEBP saved to your Summer library. Model id image/ideogram-vector.
+- [GPT Image 2](https://docs.summerengine.com/api/models/image/gpt-image-2.md): GPT Image 2 on the Summer API: $0.211 per image, PNG, JPG, WEBP saved to your Summer library. Model id image/gpt-image-2.
+
+#### Video
+
+- [Kling 3.0 Standard](https://docs.summerengine.com/api/models/video/kling-3.md): Kling 3.0 Standard on the Summer API: $0.14 per second, MP4 saved to your Summer library. Model id video/kling-3.
+- [Gemini Omni Flash](https://docs.summerengine.com/api/models/video/gemini-omni-flash.md): Gemini Omni Flash on the Summer API: $0.125 per second, MP4 saved to your Summer library. Model id video/gemini-omni-flash.
+- [Kling 3.0 Pro](https://docs.summerengine.com/api/models/video/kling-3-pro.md): Kling 3.0 Pro on the Summer API: $0.168 per second, MP4 saved to your Summer library. Model id video/kling-3-pro.
+- [Seedance 2.0 Fast](https://docs.summerengine.com/api/models/video/seedance-2-fast-ref.md): Seedance 2.0 Fast on the Summer API: $0.242 per second, MP4 saved to your Summer library. Model id video/seedance-2-fast-ref.
+- [HeyGen Video](https://docs.summerengine.com/api/models/video/heygen-video.md): HeyGen Video on the Summer API: $0.01 per second, about 14 s, MP4 saved to your Summer library. Model id video/heygen-video.
+- [HeyGen Video References](https://docs.summerengine.com/api/models/video/heygen-video-ref.md): HeyGen Video References on the Summer API: $0.01 per second, about 48 s, MP4 saved to your Summer library. Model id video/heygen-video-ref.
+- [ThinkSound](https://docs.summerengine.com/api/models/video/thinksound.md): ThinkSound on the Summer API: $0.01 per second, about 8 min, MP4 saved to your Summer library. Model id video/thinksound.
+- [MiniMax H3 Max Turbo](https://docs.summerengine.com/api/models/video/minimax-h3-max-turbo.md): MiniMax H3 Max Turbo on the Summer API: $0.026 per second, about 2 s, MP4 saved to your Summer library. Model id video/minimax-h3-max-turbo.
+- [Grok Imagine Video 1.5 Lite](https://docs.summerengine.com/api/models/video/grok-video-1-5-lite.md): Grok Imagine Video 1.5 Lite on the Summer API: $0.03 per second, about 28 s, MP4 saved to your Summer library. Model id video/grok-video-1.5-lite.
+- [Kling Video to Audio](https://docs.summerengine.com/api/models/video/kling-video-to-audio.md): Kling Video to Audio on the Summer API: $0.035 per clip, about 39 s, MP4 saved to your Summer library. Model id video/kling-video-to-audio.
+- [Veo 3.1 Lite](https://docs.summerengine.com/api/models/video/veo3-1-lite.md): Veo 3.1 Lite on the Summer API: $0.05 per second, MP4 saved to your Summer library. Model id video/veo3.1-lite.
+- [PixVerse V6](https://docs.summerengine.com/api/models/video/pixverse-v6.md): PixVerse V6 on the Summer API: $0.06 per second, MP4 saved to your Summer library. Model id video/pixverse-v6.
+- [Vidu Q4](https://docs.summerengine.com/api/models/video/vidu-q4.md): Vidu Q4 on the Summer API: $0.0665 per second, about 2 min, MP4 saved to your Summer library. Model id video/vidu-q4.
+- [MiniMax H3 Max](https://docs.summerengine.com/api/models/video/minimax-h3-max.md): MiniMax H3 Max on the Summer API: $0.08 per second, MP4 saved to your Summer library. Model id video/minimax-h3-max.
+- [MiniMax H3 Max References](https://docs.summerengine.com/api/models/video/minimax-h3-max-ref.md): MiniMax H3 Max References on the Summer API: $0.08 per second, MP4 saved to your Summer library. Model id video/minimax-h3-max-ref.
+- [MiniMax H3 Max Reframe](https://docs.summerengine.com/api/models/video/minimax-h3-max-reframe.md): MiniMax H3 Max Reframe on the Summer API: $0.08 per second, about 22 s, MP4 saved to your Summer library. Model id video/minimax-h3-max-reframe.
+- [Gemini Omni Flash 1.1](https://docs.summerengine.com/api/models/video/gemini-omni-flash-1-1.md): Gemini Omni Flash 1.1 on the Summer API: $0.10 per second, MP4 saved to your Summer library. Model id video/gemini-omni-flash-1.1.
+- [Gemini Omni Flash 1.1](https://docs.summerengine.com/api/models/video/gemini-omni-flash-1-1-edit.md): Gemini Omni Flash 1.1 on the Summer API: $0.10 per second, about 46 s, MP4 saved to your Summer library. Model id video/gemini-omni-flash-1.1-edit.
+- [Gemini Omni Flash 1.1 References](https://docs.summerengine.com/api/models/video/gemini-omni-flash-1-1-ref.md): Gemini Omni Flash 1.1 References on the Summer API: $0.10 per second, MP4 saved to your Summer library. Model id video/gemini-omni-flash-1.1-ref.
+- [Wan 3.0](https://docs.summerengine.com/api/models/video/wan-3.md): Wan 3.0 on the Summer API: $0.10 per second, MP4 saved to your Summer library. Model id video/wan-3.
+- [Wan 3.0 References](https://docs.summerengine.com/api/models/video/wan-3-ref.md): Wan 3.0 References on the Summer API: $0.10 per second, MP4 saved to your Summer library. Model id video/wan-3-ref.
+- [LTX-2.5 Pro](https://docs.summerengine.com/api/models/video/ltx-2-5-pro.md): LTX-2.5 Pro on the Summer API: $0.12 per second, MP4 saved to your Summer library. Model id video/ltx-2-5-pro.
+- [Kling 3.0 Motion Control](https://docs.summerengine.com/api/models/video/kling-3-motion-control.md): Kling 3.0 Motion Control on the Summer API: $0.126 per second, about 3 min, MP4 saved to your Summer library. Model id video/kling-3-motion-control.
+- [Gemini Omni Flash](https://docs.summerengine.com/api/models/video/gemini-omni-flash-ref.md): Gemini Omni Flash on the Summer API: $0.13 per second, MP4 saved to your Summer library. Model id video/gemini-omni-flash-ref.
+- [Gemini Omni Flash](https://docs.summerengine.com/api/models/video/gemini-omni-flash-edit.md): Gemini Omni Flash on the Summer API: $0.13 per second, MP4 saved to your Summer library. Model id video/gemini-omni-flash-edit.
+- [Grok Imagine Video 1.5](https://docs.summerengine.com/api/models/video/grok-video-1-5.md): Grok Imagine Video 1.5 on the Summer API: $0.14 per second, MP4 saved to your Summer library. Model id video/grok-video-1.5.
+- [HappyHorse 1.1](https://docs.summerengine.com/api/models/video/happy-horse-1-1.md): HappyHorse 1.1 on the Summer API: $0.14 per second, MP4 saved to your Summer library. Model id video/happy-horse-1.1.
+- [HappyHorse 1.1 References](https://docs.summerengine.com/api/models/video/happy-horse-1-1-ref.md): HappyHorse 1.1 References on the Summer API: $0.14 per second, MP4 saved to your Summer library. Model id video/happy-horse-1.1-ref.
+- [Grok Imagine Video 1.5 References](https://docs.summerengine.com/api/models/video/grok-video-1-5-ref.md): Grok Imagine Video 1.5 References on the Summer API: $0.15 per second, MP4 saved to your Summer library. Model id video/grok-video-1.5-ref.
+- [Veo 3.1 Fast](https://docs.summerengine.com/api/models/video/veo3-1-fast.md): Veo 3.1 Fast on the Summer API: $0.15 per second, MP4 saved to your Summer library. Model id video/veo3.1-fast.
+- [Vidu Q3 Pro](https://docs.summerengine.com/api/models/video/vidu-q3.md): Vidu Q3 Pro on the Summer API: $0.154 per second, MP4 saved to your Summer library. Model id video/vidu-q3.
+- [Kling 4.0](https://docs.summerengine.com/api/models/video/kling-4.md): Kling 4.0 on the Summer API: $0.157 per second, about 3 min, MP4 saved to your Summer library. Model id video/kling-4.
+- [Kling 4.0 References](https://docs.summerengine.com/api/models/video/kling-4-ref.md): Kling 4.0 References on the Summer API: $0.157 per second, about 62 s, MP4 saved to your Summer library. Model id video/kling-4-ref.
+- [Kling 3.0 Motion Control Pro](https://docs.summerengine.com/api/models/video/kling-3-pro-motion-control.md): Kling 3.0 Motion Control Pro on the Summer API: $0.168 per second, MP4 saved to your Summer library. Model id video/kling-3-pro-motion-control.
+- [Luma Ray 3.2](https://docs.summerengine.com/api/models/video/luma-ray-3-2.md): Luma Ray 3.2 on the Summer API: $0.20 per second, MP4 saved to your Summer library. Model id video/luma-ray-3.2.
+- [Seedance 2.0 Fast](https://docs.summerengine.com/api/models/video/seedance-2-fast.md): Seedance 2.0 Fast on the Summer API: $0.242 per second, MP4 saved to your Summer library. Model id video/seedance-2-fast.
+- [Veo 3.1](https://docs.summerengine.com/api/models/video/veo3-1.md): Veo 3.1 on the Summer API: $0.40 per second, MP4 saved to your Summer library. Model id video/veo3.1.
+- [Seedance 2.5](https://docs.summerengine.com/api/models/video/seedance-2-5.md): Seedance 2.5 on the Summer API: $0.462 per second, MP4 saved to your Summer library. Model id video/seedance-2.5.
+- [Seedance 2.5 References](https://docs.summerengine.com/api/models/video/seedance-2-5-ref.md): Seedance 2.5 References on the Summer API: $0.462 per second, MP4 saved to your Summer library. Model id video/seedance-2.5-ref.
+- [Veo 3.1 Reference](https://docs.summerengine.com/api/models/video/veo3-1-ref.md): Veo 3.1 Reference on the Summer API: $3.20 per clip, MP4 saved to your Summer library. Model id video/veo3.1-ref.
+
+#### Voice
+
+- [Expressive v3](https://docs.summerengine.com/api/models/voice/expressive-v3.md): Expressive v3 on the Summer API: $0.08 per 1,000 characters, about 5 s, MP3 saved to your Summer library. Model id voice/expressive-v3.
+- [Multilingual v2](https://docs.summerengine.com/api/models/voice/multilingual-v2.md): Multilingual v2 on the Summer API: $0.08 per 1,000 characters, about 5 s, MP3 saved to your Summer library. Model id voice/multilingual-v2.
+- [HeyGen Voice Turbo](https://docs.summerengine.com/api/models/voice/heygen-voice-turbo.md): HeyGen Voice Turbo on the Summer API: $0.002 per 1,000 characters, about 11 s, MP3 saved to your Summer library. Model id voice/heygen-voice-turbo.
+- [Inworld TTS-1.5 Max](https://docs.summerengine.com/api/models/voice/inworld-tts-1-5-max.md): Inworld TTS-1.5 Max on the Summer API: $0.01 per 1,000 characters, about 4 s, MP3 saved to your Summer library. Model id voice/inworld-tts-1.5-max.
+- [HeyGen Voice](https://docs.summerengine.com/api/models/voice/heygen-voice.md): HeyGen Voice on the Summer API: $0.015 per 1,000 characters, about 11 s, MP3 saved to your Summer library. Model id voice/heygen-voice.
+- [xAI TTS](https://docs.summerengine.com/api/models/voice/xai-tts-v1.md): xAI TTS on the Summer API: $0.015 per 1,000 characters, about 4 s, MP3 saved to your Summer library. Model id voice/xai-tts-v1.
+- [Gemini 3.8 Flash Lite TTS](https://docs.summerengine.com/api/models/voice/gemini-3-8-flash-lite-tts.md): Gemini 3.8 Flash Lite TTS on the Summer API: $0.03 per 1,000 characters, about 4 s, MP3 saved to your Summer library. Model id voice/gemini-3.8-flash-lite-tts.
+- [Expressive v4 Turbo](https://docs.summerengine.com/api/models/voice/expressive-v4-turbo.md): Expressive v4 Turbo on the Summer API: $0.04 per 1,000 characters, about 2 s, MP3 saved to your Summer library. Model id voice/expressive-v4-turbo.
+- [Flash v2.5](https://docs.summerengine.com/api/models/voice/flash-v2-5.md): Flash v2.5 on the Summer API: $0.04 per 1,000 characters, about 3 s, MP3 saved to your Summer library. Model id voice/flash-v2.5.
+- [Gemini 3.8 Flash TTS](https://docs.summerengine.com/api/models/voice/gemini-3-8-flash-tts.md): Gemini 3.8 Flash TTS on the Summer API: $0.045 per 1,000 characters, about 7 s, MP3 saved to your Summer library. Model id voice/gemini-3.8-flash-tts.
+- [Gemini 3.1 Flash TTS](https://docs.summerengine.com/api/models/voice/gemini-3-1-flash-tts.md): Gemini 3.1 Flash TTS on the Summer API: $0.05 per 1,000 characters, about 4 s, MP3 saved to your Summer library. Model id voice/gemini-3.1-flash-tts.
+- [Qwen Audio 3.0 TTS](https://docs.summerengine.com/api/models/voice/qwen-audio-3-tts.md): Qwen Audio 3.0 TTS on the Summer API: $0.05 per 1,000 characters, about 6 s, MP3 saved to your Summer library. Model id voice/qwen-audio-3-tts.
+- [MiniMax Speech 2.8 Turbo](https://docs.summerengine.com/api/models/voice/minimax-speech-2-8-turbo.md): MiniMax Speech 2.8 Turbo on the Summer API: $0.06 per 1,000 characters, about 5 s, MP3 saved to your Summer library. Model id voice/minimax-speech-2.8-turbo.
+- [Qwen3 TTS 0.6B](https://docs.summerengine.com/api/models/voice/qwen-3-tts-0-6b.md): Qwen3 TTS 0.6B on the Summer API: $0.07 per 1,000 characters, about 70 s, MP3 saved to your Summer library. Model id voice/qwen-3-tts-0.6b.
+- [Expressive v4](https://docs.summerengine.com/api/models/voice/expressive-v4.md): Expressive v4 on the Summer API: $0.08 per 1,000 characters, about 1 s, MP3 saved to your Summer library. Model id voice/expressive-v4.
+- [Qwen3 TTS 1.7B](https://docs.summerengine.com/api/models/voice/qwen-3-tts-1-7b.md): Qwen3 TTS 1.7B on the Summer API: $0.09 per 1,000 characters, about 86 s, MP3 saved to your Summer library. Model id voice/qwen-3-tts-1.7b.
+- [Qwen3 TTS Voice Design](https://docs.summerengine.com/api/models/voice/qwen-3-tts-voice-design.md): Qwen3 TTS Voice Design on the Summer API: $0.09 per 1,000 characters, about 61 s, MP3 saved to your Summer library. Model id voice/qwen-3-tts-voice-design.
+- [MiniMax Speech 2.8 HD](https://docs.summerengine.com/api/models/voice/minimax-speech-2-8-hd.md): MiniMax Speech 2.8 HD on the Summer API: $0.10 per 1,000 characters, about 5 s, MP3 saved to your Summer library. Model id voice/minimax-speech-2.8-hd.
+- [Seed Audio 1.0](https://docs.summerengine.com/api/models/voice/seed-audio-1-0.md): Seed Audio 1.0 on the Summer API: $0.223 per 1,000 characters, about 36 s, MP3 saved to your Summer library. Model id voice/seed-audio-1.0.
+
+#### Dialogue
+
+- [Expressive v3](https://docs.summerengine.com/api/models/dialogue/expressive-v3.md): Expressive v3 on the Summer API: $0.08 per 1,000 characters, about 5 s, MP3 saved to your Summer library. Model id dialogue/expressive-v3.
+
+#### Sound effects
+
+- [Sound Effects v2](https://docs.summerengine.com/api/models/sound/sfx-v2.md): Sound Effects v2 on the Summer API: $0.002 per second, about 3 s, WAV saved to your Summer library. Model id sound/sfx-v2.
+- [Sonilo SFX 1.1](https://docs.summerengine.com/api/models/sound/sonilo-sfx-1-1.md): Sonilo SFX 1.1 on the Summer API: $0.0018 per second, about 12 s, WAV saved to your Summer library. Model id sound/sonilo-sfx-1.1.
+- [Mirelo SFX 2.0](https://docs.summerengine.com/api/models/sound/mirelo-sfx-2-0.md): Mirelo SFX 2.0 on the Summer API: $0.01 per second, about 5 s, WAV saved to your Summer library. Model id sound/mirelo-sfx-2.0.
+- [Stable Audio 3 SFX](https://docs.summerengine.com/api/models/sound/stable-audio-3-sfx.md): Stable Audio 3 SFX on the Summer API: $0.0206 per sound, about 3 s, WAV saved to your Summer library. Model id sound/stable-audio-3-sfx.
+
+#### Music
+
+- [Music v2](https://docs.summerengine.com/api/models/music/music-v2.md): Music v2 on the Summer API: $0.0025 per second, about 10 s, MP3 saved to your Summer library. Model id music/music-v2.
+- [MiniMax Music 3](https://docs.summerengine.com/api/models/music/minimax-music-3.md): MiniMax Music 3 on the Summer API: $0.002 per second, about 10 s, MP3 saved to your Summer library. Model id music/minimax-music-3.
+- [Music v1](https://docs.summerengine.com/api/models/music/music-v1.md): Music v1 on the Summer API: $0.0025 per second, about 10 s, MP3 saved to your Summer library. Model id music/music-v1.
+- [Music v2.5](https://docs.summerengine.com/api/models/music/music-v2-5.md): Music v2.5 on the Summer API: $0.0025 per second, about 5 s, MP3 saved to your Summer library. Model id music/music-v2.5.
+- [MiniMax Music v2](https://docs.summerengine.com/api/models/music/minimax-music-v2.md): MiniMax Music v2 on the Summer API: $0.03 per track, about 25 s, MP3 saved to your Summer library. Model id music/minimax-music-v2.
+- [Lyria 2](https://docs.summerengine.com/api/models/music/lyria-2.md): Lyria 2 on the Summer API: $0.10 per track, about 25 s, MP3 saved to your Summer library. Model id music/lyria-2.
+
+#### Motion
+
+- [Meshy animation library](https://docs.summerengine.com/api/models/motion/library.md): Meshy animation library on the Summer API: $0.12 per animation, FBX, GLB saved to your Summer library. Model id motion/library.
+- [Hunyuan Motion Fast](https://docs.summerengine.com/api/models/motion/hunyuan-motion-fast.md): Hunyuan Motion Fast on the Summer API: $0.06 per animation, FBX, GLB saved to your Summer library. Model id motion/hunyuan-motion-fast.
+- [Hunyuan Motion](https://docs.summerengine.com/api/models/motion/hunyuan-motion.md): Hunyuan Motion on the Summer API: $0.08 per animation, FBX, GLB saved to your Summer library. Model id motion/hunyuan-motion.
+
+### Use the API
+
+- [Summer API sign-in, spend limits and balance](https://docs.summerengine.com/api/sign-in.md): Sign in once with summer login, get a token for curl with summer token, set a spend limit per connected app, and read the app's limit and your paid balance with GET /v1/key and GET /v1/balance.
+- [Summer API jobs: estimate, run, batches, follow, webhooks and download](https://docs.summerengine.com/api/jobs.md): How a Summer API job works: price it with POST /v1/estimate, start it with POST /v1/jobs or up to 500 at once with POST /v1/batches, follow it with GET /v1/jobs/{id}, server-sent events or a signed webhook, then download the result. No rate limits on paid usage.
+- [Summer API errors](https://docs.summerengine.com/api/errors.md): Every Summer API error has one shape: type, code, message, param, request_id and doc_url. Each code, its HTTP status, and what your code or agent should do.
+
+### API reference
+
+- [List models](https://docs.summerengine.com/api/reference/get-models.md): Every Summer API model with its id, input schema, output formats, typical time and price. Public, no sign-in.
+- [Get a model](https://docs.summerengine.com/api/reference/get-models-model.md): One model by id, dated id or default alias, with its input schema and price. Public, no sign-in.
+- [Estimate a job](https://docs.summerengine.com/api/reference/post-estimate.md): The price of one exact job before it runs, what makes it up, and a quote id that holds the price for 15 minutes. Free, no sign-in.
+- [Run a job](https://docs.summerengine.com/api/reference/post-jobs.md): Run one model on its input. The files go to your Summer library. Short jobs come back done; long ones answer running with a job id to follow with GET /v1/jobs/{jobId}. A quoteId caps the charge.
+- [Get a job](https://docs.summerengine.com/api/reference/get-jobs-jobid.md): Read a job: its state, progress and, when done, result.assets with each file's Summer URL.
+- [Follow a job](https://docs.summerengine.com/api/reference/get-jobs-jobid-events.md): Follow a job as server-sent events: a job event on each change, then done.
+- [Cancel a job](https://docs.summerengine.com/api/reference/post-jobs-jobid-cancel.md): Stop a job that has not finished.
+- [Start a file upload](https://docs.summerengine.com/api/reference/post-files.md): Start a picture upload (PNG, JPEG or WebP): POST every field plus the file to uploadUrl, then call POST /v1/files/complete.
+- [Finish a file upload](https://docs.summerengine.com/api/reference/post-files-complete.md): Finish a picture upload. The picture becomes a private asset in your Summer library, with a fileUrl to send as imageUrl.
+- [Search voices](https://docs.summerengine.com/api/reference/get-voices.md): Find voices for a voice or dialogue model: Summer's curated voices first, then the public voice library by words, language, gender, age or accent, each with a sample.
+- [Play a voice sample](https://docs.summerengine.com/api/reference/get-voices-preview-token.md): A voice's short sample, from the previewUrl in GET /v1/voices.
+- [Make a webhook secret](https://docs.summerengine.com/api/reference/post-webhooks-secret.md): Make your webhook signing secret, shown once. A new one stops the old one at once.
+- [List webhook deliveries](https://docs.summerengine.com/api/reference/get-webhooks-deliveries.md): Your newest webhook deliveries, each with every attempt.
+- [Read the app's limit](https://docs.summerengine.com/api/reference/get-key.md): The connected app behind this token: its name, spend limit, what it spent this period and when that resets.
+- [Read your balance](https://docs.summerengine.com/api/reference/get-balance.md): Your paid credit balance and what this app can spend now.
+- [Sign this app out](https://docs.summerengine.com/api/reference/delete-key.md): The signed-in app revokes its own grant. The next call with its token answers 401. Sign in again to connect it again.
+- [Read a batch](https://docs.summerengine.com/api/reference/get-batches-batchid.md): Every job of the batch with its state (queued, running, done, failed) and, when done, its result, plus counts by state.
+- [Lower this app's limit](https://docs.summerengine.com/api/reference/patch-key.md): The signed-in app lowers its own spend limit, or keeps it. A higher amount, no limit, or a reset that comes sooner is refused (403 limit_raise_needs_person): raise it in Settings > Connected apps.
+- [Run up to 500 jobs](https://docs.summerengine.com/api/reference/post-batches.md): No rate limits on paid usage. Every job is priced first: when your paid credits and the app's own limit cover them all, all are accepted (202) and run in order as your running slots free up (10 at once, up to 40 as you buy more credits). If they do not fit, nothing is accepted: 402 says how many fit and how much more is needed. Optional Idempotency-Key for the whole batch; each job may carry its own idempotencyKey.
+
+## Summer Router
+
+### Start here
+
+- [Summer Router: AI inside your game, with no keys in the build](https://docs.summerengine.com/router/overview.md): Summer Router lets a shipped game use frontier AI while people play: characters that talk and use your game's tools, lines in a character's voice, and images. No key in the build, caps on by default, paid from your Summer credits.
+- [Summer Router quickstart: add a talking character to your game](https://docs.summerengine.com/router/quickstart.md): Add a guard the player can talk to, who opens the gate when convinced: make the character in Summer Studio, add one node to your scene, and play it on Summer Games.
+- [Summer Router in single-player and multiplayer games](https://docs.summerengine.com/router/server-and-client.md): Single-player games call Summer.client.router from the player's game. Multiplayer games call Summer.authority.router from the server, for one player's session, and send the result to the players.
+
+### Capabilities
+
+- [Summer Router capabilities](https://docs.summerengine.com/router/capabilities.md): What a game can do with Summer Router at runtime: character reply, speech, image. Metered per call from the creator's Summer credits.
+- [Summer Router models and prices](https://docs.summerengine.com/router/models.md): Every model a game can use through Summer Router, with its price per unit. Usage is billed at the provider's cost from the game owner's paid Summer credits.
+- [Summer Router: character reply](https://docs.summerengine.com/router/character-reply.md): A character answers the player in text, remembers the conversation and calls your game's tools. Call it from your game with Summer.client.router.reply(character: String, text: String, options: Dictionary = {}).
+- [Summer Router: character voice session](https://docs.summerengine.com/router/character-voice.md): A live voice conversation with a character, with interruptions and tool calls. Call it from your game with Summer.client.router.talk(character: String, options: Dictionary = {"mode": "voice"}).
+- [Summer Router: speech](https://docs.summerengine.com/router/speech.md): A line spoken in a character's voice. Call it from your game with Summer.client.router.speak(text: String, options: Dictionary = {"character": ""}).
+- [Summer Router: transcribe](https://docs.summerengine.com/router/transcribe.md): What the player said, as text. Call it from your game with Summer.client.router.transcribe(clip: AudioStream, options: Dictionary = {}).
+- [Summer Router: image](https://docs.summerengine.com/router/image.md): An image made while the player plays, from a prompt and an optional reference picture. Call it from your game with Summer.client.router.generate("image", {"prompt": prompt, "size": "1024x1024"}).
+
+### Run your game
+
+- [Summer Router limits and caps](https://docs.summerengine.com/router/limits.md): Every game starts with spend caps and rate limits: $5 per player per day, $100 per game per day, 30 calls a minute per player. Change them per game in Studio.
+- [Summer Router errors](https://docs.summerengine.com/router/errors.md): Every Summer Router refusal has one stable tag, a one-line fix and a docs link, and the game keeps running. Each tag, its status and what to do.
+
+## MCP
+
+### Overview
+
+- [Summer MCP Servers: Summer Engine MCP and Summer Games MCP](https://docs.summerengine.com/mcp/summer-mcps.md): Summer has two public MCP servers: the Summer Engine MCP lets an agent build and publish games; the Summer Games MCP lets players use their account from Claude or ChatGPT.
+- [Use Summer from any AI agent: MCP, CLI and skills](https://docs.summerengine.com/mcp/overview.md): How coding agents and chat apps work with Summer: the Summer MCP server, the summer command and the Summer skills. What each one does, which one to use, and one command that sets them all up.
+- [Summer MCP setup for Claude Code, Codex, Cursor and any agent](https://docs.summerengine.com/mcp/setup.md): Connect any AI agent to Summer with one command: npx -y summer-engine@latest setup <agent> --yes. Or add the hosted server mcp.summerengine.com/mcp to a chat app. Verify it, sign in, and fix common problems.
+- [Agent Permissions and Approvals in Summer Studio](https://docs.summerengine.com/mcp/permissions.md): Six switches in Summer Studio say what connected agents may do without asking. When a change needs your yes, the agent gives you an approval link.
+- [Use Summer Engine in ChatGPT and Claude](https://docs.summerengine.com/mcp/chatgpt-and-claude.md): Add Summer to ChatGPT or Claude as a custom connector at mcp.summerengine.com/mcp and sign in once. What the two app-directory versions can and cannot do.
+
+### Summer Games MCP
+
+- [Play with Friends from Claude or ChatGPT (Summer Games MCP)](https://docs.summerengine.com/mcp/summer-games.md): Connect the Summer Games MCP to Claude or ChatGPT. Ask who of your friends is online, message them, invite them to a game, and hear when they join.
+- [Summer Games MCP Tools](https://docs.summerengine.com/mcp/summer-games-tools.md): Every tool on the Summer Games MCP (mcp.summer.games): friends, messages, parties, rivals, inbox, settings, desktop navigation, game data, events and cards.
+- [Summer Games MCP for Game Developers](https://docs.summerengine.com/mcp/summer-games-developers.md): Players gather friends for your game on Summer Games from Claude or ChatGPT, compare with rivals in your rankings, and open your store page. Make that work well.
+
+### Setup
+
+- [Every AI Coding Agent Summer Engine Supports](https://docs.summerengine.com/mcp/agents.md): Every AI coding agent and IDE summer setup configures for Summer Engine: the setup id, the MCP config file it writes, the file shape and the skills folder.
+- [Build Games in Cursor with Summer Engine MCP](https://docs.summerengine.com/mcp/cursor.md): Connect Summer Engine's MCP server to Cursor with one command, a one-click link or mcp.json, then build, run and debug games from Cursor's agent.
+- [Build Games in Claude Code with Summer Engine MCP](https://docs.summerengine.com/mcp/claude-code.md): Connect Summer Engine to Claude Code with one command or the Summer plugin, then build, play and debug your game from Claude Code. Hosted MCP for cloud work too.
+- [Build Games in Devin Desktop with Summer Engine MCP](https://docs.summerengine.com/mcp/devin-desktop.md): Connect Summer Engine's MCP server to Devin Desktop (formerly Windsurf) with summer setup windsurf, then build, run and debug games from its agent panel.
+- [Build Games in Antigravity with Summer Engine MCP](https://docs.summerengine.com/mcp/antigravity.md): Connect Summer Engine's MCP server to Google's Antigravity IDE or the agy CLI with one command, then build, run and debug games from Antigravity's agent.
+- [Build Games in Codex with Summer Engine MCP](https://docs.summerengine.com/mcp/codex.md): Connect Summer Engine's MCP server to OpenAI Codex with one command or config.toml, then build, run and debug games from Codex. Hosted MCP for cloud work too.
+- [Build Games in Gemini CLI with Summer Engine MCP](https://docs.summerengine.com/mcp/gemini.md): Legacy: connect Summer Engine to Gemini CLI as an extension for Workspace and enterprise accounts. Gemini CLI is retired for individuals; use Antigravity.
+- [Build Games in GitHub Copilot CLI with Summer Engine MCP](https://docs.summerengine.com/mcp/github-copilot.md): Connect Summer Engine's MCP server to GitHub Copilot CLI with one command, then build, run and debug games from the terminal. Copilot in VS Code has its own page.
+- [Build Games in OpenCode with Summer Engine MCP](https://docs.summerengine.com/mcp/opencode.md): Connect Summer Engine's MCP server to OpenCode, the open-source terminal agent, with one command, then build, run and debug games from the terminal.
+- [Make Games for Free with Local LLMs and Summer Engine](https://docs.summerengine.com/mcp/local-models.md): Drive Summer Engine with a free local model through MCP: LM Studio, OpenCode with Ollama, or Goose. Hardware, model picks, context settings, and what uses credits.
+- [Build Games in VS Code and GitHub Copilot with Summer Engine MCP](https://docs.summerengine.com/mcp/vscode.md): Connect Summer Engine's MCP server to VS Code and GitHub Copilot agent mode with one command or .vscode/mcp.json, then build, run and debug games from Copilot Chat.
+- [Build Games in Zed with Summer Engine MCP](https://docs.summerengine.com/mcp/zed.md): Connect Summer Engine's MCP server to Zed's Agent Panel with one command or context_servers in settings.json, then build, run and debug games from Zed.
+
+### CLI
+
+- [summer CLI Quick Start: Install, Sign In, Create and Run](https://docs.summerengine.com/mcp/cli.md): Get started with the summer CLI: install Summer Engine, sign in, create a project, run it, connect your agent, and run any Summer operation from the shell.
+- [summer CLI Reference: Every Command and Option](https://docs.summerengine.com/mcp/cli-reference.md): Every summer CLI command in the summer-engine package: setup, doctor, install, login, run, create, mcp, skills, tool, and any Summer operation from the shell.
+
+### Reference
+
+- [Building a Game with Summer Engine MCP: Agent Playbook](https://docs.summerengine.com/mcp/building-a-game.md): Playbook for AI agents building a game with Summer Engine MCP tools: read the scene, batch edits in one script, import assets, play quietly and check errors.
+
+## Skills
+
+### Overview
+
+- [Summer Engine skills for AI agents](https://docs.summerengine.com/mcp/skills.md): The Summer Engine skill library: 133 best-practice guides for AI agents building games, grouped by domain, with where each agent reads them and how to install and update them.
+- [Skills: Teach Summer Engine Your Way of Building](https://docs.summerengine.com/ai-tools/skills.md): Skills are short guides the Summer Engine agent follows. Use the built-in library, trigger one with a slash command, or write your own in Settings > Skills.
+- 196 more pages in Skills: open the pages above, or read https://docs.summerengine.com/llms-full.txt
+
+## Reference
+
+### Overview
+
+- [Technical reference](https://docs.summerengine.com/api-reference/overview.md): Generated reference for Summer: every operation your agent can run, the public Summer Platform HTTP API and the in-game Summer GDScript API. Built from the source code, never written by hand.
+- [Compatibility & upstream](https://docs.summerengine.com/reference/compatibility.md): Generated Summer Engine product-release and upstream compatibility facts from the pinned engine contract.
+- 202 more pages in Reference: open the pages above, or read https://docs.summerengine.com/llms-full.txt
+
+## Guides
+
+### Core Concepts
+
+- [Give Summer Engine's AI the right context](https://docs.summerengine.com/guides/working-with-context.md): How to give the Summer Engine agent the right context: @ file and folder mentions, error text, project rules, Memory, and prompts that get accurate changes.
+- [Use Summer Engine's AI on a large game project](https://docs.summerengine.com/guides/large-codebases.md): How to work with the Summer Engine agent on a big project: project rules in AGENTS.md and .summer/rules, @ mentions, plans before big changes, and small steps.
+- [Help Summer Engine's AI use documentation](https://docs.summerengine.com/guides/working-with-documentation.md): Which documentation the Summer Engine agent reads (engine API docs, the web, your project's own docs) and how to write project docs and doc comments it uses well.
+
+### Development
+
+- [Make a browser game with Summer Engine](https://docs.summerengine.com/guides/web-development.md): How Summer Engine builds web games: the WebGPU web template, renderer and thread rules, browser code with JavaScriptBridge, saves, and publishing to summer.games.
+- [Connect your Summer Engine project to GitHub](https://docs.summerengine.com/guides/github-from-changes-dock.md): Back up a Summer Engine project on GitHub: create an empty repository, have the agent connect it, then commit, push and sync from the Changes dock.
+
+### Publishing Your Game
+
+- [Export and publish a Summer Engine game outside Summer Games](https://docs.summerengine.com/publishing/overview.md): Export your Summer Engine game as Mac, Windows, Linux or web builds and release it on Steam, itch.io or your own site, outside Summer Games.
+- [Export a Summer Engine game for macOS](https://docs.summerengine.com/publishing/macos-export.md): Step by step: export your Summer Engine game as a Mac app for Intel and Apple Silicon, fix bundle ID and texture errors, and sign it for direct downloads.
+- [Export a Summer Engine game for Windows](https://docs.summerengine.com/publishing/windows-export.md): Step by step: export your Summer Engine game as a Windows .exe, pick the right preset settings, test it on a clean PC and sign it for direct downloads.
+- [Test your exported Summer Engine game before release](https://docs.summerengine.com/publishing/local-testing.md): Test an exported Summer Engine game on Mac and Windows before release: security prompts, permissions, debug and release builds, clean machines and save data.
+- [Publish a Summer Engine game on Steam](https://docs.summerengine.com/publishing/steam.md): Release your Summer Engine game on Steam: Steamworks setup, depots and SteamPipe uploads, launch options, beta branches, Steamworks features and revenue split.
+- [Publish a Summer Engine game on itch.io](https://docs.summerengine.com/publishing/itch-io.md): Publish your Summer Engine game on itch.io: upload Mac, Windows and web builds, set up the game page, choose pricing and revenue share, and push updates.
+- [Publish a Summer Engine game on Nintendo Switch, PlayStation or Xbox](https://docs.summerengine.com/publishing/consoles.md): Summer Engine has no console export of its own. How a Summer game reaches Switch, PlayStation or Xbox: platform approval, porting partners and certification.
+- [Summer Engine export errors and fixes](https://docs.summerengine.com/publishing/troubleshooting.md): Fixes for common Summer Engine export problems: export templates, texture formats, bundle IDs, crashes, security warnings, Steam and itch.io uploads.
+
+## Knowledge Base
+
+### About Summer
+
+- [What is Summer Engine?](https://docs.summerengine.com/knowledge-base/what-is-summer.md): Summer Engine is the game engine built for AI. Any agent builds, tests and publishes a full multiplayer 2D or 3D game, then you grow and earn from it.
+- [What makes Summer Engine different from using ChatGPT?](https://docs.summerengine.com/knowledge-base/summer-vs-chatgpt.md): A chat model alone gives you code to copy and paste. Connected to Summer Engine, the same model edits your game directly, with project context and undo.
+- [Is Summer Engine for beginners or professionals?](https://docs.summerengine.com/knowledge-base/beginners-or-professionals.md): Both. Beginners make a game in Summer Engine by describing it to an AI agent. Professionals get a full engine, plain project files and native C++ and C#.
+- [Has Summer Engine been used for production games?](https://docs.summerengine.com/knowledge-base/production-games.md): Yes. The Summer team built Don't Pray, an online PvP magic shooter on Steam, with Summer Engine in 2.5 months. It is live, not a demo.
+- [How long does it take to learn Summer Engine?](https://docs.summerengine.com/knowledge-base/learning-curve.md): With Summer Engine you can play your first game in minutes by describing it to an AI agent. Going deeper into scenes, scripts and C++ is optional.
+- [Can I make AAA games with Summer Engine?](https://docs.summerengine.com/knowledge-base/aaa-games.md): Summer Engine is a full 2D and 3D engine. AI agents do the heavy lifting, so a small team can build bigger games. Scope depends on your team and time.
+- [Is Summer Engine open source? Source and platform status](https://docs.summerengine.com/knowledge-base/source-status.md): What is open source (the MIT summer-engine CLI and MCP), free (the Summer Engine app) and paid, plus which Summer Games platform features are live.
+- [How does Summer Engine compare to other AI game tools?](https://docs.summerengine.com/knowledge-base/summer-vs-other-tools.md): Summer Engine is a full game engine built for AI, not a plugin or a prompt-to-game web toy. Agents work inside the engine, and you own the project.
+
+### Technical
+
+- [Is Summer Engine compatible with my existing project?](https://docs.summerengine.com/knowledge-base/godot-compatibility.md): Summer Engine opens projects in the standard scene, script and resource formats. Commit a copy first, then check your plugins and exports.
+- [Can I open my existing project in Summer Engine?](https://docs.summerengine.com/knowledge-base/godot-projects.md): Yes. Commit a copy, open your project in Summer Engine and review the first import. GDScript and text scenes carry over; test plugins and extensions.
+- [Which AI models does Summer use?](https://docs.summerengine.com/knowledge-base/ai-models.md): Summer Engine's chat agent runs on Auto, MAX or a model you pick from OpenAI, Anthropic and others. Asset generation has its own image, 3D, audio and video models.
+- [How good are AI-generated assets?](https://docs.summerengine.com/knowledge-base/ai-asset-quality.md): Summer Engine generates 3D models, rigged characters, textures, sprites, audio and video for your game. Where AI assets shine, and when to bring in an artist.
+- [Can I make a game with just AI, no coding?](https://docs.summerengine.com/knowledge-base/ai-game-dev.md): Yes. Describe your game in plain words and Summer Engine's AI agent writes the code, builds the scenes and makes the assets. No coding needed.
+- [How do specialist agents work?](https://docs.summerengine.com/knowledge-base/specialist-agents.md): Summer Engine's main agent hands work to a fixed team of specialists: researcher, general worker, builder, asset maker, verifier and advisor. They run in parallel.
+- [How does project intelligence work?](https://docs.summerengine.com/knowledge-base/project-intelligence.md): Summer Engine indexes your scripts, scenes and assets so its AI agent finds the right files before it answers or edits. How indexing works and where it runs.
+- [What are the limitations of AI operations?](https://docs.summerengine.com/knowledge-base/ai-operations-limitations.md): What Summer Engine's AI agent does well in your project, what people wrongly expect to be limits, and the real limits that still need manual work.
+- [Does Summer support multiplayer games?](https://docs.summerengine.com/knowledge-base/multiplayer.md): Yes. For a published Summer game, Summer runs a server for every match plus matchmaking, parties, saves, leaderboards and a store. Test it all locally first.
+- [Can I use my own assets?](https://docs.summerengine.com/knowledge-base/custom-assets.md): Yes. Summer Engine imports your own 2D art, 3D models and audio in standard formats like PNG, glTF, FBX and WAV. AI generation is optional.
+- [Can I use Summer Engine for web games?](https://docs.summerengine.com/knowledge-base/web-games.md): Yes. Summer Engine exports games to HTML5 and WebAssembly that run in any modern browser. Host them on itch.io, your own site or any static host.
+- [How does Unity or Unreal migration work?](https://docs.summerengine.com/knowledge-base/unity-unreal-migration.md): Move a Unity or Unreal project to Summer Engine: the AI agent researches your project, writes a migration plan, then rebuilds it system by system.
+
+### Account & Support
+
+- [Is my code safe with Summer Engine?](https://docs.summerengine.com/knowledge-base/privacy-and-code-safety.md): How Summer Engine handles your code: encrypted in transit and at rest, never sold, and sent to AI providers only to answer you. The Privacy Policy sets training use.
+- [Is Summer Engine free?](https://docs.summerengine.com/knowledge-base/pricing.md): Yes. The Summer Engine desktop app and local MCP are free. Paid plans (Pro $20/mo, Pro+ $60/mo, Ultra $200/mo) raise hosted Summer AI limits.
+- [How do I get support for Summer Engine?](https://docs.summerengine.com/knowledge-base/support.md): Ask in the Summer Discord first for the fastest reply. For concrete help, email support@summerengine.com or founders@summerengine.com.
+- [How do I get started with no game dev experience?](https://docs.summerengine.com/knowledge-base/no-experience.md): Make your first game with no experience: install Summer Engine for free, create a project and describe the game. The AI agent writes the code and builds it.
+- [How do I publish a Summer Engine game on Steam?](https://docs.summerengine.com/knowledge-base/publish-steam.md): Publish a Summer Engine game on Steam: export a Windows or macOS build, pay the $100 Steam Direct fee, set up the store page, upload and pass review.
+- [How do I export to mobile (iOS and Android)?](https://docs.summerengine.com/knowledge-base/export-mobile.md): Export a Summer Engine game to iOS and Android: enable ETC2/ASTC textures, add an export preset and set up signing. iOS needs a Mac and an Apple Developer account.
+
+## Changelog
+- [Summer Engine Changelog](https://docs.summerengine.com/changelog/overview.md): Summer Engine release notes: the summer-engine 4.x MCP and CLI, the Summer SDK, and desktop app updates for macOS and Windows, newest first.
+
+## Security
+
+### Data Protection
+
+- [Summer Engine security and data handling](https://docs.summerengine.com/security/overview.md): Where Summer Engine sends and stores your code, prompts and account data, which providers process it, how to delete your data, and how to report a vulnerability.
+- [Privacy Mode](https://docs.summerengine.com/security/privacy-mode.md): Zero data retention with our model providers, available on all paid plans
+
+## Optional
+
+- [Community](https://discord.gg/summerengine)
+- [Website](https://summerengine.com)
+- [Support](https://docs.summerengine.com/knowledge-base/support)

@@ -1,18 +1,18 @@
 ---
 title: "Publish your game from Summer Studio"
 sidebarTitle: "Publish your game"
-description: "Publish your game on Summer Games from Summer Studio: choose how you earn, fill the desktop and mobile store pages, upload builds, submit for review, go live."
+description: "Publish your game on Summer Games from Summer Studio: choose how you earn, fill the desktop and mobile store pages, upload builds and publish. Your game goes live as soon as the automatic checks pass."
 icon: "upload"
 "og:image": "https://docs.summerengine.com/images/og/grow-publish.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/grow-publish.jpg"
 ---
 
-Publishing on Summer Games is free. You make a store page in Studio, upload your build and submit it. Summer staff review it, and then your game goes live on [summer.games](https://summer.games).
+Publishing on Summer Games is free. You make a store page in Studio, upload your build and click **Publish**. Your game goes live on [summer.games](https://summer.games) as soon as Summer's automatic checks pass. There is no review to wait for.
 
 Start at [summerengine.com/studio/upload](https://www.summerengine.com/studio/upload), or click **Publish a game** in Grow. This is the one place to upload a game; the **Upload** button on summer.games brings you here too. You can fill in the first step before you sign in; Studio keeps your draft and asks you to sign in when you save. Your saved games are in **Your games** at [summerengine.com/studio/store](https://www.summerengine.com/studio/store). See [How do I publish my game on Summer?](/publishing/summer-games) for the whole path, with or without your agent.
 
 <Tip>
-  Want your AI agent to do every step? It fills the store page, makes the art, uploads the build and publishes. Summer's store review still runs. For now Summer Games asks you to approve an agent's publish; see [Agent permissions](/mcp/permissions). See [Create and publish your game](/publishing/summer-games).
+  Want your AI agent to do every step? It fills the store page, makes the art, uploads the build and asks you before it goes live. See [Agent permissions](/mcp/permissions). See [Create and publish your game](/publishing/summer-games).
 </Tip>
 
 ## The steps
@@ -29,7 +29,7 @@ Studio walks you through one step at a time. You can go back to any step.
     - **Web, macOS, Windows or Linux** open the **Desktop store**: summer.games and the Summer Games desktop app.
     - **iPhone or Android** open the **Mobile store**: the Summer Games apps for iPhone and Android.
 
-    A build is optional here; your builds, one per platform, go in **Check and submit**. If a jam is open, you can enter it here: see [Summer Games Jam](/grow/game-jam). Click **Save and continue**. This makes a private draft of your store page. It does not submit anything.
+    A build is optional here; your builds, one per platform, go in **Check and publish**. If a jam is open, you can enter it here: see [Summer Games Jam](/grow/game-jam). Click **Save and continue**. This makes a private draft of your store page. It does not submit anything.
   </Step>
   <Step title="Desktop store">
     The text and art for summer.games and the desktop app, with a live preview next to the form: a tagline (up to 80 characters), a description (120-300 characters), 3-8 tags, key art, 4-8 screenshots and an icon. A trailer and capsule art are optional. See [Store page text](/publishing/store-text) and [Store art](/publishing/store-art).
@@ -40,11 +40,11 @@ Studio walks you through one step at a time. You can go back to any step.
   <Step title="Get paid">
     For a paid game: set your price, then connect Stripe so players can buy it. For a free game with Sparks, this step is **Join the Creator Program** and shows what the program pays and when; you do not need it to publish. See [Earnings & payouts](/grow/earnings).
   </Step>
-  <Step title="Check and submit">
-    Add a build for each platform (see [Your build](#your-build-browser-play-or-downloads) below). The **Before launch** checklist shows what is still needed to go live and what makes the page shine. Each row links to its fix. When nothing required is left, click **Submit for review**.
+  <Step title="Check and publish">
+    Add a build for each platform (see [Your build](#your-build-browser-play-or-downloads) below). The **Before launch** checklist shows what is still needed to go live and what makes the page shine. Each row links to its fix. When nothing required is left, click **Publish**: your game goes live as soon as the automatic checks pass. Or click **Schedule…** to pick a time with **Go live at**.
   </Step>
   <Step title="Live">
-    Where your game is on its way to players: in review, approved, or live.
+    Where your game is on its way to players, and what each platform gets now.
   </Step>
 </Steps>
 
@@ -52,7 +52,7 @@ The full dashboard of a game (**Full dashboard** on its page, in **Your games**)
 
 ## Your build: browser play or downloads
 
-In **Check and submit**, Studio asks **What are you uploading?**: **A Summer Engine export** (one file with every platform, made with Summer) or **A zip for each platform** (Web, Windows, macOS and Linux, each in its own box).
+In **Check and publish**, Studio asks **What are you uploading?**: **A Summer Engine export** (one file with every platform, made with Summer) or **A zip for each platform** (Web, Windows, macOS and Linux, each in its own box).
 
 | Players get | Upload | Rules |
 |---|---|---|
@@ -61,7 +61,7 @@ In **Check and submit**, Studio asks **What are you uploading?**: **A Summer Eng
 | **The Summer Games apps** on iPhone and Android | A **Summer Engine export** from the editor | Checked in Studio and made ready for each platform. See [Export your game](/publishing/export). |
 
 - A **Summer Engine export** asks for a version, such as `v1.0.0`.
-- A lone `.exe` or `.dmg` (up to 40 GB) is kept privately for Summer staff to look at during review. It is not offered as a download.
+- A lone `.exe` or `.dmg` (up to 40 GB) is kept privately. It is not offered as a download.
 - Studio does not take iPhone and Android app files (`.ipa`, `.apk`) or macOS installers (`.pkg`). Phone players get a Summer Engine export.
 - Without a web export, players download your game instead of playing it in the browser.
 - Games that use C# (.NET) need a download per platform; they do not run in the browser or the Summer Games apps.
@@ -77,22 +77,23 @@ summer.games plays any web export with `index.html` at the root of its `.zip`:
 - **Thread support off** plays on the game page. A build with threads opens in its own tab.
 - Other engines' web builds work the same way.
 
-## Review and going live
+## Going live
 
 | Status | What it means |
 |---|---|
-| **Draft** | Not submitted. Saving never submits. |
-| **In review** | Summer staff are reviewing your page and build. You can edit again once the review is done. |
-| **Changes requested** / **Not approved** | The review found something to change. Change it and submit again. |
-| **Approved** | Click **Go live** to put the page on Summer Games. |
+| **Draft** | Not published. Saving never publishes. |
+| **Checks running** | You clicked **Publish**. Summer's automatic checks run on your page and builds. |
+| **Needs a fix** | A check failed. Studio names it and links to the fix. Fix it and publish again. |
 | **Live** | Your page is on summer.games. |
+
+There is no human review before your game goes live.
 
 A live store page and a released version are two things:
 
 - A **web export** and **downloads** go to players as soon as the page is live.
 - A **Summer export** goes out when you pick it under **Versions** and click **Promote to production**. Uploading a new version never replaces the live one by itself.
 
-Editing a live page starts a new draft, which goes through review before players see it.
+Editing a live page starts a new draft. Players see it when you publish it.
 
 <Tip>
   **Share a preview.** On the store page, **Share preview** makes a private link that expires in 1 hour, 1 day or 7 days. Anyone with the link sees your saved page before it is on Summer Games.
@@ -100,9 +101,9 @@ Editing a live page starts a new draft, which goes through review before players
 
 ## With your agent
 
-In Studio, ask the assistant "publish my game". It opens **Publish a game**, fills the title and targets, and walks the store page with you. It never presses **Submit for review** unless you ask for exactly that. See [Use the agent](/grow/use-the-agent).
+In Studio, ask the assistant "publish my game". It opens **Publish a game**, fills the title and targets, and walks the store page with you. It never presses **Publish** unless you ask for exactly that. See [Use the agent](/grow/use-the-agent).
 
-From Claude Code, Codex, Cursor, or Claude and ChatGPT with the full Summer MCP (`https://mcp.summerengine.com/mcp`), your agent does every step. It asks you first when your Agent permissions say so, and for now on every publish, because Summer Games still asks the owner; then it gives you an approval link. The version of Summer made for the ChatGPT app directory does not publish. See [Approvals](/publishing/owner-approval).
+From Claude Code, Codex, Cursor, or Claude and ChatGPT with the full Summer MCP (`https://mcp.summerengine.com/mcp`), your agent does every step. It asks you before the game goes live, and the game is live as soon as the automatic checks pass. If **Publish** is off in your Agent permissions, it gives you an approval link instead. The version of Summer made for the ChatGPT app directory does not publish. See [Approvals](/publishing/owner-approval).
 
 ---
 

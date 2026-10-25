@@ -1,0 +1,52 @@
+---
+title: "Summer API quickstart for ChatGPT and Claude"
+sidebarTitle: "ChatGPT and Claude"
+description: "Add the Summer MCP to ChatGPT or Claude as a custom connector, sign in once with a spend limit, and make 3D models, images, video, voice, sound and music in the chat."
+icon: "message-circle"
+---
+
+import DefaultPrices from "/snippets/api-default-prices.mdx";
+
+In ChatGPT and Claude (web, desktop and phone), the Summer API works through the Summer MCP. Nothing to install.
+
+<Steps>
+  <Step title="Add the connector">
+    Add this address as a custom connector:
+
+    ```text
+    https://mcp.summerengine.com/mcp
+    ```
+
+    **Claude**: add a custom connector and paste the address. **ChatGPT**: turn on developer mode, then add a custom connector (an app) with the address and OAuth sign-in. Step by step: [Summer in ChatGPT and Claude](/mcp/chatgpt-and-claude).
+  </Step>
+  <Step title="Sign in once">
+    The app opens the Summer sign-in page. Sign in with your Summer account, pick a spend limit for this app and choose **Allow**.
+  </Step>
+  <Step title="Ask for assets">
+    ```text Prompt wrap
+    With the Summer API, make a low-poly pine tree for my game. Tell me the price first.
+    ```
+
+    The app finds the Summer API operations with `summer_search` (`models.list`, `models.estimate`, `models.run`) and runs them with `summer_call`. The file is saved to your Summer library: open it in Summer Studio, or import it in Summer Engine by its asset id.
+  </Step>
+</Steps>
+
+<Note>
+Use the full address above. The reviewed directory versions (`/chatgpt`, `/directory`) have a fixed tool list; see [the versions for the app directories](/mcp/chatgpt-and-claude#the-versions-for-the-app-directories).
+</Note>
+
+## What it costs
+
+Every model has one public price: per model, image or clip, per second, or per 1,000 characters. It is the provider's list price. No markup on assets. A failed job costs nothing. The defaults:
+
+<DefaultPrices />
+
+- **Priced before it spends.** The agent reads prices from `summer api models` and prices each job for free with `summer api estimate` ([`POST /v1/estimate`](/api/jobs#know-the-price-first)). Ask it for the total before a big batch.
+- **Paid from your Summer credits.** Jobs use your paid credits: your plan's credits and your [top-ups](https://summerengine.com/studio/credits). No plan is needed to start.
+- **A limit per agent.** You pick a spend limit when you choose **Allow**. Change it or revoke the agent any time in [Settings > Connected apps](https://summerengine.com/settings/connected-apps). See [sign-in and limits](/api/sign-in).
+
+## Next
+
+- [Models and pricing](/api/models): every model with examples and its price.
+- [Jobs](/api/jobs): queued, running and done, batches and webhooks.
+- [Errors](/api/errors): `no_credits`, `over_limit` and what to show the person.

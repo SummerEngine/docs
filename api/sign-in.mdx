@@ -1,0 +1,75 @@
+---
+title: "Summer API sign-in, spend limits and balance"
+sidebarTitle: "Sign-in and limits"
+description: "Sign in once with summer login, get a token for curl with summer token, set a spend limit per connected app, and read the app's limit and your paid balance with GET /v1/key and GET /v1/balance."
+icon: "key-round"
+---
+
+There are no API keys to copy, store or leak. Your agent signs in to your Summer account in the browser, once, and you choose **Allow** with a spend limit. The sign-in renews itself.
+
+## Sign in
+
+```bash
+npx -y summer-engine@latest login
+```
+
+The browser opens the Summer sign-in page. Sign in, check which app is asking, pick a monthly spend limit, and choose **Allow**. From then on every `summer api` command uses this sign-in:
+
+```bash
+npx -y summer-engine@latest api run image/default --input '{"prompt": "a cozy pixel-art tavern at night"}' --download .
+```
+
+## Call the API over HTTP
+
+`summer token` prints a one-hour access token from the same sign-in. Send it as a bearer token:
+
+```bash
+export SUMMER_TOKEN=$(npx -y summer-engine@latest token)
+curl https://www.summerengine.com/v1/balance -H "Authorization: Bearer $SUMMER_TOKEN"
+```
+
+Run `summer token` again for a fresh token; the sign-in behind it stays valid. Reading models (`GET /v1/models`) and pricing a request (`POST /v1/estimate`) need no sign-in.
+
+**Your own app.** Summer's sign-in is standard OAuth 2.1 with PKCE, the same one the Summer MCP uses. Discovery: `https://mcp.summerengine.com/.well-known/oauth-protected-resource`. Send the access token your app gets as `Authorization: Bearer <token>`.
+
+## Spend limits per app
+
+Every app or agent you connect has its own spend limit, chosen on the Allow page: 5, 20 or 50 US dollars a month, your own amount, or no limit of its own. Change it at any time in [Settings > Connected agents & apps](https://summerengine.com/settings/connected-apps), where each app shows its limit, what it spent, when it was last used and when its access ends. **Revoke** stops the app at once; it works again only after you connect it again.
+
+## How spending works
+
+- **Paid credits.** Every call is paid from your paid Summer credits: your plan's credits and your top-ups. [Top up](https://summerengine.com/studio/credits) at any time.
+- **A failed job costs nothing.** Most jobs are charged when they succeed. A job that is charged when it starts, such as a video, is refunded in full when it fails.
+- **Hard limits.** A call that would go over the app's limit or your paid balance is refused with `402` before any work starts. Several calls at once never go past a limit.
+- **Never twice.** Send an `Idempotency-Key` header with each job. A retry with the same value returns the first answer and charges nothing more.
+
+## Read the app's limit and your balance
+
+```bash
+curl https://www.summerengine.com/v1/key -H "Authorization: Bearer $SUMMER_TOKEN"
+```
+
+Answers `data` for the app behind this token: `name`, `client_id`, `scopes`, `limit_usd`, `limit_reset`, `spent_usd`, `remaining_usd`, `resets_at`, `total_spent_usd`, `held_usd` (held for this app's queued and running jobs until they are charged; it counts against `remaining_usd`), `expires_at` and `created_at`.
+
+The app can lower its own limit with `PATCH /v1/key` (`{"limitUsd": 2}`), never raise it, and sign itself out with `DELETE /v1/key`.
+
+```bash
+curl https://www.summerengine.com/v1/balance -H "Authorization: Bearer $SUMMER_TOKEN"
+```
+
+Answers `data` with `balance_usd` (your paid credits), `held_usd` (held for your queued and running jobs), `key_held_usd` (the part of it that is this app's), `spendable_usd` (what this app can spend now, holds already taken off), `key_remaining_usd`, `key_resets_at` and `top_up_url`.
+
+All amounts are US dollars. `null` means no limit. Both calls are in the API reference: [Read the app's limit](/api/reference/get-key) and [Read your balance](/api/reference/get-balance).
+
+## No rate limits on paid usage
+
+Paid work has no request limits per minute, hour or day. Send as many jobs as your credits and the app's limit cover.
+
+- **Running slots.** Each account runs 10 jobs at once at the start, and up to 40 as it buys more credits. A job past your slots answers `202` with `state: "queued"` and an id that starts with `q:`. It starts in order as a slot frees up. Queued work is accepted: follow it, do not send it again.
+- **Held price.** A queued or running job holds its price against your balance and the app's limit until it is charged, so a queue never spends past either one.
+- **Money is the only refusal.** `402` `no_credits` (the paid balance) or `402` `over_limit` (the app's own limit), at once and before any work starts.
+- **Many at once.** `POST /v1/batches` takes up to 500 jobs in one call, all or none. See [batches](/api/jobs#run-many-jobs-batches).
+
+## Keep tokens safe
+
+A token spends your credits for an hour. Keep it in the environment, never in game code, a build or a commit.

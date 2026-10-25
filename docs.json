@@ -59,9 +59,12 @@
             "group": "Start here",
             "pages": [
               "index",
-              "essentials/installation",
               "quickstarts/fresh-project",
-              "quickstarts/multiplayer-game"
+              "quickstarts/coding-agent",
+              "quickstarts/browser",
+              "essentials/installation",
+              "quickstarts/multiplayer-game",
+              "quickstarts/ai-game-dev"
             ]
           },
           {
@@ -98,7 +101,6 @@
           {
             "group": "Other ways to start",
             "pages": [
-              "quickstarts/ai-game-dev",
               "quickstarts/web-game",
               "quickstarts/pc-game",
               "quickstarts/mac-game",
@@ -311,6 +313,271 @@
         ]
       },
       {
+        "tab": "Summer API",
+        "icon": "braces",
+        "groups": [
+          {
+            "group": "Start here",
+            "pages": [
+              "api/overview",
+              "api/quickstart",
+              "api/from-studio",
+              "api/agents",
+              {
+                "group": "Quickstart per agent",
+                "icon": "bot",
+                "pages": [
+                  "api/quickstarts/claude-code",
+                  "api/quickstarts/codex",
+                  "api/quickstarts/cursor",
+                  "api/quickstarts/chatgpt-and-claude",
+                  "api/quickstarts/hermes"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "How to make",
+            "pages": [
+              "api/guides",
+              "api/guides/3d-character",
+              "api/guides/sound-effects",
+              "api/guides/cutscene-music",
+              "api/guides/cutscenes",
+              "api/guides/trailer",
+              "api/guides/voice-lines",
+              "api/guides/logo-and-vector-art",
+              "api/guides/textures",
+              "api/guides/props-and-environment",
+              "api/guides/icons-and-sprites",
+              "api/guides/menu-background"
+            ]
+          },
+          {
+            "group": "Models and pricing",
+            "pages": [
+              "api/models",
+              {
+                "group": "3D models",
+                "icon": "box",
+                "pages": [
+                  "api/models/3d/hunyuan-3d",
+                  "api/models/3d/trellis-multi",
+                  "api/models/3d/rodin-2-5-fast",
+                  "api/models/3d/tripo-h3-1",
+                  "api/models/3d/hunyuan-3d-rapid",
+                  "api/models/3d/pixal3d",
+                  "api/models/3d/trellis-2",
+                  "api/models/3d/rodin-2-5",
+                  "api/models/3d/hunyuan3d-v2-multiview-turbo",
+                  "api/models/3d/hunyuan3d-v2-multiview",
+                  "api/models/3d/hunyuan3d-v3",
+                  "api/models/3d/tripo-p1",
+                  "api/models/3d/meshy-6",
+                  "api/models/3d/tripo-p2",
+                  "api/models/3d/meshy-7-1",
+                  "api/models/3d/hi3d-v3"
+                ]
+              },
+              {
+                "group": "Images",
+                "icon": "image",
+                "pages": [
+                  "api/models/image/nano-banana-2",
+                  "api/models/image/grok-imagine-2",
+                  "api/models/image/flux-3-klein",
+                  "api/models/image/muse-image",
+                  "api/models/image/grok-imagine",
+                  "api/models/image/recraft-4-1",
+                  "api/models/image/nano-banana-2-1",
+                  "api/models/image/flux-3",
+                  "api/models/image/gpt-image-2-5",
+                  "api/models/image/ideogram-transparent",
+                  "api/models/image/ideogram-4-5",
+                  "api/models/image/seedream-5-pro",
+                  "api/models/image/ideogram-vector",
+                  "api/models/image/gpt-image-2"
+                ]
+              },
+              {
+                "group": "Video",
+                "icon": "clapperboard",
+                "pages": [
+                  "api/models/video/kling-3",
+                  "api/models/video/gemini-omni-flash",
+                  "api/models/video/kling-3-pro",
+                  "api/models/video/seedance-2-fast-ref",
+                  "api/models/video/heygen-video",
+                  "api/models/video/heygen-video-ref",
+                  "api/models/video/thinksound",
+                  "api/models/video/minimax-h3-max-turbo",
+                  "api/models/video/grok-video-1-5-lite",
+                  "api/models/video/kling-video-to-audio",
+                  "api/models/video/veo3-1-lite",
+                  "api/models/video/pixverse-v6",
+                  "api/models/video/vidu-q4",
+                  "api/models/video/minimax-h3-max",
+                  "api/models/video/minimax-h3-max-ref",
+                  "api/models/video/minimax-h3-max-reframe",
+                  "api/models/video/gemini-omni-flash-1-1",
+                  "api/models/video/gemini-omni-flash-1-1-edit",
+                  "api/models/video/gemini-omni-flash-1-1-ref",
+                  "api/models/video/wan-3",
+                  "api/models/video/wan-3-ref",
+                  "api/models/video/ltx-2-5-pro",
+                  "api/models/video/kling-3-motion-control",
+                  "api/models/video/gemini-omni-flash-ref",
+                  "api/models/video/gemini-omni-flash-edit",
+                  "api/models/video/grok-video-1-5",
+                  "api/models/video/happy-horse-1-1",
+                  "api/models/video/happy-horse-1-1-ref",
+                  "api/models/video/grok-video-1-5-ref",
+                  "api/models/video/veo3-1-fast",
+                  "api/models/video/vidu-q3",
+                  "api/models/video/kling-4",
+                  "api/models/video/kling-4-ref",
+                  "api/models/video/kling-3-pro-motion-control",
+                  "api/models/video/luma-ray-3-2",
+                  "api/models/video/seedance-2-fast",
+                  "api/models/video/veo3-1",
+                  "api/models/video/seedance-2-5",
+                  "api/models/video/seedance-2-5-ref",
+                  "api/models/video/veo3-1-ref"
+                ]
+              },
+              {
+                "group": "Voice",
+                "icon": "mic",
+                "pages": [
+                  "api/models/voice/expressive-v3",
+                  "api/models/voice/multilingual-v2",
+                  "api/models/voice/heygen-voice-turbo",
+                  "api/models/voice/inworld-tts-1-5-max",
+                  "api/models/voice/heygen-voice",
+                  "api/models/voice/xai-tts-v1",
+                  "api/models/voice/gemini-3-8-flash-lite-tts",
+                  "api/models/voice/expressive-v4-turbo",
+                  "api/models/voice/flash-v2-5",
+                  "api/models/voice/gemini-3-8-flash-tts",
+                  "api/models/voice/gemini-3-1-flash-tts",
+                  "api/models/voice/qwen-audio-3-tts",
+                  "api/models/voice/minimax-speech-2-8-turbo",
+                  "api/models/voice/qwen-3-tts-0-6b",
+                  "api/models/voice/expressive-v4",
+                  "api/models/voice/qwen-3-tts-1-7b",
+                  "api/models/voice/qwen-3-tts-voice-design",
+                  "api/models/voice/minimax-speech-2-8-hd",
+                  "api/models/voice/seed-audio-1-0"
+                ]
+              },
+              {
+                "group": "Dialogue",
+                "icon": "messages-square",
+                "pages": [
+                  "api/models/dialogue/expressive-v3"
+                ]
+              },
+              {
+                "group": "Sound effects",
+                "icon": "audio-lines",
+                "pages": [
+                  "api/models/sound/sfx-v2",
+                  "api/models/sound/sonilo-sfx-1-1",
+                  "api/models/sound/mirelo-sfx-2-0",
+                  "api/models/sound/stable-audio-3-sfx"
+                ]
+              },
+              {
+                "group": "Music",
+                "icon": "music",
+                "pages": [
+                  "api/models/music/music-v2",
+                  "api/models/music/minimax-music-3",
+                  "api/models/music/music-v1",
+                  "api/models/music/music-v2-5",
+                  "api/models/music/minimax-music-v2",
+                  "api/models/music/lyria-2"
+                ]
+              },
+              {
+                "group": "Motion",
+                "icon": "person-standing",
+                "pages": [
+                  "api/models/motion/library",
+                  "api/models/motion/hunyuan-motion-fast",
+                  "api/models/motion/hunyuan-motion"
+                ]
+              }
+            ]
+          },
+          {
+            "group": "Use the API",
+            "pages": [
+              "api/sign-in",
+              "api/jobs",
+              "api/errors"
+            ]
+          },
+          {
+            "group": "API reference",
+            "pages": [
+              "api/reference/get-models",
+              "api/reference/get-models-model",
+              "api/reference/post-estimate",
+              "api/reference/post-jobs",
+              "api/reference/get-jobs-jobid",
+              "api/reference/get-jobs-jobid-events",
+              "api/reference/post-jobs-jobid-cancel",
+              "api/reference/post-files",
+              "api/reference/post-files-complete",
+              "api/reference/get-voices",
+              "api/reference/get-voices-preview-token",
+              "api/reference/post-webhooks-secret",
+              "api/reference/get-webhooks-deliveries",
+              "api/reference/get-key",
+              "api/reference/get-balance",
+              "api/reference/delete-key",
+              "api/reference/get-batches-batchid",
+              "api/reference/patch-key",
+              "api/reference/post-batches"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Summer Router",
+        "icon": "route",
+        "groups": [
+          {
+            "group": "Start here",
+            "pages": [
+              "router/overview",
+              "router/quickstart",
+              "router/server-and-client"
+            ]
+          },
+          {
+            "group": "Capabilities",
+            "pages": [
+              "router/capabilities",
+              "router/models",
+              "router/character-reply",
+              "router/character-voice",
+              "router/speech",
+              "router/transcribe",
+              "router/image"
+            ]
+          },
+          {
+            "group": "Run your game",
+            "pages": [
+              "router/limits",
+              "router/errors"
+            ]
+          }
+        ]
+      },
+      {
         "tab": "MCP",
         "icon": "plug",
         "groups": [
@@ -370,6 +637,7 @@
       },
       {
         "tab": "Skills",
+        "icon": "graduation-cap",
         "groups": [
           {
             "group": "Overview",
@@ -386,7 +654,7 @@
               "skills/create-asset-sheet",
               "skills/instantiate-asset-pack",
               {
-                "group": "painted-25d-world",
+                "group": "Painted 2.5D World",
                 "pages": [
                   "skills/painted-25d-world",
                   "skills/painted-25d-world/building-blocks/blender-route",
@@ -428,7 +696,7 @@
             "pages": [
               "skills/bounded-engine-runs",
               {
-                "group": "brainstorming",
+                "group": "Brainstorming Ideas into Designs",
                 "pages": [
                   "skills/brainstorming",
                   "skills/brainstorming/spec-document-reviewer-prompt"
@@ -441,7 +709,7 @@
               "skills/godogen-visual-proof-game-generation",
               "skills/headless-scripting",
               {
-                "group": "investigating-bugs",
+                "group": "Systematic Debugging",
                 "pages": [
                   "skills/investigating-bugs",
                   "skills/investigating-bugs/condition-based-waiting",
@@ -458,14 +726,14 @@
               "skills/using-summer",
               "skills/verification-before-completion",
               {
-                "group": "writing-plans",
+                "group": "Writing Plans",
                 "pages": [
                   "skills/writing-plans",
                   "skills/writing-plans/plan-document-reviewer-prompt"
                 ]
               },
               {
-                "group": "writing-skills",
+                "group": "Writing Skills",
                 "pages": [
                   "skills/writing-skills",
                   "skills/writing-skills/testing-skills-with-subagents"
@@ -490,7 +758,7 @@
               "skills/procedural-animation",
               "skills/retarget",
               {
-                "group": "text-to-motion",
+                "group": "Text to Motion",
                 "pages": [
                   "skills/text-to-motion",
                   "skills/text-to-motion/prompts-and-controls",
@@ -524,7 +792,7 @@
             "group": "Character controllers",
             "pages": [
               {
-                "group": "character-movement",
+                "group": "Character Movement",
                 "pages": [
                   "skills/character-movement",
                   "skills/character-movement/references/default-third-person-controller",
@@ -574,7 +842,7 @@
               "skills/auto-fire-targeting",
               "skills/celeste-momentum-platforming",
               {
-                "group": "combat-basics",
+                "group": "Combat Basics",
                 "pages": [
                   "skills/combat-basics",
                   "skills/combat-basics/references/projectiles-and-aoe"
@@ -589,7 +857,7 @@
             "group": "Level design",
             "pages": [
               {
-                "group": "concept-to-level",
+                "group": "Concept to Level",
                 "pages": [
                   "skills/concept-to-level",
                   "skills/concept-to-level/references/technical-rules"
@@ -604,28 +872,28 @@
             "pages": [
               "skills/multiplayer",
               {
-                "group": "multiplayer-movement",
+                "group": "Multiplayer Movement",
                 "pages": [
                   "skills/multiplayer-movement",
                   "skills/multiplayer-movement/files"
                 ]
               },
               {
-                "group": "multiplayer-project",
+                "group": "Multiplayer Project",
                 "pages": [
                   "skills/multiplayer-project",
                   "skills/multiplayer-project/files"
                 ]
               },
               {
-                "group": "multiplayer-publish",
+                "group": "Multiplayer Publish",
                 "pages": [
                   "skills/multiplayer-publish",
                   "skills/multiplayer-publish/export-errors"
                 ]
               },
               {
-                "group": "multiplayer-state",
+                "group": "Multiplayer State",
                 "pages": [
                   "skills/multiplayer-state",
                   "skills/multiplayer-state/files"
@@ -680,7 +948,7 @@
               "skills/browse-templates",
               "skills/camera-rigs",
               {
-                "group": "make-game",
+                "group": "Make Game",
                 "pages": [
                   "skills/make-game",
                   "skills/make-game/references/2d-platformer-polish",
@@ -702,7 +970,7 @@
               "skills/scene-composition",
               "skills/scene-hierarchy-design",
               {
-                "group": "scene-scripting",
+                "group": "Scene Scripting",
                 "pages": [
                   "skills/scene-scripting",
                   "skills/scene-scripting/references/ctx-api",
@@ -711,7 +979,7 @@
                 ]
               },
               {
-                "group": "spatial-placement",
+                "group": "Spatial Placement",
                 "pages": [
                   "skills/spatial-placement",
                   "skills/spatial-placement/references/kit-placement-tools"
@@ -719,7 +987,7 @@
               },
               "skills/verifying-scenes",
               {
-                "group": "world-building-3d",
+                "group": "Build 3D Worlds with Spatial Evidence",
                 "pages": [
                   "skills/world-building-3d",
                   "skills/world-building-3d/references/spatial-tools"
@@ -731,7 +999,7 @@
             "group": "Scripting",
             "pages": [
               {
-                "group": "gdscript-patterns",
+                "group": "GDScript Patterns",
                 "pages": [
                   "skills/gdscript-patterns",
                   "skills/gdscript-patterns/reference"
@@ -744,7 +1012,7 @@
             "group": "Tools",
             "pages": [
               {
-                "group": "summer-apps",
+                "group": "Summer Apps",
                 "pages": [
                   "skills/summer-apps",
                   "skills/summer-apps/manifest",
@@ -766,14 +1034,14 @@
             "pages": [
               "skills/game-feel",
               {
-                "group": "vfx-dissolve",
+                "group": "Dissolve",
                 "pages": [
                   "skills/vfx-dissolve",
                   "skills/vfx-dissolve/building-blocks/noise-3d-fbm"
                 ]
               },
               {
-                "group": "vfx-fire",
+                "group": "Fire",
                 "pages": [
                   "skills/vfx-fire",
                   "skills/vfx-fire/building-blocks/additive-billboard-particles",
@@ -781,14 +1049,14 @@
                 ]
               },
               {
-                "group": "vfx-hit-spark",
+                "group": "Hit Spark",
                 "pages": [
                   "skills/vfx-hit-spark",
                   "skills/vfx-hit-spark/building-blocks/additive-billboard-particles"
                 ]
               },
               {
-                "group": "vfx-lightning",
+                "group": "Lightning",
                 "pages": [
                   "skills/vfx-lightning",
                   "skills/vfx-lightning/building-blocks/additive-billboard-particles",
@@ -796,14 +1064,14 @@
                 ]
               },
               {
-                "group": "vfx-magic-glow",
+                "group": "Magic Glow",
                 "pages": [
                   "skills/vfx-magic-glow",
                   "skills/vfx-magic-glow/building-blocks/additive-billboard-particles"
                 ]
               },
               {
-                "group": "vfx-muzzle-flash",
+                "group": "Muzzle Flash",
                 "pages": [
                   "skills/vfx-muzzle-flash",
                   "skills/vfx-muzzle-flash/building-blocks/additive-billboard-particles",
@@ -811,14 +1079,14 @@
                 ]
               },
               {
-                "group": "vfx-smoke",
+                "group": "Smoke",
                 "pages": [
                   "skills/vfx-smoke",
                   "skills/vfx-smoke/building-blocks/noise-3d-fbm"
                 ]
               },
               {
-                "group": "vfx-water-ripple",
+                "group": "Water Ripple",
                 "pages": [
                   "skills/vfx-water-ripple",
                   "skills/vfx-water-ripple/building-blocks/additive-billboard-particles"
@@ -873,6 +1141,11 @@
               "mcp/operations/chats",
               "mcp/operations/stories",
               "mcp/operations/plugins",
+              "mcp/operations/board",
+              "mcp/operations/content",
+              "mcp/operations/economy",
+              "mcp/operations/router",
+              "mcp/operations/models",
               "mcp/operations/engine",
               "mcp/operations/legacy-names"
             ]

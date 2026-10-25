@@ -1,0 +1,119 @@
+---
+title: "Summer API errors"
+sidebarTitle: "Errors"
+description: "Every Summer API error has one shape: type, code, message, param, request_id and doc_url. Each code, its HTTP status, and what your code or agent should do."
+icon: "circle-alert"
+---
+
+Every error from `/v1` has the same shape:
+
+```json
+{
+  "error": {
+    "type": "billing_error",
+    "code": "no_credits",
+    "message": "Not enough credits for this. Add credits, no plan needed: https://summerengine.com/studio/credits",
+    "param": null,
+    "request_id": "req_4f2c...",
+    "doc_url": "https://docs.summerengine.com/api/errors#no_credits",
+    "fix_url": "https://summerengine.com/studio/credits"
+  }
+}
+```
+
+| Field | Meaning |
+|---|---|
+| `type` | The group: `invalid_request_error`, `authentication_error`, `permission_error`, `not_found_error`, `billing_error`, `conflict_error`, `rate_limit_error` or `api_error` |
+| `code` | A stable code from the list below. Branch on this. |
+| `message` | What happened and what to do, in plain words. Show it to the person. |
+| `param` | The field to fix, such as `input.prompt` or `Idempotency-Key`, or `null` |
+| `request_id` | Also in the `X-Request-Id` header. Send it to Summer support. |
+| `fix_url` | Where the person fixes it, such as the page to add credits |
+| `doc_url` | This page, at the code's section |
+
+A call that answers an error charges nothing. After `outcome_unknown`, send the same request with the same `Idempotency-Key` to see whether a job started.
+
+## Codes
+
+| Code | Status | Retry? |
+|---|---|---|
+| [`invalid_input`](#invalid_input) | 400 | No: fix the request |
+| [`moved`](#moved) | 400 | No: use the new name |
+| [`not_signed_in`](#not_signed_in) | 401 | After signing in |
+| [`no_credits`](#no_credits) | 402 | After credits are added |
+| [`over_limit`](#over_limit) | 402 | After the limit resets or is raised |
+| [`forbidden`](#forbidden) | 403 | No |
+| [`limit_raise_needs_person`](#limit_raise_needs_person) | 403 | No: the person raises it |
+| [`not_found`](#not_found) | 404 | No |
+| [`conflict`](#conflict) | 409 | After a new estimate |
+| [`idempotency_conflict`](#idempotency_conflict) | 409 | With a new `Idempotency-Key` |
+| [`in_progress`](#in_progress) | 409 | Yes, the same request |
+| [`unsupported`](#unsupported) | 409 | No |
+| [`rate_limited`](#rate_limited) | 429 | Yes, after `Retry-After` (paid work has no rate limits) |
+| [`internal`](#internal) | 500 | Yes, once |
+| [`outcome_unknown`](#outcome_unknown) | 502 | Check first |
+| [`unavailable`](#unavailable) | 503 | Yes, with backoff |
+
+### invalid_input
+
+The request does not match the model's input. `param` names the field, such as `input.duration`, and `message` says what it takes. Read the model's `inputSchema` with `GET /v1/models/{id}`. A missing `Idempotency-Key` header on `POST /v1/jobs` also answers this, and so does an expired `quoteId` (`param` is `quoteId`): estimate again.
+
+### moved
+
+The name you sent was replaced. `message` names the new one.
+
+### not_signed_in
+
+No token, or the token expired or its app was revoked. A token lasts one hour: get a new one with `summer token` and send the request again. With no sign-in on this computer, or after the person revoked the app, run `summer login` first.
+
+### no_credits
+
+The account's paid credits cannot cover this job, next to the jobs it already holds a price for. Nothing ran and nothing was charged. `fix_url` opens the page where the person adds credits; show them `message`. Check what this app can spend with `GET /v1/balance`. A refused batch also has `details`: `fits`, `jobs`, `totalUsd` and `shortUsd`.
+
+### over_limit
+
+The app reached the spend limit the person set for it. Nothing ran and nothing was charged. Show the person `message`: `fix_url` opens [Settings > Connected agents & apps](https://summerengine.com/settings/connected-apps), where they raise it. Or wait until `resets_at` from `GET /v1/key`. Do not ask for a top-up: the balance is not the problem. A refused batch also has `details`, as for `no_credits`.
+
+### forbidden
+
+This app or account may not do this.
+
+### limit_raise_needs_person
+
+`PATCH /v1/key` asked for a higher limit, no limit, or a reset that comes sooner. An app may only lower its own limit. The person raises it in [Settings > Connected agents & apps](https://summerengine.com/settings/connected-apps).
+
+### not_found
+
+No such model, job or route. Model ids come from `GET /v1/models`. Job ids are sent as they are, colon included.
+
+### conflict
+
+The price went up since your `quoteId`. Nothing was charged. Ask `POST /v1/estimate` again and start the job with the new quote.
+
+### idempotency_conflict
+
+This `Idempotency-Key` was already used for a different request. Use a new key for a new job.
+
+### in_progress
+
+A request with this `Idempotency-Key` is still running. Wait a moment and send the same request again: you get its answer.
+
+### unsupported
+
+This job does not support that action, such as cancelling a Summer API job: it runs to the end.
+
+### rate_limited
+
+Paid Summer API work has no rate limits: a job past your running slots answers `202` `queued` instead. If a call ever answers `429`, wait the seconds in the `Retry-After` header, then send the same request with the same `Idempotency-Key`.
+
+### internal
+
+Something broke on Summer's side. Retry once with the same `Idempotency-Key`. If it fails again, send `request_id` to Summer support.
+
+### outcome_unknown
+
+Summer could not tell whether the work started. Do not start a new job: send the same request with the same `Idempotency-Key`, which returns the first job if there was one.
+
+### unavailable
+
+A model or a Summer service is down for a moment. Nothing was charged. Retry with backoff, or pick another model for the same job from [the models page](/api/models).

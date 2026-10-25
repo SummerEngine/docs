@@ -1,89 +1,117 @@
 ---
-title: "Install Summer Engine"
-description: "Download Summer Engine for Apple-silicon Macs or Windows 10 and newer, or let your AI agent install it with npx -y summer-engine@latest install."
+title: "Install Summer on Windows or Mac"
+sidebarTitle: "Install"
+description: "Install Summer on Windows 10 and newer or Apple-silicon Macs from summerengine.com/download, get past SmartScreen, install the summer command for your coding agent, and check that it works."
 icon: "download"
 "og:image": "https://docs.summerengine.com/images/og/essentials-installation.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/essentials-installation.jpg"
 ---
 
-## System Requirements
+Install the Summer app on Windows or Mac. For a coding agent, add the `summer` command.
 
-Summer Engine has native installers for macOS and Windows. There is no Linux installer; on Linux (x86_64), `npx -y summer-engine@latest install` places the engine binary under `~/.summer/engine/`, without a desktop app bundle.
+## Install the Summer app
 
-- **macOS**: an Apple-silicon Mac (2020 or newer)
-- **Windows**: Windows 10 or newer
-- **RAM**: 8 GB recommended
-- **Storage**: 2 GB free space for the app, plus room for your projects
+Download Summer from [summerengine.com/download](https://www.summerengine.com/download).
 
-## Download Summer Engine
+<Tabs>
+  <Tab title="Windows">
+    Run `SummerEngine-<version>-Setup.exe`. Summer installs for your Windows user and opens.
 
-<Card
-  title="Download for Your Platform"
-  icon="download"
-  href="https://summerengine.com/download"
->
-  Get the latest Summer Engine installer from our website.
-</Card>
+    Windows SmartScreen may show a warning while Summer's new signing certificate builds its reputation. Click **More info**, then **Run anyway**.
+  </Tab>
+  <Tab title="macOS">
+    Open `Summer.dmg` and move **Summer** into your Applications folder, then open it. macOS asks you to confirm an app downloaded from the internet: click **Open**.
+  </Tab>
+</Tabs>
 
-### Alternative: Install via CLI
+**If everything worked, you see:** Summer's Home, with one message box. Sign in in your browser, then follow [Quickstart: Summer app](/quickstarts/fresh-project) to make your first Summer game.
 
-**Cloud work needs nothing installed.** Add `https://mcp.summerengine.com/mcp` to your agent and sign in once. Your agent can then make assets, work on plans, write the store page and publish.
+## Install the summer command
 
-**Engine work (scenes, scripts, play, screenshots)** needs Summer Engine on your computer. If you use Claude Code, Codex, Cursor or any other MCP-compatible agent, you can install it from the command line:
+For a coding agent, or for scripts. It needs [Node.js](https://nodejs.org) 22 or newer.
 
-```bash
-npx -y summer-engine@latest install
+<CodeGroup>
+
+```bash No install
+npx -y summer-engine@latest --version
 ```
 
-This downloads and installs Summer Engine (macOS: `/Applications/Summer.app`; Windows:
-the installer-selected location). No global npm install is required. Then connect your agent, sign in and start the engine:
-
-```bash
-npx -y summer-engine@latest setup <agent> --yes
-npx -y summer-engine@latest login
-npx -y summer-engine@latest run
+```bash npm
+npm install -g summer-engine
 ```
 
-Prefer a global `summer` command? Install it with `brew install summerengine/tap/summer` or `npm install -g summer-engine`. For each agent, see [MCP Setup](/mcp/setup).
+```bash Homebrew (macOS)
+brew install summerengine/tap/summer
+```
 
-## Installation Steps
+</CodeGroup>
 
-<Steps>
-  <Step title="Download the installer">
-    Visit [summerengine.com](https://summerengine.com) and download the installer for your operating system.
-  </Step>
-  <Step title="Run the installer">
-    Double-click the downloaded file and follow the installation wizard.
-  </Step>
-  <Step title="Launch Summer Engine">
-    Open Summer Engine from your applications folder or Start menu.
-  </Step>
-  <Step title="Create your first project">
-    Click "New Project", name it and pick a folder, or start from a template.
-  </Step>
-</Steps>
+On Windows, install Node.js with `winget install -e --id OpenJS.NodeJS.LTS`, and type `npx.cmd` in PowerShell in place of `npx`.
 
-## Verify Installation
+Then let the command install Summer Engine, create a starter project and open it, all in one step:
 
-Once installed, you can verify everything is working by:
+```bash
+npx -y summer-engine@latest dev
+```
 
-1. Opening Summer
-2. Creating a new project from a template
-3. Testing the AI chat with a request such as “Add a cube to the scene”
+To connect an agent, see [Quickstart: coding agent](/quickstarts/coding-agent).
 
-If you encounter any issues, check our [troubleshooting guide](/desktop/troubleshooting) or reach out on [Discord](https://discord.gg/summerengine).
+**Check that it works:** `npx -y summer-engine@latest --version` prints the version, such as `4.8.0`. `npx -y summer-engine@latest doctor` checks Node.js, Summer Engine, your sign-in and your agents in one go.
 
-## Existing-project compatibility
+## Sign in
 
-Summer Engine uses standard project files. Compatibility, migration, extensions, and the
-measured upstream base live in the dedicated [compatibility reference](/reference/compatibility).
-Do not infer a project-version minimum from a copied setup guide.
+The Summer app signs you in the first time you open it. From a terminal, run:
+
+```bash
+summer login
+```
+
+Your browser opens the Summer sign-in page. One sign-in covers the Summer app, the `summer` command and your agents on this computer. For your own scripts, `summer token` prints an access token that lasts one hour.
+
+Building and playing games needs no sign-in. You need it for AI assets, publishing and the [Summer API](/api/overview).
+
+## Update
+
+The Summer app updates itself. When a new version is ready, the top bar shows **Update ready · Restart**. You can also open **Settings > Updates & About** and click **Check for updates**.
+
+`npx -y summer-engine@latest` always runs the newest release. For a global install, run `npm install -g summer-engine@latest` or `brew upgrade summer`.
+
+## System requirements
+
+| | |
+|---|---|
+| Windows | Windows 10 or newer, 64-bit |
+| Mac | Apple silicon (2020 or newer), macOS 11 or newer |
+| Memory | 8 GB recommended |
+| Storage | About 2 GB for Summer, plus 3.7 GB if you start with the Sun Temple |
+| Linux | No app. `npx -y summer-engine@latest install` puts the engine in `~/.summer/engine/` |
+
+## Troubleshooting
+
+<AccordionGroup>
+  <Accordion title="PowerShell: running scripts is disabled on this system">
+    Type `npx.cmd` in place of `npx`. It is the same command without the script block. Don't change the execution policy.
+  </Accordion>
+  <Accordion title="summer: command not found">
+    Open a new terminal: terminals that were open before you installed the command don't see it yet. Or run it without installing: `npx -y summer-engine@latest`.
+  </Accordion>
+  <Accordion title="summer doctor says Node.js is too old">
+    The `summer` command needs Node.js 22 or newer when you run it with `npx` or npm. Install the current LTS from [nodejs.org](https://nodejs.org), then open a new terminal.
+  </Accordion>
+  <Accordion title="My agent answers engine_not_running">
+    Summer Engine is not open. Ask your agent to open your project, or run `npx -y summer-engine@latest dev` in the game's folder.
+  </Accordion>
+</AccordionGroup>
+
+More fixes: [Desktop troubleshooting](/desktop/troubleshooting). Bringing a project you already have? See the [compatibility reference](/reference/compatibility).
+
+## Next steps
 
 <CardGroup cols={2}>
-  <Card title="Previous: Summer Engine docs" icon="arrow-left" href="/">
-    See every step from first game to published.
+  <Card title="Quickstart: Summer app" icon="rocket" href="/quickstarts/fresh-project">
+    Describe a game and play it in minutes.
   </Card>
-  <Card title="Next: Make your first game" icon="arrow-right" href="/quickstarts/fresh-project">
-    Describe your Summer game. Your agent builds it and you play it.
+  <Card title="Quickstart: coding agent" icon="terminal" href="/quickstarts/coding-agent">
+    Build the game from Claude Code, Codex or Cursor.
   </Card>
 </CardGroup>

@@ -1,0 +1,101 @@
+{
+  "models": [
+    {
+      "id": "fast-text",
+      "capability": "character.reply",
+      "display_name": "Claude Haiku 4.5",
+      "default": true,
+      "status": "available",
+      "prices": [
+        {
+          "unit": "input_tokens",
+          "per": 1000000,
+          "usd": "1.00"
+        },
+        {
+          "unit": "output_tokens",
+          "per": 1000000,
+          "usd": "5.00"
+        }
+      ]
+    },
+    {
+      "id": "smart-text",
+      "capability": "character.reply",
+      "display_name": "Claude Sonnet 5.5",
+      "default": false,
+      "status": "available",
+      "prices": [
+        {
+          "unit": "input_tokens",
+          "per": 1000000,
+          "usd": "2.00"
+        },
+        {
+          "unit": "output_tokens",
+          "per": 1000000,
+          "usd": "10.00"
+        }
+      ]
+    },
+    {
+      "id": "image-flash",
+      "capability": "image",
+      "display_name": "Gemini 3.1 Flash Image",
+      "default": true,
+      "status": "available",
+      "prices": [
+        {
+          "unit": "images",
+          "per": 1,
+          "usd": "0.067"
+        }
+      ]
+    },
+    {
+      "id": "voice-flash",
+      "capability": "speech",
+      "display_name": "Flash v2.5",
+      "default": true,
+      "status": "available",
+      "prices": [
+        {
+          "unit": "characters",
+          "per": 1000,
+          "usd": "0.04"
+        }
+      ]
+    },
+    {
+      "id": "scribe",
+      "capability": "transcribe",
+      "display_name": "Scribe v2",
+      "default": true,
+      "status": "coming_soon",
+      "prices": [
+        {
+          "unit": "audio_seconds",
+          "per": 60,
+          "usd": "0.003667"
+        }
+      ]
+    }
+  ],
+  "defaults": {
+    "player_day_usd": "5.00",
+    "game_day_usd": "100.00",
+    "game_month_usd": "1000.00",
+    "account_month_usd": "2000.00",
+    "player_calls_per_minute": 30,
+    "game_calls_per_minute": 1200
+  },
+  "ceilings": {
+    "player_day_usd": "500.00",
+    "game_day_usd": "500.00",
+    "game_month_usd": "15500.00",
+    "account_month_usd": "50000.00",
+    "player_calls_per_minute": 120,
+    "game_calls_per_minute": 6000
+  },
+  "billing": "Usage is billed at the provider's cost from the game owner's paid Summer credits."
+}

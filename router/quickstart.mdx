@@ -1,0 +1,80 @@
+---
+title: "Summer Router quickstart: add a talking character to your game"
+sidebarTitle: "Quickstart"
+description: "Add a guard the player can talk to, who opens the gate when convinced: make the character in Summer Studio, add one node to your scene, and play it on Summer Games."
+icon: "rocket"
+---
+
+In a few minutes your game has a guard the player can talk to. The guard decides whether to open the gate, and your game opens it.
+
+<Note>
+Using a coding agent? Paste this: `Add a Summer Router character to my game (https://docs.summerengine.com/router/quickstart.md): a gate guard called "guard" who opens the gate when the player gives a good reason.`
+</Note>
+
+<Steps>
+  <Step title="Publish your game on Summer Games">
+    Summer Router serves games published on Summer Games, and it is on for every game, with [caps](/router/limits) from the start. If your game is not there yet, see [publish on Summer Games](/publishing/summer-games). Calls are paid from your paid Summer credits, from your plan or [top-ups](https://summerengine.com/studio/credits).
+  </Step>
+  <Step title="Make the character">
+    In [Summer Studio](https://summerengine.com/studio), open your game, then **Grow > Summer Router**, and add a character:
+
+    | Field | Example |
+    |---|---|
+    | Id | `guard` |
+    | Instructions | You guard the north gate of a mountain town. Be gruff but fair. Open the gate only when the traveller gives a good reason. |
+    | First message | Halt. State your business. |
+    | Tools | `open_gate`, no inputs: "Opens the north gate." |
+    | Model and voice | Leave the defaults, or pick them from the lists |
+
+    Try the character in the tab's test conversation right away. Your agent can do this step too: on the Summer MCP it saves the character with the `router.save_character` operation, and you approve the change.
+  </Step>
+  <Step title="Add the character to your scene">
+    Add a **SummerRouterCharacter** node, name it `Guard`, and set **Character ID** to `guard`, **Mode** to `text` and **Show UI** on. Show UI gives the player a bar with the guard's words and a text field. Then give the guard its tool and an offline line:
+
+    ```gdscript level.gd
+    extends Node3D
+
+    func _ready() -> void:
+        $Guard.tools = {"open_gate": func(_args): $Gate.open(); return {"opened": true}}
+        $Guard.turn_failed.connect(func(_result): $Subtitle.text = "The guard ignores you.")
+    ```
+
+    Turn **Speak** on and each answer is also spoken in the guard's voice.
+  </Step>
+  <Step title="Play it">
+    Upload the build to Summer Games and play it in the Summer app or on summer.games, signed in. The bar shows the guard's first message; type an answer. When you convince the guard, the gate opens.
+
+    In the editor, Summer Router calls answer `unavailable` and the guard uses its offline line, so your game always runs. Shape the character in Studio's test conversation, and play the real thing on Summer Games.
+  </Step>
+</Steps>
+
+## One call instead of a node
+
+The node runs a whole conversation. For a single line, call the router directly:
+
+```gdscript
+var r: SummerRouterResult = await Summer.client.router.reply("guard", "Let me in, I have a letter for the mayor.", {
+    "tools": {"open_gate": func(_args): $Gate.open(); return {"opened": true}},
+})
+$Subtitle.text = r.text if r.ok else "The guard ignores you."
+```
+
+Pass the same `conversation_id` from `r.conversation_id` on the next call, and the guard remembers what was said.
+
+## More you can do
+
+- **A voice line:** `await Summer.client.router.speak("Welcome, traveller!", {"character": "narrator"})` returns `audio` to play. See [speech](/router/speech).
+- **An image:** `await Summer.client.router.generate("image", {"prompt": "a flower made of glass", "size": "512x512"})` returns a `texture`. See [image](/router/image).
+- **What the character knows:** `variables` fill the character's declared `{{variables}}`, such as the player's name, when the character lists `variables` in its overridable fields. `context` tells it what just happened in the game.
+
+<CardGroup cols={3}>
+  <Card title="Server and client" icon="server" href="/router/server-and-client">
+    Multiplayer: let the server check a reply before it changes the world.
+  </Card>
+  <Card title="Limits and caps" icon="gauge" href="/router/limits">
+    The caps every game starts with, and how to change them.
+  </Card>
+  <Card title="Errors" icon="circle-alert" href="/router/errors">
+    Every error tag and what to do.
+  </Card>
+</CardGroup>

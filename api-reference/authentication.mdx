@@ -16,6 +16,7 @@ Summer is the game engine built for AI. Every Summer API uses your Summer accoun
 | `summer` CLI and the local MCP (`summer mcp`) | `summer login` opens your browser once. It signs in your Summer account, then the store, publishing and Grow tools. |
 | Engine tools (scenes, scripts, play) | No sign-in. Summer Engine writes a local token to `~/.summer/api-token` when it starts, and the local MCP reads it. |
 | [HTTP API](/api-reference/http/overview) (`api.summer.games`) | A bearer token from the same OAuth sign-in: `summer login --store`, or the Summer connector in an AI app. |
+| [Summer API](/api/overview) (`www.summerengine.com/v1`) | The same OAuth sign-in: `summer login`, then `Authorization: Bearer $(summer token)` (one hour). Each connected app has its own spend limit. See [sign-in and limits](/api/sign-in). |
 
 ## Files and variables
 

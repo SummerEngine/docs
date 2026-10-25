@@ -1,0 +1,71 @@
+---
+title: "Use the Summer API from Claude Code, Codex, Cursor, Hermes and ChatGPT"
+sidebarTitle: "Agents"
+description: "One step per agent: paste one prompt into Claude Code, Codex, Cursor or Hermes, or add one connector URL in ChatGPT or Claude. You sign in once and choose Allow with a spend limit."
+icon: "bot"
+---
+
+Every agent uses the same API and the same Summer sign-in. Coding agents use the `summer` CLI. Chat apps use the Summer MCP. You sign in once, in the browser, and choose **Allow** with a spend limit.
+
+## The one step for coding agents
+
+Paste this into **Claude Code, Codex, Cursor, Hermes** or any agent that can run commands:
+
+```text Prompt for your agent wrap
+Use the Summer API for game assets (docs: https://docs.summerengine.com/llms.txt). Run `npx -y summer-engine@latest login` so I can sign in. Then run `npx -y summer-engine@latest api run 3d/default --input '{"kind":"text-to-3d","prompt":"a stylized treasure chest, game prop"}' --download assets` and tell me where the GLB is.
+```
+
+The browser opens the Summer sign-in page. You sign in, pick a spend limit and choose **Allow**. The agent makes its first asset.
+
+| Agent | Paste the prompt into |
+|---|---|
+| Claude Code | the Claude Code chat in your project folder |
+| Codex | the Codex chat (CLI or app) in your project folder |
+| Cursor | the Agent chat |
+| Hermes | the Hermes Agent chat |
+| Any other agent | its chat |
+
+## The summer CLI
+
+```bash
+npx -y summer-engine@latest login
+```
+
+One browser sign-in. It renews itself, so the agent never asks again on this computer. Then every Summer API call is one command:
+
+| Command | Does |
+|---|---|
+| `summer api models [id] [--capability 3d]` | Lists models with their input and price |
+| `summer api estimate <model> --input '<json>'` | The price of one job and a quote that holds it for 15 minutes. Free. |
+| `summer api run <model> --input '<json>' --download [dir]` | Runs the job, follows it and saves each file as `<assetId>.<ext>`. Add `--quote <quoteId>` to cap the charge. |
+| `summer api run --batch jobs.jsonl --download [dir]` | Runs up to 500 jobs from a file with one `{"model", "input"}` per line, all or none, and saves every file |
+| `summer api jobs <id> [--wait] [--download [dir]]` | Reads a job, follows it, or saves its files |
+| `summer token` | Prints a one-hour token for `curl`: `Authorization: Bearer $(summer token)` |
+
+Run them as `npx -y summer-engine@latest api ...`, or as `summer api ...` once the CLI is installed. The output is JSON when piped or with `--json`, and a short summary in a terminal. In Windows PowerShell or cmd, put the input in a file and pass `--input "@input.json"`.
+
+The CLI's MCP server has the same calls as tools: `summer_api_models`, `summer_api_estimate`, `summer_api_run`, `summer_api_batch` and `summer_api_job`. `npx -y summer-engine@latest setup <agent> --yes` also installs the `summer-api` skill, which teaches the agent this whole flow, and the `summer-router` skill for AI characters in games.
+
+## ChatGPT and Claude
+
+Chat apps use the Summer MCP. Add this address as a custom connector and sign in to your Summer account once:
+
+```text
+https://mcp.summerengine.com/mcp
+```
+
+Then ask in plain words, for example "Make a low-poly pine tree for my game with the Summer API". The agent finds the Summer API operations (`models.list`, `models.estimate`, `models.run`) with `summer_search` and runs them with `summer_call`. Results go to your Summer library. Step by step for each app: [Summer in ChatGPT and Claude](/mcp/chatgpt-and-claude).
+
+Coding agents can add the same server: Claude Code `claude mcp add --transport http summer-cloud https://mcp.summerengine.com/mcp`, Codex `codex mcp add summer-cloud --url https://mcp.summerengine.com/mcp`.
+
+Every app you connect shows in [Settings > Connected agents & apps](https://summerengine.com/settings/connected-apps) with its own spend limit and **Revoke**. See [sign-in and limits](/api/sign-in).
+
+## What agents should always do
+
+- Read models and prices from `summer api models` or `GET /v1/models`, never from memory.
+- Price a big batch first with `summer api estimate` or `POST /v1/estimate`, and tell the person the total. Then send it as one batch (`summer api run --batch`, `POST /v1/batches`), not job by job.
+- Treat `queued` as accepted: the job starts in order and its price is held. Never send it again.
+- Send a new `Idempotency-Key` for each new job and the same one when retrying it. The CLI does this for you.
+- Save finished files in the project, and keep the asset id to import the asset again.
+- Keep tokens out of game code, builds and commits.
+- On `402`, show the person the error message and stop. `no_credits` links where to add credits; `over_limit` links where to raise this app's limit.

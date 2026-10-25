@@ -58,7 +58,7 @@ The local MCP waits for the browser on port 47615, 47616 or 47617. Close the pro
 | Message | Fix |
 |---|---|
 | `conflict`: the store page changed since it was read (`412`) | Read it again with `summer_store_get_listing`, then retry. |
-| A page in review cannot change | Wait for review to finish. A published or sent-back page starts a new draft when you edit it. |
+| A page cannot change while its checks run | Wait for the checks to finish. A live page starts a new draft when you edit it. |
 | Shape or size wrong | The picture must match the slot's shape within 2% and meet the minimum size. See [Store art](/publishing/store-art). |
 | `not_found` (`asset_not_found`) | The asset is not one of yours. Find yours with `summer_assets_search` and `scope: "mine"`. |
 | `invalid_input` (`image_unreadable`) | Upload a PNG, JPEG or WebP with `assets.upload_begin`, or use a public `https` image URL. |

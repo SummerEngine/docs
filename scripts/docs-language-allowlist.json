@@ -11,14 +11,6 @@
       "maxOccurrences": 1,
       "owner": "docs-publishing",
       "reason": "Technical platform-holder prerequisite describing an applicant's prior Switch publishing record."
-    },
-    {
-      "rule": "lowercase-gdscript",
-      "file": "mcp/skills.mdx",
-      "match": "gdscript",
-      "maxOccurrences": 1,
-      "owner": "docs-mcp",
-      "reason": "Literal gdscript-patterns skill identifier; the adjacent prose spells GDScript correctly."
     }
   ],
   "requiredTerms": [
