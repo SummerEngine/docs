@@ -480,9 +480,9 @@
 
 ### Overview
 
-- [Summer Engine skills for AI agents](https://docs.summerengine.com/mcp/skills.md): The Summer Engine skill library: 133 best-practice guides for AI agents building games, grouped by domain, with where each agent reads them and how to install and update them.
+- [Summer Engine skills for AI agents](https://docs.summerengine.com/mcp/skills.md): The Summer Engine skill library: 137 best-practice guides for AI agents building games, grouped by domain, with where each agent reads them and how to install and update them.
 - [Skills: Teach Summer Engine Your Way of Building](https://docs.summerengine.com/ai-tools/skills.md): Skills are short guides the Summer Engine agent follows. Use the built-in library, trigger one with a slash command, or write your own in Settings > Skills.
-- 196 more pages in Skills: open the pages above, or read https://docs.summerengine.com/llms-full.txt
+- 201 more pages in Skills: open the pages above, or read https://docs.summerengine.com/llms-full.txt
 
 ## Reference
 
