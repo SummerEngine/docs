@@ -44,8 +44,10 @@ you. If each match starts fresh, use
   sleep for maintenance, your game can tell players in advance, and the World
   saves before it stops.
 - **Worlds that survive updates.** Publishing a new version of your game
-  doesn't touch existing private Worlds: they keep their saves and the version
-  they started on. New Worlds use your newest version.
+  never touches a World's saves. Today an existing private World keeps running
+  the version it started on, and new Worlds use your newest version. Coming
+  soon, Worlds move to your newest version when it can read their saves: see
+  [Changing your save format](#changing-your-save-format).
 
 ## What to save where
 
@@ -148,6 +150,134 @@ Tell me:
 3. how players find their way back to a World;
 4. anything my design needs that persistent Worlds don't cover yet, and how
    we can build around it.
+</Prompt>
+
+## Changing your save format
+
+<Note>
+  **Coming soon.** Everything in this section needs a Summer Engine release
+  with save migrations (Engine interface 7) and the matching Summer update.
+  Until both ship, a World stays on the version of your game it started on,
+  and a new version must keep writing the same save version to restore the
+  same World.
+</Note>
+
+Your save format changes as your game grows: a crop gets a growth stage, a
+chest gets more slots, an item is renamed. Every save is written in a **save
+version**, a name you choose such as `farm.v2`. When your new version of the
+game writes a new save version, it also says which older ones it can still
+read, and your game turns old saves into the new format.
+
+### How a save is migrated
+
+1. **List every save version this version of your game reads**, oldest first,
+   in your World definition. The last one is the save version it writes.
+
+   ```json
+   "persistence": {
+     "mode": "checkpoint",
+     "recovery_point_seconds": 60,
+     "snapshot_schemas": ["farm.v1", "farm.v2", "farm.v3"],
+     "migration_ids": []
+   }
+   ```
+
+2. **Write one migration step per older save version.** A step takes the
+   bytes of one save version and returns the bytes of the next one in the
+   list. Summer Engine chains the steps when a World loads, so a `farm.v1`
+   save goes `farm.v1` → `farm.v2` → `farm.v3`. You never write a step that
+   skips a version.
+3. **Keep the old steps.** A World that has been asleep for months may still
+   be on your oldest save version.
+
+Summer never changes your save bytes; only your game's code does. Every
+earlier save stays in the World's history, so a failed migration loses
+nothing.
+
+### When Worlds move to your new version
+
+Choose an upgrade policy for your game:
+
+| Policy | What happens |
+| --- | --- |
+| **Automatically on next visit** (default) | When a sleeping World next wakes, it moves to your newest version if that version can read its save. |
+| **When I choose** | Worlds move only when you upgrade one World or press **Upgrade all now**. |
+| **Never** | Worlds keep running the version they're on. |
+
+- You can also **pin** a single World so it never moves, whatever the policy.
+- Automatic upgrades only ever go to your newest published version. You can
+  move a World to any other version that reads its save yourself.
+- A World whose save your newest version can't read stays on its current
+  version and keeps working. It isn't stuck: the version that wrote a save can
+  always read it.
+
+### Every upgrade is a trial
+
+When a World upgrades, the new version loads the save, migrates it and saves
+the result **before any player is let in**. A player who joins meanwhile sees
+the World waking up and gets in once the upgrade is saved.
+
+If the migration fails, the server crashes before that first save, or the
+upgrade takes longer than 5 minutes, the World goes back to the version and
+save it had before, untouched, and sleeps. On your game's **Saved Worlds**
+page it shows **Upgrade failed** with the reason, for example "Version 13's
+save migration from farm.v1 failed: farm.v1 save is not a dictionary".
+
+- A failure caused by your game is not tried again automatically for that
+  World. Fix the step and choose **Retry**, or publish a newer version.
+- A failure caused by Summer, such as a server machine going away, doesn't
+  count against your version. The World tries again on its next visit.
+
+Each World on **Saved Worlds** shows one status: *Up to date*, *Upgrades on
+next visit*, *Upgrading…*, *Upgrade failed*, *Pinned*, or *Can't upgrade*
+(your newest version can't read its save). A failed World offers **Retry**,
+**Pin this World**, **Run on another version** and **Start fresh**. Starting
+fresh asks you to type the World's name, and keeps the old saves as history.
+
+### Check your migrations before you publish
+
+Keep a few real saves of each older save version in your project, under
+`res://summer/save_fixtures/<save version>/`, for example
+`res://summer/save_fixtures/farm.v1/big-farm.save`. Summer Engine can run your
+migration steps over them on your machine: every one must migrate to your
+current save version and load. Local Play can't show a migration on its own,
+because it starts every run with an empty World.
+
+After you publish, Summer runs the same check on its servers with your save
+fixtures and up to 20 recent saves from your players' Worlds of each older
+save version. Your players' saves never leave Summer's servers. The result
+appears next to the release, such as "Save check: farm.v1 → farm.v3 passed on
+3 test saves and 20 player saves".
+
+- A failed check only keeps that version from upgrading Worlds automatically.
+  It never stops you publishing.
+- If Summer couldn't run the check, nothing is held back: each World's upgrade
+  is still a trial that rolls back on failure.
+
+### Strict compatibility
+
+Turn on **strict compatibility** in your game's Saved Worlds settings if you
+never want to drop an old save version. Publishing is then refused when your
+new version stops reading a save version an earlier version wrote, or when
+its own save fixtures fail the check. Your newest version can then always
+upgrade every World.
+
+It's off by default, so you can drop support for very old save versions.
+Worlds on a dropped save version keep running the version that wrote them.
+
+<Prompt description="**Change my save format** without losing any World's progress.">
+In my Summer project, I want to change what my persistent World saves:
+[THE CHANGE, for example "crops get a growth stage"]. Use the Summer
+`persistent-world-save-migrations` skill; if you don't have it installed,
+find it in the Summer library.
+
+- Add a new save version and keep reading every older one.
+- Write the migration step from my current save version to the new one,
+  and keep my older steps.
+- Add save fixtures for my current save version before I publish.
+
+Read my project first and tell me which save version my Worlds use today
+before you change anything.
 </Prompt>
 
 ## Testing it on your machine
