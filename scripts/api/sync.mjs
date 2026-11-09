@@ -19,7 +19,10 @@
  * typed by hand: they come from here or nowhere.
  *
  * Docs builds never run this; they only render the pinned inputs
- * (scripts/api/generate.mjs --check).
+ * (scripts/api/generate.mjs --check). The api-price-sync workflow runs it daily.
+ *
+ * Exit codes: 0 done, 3 GET /v1/models answers 404 (the Summer API is not on
+ * for that deployment yet: nothing to sync), anything else a failure.
  */
 
 import { execFileSync } from "node:child_process";
@@ -30,6 +33,7 @@ import { fileURLToPath } from "node:url";
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SOURCES = join(HERE, "sources");
 const DEFAULT_BASE = "https://www.summerengine.com/v1";
+const NOT_LIVE = 3;
 
 function parseArgs(argv) {
   const opts = { base: DEFAULT_BASE };
@@ -54,7 +58,7 @@ function parseArgs(argv) {
 
 async function getJson(url) {
   const res = await fetch(url, { headers: { accept: "application/json" } });
-  if (!res.ok) throw new Error(`GET ${url}: ${res.status} (the Summer API answers 404 until it is on for that deployment)`);
+  if (!res.ok) throw Object.assign(new Error(`GET ${url}: ${res.status} (the Summer API answers 404 until it is on for that deployment)`), { status: res.status });
   return res.json();
 }
 
@@ -140,7 +144,15 @@ function readRouter(dir) {
 }
 
 const opts = parseArgs(process.argv.slice(2));
-const models = unwrap(opts.models ? JSON.parse(readFileSync(opts.models, "utf8")) : await getJson(`${opts.base}/models`));
+const models = unwrap(
+  opts.models
+    ? JSON.parse(readFileSync(opts.models, "utf8"))
+    : await getJson(`${opts.base}/models`).catch((err) => {
+        if (err.status !== 404) throw err;
+        console.log(`api sync: GET ${opts.base}/models answers 404, the Summer API is not on there yet. Nothing to sync.`);
+        process.exit(NOT_LIVE);
+      }),
+);
 const openapi = opts.openapi ? JSON.parse(readFileSync(opts.openapi, "utf8")) : await getJson(`${opts.base}/openapi.json`);
 if (!Array.isArray(models?.models) || !models.models.length) throw new Error("the model list has no models");
 if (openapi?.openapi?.startsWith("3.") !== true) throw new Error("not an OpenAPI 3 document");
