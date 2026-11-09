@@ -1,7 +1,7 @@
 ---
 title: "Approve what your AI agent asks: publishing and approval links"
 sidebarTitle: "Approvals"
-description: "How Summer approval links work: when your AI agent must ask first, how to approve publishing a game on Summer Games, and what each approval state means."
+description: "How Summer approval links work: when your AI agent must ask first, how it asks before your game goes live on Summer Games, and what each approval state means."
 icon: "badge-check"
 "og:image": "https://docs.summerengine.com/images/og/publishing-owner-approval.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/publishing-owner-approval.jpg"
@@ -11,7 +11,7 @@ Your agent asks you first in three cases:
 
 - a switch in **Studio > Settings > [Agent permissions](/mcp/permissions)** is off;
 - the change always asks: agent permissions, auto top-up, entering a jam, the analytics event limit;
-- Summer Games still asks: for now, the game's owner approves an agent's publish or release, and you approve price, A/B test and member changes.
+- Summer Games still asks: for now, you approve price, A/B test and member changes.
 
 Your agent gives you a link. Nothing changes until you approve.
 
@@ -31,47 +31,31 @@ Your agent gives you a link. Nothing changes until you approve.
 
 A request for your own yes expires after 24 hours. A request for a game owner's yes expires after 7 days. **Studio > Settings > Agent activity** lists every request and every change, with Undo for prices, sales, country prices, member roles, team names and the event limit.
 
-## Approve publishing
+## Approve going live
 
-For now every agent publish asks the game's owner: the answer is `needs_approval` with the owner's approval link. Summer Games records exactly that version and waits for the owner.
+Your agent always asks you before a game goes live. It shows you the plan, the page and the build, and asks in the chat. Only after your yes does it take the game live with `summer_go_live`. The game is live as soon as Summer's automatic checks pass. There is no review to wait for.
 
-<img className="block dark:hidden" src="/images/guide-art/publishing/approval-light.svg" alt="The agent submits. The version waits for you exactly as submitted. You click Approve publishing, Summer reviews it, then it goes live. Not now cancels it and publishes nothing. If the page changes after the agent asked, the request is stale and the agent submits again." />
-<img className="hidden dark:block" src="/images/guide-art/publishing/approval-dark.svg" alt="The agent submits. The version waits for you exactly as submitted. You click Approve publishing, Summer reviews it, then it goes live. Not now cancels it and publishes nothing. If the page changes after the agent asked, the request is stale and the agent submits again." />
+When **Publish** is off for agents on your account, your agent can't take the game live. Publish it yourself in Studio.
 
-<Steps>
-  <Step title="Open the link">
-    The link looks like `https://www.summerengine.com/studio/store/<gameId>/approve/<approvalId>`. Open it signed in to your Summer account.
-  </Step>
-  <Step title="Check what will publish">
-    The page shows **What will publish**: the stores, the title, the desktop and mobile text, the build, the price and your agent's note. Below it is the **store page preview**: how players will see this version.
-  </Step>
-  <Step title="Approve, or not now">
-    Click **Approve publishing** to send it to Summer for review. Click **Not now** to turn it down; nothing is published, and your agent can publish again later.
-  </Step>
-</Steps>
-
-When you approve:
-
-1. The price is set as you. A price needs payouts set up; without them nothing is submitted, and the page tells you.
-2. The page goes to Summer for review.
-3. When the review passes, the store page goes live. There is no second click. For a store bundle, your agent then releases the build you approved with `store.release`.
+<img className="block dark:hidden" src="/images/guide-art/publishing/approval-light.svg" alt="The agent asks. The request waits for you on the approval page with exactly what changes. You approve it, Summer's automatic checks run, then it is live. Not now cancels it and publishes nothing. If the page changes after the agent asked, the request is stale and the agent asks again." />
+<img className="hidden dark:block" src="/images/guide-art/publishing/approval-dark.svg" alt="The agent asks. The request waits for you on the approval page with exactly what changes. You approve it, Summer's automatic checks run, then it is live. Not now cancels it and publishes nothing. If the page changes after the agent asked, the request is stale and the agent asks again." />
 
 ## When you publish yourself
 
-If you click **Submit for review** in Studio yourself, that is your approval. There is no extra step. See [Publish your game](/build/publish).
+If you click **Publish** in Studio yourself, that is your yes. There is no extra step: the game goes live as soon as the automatic checks pass. See [Publish your game](/build/publish).
 
 ## What the states mean
 
 | State | Your agent sees | Meaning | What to do |
 |---|---|---|---|
 | **Awaiting owner approval** | `awaiting_approval` | Your agent asked. Nothing is published. | Open the link. |
-| **Approved** | `done` | You approved it. It went to Summer for review. | Wait for the review. |
-| **Cancelled** | `cancelled` | You clicked **Not now**, or your agent withdrew it. | Ask your agent to publish again when ready. |
-| **Stale** | `stale` | The store page changed after your agent asked. | Ask your agent to publish again, so you approve exactly what will publish. |
+| **Approved** | `done` | You approved it, and the change ran. | Nothing. |
+| **Cancelled** | `cancelled` | You clicked **Not now**, or your agent withdrew it. | Ask your agent again when ready. |
+| **Stale** | `stale` | The store page changed after your agent asked. | Ask your agent again, so you approve exactly what will change. |
 
 ## What your agent may do
 
-With the default switches, your agent can read your games, edit the draft, upload art and builds, and start builds without asking. These defaults apply now. You can change them soon. Until then, Summer Games still asks the game's owner before an agent publishes, and price, A/B test and member changes ask you first. It asks first before it deletes something for good or contacts people, such as a team invite.
+With the default switches, your agent can read your games, edit the draft, upload art and builds, and start builds without asking. These defaults apply now. You can change them soon. Until then, price, A/B test and member changes ask you first. Going live always asks you, in the chat. It asks first before it deletes something for good or contacts people, such as a team invite.
 
 Only you can set up payouts. On a game that is already live, only the owner can finish a web build or download.
 
@@ -79,19 +63,19 @@ Summer checks every agent call. A change Summer Games does not take from an agen
 
 ## For agents
 
-- After `summer_store_publish`, read `status`. `needs_approval` (for now every agent publish): give the owner `approval.url`, then call `summer_jobs_wait` with `job.id` until it is `done`, `cancelled` or `stale`. `done`: Summer's review runs next. Do not say the game is live.
-- `summer_store_status` shows the request, the review and its feedback.
-- If the job ends `stale`, read the store page again with `summer_store_get_listing` and publish again with a new `idempotencyKey`.
-- After the review passes, the page goes live. For a store bundle, `store.release` (with an `idempotencyKey`) releases exactly the build the owner approved. Web builds and downloads need no release.
+- Before a game goes live, call `summer_go_live` without `confirm`, show the owner the plan and ask. Call it with `confirm: true` only after they say yes. The game is live as soon as Summer's automatic checks pass; there is no review, so never tell the owner to wait for one.
+- Any answer `needs_approval`: give the owner `approval.url`, then call `summer_jobs_wait` with `job.id` until it is `done`, `cancelled` or `stale`.
+- If the job ends `stale`, read the current state again and ask again.
+- `summer_store_status` shows every upload, what players get now, and any waiting request.
 
 ## Ask your agent
 
-<Prompt description="**Where is my game?** Your agent reads the approval and review state. No changes.">
+<Prompt description="**Where is my game?** Your agent reads what is live and what waits for you. No changes.">
 Tell me where my game is on Summer Games. Use the Summer Engine MCP and read
 my game with summer_store_status. Don't change anything.
 
-Tell me: whether an approval is waiting for me (and give me its link), what
-I approved, whether Summer's review has passed, and whether the game is live.
+Tell me: whether an approval is waiting for me (and give me its link), which
+version players get on each platform, and whether the game is live.
 </Prompt>
 
 ---

@@ -5,8 +5,8 @@ from illo import write
 
 def flow(k):
     c = k.c
-    steps = ["Export", "Store page", "Upload", "Review", "Live"]
-    notes = ["one .zip file", "in Summer Studio", "checked by Summer", "by Summer staff", "on summer.games"]
+    steps = ["Export", "Store page", "Upload", "Publish", "Live"]
+    notes = ["one .zip file", "in Summer Studio", "checked by Summer", "your yes", "once checks pass"]
     for i, (title, note) in enumerate(zip(steps, notes)):
         x = 30 + i * 168
         last = i == len(steps) - 1
@@ -29,10 +29,8 @@ def flow(k):
                 y = cy - 20 + j * 20
                 k.badge(cx - 30, y, ok=True, r=7)
                 k.text(cx - 16, y + 4, label, 12, c["ink"], 500, anchor="start")
-        elif i == 3:  # a reviewer
+        elif i == 3:  # you say yes
             k.player(cx, cy + 22, c["ink"], 1)
-            k.add(f'<circle cx="{cx + 22}" cy="{cy - 18}" r="10" fill="none" stroke="{c["accent"]}" stroke-width="2.5"/>')
-            k.line(cx + 29, cy - 11, cx + 36, cy - 4, c["accent"], 3)
         else:  # live
             k.add(f'<circle cx="{cx}" cy="{cy}" r="24" fill="{c["accent"]}"/>')
             k.add(f'<path d="M {cx - 7} {cy - 11} L {cx + 11} {cy} L {cx - 7} {cy + 11} z" fill="{c["bg"]}"/>')
@@ -69,7 +67,7 @@ def bundle(k):
 
 def update(k):
     c = k.c
-    k.text(40, 40, "Players keep the live version until the new one is promoted", 15, weight=600, anchor="start")
+    k.text(40, 40, "Players keep the live version until the new one goes live", 15, weight=600, anchor="start")
     # Live version.
     k.rect(40, 62, 300, 140, fill=c["accent_soft"], stroke=c["accent"], rx=14, width=2)
     k.text(64, 92, "v1.0.0", 18, c["ink"], 700, anchor="start")

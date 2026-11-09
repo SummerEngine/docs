@@ -1,0 +1,107 @@
+---
+title: "Quickstart: make a game with your coding agent"
+sidebarTitle: "Quickstart: coding agent"
+description: "Connect Claude Code, Codex, Cursor or any agent to Summer with one command, then ask for a game. Your agent installs Summer Engine, builds the game, plays it and shows you."
+icon: "terminal"
+---
+
+In four steps your coding agent connects to Summer, installs the engine and builds a game you can play. Your agent drives Summer Engine on your computer: it builds scenes, writes code, plays the game and takes screenshots.
+
+**You need:**
+
+- A coding agent: [Claude Code](/mcp/claude-code), [Codex](/mcp/codex), [Cursor](/mcp/cursor) or [any of 31 agents](/mcp/setup#every-agent).
+- [Node.js](https://nodejs.org) 22 or newer. Check with `node --version`. On Windows, install it with `winget install -e --id OpenJS.NodeJS.LTS`.
+- A Windows 10 or newer PC, or a Mac with Apple silicon, for Summer Engine.
+
+<Steps>
+  <Step title="Connect your agent">
+    Run the setup for your agent in a terminal:
+
+    <CodeGroup>
+
+    ```bash Claude Code
+    npx -y summer-engine@latest setup claude-code --yes
+    ```
+
+    ```bash Codex
+    npx -y summer-engine@latest setup codex --yes
+    ```
+
+    ```bash Cursor
+    npx -y summer-engine@latest setup cursor --yes
+    ```
+
+    ```powershell Windows PowerShell
+    npx.cmd -y summer-engine@latest setup claude-code --yes
+    ```
+
+    </CodeGroup>
+
+    Setup adds the Summer MCP server (the connection that gives your agent Summer's tools) to your agent's config, installs the Summer skills where your agent reads them, and adds the [Summer Games MCP](/mcp/summer-games). It ends with a `summer doctor` report. A warning that Summer Engine is not installed is expected: your agent installs it in step 4.
+
+    <Tip>
+    In Claude Code you can install the Summer plugin instead: type `/plugin install summer --marketplace summerengine/summer`, then `/summer:start`. It brings the same skills and servers and gets a first game playing. Use the plugin or `summer setup`, not both.
+    </Tip>
+  </Step>
+  <Step title="Restart your agent and check">
+    Restart your agent so it loads the new MCP server. Then ask it:
+
+    ```text
+    List the Summer tools you have.
+    ```
+
+    **If everything worked:** your agent lists tools such as `summer_play`, `summer_screenshot` and `summer_search`. In Claude Code, `/mcp` shows `summer-engine` as connected.
+  </Step>
+  <Step title="Sign in">
+    Sign in once so your agent can make AI art, 3D models and sound for your game, and publish it later. Building and playing need no account, so you can also skip this step and sign in when your agent asks.
+
+    ```bash
+    npx -y summer-engine@latest login
+    ```
+
+    Your browser opens the Summer sign-in page. Sign in and choose **Allow**. Your agent uses this sign-in from now on.
+  </Step>
+  <Step title="Ask for a game">
+    Open your agent in an empty folder for the game, such as `my-game`. Then describe the game you want:
+
+    <Prompt description="**Make my first Summer game.** Your agent installs Summer Engine if needed, builds the game and plays it.">
+    Make a game in Summer: a third-person adventure in a desert ruin. I collect five glowing relics while stone guardians patrol. Start a new project, build it, play it, and show me a screenshot of the running game.
+    </Prompt>
+
+    Your agent asks before it downloads Summer Engine (about 660 MB). It then creates the project, opens it in Summer Engine, and builds the game.
+
+    **If everything worked:** the Summer Engine window shows your game, and your agent shows you a screenshot of it running. Click **Play** in the engine to play it yourself.
+  </Step>
+</Steps>
+
+## For agents following this page
+
+If a person asked you to set up Summer from this page, do the steps above for them from a shell:
+
+1. Check `node --version`. Below 22 or missing: on Windows, ask the person once, then run `winget install -e --id OpenJS.NodeJS.LTS --accept-source-agreements --accept-package-agreements`. On macOS, point them to [nodejs.org](https://nodejs.org) and stop.
+2. Run `npx -y summer-engine@latest setup <your agent id> --yes`. In Windows PowerShell, use `npx.cmd`; never change the execution policy.
+3. If they want AI art or will publish, run `npx -y summer-engine@latest login` and let them sign in.
+4. Ask the person before you download Summer Engine. On yes, run `npx -y summer-engine@latest dev --yes` in an empty folder for the game. It installs the engine, creates a starter project and opens it.
+5. Tell the person to restart you once so the Summer MCP tools load. Until then, run any operation from the shell: `npx -y summer-engine@latest ops search "<what you want>"`.
+6. Play the running game and take a screenshot before you say a feature works. Use Summer's skills for multiplayer and publishing; ask the person before you spend credits or go live.
+
+## Next steps
+
+<CardGroup cols={2}>
+  <Card title="Make it multiplayer" icon="users" href="/quickstarts/multiplayer-game">
+    One prompt: a client, a server and a Local Play test with two players.
+  </Card>
+  <Card title="Publish on Summer Games" icon="upload" href="/publishing/agent-publishing">
+    Your agent makes the store page, uploads the build and asks you before it goes live.
+  </Card>
+  <Card title="MCP setup for every agent" icon="plug" href="/mcp/setup">
+    Config files, the hosted server, and how to check the connection.
+  </Card>
+  <Card title="The summer command" icon="square-terminal" href="/mcp/cli">
+    Run any Summer operation from a shell or a script.
+  </Card>
+</CardGroup>
+
+---
+
+Need help? Ask in [Discord](https://discord.gg/summerengine) for the fastest reply, or email [support@summerengine.com](mailto:support@summerengine.com).

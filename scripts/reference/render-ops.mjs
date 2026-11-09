@@ -14,7 +14,7 @@ export const OPS_AREAS = [
   { id: "jobs", title: "Jobs", icon: "clock", blurb: "Long work and waiting for your approval: read, wait for, list and cancel jobs." },
   { id: "docs", title: "Docs and skills", icon: "book-open", blurb: "Summer's skills, templates, references and the engine class reference." },
   { id: "assets", title: "Assets", icon: "image", blurb: "Make, find, edit and upload images, 3D models, sound, music, voices, video and animation." },
-  { id: "makers", title: "Makers", icon: "wand-sparkles", blurb: "One-shot creative recipes: trailers, ads, NPC voices, sprite sheets and more." },
+  { id: "makers", title: "Makers", icon: "clapperboard", blurb: "One-shot creative recipes: trailers, ads, NPC voices, sprite sheets and more." },
   { id: "projects", title: "Projects", icon: "folder", blurb: "Where a game is made: list, create, build and open projects." },
   { id: "plans", title: "Plans", icon: "map", blurb: "The game plan: look, characters, direction and the plan agent." },
   { id: "games", title: "Games", icon: "gamepad-2", blurb: "Your games on Summer Games, and who works on them." },
@@ -31,6 +31,11 @@ export const OPS_AREAS = [
   { id: "chats", title: "Chats", icon: "message-square", blurb: "Your Studio chats." },
   { id: "stories", title: "Stories", icon: "book", blurb: "The story builder: nodes, links, references and sharing." },
   { id: "plugins", title: "Plugins", icon: "plug", blurb: "Plugins for desktop projects." },
+  { id: "board", title: "Summer Board", icon: "kanban", blurb: "A game's shared board: join it, read it, post, claim files, hand off files and ask a person." },
+  { id: "content", title: "Content", icon: "clapperboard", blurb: "Summer Content: a game's kit, trending references, finished pieces and the team's library." },
+  { id: "economy", title: "Economy", icon: "coins", blurb: "A game's items: propose or sync the item plan for the owner's approval." },
+  { id: "router", title: "Summer Router", icon: "route", blurb: "AI characters, voices and images inside a shipped game: characters, settings, limits and usage." },
+  { id: "models", title: "Summer API models", icon: "cpu", blurb: "Run Summer API jobs from the agent: list models, estimate, run, batch and follow jobs." },
   { id: "engine", title: "Engine", icon: "box", blurb: "The open project in Summer Engine and the running game: scenes, nodes, scripts, play, input and screenshots." },
 ];
 const AREA_IDS = new Set(OPS_AREAS.map((a) => a.id));
@@ -81,6 +86,7 @@ function asksFirst(op, groups) {
   const permission = permissionOf(op);
   if (permission === "free") return { short: "Never", long: "No. It changes nothing." };
   if (permission === "ask") return { short: "Always", long: "Always. You approve it in Studio; an agent can never skip this." };
+  if (op.input?.properties?.confirm) return { short: "Always", long: "Yes, every time: it first answers with what it will do, and runs only with `confirm: true` after you say yes." };
   const g = groups[permission];
   if (!g) return { short: "-", long: "-" };
   if (PLATFORM_STILL_ASKS.has(op.name)) {
@@ -117,7 +123,10 @@ function mcpExample(op, input, direct) {
 }
 
 function exampleBlock(op, hosted) {
-  const ex = op.examples?.[0] ?? { input: {}, note: op.title };
+  const first = op.examples?.[0] ?? { input: {}, note: op.title };
+  // A required retry key is part of every real call, so the example carries one too.
+  const needsKey = op.input?.required?.includes("idempotencyKey") && !("idempotencyKey" in (first.input ?? {}));
+  const ex = needsKey ? { ...first, input: { ...first.input, idempotencyKey: "a-new-key-each-time" } } : first;
   const direct = hosted.has(op.name) || op.provider !== "cloud";
   const note = ex.note?.trim() || op.title;
   return [

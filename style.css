@@ -32,3 +32,35 @@ html.dark .prose a:not(.card):not([class*="card"]) {
 html.dark .prose a:not(.card):not([class*="card"]):hover {
   color: #a3c8ff;
 }
+
+/* Summer API model pages: example outputs, two to a row. */
+.summer-samples img,
+.summer-samples video,
+.summer-samples model-viewer {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: contain;
+  margin: 0;
+  background: #f5f5f7;
+}
+html.dark .summer-samples img,
+html.dark .summer-samples video,
+html.dark .summer-samples model-viewer {
+  background: #161618;
+}
+.summer-samples audio {
+  display: block;
+  width: 100%;
+  margin-top: 0.5rem;
+}
+
+/* Model galleries: every thumbnail the same shape. */
+.summer-gallery img {
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  width: 100%;
+}
+.summer-samples figure > div > div:has(> audio) {
+  width: 100%;
+}

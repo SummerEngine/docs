@@ -40,10 +40,8 @@
 <circle cx="608" cy="66" r="13" fill="#f0b566"/>
 <text x="608" y="71" font-size="13" font-weight="700" fill="#1b1810" text-anchor="middle" opacity="1">4</text>
 <g opacity="1" fill="#ede6d6"><circle cx="608" cy="117" r="8"/><path d="M 595 142 v -6 a 13 11 0 0 1 26 0 v 6 z"/></g>
-<circle cx="630" cy="102" r="10" fill="none" stroke="#f0b566" stroke-width="2.5"/>
-<line x1="637" y1="109" x2="644" y2="116" stroke="#f0b566" stroke-width="3" stroke-linecap="round" opacity="1"/>
-<text x="608" y="172" font-size="14" font-weight="600" fill="#ede6d6" text-anchor="middle" opacity="1">Review</text>
-<text x="608" y="190" font-size="12" font-weight="500" fill="#9b927f" text-anchor="middle" opacity="1">by Summer staff</text>
+<text x="608" y="172" font-size="14" font-weight="600" fill="#ede6d6" text-anchor="middle" opacity="1">Publish</text>
+<text x="608" y="190" font-size="12" font-weight="500" fill="#9b927f" text-anchor="middle" opacity="1">your yes</text>
 <line x1="685" y1="115" x2="693" y2="115" stroke="#9b927f" stroke-width="2" stroke-linecap="round" opacity="1"/>
 <path d="M 690 109 L 699 115 L 690 121" fill="none" stroke="#9b927f" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 <rect x="702" y="30" width="148" height="170" rx="14" fill="#3d3121" stroke="#f0b566" stroke-width="2" opacity="1"/>
@@ -52,5 +50,5 @@
 <circle cx="776" cy="120" r="24" fill="#f0b566"/>
 <path d="M 769 109 L 787 120 L 769 131 z" fill="#1b1810"/>
 <text x="776" y="172" font-size="14" font-weight="600" fill="#ede6d6" text-anchor="middle" opacity="1">Live</text>
-<text x="776" y="190" font-size="12" font-weight="500" fill="#9b927f" text-anchor="middle" opacity="1">on summer.games</text>
+<text x="776" y="190" font-size="12" font-weight="500" fill="#9b927f" text-anchor="middle" opacity="1">once checks pass</text>
 </svg>

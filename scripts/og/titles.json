@@ -131,5 +131,8 @@
   "knowledge-base/export-mobile": "Mobile export",
   "changelog/overview": "Changelog",
   "security/overview": "Security",
-  "security/privacy-mode": "Privacy mode"
+  "security/privacy-mode": "Privacy mode",
+  "studio/overview": "Summer Studio",
+  "studio/board": "Summer Board",
+  "apps/custom-tools": "Your own tools"
 }

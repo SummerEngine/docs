@@ -16,7 +16,7 @@ A character answers the player in text, remembers the conversation and calls you
 | In your game | `Summer.client.router.reply(character: String, text: String, options: Dictionary = {})` |
 | Status | Available |
 | Metered | per token in and out, from the creator's Summer credits |
-| Counts toward | per player per day, per game per day, per game per month, per account per month, per character per player per day, per character per game per day ([limits](/router/limits)) |
+| Counts toward | per player per day, per game per day, per game per month, per account per month, per character per player per day, per character per game per day ([limits](/router/limits)). A multiplayer server's calls count toward the game's caps, not the player's. |
 
 ## Example
 
@@ -31,7 +31,7 @@ The result has `text`, the `tool_calls` the character made, `exchange_id` and `c
 
 **Tools.** Declare each tool on the character in Studio, with the same name as in `tools`. When the character calls one, the SDK runs your handler with the arguments as a `Dictionary`, sends what it returns back to the character, and the character goes on, for up to 8 rounds in one call. Return any JSON value; return `{"error": "..."}` to tell the character it failed. A handler that takes longer than 30 seconds sends a timeout to the character.
 
-**Options.** `variables` fill the character's `{{variables}}`, such as the player's name. `context` tells the character what just happened in the game. `overrides` set the fields you marked overridable on the character, such as its first message.
+**Options.** `variables` fill the character's declared `{{variables}}`, such as the player's name; the character must list `variables` in its overridable fields. `context` tells the character what just happened in the game. `overrides` set the fields you marked overridable on the character, such as its first message.
 
 For a whole conversation in one node, use **SummerRouterCharacter** (see the [quickstart](/router/quickstart)).
 
@@ -43,11 +43,13 @@ The SDK builds the request from the call's arguments and options. Summer checks 
 |---|---|---|
 | `character` (required) | string | The id of a character you made in Studio |
 | `text` | string | 1 to 4000 characters |
-| `conversation_id` | string | Any |
+| `conversation_id` | string | 1 to 64 letters, digits, dashes or underscores; your game may choose it |
 | `variables` | object | up to 32 entries |
 | `context` | string | 0 to 4000 characters |
 | `overrides` | object | up to 16 entries |
 | `tool_results` | array of objects | up to 16 items |
+
+Send `text`, `tool_results`, or both. With only `tool_results`, leave the text empty: it answers the previous turn's tool calls.
 
 ## Errors
 

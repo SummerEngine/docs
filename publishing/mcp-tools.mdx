@@ -63,7 +63,7 @@ See [Make store art with your agent](/publishing/generate-store-art).
 | Export the game (npm MCP) | [`summer_export_game`](/mcp/operations/engine#export_game), with [`summer_export_templates`](/mcp/operations/engine#export_templates) for web and downloads |
 | Upload an export from your disk (npm MCP) | `store.upload_file`: the tool [`summer_publish_build`](/mcp/operations/store#upload_file) |
 | Upload without the npm MCP | [`store.upload_begin`](/mcp/operations/store#upload_begin), [`store.upload_sign_parts`](/mcp/operations/store#upload_sign_parts), [`store.upload_complete`](/mcp/operations/store#upload_complete) |
-| See every upload, the review and what players get | [`store.status`](/mcp/operations/store#status) (`summer_store_status`) |
+| See every upload and what players get | [`store.status`](/mcp/operations/store#status) (`summer_store_status`) |
 | Remove an unused build or file (asks first) | [`store.remove_build`](/mcp/operations/store#remove_build), [`store.remove_file`](/mcp/operations/store#remove_file) |
 
 Step by step: [Upload and publish](/publishing/upload-and-submit).
@@ -75,10 +75,10 @@ Step by step: [Upload and publish](/publishing/upload-and-submit).
 | Publish the draft with a build and a price (needs an `idempotencyKey`) | [`store.publish`](/mcp/operations/store#publish) (`summer_store_publish`) |
 | Wait for a job or an approval | [`jobs.wait`](/mcp/operations/jobs#wait) (`summer_jobs_wait`) |
 | Withdraw a publish request that still waits | [`store.cancel_publish`](/mcp/operations/store#cancel_publish) |
-| Release the approved store bundle to players once Summer's review passed (needs an `idempotencyKey`; web builds and downloads need none) | [`store.release`](/mcp/operations/store#release) |
+| Take the game live after the owner says yes: releases the build, publishes the page and watches until players get it | [`store.go_live`](/mcp/operations/store#go_live) (`summer_go_live`, with `confirm: true` after the yes) |
 | Write the release notes players read | [`store.update_release_notes`](/mcp/operations/store#update_release_notes) |
 
-`store.publish` answers `needs_approval`: give the owner `approval.url` and wait with `summer_jobs_wait`. Any other answer `needs_approval` works the same way. See [Approvals](/publishing/owner-approval).
+`summer_go_live` first answers the plan; ask the owner, then call it with `confirm: true`. The game is live as soon as Summer's automatic checks pass. An answer `needs_approval`: give the owner `approval.url` and wait with `summer_jobs_wait`. See [Approvals](/publishing/owner-approval).
 
 ## After launch
 

@@ -14,9 +14,23 @@ Alibaba's speech model with 45 character voices.
 | Model id | `voice/qwen-audio-3-tts` |
 | Price | \$0.05 per 1,000 characters |
 | Typical time | about 6 s |
+| Does | [Text to speech](/api/models#text-to-speech) |
 | Output | MP3 |
 | Made by | Alibaba |
+| Try it | [Examples and playground on summerengine.com](https://www.summerengine.com/models/qwen-audio-3-tts) |
 | Commercial use | Yes |
+
+## Examples
+
+Real outputs of `voice/qwen-audio-3-tts`, each with the input that made it.
+
+<div className="summer-samples">
+<Columns cols={2}>
+  <Frame caption="Words: Hehe, found you! You can't hide from a fox spirit, you know. Now, what did you bring me?">
+    <a href="https://media.summer.games/preview/v3/create/audio/speech-qwen.mp3"><img src="https://media.summer.games/preview/v3/create/image/image-gallery-muse-moss-garden.webp" alt="Momo, fox spirit" /></a>
+  </Frame>
+</Columns>
+</div>
 
 ## Best for
 
@@ -27,8 +41,6 @@ Alibaba's speech model with 45 character voices.
 ## Price
 
 **\$0.05 per 1,000 characters**, counted from `text`. Exact list price: `0.05 USD`.
-
-Minimum per job: \$0.0021.
 
 No markup: this is the provider's list price, checked 2026-09-26. A failed job costs nothing. Get the exact price of one request, free and without a key, from [`POST /v1/estimate`](/api/jobs#know-the-price-first).
 
@@ -87,6 +99,17 @@ res = requests.post(
 )
 job = res.json()["job"]
 print(job["state"], job["id"])
+```
+
+```js MCP
+// Summer's MCP server: npx -y summer-engine@latest setup <agent> --yes
+summer_api_run({
+  model: "voice/qwen-audio-3-tts",
+  input: {
+    text: "The gate is open. Go, before the guards come back."
+  },
+  out: "assets",
+})
 ```
 
 </CodeGroup>
@@ -158,6 +181,17 @@ Send these fields in `input`. The full JSON Schema is `inputSchema` in [`GET /v1
 | Rocky | `Rocky` |
 
 </Accordion>
+
+## Related models
+
+<div className="summer-gallery">
+<CardGroup cols={2}>
+  <Card title="Expressive v3" href="/api/models/voice/expressive-v3" img="/images/api/tiles/voice.svg">`voice/expressive-v3`: \$0.08 per 1,000 characters (default)</Card>
+  <Card title="Multilingual v2" href="/api/models/voice/multilingual-v2" img="/images/api/tiles/voice.svg">`voice/multilingual-v2`: \$0.08 per 1,000 characters</Card>
+  <Card title="HeyGen Voice Turbo" href="/api/models/voice/heygen-voice-turbo" img="/images/api/tiles/voice.svg">`voice/heygen-voice-turbo`: \$0.002 per 1,000 characters</Card>
+  <Card title="Inworld TTS-1.5 Max" href="/api/models/voice/inworld-tts-1-5-max" img="https://media.summer.games/preview/v3/create/image/image-gallery-muse-moss-garden.webp">`voice/inworld-tts-1.5-max`: \$0.01 per 1,000 characters</Card>
+</CardGroup>
+</div>
 
 ## For agents
 

@@ -1,6 +1,6 @@
 ---
 title: "Expressive v3"
-description: "Expressive v3 on the Summer API: $0.119 per 1,000 characters, about 5 s, MP3 saved to your Summer library. Model id voice/expressive-v3."
+description: "Expressive v3 on the Summer API: $0.08 per 1,000 characters, about 5 s, MP3 saved to your Summer library. Model id voice/expressive-v3."
 generated: true
 generator: scripts/api
 ---
@@ -13,11 +13,34 @@ Expressive v3: a voice model for your game.
 |---|---|
 | Model id | `voice/expressive-v3` |
 | Default for | `voice/default` |
-| Price | \$0.119 per 1,000 characters |
+| Price | \$0.08 per 1,000 characters |
 | Typical time | about 5 s |
+| Does | [Text to speech](/api/models#text-to-speech) |
 | Output | MP3 |
 | Made by | Summer |
+| Try it | [Examples and playground on summerengine.com](https://www.summerengine.com/models/expressive-v3) |
 | Commercial use | Yes |
+
+## Examples
+
+Real outputs of `voice/expressive-v3`, each with the input that made it.
+
+<div className="summer-samples">
+<Columns cols={2}>
+  <Frame caption="Words: [warmly] Sit, sit! First mug's on the house. [laughs] The second one... we'll talk about the second one.">
+    <a href="https://media.summer.games/preview/v3/create/audio/voices-bram.mp3"><img src="/images/api/tiles/voice.svg" alt="Bram, tavern keeper" /></a>
+  </Frame>
+  <Frame caption="Words: [whispering] Come closer, apprentice. [pause] The map was never lost... it was hiding from you. [chuckles softly]">
+    <a href="https://media.summer.games/preview/v3/create/audio/voices-wizard.mp3"><img src="/images/api/tiles/voice.svg" alt="The old wizard" /></a>
+  </Frame>
+  <Frame caption="Words: [excited] And they're off! Round three, final lap, and the crowd is on its feet!">
+    <a href="https://media.summer.games/preview/v3/create/audio/voices-announcer.mp3"><img src="/images/api/tiles/voice.svg" alt="Race announcer" /></a>
+  </Frame>
+  <Frame caption="Words: [flat, fast] Package secured. Two minutes out. [pause] Tell the client to stop calling, I'm literally flying.">
+    <a href="https://media.summer.games/preview/v3/create/audio/voices-vex.mp3"><img src="/images/api/tiles/voice.svg" alt="Vex, courier" /></a>
+  </Frame>
+</Columns>
+</div>
 
 ## Best for
 
@@ -28,11 +51,9 @@ Expressive v3: a voice model for your game.
 
 ## Price
 
-**\$0.119 per 1,000 characters**, counted from `text`. Exact list price: `0.119048 USD`.
+**\$0.08 per 1,000 characters**, counted from `text`. Exact list price: `0.08 USD`.
 
-Minimum per job: \$0.005.
-
-No markup: this is the provider's list price, checked 2026-09-24. A failed job costs nothing. Get the exact price of one request, free and without a key, from [`POST /v1/estimate`](/api/jobs#know-the-price-first).
+No markup: this is the provider's list price, checked 2026-10-23. A failed job costs nothing. Get the exact price of one request, free and without a key, from [`POST /v1/estimate`](/api/jobs#know-the-price-first).
 
 ## Example call
 
@@ -91,6 +112,17 @@ job = res.json()["job"]
 print(job["state"], job["id"])
 ```
 
+```js MCP
+// Summer's MCP server: npx -y summer-engine@latest setup <agent> --yes
+summer_api_run({
+  model: "voice/expressive-v3",
+  input: {
+    text: "The gate is open. Go, before the guards come back."
+  },
+  out: "assets",
+})
+```
+
 </CodeGroup>
 
 The finished job has `state` `"done"` and `result.assets`: one entry per file, each with `assetId`, `fileUrl` (a Summer URL) and `thumbnailUrl`. Download the file into your project, or import it in Summer Engine by its asset id.
@@ -136,6 +168,17 @@ Send these fields in `input`. The full JSON Schema is `inputSchema` in [`GET /v1
 | Will | `bIHbv24MWmeRgasZH58o` |
 
 </Accordion>
+
+## Related models
+
+<div className="summer-gallery">
+<CardGroup cols={2}>
+  <Card title="Multilingual v2" href="/api/models/voice/multilingual-v2" img="/images/api/tiles/voice.svg">`voice/multilingual-v2`: \$0.08 per 1,000 characters</Card>
+  <Card title="HeyGen Voice Turbo" href="/api/models/voice/heygen-voice-turbo" img="/images/api/tiles/voice.svg">`voice/heygen-voice-turbo`: \$0.002 per 1,000 characters</Card>
+  <Card title="Inworld TTS-1.5 Max" href="/api/models/voice/inworld-tts-1-5-max" img="https://media.summer.games/preview/v3/create/image/image-gallery-muse-moss-garden.webp">`voice/inworld-tts-1.5-max`: \$0.01 per 1,000 characters</Card>
+  <Card title="HeyGen Voice" href="/api/models/voice/heygen-voice" img="/images/api/tiles/voice.svg">`voice/heygen-voice`: \$0.015 per 1,000 characters</Card>
+</CardGroup>
+</div>
 
 ## For agents
 

@@ -1,7 +1,7 @@
 ---
 title: "Make a multiplayer game on Summer Games"
 sidebarTitle: "Multiplayer on Summer Games"
-description: "Build an online multiplayer game with Summer Engine, the game engine built for AI: one project, a server that owns the rules, and hosted matches on Summer Games."
+description: "Build an online multiplayer game with Summer Engine: one project, a server that owns the rules, the client code that joins a match, Local Play with several players, and hosted matches."
 icon: "users"
 "og:image": "https://docs.summerengine.com/images/og/build-multiplayer.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/build-multiplayer.jpg"
@@ -63,33 +63,130 @@ the client before you change anything. Then run it with Local Play with two
 players and tell me what you saw.
 </Prompt>
 
-<Prompt description="**Explain how multiplayer would fit my game.** No code, just a plan.">
-Read my Summer project and explain how it would work as a Summer multiplayer
-game. Use the Summer `multiplayer` skill; if you don't have it installed, find
-it in the Summer library. Don't change any files yet.
+Your agent works through Summer's multiplayer skills in this order. Each one
+continues the same example game, so you can also ask for them one at a time:
 
-Tell me:
-1. what the server should own in my game, and what each player's client does;
-2. how players would find a match, and how many fit in one;
-3. which of my existing scripts change, and which stay as they are;
-4. anything my design needs that Summer doesn't cover yet, and how we can
-   build around it.
-</Prompt>
+| Skill | What it adds |
+|---|---|
+| [`multiplayer`](/skills/multiplayer) | The plan: what the server owns and what each player runs |
+| [`multiplayer-project`](/skills/multiplayer-project) | Both scenes, the World and queue files, joining, a first Local Play |
+| [`multiplayer-movement`](/skills/multiplayer-movement) | Movement that responds at once for the player and looks smooth for everyone else |
+| [`multiplayer-state`](/skills/multiplayer-state) | Scores, doors, pickups, health and private state |
+| [`multiplayer-testing`](/skills/multiplayer-testing) | Local Play with many players and a bad connection |
+| [`multiplayer-publish`](/skills/multiplayer-publish) | The export with its server, ready for Summer Games |
+
+## The project
+
+One project holds both sides. Each folder belongs to one side:
+
+```text
+project.godot            shared
+summer.build.json        the Build: game id, queues, Worlds, server export preset
+world.json               the World: which scene runs on the server, which on players' devices
+network/                 shared by both sides: the network composition and shared code
+client/                  what players run: main scene, player scenes, UI
+authority/               what the server runs: main scene and the rules
+```
+
+Client code never loads a file from `authority/`, and the export for players
+leaves that folder out.
+
+## The code
+
+This is the client's main script from the `multiplayer-project` skill. It
+starts Summer, joins the match queue, and tells the server it has arrived. Each
+player runs it. The other files, scenes included, are in
+[the complete files](/skills/multiplayer-project/files), and every one of them
+ran as shown under Local Play.
+
+```gdscript client/main.gd
+extends Node
+## What each player runs: joins the match and shows every player.
+
+const Game = preload("res://network/game.gd")
+const PlayerArchetype = preload("res://client/player_archetype.tres")
+
+var spawner: SummerNetworkSpawner
+
+func _ready() -> void:
+	spawner = Game.build_network(self, PlayerArchetype)
+	# Connect signals like state_group_created here, before joining, or values
+	# that arrive during the join go unseen (multiplayer-movement adds them).
+	var initialized: SummerResult = await Summer.initialize().get_result_or_completed_signal()
+	if not initialized.ok:
+		push_error(initialized.message)
+		return
+	var join := Summer.client.join(SummerJoinTarget.queue(Game.QUEUE))
+	# Hosted matchmaking may ask the player to accept a match.
+	join.acceptance_required.connect(func(proposal: SummerMatchmakingProposal) -> void: proposal.accept())
+	var joined: SummerResult = await join.get_result_or_completed_signal()
+	if not joined.ok:
+		push_error("join failed: %s %s" % [joined.code, joined.message])
+		return
+	if not spawner.is_network_ready():
+		await spawner.network_ready
+	var entered := await command({"c": "join"})
+	if not entered.ok:
+		push_error("could not enter the match: %s" % entered.error)
+		return
+	print("COURTYARD_CLIENT_JOINED")
+
+## Sends one Command and waits for the authority's answer.
+func command(payload: Dictionary) -> Dictionary:
+	var admission := spawner.enqueue_command(Game.CMD, Game.pack(payload))
+	if not admission.is_enqueued():
+		return {"ok": false, "error": String(admission.get_code())}
+	var handle := admission.get_handle()
+	if not handle.is_terminal():
+		await handle.completed
+	if handle.get_outcome() == SummerNetworkCommandHandle.OUTCOME_ACCEPTED:
+		return {"ok": true, "error": "", "result": Game.unpack(handle.get_result())}
+	return {"ok": false, "error": String(handle.get_reason())}
+```
+
+Three rules hold for every Summer multiplayer game:
+
+- **`Summer.initialize()` takes no game ID.** Summer knows the game from where
+  it runs: Local Play, the hosted server or the Summer Games app.
+- **The server decides.** Players send requests, called Commands, and the
+  server accepts or refuses each one. It reads who sent a Command from the
+  verified session, never from the payload.
+- **Use Summer's multiplayer nodes**, `SummerNetworkWorld` and
+  `SummerNetworkSpawner`, not hand-written networking. That is what lets Summer
+  host the match, check every player and keep the game fair.
+
+Every method and signal: [`Summer.client`](/api-reference/gdscript/client),
+[`Summer.multiplayer`](/api-reference/gdscript/multiplayer) and the
+[Summer API overview](/api-reference/gdscript/overview).
 
 ## Testing it on your machine
 
-**Local Play** runs your whole multiplayer game on one computer. Press Play
-and Summer starts the server scene in the background plus one game window per
-player, side by side, each signed in as a test player. Choose the number of
-players in **Debug > Local Multiplayer**. No account, server or extra tools
-are needed, and your agent can start it for you.
+**Local Play** runs your whole multiplayer game on one computer. Summer starts
+the server scene in the background plus one game window per player, side by
+side, each signed in as a test player. No account, server or extra tools are
+needed.
 
 <img className="block dark:hidden" src="/images/guide-art/multiplayer/local-play-light.svg" alt="Pressing Play in Summer starts the server scene in the background and three game windows side by side, each signed in as a different test player." />
 <img className="hidden dark:block" src="/images/guide-art/multiplayer/local-play-dark.svg" alt="Pressing Play in Summer starts the server scene in the background and three game windows side by side, each signed in as a different test player." />
 
+Start it any of these ways:
+
+- **Your agent**: ask for "a Local Play test with two players".
+- **The editor**: choose the number of players in **Debug > Local Multiplayer**, then press Play.
+- **A terminal**, while Summer Engine is open:
+
+  ```bash
+  npx -y summer-engine@latest engine play --players 2
+  ```
+
+The number of players defaults to the queue's `minPlayers` in
+`summer.build.json`, or 2.
+
 Your own machine has no lag, which hides timing problems. Local Play can add
-delay, jitter and packet loss to every window, so you see what players on a
-real connection will see. Run it that way before you call a feature done.
+delay, jitter and packet loss to every window: set
+`summer/local_play/network/round_trip_msec`, `jitter_msec` and `loss_percent`
+in Project Settings, or ask your agent. Run it that way before you call a
+feature done.
 
 <Prompt description="**Test my multiplayer game on a bad connection.** Several players, real lag, and what a passing run shows.">
 Test my Summer multiplayer game with Local Play. Use the Summer
@@ -101,6 +198,8 @@ Summer library.
 - Walk through [THE FEATURE] in every window.
 - Tell me exactly what you saw in each window, and anything that looked wrong.
 </Prompt>
+
+**Limits today:** up to 16 players in one match.
 
 ## Where to go next
 
@@ -186,10 +285,6 @@ Summer library.
     Accounts, saves and a store.
   </Card>
 </CardGroup>
-
-## Technical reference
-
-Exact methods, inputs and signals: [`Summer.multiplayer`](/api-reference/gdscript/multiplayer), [Summer API overview](/api-reference/gdscript/overview).
 
 ---
 

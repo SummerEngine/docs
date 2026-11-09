@@ -27,6 +27,7 @@ import { dirname, join, relative, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { cell, code, escapeProse, fm } from "../reference/lib/mdx.mjs";
 import { ROUTER_HAND_WRITTEN, ROUTER_TAB, routerPages } from "./router.mjs";
+import { guidePages } from "./guides.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(HERE, "..", "..");
@@ -39,12 +40,20 @@ const SPEC = "/scripts/api/sources/openapi.json";
 const MODELS_PAGE = "api/models";
 const MODELS_DIR = "api/models";
 const REFERENCE_DIR = "api/reference";
+const PRICES_SNIPPET = "snippets/api-default-prices";
 const TAB = "Summer API";
 
 const readJson = (p) => JSON.parse(readFileSync(p, "utf8"));
 const catalog = readJson(join(SOURCES, "models.json"));
 const notes = existsSync(join(SOURCES, "model-notes.json")) ? readJson(join(SOURCES, "model-notes.json")).notes : {};
 const spec = readJson(join(SOURCES, "openapi.json"));
+// Real outputs per model, pinned by scripts/api/samples.mjs from the summerengine.com/create examples.
+const samples = existsSync(join(SOURCES, "model-samples.json")) ? readJson(join(SOURCES, "model-samples.json")).samples : {};
+// Each model's page on summerengine.com/models, pinned by scripts/api/site-slugs.mts from PSE.
+const siteSlugs = existsSync(join(SOURCES, "site-model-slugs.json")) ? readJson(join(SOURCES, "site-model-slugs.json")).slugs : {};
+const SITE_MODELS = "https://www.summerengine.com/models";
+// A model the API lists under Summer's own name links only to an address that does not name its maker.
+const sitePage = (m) => (siteSlugs[m.id] && !(m.vendor === "Summer" && /eleven/i.test(siteSlugs[m.id])) ? `${SITE_MODELS}/${siteSlugs[m.id]}` : null);
 
 // ------------------------------------------------------------------ data
 
@@ -56,8 +65,57 @@ const CAPABILITIES = [
   { id: "dialogue", title: "Dialogue", icon: "messages-square", one: "dialogue", noun: "dialogue model", blurb: "Several characters talking, in one file." },
   { id: "sound", title: "Sound effects", icon: "audio-lines", one: "sound", noun: "sound effect model", blurb: "Hits, footsteps, pickups, UI clicks and loops from a description." },
   { id: "music", title: "Music", icon: "music", one: "track", noun: "music model", blurb: "Level, menu and combat music from a description." },
+  { id: "motion", title: "Motion", icon: "person-standing", one: "animation", noun: "motion model", blurb: "Animations for a rigged character: a move from words, or clips from a curated library." },
 ];
 const CAP = Object.fromEntries(CAPABILITIES.map((c) => [c.id, c]));
+
+/**
+ * The task segments the gallery and the model pages follow, from each model's
+ * tags in GET /v1/models: one segment per job a game developer has. A model
+ * can do several. Unknown tags still show, under their own words.
+ */
+const SEGMENTS = {
+  "text-to-image": "Text to image",
+  "image-edit": "Edit a picture",
+  "pixel-art": "Pixel art",
+  "vector-image": "Vector art",
+  "text-to-3d": "Text to 3D",
+  "image-to-3d": "Picture to 3D",
+  "multiview-to-3d": "Several pictures to 3D",
+  "text-to-motion": "Text to motion",
+  "motion-library": "Motion library",
+  "text-to-video": "Text to video",
+  "image-to-video": "Picture to video",
+  "reference-to-video": "References to video",
+  "video-to-video": "Edit a video",
+  "motion-transfer": "Motion transfer",
+  "video-to-audio": "Video to sound",
+  "lipsync": "Lip sync",
+  "text-to-speech": "Text to speech",
+  "dialogue": "Dialogue",
+  "sound-effects": "Sound effects",
+  "music": "Music",
+};
+const segmentTitle = (tag) => SEGMENTS[tag] ?? tag.replace(/-/g, " ").replace(/^./, (c) => c.toUpperCase());
+const anchor = (title) => title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+/** A capability's segments: the models of each tag, with segments of the same models merged ("Text to video and picture to video"). */
+function segmentsOf(list) {
+  const groups = [];
+  for (const tag of [...Object.keys(SEGMENTS), ...new Set(list.flatMap((m) => m.tags))]) {
+    if (groups.some((g) => g.tags.includes(tag))) continue;
+    const members = list.filter((m) => m.tags.includes(tag));
+    if (!members.length) continue;
+    const same = groups.find((g) => g.models.length === members.length && g.models.every((m) => members.includes(m)));
+    if (same) same.tags.push(tag);
+    else groups.push({ tags: [tag], models: members });
+  }
+  return groups.map((g) => {
+    const titles = g.tags.map(segmentTitle);
+    const title = titles.length === 1 ? titles[0] : `${titles.slice(0, -1).join(", ")} and ${titles.at(-1).replace(/^./, (c) => c.toLowerCase())}`;
+    return { ...g, title, anchor: anchor(title) };
+  });
+}
 
 const models = catalog.models;
 const aliases = catalog.aliases ?? {};
@@ -115,7 +173,7 @@ const typicalTime = (m) => (m.latency ? `about ${duration(m.latency.p50Seconds)}
 const isDefault = (m) => m.aliases?.length > 0;
 const voicesOf = (m) => m.voices ?? [];
 /** Capabilities whose jobs run for minutes and answer `running`. */
-const LONG = new Set(["3d", "video"]);
+const LONG = new Set(["3d", "video", "motion"]);
 const props = (m) => m.inputSchema?.properties ?? {};
 
 /** Within a capability: the default first, then Summer's well-tested picks, then by price. */
@@ -139,10 +197,24 @@ function noteLines(m) {
 // ------------------------------------------------------------- examples
 
 const SAMPLE_PICTURE = `${DOCS_URL}/images/api/chest.png`;
+// A short public clip for the models that take one (a Summer example output).
+const SAMPLE_CLIP = "https://media.summer.games/preview/v3/create/video/video-ref-omni-moss-lantern.mp4";
 const EXAMPLE_INPUT = {
   "3d": (m) => (props(m).kind?.enum?.includes("text-to-3d") ?? true ? { kind: "text-to-3d", prompt: "a stylized treasure chest, game prop" } : { kind: "image-to-3d", imageUrl: SAMPLE_PICTURE }),
   image: () => ({ prompt: "a cozy pixel-art tavern at night, warm window light", aspectRatio: "16:9" }),
-  video: () => ({ prompt: "a slow pan over a misty forest village at dawn", duration: 5 }),
+  // A clip in, a clip out (edit, reframe, sound, motion transfer), or references to keep: each gets its own inputs.
+  video: (m) =>
+    "videoUrl" in props(m) && !("duration" in props(m))
+      ? { prompt: "rain on the rooftops, distant thunder, footsteps on wet stone", videoUrl: SAMPLE_CLIP }
+      : "referenceImageUrls" in props(m) && m.tags.includes("motion-transfer")
+        ? { prompt: "the character performs the move from the clip", referenceImageUrls: [SAMPLE_PICTURE], videoUrl: SAMPLE_CLIP }
+        : "referenceImageUrls" in props(m)
+          ? { prompt: "the treasure chest from the reference slowly opens on a mossy forest floor, warm light spills out", referenceImageUrls: [SAMPLE_PICTURE], duration: 5 }
+          : { prompt: "a slow pan over a misty forest village at dawn", duration: 5 },
+  motion: (m) =>
+    "motionNames" in props(m)
+      ? { rigAssetId: "<assetId of your rigged model>", motionNames: ["idle", "walk", "run"] }
+      : { rigAssetId: "<assetId of your rigged model>", prompt: "jumps over a fence and lands in a crouch", durationSeconds: 4 },
   voice: () => ({ text: "The gate is open. Go, before the guards come back." }),
   dialogue: (m) => {
     const [a, b] = voicesOf(m);
@@ -225,7 +297,24 @@ function jobCode(model, input) {
     'print(job["state"], job["id"])',
     "```",
   ];
-  return ["<CodeGroup>", "", ...cli, "", ...curl, "", ...ts, "", ...py, "", "</CodeGroup>"].join("\n");
+  const mcp = [
+    "```js MCP",
+    "// Summer's MCP server: npx -y summer-engine@latest setup <agent> --yes",
+    `summer_api_run({\n  model: ${JSON.stringify(model)},\n  input: ${jsValue(input, "  ")},\n  out: "assets",\n})`,
+    ...(LONG.has(model.split("/")[0]) ? ["// It answers `next` while the job runs: follow it to the end.", 'summer_api_job({ jobId: "<jobId>", wait: true, out: "assets" })'] : []),
+    "```",
+  ];
+  return ["<CodeGroup>", "", ...cli, "", ...curl, "", ...ts, "", ...py, "", ...mcp, "", "</CodeGroup>"].join("\n");
+}
+
+/** A JavaScript object literal: unquoted keys where they are plain names. */
+function jsValue(v, pad = "") {
+  if (Array.isArray(v)) return `[${v.map((x) => jsValue(x, pad)).join(", ")}]`;
+  if (v && typeof v === "object") {
+    const inner = Object.entries(v).map(([k, x]) => `${pad}  ${/^[A-Za-z_$][\w$]*$/.test(k) ? k : JSON.stringify(k)}: ${jsValue(x, `${pad}  `)}`);
+    return `{\n${inner.join(",\n")}\n${pad}}`;
+  }
+  return JSON.stringify(v);
 }
 
 // ------------------------------------------------------------------ render
@@ -288,11 +377,24 @@ function limits(schema) {
   return out.join(", ");
 }
 
+/**
+ * A field's description as an API caller reads it: no internal mode prefix
+ * ("hunyuan-custom: ..."), no operation names, and no sentence about a field
+ * this model does not take.
+ */
+function describe(m, text) {
+  if (!text) return "";
+  let out = text.replace(/^[a-z0-9]+(?:-[a-z0-9]+)+:\s*/, "").replace(/\(assets\.generate_3d with rig\)/g, "(a 3D job with `rig: true`)");
+  if (!("imageUrl" in props(m))) out = out.replace(/\s*Needed without imageUrl\./g, "");
+  out = out.trim();
+  return out.charAt(0).toUpperCase() + out.slice(1);
+}
+
 function inputSection(m) {
   const p = props(m);
   const required = new Set(m.inputSchema?.required ?? []);
   const rows = Object.entries(p).map(([name, s]) => {
-    const about = [s.description, limits(s), s.default !== undefined ? `Default ${code(JSON.stringify(s.default))}.` : ""].filter(Boolean).join(" ");
+    const about = [describe(m, s.description), limits(s), s.default !== undefined ? `Default ${code(JSON.stringify(s.default))}.` : ""].filter(Boolean).join(" ");
     return `| ${code(name)}${required.has(name) ? " (required)" : ""} | ${cell(typeOf(s)).replace(/\\`/g, "`")} | ${cell(about)} |`;
   });
   return [
@@ -326,6 +428,70 @@ function voicesSection(m) {
   ];
 }
 
+// A JSX attribute string: JSX strings take no escapes, so quotes and braces never reach one.
+const attr = (v) => `"${String(v).replace(/"/g, "'").replace(/[{}<>\\]/g, "")}"`;
+const samplesOf = (m) => samples[m.id] ?? [];
+const TILE = (cap) => `/images/api/tiles/${cap}.svg`;
+/** The picture that stands for a model: its first sample's still, or the neutral tile of its capability. */
+const thumbnail = (m) => {
+  const s = samplesOf(m)[0];
+  return s ? (s.kind === "image" ? s.url : s.poster ?? TILE(m.capability)) : TILE(m.capability);
+};
+const clip = (text, max = 220) => {
+  const flat = String(text ?? "").replace(/\s+/g, " ").trim();
+  return flat.length > max ? `${flat.slice(0, max - 1).replace(/\s+\S*$/, "")}…` : flat;
+};
+
+// Mintlify keeps img and video; a 3D or audio example is a still linking to its file, and
+// summer-samples.js turns the link into a model to turn or a player.
+function sampleMedia(s, m) {
+  const alt = attr(`${m.name}: ${clip(s.prompt, 120)}`);
+  switch (s.kind) {
+    case "image":
+      return `<img src=${attr(s.url)} alt=${alt} />`;
+    case "video":
+      return `<video controls muted loop playsInline preload="metadata" poster=${attr(s.poster)} src=${attr(s.url)} />`;
+    case "3d":
+    case "audio":
+      return `<a href=${attr(s.url)}><img src=${attr(s.poster ?? TILE(m.capability))} alt=${s.kind === "audio" ? attr(s.title ?? m.name) : alt} /></a>`;
+    default:
+      throw new Error(`model ${m.id}: unknown sample kind ${s.kind}`);
+  }
+}
+
+function examplesSection(m) {
+  const list = samplesOf(m);
+  if (!list.length) return [];
+  const label = (s) => (s.kind === "audio" ? "Words" : s.fromPicture ? "From a picture" : "Prompt");
+  return [
+    "## Examples",
+    "",
+    `Real outputs of ${code(m.id)}, each with the input that made it.${list.some((s) => s.kind === "3d") ? " Drag a model to turn it." : ""}`,
+    "",
+    '<div className="summer-samples">',
+    "<Columns cols={2}>",
+    ...list.flatMap((s) => [`  <Frame caption=${attr(`${label(s)}: ${clip(s.prompt, 180)}`)}>`, `    ${sampleMedia(s, m)}`, "  </Frame>"]),
+    "</Columns>",
+    "</div>",
+    "",
+  ];
+}
+
+function relatedSection(m) {
+  const list = byCapability[m.capability].filter((x) => x.id !== m.id).slice(0, 4);
+  if (!list.length) return [];
+  return [
+    "## Related models",
+    "",
+    '<div className="summer-gallery">',
+    "<CardGroup cols={2}>",
+    ...list.map((x) => `  <Card title=${attr(x.name)} href=${attr(`/${modelPath(x)}`)} img=${attr(thumbnail(x))}>${code(x.id)}: ${priceText(x)}${isDefault(x) ? " (default)" : ""}</Card>`),
+    "</CardGroup>",
+    "</div>",
+    "",
+  ];
+}
+
 function renderModelPage(m) {
   const cap = CAP[m.capability];
   const { tagline, uses } = noteLines(m);
@@ -336,8 +502,10 @@ function renderModelPage(m) {
     ...(isDefault(m) ? [["Default for", m.aliases.map(code).join(", ")]] : []),
     ["Price", `${priceText(m)}`],
     ...(typicalTime(m) ? [["Typical time", typicalTime(m)]] : []),
+    ["Does", segmentsOf(byCapability[m.capability]).filter((s) => s.models.includes(m)).map((s) => `[${s.title}](/${MODELS_PAGE}#${s.anchor})`).join(", ")],
     ["Output", m.outputFormats.map((f) => f.toUpperCase()).join(", ")],
     ["Made by", cell(m.vendor)],
+    ...(sitePage(m) ? [["Try it", `[Examples and playground on summerengine.com](${sitePage(m)})`]] : []),
     ["Commercial use", m.commercialUse ? "Yes" : "No"],
   ];
   const best = [
@@ -361,6 +529,7 @@ function renderModelPage(m) {
     "|---|---|",
     ...facts.map(([k, v]) => `| ${k} | ${v} |`),
     "",
+    ...examplesSection(m),
     ...(best.length ? ["## Best for", "", ...best.map((b) => `- ${escapeProse(b)}`), ""] : []),
     priceSection(m),
     "",
@@ -375,6 +544,7 @@ function renderModelPage(m) {
     inputSection(m),
     "",
     ...voicesSection(m),
+    ...relatedSection(m),
     "## For agents",
     "",
     `This page as Markdown: [${DOCS_URL}/${modelPath(m)}.md](${DOCS_URL}/${modelPath(m)}.md). The live record with the JSON Schema: ${code(`GET ${BASE_URL}/models/${m.id}`)}, public, no sign-in.`,
@@ -384,7 +554,7 @@ function renderModelPage(m) {
 
 function modelRow(m, timed) {
   const label = `[${cell(m.name)}](/${modelPath(m)})${isDefault(m) ? " (default)" : ""}`;
-  return `| ${label} | ${code(m.id)} | ${priceText(m)} |${timed ? ` ${typicalTime(m) ?? ""} |` : ""}`;
+  return `| ${label} | ${code(m.id)} | ${priceText(m)} |${timed ? ` ${typicalTime(m) ?? ""} |` : ""} ${sitePage(m) ? `[Examples](${sitePage(m)})` : ""} |`;
 }
 const formatsOf = (list) => [...new Set(list.flatMap((m) => m.outputFormats))].map((f) => f.toUpperCase()).join(", ");
 
@@ -397,6 +567,29 @@ function sampleListing() {
     aliases: Object.fromEntries(Object.entries(aliases).slice(0, 2)),
     models: [{ ...m, inputSchema: { type: "object", properties } }],
   };
+}
+
+/** One row per job: the default id, the model it runs and its price. */
+function defaultsTable() {
+  const out = ["| I need | Model id | Runs | Price |", "|---|---|---|---|"];
+  for (const c of CAPABILITIES) {
+    const alias = `${c.id}/default`;
+    const target = models.find((m) => m.id === aliases[alias]);
+    if (target) out.push(`| ${c.blurb.split(".")[0]} | ${code(alias)} | [${cell(target.name)}](/${modelPath(target)}) | ${priceText(target)} |`);
+  }
+  return out;
+}
+
+/** The defaults and their prices, for the hand-written pages (they import it; prices are never typed by hand). */
+function renderPricesSnippet() {
+  return [
+    banner("GET /v1/models"),
+    "",
+    ...defaultsTable(),
+    "",
+    `Every other model and its price: [models and pricing](/${MODELS_PAGE}). Prices checked up to ${updatedAt}.`,
+    "",
+  ].join("\n");
 }
 
 function renderModelsPage() {
@@ -416,6 +609,8 @@ function renderModelsPage() {
     "",
     `**No markup on assets. Every model at the provider's list price.** ${models.length} curated models, each tested for games. A failed job costs nothing, and you pay from one credit balance. No plan needed.`,
     "",
+    "Browse every model with examples and prices: [summerengine.com/models](https://www.summerengine.com/models).",
+    "",
     `This table is generated from [\`GET /v1/models\`](/api/reference/get-models), the same list the API prices and charges from. Agents: read prices and ids from there, never from memory, and copy ids exactly as listed. Each model page shows the date its price was last checked.`,
     "",
     "<CardGroup cols={2}>",
@@ -431,26 +626,22 @@ function renderModelsPage() {
     "",
     "Send the default id when you have no preference. It runs the model Summer tests first for that job, and it moves when a better one passes.",
     "",
-    "| I need | Model id | Runs | Price |",
-    "|---|---|---|---|",
+    ...defaultsTable(),
   ];
-  for (const c of CAPABILITIES) {
-    const alias = `${c.id}/default`;
-    const target = models.find((m) => m.id === aliases[alias]);
-    if (target) out.push(`| ${c.blurb.split(".")[0]} | ${code(alias)} | [${cell(target.name)}](/${modelPath(target)}) | ${priceText(target)} |`);
-  }
   for (const c of CAPABILITIES) {
     const list = byCapability[c.id];
     if (!list.length) continue;
     const timed = list.some((m) => m.latency);
+    const card = (m) => `  <Card title=${attr(`${m.name}${isDefault(m) ? " (default)" : ""}`)} href=${attr(`/${modelPath(m)}`)} img=${attr(thumbnail(m))}>${priceText(m)}${typicalTime(m) ? `, ${typicalTime(m)}` : ""}</Card>`;
+    const gallery = (members) => ['<div className="summer-gallery">', "<CardGroup cols={3}>", ...members.map(card), "</CardGroup>", "</div>"];
+    const segments = segmentsOf(list);
+    out.push("", `## ${c.title}`, "", `${c.blurb} Output: ${formatsOf(list)}.`, "");
+    // One gallery per task (text to 3D, picture to 3D, ...) when the capability has more than one.
+    if (segments.length > 1) for (const s of segments) out.push(`### ${s.title}`, "", ...gallery(s.models), "");
+    else out.push(...gallery(list), "");
     out.push(
-      "",
-      `## ${c.title}`,
-      "",
-      `${c.blurb} Output: ${formatsOf(list)}.`,
-      "",
-      `| Model | Id | Price |${timed ? " Typical time |" : ""}`,
-      `|---|---|---|${timed ? "---|" : ""}`,
+      `| Model | Id | Price |${timed ? " Typical time |" : ""} On summerengine.com |`,
+      `|---|---|---|${timed ? "---|" : ""}---|`,
       ...list.map((m) => modelRow(m, timed)),
     );
     const options = [...new Set(list.flatMap((m) => (m.price.modifiers ?? []).map((r) => r.field)))];
@@ -540,6 +731,7 @@ for (const r of reference) {
 }
 
 put(MODELS_PAGE, renderModelsPage());
+put(PRICES_SNIPPET, renderPricesSnippet());
 for (const m of models) put(modelPath(m), renderModelPage(m));
 
 // Summer Router: its own tab, from the pinned registry and default caps.
@@ -547,9 +739,14 @@ const routerModelsPath = join(SOURCES, "router-models.json");
 const router = routerPages(readJson(join(SOURCES, "router-registry.json")), readJson(join(SOURCES, "router-policy.json")), existsSync(routerModelsPath) ? readJson(routerModelsPath) : null);
 for (const [path, content] of router.pages) put(path, content);
 
+// How to make: hand-written guides, with models, inputs, code and prices from the model list.
+const guides = guidePages(join(HERE, "guides"), { models, aliases, modelPath, money, unitLabel, jobCode, code, cell, fm, banner, generator: GENERATOR });
+for (const [path, content] of guides.pages) put(path, content);
+
 // ------------------------------------------------------------- navigation
 
-const HAND_WRITTEN = ["api/overview", "api/quickstart", "api/agents", "api/sign-in", "api/jobs", "api/errors"];
+const QUICKSTARTS = ["claude-code", "codex", "cursor", "chatgpt-and-claude", "hermes"].map((p) => `api/quickstarts/${p}`);
+const HAND_WRITTEN = ["api/overview", "api/quickstart", "api/from-studio", "api/agents", ...QUICKSTARTS, "api/sign-in", "api/jobs", "api/errors"];
 const REFERENCE_ORDER = ["GET /models", "GET /models/{model}", "POST /estimate", "POST /jobs", "GET /jobs/{jobId}", "GET /jobs/{jobId}/events", "POST /jobs/{jobId}/cancel", "POST /files", "POST /files/complete", "GET /voices", "GET /voices/preview/{token}", "POST /webhooks/secret", "GET /webhooks/deliveries", "GET /key", "GET /balance"];
 const rank = (r) => {
   const i = REFERENCE_ORDER.indexOf(`${r.method} ${r.path}`);
@@ -557,8 +754,10 @@ const rank = (r) => {
 };
 const tab = {
   tab: TAB,
+  icon: "braces",
   groups: [
-    { group: "Start here", pages: ["api/overview", "api/quickstart", "api/agents"] },
+    { group: "Start here", pages: ["api/overview", "api/quickstart", "api/from-studio", "api/agents", { group: "Quickstart per agent", icon: "bot", pages: QUICKSTARTS }] },
+    ...(guides.nav.length ? [{ group: "How to make", pages: guides.nav }] : []),
     {
       group: "Models and pricing",
       pages: [MODELS_PAGE, ...CAPABILITIES.filter((c) => byCapability[c.id].length).map((c) => ({ group: c.title, icon: c.icon, pages: byCapability[c.id].map(modelPath) }))],
@@ -572,8 +771,9 @@ const docsJsonPath = join(ROOT, "docs.json");
 const docsJsonRaw = readFileSync(docsJsonPath, "utf8");
 const docs = JSON.parse(docsJsonRaw);
 const tabs = docs.navigation.tabs.filter((t) => t.tab !== TAB && t.tab !== ROUTER_TAB);
-const at = docs.navigation.tabs.findIndex((t) => t.tab === TAB);
-tabs.splice(at < 0 ? 1 : at, 0, tab, router.nav);
+// Docs, Multiplayer games and Grow come first; the Summer API and Router tabs follow Grow.
+const grow = tabs.findIndex((t) => t.tab === "Grow");
+tabs.splice(grow < 0 ? 1 : grow + 1, 0, tab, router.nav);
 docs.navigation.tabs = tabs;
 const docsJsonNext = JSON.stringify(docs, null, 2) + "\n";
 
@@ -626,18 +826,22 @@ function renderLlms() {
     `- Summer API base URL: ${BASE_URL}`,
     "- Sign in: `npx -y summer-engine@latest login` opens the browser once; the person signs in to Summer and chooses Allow, with a spend limit. The sign-in renews itself.",
     "- Auth over HTTP: `Authorization: Bearer <token>`, with a one-hour token from `npx -y summer-engine@latest token`. There are no API keys.",
-    "- CLI: `npx -y summer-engine@latest api models|estimate|run|jobs`. `api run <model> --input '<json>' --download <dir>` runs a job, follows it and saves the files. JSON when piped.",
+    "- CLI: `npx -y summer-engine@latest api models|estimate|run|jobs`. `api run <model> --input '<json>' --download <dir>` runs a job, follows it and saves the files; `api run --batch jobs.jsonl --download <dir>` runs up to 500 (one `{\"model\", \"input\"}` per line). JSON when piped. The same calls are MCP tools: `summer_api_models`, `summer_api_estimate`, `summer_api_run`, `summer_api_batch`, `summer_api_job`.",
     `- Without the CLI: Summer's sign-in is OAuth 2.1 with PKCE; discovery at https://mcp.summerengine.com/.well-known/oauth-protected-resource. Steps: ${DOCS_URL}/api/sign-in.md`,
     `- Models and prices: \`GET ${BASE_URL}/models\` (public, no sign-in). Read prices there, never from memory or training data. Defaults per job: ${defaults}.`,
     `- Exact price of one request: \`POST ${BASE_URL}/estimate\` with the same body as the job (free, no sign-in).`,
-    `- Run: \`POST ${BASE_URL}/jobs\` with \`{"model", "input"}\`, a required \`Idempotency-Key\` header (new per job, the same on a retry) and \`Prefer: wait=60\`. A long job (3D, video) answers \`running\`: poll \`GET ${BASE_URL}/jobs/{id}\` every \`pollAfterSeconds\` (else 5 s) while \`state\` is \`queued\` or \`running\`. Or pass \`webhookUrl\` for one signed POST when it finishes. Stop on \`done\` (download the \`fileUrl\` of every entry in \`result.assets\`; \`job.model\` is the model that ran) or on \`failed\`, \`cancelled\`, \`expired\`, \`stale\` or \`declined\` (show \`error.message\`).`,
-    "- Credits: every call is paid from the person's paid Summer credits (plan credits and top-ups). Without enough, a job answers `402` `no_credits` with a `fix_url` to top up; show it to the person.",
+    `- Run: \`POST ${BASE_URL}/jobs\` with \`{"model", "input"}\`, a required \`Idempotency-Key\` header (new per job, the same on a retry) and \`Prefer: wait=60\`. A long job (3D, video) answers \`running\`: poll \`GET ${BASE_URL}/jobs/{id}\` every \`pollAfterSeconds\` (else 5 s) while \`state\` is \`queued\` or \`running\`. A job past the account's running slots answers \`202\` \`queued\` (id \`q:...\`): it is accepted at a held price and starts in order; follow it, never resend it. Or pass \`webhookUrl\` for one signed POST when it finishes. Stop on \`done\` (download the \`fileUrl\` of every entry in \`result.assets\`; \`job.model\` is the model that ran) or on \`failed\`, \`cancelled\`, \`expired\`, \`stale\` or \`declined\` (show \`error.message\`).`,
+    `- Many jobs: \`POST ${BASE_URL}/batches\` with \`{"jobs": [{"model", "input"}, ...]}\` (up to 500, all or none, \`Idempotency-Key\` header for the batch), then \`GET ${BASE_URL}/batches/{id}\` until no job is \`queued\` or \`running\`.`,
+    "- Limits: no rate limits on paid usage. Each account runs 10 jobs at once at the start, up to 40 as it buys credits; more jobs queue. Money is the only refusal, as `402`: `no_credits` (the paid balance; `fix_url` adds credits) or `over_limit` (this app's own spend limit; `fix_url` opens Connected apps). Show the person `message` and stop until they act.",
+    "- Credits: every call is paid from the person's paid Summer credits (plan credits and top-ups). Estimate first and tell the person the total before you spend.",
     `- OpenAPI 3.1: ${BASE_URL}/openapi.json`,
     "- MCP for chat apps and cloud work: `https://mcp.summerengine.com/mcp` (OAuth sign-in).",
-    `- Summer Router (AI inside a shipped game: talking characters, speech, images): the game calls \`Summer.client.router\`; no key is in the build and the creator's paid Summer credits pay. Works on games published on Summer Games. Models and prices: \`GET https://api.summer.games/v1/router/models\` (public). Start: ${DOCS_URL}/router/quickstart.md`,
-    "- CLI and local MCP for engine work: `npx -y summer-engine@latest setup <agent> --yes`.",
+    `- Summer Router (early preview: AI inside a game published on Summer Games): character replies with tools, speech and images. Single-player games call \`Summer.client.router\`; multiplayer games call \`Summer.authority.router\` from the server (Summer Engine 0.8 and later). Transcription and realtime voice are coming soon. No key is in the build; the creator's paid Summer credits pay, within caps. Models and prices: \`GET https://api.summer.games/v1/router/models\` (public). Start: ${DOCS_URL}/router/quickstart.md`,
+    "- CLI, local MCP and skills for engine work: `npx -y summer-engine@latest setup <agent> --yes`. The `summer-api` skill covers assets; the `summer-router` skill covers AI characters in games.",
     "- Every page is also Markdown: add `.md` to its URL. Everything in one file: https://docs.summerengine.com/llms-full.txt",
     `- Quickstart: ${DOCS_URL}/api/quickstart.md. Models and pricing: ${DOCS_URL}/api/models.md. Errors: ${DOCS_URL}/api/errors.md`,
+    `- How to make X (which models to chain, the exact steps and the cost): ${DOCS_URL}/api/guides.md, for example ${DOCS_URL}/api/guides/3d-character.md and ${DOCS_URL}/api/guides/trailer.md`,
+    `- Setup per agent (one command, then \`summer login\`): ${QUICKSTARTS.map((p) => `${DOCS_URL}/${p}.md`).join(", ")}. Signed in to Summer Studio: ${DOCS_URL}/api/from-studio.md`,
     "",
   ];
   for (const t of docs.navigation.tabs) {
@@ -645,7 +849,8 @@ function renderLlms() {
     const groups = t.groups ?? [];
     // A generated tab of hundreds of pages (skills, reference) gets its overview here;
     // its pages link on from there and are all in llms-full.txt.
-    const size = groups.reduce((n, g) => n + countPages(g), 0);
+    // The Summer API tab is listed in full however large it grows: agents look up models and guides here.
+    const size = t.tab === TAB ? 0 : groups.reduce((n, g) => n + countPages(g), 0);
     for (const g of size > BIG_TAB ? groups.slice(0, 1) : groups) {
       out.push("", `### ${g.group}`, "");
       indexLines(g, 4, out);
@@ -700,7 +905,7 @@ for (const p of [...handWritten, ...pages.keys()]) {
   if (hit) problems.push(`${p}.mdx: names another provider: …${hit[0]}…`);
 }
 // Summer Router pages name no provider and no model maker at all: the creator picks models in Studio.
-const ROUTER_OTHERS = /.{0,40}\b(?:Vercel|ElevenLabs|OpenAI|Anthropic|Gemini|Google|Meshy|Gateway)\b.{0,40}/;
+const ROUTER_OTHERS = /.{0,40}\b(?:Vercel|ElevenLabs|OpenAI|Anthropic|Google|Meshy|Gateway)\b.{0,40}/;
 for (const p of [...handWritten, ...pages.keys()].filter((p) => p.startsWith("router/"))) {
   const hit = (pages.get(p) ?? readFileSync(join(ROOT, `${p}.mdx`), "utf8")).match(ROUTER_OTHERS);
   if (hit) problems.push(`${p}.mdx: names a provider: …${hit[0]}…`);

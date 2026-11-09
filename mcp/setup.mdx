@@ -1,7 +1,7 @@
 ---
-title: "Summer Engine MCP Setup for Any AI Agent"
-sidebarTitle: "MCP Setup"
-description: "Connect any agent to Summer Engine: add mcp.summerengine.com/mcp for cloud work, or run one setup command for engine work in Claude Code, Codex, Cursor and 28 more."
+title: "Summer MCP setup for Claude Code, Codex, Cursor and any agent"
+sidebarTitle: "MCP setup"
+description: "Connect any AI agent to Summer with one command: npx -y summer-engine@latest setup <agent> --yes. Or add the hosted server mcp.summerengine.com/mcp to a chat app. Verify it, sign in, and fix common problems."
 icon: "settings"
 "og:image": "https://docs.summerengine.com/images/og/mcp-setup.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/mcp-setup.jpg"
@@ -9,63 +9,117 @@ icon: "settings"
 
 {/* Do not reintroduce a hardcoded MCP tool count here. The tool list grows every release and a baked-in number has already gone stale twice. The agent table below is rendered from the toolkit's agent table (2026-09-11); regenerate it rather than hand-editing rows. */}
 
-Summer is the game engine built for AI. Any agent builds, tests and publishes a full multiplayer game.
+One command connects your agent to Summer. It works for 31 agents, and on Windows and Mac. Using a chat app such as Claude or ChatGPT? Skip to [the hosted server](#hosted-server-for-chat-apps).
 
-## Two Ways to Connect
+## Set up your agent
 
-| | **Cloud work** | **Engine work** |
-|---|---|---|
-| What | Assets, plans, projects, the store and publishing, prices, analytics, A/B tests, team and Summer Studio | Scenes, scripts, play, screenshots and files in your project |
-| Connect | Add `https://mcp.summerengine.com/mcp` to your agent as a remote MCP server | `npx -y summer-engine@latest setup <agent> --yes` |
-| Sign in | Once, in the browser, when your agent connects | Once: `npx -y summer-engine@latest login` |
-| Install | Nothing | Node.js 20+ and Summer Engine |
+**You need:** [Node.js](https://nodejs.org) 22 or newer. The [Summer app](/essentials/installation) already brings its own copy and connects the agents it finds, so you can skip this page if you installed it.
 
-**Cloud work.** Add `https://mcp.summerengine.com/mcp` to your agent. Your agent opens the Summer sign-in page once. Sign in to your Summer account and choose **Allow**. Nothing to install. Claude Code: `claude mcp add --transport http summer-cloud https://mcp.summerengine.com/mcp`, then run `/mcp` and sign in. Codex: `codex mcp add summer-cloud --url https://mcp.summerengine.com/mcp`, then `codex mcp login summer-cloud`. Claude and ChatGPT: see [Summer in ChatGPT and Claude](/mcp/chatgpt-and-claude).
+<CodeGroup>
 
-**Engine work.** Run the setup command below, then `npx -y summer-engine@latest login` once. After sign-in, the local server also runs the cloud operations, so your agent needs one server.
+```bash Claude Code
+npx -y summer-engine@latest setup claude-code --yes
+```
+
+```bash Codex
+npx -y summer-engine@latest setup codex --yes
+```
+
+```bash Cursor
+npx -y summer-engine@latest setup cursor --yes
+```
+
+```bash VS Code
+npx -y summer-engine@latest setup vscode-copilot --yes
+```
+
+```powershell Windows PowerShell
+npx.cmd -y summer-engine@latest setup claude-code --yes
+```
+
+</CodeGroup>
+
+For any other agent, use its id from [Every agent](#every-agent). The command:
+
+1. **Writes the Summer MCP server** (`summer-engine`) into your agent's own config file. Servers already in the file stay.
+2. **Installs the Summer skills** where your agent reads them. See [Skills](/mcp/skills).
+3. **Adds the [Summer Games MCP](/mcp/summer-games)** (`summer-games`) for friends, parties and messages, and prints its one sign-in step. `--no-games` skips it.
+4. **Runs `summer doctor`**, which checks Node.js, Summer Engine, your sign-in and your agent's config.
+
+In Claude Code you can install the Summer plugin instead: `/plugin install summer --marketplace summerengine/summer`, then `/summer:start`. Use the plugin or `summer setup`, not both.
+
+## Check that it works
+
+Restart your agent so it loads the new server. Then ask it:
+
+```text
+List the Summer tools you have.
+```
+
+**If everything worked:** your agent lists tools such as `summer_play`, `summer_screenshot` and `summer_search`. You can also look in your agent's MCP list: `/mcp` in Claude Code and Codex, **Settings > MCP** in Cursor. It shows `summer-engine` as connected.
+
+Then try a real task: "Make a small 3D game in Summer, play it and show me a screenshot." Your agent installs Summer Engine if it is missing (it asks you first), creates the project and opens it.
+
+## Sign in
+
+Building and playing games needs no sign-in. For assets, publishing and the rest of the cloud work, sign in once:
+
+```bash
+npx -y summer-engine@latest login
+```
+
+Your browser opens the Summer sign-in page. Sign in and choose **Allow**. The local server then also runs every cloud operation, so your agent needs only one Summer server. If your agent calls a cloud tool before you sign in, it gets a sign-in link and continues once you sign in.
+
+## Hosted server for chat apps
+
+Chat apps without a terminal connect to Summer's hosted server. It does cloud work only: assets, plans, the store page, publishing, prices and analytics. It has no engine tools. You sign in with your Summer account the first time your agent connects.
+
+<CodeGroup>
+
+```bash Claude Code
+claude mcp add --transport http summer-cloud https://mcp.summerengine.com/mcp
+# then run /mcp and sign in
+```
+
+```bash Codex
+codex mcp add summer-cloud --url https://mcp.summerengine.com/mcp
+codex mcp login summer-cloud
+```
+
+```json Cursor (~/.cursor/mcp.json)
+{
+  "mcpServers": {
+    "summer-cloud": { "url": "https://mcp.summerengine.com/mcp" }
+  }
+}
+```
+
+```bash VS Code
+code --add-mcp '{"name":"summer-cloud","type":"http","url":"https://mcp.summerengine.com/mcp"}'
+```
+
+</CodeGroup>
+
+In Claude and Claude Desktop, open **Settings > Connectors > Add custom connector** and paste `https://mcp.summerengine.com/mcp`. For ChatGPT, see [Summer in ChatGPT and Claude](/mcp/chatgpt-and-claude).
 
 <Note>
 `https://docs.summerengine.com/mcp` only searches these docs. To connect Summer, use `https://mcp.summerengine.com/mcp`.
 </Note>
 
-## Engine Work: One Command, Any Agent
+## Setup options
 
-```bash
-npx -y summer-engine@latest setup <agent> --yes
-npx -y summer-engine@latest login
-```
+| Option | What it does |
+|---|---|
+| `--scope project` | Writes project files that travel with the game, in place of your user config |
+| `--cli` | Installs the skills and no MCP server. Your agent runs `summer` commands in its shell |
+| `--profile engine` | Lists the engine tools only, for agents with a tool limit. VS Code Copilot gets it by default |
+| `--assets-only` | Sets up the asset tools and skills only, with no engine |
+| `--print` / `--dry-run` | Shows the config or the plan without writing anything |
+| `--force` | Refreshes the skills after you update Summer |
 
-Replace `<agent>` with the id from the table below (`cursor`, `claude-code`, `codex`, ...). The setup command does three things:
+Every option: [summer setup](/mcp/cli-reference#summer-setup).
 
-1. **Writes the MCP server entry** into the agent's own config file, in that agent's file shape. Existing servers in the file are kept.
-2. **Installs the Summer skill library** where that agent reads skills (see [Skills](/mcp/skills)). Most agents share one folder, `~/.agents/skills`, so one setup covers several agents.
-3. **Runs `summer doctor`** so you see immediately whether Node, the engine and the login are in place.
-
-For most agents, setup also adds the **Summer Games MCP** (`summer-games`, `https://mcp.summer.games/mcp`) so your agent can see your friends, start parties and send messages as you. It prints the one sign-in step for your agent. `--no-games` skips it. See [Summer MCPs](/mcp/summer-mcps).
-
-Options worth knowing: `--cli` installs the skills and no MCP server, so the agent runs `summer` commands in its shell. `--assets-only` sets up only the asset tools and skills, with no engine. `--profile engine` lists fewer tools, for agents with a tool limit; VS Code Copilot gets it by default. Every option: [summer setup](/mcp/cli-reference#summer-setup).
-
-Add `--scope project` to write project-level files that travel with the game, `--print` to see the config without writing, `--dry-run` to see the plan. Re-run with `--force` after upgrading Summer to refresh the skills.
-
-`login` opens your browser once. One sign-in covers your Summer account and the store, publishing and Grow tools.
-
-## What You Get
-
-The local server lets the agent control the engine directly: read the scene tree, add nodes, set properties, import assets, run the game, capture screenshots, read errors. Instead of switching between your editor and Summer Engine, you stay in one place and describe what you want.
-
-The engine tools use the same engine operations as Summer Engine's built-in chat. The difference is where you type. Undo works the same. Changes are just as safe.
-
-**Lazy connection.** The local server starts immediately and connects to the engine on the first engine tool call. If the engine is not running, the tool answers with the code `engine_not_running` and names the next step: open your project in Summer Engine (or run `npx summer-engine run <project-path>`), then try the same call again. Cloud tools do not need the engine.
-
-## Prerequisites for Engine Work
-
-1. **Summer Engine**: the desktop app from [summerengine.com](https://www.summerengine.com) or `npx -y summer-engine@latest install`
-2. **Node.js 20+**: the MCP server runs with `npx`
-3. **A Summer Engine project open in the engine**, so the local API server is active
-
-The engine runs a local HTTP server on `localhost:6550` while it is open and writes a token to `~/.summer/api-token`. No API keys to manage.
-
-## Supported Agents
+## Every agent
 
 Every id `summer setup` accepts, with the file it writes and where the skills land. Agents with their own guide are linked; the rest are on [Every Supported Agent](/mcp/agents) with the exact snippet.
 
@@ -107,7 +161,7 @@ Legacy ids still work but warn: `gemini` (Gemini CLI, retired for individual acc
 
 Aliases: `claude` → `claude-code`, `devin` → `windsurf`, `agy` → `antigravity`, `copilot` → `github-copilot`, `vscode` → `vscode-copilot`, `droid` → `factory`, `kilo` → `kilo-code`, `qwen` → `qwen-code`, `kimi` → `kimi-code`.
 
-## Manual Configuration
+## Manual configuration
 
 If you would rather edit files yourself, or your agent is not listed, these are the shapes in use. `summer setup <agent> --print` prints the exact one for any agent.
 
@@ -188,72 +242,40 @@ extensions:
 **No global install required.** `npx -y summer-engine@latest mcp` runs the current release on demand. For faster startup install it (`brew install summerengine/tap/summer` or `npm install -g summer-engine`) and use `"command": "summer", "args": ["mcp"]`.
 </Tip>
 
-## Verify It Works
+## Troubleshooting
 
-1. **Sign in once**: `npx -y summer-engine@latest login`. One browser sign-in covers your Summer account and the store, publishing and Grow tools.
-2. **Start Summer Engine**: open your project in the engine (or run `npx summer-engine run` from the project directory).
-3. **Restart the agent** so it reloads its MCP config. `summer setup` prints the exact step for your agent.
-4. **Check the MCP list**: in Cursor, Settings > MCP; in Claude Code, `/mcp`. You should see `summer-engine` connected with its tools.
-5. **Ask the AI**: "Use Summer Engine to add a MeshInstance3D with a BoxMesh to the scene root. Name it TestCube."
-6. **Confirm in the engine**: the node appears in the scene tree.
+<AccordionGroup>
+  <Accordion title="My agent does not list any Summer tools">
+    Restart the agent: most agents load a new MCP server only at start. Then run `npx -y summer-engine@latest doctor`, which shows whether your agent's config points at Summer.
+  </Accordion>
+  <Accordion title="A tool answers engine_not_running">
+    Summer Engine is not open. Ask your agent to open your project, or run `npx -y summer-engine@latest dev` in the game's folder. Cloud tools work without the engine.
+  </Accordion>
+  <Accordion title="Windows: running scripts is disabled on this system">
+    Type `npx.cmd` in place of `npx` in PowerShell. Don't change the execution policy.
+  </Accordion>
+  <Accordion title="summer doctor says Node.js is too old">
+    Summer needs Node.js 22 or newer. Install the current LTS from [nodejs.org](https://nodejs.org) (on Windows: `winget install -e --id OpenJS.NodeJS.LTS`), then restart your agent.
+  </Accordion>
+</AccordionGroup>
 
-`summer doctor` checks all of this from the terminal, including whether the agent's recorded config still points at a current Summer release.
-
-## What the AI Can Do
-
-Your agent gets tools in these categories:
-
-| Category | What they do |
-|----------|--------------|
-| **Scene** | Add nodes, set properties, save/open scenes, connect signals, instantiate prefabs, inspect nodes and resources |
-| **Debug and Play** | Run the game, read console output, get diagnostics, script and debugger errors |
-| **Visual Verification** | Screenshot the viewport or the running game |
-| **Project** | Project context, settings, input mappings, scene tree, import assets from URLs |
-| **Project Files** | Read, write, and patch script and resource files inside the bound project |
-| **Asset Library** | Search the public library and your assets, then import |
-| **Generation** | Generate images, 3D models, audio, video, and motion clips, and slice sprite sheets. Long work returns a job: `summer_jobs_wait` waits up to 50 seconds per call |
-| **Plans and projects** | Read and change a game's plan and its saved direction, and list your Summer projects |
-| **Navigation** | Open the right page on summerengine.com or the right surface in the editor for the user (`studio.open` through `summer_call`) |
-| **Publishing** | Export the game, upload builds, edit the store page and ask the owner to publish |
-| **Grow** | Prices and sales, analytics, A/B tests, game members and growth applications |
-| **Team and Studio** | Your team, and pages in Summer Studio |
-| **Anything else** | `summer_search` finds the operation for a job in plain words and returns its exact input. `summer_call` runs it. |
-
-Every capability is an operation, such as `assets.generate_3d` or `pricing.set_base`. See [Operations](/mcp/operations) for each one, its input and its answer. For a step-by-step guide on how an AI agent builds a complete game using these tools, see [Building a Game with MCP](/mcp/building-a-game).
-
-## Next Steps
+## Next steps
 
 <CardGroup cols={2}>
-  <Card
-    title="Every Supported Agent"
-    icon="list"
-    href="/mcp/agents"
-  >
-    Config file, file shape and skills folder for all agents
+  <Card title="Quickstart: coding agent" icon="rocket" href="/quickstarts/coding-agent">
+    From setup to a game you can play.
   </Card>
-  <Card
-    title="Skills"
-    icon="book-open"
-    href="/mcp/skills"
-  >
-    The skill library and where each agent reads it
+  <Card title="Skills" icon="book-open" href="/mcp/skills">
+    The skill library and where each agent reads it.
   </Card>
-  <Card
-    title="CLI Reference"
-    icon="terminal"
-    href="/mcp/cli-reference"
-  >
-    All CLI commands: setup, doctor, install, run, create, and more
+  <Card title="Operations" icon="wrench" href="/mcp/operations">
+    Every tool, its input and its answer.
   </Card>
-  <Card
-    title="Operations reference"
-    icon="wrench"
-    href="/mcp/operations"
-  >
-    Every MCP tool with parameters and usage examples
+  <Card title="CLI reference" icon="terminal" href="/mcp/cli-reference">
+    Every `summer` command.
   </Card>
 </CardGroup>
 
 ---
 
-Need help? Ask in [Discord](https://discord.gg/summerengine) first. That is where you get the fastest reply and support. For concrete help, email [support@summerengine.com](mailto:support@summerengine.com) or [founders@summerengine.com](mailto:founders@summerengine.com).
+Need help? Ask in [Discord](https://discord.gg/summerengine) for the fastest reply, or email [support@summerengine.com](mailto:support@summerengine.com).

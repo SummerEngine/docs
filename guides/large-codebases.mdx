@@ -40,7 +40,7 @@ each chat:
 | File | When it applies |
 |---|---|
 | `AGENTS.md` at the project root | Every chat |
-| `.summerrules` at the project root | Every chat |
+| `.summerrules` at the project root | When that folder has no `AGENTS.md` |
 | `.summer/rules/*.md` (or `.mdc`) | Every chat, or only when the files you work on match its `globs` |
 
 A rule file in `.summer/rules/` can have frontmatter. With `globs` and no
@@ -58,8 +58,10 @@ globs: "scripts/combat/**"
 4. Combat events are emitted on CombatEventBus.
 ```
 
-Keep rules short. Summer reads up to 20 KB from each of `AGENTS.md` and
-`.summerrules`, and about 24,000 characters of rules in total.
+For each folder from the project root to the chat's folder, `AGENTS.md` takes
+precedence. Summer reads `.summerrules` in that folder only when `AGENTS.md`
+is absent. Put shared instructions in one file per folder so both sets are not
+mistakenly expected to load together.
 
 For decisions about your game itself (art style, mechanics), use
 [Memory](/ai-tools/memory). For a repeatable way of working, write a

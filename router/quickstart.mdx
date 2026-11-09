@@ -16,7 +16,7 @@ Using a coding agent? Paste this: `Add a Summer Router character to my game (htt
     Summer Router serves games published on Summer Games, and it is on for every game, with [caps](/router/limits) from the start. If your game is not there yet, see [publish on Summer Games](/publishing/summer-games). Calls are paid from your paid Summer credits, from your plan or [top-ups](https://summerengine.com/studio/credits).
   </Step>
   <Step title="Make the character">
-    In [Summer Studio](https://summerengine.com/studio), open your game and its **Summer Router** tab, then add a character:
+    In [Summer Studio](https://summerengine.com/studio), open your game, then **Grow > Summer Router**, and add a character:
 
     | Field | Example |
     |---|---|
@@ -65,7 +65,7 @@ Pass the same `conversation_id` from `r.conversation_id` on the next call, and t
 
 - **A voice line:** `await Summer.client.router.speak("Welcome, traveller!", {"character": "narrator"})` returns `audio` to play. See [speech](/router/speech).
 - **An image:** `await Summer.client.router.generate("image", {"prompt": "a flower made of glass", "size": "512x512"})` returns a `texture`. See [image](/router/image).
-- **What the character knows:** `variables` fill the character's `{{variables}}`, such as the player's name, and `context` tells it what just happened in the game.
+- **What the character knows:** `variables` fill the character's declared `{{variables}}`, such as the player's name, when the character lists `variables` in its overridable fields. `context` tells it what just happened in the game.
 
 <CardGroup cols={3}>
   <Card title="Server and client" icon="server" href="/router/server-and-client">

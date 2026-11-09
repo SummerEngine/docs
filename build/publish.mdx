@@ -1,7 +1,7 @@
 ---
 title: "Publish your game on summer.games"
 sidebarTitle: "Publish"
-description: "Publish a Summer Engine game on summer.games: export one .zip in the editor, build the store page in Summer Studio, upload, pass the checks and submit for review."
+description: "Publish a Summer Engine game on summer.games: export one .zip in the editor, build the store page in Summer Studio, upload, and publish. It goes live as soon as Summer's automatic checks pass."
 icon: "rocket"
 "og:image": "https://docs.summerengine.com/images/og/build-publish.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/build-publish.jpg"
@@ -9,8 +9,9 @@ icon: "rocket"
 
 Publishing takes your project to a page on summer.games that players can find,
 download and play. You export your game as one file in the editor, make its
-store page in Summer Studio, upload the file, and submit the page for review.
-Once Summer approves it, you choose when it goes live.
+store page in Summer Studio, upload the file, and click **Publish**. Your
+game goes live as soon as Summer's automatic checks pass. There is no review
+to wait for.
 
 There is one place to upload a game:
 [summerengine.com/studio/upload](https://www.summerengine.com/studio/upload).
@@ -37,11 +38,11 @@ For other builds, such as downloads for Mac, Windows or Linux, see
 
 ## How it works
 
-<img className="block dark:hidden" src="/images/guide-art/publish/flow-light.svg" alt="Five steps: export one file in the editor, make your store page in Studio, upload the file and let Summer check it, submit for review, then go live on summer.games." />
-<img className="hidden dark:block" src="/images/guide-art/publish/flow-dark.svg" alt="Five steps: export one file in the editor, make your store page in Studio, upload the file and let Summer check it, submit for review, then go live on summer.games." />
+<img className="block dark:hidden" src="/images/guide-art/publish/flow-light.svg" alt="Five steps: export one file in the editor, make your store page in Studio, upload the file and let Summer check it, click Publish, and the game is live on summer.games once the checks pass." />
+<img className="hidden dark:block" src="/images/guide-art/publish/flow-dark.svg" alt="Five steps: export one file in the editor, make your store page in Studio, upload the file and let Summer check it, click Publish, and the game is live on summer.games once the checks pass." />
 
 Saving a draft or uploading a file never releases your game. Nothing reaches
-players until Summer has approved your page and you choose to go live.
+players until you publish it.
 
 <Steps>
   <Step title="Export your game">
@@ -62,16 +63,14 @@ players until Summer has approved your page and you choose to go live.
     players pay once. See [Charge for your game and accept tips](/build/paid-games).
   </Step>
   <Step title="Upload and check">
-    In **Check and submit**, upload your export and give it a version, such
+    In **Check and publish**, upload your export and give it a version, such
     as `v1.0.0`. Summer checks it for every
     platform you picked and shows **Checks passed** or what needs a fix.
   </Step>
-  <Step title="Submit for review">
-    Click **Submit for review**. Summer staff look at your store page, and
-    Studio shows where your game is in the review.
-  </Step>
-  <Step title="Go live">
-    Once your game is approved, click **Go live**. Your page is at
+  <Step title="Publish">
+    Click **Publish**. Your game goes live as soon as Summer's automatic
+    checks pass, with no review to wait for. To pick the moment, click
+    **Schedule…** and set **Go live at**. Your page is at
     `summer.games/games/<your-game>`, ready to share.
   </Step>
 </Steps>
@@ -83,10 +82,10 @@ players until Summer has approved your page and you choose to go live.
 
 <Tip>
   Want your AI agent to do all of this? It fills the store page, makes the
-  art, exports, uploads and publishes through the Summer Engine MCP. Summer's
-  review still runs first. Six switches in [Agent permissions](/mcp/permissions)
-  say what it may do without asking; if it gives you an approval link,
-  you approve with one click. See
+  art, exports, uploads and publishes through the Summer Engine MCP. It asks
+  you before the game goes live, and it is live as soon as the automatic
+  checks pass. Six switches in [Agent permissions](/mcp/permissions) say what
+  else it may do without asking. See
   [Create and publish your game](/publishing/summer-games).
 </Tip>
 
@@ -139,15 +138,15 @@ that show it best, as 16:9 shots of real gameplay with no added captions
 
 ## Update your game
 
-<img className="block dark:hidden" src="/images/guide-art/publish/update-light.svg" alt="Version 1.0.0 is live while version 1.1.0 is uploaded and checked; promoting 1.1.0 makes it the live version." />
-<img className="hidden dark:block" src="/images/guide-art/publish/update-dark.svg" alt="Version 1.0.0 is live while version 1.1.0 is uploaded and checked; promoting 1.1.0 makes it the live version." />
+<img className="block dark:hidden" src="/images/guide-art/publish/update-light.svg" alt="Version 1.0.0 is live while version 1.1.0 is uploaded and checked; publishing 1.1.0 makes it the live version." />
+<img className="hidden dark:block" src="/images/guide-art/publish/update-dark.svg" alt="Version 1.0.0 is live while version 1.1.0 is uploaded and checked; publishing 1.1.0 makes it the live version." />
 
 Export again with a new version number, such as `v1.1.0`, open your game in
 [Your games](https://www.summerengine.com/studio/store) and upload the new
-export in **Check and submit**. When it shows **Checks passed**, open **Versions**, pick
+export in **Check and publish**. When it shows **Checks passed**, open **Versions**, pick
 the new version and click **Promote to production**. Players keep the current
-version until the new one is live. Changes to a live store page go through
-review again before they appear.
+version until the new one is live. Changes to a live store page appear when
+you publish them.
 
 <Prompt description="**Publish an update.** Bump the version and export again.">
 I want to publish an update to my Summer game. Use the Summer

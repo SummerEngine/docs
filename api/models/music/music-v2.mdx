@@ -15,8 +15,10 @@ Music with stronger vocals, arrangement, and long-form structure.
 | Default for | `music/default` |
 | Price | \$0.0025 per second |
 | Typical time | about 10 s |
+| Does | [Music](/api/models#music) |
 | Output | MP3 |
 | Made by | Summer |
+| Try it | [Examples and playground on summerengine.com](https://www.summerengine.com/models/music-v2) |
 | Commercial use | Yes |
 
 ## Best for
@@ -90,6 +92,18 @@ job = res.json()["job"]
 print(job["state"], job["id"])
 ```
 
+```js MCP
+// Summer's MCP server: npx -y summer-engine@latest setup <agent> --yes
+summer_api_run({
+  model: "music/music-v2",
+  input: {
+    prompt: "a calm lo-fi loop for a cozy farming game menu",
+    durationSeconds: 30
+  },
+  out: "assets",
+})
+```
+
 </CodeGroup>
 
 The finished job has `state` `"done"` and `result.assets`: one entry per file, each with `assetId`, `fileUrl` (a Summer URL) and `thumbnailUrl`. Download the file into your project, or import it in Summer Engine by its asset id.
@@ -102,6 +116,17 @@ Send these fields in `input`. The full JSON Schema is `inputSchema` in [`GET /v1
 |---|---|---|
 | `prompt` (required) | string | What the music should sound like, at most 2000 characters. up to 2000 characters |
 | `durationSeconds` | number | Seconds, 3 to 600 (default 30). 3 to 600 |
+
+## Related models
+
+<div className="summer-gallery">
+<CardGroup cols={2}>
+  <Card title="MiniMax Music 3" href="/api/models/music/minimax-music-3" img="/images/api/tiles/music.svg">`music/minimax-music-3`: \$0.002 per second</Card>
+  <Card title="Music v1" href="/api/models/music/music-v1" img="/images/api/tiles/music.svg">`music/music-v1`: \$0.0025 per second</Card>
+  <Card title="Music v2.5" href="/api/models/music/music-v2-5" img="/images/api/tiles/music.svg">`music/music-v2.5`: \$0.0025 per second</Card>
+  <Card title="MiniMax Music v2" href="/api/models/music/minimax-music-v2" img="/images/api/tiles/music.svg">`music/minimax-music-v2`: \$0.03 per track</Card>
+</CardGroup>
+</div>
 
 ## For agents
 
