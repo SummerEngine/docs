@@ -123,20 +123,32 @@ function routerPolicy(sql) {
   return { ...policy, ceilings };
 }
 
+/** Defaults added to summer.router_policy by a later migration: ADD COLUMN default_<x> ... DEFAULT <n> CHECK (BETWEEN <min> AND <max>). */
+function routerPolicyColumns(sql) {
+  const added = [...sql.matchAll(/ALTER TABLE summer\.router_policy\s+ADD COLUMN (default_\w+) \w+ NOT NULL DEFAULT (\d+)\s+CHECK \(\1 BETWEEN \d+ AND (\d+)\)/g)];
+  return { defaults: Object.fromEntries(added.map((m) => [m[1], Number(m[2])])), ceilings: Object.fromEntries(added.map((m) => [m[1], Number(m[3])])) };
+}
+
 function readRouter(dir) {
   const migrations = join(dir, "db/postgres/platform/migrations");
   const file = readdirSync(migrations).filter((f) => f.endsWith("_summer_router.sql")).sort().at(-1);
   if (!file) throw new Error(`no *_summer_router.sql in ${migrations}`);
+  const later = readdirSync(migrations).filter((f) => /_summer_router_\w+\.sql$/.test(f) && f > file).sort();
   // The docs need the kinds, errors and limit keys. Which providers serve a kind, and the provider
   // options of the character schema, are Summer's business: the pinned copy leaves them out.
   const registry = JSON.parse(readFileSync(join(dir, "contracts/summer-router/registry.json"), "utf8"));
   delete registry.providers;
   delete registry.schemas;
   for (const kind of registry.kinds) delete kind.providers;
-  return {
-    registry,
-    policy: { source: `db/postgres/platform/migrations/${file}`, ...routerPolicy(readFileSync(join(migrations, file), "utf8")) },
-  };
+  const policy = { source: `db/postgres/platform/migrations/${file}`, ...routerPolicy(readFileSync(join(migrations, file), "utf8")) };
+  for (const f of later) {
+    const { defaults, ceilings } = routerPolicyColumns(readFileSync(join(migrations, f), "utf8"));
+    if (!Object.keys(defaults).length) continue;
+    Object.assign(policy, defaults);
+    Object.assign(policy.ceilings, ceilings);
+    (policy.amended_by ??= []).push(`db/postgres/platform/migrations/${f}`);
+  }
+  return { registry, policy };
 }
 
 const opts = parseArgs(process.argv.slice(2));

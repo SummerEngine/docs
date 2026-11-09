@@ -300,7 +300,13 @@ export function routerPages(registry, policy, list = null) {
       "|---|---|---|",
       `| Calls a minute per player | ${policy.default_player_calls_per_minute} | ${ceiling("player_calls_per_minute")} |`,
       `| Calls a minute per game | ${policy.default_game_calls_per_minute.toLocaleString("en-US")} | ${ceiling("game_calls_per_minute").toLocaleString("en-US")} |`,
+      ...(policy.default_player_hour_tokens
+        ? [`| Text tokens an hour per player | ${policy.default_player_hour_tokens.toLocaleString("en-US")} | ${ceiling("player_hour_tokens").toLocaleString("en-US")} |`]
+        : []),
       "",
+      ...(policy.default_player_hour_tokens
+        ? ["The token limit counts the text tokens a player's character replies used in the last hour. The default is sized for real play: about four turns a minute of a long voice conversation with tools.", ""]
+        : []),
       `Test turns from Studio and your agent while you build count toward their own cap: ${usd(policy.developer_day_micro_usd)} per developer per day.`,
       "",
       "## When a cap is reached",

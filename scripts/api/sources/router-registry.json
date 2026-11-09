@@ -22,7 +22,7 @@
       "host_op": "request_router_reply",
       "gdscript": "Summer.client.router.reply(character: String, text: String, options: Dictionary = {}) -> SummerRouterResult",
       "mcp_tool": "summer_router_character_reply",
-      "cli": "summer router test <character> --say <text>",
+      "cli": "summer router test-character --input '{\"gameId\": \"<game>\", \"characterId\": \"<character>\", \"messages\": [\"<text>\"]}'",
       "studio_form": "game-router-characters",
       "docs_slug": "router/character-reply",
       "inputs": {
@@ -604,7 +604,7 @@
       "tag": "character_not_found",
       "http_status": 404,
       "retryable": false,
-      "fix": "Push the character with `summer router push`, then call it by its id."
+      "fix": "Save the character in Studio (Grow > Summer Router) or with `summer router save-character`, then call it by its id."
     },
     {
       "tag": "tool_unhandled",
@@ -622,7 +622,7 @@
       "tag": "limit_reached",
       "http_status": 429,
       "retryable": true,
-      "fix": "Wait until resets_at, or raise the cap in Studio or with `summer router limits set`."
+      "fix": "Wait until resets_at, or raise the cap in Studio (Grow > Summer Router) or with `summer router set-settings`."
     },
     {
       "tag": "credits_required",
@@ -635,7 +635,7 @@
       "tag": "router_disabled",
       "http_status": 403,
       "retryable": false,
-      "fix": "Turn on Summer Router for this game in Studio or with `summer router limits set`."
+      "fix": "Turn on Summer Router for this game in Studio (Grow > Summer Router) or with `summer router set-settings`."
     },
     {
       "tag": "age_restricted",

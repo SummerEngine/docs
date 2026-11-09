@@ -15,6 +15,11 @@
     "default_account_month_micro_usd": 50000000000,
     "developer_day_micro_usd": 50000000,
     "default_player_calls_per_minute": 120,
-    "default_game_calls_per_minute": 6000
-  }
+    "default_game_calls_per_minute": 6000,
+    "default_player_hour_tokens": 50000000
+  },
+  "default_player_hour_tokens": 2000000,
+  "amended_by": [
+    "db/postgres/platform/migrations/20261026221043_summer_router_player_hour_tokens.sql"
+  ]
 }
