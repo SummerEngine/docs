@@ -39,6 +39,25 @@
       ]
     },
     {
+      "id": "gpt-4.1-mini",
+      "capability": "character.reply",
+      "display_name": "GPT-4.1 mini",
+      "default": false,
+      "status": "available",
+      "prices": [
+        {
+          "unit": "input_tokens",
+          "per": 1000000,
+          "usd": "0.40"
+        },
+        {
+          "unit": "output_tokens",
+          "per": 1000000,
+          "usd": "1.60"
+        }
+      ]
+    },
+    {
       "id": "image-flash",
       "capability": "image",
       "display_name": "Gemini 3.1 Flash Image",
@@ -67,6 +86,20 @@
       ]
     },
     {
+      "id": "gpt-4o-mini-tts",
+      "capability": "speech",
+      "display_name": "GPT-4o mini TTS",
+      "default": false,
+      "status": "available",
+      "prices": [
+        {
+          "unit": "characters",
+          "per": 1000,
+          "usd": "0.025"
+        }
+      ]
+    },
+    {
       "id": "scribe",
       "capability": "transcribe",
       "display_name": "Scribe v2",
@@ -76,7 +109,31 @@
         {
           "unit": "audio_seconds",
           "per": 60,
-          "usd": "0.003667"
+          "usd": "0.00366666"
+        }
+      ]
+    },
+    {
+      "id": "gpt-4o-mini-transcribe",
+      "capability": "transcribe",
+      "display_name": "GPT-4o mini Transcribe",
+      "default": false,
+      "status": "coming_soon",
+      "prices": [
+        {
+          "unit": "input_tokens",
+          "per": 1000000,
+          "usd": "1.25"
+        },
+        {
+          "unit": "output_tokens",
+          "per": 1000000,
+          "usd": "5.00"
+        },
+        {
+          "unit": "audio_seconds",
+          "per": 60,
+          "usd": "0.006"
         }
       ]
     }
@@ -87,7 +144,8 @@
     "game_month_usd": "1000.00",
     "account_month_usd": "2000.00",
     "player_calls_per_minute": 30,
-    "game_calls_per_minute": 1200
+    "game_calls_per_minute": 1200,
+    "player_hour_tokens": 2000000
   },
   "ceilings": {
     "player_day_usd": "500.00",
@@ -95,7 +153,8 @@
     "game_month_usd": "15500.00",
     "account_month_usd": "50000.00",
     "player_calls_per_minute": 120,
-    "game_calls_per_minute": 6000
+    "game_calls_per_minute": 6000,
+    "player_hour_tokens": 50000000
   },
   "billing": "Usage is billed at the provider's cost from the game owner's paid Summer credits."
 }

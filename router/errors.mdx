@@ -37,6 +37,7 @@ else:
 | [`moderated`](#moderated) | 422 | No |
 | [`invalid_input`](#invalid_input) | 400 | No |
 | [`rate_limited`](#rate_limited) | 429 | After `Retry-After` |
+| [`content_restricted`](#content_restricted) | 403 | No |
 
 ### unavailable
 
@@ -97,6 +98,10 @@ Send inputs that match the kind's schema in the registry.
 ### rate_limited
 
 Slow down and retry after Retry-After seconds.
+
+### content_restricted
+
+The game is unavailable for this account: the account's content settings hide it, or no game on Summer Games has this id. Check the game id, and keep the offline line.
 
 ## What a result carries
 

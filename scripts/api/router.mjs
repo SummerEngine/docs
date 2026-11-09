@@ -178,6 +178,17 @@ export function routerPages(registry, policy, list = null) {
     not_signed_in: "Only signed-in Summer players can use Summer Router. Ask the player to sign in to Summer, then try again.",
   };
   const RETRY = { limit_reached: "After `resets_at`", rate_limited: "After `Retry-After`" };
+  // Refusals from the Summer Games access check, which runs before Summer Router (platform api/player/openapi.yaml);
+  // not registry tags, but a call can answer them.
+  const GATE_ERRORS = [
+    {
+      tag: "content_restricted",
+      http_status: 403,
+      retryable: false,
+      fix: "The game is unavailable for this account: the account's content settings hide it, or no game on Summer Games has this id. Check the game id, and keep the offline line.",
+    },
+  ];
+  const errors = [...registry.errors, ...GATE_ERRORS];
   const limitTitle = Object.fromEntries(registry.limit_keys.map((l) => [l.id, l.title.toLowerCase()]));
   const source = `the Summer Router registry (version ${registry.version})`;
 
@@ -331,9 +342,9 @@ export function routerPages(registry, policy, list = null) {
       "",
       "| Tag | Status | Retry |",
       "|---|---|---|",
-      ...registry.errors.map((e) => `| [${code(e.tag)}](#${e.tag}) | ${e.http_status || "in the game"} | ${RETRY[e.tag] ?? (e.retryable ? "Yes" : "No")} |`),
+      ...errors.map((e) => `| [${code(e.tag)}](#${e.tag}) | ${e.http_status || "in the game"} | ${RETRY[e.tag] ?? (e.retryable ? "Yes" : "No")} |`),
       "",
-      ...registry.errors.flatMap((e) => [`### ${e.tag}`, "", escapeProse(FIX[e.tag] ?? e.fix), ""]),
+      ...errors.flatMap((e) => [`### ${e.tag}`, "", escapeProse(FIX[e.tag] ?? e.fix), ""]),
       "## What a result carries",
       "",
       "| Field | On | Meaning |",
