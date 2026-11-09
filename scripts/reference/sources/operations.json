@@ -10789,7 +10789,7 @@
     {
       "name": "assets.search",
       "title": "Search assets",
-      "summary": "Search game assets: the Summer library (130k+), the person's own assets (scope mine; an empty query lists recent), or both. Returns asset ids and file URLs. Free. Next: assets.get.",
+      "summary": "Search game assets: the Summer library (239,000+), the person's own assets (scope mine; an empty query lists recent), or both. Returns asset ids and file URLs. Free. Next: assets.get.",
       "effect": "read",
       "approval": "none",
       "permission": "free",
