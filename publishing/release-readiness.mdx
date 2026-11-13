@@ -1,7 +1,7 @@
 ---
 title: "Release readiness checklist for Summer Games"
 sidebarTitle: "Release readiness"
-description: "Ten checks to run before you publish a Summer game or a new version of it, so players can really play it: server scene, online join, saves, pack files and Summer version."
+description: "Checks to run before you publish a Summer game or a new version of it, so players can really play it: server scene, online join, saves, pack files and Summer version."
 icon: "list-checks"
 "og:image": "https://docs.summerengine.com/images/og/publishing-release-readiness.jpg"
 "twitter:image": "https://docs.summerengine.com/images/og/publishing-release-readiness.jpg"
@@ -49,6 +49,11 @@ whenever that happens again.
 - [ ] **A signed-in player keeps playing for 3 minutes on each Summer Games
       app, and stays signed in.** See
       [check 10](#10-play-for-three-minutes-while-signed-in).
+
+### Browser games
+
+- [ ] **Browser play uses Compatibility and loads the game.** See
+      [check 14](#14-browser-play-uses-compatibility).
 
 ## The checks
 
@@ -370,6 +375,21 @@ If the game closes or you are signed out, the fault is Summer's, not your
 game's. See
 [The game closes after about a minute](#the-game-closes-after-about-a-minute).
 
+### 14. Browser play uses Compatibility
+
+Browser exports must use **Compatibility (WebGL 2)**. Forward+ and Mobile
+are not browser export choices. Native builds can keep their chosen renderer.
+
+**Check it.** Open the exact browser build you plan to publish. Confirm that
+its startup log says **Compatibility**, and play through the first scene.
+Check that the game's scripts load and that its materials look right.
+Forward+-only effects may look different or be unavailable.
+
+In the browser's Network panel, check the runtime download's transferred size.
+If it is compressed, confirm it decodes and the game starts. A working local
+preview does not prove that the uploaded files have the right delivery headers.
+Keep the previous version until the replacement works on the live game page.
+
 ## Troubleshooting
 
 ### Players can't join online
@@ -440,6 +460,13 @@ This happens when a Summer service refuses the player's sign-in while your
 game plays. It is Summer's fault, and you don't need to change your game.
 Report it on [Discord](https://discord.gg/summerengine) with your game's
 name, the app and the time it happened.
+
+### Browser play loads slowly or selects Forward+
+
+Check the browser startup log and the runtime download in the Network panel.
+A large uncompressed runtime delays loading. A Forward+ browser build uses
+the wrong renderer for Summer browser exports. Back up the existing upload,
+export a Compatibility build, and run check 14 before replacing it.
 
 ## Ask your agent
 
