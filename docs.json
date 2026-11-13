@@ -655,6 +655,15 @@
               "skills/character-portrait",
               "skills/concept-art",
               "skills/create-asset-sheet",
+              {
+                "group": "Hero Art",
+                "pages": [
+                  "skills/hero-art",
+                  "skills/hero-art/references/hero-character",
+                  "skills/hero-art/references/splash-art",
+                  "skills/hero-art/references/splash-loop"
+                ]
+              },
               "skills/instantiate-asset-pack",
               {
                 "group": "Painted 2.5D World",
