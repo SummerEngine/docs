@@ -38,6 +38,10 @@ mint dev
 
 View your local preview at `http://localhost:3000`.
 
+## Changelog entries
+
+Use the [public release notes standard](https://github.com/SummerEngine/summer/blob/main/docs/PUBLIC_RELEASE_NOTES.md) when editing [the release timeline](changelog/overview.mdx). Check desktop details against the [versioned website entries](https://www.summerengine.com/changelog) and CLI details against the [package changelog](https://github.com/SummerEngine/summer/blob/main/CHANGELOG.md).
+
 ## Publishing changes
 
 Documentation changes are deployed automatically after pushing to the main branch.
