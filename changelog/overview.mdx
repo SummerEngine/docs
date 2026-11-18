@@ -11,6 +11,48 @@ icon: "history"
 
 Every Summer release, newest first: the Summer desktop app, the `summer-engine` MCP and CLI, and the Summer SDK. Filter by tag to see one of them.
 
+<Update label="Desktop 0.8.7" description="November 17, 2026" tags={["Desktop app"]}>
+
+## Build and play a web game beside your chat
+
+On Windows, choose **New game → Web-only game**, pick **Blank game** or a game from the gallery, then press **Create**. Your game runs in the **Web** tab beside chat and reloads as your agent changes it. Windows 0.8.7 supports creating and playing these projects locally. [Start a Web-only game](/quickstarts/fresh-project)
+
+Long pastes in chat become text files your agent can read. Your chat and editor panels keep their widths as you switch tabs.
+
+[Full 0.8.7 release notes](https://www.summerengine.com/changelog/0.8.7)
+
+</Update>
+
+<Update label="Desktop 0.8.6" description="November 12, 2026" tags={["Desktop app"]}>
+
+## Start your next game from a first-person shooter template
+
+Under **New game**, choose **Pick a template** and open the first-person shooter to start building from a playable project. On Windows, the gallery also downloads and unpacks larger templates. This release fixes local multiplayer connection and project upload issues.
+
+[Full 0.8.6 release notes](https://www.summerengine.com/changelog/0.8.6)
+
+</Update>
+
+<Update label="Desktop 0.8.5" description="November 7, 2026" tags={["Desktop app"]}>
+
+## Retry a failed Windows update download
+
+On Windows, the updater tells you when a check finishes and offers a retry when a download fails. This release also fixes the crash when closing the editor after an update check. Use **Copy Load Errors** to share the diagnostic text when a project fails to load.
+
+[Full 0.8.5 release notes](https://www.summerengine.com/changelog/0.8.5)
+
+</Update>
+
+<Update label="Desktop 0.8.0" description="October 27, 2026" tags={["Desktop app"]}>
+
+## A starter world for your game, a shared board for your team
+
+Open the **Summer Starter Template** to begin with a lit world, characters, and props. Plan the game with teammates and agents on **Summer Board**, and speak to Summer with **Summer Voice**. The rebuilt desktop editor ships as a full app install.
+
+[Full 0.8.0 release notes](https://www.summerengine.com/changelog/0.8.0)
+
+</Update>
+
 <Update label="MCP and CLI 4.8" description="October 24, 2026" tags={["MCP and CLI"]}>
 
 ## summer-engine 4.8: the Summer API, Studio inside the Summer app, and agents that show their work
@@ -116,15 +158,11 @@ Summer is the game engine built for AI. Any agent builds, tests and publishes a 
 
 <Update label="Desktop 0.7.3" description="October 11, 2026" tags={["Desktop app"]}>
 
-## Summer 0.7.3: Steadier publishing to Summer Games
+## Catch the wrong server scene before launch
 
-- Exporting to Summer Games no longer crashes on compressed files
-- Publishing stops a multiplayer server that starts the wrong scene
+Summer Games exports now handle compressed binary resources without crashing. Before a hosted multiplayer build goes live, Summer checks that its server starts the intended scene and blocks the release if it opens the wrong one.
 
-**Fixed**
-
-- Summer Games export: a compressed binary resource no longer crashes the export
-- Multiplayer: a hosted build whose server starts the wrong scene is refused before it goes live
+[Full 0.7.3 release notes](https://www.summerengine.com/changelog/0.7.3)
 
 </Update>
 
