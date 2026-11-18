@@ -19,6 +19,10 @@ On Windows, choose **New game → Web-only game**, pick **Blank game** or a game
 
 Long pastes in chat become text files your agent can read. Your chat and editor panels keep their widths as you switch tabs.
 
+The template gallery recognizes desktop sign-ins. Agents can capture a 2D scene while the Game or Script tab is open, and the model picker unlocks newly available models after a plan upgrade.
+
+On Mac, dividers keep moving when you drag across chat, Files, or Studio.
+
 [Full 0.8.7 release notes](https://www.summerengine.com/changelog/0.8.7)
 
 </Update>
@@ -28,6 +32,10 @@ Long pastes in chat become text files your agent can read. Your chat and editor 
 ## Start your next game from a first-person shooter template
 
 Under **New game**, choose **Pick a template** and open the first-person shooter to start building from a playable project. On Windows, the gallery also downloads and unpacks larger templates. This release fixes local multiplayer connection and project upload issues.
+
+Scripted playtests release timed key presses and actions when the requested duration ends.
+
+Chat recovers after an unexpected quit on Mac. If a backup-history request is interrupted, Summer retains the backups it found and retries the rest.
 
 [Full 0.8.6 release notes](https://www.summerengine.com/changelog/0.8.6)
 
@@ -39,6 +47,10 @@ Under **New game**, choose **Pick a template** and open the first-person shooter
 
 On Windows, the updater tells you when a check finishes and offers a retry when a download fails. This release also fixes the crash when closing the editor after an update check. Use **Copy Load Errors** to share the diagnostic text when a project fails to load.
 
+On Mac, interrupted update downloads resume. Studio remembers your selected game tab when you return.
+
+On Windows, projects with long chat-history paths show their existing chats, and imported chats retain their dates.
+
 [Full 0.8.5 release notes](https://www.summerengine.com/changelog/0.8.5)
 
 </Update>
@@ -48,6 +60,10 @@ On Windows, the updater tells you when a check finishes and offers a retry when 
 ## A starter world for your game, a shared board for your team
 
 Open the **Summer Starter Template** to begin with a lit world, characters, and props. Plan the game with teammates and agents on **Summer Board**, and speak to Summer with **Summer Voice**. The rebuilt desktop editor ships as a full app install.
+
+Rewind to an earlier chat message to restore that turn’s game files. Drafts stay with their conversation across game switches and reloads.
+
+When you restore a backup with local changes still waiting to upload, Summer asks first and keeps the local copy. Background scene updates preserve unsaved edits.
 
 [Full 0.8.0 release notes](https://www.summerengine.com/changelog/0.8.0)
 
@@ -161,6 +177,10 @@ Summer is the game engine built for AI. Any agent builds, tests and publishes a 
 ## Catch the wrong server scene before launch
 
 Summer Games exports now handle compressed binary resources without crashing. Before a hosted multiplayer build goes live, Summer checks that its server starts the intended scene and blocks the release if it opens the wrong one.
+
+The exporter also catches client scripts and scenes that reference server-only classes before upload.
+
+Exported games can fall back to an available rendering driver at startup and report script errors for calls on missing objects that previously crashed the player.
 
 [Full 0.7.3 release notes](https://www.summerengine.com/changelog/0.7.3)
 
