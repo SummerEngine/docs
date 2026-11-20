@@ -41,8 +41,8 @@ whenever that happens again.
 - [ ] **You exported with a released Summer editor, and your scripts compile
       on the Summer that players get.** See
       [check 7](#7-export-with-a-released-summer-editor).
-- [ ] **Every file your game reads at run time is in the pack, and text shows
-      as letters on iPhone.** See
+- [ ] **Your build includes the files and fonts the game uses. The title and
+      menus are readable on every platform you ship.** See
       [check 8](#8-every-file-your-game-reads-is-in-the-pack).
 - [ ] **You exported with the Summer version the Summer Games apps run.** See
       [check 9](#9-export-with-the-summer-version-the-apps-run).
@@ -284,6 +284,12 @@ on your computer.
    # Prints one "PACK res://..." line per file in the pack.
    func _init() -> void:
        _walk("res://")
+       for path in OS.get_cmdline_user_args():
+           if not (ResourceLoader.load(path) is Font):
+               push_error("Missing or invalid packed font: " + path)
+               quit(1)
+               return
+           print("FONT ", path)
        quit()
 
    func _walk(dir: String) -> void:
@@ -302,12 +308,12 @@ on your computer.
    <CodeGroup>
 
    ```sh macOS / Linux
-   "$SUMMER" --headless --main-pack build/bundle/client.pck --script ~/list_pack.gd | grep '^PACK '
+   "$SUMMER" --headless --main-pack build/bundle/client.pck --script ~/list_pack.gd
    ```
 
    ```powershell Windows PowerShell
    Run-Summer 60 build\pack.log '--headless','--main-pack','build\bundle\client.pck','--script',"$HOME\list_pack.gd"
-   Select-String -Path build\pack.log -Pattern '^PACK '
+   Select-String -Path build\pack.log -Pattern '^(PACK|FONT) '
    ```
 
    </CodeGroup>
@@ -315,14 +321,21 @@ on your computer.
    Every file from step 1 must have its own `PACK res://…` line. If one is
    missing, add it to the summer.games preset's non-resource filter, for
    example `fonts/*.bin`, export again and check again.
-3. Don't use `SystemFont` for text that phone players see, not even as a
-   fallback. Put the font in your project: import a `.ttf` or `.otf`, or read
-   its bytes from a file that step 2 shows is in the pack. If you need a
-   fallback, use `ThemeDB.fallback_font`, Summer's built-in font.
-4. Right after the version goes live, open your game on an iPhone in the
-   Summer Games app and look at the title screen and one menu. Every label
-   must show letters, not boxes. Your editor, Local Play and the desktop app
-   can't show this problem.
+3. Check the fonts used by your theme, individual labels, rich text and
+   scripts. Include bold and italic faces and any fallback used for another
+   language or symbol. Import custom fonts such as `.ttf` or `.otf` into
+   the game and reference them from the UI. If your code picks a font by
+   name at run time, include its resource in the client export preset. For
+   an imported font, pass its original path to the listing script after
+   `--`, for example `-- res://fonts/Title.ttf`. View the full output and
+   look for a `FONT` line for each face. Summer may store the imported data
+   under a different name in the pack.
+4. Before release, open that build on each platform you ship, on a device or
+   clean environment without your development fonts. Read the title, menu
+   buttons and a sample from each writing system your game supports. Check
+   the actual Summer Games app for iPhone releases. Save a screenshot or
+   note the build, platform and text you read. If a letter appears as a box,
+   fix the font and repeat the check on the new export.
 
 ### 9. Export with the Summer version the apps run
 
@@ -411,14 +424,16 @@ the current Summer release from the
 [download page](https://summerengine.com/download), upload the new version
 and take it live. Run check 7 on the new `.zip` before you upload it.
 
-### Text shows as boxes on iPhone
+<a id="text-shows-as-boxes-on-iphone" />
 
-Every letter in your game draws as an empty box on iPhone, while it looks
-right on your computer. Your game most likely reads a font file that isn't
-in your pack and falls back to `SystemFont`. Run
-[check 8](#8-every-file-your-game-reads-is-in-the-pack): add the font to the
-summer.games preset's non-resource filter, or import it, export a new
-version, upload it and take it live.
+### Text shows as boxes in the exported game
+
+A box with digits inside is a missing character. This can happen on any
+platform when a font is missing from the export, a label uses a font
+installed only on your computer, or the font lacks that character. Check
+the face assigned to the affected label. Bundle that face and a fallback
+that covers the affected text, then export again and read the same label
+in the player build. [Check 8](#8-every-file-your-game-reads-is-in-the-pack)
 
 ### The game could not start
 
@@ -455,7 +470,8 @@ https://docs.summerengine.com/publishing/release-readiness.md.
   and engine made it, and whether that is a released Summer. Run client.pck
   on that released Summer and show me any script that fails to load.
 - Find every file my scripts read by path, list client.pck and tell me which
-  of those files are missing from it. Tell me if any text uses SystemFont.
+  of those files are missing from it. Check my UI fonts and fallbacks in the
+  exported client and show me the title and menu text on each target you test.
 - Tell me whether the summerVersion in summer-bundle.json is on the same
   version line as the current Summer release.
 - Remind me to play the release for 3 minutes in each Summer Games app while
